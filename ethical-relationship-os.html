@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>倫理人際關係作業系統 | Ethical Relationship OS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background-color: #FFFFFF;
+            color: #0D1B3E;
+            line-height: 1.8;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1A2B5F 0%, #0A7A72 100%);
+            color: #FFFFFF;
+            padding: 60px 40px;
+            text-align: center;
+            border-bottom: 6px solid #C9960C;
+        }
+
+        header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        header .subtitle {
+            font-size: 18px;
+            font-weight: 300;
+            opacity: 0.95;
+            margin-bottom: 8px;
+        }
+
+        header .tagline {
+            font-size: 16px;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        .pillar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .pillar {
+            background: #F8F9FB;
+            border-left: 6px solid #C9960C;
+            padding: 30px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .pillar:hover {
+            box-shadow: 0 8px 24px rgba(13, 27, 62, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .pillar-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .pillar h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1A2B5F;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .pillar .subtitle {
+            font-size: 16px;
+            color: #0A7A72;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .pillar p {
+            font-size: 16px;
+            color: #4A5568;
+            line-height: 1.7;
+        }
+
+        .section {
+            margin-bottom: 100px;
+            scroll-margin-top: 100px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #C9960C;
+        }
+
+        .section-icon {
+            font-size: 48px;
+        }
+
+        .section-title h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1A2B5F;
+            margin: 0;
+        }
+
+        .section-title .en {
+            font-size: 18px;
+            color: #0A7A72;
+            font-weight: 600;
+        }
+
+        .bilingual-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .zh, .en {
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .zh {
+            color: #2D3748;
+        }
+
+        .en {
+            color: #4A5568;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: #FFFFFF;
+            border: 2px solid #E2E8F0;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            border-color: #0A7A72;
+            box-shadow: 0 4px 16px rgba(10, 122, 114, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #1A2B5F 0%, #0A7A72 100%);
+            color: #FFFFFF;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .card-toggle {
+            font-size: 24px;
+            font-weight: 700;
+            transition: transform 0.3s ease;
+            user-select: none;
+        }
+
+        .card.open .card-toggle {
+            transform: rotate(180deg);
+        }
+
+        .card-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .card.open .card-content {
+            max-height: 1000px;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .bilingual {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 16px;
+        }
+
+        .bilingual .zh, .bilingual .en {
+            font-size: 15px;
+        }
+
+        .practice-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 12px;
+        }
+
+        .practice-list li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .practice-list li:before {
+            content: "◆";
+            position: absolute;
+            left: 0;
+            color: #C9960C;
+            font-weight: 700;
+        }
+
+        .tts-button {
+            background: #0A7A72;
+            color: #FFFFFF;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 12px;
+        }
+
+        .tts-button:hover {
+            background: #055f57;
+            transform: translateY(-1px);
+        }
+
+        .tts-button:active {
+            transform: translateY(0);
+        }
+
+        .framework {
+            background: #F0F9FF;
+            border: 2px solid #0A7A72;
+            padding: 30px;
+            border-radius: 4px;
+            margin-bottom: 40px;
+        }
+
+        .framework h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1A2B5F;
+            margin-bottom: 16px;
+        }
+
+        .framework-step {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #B8E4E0;
+        }
+
+        .framework-step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #C9960C;
+            color: #FFFFFF;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: 700;
+            margin-right: 12px;
+            font-size: 14px;
+        }
+
+        .step-content {
+            display: inline-block;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .quote {
+            background: #FFF8E7;
+            border-left: 5px solid #C9960C;
+            padding: 20px 24px;
+            margin: 24px 0;
+            font-style: italic;
+            font-size: 15px;
+            color: #2D3748;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            .bilingual-content {
+                grid-template-columns: 1fr;
+            }
+
+            .bilingual {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 28px;
+            }
+
+            .section-title h2 {
+                font-size: 24px;
+            }
+
+            .container {
+                padding: 40px 24px;
+            }
+
+            .pillar-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+                animation: none !important;
+            }
+        }
+
+        footer {
+            background: #1A2B5F;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 14px;
+            border-top: 3px solid #C9960C;
+            margin-top: 80px;
+        }
+
+        footer p {
+            margin-bottom: 8px;
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #C9960C, transparent);
+            margin: 60px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>倫理人際關係作業系統</h1>
+        <div class="subtitle">Ethical Relationship Operating System</div>
+        <div class="tagline">建立基於信任、同理心與共同成長的深層連結</div>
+        <div class="tagline">Build deep connections through trust, empathy, and mutual growth</div>
+    </header>
+
+    <div class="container">
+        <!-- Introduction Pillars -->
+        <section class="section">
+            <div class="pillar-grid">
+                <div class="pillar">
+                    <div class="pillar-icon">🧠</div>
+                    <h2>情感智商</h2>
+                    <div class="subtitle">Emotional Intelligence</div>
+                    <p>深入理解自我情緒與他人感受的能力，是所有健康人際關係的基礎。透過自我覺知與同理心，建立穩定的關係基礎。</p>
+                </div>
+
+                <div class="pillar">
+                    <div class="pillar-icon">💬</div>
+                    <h2>倫理說服</h2>
+                    <div class="subtitle">Ethical Persuasion</div>
+                    <p>不是操控，而是透過真誠、信任與共同價值來影響他人。基於對方最佳利益的說服，建立長期信賴關係。</p>
+                </div>
+
+                <div class="pillar">
+                    <div class="pillar-icon">🤝</div>
+                    <h2>健康談判</h2>
+                    <div class="subtitle">Healthy Negotiation</div>
+                    <p>尋求雙贏的解決方案，尊重彼此需求與邊界。透過積極傾聽與創意問題解決，化解衝突為合作機會。</p>
+                </div>
+
+                <div class="pillar">
+                    <div class="pillar-icon">🌱</div>
+                    <h2>真誠連結</h2>
+                    <div class="subtitle">Authentic Connection</div>
+                    <p>建立基於脆弱性與相互性的深層關係。長期投資於他人成長，經營能夠彼此滋養與支持的人際系統。</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Section 1: Emotional Intelligence -->
+        <section class="section">
+            <div class="section-title">
+                <div class="section-icon">🧠</div>
+                <div>
+                    <h2>情感智商與自我覺知</h2>
+                    <div class="en">Emotional Intelligence & Self-Awareness</div>
+                </div>
+            </div>
+
+            <div class="bilingual-content">
+                <div class="zh">
+                    <p><strong>情感智商是所有人際互動的基礎。</strong>它包括四個核心能力：自我覺知、自我管理、社交覺知與人際管理。</p>
+                    <p style="margin-top: 16px;">當你能夠準確識別自己的情緒觸發點，理解情緒背後的需求，就能在人際互動中做出更明智的選擇。同時，理解他人的情緒狀態——他們的恐懼、渴望與痛點——就是同理心的開始。</p>
+                </div>
+                <div class="en">
+                    <p><strong>Emotional intelligence is the foundation of all interpersonal interactions.</strong> It comprises four core abilities: self-awareness, self-management, social awareness, and relationship management.</p>
+                    <p style="margin-top: 16px;">When you can accurately identify your emotional triggers and understand the needs behind your emotions, you make wiser choices in relationships. Simultaneously, understanding others' emotional states—their fears, desires, and pain points—is where empathy begins.</p>
+                </div>
+            </div>
+
+            <div class="card-container">
+                <div class="card" data-card-id="eq-1">
+                    <div class="card-header">
+                        <h3>自我覺知</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>識別你的情緒模式</strong></div>
+                                <div class="en"><strong>Identify Your Emotional Patterns</strong></div>
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>追蹤情緒日記：</strong>記錄觸發你反應的情景、你的感受與潛在的需求</li>
+                                <li><strong>識別核心信念：</strong>那些自動出現的想法往往源自早期經驗與信念系統</li>
+                                <li><strong>認可生理信號：</strong>胸部緊張、頸部發熱或胃痛往往是情緒的先兆</li>
+                                <li><strong>觀察反應模式：</strong>你在壓力下傾向於戰鬥、逃避還是凍結？</li>
+                            </ul>
+                            <button class="tts-button" data-text="Identify your emotional patterns. Track emotion journal: record situations that trigger your responses, your feelings, and underlying needs. Identify core beliefs: automatic thoughts often originate from early experiences and belief systems. Acknowledge physical signals: chest tightness, neck heat, or stomach pain are often precursors to emotions. Observe response patterns: under stress, do you tend to fight, flee, or freeze?">🔊 Listen (EN)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-card-id="eq-2">
+                    <div class="card-header">
+                        <h3>同理心開發</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>理解他人的內心世界</strong></div>
+                                <div class="en"><strong>Understanding Others' Inner World</strong></div>
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>探究背後的故事：</strong>行為背後往往有未表達的需求或恐懼</li>
+                                <li><strong>暫停反駁衝動：</strong>在回應前，先問「他為什麼這樣說？他現在的感受是什麼？」</li>
+                                <li><strong>反映回應：</strong>用自己的話重述對方所說，確認理解是否正確</li>
+                                <li><strong>體驗相似情況：</strong>回想你自己感到被誤解、害怕或被忽視的時刻</li>
+                            </ul>
+                            <button class="tts-button" data-text="Understanding others' inner world. Explore the story behind: behavior often masks unspressed needs or fears. Pause the urge to rebut: before responding, ask why they said that and what they're feeling. Reflective response: restate what others say in your own words to confirm understanding. Experience similar situations: recall when you felt misunderstood, afraid, or ignored.">🔊 Listen (EN)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-card-id="eq-3">
+                    <div class="card-header">
+                        <h3>邊界與自尊</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>健康人際的先決條件</strong></div>
+                                <div class="en"><strong>Prerequisites for Healthy Relationships</strong></div>
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>認識你的限制：</strong>清楚表達你可接受與不可接受的事物</li>
+                                <li><strong>溫和但堅定的拒絕：</strong>說「不」時不需要解釋過度或道歉過度</li>
+                                <li><strong>一致性維護：</strong>邊界只有在堅持執行時才有效力</li>
+                                <li><strong>尊重他人邊界：</strong>他人的「不」同樣值得尊重</li>
+                            </ul>
+                            <button class="tts-button" data-text="Healthy relationship foundations. Know your limits: clearly express what you can and cannot accept. Gentle but firm refusal: say no without over-explaining or over-apologizing. Consistency maintenance: boundaries only have power when you enforce them. Respect others' boundaries: their no is equally worthy of respect.">🔊 Listen (EN)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Section 2: Ethical Persuasion -->
+        <section class="section">
+            <div class="section-title">
+                <div class="section-icon">💬</div>
+                <div>
+                    <h2>倫理說服與信任構建</h2>
+                    <div class="en">Ethical Persuasion & Trust Building</div>
+                </div>
+            </div>
+
+            <div class="bilingual-content">
+                <div class="zh">
+                    <p><strong>倫理說服不是操控。</strong>它是基於對方最佳利益，透過清晰溝通、共同價值與信任來影響他人。</p>
+                    <p style="margin-top: 16px;">當你真誠地關心對方的福祉，並展現個人廉正，你建立的信任會自然吸引他人朝著共同目標邁進。這種影響力是可持續的，因為它基於相互尊重而非隱藏的議程。</p>
+                </div>
+                <div class="en">
+                    <p><strong>Ethical persuasion is not manipulation.</strong> It influences others through clear communication, shared values, and trust—with their best interests in mind.</p>
+                    <p style="margin-top: 16px;">When you genuinely care for others' wellbeing and demonstrate personal integrity, the trust you build naturally draws them toward shared goals. This influence is sustainable because it's based on mutual respect, not hidden agendas.</p>
+                </div>
+            </div>
+
+            <div class="framework">
+                <h4>倫理影響力五步驟 | Five Steps to Ethical Influence</h4>
+                <div class="framework-step">
+                    <span class="step-number">1</span>
+                    <div class="step-content">
+                        <div style="margin-bottom: 8px;">
+                            <strong>建立可信度 | Build Credibility</strong>
+                        </div>
+                        <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">透過一致的行動、專業知識與道德行為展現你的價值觀</div>
+                        <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">Demonstrate your values through consistent action, expertise, and ethical behavior.</div>
+                    </div>
+                </div>
+                <div class="framework-step">
+                    <span class="step-number">2</span>
+                    <div class="step-content">
+                        <div style="margin-bottom: 8px;">
+                            <strong>理解對方價值 | Understand Their Values</strong>
+                        </div>
+                        <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">深入傾聽，發現他們真正關心的事物與他們的人生目標</div>
+                        <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">Listen deeply to discover what they truly care about and their life goals.</div>
+                    </div>
+                </div>
+                <div class="framework-step">
+                    <span class="step-number">3</span>
+                    <div class="step-content">
+                        <div style="margin-bottom: 8px;">
+                            <strong>找到共同基礎 | Find Common Ground</strong>
+                        </div>
+                        <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">識別你們都贊同的價值觀、目標或原則</div>
+                        <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">Identify values, goals, or principles you both agree on.</div>
+                    </div>
+                </div>
+                <div class="framework-step">
+                    <span class="step-number">4</span>
+                    <div class="step-content">
+                        <div style="margin-bottom: 8px;">
+                            <strong>提供清晰願景 | Articulate a Clear Vision</strong>
+                        </div>
+                        <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">解釋如何共同行動會造福雙方與更廣泛的系統</div>
+                        <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">Explain how collaborative action benefits both of you and the wider system.</div>
+                    </div>
+                </div>
+                <div class="framework-step">
+                    <span class="step-number">5</span>
+                    <div class="step-content">
+                        <div style="margin-bottom: 8px;">
+                            <strong>維持透明度 | Maintain Transparency</strong>
+                        </div>
+                        <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">坦誠溝通你的意圖、挑戰與限制</div>
+                        <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">Communicate honestly about your intentions, challenges, and limitations.</div>
+                        <button class="tts-button" data-text="Step 1: Demonstrate your values through consistent action, expertise, and ethical behavior. Step 2: Listen deeply to discover what they truly care about and their life goals. Step 3: Identify values, goals, or principles you both agree on. Step 4: Explain how collaborative action benefits both of you and the wider system. Step 5: Communicate honestly about your intentions, challenges, and limitations.">🔊 All Steps</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-container">
+                <div class="card" data-card-id="persua-1">
+                    <div class="card-header">
+                        <h3>信任的三要素</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>信任不是一蹴而就，而是逐步建立</strong></div>
+                                <div class="en"><strong>Trust is not instant; it's built progressively</strong></div>
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>能力 Competence：</strong>展示你有能力履行承諾。在你的領域裡維持高標準。</li>
+                                <li><strong>可靠性 Reliability：</strong>一次又一次遵守承諾。小的、無聲的信守比言語更有力。</li>
+                                <li><strong>關懷 Care：</strong>表現出你真的在乎對方的福祉，而不僅是你想要的結果。</li>
+                            </ul>
+                            <button class="tts-button" data-text="Trust is not instant; it's built progressively. Competence: demonstrate your ability to fulfill promises and maintain high standards in your field. Reliability: keep commitments again and again. Small, quiet fulfillment of promises is more powerful than words. Care: show that you truly care about others' wellbeing, not just the results you want.">🔊 Listen (EN)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-card-id="persua-2">
+                    <div class="card-header">
+                        <h3>避免常見的操控陷阱</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>倫理說服 vs. 不道德操控</strong></div>
+                                <div class="en"><strong>Ethical Persuasion vs. Unethical Manipulation</strong></div>
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>避免隱藏議程：</strong>你的意圖應該是可檢查的與可防禦的</li>
+                                <li><strong>避免扭曲事實：</strong>透明地呈現完整信息，包括反方觀點</li>
+                                <li><strong>避免情感勒索：</strong>使用羞愧、內疚或恐懼來強制同意是操控</li>
+                                <li><strong>避免利用依賴：</strong>尊重他人的獨立決策能力</li>
+                            </ul>
+                            <button class="tts-button" data-text="Ethical persuasion versus unethical manipulation. Avoid hidden agendas: your intentions should be checkable and defensible. Avoid distorting facts: present complete information transparently, including opposing views. Avoid emotional coercion: using shame, guilt, or fear to force agreement is manipulation. Avoid exploiting dependency: respect others' independent decision-making capacity.">🔊 Listen (EN)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Section 3: Healthy Negotiation -->
+        <section class="section">
+            <div class="section-title">
+                <div class="section-icon">🤝</div>
+                <div>
+                    <h2>健康談判與衝突解決</h2>
+                    <div class="en">Healthy Negotiation & Conflict Resolution</div>
+                </div>
+            </div>
+
+            <div class="bilingual-content">
+                <div class="zh">
+                    <p><strong>衝突是關係的自然部分，不是失敗的信號。</strong>重要的是如何處理它。健康的談判尋求雙贏解決方案，在此過程中雙方的需求都被理解、尊重與整合。</p>
+                    <p style="margin-top: 16px;">積極傾聽是關鍵。這意味著不只是等待輪到你說話，而是真正試圖理解對方的立場。當人們感到被聽見，他們更願意傾聽你。這個相互理解創造了創新解決方案的空間。</p>
+                </div>
+                <div class="en">
+                    <p><strong>Conflict is a natural part of relationships, not a sign of failure.</strong> What matters is how you handle it. Healthy negotiation seeks win-win solutions where both parties' needs are understood, respected, and integrated.</p>
+                    <p style="margin-top: 16px;">Active listening is key. It means not just waiting for your turn to speak, but genuinely trying to understand the other's position. When people feel heard, they're more willing to listen to you. This mutual understanding creates space for innovative solutions.</p>
+                </div>
+            </div>
+
+            <div class="card-container">
+                <div class="card" data-card-id="neg-1">
+                    <div class="card-header">
+                        <h3>積極傾聽技巧</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>從根本改變對話質量</strong></div>
+                                <div class="en"><strong>Transform Conversation Quality at the Core</strong></div>
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>全身專注：</strong>放下手機，面對對方，保持眼神接觸</li>
+                                <li><strong>暫停反應衝動：</strong>聽完整個想法，而不是在心裡準備回應</li>
+                                <li><strong>提出澄清問題：</strong>「你的意思是...？」或「發生了什麼讓你感到這樣？」</li>
+                                <li><strong>確認與反映：</strong>「聽起來你感到...因為...是嗎？」</li>
+                                <li><strong>驗證感受：</strong>「我理解為什麼你會這樣感受」不等於「我同意」</li>
+                            </ul>
+                            <button class="tts-button" data-text="Transform conversation quality at the core. Full body focus: put down your phone, face the other person, maintain eye contact. Pause reactive impulses: listen to the complete thought, not just prepare responses in your mind. Ask clarifying questions: what do you mean? What happened that made you feel this way? Confirm and reflect: it sounds like you feel... because... is that right? Validate feelings: understanding why you feel that way is not the same as agreeing.">🔊 Listen (EN)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-card-id="neg-2">
+                    <div class="card-header">
+                        <h3>雙贏思維框架</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>超越勝負思維</strong></div>
+                                <div class="en"><strong>Beyond Win-Lose Thinking</strong></div>
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>分開人與問題：</strong>針對問題進行談判，而非針對個性或意圖</li>
+                                <li><strong>區分立場與利益：</strong>立場是他們說他們想要什麼；利益是為什麼他們想要它</li>
+                                <li><strong>列出雙方需求：</strong>在紙上寫下所有涉及的需求與關注點</li>
+                                <li><strong>發散式地思考：</strong>先想出多個方案，然後評估，不要限制可能性</li>
+                                <li><strong>尋找共同目標：</strong>你們都想要什麼？長期關係？公平？解決方案？</li>
+                            </ul>
+                            <button class="tts-button" data-text="Beyond win-lose thinking. Separate people from problems: negotiate the issue, not personality or intent. Distinguish positions from interests: position is what they say they want; interest is why they want it. List both parties' needs: write down all needs and concerns involved. Think divergently: first brainstorm multiple options, then evaluate without limiting possibilities. Seek common goals: what do you both want? Long-term relationships? Fairness? Solutions?">🔊 Listen (EN)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-card-id="neg-3">
+                    <div class="card-header">
+                        <h3>困難對話的結構化方法</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>當情緒高漲時保持清晰</strong></div>
+                                <div class="en"><strong>Stay Clear When Emotions Run High</strong></div>
+                            </div>
+                            <div class="quote">
+                                「我想和你討論一些對我們關係很重要的事情。我想確保我們都能表達我們的看法和感受。」
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>開場陳述：</strong>表達討論的意圖是為了改善關係，而不是指責</li>
+                                <li><strong>描述行為不評判人格：</strong>「當你...時」而非「你是...」</li>
+                                <li><strong>表達影響與感受：</strong>「這對我造成...的影響，我感到...」</li>
+                                <li><strong>詢問他們的觀點：</strong>「你從你的角度如何看待這個情況？」</li>
+                                <li><strong>共同製定解決方案：</strong>「我們可以如何一起解決這個問題？」</li>
+                                <li><strong>確認與總結：</strong>確保你們對下一步有相同理解</li>
+                            </ul>
+                            <button class="tts-button" data-text="Stay clear when emotions run high. Opening statement: express that discussion aims to improve your relationship, not to blame. Describe behavior, not character: when you... rather than you are... Express impact and feelings: this affected me by... and I felt... Ask their perspective: how do you see this situation from your angle? Co-develop solutions: how can we solve this together? Confirm and summarize: ensure you both understand next steps the same way.">🔊 Listen (EN)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Section 4: Authentic Connection -->
+        <section class="section">
+            <div class="section-title">
+                <div class="section-icon">🌱</div>
+                <div>
+                    <h2>真誠連結與長期投資</h2>
+                    <div class="en">Authentic Connection & Long-Term Investment</div>
+                </div>
+            </div>
+
+            <div class="bilingual-content">
+                <div class="zh">
+                    <p><strong>最深的人際關係由脆弱性與相互性所建立。</strong>脆弱性不是軟弱；它是敢於真實展現自己，願意被看見的勇氣。</p>
+                    <p style="margin-top: 16px;">長期健康的關係是投資。它需要一致的關注、時間、誠實反饋與對彼此成長的承諾。它們不是為了獲得什麼而建立的交易關係，而是因為你重視這個人與你們一起創造的東西而維持的關係。</p>
+                </div>
+                <div class="en">
+                    <p><strong>The deepest relationships are built through vulnerability and reciprocity.</strong> Vulnerability isn't weakness; it's the courage to show yourself truly, willing to be seen.</p>
+                    <p style="margin-top: 16px;">Healthy long-term relationships are investments. They require consistent attention, time, honest feedback, and commitment to mutual growth. They're not transactional relationships built to gain something, but relationships maintained because you value the person and what you create together.</p>
+                </div>
+            </div>
+
+            <div class="card-container">
+                <div class="card" data-card-id="conn-1">
+                    <div class="card-header">
+                        <h3>脆弱性的力量</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>真實比完美更強大</strong></div>
+                                <div class="en"><strong>Authenticity Is Stronger Than Perfection</strong></div>
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>分享你的掙扎：</strong>說出你感到困難的地方，而不是假裝無所不能</li>
+                                <li><strong>承認錯誤：</strong>「我搞砸了。以下是我學到的...」比防守更能建立信任</li>
+                                <li><strong>表達情緒需求：</strong>「我現在需要支持」或「我需要幫助思考這個」</li>
+                                <li><strong>邀請他人進入你的內心世界：</strong>分享你的恐懼、夢想與價值觀</li>
+                                <li><strong>漸進式脆弱性：</strong>先用信任的人試驗，然後擴展到更寬的圈子</li>
+                            </ul>
+                            <button class="tts-button" data-text="Authenticity is stronger than perfection. Share your struggles: speak about where you find difficulty, not pretending you're all-powerful. Acknowledge mistakes: I messed up, and here's what I learned builds more trust than defensiveness. Express emotional needs: I need support now, or I need help thinking through this. Invite others into your inner world: share your fears, dreams, and values. Progressive vulnerability: experiment with trusted people first, then expand to wider circles.">🔊 Listen (EN)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-card-id="conn-2">
+                    <div class="card-header">
+                        <h3>相互性與給予</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>健康關係是雙向的舞蹈</strong></div>
+                                <div class="en"><strong>Healthy Relationships Are Two-Way Dance</strong></div>
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>觀察給與受的平衡：</strong>你們是否都在提供支持與接受幫助？</li>
+                                <li><strong>認可他人的努力：</strong>注意他人用心愛你的具體方式</li>
+                                <li><strong>主動提供幫助：</strong>在他人要求前預期他們的需求</li>
+                                <li><strong>慶祝彼此的成功：</strong>真心地為對方的成就感到高興</li>
+                                <li><strong>定期表達欣賞：</strong>不要假設人們知道；明確表達他們對你的意義</li>
+                            </ul>
+                            <button class="tts-button" data-text="Healthy relationships are two-way dance. Observe the balance of giving and receiving: are you both offering support and accepting help? Acknowledge others' efforts: notice specific ways they love you thoughtfully. Proactively offer help: anticipate needs before they ask. Celebrate each other's success: genuinely be happy for their achievements. Express appreciation regularly: don't assume people know; explicitly state what they mean to you.">🔊 Listen (EN)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-card-id="conn-3">
+                    <div class="card-header">
+                        <h3>支持彼此成長</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>最好的人際關係讓人變得更好</strong></div>
+                                <div class="en"><strong>Best Relationships Make People Better</strong></div>
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>詢問他們的目標：</strong>「你最近在追求什麼？我如何能支持你？」</li>
+                                <li><strong>提供建設性反饋：</strong>基於愛與成長的意圖，而非批評</li>
+                                <li><strong>見證他們的進展：</strong>注意他們如何改變與成長，予以認可</li>
+                                <li><strong>挑戰他們超越舒適區：</strong>鼓勵他們冒經過計算的風險</li>
+                                <li><strong>維持長期視角：</strong>關係是馬拉松，不是短跑</li>
+                            </ul>
+                            <button class="tts-button" data-text="Best relationships make people better. Ask about their goals: what are you pursuing lately? How can I support you? Provide constructive feedback: based on intentions of love and growth, not criticism. Witness their progress: notice how they change and grow, give recognition. Challenge them beyond comfort zones: encourage calculated risks. Maintain long-term perspective: relationships are marathons, not sprints.">🔊 Listen (EN)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="framework" style="margin-top: 40px;">
+                <h4>關係維護的月度反思 | Monthly Relationship Reflection</h4>
+                <div class="framework-step">
+                    <span class="step-number">1</span>
+                    <div class="step-content">
+                        <div style="margin-bottom: 8px;">
+                            <strong>評估連結品質 | Assess Connection Quality</strong>
+                        </div>
+                        <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">我最近與這個人花了多少有品質的時間？我們最後一次深入對話是什麼時候？</div>
+                        <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">How much quality time have you spent recently? When was your last deep conversation?</div>
+                    </div>
+                </div>
+                <div class="framework-step">
+                    <span class="step-number">2</span>
+                    <div class="step-content">
+                        <div style="margin-bottom: 8px;">
+                            <strong>識別任何未解決的問題 | Identify Unresolved Issues</strong>
+                        </div>
+                        <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">是否有任何我們沒有說出來的事情？這個沉默是否在影響信任？</div>
+                        <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">Is anything left unsaid? Is this silence affecting trust?</div>
+                    </div>
+                </div>
+                <div class="framework-step">
+                    <span class="step-number">3</span>
+                    <div class="step-content">
+                        <div style="margin-bottom: 8px;">
+                            <strong>認可已維持的承諾 | Acknowledge Commitments Kept</strong>
+                        </div>
+                        <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">我們都履行了什麼承諾？哪些時刻展現了相互依靠？</div>
+                        <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">What promises have you both kept? Which moments showed mutual reliance?</div>
+                    </div>
+                </div>
+                <div class="framework-step">
+                    <span class="step-number">4</span>
+                    <div class="step-content">
+                        <div style="margin-bottom: 8px;">
+                            <strong>規劃下一步 | Plan Next Steps</strong>
+                        </div>
+                        <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">我想在下個月更深入連結的一個具體行動是什麼？</div>
+                        <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">What is one specific action to deepen connection next month?</div>
+                        <button class="tts-button" data-text="Assess: How much quality time have you spent recently? When was your last deep conversation? Identify: Is anything left unsaid? Is this silence affecting trust? Acknowledge: What promises have you both kept? Which moments showed mutual reliance? Plan: What is one specific action to deepen connection next month?">🔊 Reflection</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Integration Section -->
+        <section class="section">
+            <div class="section-title">
+                <div class="section-icon">🔗</div>
+                <div>
+                    <h2>四大支柱的整合</h2>
+                    <div class="en">Integration of Four Pillars</div>
+                </div>
+            </div>
+
+            <div class="bilingual-content">
+                <div class="zh">
+                    <p>倫理人際關係不是一個孤立的技能組合；四個支柱相互強化。情感智商給你內在清晰度，倫理說服建立信任基礎，健康談判解決衝突，而真誠連結為長期關係提供意義與滿足感。</p>
+                    <p style="margin-top: 16px;">當你在所有四個領域發展時，你變得一個既能從容應對複雜人際動力，又能創造深層人類連結的人。這正是高維利他的核心——你的成長與他人的成長是相互交織的。</p>
+                </div>
+                <div class="en">
+                    <p>Ethical relationships aren't an isolated set of skills; the four pillars reinforce each other. Emotional intelligence gives you inner clarity, ethical persuasion builds a trust foundation, healthy negotiation resolves conflict, and authentic connection provides meaning and fulfillment to long-term relationships.</p>
+                    <p style="margin-top: 16px;">As you develop in all four areas, you become someone who navigates complex interpersonal dynamics with ease while creating deep human connection. This is at the heart of high-dimensional altruism—your growth and others' growth are intertwined.</p>
+                </div>
+            </div>
+
+            <div class="quote" style="font-size: 16px; text-align: center; margin: 40px 0;">
+                「最深的人際影響力來自於一個簡單的事實：當人們感到被真誠地看見、傾聽與價值化時，他們會自然地向變得更好的方向移動。」
+                <br><br>
+                "The deepest interpersonal influence comes from a simple truth: when people feel genuinely seen, heard, and valued, they naturally move toward becoming better."
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Section 5: Real-World Scenarios -->
+        <section class="section">
+            <div class="section-title">
+                <div class="section-icon">🎯</div>
+                <div>
+                    <h2>實際場景案例研究</h2>
+                    <div class="en">Real-World Scenario Case Studies</div>
+                </div>
+            </div>
+
+            <div class="bilingual-content">
+                <div class="zh">
+                    <p><strong>理論必須在現實中測試。</strong>以下是四個常見的人際挑戰場景，展示四大支柱如何實際運作。</p>
+                </div>
+                <div class="en">
+                    <p><strong>Theory must be tested in reality.</strong> Here are four common interpersonal challenge scenarios showing how the four pillars work in practice.</p>
+                </div>
+            </div>
+
+            <div class="card-container">
+                <div class="card" data-card-id="scenario-1">
+                    <div class="card-header">
+                        <h3>職場：團隊衝突</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>情景：團隊成員批評你的提案</strong></div>
+                                <div class="en"><strong>Scenario: Team member criticizes your proposal</strong></div>
+                            </div>
+                            
+                            <div style="margin-top: 16px; padding: 16px; background: #FFF8E7; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>情感智商：</strong>注意到你的防禦反應。你的心在加速，想立即反駁。停下來，深呼吸。<br><strong>Emotional Intelligence:</strong> Notice your defensive reaction. Your heart races, urge to rebuttal. Pause, breathe.</p>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 16px; background: #F0F9FF; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>倫理說服：</strong>說「我能理解你的關注。能多告訴我你擔心什麼嗎？」展示你真正想理解他，而不是贏得爭論。<br><strong>Ethical Persuasion:</strong> Say "I understand your concern. Can you tell me more about what worries you?" Show you genuinely want to understand, not win.</p>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 16px; background: #E8F5F0; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>健康談判：</strong>聽完整個想法後，說「我看到你的點。我的角度是...我們可以如何結合兩個觀點？」<br><strong>Healthy Negotiation:</strong> After hearing completely, say "I see your point. My angle is... How can we combine both views?" Share your reasoning.</p>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 16px; background: #F9F0FF; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>真誠連結：</strong>之後，一對一與他們談話：「我欣賞你直言不諱。這幫我改進。下次讓我們早點合作。」<br><strong>Authentic Connection:</strong> Later, talk one-on-one: "I appreciate your directness. It helps me improve. Let's collaborate earlier next time."</p>
+                            </div>
+                            
+                            <div style="margin-top: 16px; padding: 12px; background: #E8E8E8; border-radius: 3px; border-left: 4px solid #C9960C;">
+                                <p style="font-size: 14px; margin: 0;"><strong>結果：</strong>從對抗變成協作。團隊成員感到被聽見，提案因此改進，關係因為誠實而加深。</p>
+                                <p style="font-size: 14px; margin: 8px 0 0 0;"><strong>Result:</strong> From confrontation to collaboration. Team members feel heard, proposal improves, relationship deepens through honesty.</p>
+                            </div>
+                            <button class="tts-button" data-text="From confrontation to collaboration. Team members feel heard, proposal improves, relationship deepens through honesty.">🔊 Scenario 1</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-card-id="scenario-2">
+                    <div class="card-header">
+                        <h3>家庭：邊界衝突</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>情景：父母干預你的生活選擇</strong></div>
+                                <div class="en"><strong>Scenario: Parents interfere with your life choices</strong></div>
+                            </div>
+                            
+                            <div style="margin-top: 16px; padding: 16px; background: #FFF8E7; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>情感智商：</strong>識別你的情緒：是憤怒、恐懼還是內疚？理解根源。可能是對失望他們的恐懼。<br><strong>Emotional Intelligence:</strong> Identify emotion: anger, fear, or guilt? Understand root. Maybe fear of disappointing them.</p>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 16px; background: #F0F9FF; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>倫理說服：</strong>溫暖但堅定：「我知道你關心我。我的決定可能與你的不同，但我需要自己做出選擇。我希望你支持我，即使你不贊同。」<br><strong>Ethical Persuasion:</strong> Warm but firm: "I know you care. My decision may differ from yours, but I need to make my own choice. I want your support, even if you disagree."</p>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 16px; background: #E8F5F0; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>健康談判：</strong>邀請他們參與：「我很樂意聽你的想法。我也可以解釋我的推理。但最終，這是我的決定。」<br><strong>Healthy Negotiation:</strong> Invite involvement: "I'd love to hear your thoughts. I can explain my reasoning too. But ultimately, it's my decision."</p>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 16px; background: #F9F0FF; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>真誠連結：</strong>定期分享你的進展與學習。展示他們的關懷實際上是有幫助的。重新定義支持的含義。<br><strong>Authentic Connection:</strong> Share progress and learning regularly. Show their care actually helps. Redefine what support means.</p>
+                            </div>
+                            
+                            <div style="margin-top: 16px; padding: 12px; background: #E8E8E8; border-radius: 3px; border-left: 4px solid #C9960C;">
+                                <p style="font-size: 14px; margin: 0;"><strong>結果：</strong>邊界被尊重，關係變得更成熟。父母從控制者變成顧問。</p>
+                                <p style="font-size: 14px; margin: 8px 0 0 0;"><strong>Result:</strong> Boundaries are respected. Relationship matures. Parents shift from controllers to advisors.</p>
+                            </div>
+                            <button class="tts-button" data-text="Boundaries are respected. Relationship matures. Parents shift from controllers to advisors.">🔊 Scenario 2</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-card-id="scenario-3">
+                    <div class="card-header">
+                        <h3>友誼：被誤解與冷淡</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>情景：好友似乎在疏遠你</strong></div>
+                                <div class="en"><strong>Scenario: Close friend seems to be distancing</strong></div>
+                            </div>
+                            
+                            <div style="margin-top: 16px; padding: 16px; background: #FFF8E7; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>情感智商：</strong>注意你的故事與現實。你編造了他們不再關心你的故事。先停止假設。<br><strong>Emotional Intelligence:</strong> Notice your story vs. reality. You've fabricated they don't care anymore. Stop assuming first.</p>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 16px; background: #F0F9FF; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>倫理說服：</strong>出於真實的擔心接近他們：「最近感覺我們之間的距離變大了。我想確認一切是否還好？」<br><strong>Ethical Persuasion:</strong> Approach from genuine concern: "Feels like distance grew between us. I want to check: is everything okay?"</p>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 16px; background: #E8F5F0; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>健康談判：</strong>傾聽他們的實際狀況。可能他們在應對個人挑戰。共同找解決方案。<br><strong>Healthy Negotiation:</strong> Listen to their actual situation. Maybe they're dealing with personal challenges. Find solutions together.</p>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 16px; background: #F9F0FF; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>真誠連結：</strong>說「我在乎這段友誼。我想我們可以渡過這個。」然後定期主動聯絡。<br><strong>Authentic Connection:</strong> Say "I value this friendship. I think we can get through this." Then regularly initiate contact.</p>
+                            </div>
+                            
+                            <div style="margin-top: 16px; padding: 12px; background: #E8E8E8; border-radius: 3px; border-left: 4px solid #C9960C;">
+                                <p style="font-size: 14px; margin: 0;"><strong>結果：</strong>友誼不但存活，而且因為脆弱性與誠實而深化。</p>
+                                <p style="font-size: 14px; margin: 8px 0 0 0;"><strong>Result:</strong> Friendship not only survives but deepens through vulnerability and honesty.</p>
+                            </div>
+                            <button class="tts-button" data-text="Friendship not only survives but deepens through vulnerability and honesty.">🔊 Scenario 3</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-card-id="scenario-4">
+                    <div class="card-header">
+                        <h3>自我：內在衝突</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>情景：你知道該說「不」，但說不出來</strong></div>
+                                <div class="en"><strong>Scenario: You know you should say "no" but can't</strong></div>
+                            </div>
+                            
+                            <div style="margin-top: 16px; padding: 16px; background: #FFF8E7; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>情感智商：</strong>探查阻力。是什麼恐懼阻止你？被拒絕？失去喜歡？無價值感？<br><strong>Emotional Intelligence:</strong> Explore resistance. What fear blocks you? Rejection? Losing approval? Worthlessness?</p>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 16px; background: #F0F9FF; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>倫理說服：</strong>相信說「不」是一個禮物。你在給人們誠實的回應，而不是怨恨。<br><strong>Ethical Persuasion:</strong> Believe saying "no" is a gift. You're giving honest responses, not resentment later.</p>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 16px; background: #E8F5F0; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>健康談判：</strong>簡短、清楚、尊重：「我感謝你的要求。我現在不能做這個。」不需要過度解釋。<br><strong>Healthy Negotiation:</strong> Brief, clear, respectful: "I appreciate your ask. I can't do this now." No over-explaining needed.</p>
+                            </div>
+                            
+                            <div style="margin-top: 12px; padding: 16px; background: #F9F0FF; border-radius: 3px;">
+                                <p style="font-size: 14px; line-height: 1.8; margin: 0;"><strong>真誠連結：</strong>如果適當，在拒絕中提出替代方案：「我不能做這個，但我可以...」<br><strong>Authentic Connection:</strong> If appropriate, offer alternative in refusal: "I can't do this, but I can..."</p>
+                            </div>
+                            
+                            <div style="margin-top: 16px; padding: 12px; background: #E8E8E8; border-radius: 3px; border-left: 4px solid #C9960C;">
+                                <p style="font-size: 14px; margin: 0;"><strong>結果：</strong>你的能量被保護。關係因誠實而加強。他人學會尊重你的時間。</p>
+                                <p style="font-size: 14px; margin: 8px 0 0 0;"><strong>Result:</strong> Your energy is protected. Relationships strengthen through honesty. Others learn to respect your time.</p>
+                            </div>
+                            <button class="tts-button" data-text="Your energy is protected. Relationships strengthen through honesty. Others learn to respect your time.">🔊 Scenario 4</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Section 6: 30-Day Practice Plan -->
+        <section class="section">
+            <div class="section-title">
+                <div class="section-icon">📋</div>
+                <div>
+                    <h2>30天實踐計劃</h2>
+                    <div class="en">30-Day Practice Plan</div>
+                </div>
+            </div>
+
+            <div class="bilingual-content">
+                <div class="zh">
+                    <p><strong>知識不能自動轉變為能力。</strong>這個30天計劃將四大支柱整合到日常習慣中。每天只需10-15分鐘。</p>
+                </div>
+                <div class="en">
+                    <p><strong>Knowledge doesn't automatically translate to capability.</strong> This 30-day plan integrates the four pillars into daily habits. Only 10-15 minutes daily.</p>
+                </div>
+            </div>
+
+            <div class="framework">
+                <h4>第1-10天：情感智商基礎 | Days 1-10: EQ Foundation</h4>
+                <div class="framework-step">
+                    <span class="step-number">1-3</span>
+                    <div class="step-content">
+                        <strong>情緒日記 | Emotion Journal</strong><br>
+                        <div style="margin-top: 8px;">
+                            <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">每晚記錄：今天最大的情緒觸發是什麼？你如何反應？它源自什麼信念？</div>
+                            <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">Record each evening: What was today's biggest emotional trigger? How did you respond? What belief is it rooted in?</div>
+                        </div>
+                        <button class="tts-button" data-text="Record each evening: What was today's biggest emotional trigger? How did you respond? What belief is it rooted in?">🔊 Day 1-3</button>
+                    </div>
+                </div>
+                <div class="framework-step">
+                    <span class="step-number">4-6</span>
+                    <div class="step-content">
+                        <strong>暫停練習 | Pause Practice</strong><br>
+                        <div style="margin-top: 8px;">
+                            <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">當感到情緒高漲時，實踐三次呼吸法。計時：從觸發到回應的延遲時間。</div>
+                            <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">When emotions spike, practice three deep breaths. Time it: measure the delay between trigger and response.</div>
+                        </div>
+                        <button class="tts-button" data-text="When emotions spike, practice three deep breaths. Time it: measure the delay between trigger and response.">🔊 Day 4-6</button>
+                    </div>
+                </div>
+                <div class="framework-step">
+                    <span class="step-number">7-10</span>
+                    <div class="step-content">
+                        <strong>同理心實驗 | Empathy Experiment</strong><br>
+                        <div style="margin-top: 8px;">
+                            <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">找一個讓你困擾的人。寫下他們的觀點與可能的恐懼。試著理解他們的邏輯。</div>
+                            <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">Find someone who bothers you. Write down their perspective and possible fears. Try to understand their logic.</div>
+                        </div>
+                        <button class="tts-button" data-text="Find someone who bothers you. Write down their perspective and possible fears. Try to understand their logic.">🔊 Day 7-10</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="framework" style="margin-top: 30px;">
+                <h4>第11-20天：倫理影響力 | Days 11-20: Ethical Influence</h4>
+                <div class="framework-step">
+                    <span class="step-number">11-14</span>
+                    <div class="step-content">
+                        <strong>可信度構建 | Build Credibility</strong><br>
+                        <div style="margin-top: 8px;">
+                            <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">在一件小事上表現卓越。追蹤並履行所有承諾，無例外。向一個人展示一致性。</div>
+                            <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">Excel at one small thing. Track and keep every promise—no exceptions. Show one person consistency.</div>
+                        </div>
+                        <button class="tts-button" data-text="Excel at one small thing. Track and keep every promise—no exceptions. Show one person consistency.">🔊 Day 11-14</button>
+                    </div>
+                </div>
+                <div class="framework-step">
+                    <span class="step-number">15-17</span>
+                    <div class="step-content">
+                        <strong>深層傾聽 | Deep Listening</strong><br>
+                        <div style="margin-top: 8px;">
+                            <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">與兩個人進行有意的對話。問題從「你想要什麼？」而非「你覺得怎樣？」開始。</div>
+                            <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">Have intentional conversations with two people. Start questions with "What do you want?" instead of "How do you feel?"</div>
+                        </div>
+                        <button class="tts-button" data-text="Have intentional conversations with two people. Start questions with What do you want instead of How do you feel?">🔊 Day 15-17</button>
+                    </div>
+                </div>
+                <div class="framework-step">
+                    <span class="step-number">18-20</span>
+                    <div class="step-content">
+                        <strong>共同價值發現 | Find Shared Values</strong><br>
+                        <div style="margin-top: 8px;">
+                            <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">在這些對話中，識別你與他們共享的至少三個價值觀。</div>
+                            <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">In these conversations, identify at least three values you share with them.</div>
+                        </div>
+                        <button class="tts-button" data-text="In these conversations, identify at least three values you share with them.">🔊 Day 18-20</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="framework" style="margin-top: 30px;">
+                <h4>第21-27天：談判與衝突解決 | Days 21-27: Negotiation & Conflict</h4>
+                <div class="framework-step">
+                    <span class="step-number">21-23</span>
+                    <div class="step-content">
+                        <strong>積極傾聽技巧 | Active Listening Skills</strong><br>
+                        <div style="margin-top: 8px;">
+                            <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">在三次對話中，實踐反思回應：「聽起來你...因為...」</div>
+                            <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">In three conversations, practice reflective responses: "It sounds like you... because..."</div>
+                        </div>
+                        <button class="tts-button" data-text="In three conversations, practice reflective responses: It sounds like you because">🔊 Day 21-23</button>
+                    </div>
+                </div>
+                <div class="framework-step">
+                    <span class="step-number">24-25</span>
+                    <div class="step-content">
+                        <strong>邊界表達 | Express Boundaries</strong><br>
+                        <div style="margin-top: 8px;">
+                            <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">說「不」至少一次。使用結構化的方法。記錄發生了什麼。</div>
+                            <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">Say no at least once. Use the structured method. Document what happened and how you felt.</div>
+                        </div>
+                        <button class="tts-button" data-text="Say no at least once. Use the structured method. Document what happened and how you felt.">🔊 Day 24-25</button>
+                    </div>
+                </div>
+                <div class="framework-step">
+                    <span class="step-number">26-27</span>
+                    <div class="step-content">
+                        <strong>雙贏思維 | Win-Win Mindset</strong><br>
+                        <div style="margin-top: 8px;">
+                            <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">在一個小衝突中應用雙贏框架。列出雙方的需求與利益。</div>
+                            <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">Apply the win-win framework in a small conflict. List both parties' needs and interests.</div>
+                        </div>
+                        <button class="tts-button" data-text="Apply the win-win framework in a small conflict. List both parties' needs and interests.">🔊 Day 26-27</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="framework" style="margin-top: 30px;">
+                <h4>第28-30天：整合與反思 | Days 28-30: Integration & Reflection</h4>
+                <div class="framework-step">
+                    <span class="step-number">28</span>
+                    <div class="step-content">
+                        <strong>脆弱性分享 | Vulnerability Share</strong><br>
+                        <div style="margin-top: 8px;">
+                            <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">與一個你信任的人分享一個個人掙扎。觀察他們的回應。</div>
+                            <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">Share a personal struggle with someone you trust. Observe their response.</div>
+                        </div>
+                        <button class="tts-button" data-text="Share a personal struggle with someone you trust. Observe their response.">🔊 Day 28</button>
+                    </div>
+                </div>
+                <div class="framework-step">
+                    <span class="step-number">29</span>
+                    <div class="step-content">
+                        <strong>感謝與認可 | Thanks & Recognition</strong><br>
+                        <div style="margin-top: 8px;">
+                            <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">明確感謝至少三個人對你的影響與支持。</div>
+                            <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">Explicitly thank at least three people for their impact and support in your life.</div>
+                        </div>
+                        <button class="tts-button" data-text="Explicitly thank at least three people for their impact and support in your life.">🔊 Day 29</button>
+                    </div>
+                </div>
+                <div class="framework-step">
+                    <span class="step-number">30</span>
+                    <div class="step-content">
+                        <strong>月度反思 | Monthly Reflection</strong><br>
+                        <div style="margin-top: 8px;">
+                            <div style="font-size: 14px; line-height: 1.6; margin-bottom: 8px;">寫下你觀察到的三個變化。你在何處成長最多？哪裡仍需工作？</div>
+                            <div style="font-size: 14px; line-height: 1.6; color: #4A5568;">Write down three changes you've observed. Where did you grow most? What still needs work?</div>
+                        </div>
+                        <button class="tts-button" data-text="Write down three changes you have observed. Where did you grow most? What still needs work?">🔊 Day 30</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Section 7: Self-Assessment -->
+        <section class="section">
+            <div class="section-title">
+                <div class="section-icon">📊</div>
+                <div>
+                    <h2>自我評估工具</h2>
+                    <div class="en">Self-Assessment Tool</div>
+                </div>
+            </div>
+
+            <div class="bilingual-content">
+                <div class="zh">
+                    <p><strong>衡量你的當前水平。</strong>對每個陳述進行1-5的評分（1=完全不同意，5=完全同意）。</p>
+                </div>
+                <div class="en">
+                    <p><strong>Measure your current level.</strong> Rate each statement 1-5 (1=Strongly Disagree, 5=Strongly Agree).</p>
+                </div>
+            </div>
+
+            <div id="assessment-container" style="margin-top: 30px;">
+                <!-- Assessment will be dynamically generated by JavaScript -->
+            </div>
+
+            <div id="assessment-results" style="display: none; margin-top: 30px; padding: 30px; background: #F0F9FF; border-radius: 4px;">
+                <h4 style="color: #1A2B5F; margin-bottom: 20px;">你的評分結果 | Your Assessment Results</h4>
+                <div id="results-content"></div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Section 8: Common Pitfalls -->
+        <section class="section">
+            <div class="section-title">
+                <div class="section-icon">⚠️</div>
+                <div>
+                    <h2>常見陷阱與反模式</h2>
+                    <div class="en">Common Pitfalls & Anti-Patterns</div>
+                </div>
+            </div>
+
+            <div class="card-container">
+                <div class="card" data-card-id="pitfall-1">
+                    <div class="card-header">
+                        <h3>同理心疲勞</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>問題：過度給予導致耗竭</strong></div>
+                                <div class="en"><strong>Problem: Over-giving leads to burnout</strong></div>
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>跡象：</strong>總是傾聽他人，但從不分享自己；感到怨恨；避免聯絡<br>
+                                <span style="font-size: 13px; color: #4A5568;">Signs: Always listen to others but never share; feel resentful; avoid contact</span></li>
+                                <li><strong>根本原因：</strong>邊界缺乏；低自尊；英雄情結<br>
+                                <span style="font-size: 13px; color: #4A5568;">Root causes: Lack of boundaries; low self-esteem; hero complex</span></li>
+                                <li><strong>解決方案：</strong>實踐相互性。要求幫助。定期獨處。設定對話時間限制。<br>
+                                <span style="font-size: 13px; color: #4A5568;">Solution: Practice reciprocity. Ask for help. Schedule alone time. Set conversation time limits.</span></li>
+                            </ul>
+                            <button class="tts-button" data-text="Signs: Always listen to others but never share; feel resentful; avoid contact. Root causes: Lack of boundaries; low self-esteem; hero complex. Solution: Practice reciprocity. Ask for help. Schedule alone time. Set conversation time limits.">🔊 Pitfall 1</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-card-id="pitfall-2">
+                    <div class="card-header">
+                        <h3>虛偽的脆弱性</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>問題：為了獲得同情而分享</strong></div>
+                                <div class="en"><strong>Problem: Sharing to get sympathy</strong></div>
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>跡象：</strong>分享一個困難，但不採取行動解決；尋求拯救；玩受害者<br>
+                                <span style="font-size: 13px; color: #4A5568;">Signs: Share difficulty but don't take action; seek rescue; play victim</span></li>
+                                <li><strong>根本原因：</strong>對求助感到羞愧；需要驗證；寧願同情也不願尊重<br>
+                                <span style="font-size: 13px; color: #4A5568;">Root causes: Shame about asking for help; need for validation; prefer pity over respect</span></li>
+                                <li><strong>解決方案：</strong>脆弱性加上行動。說「我掙扎著，我在採取這些步驟...」<br>
+                                <span style="font-size: 13px; color: #4A5568;">Solution: Vulnerability plus action. Say "I struggle, and I'm taking these steps..."</span></li>
+                            </ul>
+                            <button class="tts-button" data-text="Signs: Share difficulty but don't take action; seek rescue; play victim. Root causes: Shame about asking for help; need for validation; prefer pity over respect. Solution: Vulnerability plus action. Say I struggle, and I'm taking these steps">🔊 Pitfall 2</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-card-id="pitfall-3">
+                    <div class="card-header">
+                        <h3>被動攻擊性</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>問題：無法直接表達，而是間接傷害</strong></div>
+                                <div class="en"><strong>Problem: Indirect harm instead of direct expression</strong></div>
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>跡象：</strong>微妙的評論；冷靜對待；遲到；「忘記」承諾<br>
+                                <span style="font-size: 13px; color: #4A5568;">Signs: Subtle comments; silent treatment; running late; "forgetting" promises</span></li>
+                                <li><strong>根本原因：</strong>害怕衝突；無法說「不」；累積的怨恨<br>
+                                <span style="font-size: 13px; color: #4A5568;">Root causes: Fear of conflict; can't say no; accumulated resentment</span></li>
+                                <li><strong>解決方案：</strong>直接但尊重地說出來。練習困難的對話。立即解決小問題。<br>
+                                <span style="font-size: 13px; color: #4A5568;">Solution: Say it directly but respectfully. Practice difficult conversations. Address small issues immediately.</span></li>
+                            </ul>
+                            <button class="tts-button" data-text="Signs: Subtle comments; silent treatment; running late; forgetting promises. Root causes: Fear of conflict; can't say no; accumulated resentment. Solution: Say it directly but respectfully. Practice difficult conversations. Address small issues immediately.">🔊 Pitfall 3</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-card-id="pitfall-4">
+                    <div class="card-header">
+                        <h3>邊界不一致</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>問題：邊界存在但不被執行</strong></div>
+                                <div class="en"><strong>Problem: Boundaries exist but aren't enforced</strong></div>
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>跡象：</strong>你說「不」，但隨後屈服；內疚感壓倒決定；一致的違反<br>
+                                <span style="font-size: 13px; color: #4A5568;">Signs: Say no then cave; guilt overwhelms decision; consistent violations</span></li>
+                                <li><strong>根本原因：</strong>內疚；害怕衝突；對他人的需求優先於自己<br>
+                                <span style="font-size: 13px; color: #4A5568;">Root causes: Guilt; fear of conflict; prioritize others' needs over your own</span></li>
+                                <li><strong>解決方案：</strong>承諾執行。告訴他人你的邊界及後果。一致地應用。<br>
+                                <span style="font-size: 13px; color: #4A5568;">Solution: Commit to enforcing. Tell others your boundary and consequences. Apply consistently.</span></li>
+                            </ul>
+                            <button class="tts-button" data-text="Signs: Say no then cave; guilt overwhelms decision; consistent violations. Root causes: Guilt; fear of conflict; prioritize others' needs over your own. Solution: Commit to enforcing. Tell others your boundary and consequences. Apply consistently.">🔊 Pitfall 4</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" data-card-id="pitfall-5">
+                    <div class="card-header">
+                        <h3>假信任</h3>
+                        <span class="card-toggle">▼</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="bilingual">
+                                <div class="zh"><strong>問題：看起來友好但基於議程</strong></div>
+                                <div class="en"><strong>Problem: Seeming friendly but agenda-driven</strong></div>
+                            </div>
+                            <ul class="practice-list">
+                                <li><strong>跡象：</strong>你只在想要某些東西時才接觸；改變行為取決於對方的有用性；計算<br>
+                                <span style="font-size: 13px; color: #4A5568;">Signs: Contact only when you want something; behavior shifts with usefulness; calculating</span></li>
+                                <li><strong>根本原因：</strong>對交易關係感到舒適；信任恐懼；害怕無條件給予<br>
+                                <span style="font-size: 13px; color: #4A5568;">Root causes: Comfortable with transactional relationships; fear of trust; afraid of unconditional giving</span></li>
+                                <li><strong>解決方案：</strong>檢查你的意圖。建立關係，而不是收集資源。長期投資。<br>
+                                <span style="font-size: 13px; color: #4A5568;">Solution: Examine your intentions. Build relationships, not collect resources. Invest long-term.</span></li>
+                            </ul>
+                            <button class="tts-button" data-text="Signs: Contact only when you want something; behavior shifts with usefulness; calculating. Root causes: Comfortable with transactional relationships; fear of trust; afraid of unconditional giving. Solution: Examine your intentions. Build relationships, not collect resources. Invest long-term.">🔊 Pitfall 5</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Section 9: Mind Maps & Framework Visualizations -->
+        <section class="section">
+            <div class="section-title">
+                <div class="section-icon">🗺️</div>
+                <div>
+                    <h2>總覽與可視化框架</h2>
+                    <div class="en">Overview & Framework Visualizations</div>
+                </div>
+            </div>
+
+            <!-- System Architecture Diagram -->
+            <div style="margin-bottom: 60px;">
+                <h3 style="font-size: 20px; font-weight: 700; color: #1A2B5F; margin-bottom: 24px; text-align: center;">系統完整架構 | Complete System Architecture</h3>
+                
+                <svg viewBox="0 0 1400 600" xmlns="http://www.w3.org/2000/svg" style="width: 100%; max-width: 100%; margin: 0 auto; display: block; background: #F8F9FB; border-radius: 4px;">
+                    <!-- Title -->
+                    <text x="700" y="40" font-size="32" font-weight="700" text-anchor="middle" fill="#1A2B5F">倫理人際關係作業系統</text>
+                    <text x="700" y="70" font-size="28" font-weight="700" text-anchor="middle" fill="#0A7A72">Ethical Relationship OS</text>
+                    
+                    <!-- Foundation Layer -->
+                    <rect x="50" y="100" width="240" height="100" fill="#FFF8E7" stroke="#C9960C" stroke-width="3" rx="4"/>
+                    <text x="170" y="140" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">情感智商</text>
+                    <text x="170" y="165" font-size="16" font-weight="600" text-anchor="middle" fill="#0A7A72">Emotional</text>
+                    <text x="170" y="185" font-size="16" font-weight="600" text-anchor="middle" fill="#0A7A72">Intelligence</text>
+
+                    <rect x="330" y="100" width="240" height="100" fill="#FFF8E7" stroke="#C9960C" stroke-width="3" rx="4"/>
+                    <text x="450" y="140" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">倫理說服</text>
+                    <text x="450" y="165" font-size="16" font-weight="600" text-anchor="middle" fill="#0A7A72">Ethical</text>
+                    <text x="450" y="185" font-size="16" font-weight="600" text-anchor="middle" fill="#0A7A72">Persuasion</text>
+
+                    <rect x="610" y="100" width="240" height="100" fill="#FFF8E7" stroke="#C9960C" stroke-width="3" rx="4"/>
+                    <text x="730" y="140" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">健康談判</text>
+                    <text x="730" y="165" font-size="16" font-weight="600" text-anchor="middle" fill="#0A7A72">Healthy</text>
+                    <text x="730" y="185" font-size="16" font-weight="600" text-anchor="middle" fill="#0A7A72">Negotiation</text>
+
+                    <rect x="890" y="100" width="240" height="100" fill="#FFF8E7" stroke="#C9960C" stroke-width="3" rx="4"/>
+                    <text x="1010" y="140" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">真誠連結</text>
+                    <text x="1010" y="165" font-size="16" font-weight="600" text-anchor="middle" fill="#0A7A72">Authentic</text>
+                    <text x="1010" y="185" font-size="16" font-weight="600" text-anchor="middle" fill="#0A7A72">Connection</text>
+
+                    <!-- Connecting arrows up -->
+                    <path d="M 170 200 L 170 240" stroke="#0A7A72" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+                    <path d="M 450 200 L 450 240" stroke="#0A7A72" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+                    <path d="M 730 200 L 730 240" stroke="#0A7A72" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+                    <path d="M 1010 200 L 1010 240" stroke="#0A7A72" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+
+                    <!-- Integration Layer -->
+                    <rect x="50" y="240" width="1080" height="80" fill="#E8F5F0" stroke="#0A7A72" stroke-width="3" rx="4"/>
+                    <text x="590" y="275" font-size="20" font-weight="700" text-anchor="middle" fill="#1A2B5F">四大支柱的整合</text>
+                    <text x="590" y="305" font-size="18" font-weight="600" text-anchor="middle" fill="#0A7A72">Integration of Four Pillars</text>
+
+                    <!-- Connecting arrows down -->
+                    <path d="M 170 320 L 170 360" stroke="#0A7A72" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+                    <path d="M 450 320 L 300 360" stroke="#0A7A72" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+                    <path d="M 730 320 L 730 360" stroke="#0A7A72" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+                    <path d="M 1010 320 L 880 360" stroke="#0A7A72" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+
+                    <!-- Application Layers -->
+                    <rect x="50" y="360" width="260" height="90" fill="#F0F9FF" stroke="#0A7A72" stroke-width="2" rx="4"/>
+                    <text x="180" y="395" font-size="17" font-weight="700" text-anchor="middle" fill="#1A2B5F">實際場景</text>
+                    <text x="180" y="420" font-size="15" font-weight="600" text-anchor="middle" fill="#0A7A72">Real-World</text>
+                    <text x="180" y="440" font-size="15" font-weight="600" text-anchor="middle" fill="#0A7A72">Scenarios</text>
+
+                    <rect x="350" y="360" width="260" height="90" fill="#F0F9FF" stroke="#0A7A72" stroke-width="2" rx="4"/>
+                    <text x="480" y="395" font-size="17" font-weight="700" text-anchor="middle" fill="#1A2B5F">30天實踐</text>
+                    <text x="480" y="420" font-size="15" font-weight="600" text-anchor="middle" fill="#0A7A72">30-Day</text>
+                    <text x="480" y="440" font-size="15" font-weight="600" text-anchor="middle" fill="#0A7A72">Practice</text>
+
+                    <rect x="650" y="360" width="260" height="90" fill="#F0F9FF" stroke="#0A7A72" stroke-width="2" rx="4"/>
+                    <text x="780" y="395" font-size="17" font-weight="700" text-anchor="middle" fill="#1A2B5F">自我評估</text>
+                    <text x="780" y="420" font-size="15" font-weight="600" text-anchor="middle" fill="#0A7A72">Self-</text>
+                    <text x="780" y="440" font-size="15" font-weight="600" text-anchor="middle" fill="#0A7A72">Assessment</text>
+
+                    <!-- Outcome -->
+                    <rect x="80" y="500" width="1020" height="80" fill="#F9F0FF" stroke="#0A7A72" stroke-width="4" rx="4"/>
+                    <text x="590" y="535" font-size="19" font-weight="700" text-anchor="middle" fill="#1A2B5F">高維利他 × 可持續影響力</text>
+                    <text x="590" y="560" font-size="17" font-weight="600" text-anchor="middle" fill="#0A7A72">High-Dimensional Altruism × Sustainable Influence</text>
+
+                    <!-- Arrow marker definition -->
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                            <polygon points="0 0, 10 5, 0 10" fill="#0A7A72"/>
+                        </marker>
+                    </defs>
+                </svg>
+
+                <button class="tts-button" data-text="System architecture: Four pillars at foundation - Emotional Intelligence, Ethical Persuasion, Healthy Negotiation, Authentic Connection. All integrated together. Applied through real-world scenarios, thirty-day practice plan, and self-assessment tools. Leading to high-dimensional altruism and sustainable influence.">🔊 Architecture</button>
+            </div>
+
+            <!-- Four Pillars Mind Map -->
+            <div style="margin-bottom: 60px;">
+                <h3 style="font-size: 20px; font-weight: 700; color: #1A2B5F; margin-bottom: 24px; text-align: center;">四大支柱心智圖 | Four Pillars Mind Map</h3>
+                
+                <svg viewBox="0 0 1400 800" xmlns="http://www.w3.org/2000/svg" style="width: 100%; max-width: 100%; margin: 0 auto; display: block; background: #F8F9FB; border-radius: 4px;">
+                    <!-- Central Hub -->
+                    <circle cx="700" cy="400" r="100" fill="#1A2B5F" stroke="#C9960C" stroke-width="4"/>
+                    <text x="700" y="385" font-size="22" font-weight="700" text-anchor="middle" fill="#FFFFFF">四大支柱</text>
+                    <text x="700" y="415" font-size="20" font-weight="600" text-anchor="middle" fill="#C9960C">Four Pillars</text>
+
+                    <!-- Pillar 1: Emotional Intelligence -->
+                    <circle cx="150" cy="150" r="75" fill="#FFF8E7" stroke="#C9960C" stroke-width="3"/>
+                    <text x="150" y="140" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">情感</text>
+                    <text x="150" y="170" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">智商</text>
+                    <line x1="220" y1="200" x2="600" y2="320" stroke="#C9960C" stroke-width="3" stroke-dasharray="5,5"/>
+                    
+                    <g id="eq-items">
+                        <circle cx="60" cy="40" r="45" fill="#FFF9F0" stroke="#C9960C" stroke-width="2"/>
+                        <text x="60" y="48" font-size="14" font-weight="700" text-anchor="middle" fill="#1A2B5F">自我覺知</text>
+                        <line x1="110" y1="80" x2="140" y2="120" stroke="#C9960C" stroke-width="2"/>
+                        
+                        <circle cx="150" cy="20" r="45" fill="#FFF9F0" stroke="#C9960C" stroke-width="2"/>
+                        <text x="150" y="28" font-size="14" font-weight="700" text-anchor="middle" fill="#1A2B5F">同理心</text>
+                        <line x1="150" y1="65" x2="150" y2="110" stroke="#C9960C" stroke-width="2"/>
+                        
+                        <circle cx="240" cy="40" r="45" fill="#FFF9F0" stroke="#C9960C" stroke-width="2"/>
+                        <text x="240" y="48" font-size="14" font-weight="700" text-anchor="middle" fill="#1A2B5F">邊界</text>
+                        <line x1="200" y1="80" x2="170" y2="120" stroke="#C9960C" stroke-width="2"/>
+                    </g>
+
+                    <!-- Pillar 2: Ethical Persuasion -->
+                    <circle cx="1250" cy="150" r="75" fill="#F0F9FF" stroke="#0A7A72" stroke-width="3"/>
+                    <text x="1250" y="140" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">倫理</text>
+                    <text x="1250" y="170" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">說服</text>
+                    <line x1="1180" y1="200" x2="800" y2="320" stroke="#0A7A72" stroke-width="3" stroke-dasharray="5,5"/>
+                    
+                    <g id="ep-items">
+                        <circle cx="1160" cy="40" r="45" fill="#F5FBFF" stroke="#0A7A72" stroke-width="2"/>
+                        <text x="1160" y="48" font-size="14" font-weight="700" text-anchor="middle" fill="#1A2B5F">可信度</text>
+                        <line x1="1200" y1="80" x2="1230" y2="120" stroke="#0A7A72" stroke-width="2"/>
+                        
+                        <circle cx="1250" cy="20" r="45" fill="#F5FBFF" stroke="#0A7A72" stroke-width="2"/>
+                        <text x="1250" y="28" font-size="14" font-weight="700" text-anchor="middle" fill="#1A2B5F">信任</text>
+                        <line x1="1250" y1="65" x2="1250" y2="110" stroke="#0A7A72" stroke-width="2"/>
+                        
+                        <circle cx="1340" cy="40" r="45" fill="#F5FBFF" stroke="#0A7A72" stroke-width="2"/>
+                        <text x="1340" y="48" font-size="14" font-weight="700" text-anchor="middle" fill="#1A2B5F">透明度</text>
+                        <line x1="1300" y1="80" x2="1270" y2="120" stroke="#0A7A72" stroke-width="2"/>
+                    </g>
+
+                    <!-- Pillar 3: Healthy Negotiation -->
+                    <circle cx="150" cy="650" r="75" fill="#E8F5F0" stroke="#0A7A72" stroke-width="3"/>
+                    <text x="150" y="640" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">健康</text>
+                    <text x="150" y="670" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">談判</text>
+                    <line x1="220" y1="600" x2="600" y2="480" stroke="#0A7A72" stroke-width="3" stroke-dasharray="5,5"/>
+                    
+                    <g id="hn-items">
+                        <circle cx="60" cy="760" r="45" fill="#F0FFFE" stroke="#0A7A72" stroke-width="2"/>
+                        <text x="60" y="768" font-size="14" font-weight="700" text-anchor="middle" fill="#1A2B5F">傾聽</text>
+                        <line x1="110" y1="720" x2="140" y2="680" stroke="#0A7A72" stroke-width="2"/>
+                        
+                        <circle cx="150" cy="780" r="45" fill="#F0FFFE" stroke="#0A7A72" stroke-width="2"/>
+                        <text x="150" y="788" font-size="14" font-weight="700" text-anchor="middle" fill="#1A2B5F">雙贏</text>
+                        <line x1="150" y1="735" x2="150" y2="680" stroke="#0A7A72" stroke-width="2"/>
+                        
+                        <circle cx="240" cy="760" r="45" fill="#F0FFFE" stroke="#0A7A72" stroke-width="2"/>
+                        <text x="240" y="768" font-size="14" font-weight="700" text-anchor="middle" fill="#1A2B5F">衝突</text>
+                        <line x1="200" y1="720" x2="170" y2="680" stroke="#0A7A72" stroke-width="2"/>
+                    </g>
+
+                    <!-- Pillar 4: Authentic Connection -->
+                    <circle cx="1250" cy="650" r="75" fill="#F9F0FF" stroke="#0A7A72" stroke-width="3"/>
+                    <text x="1250" y="640" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">真誠</text>
+                    <text x="1250" y="670" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">連結</text>
+                    <line x1="1180" y1="600" x2="800" y2="480" stroke="#0A7A72" stroke-width="3" stroke-dasharray="5,5"/>
+                    
+                    <g id="ac-items">
+                        <circle cx="1160" cy="760" r="45" fill="#FDFBFF" stroke="#0A7A72" stroke-width="2"/>
+                        <text x="1160" y="768" font-size="14" font-weight="700" text-anchor="middle" fill="#1A2B5F">脆弱</text>
+                        <line x1="1200" y1="720" x2="1230" y2="680" stroke="#0A7A72" stroke-width="2"/>
+                        
+                        <circle cx="1250" cy="780" r="45" fill="#FDFBFF" stroke="#0A7A72" stroke-width="2"/>
+                        <text x="1250" y="768" font-size="14" font-weight="700" text-anchor="middle" fill="#1A2B5F">相互性</text>
+                        <line x1="1250" y1="735" x2="1250" y2="680" stroke="#0A7A72" stroke-width="2"/>
+                        
+                        <circle cx="1340" cy="760" r="45" fill="#FDFBFF" stroke="#0A7A72" stroke-width="2"/>
+                        <text x="1340" y="768" font-size="14" font-weight="700" text-anchor="middle" fill="#1A2B5F">成長</text>
+                        <line x1="1300" y1="720" x2="1270" y2="680" stroke="#0A7A72" stroke-width="2"/>
+                    </g>
+                </svg>
+
+                <button class="tts-button" data-text="Four pillars mind map. Center: Four Pillars. Top left: Emotional Intelligence with self-awareness, empathy, boundaries. Top right: Ethical Persuasion with credibility, trust, transparency. Bottom left: Healthy Negotiation with listening, win-win, conflict. Bottom right: Authentic Connection with vulnerability, reciprocity, growth.">🔊 Mind Map</button>
+            </div>
+
+            <!-- Learning Progression Diagram -->
+            <div style="margin-bottom: 40px;">
+                <h3 style="font-size: 20px; font-weight: 700; color: #1A2B5F; margin-bottom: 24px; text-align: center;">學習進階路徑 | Learning Progression Path</h3>
+                
+                <svg viewBox="0 0 1400 400" xmlns="http://www.w3.org/2000/svg" style="width: 100%; max-width: 100%; margin: 0 auto; display: block; background: #F8F9FB; border-radius: 4px;">
+                    <!-- Level 1: Beginner -->
+                    <rect x="50" y="100" width="220" height="180" fill="#FFF8E7" stroke="#C9960C" stroke-width="3" rx="4"/>
+                    <text x="160" y="140" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">初級</text>
+                    <text x="160" y="165" font-size="16" font-weight="600" text-anchor="middle" fill="#0A7A72">Beginner</text>
+                    <text x="160" y="190" font-size="14" text-anchor="middle" fill="#4A5568">• 基礎認識</text>
+                    <text x="160" y="210" font-size="14" text-anchor="middle" fill="#4A5568">• 工具嘗試</text>
+                    <text x="160" y="230" font-size="14" text-anchor="middle" fill="#4A5568">• 小步前進</text>
+                    <text x="160" y="255" font-size="12" text-anchor="middle" fill="#4A5568">(Week 1-2)</text>
+                    <line x1="270" y1="190" x2="360" y2="190" stroke="#C9960C" stroke-width="3" marker-end="url(#arrowhead2)"/>
+
+                    <!-- Level 2: Intermediate -->
+                    <rect x="360" y="70" width="220" height="240" fill="#F0F9FF" stroke="#0A7A72" stroke-width="3" rx="4"/>
+                    <text x="470" y="115" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">中級</text>
+                    <text x="470" y="140" font-size="16" font-weight="600" text-anchor="middle" fill="#0A7A72">Intermediate</text>
+                    <text x="470" y="165" font-size="14" text-anchor="middle" fill="#4A5568">• 應用實踐</text>
+                    <text x="470" y="185" font-size="14" text-anchor="middle" fill="#4A5568">• 情景挑戰</text>
+                    <text x="470" y="205" font-size="14" text-anchor="middle" fill="#4A5568">• 反思改進</text>
+                    <text x="470" y="225" font-size="14" text-anchor="middle" fill="#4A5568">• 關係深化</text>
+                    <text x="470" y="250" font-size="12" text-anchor="middle" fill="#4A5568">(Week 3-4)</text>
+                    <text x="470" y="275" font-size="12" text-anchor="middle" fill="#4A5568">(30-Day Plan)</text>
+                    <line x1="580" y1="190" x2="670" y2="190" stroke="#0A7A72" stroke-width="3" marker-end="url(#arrowhead3)"/>
+
+                    <!-- Level 3: Advanced -->
+                    <rect x="670" y="40" width="220" height="300" fill="#E8F5F0" stroke="#0A7A72" stroke-width="4" rx="4"/>
+                    <text x="780" y="90" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">高級</text>
+                    <text x="780" y="115" font-size="16" font-weight="600" text-anchor="middle" fill="#0A7A72">Advanced</text>
+                    <text x="780" y="140" font-size="14" text-anchor="middle" fill="#4A5568">• 整合應用</text>
+                    <text x="780" y="160" font-size="14" text-anchor="middle" fill="#4A5568">• 無意識勝任</text>
+                    <text x="780" y="180" font-size="14" text-anchor="middle" fill="#4A5568">• 影響他人</text>
+                    <text x="780" y="200" font-size="14" text-anchor="middle" fill="#4A5568">• 高維利他</text>
+                    <text x="780" y="220" font-size="14" text-anchor="middle" fill="#4A5568">• 系統思維</text>
+                    <text x="780" y="245" font-size="12" text-anchor="middle" fill="#4A5568">(Ongoing)</text>
+                    <text x="780" y="270" font-size="12" text-anchor="middle" fill="#4A5568">(Mastery)</text>
+                    <line x1="890" y1="190" x2="980" y2="190" stroke="#0A7A72" stroke-width="3" marker-end="url(#arrowhead3)"/>
+
+                    <!-- Level 4: Mastery -->
+                    <rect x="980" y="100" width="220" height="180" fill="#F9F0FF" stroke="#0A7A72" stroke-width="3" rx="4"/>
+                    <text x="1090" y="140" font-size="18" font-weight="700" text-anchor="middle" fill="#1A2B5F">大師</text>
+                    <text x="1090" y="165" font-size="16" font-weight="600" text-anchor="middle" fill="#0A7A72">Mastery</text>
+                    <text x="1090" y="190" font-size="14" text-anchor="middle" fill="#4A5568">• 自然流暢</text>
+                    <text x="1090" y="210" font-size="14" text-anchor="middle" fill="#4A5568">• 他人導師</text>
+                    <text x="1090" y="230" font-size="14" text-anchor="middle" fill="#4A5568">• 系統創造者</text>
+                    <text x="1090" y="255" font-size="12" text-anchor="middle" fill="#4A5568">(Lifelong)</text>
+
+                    <!-- Arrow marker definitions -->
+                    <defs>
+                        <marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                            <polygon points="0 0, 10 5, 0 10" fill="#C9960C"/>
+                        </marker>
+                        <marker id="arrowhead3" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+                            <polygon points="0 0, 10 5, 0 10" fill="#0A7A72"/>
+                        </marker>
+                    </defs>
+                </svg>
+
+                <button class="tts-button" data-text="Learning progression path. Level 1 Beginner: basic understanding, tool experimentation, small steps forward during weeks 1-2. Level 2 Intermediate: applied practice, scenario challenges, reflection and improvement, relationship deepening during weeks 3-4 of the 30-day plan. Level 3 Advanced: integrated application, unconscious competence, influencing others, high-dimensional altruism, systems thinking ongoing toward mastery. Level 4 Mastery: natural fluency, mentor to others, system creator, lifelong journey.">🔊 Progression</button>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p><strong>倫理人際關係作業系統 | Ethical Relationship Operating System</strong></p>
+        <p>Design & Content by 王欣蓉 Anne Wang</p>
+        <p>高維利他 × 倫理人際 × 可持續影響力</p>
+        <p style="font-size: 12px; margin-top: 16px; opacity: 0.8;">© 2026 | Built with intention for authentic human connection</p>
+    </footer>
+
+    <script>
+        // Assessment Data
+        const assessmentQuestions = [
+            {
+                category: 'Emotional Intelligence',
+                zh: '情感智商',
+                statements: [
+                    { zh: '我能識別並命名我的情緒狀態', en: 'I can identify and name my emotional states' },
+                    { zh: '當情緒高漲時，我能暫停並深呼吸', en: 'I can pause and breathe when emotions run high' },
+                    { zh: '我理解他人行為背後的動機', en: 'I understand motivations behind others\' behavior' },
+                    { zh: '我的邊界清晰且被尊重', en: 'My boundaries are clear and respected' }
+                ]
+            },
+            {
+                category: 'Ethical Persuasion',
+                zh: '倫理說服',
+                statements: [
+                    { zh: '人們信任我的意圖', en: 'People trust my intentions' },
+                    { zh: '我履行我的承諾', en: 'I keep my promises' },
+                    { zh: '我能夠找到共同價值', en: 'I can find shared values with others' },
+                    { zh: '我清楚地表達我的想法而不操控', en: 'I express myself clearly without manipulation' }
+                ]
+            },
+            {
+                category: 'Healthy Negotiation',
+                zh: '健康談判',
+                statements: [
+                    { zh: '我在衝突中積極傾聽', en: 'I listen actively during conflicts' },
+                    { zh: '我尋求雙贏解決方案', en: 'I seek win-win solutions' },
+                    { zh: '我能表達我的需求而不傷害他人', en: 'I can express needs without hurting others' },
+                    { zh: '我分開人與問題', en: 'I separate people from problems' }
+                ]
+            },
+            {
+                category: 'Authentic Connection',
+                zh: '真誠連結',
+                statements: [
+                    { zh: '我能與他人分享脆弱性', en: 'I can share vulnerability with others' },
+                    { zh: '我投資於長期關係', en: 'I invest in long-term relationships' },
+                    { zh: '我慶祝他人的成功', en: 'I celebrate others\' successes' },
+                    { zh: '我支持他人的成長', en: 'I support others\' growth' }
+                ]
+            }
+        ];
+
+        // Render Assessment
+        function renderAssessment() {
+            const container = document.getElementById('assessment-container');
+            let html = '';
+            let questionId = 0;
+
+            assessmentQuestions.forEach((section, sectionIdx) => {
+                html += `
+                    <div style="margin-bottom: 40px;">
+                        <h4 style="font-size: 18px; font-weight: 700; color: #1A2B5F; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #C9960C;">
+                            ${section.zh} | ${section.category}
+                        </h4>
+                        <div style="background: #F8F9FB; padding: 20px; border-radius: 4px;">
+                `;
+                
+                section.statements.forEach((stmt, stmtIdx) => {
+                    const id = `q-${sectionIdx}-${stmtIdx}`;
+                    html += `
+                        <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #E2E8F0;">
+                            <div style="margin-bottom: 12px; font-size: 15px;">
+                                <strong>${stmt.zh}</strong>
+                                <div style="font-size: 13px; color: #4A5568; margin-top: 4px;">${stmt.en}</div>
+                            </div>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                ${[1, 2, 3, 4, 5].map(score => `
+                                    <button class="rating-btn" data-question="${id}" data-score="${score}" 
+                                        style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #D0D0D0; background: #FFFFFF; cursor: pointer; font-weight: 700; font-size: 14px; transition: all 0.2s; color: #0D1B3E;">
+                                        ${score}
+                                    </button>
+                                `).join('')}
+                                <span style="font-size: 12px; color: #999; margin-left: 12px;">完全不同意 ← → 完全同意</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `</div></div>`;
+            });
+
+            html += `<div style="text-align: center; margin-top: 30px;">
+                        <button id="submit-assessment" style="background: #1A2B5F; color: #FFFFFF; border: none; padding: 12px 32px; font-size: 16px; font-weight: 700; border-radius: 3px; cursor: pointer; transition: all 0.2s;">
+                            查看我的評分 | See My Results
+                        </button>
+                    </div>`;
+
+            container.innerHTML = html;
+
+            // Rating button functionality
+            document.querySelectorAll('.rating-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const question = this.getAttribute('data-question');
+                    const score = this.getAttribute('data-score');
+                    
+                    // Remove previous selection for this question
+                    document.querySelectorAll(`button[data-question="${question}"]`).forEach(b => {
+                        b.style.background = '#FFFFFF';
+                        b.style.borderColor = '#D0D0D0';
+                        b.style.color = '#0D1B3E';
+                    });
+                    
+                    // Add selection
+                    this.style.background = '#0A7A72';
+                    this.style.borderColor = '#0A7A72';
+                    this.style.color = '#FFFFFF';
+                });
+            });
+
+            // Submit button
+            document.getElementById('submit-assessment').addEventListener('click', calculateResults);
+        }
+
+        function calculateResults() {
+            const scores = {};
+            const categories = ['Emotional Intelligence', 'Ethical Persuasion', 'Healthy Negotiation', 'Authentic Connection'];
+            
+            categories.forEach(cat => {
+                scores[cat] = 0;
+            });
+
+            document.querySelectorAll('.rating-btn').forEach(btn => {
+                const score = parseInt(btn.getAttribute('data-score'));
+                if (btn.style.background === 'rgb(10, 122, 114)') { // Selected state
+                    const question = btn.getAttribute('data-question');
+                    const sectionIdx = parseInt(question.split('-')[1]);
+                    const category = categories[sectionIdx];
+                    scores[category] += score;
+                }
+            });
+
+            // Check if all questions answered
+            const answered = Object.values(scores).every(s => s > 0);
+            if (!answered) {
+                alert('請為所有問題評分 | Please rate all questions');
+                return;
+            }
+
+            displayResults(scores);
+        }
+
+        function displayResults(scores) {
+            const container = document.getElementById('assessment-results');
+            const resultsContent = document.getElementById('results-content');
+            
+            const levels = {
+                'Emotional Intelligence': { zh: '情感智商', max: 20 },
+                'Ethical Persuasion': { zh: '倫理說服', max: 20 },
+                'Healthy Negotiation': { zh: '健康談判', max: 20 },
+                'Authentic Connection': { zh: '真誠連結', max: 20 }
+            };
+
+            let html = '';
+            const categories = Object.keys(levels);
+
+            categories.forEach(cat => {
+                const score = scores[cat];
+                const maxScore = levels[cat].max;
+                const percentage = (score / maxScore) * 100;
+                const level = percentage >= 75 ? '高級 (Advanced)' : percentage >= 50 ? '中級 (Intermediate)' : '初級 (Beginner)';
+                const color = percentage >= 75 ? '#0A7A72' : percentage >= 50 ? '#C9960C' : '#E53E3E';
+
+                html += `
+                    <div style="margin-bottom: 24px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <strong style="font-size: 15px;">${levels[cat].zh} | ${cat}</strong>
+                            <span style="font-size: 14px; font-weight: 700; color: ${color};">${score}/${maxScore} - ${level}</span>
+                        </div>
+                        <div style="height: 12px; background: #E2E8F0; border-radius: 6px; overflow: hidden;">
+                            <div style="height: 100%; width: ${percentage}%; background: ${color}; border-radius: 6px;"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const totalScore = Object.values(scores).reduce((a, b) => a + b, 0);
+            const overallPercentage = (totalScore / 80) * 100;
+            const overallLevel = overallPercentage >= 75 ? '高級' : overallPercentage >= 50 ? '中級' : '初級';
+
+            const feedbackText = overallPercentage >= 75 ? 'Excellent! You have a solid foundation. Now focus on deepening and fine-tuning.' : 
+                          overallPercentage >= 50 ? 'Good start! Keep practicing areas with lower scores.' :
+                          'Just starting! Lots of growth ahead. Practice these skills daily.';
+
+            html += `
+                <div style="margin-top: 30px; padding: 20px; background: #FFF8E7; border-radius: 4px; border-left: 4px solid #C9960C;">
+                    <h5 style="color: #1A2B5F; margin-bottom: 12px;">整體評分 | Overall Score</h5>
+                    <div style="font-size: 24px; font-weight: 700; color: #1A2B5F; margin-bottom: 8px;">${totalScore}/80 (${Math.round(overallPercentage)}%) - ${overallLevel}</div>
+                    <div style="margin-bottom: 12px;">
+                        <p style="font-size: 14px; line-height: 1.6; color: #4A5568; margin-bottom: 8px;">
+                            ${overallPercentage >= 75 ? '🌟 出色！你已在四大支柱上建立了堅實的基礎。現在專注於深化與微調。' : 
+                              overallPercentage >= 50 ? '✅ 良好開始！你已掌握基本原理。持續實踐那些得分較低的領域。' :
+                              '🌱 剛開始！這個領域充滿成長的機會。每天實踐這些技能。'}
+                        </p>
+                        <p style="font-size: 14px; line-height: 1.6; color: #4A5568; margin: 0;">
+                            ${feedbackText}
+                        </p>
+                    </div>
+                    <button class="tts-button" data-text="${feedbackText}">🔊 Feedback</button>
+                </div>
+            `;
+
+            resultsContent.innerHTML = html;
+            container.style.display = 'none';
+            container.parentElement.appendChild(document.getElementById('assessment-results'));
+            document.getElementById('assessment-results').style.display = 'block';
+            document.getElementById('assessment-results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Card toggle functionality
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.classList.toggle('open');
+            });
+        });
+
+        // TTS functionality for English content
+        document.querySelectorAll('.tts-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const text = this.getAttribute('data-text');
+                
+                // Cancel any ongoing speech
+                if (window.speechSynthesisUtterance) {
+                    speechSynthesis.cancel();
+                }
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.85;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                
+                speechSynthesis.speak(utterance);
+                
+                // Visual feedback
+                const originalText = this.textContent;
+                this.textContent = '🔊 Playing...';
+                
+                utterance.onend = () => {
+                    this.textContent = originalText;
+                };
+                
+                utterance.onerror = () => {
+                    this.textContent = originalText;
+                };
+            });
+        });
+
+        // Smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize assessment
+        document.addEventListener('DOMContentLoaded', renderAssessment);
+    </script>
+</body>
+</html>
