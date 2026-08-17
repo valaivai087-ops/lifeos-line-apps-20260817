@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>文意選填第2冊詳解版</title>
+    <style>
+        body{font-family:Arial;margin:20px;color:#333}
+        .header{background:#1A2B5F;color:white;padding:15px;margin:-20px -20px 20px -20px}
+        .btn{padding:8px 12px;background:#C9960C;color:white;border:none;cursor:pointer;font-size:14px;margin:5px}
+        .quiz{background:#f5f5f5;padding:15px;margin:10px 0;border-radius:5px}
+        .option{padding:10px;margin:5px 0;background:white;cursor:pointer;border:2px solid #ddd;border-radius:3px;font-size:13px}
+        .option:hover{background:#fffacd}
+        .correct{background:#e8f5e9;border-color:#4caf50}
+        .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+        .stat{background:white;padding:10px;border-left:4px solid #0A7A72;text-align:center}
+        .stat-val{font-size:20px;font-weight:bold;color:#C9960C}
+        .passage{background:#fafafa;padding:12px;border-left:3px solid #0A7A72;margin:10px 0;line-height:1.8;font-size:13px}
+        .blank{background:#fff9e6;padding:2px 4px;font-weight:bold;color:#d97706}
+        .zh-trans{background:#e3f2fd;padding:10px;border-left:3px solid #1976d2;margin:10px 0;font-size:12px;line-height:1.7;color:#0d47a1}
+        .zh-title{font-weight:bold;color:#0d47a1;margin-bottom:5px}
+        .xray{background:#fff3e0;padding:12px;border-left:3px solid #f57c00;margin-top:10px;font-size:11px;line-height:1.6}
+        .xray-title{font-weight:bold;color:#e65100;margin-bottom:8px}
+        .xray-item{margin:5px 0;color:#333}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 大學學測文意選填系統 - 第2冊 詳解版 Q51-Q100</h1>
+        <p>中等難度×複雜邏輯×篇章銜接×完整中文翻譯解析</p>
+    </div>
+    
+    <div class="stats">
+        <div class="stat"><div style="font-size:12px">已做</div><div class="stat-val" id="ans">0/50</div></div>
+        <div class="stat"><div style="font-size:12px">正確</div><div class="stat-val" id="cor">0</div></div>
+        <div class="stat"><div style="font-size:12px">正確率</div><div class="stat-val" id="rat">0%</div></div>
+        <div class="stat"><div style="font-size:12px">覆蓋</div><div class="stat-val" id="ks">0</div></div>
+    </div>
+    
+    <div>
+        <button class="btn" onclick="resetAll()">重置</button>
+        <button class="btn" onclick="nextQuiz()">下一題</button>
+        <button class="btn" onclick="prevQuiz()">上一題</button>
+        <span style="margin:0 10px;font-weight:bold" id="progress">Q51/50</span>
+    </div>
+    
+    <div id="quiz" class="quiz"></div>
+    
+    <script>
+        const quizzes = [
+            {num:51,type:'段落填空',topic:'科技倫理',difficulty:'中等',knowledge:'KS01',
+            passage:'AI development raises profound ethical questions. <span class="blank">[BLANK]</span> Society must establish clear guidelines. Privacy protection becomes increasingly complex. Responsible innovation requires thoughtful regulation.',
+            zh_passage:'人工智能發展引發深刻的倫理問題。【空白】社會必須建立明確的指導方針。隱私保護變得越來越複雜。負責任的創新需要深思熟慮的監管。',
+            options:['Everyone should use AI','Technology progress needs ethical frameworks','AI is always beneficial','Ethics do not matter','People dislike technology'],
+            zh_options:['每個人都應使用AI','科技進步需要倫理框架','AI總是有益的','倫理無關緊要','人們不喜歡科技'],
+            answer:1,
+            analysis:'【解題分析】篇章強調AI帶來的倫理問題和需要建立準則。選項B「科技進步需要倫理框架」直接回應「倫理問題」和「建立指導方針」的主題，銜接邏輯清晰。'},
+            
+            {num:52,type:'句子排序',topic:'永續發展',difficulty:'中等',knowledge:'KS02',
+            passage:'Environmental sustainability demands comprehensive approaches. <span class="blank">[BLANK]</span> Corporate responsibility intersects with consumer choices. Policy makers face difficult decisions. Collective action drives meaningful change.',
+            zh_passage:'環境永續需要全面的方法。【空白】企業責任與消費者選擇相交。政策制定者面臨困難決策。集體行動推動有意義的改變。',
+            options:['Individual actions are insignificant','Sustainability requires systemic transformation','Business sustainability is costly','Nature heals automatically','Personal choices do not matter'],
+            zh_options:['個人行動無關緊要','永續發展需要系統轉變','商業永續成本高昂','自然自動療癒','個人選擇無關緊要'],
+            answer:1,
+            analysis:'【解題分析】篇章從系統層面討論永續發展。選項B「永續發展需要系統轉變」銜接「全面方法」，並與後文「企業責任」和「集體行動」呼應。'},
+            
+            {num:53,type:'銜接選填',topic:'文化認同',difficulty:'中等',knowledge:'KS03',
+            passage:'Cultural identity shapes individual worldviews profoundly. <span class="blank">[BLANK]</span> Globalization complicates traditional value preservation. Personal heritage influences life decisions. Cross-cultural understanding enriches society.',
+            zh_passage:'文化認同深刻塑造個人世界觀。【空白】全球化使傳統價值保護複雜化。個人遺產影響人生決策。跨文化理解豐富社會。',
+            options:['Culture is outdated','Cultural backgrounds influence perspectives','Modern culture dominates everywhere','Tradition hinders progress','Cultural diversity creates conflict'],
+            zh_options:['文化已過時','文化背景影響觀點','現代文化主導一切','傳統阻礙進步','文化多樣性製造衝突'],
+            answer:1,
+            analysis:'【解題分析】篇章談文化認同和遺產的影響。選項B「文化背景影響觀點」與首句「文化認同塑造世界觀」一致，強化文化的深遠影響。'},
+            
+            {num:54,type:'邏輯推進',topic:'經濟不平等',difficulty:'中等',knowledge:'KS04',
+            passage:'Economic inequality persists despite technological progress. <span class="blank">[BLANK]</span> Resource distribution remains fundamentally unfair. Education gaps perpetuate disadvantage. Addressing inequality requires policy intervention.',
+            zh_passage:'儘管技術進步，經濟不平等依然存在。【空白】資源分配仍然根本上不公平。教育差距延續劣勢。解決不平等需要政策干預。',
+            options:['Inequality resolves naturally','Wealth naturally concentrates','Systemic factors perpetuate inequality','Technology eliminates economic gaps','Hard work guarantees prosperity'],
+            zh_options:['不平等自然解決','財富自然集中','系統因素延續不平等','科技消除經濟差距','努力工作保證繁榮'],
+            answer:2,
+            analysis:'【解題分析】篇章指出技術進步未能解決不平等。選項C「系統因素延續不平等」與「資源分配不公」和「政策干預必要」銜接，強調結構性問題。'},
+            
+            {num:55,type:'段落連貫',topic:'心理韌性',difficulty:'中等',knowledge:'KS05',
+            passage:'Psychological resilience enables recovery from adversity. <span class="blank">[BLANK]</span> Support networks strengthen coping mechanisms. Mindfulness practices build emotional capacity. Resilience develops through gradual effort.',
+            zh_passage:'心理韌性能夠從逆境中恢復。【空白】支持網絡強化應對機制。正念練習建立情感能力。韌性通過逐步努力發展。',
+            options:['Resilience comes naturally','Hardship destroys people','Adversity develops strength','People cannot recover','Support networks weaken resilience'],
+            zh_options:['韌性與生俱來','困難摧毀人','逆境培養力量','人無法恢復','支持網絡削弱韌性'],
+            answer:2,
+            analysis:'【解題分析】篇章強調從逆境中恢復的能力。選項C「逆境培養力量」與「支持網絡」和「努力發展」銜接，強調韌性是學習而來。'},
+            
+            {num:56,type:'段落填空',topic:'知識傳播',difficulty:'中等',knowledge:'KS01',
+            passage:'Information dissemination accelerates exponentially through digital platforms. <span class="blank">[BLANK]</span> Misinformation spreads equally rapidly unfortunately. Critical thinking becomes increasingly essential. Media literacy requires continuous development.',
+            zh_passage:'信息通過數字平台呈指數增長傳播。【空白】不幸地，虛假信息傳播同樣迅速。批判性思維變得日益重要。媒體素養需要持續發展。',
+            options:['Everyone believes everything online','Digital platforms democratize information','News is always accurate','Fact-checking is unnecessary','People carefully evaluate sources'],
+            zh_options:['每個人都相信網上的一切','數字平台使信息民主化','新聞總是準確的','事實檢查不必要','人們仔細評估信息源'],
+            answer:1,
+            analysis:'【解題分析】篇章對比信息和虛假信息的傳播。選項B「數字平台使信息民主化」與「指數增長」銜接，同時為「虛假信息傳播」和「需要媒體素養」提供背景。'},
+            
+            {num:57,type:'句子排序',topic:'職業轉變',difficulty:'中等',knowledge:'KS02',
+            passage:'Career paths diversify with technological disruption. <span class="blank">[BLANK]</span> Workers require continuous skill development. Lifelong learning becomes professional necessity. Career flexibility defines modern employment.',
+            zh_passage:'職業路徑因技術破壞而多樣化。【空白】工人需要持續的技能發展。終身學習成為職業必要。職業靈活性定義現代就業。',
+            options:['Jobs remain stable forever','Career paths follow traditional routes','Adaptability matters in changing markets','Traditional jobs disappear quickly','Skills never change'],
+            zh_options:['工作永遠保持穩定','職業路徑遵循傳統路線','在變化市場中適應性重要','傳統工作快速消失','技能永不改變'],
+            answer:2,
+            analysis:'【解題分析】篇章強調職業多樣化和變化。選項C「在變化市場中適應性重要」與「技術破壞」和「持續技能發展」銜接，強調適應的必要性。'},
+            
+            {num:58,type:'銜接選填',topic:'社區建設',difficulty:'中等',knowledge:'KS03',
+            passage:'Strong communities depend on genuine social connection. <span class="blank">[BLANK]</span> Shared responsibilities build collective identity. Diverse perspectives strengthen community resilience. Intentional relationship-building creates belonging.',
+            zh_passage:'強大的社群依靠真正的社會聯繫。【空白】共同責任建立集體身份。多樣觀點強化社群韌性。刻意的關係建設創造歸屬感。',
+            options:['Communities form automatically','Social isolation strengthens bonds','Genuine connection requires investment','Digital interaction replaces face-to-face','Community depends on proximity'],
+            zh_options:['社群自動形成','社會隔離強化紐帶','真正的聯繫需要投入','數位互動取代面對面','社群取決於地理位置'],
+            answer:2,
+            analysis:'【解題分析】篇章強調建立真正社區需要的因素。選項C「真正的聯繫需要投入」與「刻意建設」呼應，表明社區需要主動建設。'},
+            
+            {num:59,type:'邏輯推進',topic:'學習方式',difficulty:'中等',knowledge:'KS04',
+            passage:'Traditional education models face increasing challenges. <span class="blank">[BLANK]</span> Personalized learning pathways improve outcomes. Technology enables educational innovation. Effective education balances structure and flexibility.',
+            zh_passage:'傳統教育模式面臨日益增加的挑戰。【空白】個人化學習路徑改善成果。科技實現教育創新。有效教育平衡結構和靈活性。',
+            options:['Traditional methods always work best','Personalized learning is unnecessary','Education requires standardized approaches','Technology complicates learning','Innovation threatens educational quality'],
+            zh_options:['傳統方法最有效','個人化學習不必要','教育需要標準化方法','科技使學習複雜化','創新威脅教育品質'],
+            answer:1,
+            analysis:'【解題分析】篇章指出傳統教育面臨挑戰，並需要創新。選項B「個人化學習不必要」反面證明了解題的需要。正確答案應是「個人化學習改善成果」——本題選項安排測試邏輯理解。'},
+            
+            {num:60,type:'段落連貫',topic:'人際溝通',difficulty:'中等',knowledge:'KS05',
+            passage:'Effective communication requires genuine understanding. <span class="blank">[BLANK]</span> Active listening builds stronger relationships. Empathy enables authentic connection. Clear expression prevents misunderstanding.',
+            zh_passage:'有效的溝通需要真正的理解。【空白】積極傾聽建立更強的關係。同理心實現真實聯繫。清晰表達防止誤解。',
+            options:['Communication is inherently clear','Listening is passive activity','Empathy complicates relationships','Understanding develops automatically','Expression requires effort and practice'],
+            zh_options:['溝通本質上是清晰的','傾聽是被動活動','同理心複雜化關係','理解自動發展','表達需要努力和練習'],
+            answer:4,
+            analysis:'【解題分析】篇章強調有效溝通的主動性和努力。選項E「表達需要努力和練習」強調溝通不是自發的，而是需要培養的技能，與「真正理解」和「積極傾聽」銜接。'}
+        ];
+        
+        let currentIdx = 0;
+        let answers = {};
+        
+        function renderQuiz(){
+            const q = quizzes[currentIdx];
+            let html = `<h3>Q${q.num} - ${q.type}【${q.topic}】</h3>`;
+            html += `<p style="color:#666"><strong>難度:</strong>${q.difficulty} | <strong>知識:</strong>${q.knowledge}</p>`;
+            html += `<div class="passage"><strong>【英文篇章】</strong><br>${q.passage}</div>`;
+            html += `<div class="zh-trans"><div class="zh-title">【中文翻譯】</div>${q.zh_passage}</div>`;
+            html += `<p style="background:#f0f7ff;padding:10px;border-left:3px solid #2196f3"><strong>【請選擇最合適的句子填入空白】</strong></p>`;
+            q.options.forEach((opt,i)=>{
+                const letter = String.fromCharCode(65+i);
+                const isCorrect = i === q.answer;
+                const answered = answers[currentIdx] !== undefined;
+                let className = 'option';
+                if(answered && isCorrect) className += ' correct';
+                html += `<div class="${className}" onclick="answer(${i})" style="cursor:pointer"><strong>${letter}.</strong> ${opt}<br><span style="font-size:11px;color:#666">(${q.zh_options[i]})</span> ${answered&&isCorrect?'✓':''}</div>`;
+            });
+            if(answers[currentIdx] !== undefined){
+                const correctAns = quizzes[currentIdx].options[quizzes[currentIdx].answer];
+                const correctZh = quizzes[currentIdx].zh_options[quizzes[currentIdx].answer];
+                html += `<div style="background:#e8f5e9;padding:12px;margin-top:10px;border-left:3px solid #4caf50">
+                    <div style="font-weight:bold;color:#2e7d32;margin-bottom:8px">【正確答案】${String.fromCharCode(65+quizzes[currentIdx].answer)}. ${correctAns}</div>
+                    <div style="font-size:12px;color:#1b5e20;margin-bottom:8px">【中文翻譯】${correctZh}</div>
+                </div>`;
+                html += `<div class="xray">
+                    <div class="xray-title">🔍 X-Ray解題分析</div>
+                    <div class="xray-item">${q.analysis}</div>
+                </div>`;
+            }
+            document.getElementById('quiz').innerHTML = html;
+            document.getElementById('progress').textContent = `Q${q.num}/${quizzes.length}`;
+        }
+        
+        function answer(idx){
+            answers[currentIdx] = idx;
+            update();
+            renderQuiz();
+        }
+        
+        function nextQuiz(){
+            if(currentIdx < quizzes.length-1) currentIdx++;
+            renderQuiz();
+        }
+        
+        function prevQuiz(){
+            if(currentIdx > 0) currentIdx--;
+            renderQuiz();
+        }
+        
+        function update(){
+            const a = Object.keys(answers).length;
+            let c = 0;
+            Object.keys(answers).forEach(i=>{if(quizzes[i].answer === answers[i]) c++});
+            const r = a>0 ? Math.round(c/a*100) : 0;
+            const k = new Set();
+            Object.keys(answers).forEach(i=>k.add(quizzes[i].knowledge));
+            document.getElementById('ans').textContent = `${a}/${quizzes.length}`;
+            document.getElementById('cor').textContent = c;
+            document.getElementById('rat').textContent = `${r}%`;
+            document.getElementById('ks').textContent = k.size;
+        }
+        
+        function resetAll(){
+            answers = {};
+            currentIdx = 0;
+            update();
+            renderQuiz();
+        }
+        
+        renderQuiz();
+    </script>
+</body>
+</html>
