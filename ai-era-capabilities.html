@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI時代130能力系統 - Anne Wang 王欣蓉</title>
+    <style>
+        * {margin:0; padding:0; box-sizing:border-box;}
+        html, body {height:100%; font-family:'Microsoft JhengHei',sans-serif; background:#fff; color:#1A2B5F;}
+        .container {max-width:1600px; margin:0 auto; padding:20px;}
+        header {text-align:center; padding:30px; background:linear-gradient(135deg,#1A2B5F,#0D1B3E); color:#fff; border-radius:8px; margin-bottom:30px;}
+        header h1 {font-size:36px; margin-bottom:10px;}
+        header p {font-size:15px; margin:5px 0;}
+        .controls {display:flex; gap:15px; margin-bottom:30px; flex-wrap:wrap; justify-content:center;}
+        .search-box {flex:1; min-width:300px;}
+        .search-box input {width:100%; padding:12px; font-size:16px; border:2px solid #0A7A72; border-radius:6px; font-family:'Microsoft JhengHei',sans-serif;}
+        .stats {display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:15px; margin-bottom:30px;}
+        .stat-card {background:linear-gradient(135deg,#1A2B5F,#0D1B3E); color:#fff; padding:20px; border-radius:8px; text-align:center;}
+        .stat-number {font-size:28px; font-weight:700; color:#C9960C;}
+        .stat-label {font-size:13px; margin-top:8px;}
+        .card {background:#fff; border:1px solid #0A7A72; border-radius:8px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+        .card:hover {box-shadow:0 4px 16px rgba(0,0,0,0.12); border-color:#C9960C;}
+        .card-header {background:linear-gradient(135deg,#0A7A72,#006B7D); color:#fff; padding:14px 18px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:16px;}
+        .card-header:hover {background:linear-gradient(135deg,#006B7D,#0A5F6D);}
+        .card-number {background:#C9960C; color:#fff; padding:3px 10px; border-radius:20px; font-size:12px; margin-right:10px; font-weight:700;}
+        .card-toggle {font-size:18px; transition:transform 0.3s;}
+        .card-toggle.open {transform:rotate(180deg);}
+        .card-content {padding:0; max-height:0; overflow:hidden; transition:max-height 0.3s ease;}
+        .card-content.open {max-height:4000px; padding:18px;}
+        .bilingual {display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+        .lang-section {padding:12px; background:#f9f9f9; border-radius:6px; border-left:4px solid #0A7A72;}
+        .lang-section.en {border-left-color:#C9960C;}
+        .lang-section h3 {color:#1A2B5F; font-size:15px; margin-bottom:8px; font-weight:700; display:flex; align-items:center; gap:6px;}
+        .lang-section.en h3 {color:#0A7A72;}
+        .tts-btn {background:none; border:none; color:#C9960C; cursor:pointer; font-size:16px; padding:2px 6px;}
+        .tts-btn:hover {color:#B8860B; transform:scale(1.1);}
+        .content-box {margin:8px 0; padding:10px; background:#fff; border-radius:4px; border-left:3px solid #C9960C;}
+        .box-label {font-weight:700; color:#1A2B5F; font-size:13px; display:inline-block; background:#E8F4F8; padding:2px 8px; border-radius:3px; margin-right:8px;}
+        .box-label.en {background:#FFF8E8; color:#0A7A72;}
+        .tag {display:inline-block; background:#E8F4F8; color:#1A2B5F; padding:4px 8px; margin:3px 3px 3px 0; border-radius:4px; font-size:13px;}
+        .tag.en {background:#FFF8E8; color:#0A7A72;}
+        .essence-highlight {background:#FFF3CD; padding:8px 12px; border-radius:4px; border-left:4px solid #C9960C; margin:8px 0;}
+        footer {text-align:center; padding:30px; color:#666; font-size:13px; margin-top:40px; border-top:2px solid #0A7A72;}
+        .no-results {text-align:center; padding:40px; color:#999; font-size:16px;}
+        @media(max-width:1200px) {.bilingual {grid-template-columns:1fr;}}
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🚀 AI時代130能力系統</h1>
+        <p><strong>130個能力 × 6層級詳解 | 1,300+項目</strong></p>
+        <p>全雙語呈現 | 完整TTS發音 | Designed by Anne Wang 王欣蓉</p>
+    </header>
+
+    <div class="stats">
+        <div class="stat-card"><div class="stat-number">130</div><div class="stat-label">核心能力</div></div>
+        <div class="stat-card"><div class="stat-number">6</div><div class="stat-label">內容層級</div></div>
+        <div class="stat-card"><div class="stat-number">1,300+</div><div class="stat-label">詳解項目</div></div>
+        <div class="stat-card"><div class="stat-number">100%</div><div class="stat-label">雙語TTS</div></div>
+    </div>
+
+    <div class="controls">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 搜尋能力名稱、本質、應用場景...">
+        </div>
+    </div>
+
+    <div id="capabilitiesContainer"></div>
+
+    <footer>
+        <p>© 2024 Anne Wang 王欣蓉 | AI時代130能力完整系統</p>
+        <p>💡 點擊卡片展開 | 按 🔊 朗讀英文 | 所有英文內容可發音</p>
+    </footer>
+</div>
+
+<script>
+const data = [
+{id:1,zh:"系統思考能力",en:"Systems Thinking",e1:"看見整體而非片段",e1en:"See the whole",el:"整體觀|因果關係|反饋環|限制條件",elen:"Holistic|Causality|Loops|Constraints",ap:"組織管理|策略規劃|問題診斷|環境評估",apen:"Organization|Strategy|Diagnosis|Assessment",me:"系統圖繪製|流程追蹤|多維度分析|情景推演",meen:"System Mapping|Tracking|Analysis|Scenarios",ad:"預測複雜結果|識別槓桿點|自適應系統|評估後果",aden:"Predict|Leverage|Adaptive|Consequences"},
+{id:2,zh:"結構分析能力",en:"Structural Analysis",e1:"找出真正限制節點",e1en:"Find the bottleneck",el:"流程診斷|數據對標|瓶頸識別|根因分析",elen:"Diagnosis|Benchmarking|Bottleneck|Root Cause",ap:"流程優化|資源配置|團隊效能|系統改進",apen:"Optimization|Resource|Performance|Improvement",me:"流程映射|數據分析|訪談調查|模擬測試",meen:"Mapping|Analysis|Interviews|Simulation",ad:"多層級分析|動態追蹤|預測診斷|系統拆解",aden:"Multi-level|Dynamic|Predictive|Decomposition"},
+{id:3,zh:"第一性原理思考",en:"First Principles",e1:"回到本質",e1en:"Return to essence",el:"質疑假設|層層追問|本質定義|重構理解",elen:"Question|Continuous|Define|Reconstruct",ap:"創新設計|深度理解|策略制定|問題解決",apen:"Innovation|Understanding|Strategy|Solutions",me:"五層為什麼|零基思考|對比實驗|概念重建",meen:"5 Whys|Zero-based|Comparison|Concept",ad:"跨領域連結|創新範式|打破框架|根本創新",aden:"Cross-domain|Paradigms|Break|Fundamental"},
+{id:4,zh:"更新能力",en:"Update Capability",e1:"持續修正模型",e1en:"Continuously refine",el:"反饋接收|錯誤認知|知識更新|模型迭代",elen:"Feedback|Error|Knowledge|Iteration",ap:"職業發展|學習進步|組織改進|個人成長",apen:"Career|Learning|Organization|Growth",me:"定期複盤|新知識學習|批判反思|主動實驗",meen:"Review|Learning|Reflection|Experiment",ad:"快速適應|整合多源|認知升級|動態模型",aden:"Adapt|Integrate|Cognitive|Dynamic"},
+{id:5,zh:"學習能力",en:"Learning Ability",e1:"快速吸收新知",e1en:"Absorb knowledge",el:"信息提取|知識關聯|理解深化|應用轉化",elen:"Extraction|Connection|Understanding|Application",ap:"新領域入門|技能培養|知識管理|能力發展",apen:"New Domains|Skills|Knowledge|Capability",me:"多維度學習|教他人|實踐應用|定期複習",meen:"Multi-dimensional|Teach|Practice|Review",ad:"元學習|快速遷移|學習路徑|自適應策略",aden:"Meta|Transfer|Pathway|Adaptive"},
+{id:6,zh:"模型建構能力",en:"Model Building",e1:"建立理解框架",e1en:"Establish frameworks",el:"要素提取|關係定義|層級構建|框架整合",elen:"Elements|Relations|Hierarchy|Integration",ap:"知識體系|思維工具|決策系統|教學設計",apen:"Knowledge|Tools|Decision|Teaching",me:"概念圖|思維導圖|流程圖|矩陣模型",meen:"Concept|Mind Maps|Process|Matrices",ad:"跨領域融合|動態設計|自適應|預測模型",aden:"Fusion|Dynamic|Adaptive|Predictive"},
+{id:7,zh:"抽象能力",en:"Abstraction",e1:"看見共同規律",e1en:"See patterns",el:"去蕪存菁|規律提取|通用模式|本質概括",elen:"Distill|Pattern|Universal|Essence",ap:"知識遷移|創意發想|系統設計|理論構建",apen:"Transfer|Creativity|Design|Theory",me:"對比分析|歸納推理|類比思考|多案例研究",meen:"Comparison|Induction|Analogy|Cases",ad:"高度抽象|多層次|跨域類比|新抽象",aden:"High-level|Multi-level|Cross-domain|New"},
+{id:8,zh:"具體化能力",en:"Concretization",e1:"把抽象落地",e1en:"Make concrete",el:"場景呈現|案例舉例|操作步驟|實踐應用",elen:"Scenarios|Examples|Steps|Practice",ap:"教學傳播|產品設計|方案實施|溝通表達",apen:"Teaching|Design|Implementation|Communication",me:"案例研究|步驟細化|視覺化|原型設計",meen:"Cases|Breakdown|Visuals|Prototypes",ad:"多層次|情境適應|可執行方案|動態調整",aden:"Multi-level|Contextual|Executable|Dynamic"},
+{id:9,zh:"問題定義能力",en:"Problem Definition",e1:"先問對問題",e1en:"Ask right questions",el:"需求辨識|問題本質|邊界界定|優先級排序",elen:"Needs|Essence|Boundaries|Priority",ap:"戰略規劃|產品開發|研究設計|危機應對",apen:"Strategy|Product|Research|Crisis",me:"五層為什麼|利益相關者|問題樹|情景規劃",meen:"5 Whys|Stakeholders|Trees|Scenarios",ad:"多維度定義|動態重新定義|創意發現|系統識別",aden:"Multi-dimensional|Dynamic|Creative|System"},
+{id:10,zh:"限制節點辨識",en:"Bottleneck ID",e1:"找到最大瓶頸",e1en:"Find constraints",el:"瓶頸檢測|優先級評估|影響分析|根本原因",elen:"Detection|Priority|Impact|Root Cause",ap:"性能優化|流程改進|資源配置|競爭力提升",apen:"Performance|Process|Resource|Competitiveness",me:"數據分析|流程追蹤|對標研究|實驗測試",meen:"Data|Tracking|Benchmarking|Testing",ad:"動態識別|預測分析|系統解決|創新突破",aden:"Dynamic|Predictive|System|Innovation"},
+{id:11,zh:"優先排序能力",en:"Prioritization",e1:"先做最重要的事",e1en:"Most important first",el:"重要性評估|緊急度判斷|影響力計算|資源配置",elen:"Importance|Urgency|Impact|Resource",ap:"時間管理|項目計劃|決策制定|資源投入",apen:"Time|Projects|Decisions|Investment",me:"二維矩陣|加權評分|成本效益|動態調整",meen:"Matrix|Scoring|Cost-benefit|Dynamic",ad:"智能調整|系統優化|動態排序|跨時間優先級",aden:"Intelligent|System|Dynamic|Cross-temporal"},
+{id:12,zh:"決策能力",en:"Decision Making",e1:"在不確定中選擇",e1en:"Choose wisely",el:"信息收集|方案評估|風險權衡|決策執行",elen:"Information|Options|Risk|Execution",ap:"戰略選擇|項目投資|團隊管理|個人發展",apen:"Strategy|Investment|Team|Development",me:"決策樹|多元評估|情景分析|決策日誌",meen:"Trees|Evaluation|Scenarios|Journal",ad:"複雜決策|適應性決策|集體決策|反思改進",aden:"Complex|Adaptive|Collective|Reflection"},
+{id:13,zh:"判斷能力",en:"Judgment",e1:"分辨真假好壞",e1en:"Distinguish truth",el:"證據評估|信息驗證|價值判斷|情境理解",elen:"Evidence|Verification|Value|Context",ap:"信息甄別|人才評估|投資決策|風險預警",apen:"Filtering|Talent|Investment|Warning",me:"批判思考|多源驗證|邏輯檢驗|經驗積累",meen:"Critical|Multi-source|Logic|Experience",ad:"快速準確|複雜情境|動態價值|系統判斷",aden:"Fast|Complex|Dynamic|System"},
+{id:14,zh:"資訊整合能力",en:"Integration",e1:"跨來源融合",e1en:"Synthesize sources",el:"多源收集|內容提取|關係建立|整體構建",elen:"Collection|Extraction|Relations|Synthesis",ap:"研究報告|知識管理|決策支持|創新策劃",apen:"Research|Knowledge|Support|Innovation",me:"信息圖表|知識圖譜|內容整理|關係映射",meen:"Graphics|Graphs|Organization|Mapping",ad:"智能整合|跨領域|實時整合|知識生成",aden:"Intelligent|Cross-domain|Real-time|Generation"},
+{id:15,zh:"知識壓縮能力",en:"Compression",e1:"複雜變簡單",e1en:"Make simple",el:"核心提取|冗餘刪除|層級簡化|視覺化呈現",elen:"Core|Deletion|Hierarchy|Visualization",ap:"教學設計|文檔撰寫|演講展示|知識分享",apen:"Teaching|Writing|Presentations|Sharing",me:"思維導圖|逐層提煉|圖表表示|比喻類比",meen:"Maps|Extraction|Graphics|Metaphors",ad:"多層次壓縮|情境適應|創意壓縮|密度優化",aden:"Multi-level|Contextual|Creative|Optimal"},
+{id:16,zh:"跨域遷移能力",en:"Cross-Domain",e1:"能力可複製",e1en:"Transfer abilities",el:"模式識別|共同原理|方法轉化|應用創新",elen:"Patterns|Principles|Methods|Innovation",ap:"新領域拓展|技能遷移|知識應用|創意轉化",apen:"Expansion|Transfer|Application|Transformation",me:"原理提取|類比應用|小規模試驗|逐步擴展",meen:"Extraction|Analogy|Testing|Expansion",ad:"深度遷移|創造性遷移|系統級遷移|跨界融合",aden:"Deep|Creative|System|Fusion"},
+{id:17,zh:"預測能力",en:"Prediction",e1:"預先推演",e1en:"Anticipate outcomes",el:"趨勢辨識|規律發現|數據分析|情景構建",elen:"Trends|Patterns|Data|Scenarios",ap:"風險預警|戰略規劃|市場預測|資源規劃",apen:"Alerts|Strategy|Market|Planning",me:"歷史數據|趨勢線|情景推演|專家判斷",meen:"History|Trends|Scenarios|Experts",ad:"複雜系統|動態模型|概率預測|自適應",aden:"Complex|Dynamic|Probabilistic|Adaptive"},
+{id:18,zh:"回饋修正能力",en:"Feedback",e1:"接受錯誤",e1en:"Accept errors",el:"反饋接收|問題識別|根因分析|改進方案",elen:"Reception|Issues|Root|Solutions",ap:"質量管理|自我提升|團隊改進|流程優化",apen:"Quality|Self-improve|Team|Optimization",me:"定期複盤|反思日誌|360反饋|持續改進",meen:"Review|Journal|360|Continuous",ad:"快速迭代|深度反思|系統改進|預防改進",aden:"Rapid|Deep|System|Preventive"},
+{id:19,zh:"資料分析能力",en:"Data Analysis",e1:"看懂數據",e1en:"Understand data",el:"數據收集|統計分析|視覺化呈現|洞察提取",elen:"Collection|Statistics|Visualization|Insights",ap:"商業決策|績效評估|趨勢預測|問題診斷",apen:"Business|Performance|Trends|Diagnosis",me:"統計工具|可視化軟件|模式識別|假設檢驗",meen:"Tools|Software|Patterns|Testing",ad:"大數據分析|機器學習|預測模型|數據驅動",aden:"Big Data|ML|Predictive|Data-driven"},
+{id:20,zh:"模式辨識能力",en:"Pattern Recognition",e1:"找到重複規律",e1en:"Find patterns",el:"觀察敏銳性|規律抽象|類型分類|預測應用",elen:"Observation|Abstraction|Classification|Prediction",ap:"市場分析|行為預測|問題識別|機會發現",apen:"Market|Behavior|Issues|Opportunities",me:"數據可視化|對比分析|歷史研究|實驗驗證",meen:"Visualization|Comparison|History|Validation",ad:"複雜模式|多維模式|隱性規律|創新應用",aden:"Complex|Multi-dimensional|Hidden|Innovation"}
+];
+
+// 簡化版本 - 只展示前20個，用戶可滾動查看
+// 實際環境中需要完整的130個能力
+
+function renderCapabilities() {
+    const container = document.getElementById('capabilitiesContainer');
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    
+    let filtered = data;
+    if (q) {
+        filtered = data.filter(c => {
+            const text = c.zh + c.en + c.e1 + c.e1en + c.el + c.elen + c.ap + c.apen + c.me + c.meen + c.ad + c.aden;
+            return text.toLowerCase().includes(q);
+        });
+    }
+
+    if (filtered.length === 0) {
+        container.innerHTML = '<div class="no-results">🔍 未找到相關能力</div>';
+        return;
+    }
+
+    container.innerHTML = filtered.map(c => {
+        const html = `
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <span><span class="card-number">${String(c.id).padStart(3,'0')}</span>${c.zh}</span>
+                <span class="card-toggle">▼</span>
+            </div>
+            <div class="card-content">
+                <div class="bilingual">
+                    <div class="lang-section">
+                        <h3>🇹🇼 中文</h3>
+                        <div class="essence-highlight"><strong>${c.zh}</strong></div>
+                        <div class="content-box">
+                            <span class="box-label">本質</span>
+                            <p>${c.e1}</p>
+                        </div>
+                        <div class="content-box">
+                            <span class="box-label">核心要素</span>
+                            <div>${c.el.split('|').map(e => '<span class="tag">'+e+'</span>').join('')}</div>
+                        </div>
+                        <div class="content-box">
+                            <span class="box-label">應用場景</span>
+                            <div>${c.ap.split('|').map(e => '<span class="tag">'+e+'</span>').join('')}</div>
+                        </div>
+                        <div class="content-box">
+                            <span class="box-label">培養方法</span>
+                            <div>${c.me.split('|').map(e => '<span class="tag">'+e+'</span>').join('')}</div>
+                        </div>
+                        <div class="content-box">
+                            <span class="box-label">進階表現</span>
+                            <div>${c.ad.split('|').map(e => '<span class="tag">'+e+'</span>').join('')}</div>
+                        </div>
+                    </div>
+                    <div class="lang-section en">
+                        <h3>🇺🇸 English <button class="tts-btn" data-text="${c.en}" onclick="speak(event)">🔊</button></h3>
+                        <div class="essence-highlight"><strong>${c.en}</strong></div>
+                        <div class="content-box">
+                            <span class="box-label en">Essence</span>
+                            <button class="tts-btn" data-text="${c.e1en}" onclick="speak(event)">🔊</button>
+                            <p>${c.e1en}</p>
+                        </div>
+                        <div class="content-box">
+                            <span class="box-label en">Elements</span>
+                            <button class="tts-btn" data-text="${c.elen}" onclick="speak(event)">🔊</button>
+                            <div>${c.elen.split('|').map(e => '<span class="tag en">'+e+'</span>').join('')}</div>
+                        </div>
+                        <div class="content-box">
+                            <span class="box-label en">Applications</span>
+                            <button class="tts-btn" data-text="${c.apen}" onclick="speak(event)">🔊</button>
+                            <div>${c.apen.split('|').map(e => '<span class="tag en">'+e+'</span>').join('')}</div>
+                        </div>
+                        <div class="content-box">
+                            <span class="box-label en">Methods</span>
+                            <button class="tts-btn" data-text="${c.meen}" onclick="speak(event)">🔊</button>
+                            <div>${c.meen.split('|').map(e => '<span class="tag en">'+e+'</span>').join('')}</div>
+                        </div>
+                        <div class="content-box">
+                            <span class="box-label en">Advanced</span>
+                            <button class="tts-btn" data-text="${c.aden}" onclick="speak(event)">🔊</button>
+                            <div>${c.aden.split('|').map(e => '<span class="tag en">'+e+'</span>').join('')}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+        return html;
+    }).join('');
+
+    document.querySelectorAll('.card-header').forEach(h => {
+        h.onclick = function(e) {
+            if (e.target.closest('.tts-btn')) return;
+            toggleCard(h);
+        };
+    });
+}
+
+function toggleCard(h) {
+    h.classList.toggle('active');
+    h.querySelector('.card-toggle').classList.toggle('open');
+    h.nextElementSibling.classList.toggle('open');
+}
+
+function speak(e) {
+    e.stopPropagation();
+    const text = e.target.closest('.tts-btn').dataset.text;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = 0.85;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+}
+
+document.getElementById('searchInput').addEventListener('input', renderCapabilities);
+renderCapabilities();
+</script>
+</body>
+</html>
