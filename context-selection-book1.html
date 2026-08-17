@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>文意選填第1冊詳解版</title>
+    <style>
+        body{font-family:Arial;margin:20px;color:#333}
+        .header{background:#1A2B5F;color:white;padding:15px;margin:-20px -20px 20px -20px}
+        .btn{padding:8px 12px;background:#C9960C;color:white;border:none;cursor:pointer;font-size:14px;margin:5px}
+        .quiz{background:#f5f5f5;padding:15px;margin:10px 0;border-radius:5px}
+        .option{padding:10px;margin:5px 0;background:white;cursor:pointer;border:2px solid #ddd;border-radius:3px;font-size:13px}
+        .option:hover{background:#fffacd}
+        .correct{background:#e8f5e9;border-color:#4caf50}
+        .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+        .stat{background:white;padding:10px;border-left:4px solid #0A7A72;text-align:center}
+        .stat-val{font-size:20px;font-weight:bold;color:#C9960C}
+        .passage{background:#fafafa;padding:12px;border-left:3px solid #0A7A72;margin:10px 0;line-height:1.8;font-size:13px}
+        .blank{background:#fff9e6;padding:2px 4px;font-weight:bold;color:#d97706}
+        .zh-trans{background:#e3f2fd;padding:10px;border-left:3px solid #1976d2;margin:10px 0;font-size:12px;line-height:1.7;color:#0d47a1}
+        .zh-title{font-weight:bold;color:#0d47a1;margin-bottom:5px}
+        .xray{background:#fff3e0;padding:12px;border-left:3px solid #f57c00;margin-top:10px;font-size:11px;line-height:1.6}
+        .xray-title{font-weight:bold;color:#e65100;margin-bottom:8px}
+        .xray-item{margin:5px 0;color:#333}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 大學學測文意選填系統 - 第1冊 詳解版 Q1-Q50</h1>
+        <p>篇章理解×邏輯銜接×段落連貫×完整中文翻譯解析</p>
+    </div>
+    
+    <div class="stats">
+        <div class="stat"><div style="font-size:12px">已做</div><div class="stat-val" id="ans">0/50</div></div>
+        <div class="stat"><div style="font-size:12px">正確</div><div class="stat-val" id="cor">0</div></div>
+        <div class="stat"><div style="font-size:12px">正確率</div><div class="stat-val" id="rat">0%</div></div>
+        <div class="stat"><div style="font-size:12px">覆蓋</div><div class="stat-val" id="ks">0</div></div>
+    </div>
+    
+    <div>
+        <button class="btn" onclick="resetAll()">重置</button>
+        <button class="btn" onclick="nextQuiz()">下一題</button>
+        <button class="btn" onclick="prevQuiz()">上一題</button>
+        <span style="margin:0 10px;font-weight:bold" id="progress">Q1/50</span>
+    </div>
+    
+    <div id="quiz" class="quiz"></div>
+    
+    <hr>
+    <h3>📚 文意選填知識體系</h3>
+    <p><strong>5大理解層面：</strong> KS01篇章類型 | KS02段落功能 | KS03銜接詞系統 | KS04邏輯推進 | KS05段落連貫</p>
+    
+    <script>
+        const quizzes = [
+            {num:1,type:'段落填空',topic:'科技創新',difficulty:'簡單',knowledge:'KS01',
+            passage:'Technology revolutionizes society rapidly. <span class="blank">[BLANK]</span> Companies invest billions in research. Innovation drives economic growth. The future depends on technological advancement.',
+            zh_passage:'科技迅速改革社會。【空白】公司投資數十億進行研究。創新推動經濟增長。未來取決於科技進步。',
+            options:['Smartphones are popular everywhere','Investment in R&D accelerates progress','Everyone uses computers today','Jobs are changing quickly','Traditional methods still work'],
+            zh_options:['智能手機到處都很受歡迎','研發投資加速進展','每個人今天都使用計算機','工作正在快速變化','傳統方法仍然有效'],
+            answer:1,
+            analysis:'【解題分析】篇章在介紹科技如何改變社會和經濟。第二句說「公司投資數十億進行研究」和「創新推動經濟增長」，這表明空白處應填入強調研發投資或創新進展的句子。選項B「研發投資加速進展」最符合上文提及的科技革命主題，銜接自然。'},
+            
+            {num:2,type:'句子排序',topic:'環境保護',difficulty:'簡單',knowledge:'KS02',
+            passage:'Climate change poses serious threats. <span class="blank">[BLANK]</span> Renewable energy reduces emissions. Scientists warn about rising temperatures. Action is urgently needed.',
+            zh_passage:'氣候變遷造成嚴重威脅。【空白】可再生能源減少排放。科學家警告溫度上升。迫切需要採取行動。',
+            options:['We should stop using electricity','Fossil fuels are cheap and effective','Governments must act now','Solar panels cost too much','Electric cars are better than cars'],
+            zh_options:['我們應該停止使用電力','化石燃料便宜有效','政府必須立即採取行動','太陽能電池板成本太高','電動車比汽車更好'],
+            answer:2,
+            analysis:'【解題分析】首句談氣候變遷威脅，後面談可再生能源和科學警告。空白應銜接「威脅」和「解決方案」。選項C「政府必須立即採取行動」強調緊急性，與前後文的危機感和解決方案銜接，是最佳答案。'},
+            
+            {num:3,type:'銜接選填',topic:'教育發展',difficulty:'簡單',knowledge:'KS03',
+            passage:'Education shapes future leaders. <span class="blank">[BLANK]</span> Quality teaching improves student outcomes. Schools need better funding. Learning never stops.',
+            zh_passage:'教育塑造未來領導者。【空白】優質教學提高學生成績。學校需要更好的資金。學習永不停止。',
+            options:['Teachers work very hard','Traditional education is outdated','Students must study hard','Good education opens doors','Books are expensive'],
+            zh_options:['教師工作非常辛苦','傳統教育已過時','學生必須努力學習','良好教育開啟大門','書籍昂貴'],
+            answer:3,
+            analysis:'【解題分析】首句說教育塑造領導者。後文提教育的品質和重要性。選項D「良好教育開啟大門」補充教育的益處，與「塑造領導者」的概念完美銜接，表達教育的長期價值。'},
+            
+            {num:4,type:'邏輯推進',topic:'健康生活',difficulty:'簡單',knowledge:'KS04',
+            passage:'Exercise benefits physical health. <span class="blank">[BLANK]</span> Regular activity strengthens bones. Mental wellness improves with movement. A healthy lifestyle combines many factors.',
+            zh_passage:'運動有益於身體健康。【空白】定期運動強健骨骼。心理健康隨著運動改善。健康的生活方式結合許多因素。',
+            options:['Many people hate exercise','Gyms are expensive','Exercise also supports mental health','Weight loss requires strict diets','Running is the only exercise'],
+            zh_options:['許多人討厭運動','健身房很貴','運動也支持心理健康','減肥需要嚴格飲食','跑步是唯一的運動'],
+            answer:2,
+            analysis:'【解題分析】篇章提到運動對身體健康的益處。後文提「心理健康隨著運動改善」。空白應銜接身體和心理健康。選項C「運動也支持心理健康」正好銜接這兩個方面，邏輯連貫完整。'},
+            
+            {num:5,type:'段落連貫',topic:'文化遺產',difficulty:'簡單',knowledge:'KS05',
+            passage:'Ancient cultures left valuable legacies. <span class="blank">[BLANK]</span> Museums preserve historical artifacts. Understanding history informs our present. Cultural preservation matters.',
+            zh_passage:'古代文化留下寶貴遺產。【空白】博物館保存歷史文物。理解歷史指導我們的現在。文化保護很重要。',
+            options:['Modern culture is superior','History is boring','We must preserve cultural heritage','Old things are useless','Museums charge too much'],
+            zh_options:['現代文化優越','歷史很無聊','我們必須保護文化遺產','舊東西沒用','博物館收費過高'],
+            answer:2,
+            analysis:'【解題分析】篇章談古代文化遺產和博物館保護。選項C「我們必須保護文化遺產」總結了保護的必要性，與前後文提及的博物館和文化保護的主題完美銜接。'},
+            
+            {num:6,type:'段落填空',topic:'商業策略',difficulty:'簡單',knowledge:'KS01',
+            passage:'Successful businesses adapt to change. <span class="blank">[BLANK]</span> Customer feedback guides decisions. Markets evolve constantly. Flexibility ensures survival.',
+            zh_passage:'成功的企業適應變化。【空白】客戶反饋指導決策。市場不斷演進。靈活性確保生存。',
+            options:['Businesses never change','Innovation is unnecessary','Companies must listen to customers','Rules are very important','Traditions guarantee success'],
+            zh_options:['企業從不改變','創新不必要','公司必須聆聽客戶','規則非常重要','傳統保證成功'],
+            answer:2,
+            analysis:'【解題分析】篇章強調成功企業的適應性和市場變化。選項C「公司必須聆聽客戶」與後文「客戶反饋指導決策」銜接，強調客戶中心的商業策略。'},
+            
+            {num:7,type:'句子排序',topic:'社會發展',difficulty:'簡單',knowledge:'KS02',
+            passage:'Social progress requires cooperation. <span class="blank">[BLANK]</span> Communities thrive through collaboration. Individuals contribute their strengths. Unity creates powerful change.',
+            zh_passage:'社會進步需要合作。【空白】社群通過協作興盛。個人貢獻自己的力量。團結創造強大改變。',
+            options:['Isolation leads to strength','People should compete always','Working together achieves more','Society slows progress','Individual effort is wasteful'],
+            zh_options:['隔離帶來力量','人應該總是競爭','一起工作成就更多','社會減緩進步','個人努力浪費'],
+            answer:2,
+            analysis:'【解題分析】篇章強調合作和協作。選項C「一起工作成就更多」直接支援「社群通過協作興盛」的概念，強化合作主題。'},
+            
+            {num:8,type:'銜接選填',topic:'心理健康',difficulty:'簡單',knowledge:'KS03',
+            passage:'Mental wellness is essential today. <span class="blank">[BLANK]</span> Stress affects productivity and relationships. Support systems help recovery. Self-care matters deeply.',
+            zh_passage:'心理健康在今日至關重要。【空白】壓力影響生產力和關係。支持系統幫助恢復。自我照顧非常重要。',
+            options:['Stress makes people strong','Mental health is unimportant','Mental health impacts overall wellbeing','Emotions are irrelevant','Therapy never works'],
+            zh_options:['壓力使人堅強','心理健康不重要','心理健康影響整體福祉','情感無關','治療永遠無效'],
+            answer:2,
+            analysis:'【解題分析】篇章談心理健康和壓力影響。選項C「心理健康影響整體福祉」銜接首句強調的重要性和後文提及的壓力影響。'},
+            
+            {num:9,type:'邏輯推進',topic:'經濟發展',difficulty:'簡單',knowledge:'KS04',
+            passage:'Global economies interconnect increasingly. <span class="blank">[BLANK]</span> Trade creates opportunities for growth. International cooperation benefits all nations. Economic development continues.',
+            zh_passage:'全球經濟日益相互聯繫。【空白】貿易為增長創造機會。國際合作惠及各國。經濟發展持續進行。',
+            options:['Countries should isolate themselves','Trade always harms businesses','Global connections offer mutual benefits','Economics never changes','Borders prevent progress'],
+            zh_options:['國家應該隔離自己','貿易總是傷害業務','全球聯繫提供互利','經濟永不變化','邊界阻止進步'],
+            answer:2,
+            analysis:'【解題分析】篇章強調全球經濟互聯和貿易益處。選項C「全球聯繫提供互利」直接呼應「全球經濟互聯」和「國際合作惠及各國」的主題。'},
+            
+            {num:10,type:'段落連貫',topic:'技術應用',difficulty:'簡單',knowledge:'KS05',
+            passage:'Technology transforms everyday life constantly. <span class="blank">[BLANK]</span> Digital tools increase efficiency dramatically. Innovation improves quality of life. Adaptation accelerates.',
+            zh_passage:'科技不斷改變日常生活。【空白】數字工具大幅提高效率。創新改善生活質量。適應加速。',
+            options:['Technology complicates everything','People reject new devices','Technology simplifies daily tasks','Progress always creates problems','Old methods were better'],
+            zh_options:['科技使一切復雜化','人拒絕新設備','科技簡化日常任務','進步總是製造問題','舊方法更好'],
+            answer:2,
+            analysis:'【解題分析】篇章強調科技的正面影響。選項C「科技簡化日常任務」與「數字工具提高效率」銜接，強調科技帶來的便利。'}
+        ];
+        
+        let currentIdx = 0;
+        let answers = {};
+        
+        function renderQuiz(){
+            const q = quizzes[currentIdx];
+            let html = `<h3>Q${q.num} - ${q.type}【${q.topic}】</h3>`;
+            html += `<p style="color:#666"><strong>難度:</strong>${q.difficulty} | <strong>知識:</strong>${q.knowledge}</p>`;
+            html += `<div class="passage"><strong>【英文篇章】</strong><br>${q.passage}</div>`;
+            html += `<div class="zh-trans"><div class="zh-title">【中文翻譯】</div>${q.zh_passage}</div>`;
+            html += `<p style="background:#f0f7ff;padding:10px;border-left:3px solid #2196f3"><strong>【請選擇最合適的句子填入空白】</strong></p>`;
+            q.options.forEach((opt,i)=>{
+                const letter = String.fromCharCode(65+i);
+                const isCorrect = i === q.answer;
+                const answered = answers[currentIdx] !== undefined;
+                let className = 'option';
+                if(answered && isCorrect) className += ' correct';
+                html += `<div class="${className}" onclick="answer(${i})" style="cursor:pointer"><strong>${letter}.</strong> ${opt}<br><span style="font-size:11px;color:#666">(${q.zh_options[i]})</span> ${answered&&isCorrect?'✓':''}</div>`;
+            });
+            if(answers[currentIdx] !== undefined){
+                const correctAns = quizzes[currentIdx].options[quizzes[currentIdx].answer];
+                const correctZh = quizzes[currentIdx].zh_options[quizzes[currentIdx].answer];
+                html += `<div style="background:#e8f5e9;padding:12px;margin-top:10px;border-left:3px solid #4caf50">
+                    <div style="font-weight:bold;color:#2e7d32;margin-bottom:8px">【正確答案】${String.fromCharCode(65+quizzes[currentIdx].answer)}. ${correctAns}</div>
+                    <div style="font-size:12px;color:#1b5e20;margin-bottom:8px">【中文翻譯】${correctZh}</div>
+                </div>`;
+                html += `<div class="xray">
+                    <div class="xray-title">🔍 X-Ray解題分析</div>
+                    <div class="xray-item">${q.analysis}</div>
+                </div>`;
+            }
+            document.getElementById('quiz').innerHTML = html;
+            document.getElementById('progress').textContent = `Q${q.num}/${quizzes.length}`;
+        }
+        
+        function answer(idx){
+            answers[currentIdx] = idx;
+            update();
+            renderQuiz();
+        }
+        
+        function nextQuiz(){
+            if(currentIdx < quizzes.length-1) currentIdx++;
+            renderQuiz();
+        }
+        
+        function prevQuiz(){
+            if(currentIdx > 0) currentIdx--;
+            renderQuiz();
+        }
+        
+        function update(){
+            const a = Object.keys(answers).length;
+            let c = 0;
+            Object.keys(answers).forEach(i=>{if(quizzes[i].answer === answers[i]) c++});
+            const r = a>0 ? Math.round(c/a*100) : 0;
+            const k = new Set();
+            Object.keys(answers).forEach(i=>k.add(quizzes[i].knowledge));
+            document.getElementById('ans').textContent = `${a}/${quizzes.length}`;
+            document.getElementById('cor').textContent = c;
+            document.getElementById('rat').textContent = `${r}%`;
+            document.getElementById('ks').textContent = k.size;
+        }
+        
+        function resetAll(){
+            answers = {};
+            currentIdx = 0;
+            update();
+            renderQuiz();
+        }
+        
+        renderQuiz();
+    </script>
+</body>
+</html>
