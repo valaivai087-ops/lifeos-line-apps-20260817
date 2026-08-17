@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>economical 知識資料 | 最強內化系統</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --navy: #1A2B5F; --gold: #C9960C; --teal: #0A7A72; --red: #C62828; --green: #2E7D32; }
+        body { font-family: 'Microsoft JhengHei', 微軟正黑體, sans-serif; background: linear-gradient(135deg, #f5f7fa, #e8eef5); color: #333; line-height: 1.8; }
+        header { background: linear-gradient(135deg, var(--navy), var(--teal)); color: white; padding: 30px 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        header h1 { font-size: 32px; margin-bottom: 8px; font-weight: bold; }
+        header p { font-size: 16px; opacity: 0.95; }
+        .container { max-width: 950px; margin: 0 auto; padding: 20px; }
+        
+        /* 主要區塊 */
+        .main-section { background: white; border-radius: 10px; margin-bottom: 25px; padding: 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden; }
+        .section-header { background: linear-gradient(to right, var(--navy), var(--teal)); color: white; padding: 18px 20px; margin: -25px -25px 20px -25px; font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        
+        /* TTS按鈕 */
+        .tts-btn { background: var(--gold); color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; transition: all 0.2s; display: inline-block; margin-left: 8px; }
+        .tts-btn:hover { background: #B8860B; transform: scale(1.05); }
+        .english-word { background: #E3F2FD; padding: 4px 8px; border-radius: 4px; font-weight: bold; color: var(--teal); display: inline-block; margin: 0 4px; }
+        
+        /* 卡片樣式 */
+        .card { background: linear-gradient(135deg, #FFF9E6 0%, #E0F2F1 100%); border-left: 5px solid var(--gold); padding: 16px 18px; margin-bottom: 15px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .card-title { font-size: 16px; font-weight: bold; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .card-content { font-size: 14px; line-height: 1.8; color: #555; }
+        
+        /* 對比框 */
+        .comparison-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .comp-box { padding: 16px; border-radius: 6px; font-size: 14px; line-height: 1.7; }
+        .comp-correct { background: #E8F5E9; border-left: 4px solid var(--green); }
+        .comp-wrong { background: #FFEBEE; border-left: 4px solid var(--red); }
+        .comp-box strong { display: block; margin-bottom: 8px; font-size: 15px; }
+        
+        /* 記憶卡 */
+        .memory-card { background: linear-gradient(135deg, var(--gold), #D4A520); color: white; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(201, 150, 12, 0.3); }
+        .memory-card .big-text { font-size: 28px; font-weight: bold; margin-bottom: 8px; }
+        .memory-card .small-text { font-size: 13px; opacity: 0.95; }
+        
+        /* 技巧框 */
+        .trick-box { background: #FFF3E0; border-left: 4px solid var(--gold); padding: 15px; margin-bottom: 12px; border-radius: 4px; }
+        .trick-box strong { color: var(--navy); display: block; margin-bottom: 6px; }
+        
+        /* 列表 */
+        .list-item { background: #f9f9f9; padding: 12px 15px; margin-bottom: 10px; border-radius: 4px; border-left: 3px solid var(--teal); }
+        .list-item strong { color: var(--navy); }
+        
+        /* 強調 */
+        .highlight { background: #FFFF99; padding: 2px 6px; font-weight: bold; border-radius: 2px; }
+        .red-highlight { background: #FFEBEE; color: var(--red); padding: 2px 6px; font-weight: bold; border-radius: 2px; }
+        .green-highlight { background: #E8F5E9; color: var(--green); padding: 2px 6px; font-weight: bold; border-radius: 2px; }
+        
+        /* 表格 */
+        .table-box { overflow-x: auto; margin: 15px 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: var(--navy); color: white; padding: 12px 10px; text-align: left; font-weight: bold; }
+        td { padding: 12px 10px; border-bottom: 1px solid #eee; }
+        tr:hover { background: #f9f9f9; }
+        
+        /* 進度條 */
+        .progress-item { margin-bottom: 12px; }
+        .progress-label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 13px; }
+        .progress-label strong { color: var(--navy); }
+        .progress-bar { height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(to right, var(--green), #66BB6A); transition: width 0.3s; }
+        
+        /* 模式卡片 */
+        .pattern-card { background: white; border: 2px solid var(--gold); border-radius: 8px; padding: 15px; margin-bottom: 12px; }
+        .pattern-num { background: var(--gold); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; float: left; margin-right: 12px; }
+        .pattern-content { overflow: auto; }
+        
+        footer { background: var(--navy); color: white; padding: 20px; text-align: center; margin-top: 30px; font-size: 12px; }
+        
+        @media (max-width: 768px) {
+            .comparison-row { grid-template-columns: 1fr; }
+            header h1 { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎯 economical 知識資料</h1>
+        <p>最強內化系統 | 3分鐘速記 | 考前冠軍備考</p>
+    </header>
+
+    <div class="container">
+        <!-- ═════════ 第1部分: 核心定義 ═════════ -->
+        <div class="main-section">
+            <div class="section-header">📌 核心定義 | 一句話掌握</div>
+            
+            <div class="memory-card">
+                <div class="big-text">economical</div>
+                <div class="small-text">節省資源的</div>
+                <div style="margin-top: 10px; font-size: 11px;">( 時間、金錢、能源 )</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    💡 為什麼這樣記？
+                </div>
+                <div class="card-content">
+                    <strong>economical</strong> 字根：<span class="english-word">economy</span>
+                    <button class="tts-btn" onclick="speak('economy')">🔊</button>
+                    (經濟) + <span class="english-word">-ical</span> (形容詞)<br><br>
+                    
+                    → 「經濟的」= 不浪費的 = 節省的<br>
+                    → 強調「用更少資源達到目的」<br>
+                    → 重點詞彙：時間、金錢、能源、資源
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🎯 重點搭配詞彙</div>
+                <div class="card-content">
+                    📍 <span class="english-word">car</span> <button class="tts-btn" onclick="speak('car')">🔊</button>
+                    → economical car (省油車)<br>
+                    📍 <span class="english-word">method</span> <button class="tts-btn" onclick="speak('method')">🔊</button>
+                    → economical method (節省方法)<br>
+                    📍 <span class="english-word">choice</span> <button class="tts-btn" onclick="speak('choice')">🔊</button>
+                    → economical choice (省錢選擇)<br>
+                    📍 <span class="english-word">use</span> <button class="tts-btn" onclick="speak('use')">🔊</button>
+                    → economical use (節儉使用)
+                </div>
+            </div>
+        </div>
+
+        <!-- ═════════ 第2部分: 易混詞 #1 ═════════ -->
+        <div class="main-section">
+            <div class="section-header">⚡ 最易混淆 #1 | economical vs economic</div>
+            
+            <div class="trick-box">
+                <strong>🎓 混淆原因：都是「economy」的衍生詞，但意思完全不同！</strong>
+            </div>
+
+            <div class="comparison-row">
+                <div class="comp-box comp-correct">
+                    <strong>✓ economical</strong><br>
+                    <button class="tts-btn" onclick="speak('economical')">🔊 發音</button><br><br>
+                    意思：節省資源的<br>
+                    重點：<span class="highlight">個人/具體行為</span><br><br>
+                    例句：<br>
+                    • economical car 省油車<br>
+                    • economical method 節省方法<br>
+                    • be economical with money 節省金錢
+                </div>
+                <div class="comp-box comp-wrong">
+                    <strong>✗ economic</strong><br>
+                    <button class="tts-btn" onclick="speak('economic')">🔊 發音</button><br><br>
+                    意思：經濟系統的<br>
+                    重點：<span class="red-highlight">系統/政策層面</span><br><br>
+                    例句：<br>
+                    • economic policy 經濟政策<br>
+                    • economic system 經濟系統<br>
+                    • economic growth 經濟增長
+                </div>
+            </div>
+
+            <div class="memory-card" style="background: linear-gradient(135deg, #FFEBEE, #E8F5E9);">
+                <div style="color: var(--red); font-size: 18px; font-weight: bold;">❌ 錯誤範例</div>
+                <div style="color: #333; margin-top: 8px;">
+                    <strong>economic car</strong> ← 這是<span class="red-highlight">錯的！</span><br>
+                    意思：「經濟系統的車」(無意義)<br><br>
+                    應該說：<span class="green-highlight">economical car</span> (省油車)
+                </div>
+            </div>
+
+            <div class="trick-box">
+                <strong>🎯 速記秘訣：「cal」記住「個人」(choice/method) | 「c」記住「系統」(policy)</strong>
+            </div>
+        </div>
+
+        <!-- ═════════ 第3部分: 易混詞 #2 ═════════ -->
+        <div class="main-section">
+            <div class="section-header">⚡ 最易混淆 #2 | economical vs efficient</div>
+            
+            <div class="trick-box">
+                <strong>🎓 混淆原因：都是正面詞，但強調不同方面！</strong>
+            </div>
+
+            <div class="comparison-row">
+                <div class="comp-box comp-correct">
+                    <strong>✓ economical</strong><br>
+                    <button class="tts-btn" onclick="speak('economical')">🔊 發音</button><br><br>
+                    強調：<span class="highlight">成本層面</span><br>
+                    = 省錢/節資源<br><br>
+                    看到「成本」字：<br>
+                    → reduce costs<br>
+                    → budget-conscious<br>
+                    → save money<br>
+                    就用 economical
+                </div>
+                <div class="comp-box comp-wrong">
+                    <strong>✗ efficient</strong><br>
+                    <button class="tts-btn" onclick="speak('efficient')">🔊 發音</button><br><br>
+                    強調：<span class="red-highlight">效率層面</span><br>
+                    = 快/流程順暢<br><br>
+                    看到「效率」字：<br>
+                    → faster completion<br>
+                    → high performance<br>
+                    → less time<br>
+                    就用 efficient
+                </div>
+            </div>
+
+            <div class="table-box">
+                <table>
+                    <tr>
+                        <th>對比點</th>
+                        <th>economical 節省的</th>
+                        <th>efficient 高效的</th>
+                    </tr>
+                    <tr>
+                        <td><strong>強調</strong></td>
+                        <td>成本少</td>
+                        <td>效率高</td>
+                    </tr>
+                    <tr>
+                        <td><strong>時間投資</strong></td>
+                        <td>用少時間</td>
+                        <td>花少時間</td>
+                    </tr>
+                    <tr>
+                        <td><strong>金錢投資</strong></td>
+                        <td>花少錢 ✓</td>
+                        <td>不強調成本</td>
+                    </tr>
+                    <tr>
+                        <td><strong>資源投資</strong></td>
+                        <td>用少資源 ✓</td>
+                        <td>不強調資源</td>
+                    </tr>
+                    <tr>
+                        <td><strong>關鍵詞</strong></td>
+                        <td>reduce costs<br>save money</td>
+                        <td>faster<br>completion time</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="memory-card" style="background: linear-gradient(135deg, #E3F2FD, #E0F2F1);">
+                <div style="color: var(--teal); font-size: 18px; font-weight: bold;">💡 30秒判斷法</div>
+                <div style="color: #333; margin-top: 10px; font-size: 14px;">
+                    看文意：<br><br>
+                    有「<span class="highlight">省</span>」字 → <span class="green-highlight">economical</span><br>
+                    有「<span class="highlight">快</span>」字 → <span class="green-highlight">efficient</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═════════ 第4部分: 5大考試模式 ═════════ -->
+        <div class="main-section">
+            <div class="section-header">🎯 5大考試模式 | 必考無誤</div>
+            
+            <div class="pattern-card">
+                <div class="pattern-num">1</div>
+                <div class="pattern-content">
+                    <strong style="font-size: 15px;">搭配陷阱 ★★★ 【最常考】</strong><br>
+                    題型：選擇 economical car 還是 economic car<br>
+                    答案：一定選 economical car<br>
+                    出現次數：每次考試 1-2 題
+                </div>
+            </div>
+
+            <div class="pattern-card">
+                <div class="pattern-num">2</div>
+                <div class="pattern-content">
+                    <strong style="font-size: 15px;">文意克漏字 ★★★ 【最常考】</strong><br>
+                    題型：看文意「成本」字判斷選 economical<br>
+                    範例：「reduce costs」→ economical methods<br>
+                    出現次數：每次考試 1-2 題
+                </div>
+            </div>
+
+            <div class="pattern-card">
+                <div class="pattern-num">3</div>
+                <div class="pattern-content">
+                    <strong style="font-size: 15px;">近義詞區分 ★★ 【常考】</strong><br>
+                    題型：economical vs efficient 在同一題<br>
+                    判斷：看「省」還「快」<br>
+                    出現次數：每次考試 1 題
+                </div>
+            </div>
+
+            <div class="pattern-card">
+                <div class="pattern-num">4</div>
+                <div class="pattern-content">
+                    <strong style="font-size: 15px;">詞族混淆 ★★ 【常考】</strong><br>
+                    題型：economy / economic / economical 區分<br>
+                    重點：choice → economical；policy → economic<br>
+                    出現次數：每次考試 0-1 題
+                </div>
+            </div>
+
+            <div class="pattern-card">
+                <div class="pattern-num">5</div>
+                <div class="pattern-content">
+                    <strong style="font-size: 15px;">干擾設置 ★ 【基礎】</strong><br>
+                    題型：economic / efficient / effective 都可能出現<br>
+                    應對：依照規則排除<br>
+                    出現次數：每次考試 1-2 題
+                </div>
+            </div>
+        </div>
+
+        <!-- ═════════ 第5部分: 30秒判斷法 ═════════ -->
+        <div class="main-section">
+            <div class="section-header">⚡ 30秒考場決策法 | 快速得分</div>
+            
+            <div style="background: linear-gradient(to bottom, #fff3e0, #f9f9f9); padding: 20px; border-radius: 8px; border: 2px solid var(--gold);">
+                <div style="font-size: 18px; font-weight: bold; color: var(--navy); margin-bottom: 15px; text-align: center;">
+                    看到題目 → 5秒內決策
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-label">
+                        <span><strong>第1秒</strong>：掃選項中有沒有 <span class="english-word">economic</span></span>
+                    </div>
+                    <div style="background: #FFEBEE; padding: 8px 12px; border-radius: 4px; font-size: 13px; color: var(--red); font-weight: bold;">
+                        🚫 有 economic → 通常是陷阱!
+                    </div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-label">
+                        <span><strong>第2-3秒</strong>：看文意「<span class="highlight">省</span>」還「<span class="highlight">快</span>」</span>
+                    </div>
+                    <div style="background: #E3F2FD; padding: 8px 12px; border-radius: 4px; font-size: 13px; color: var(--teal); font-weight: bold;">
+                        省 → economical | 快 → efficient
+                    </div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-label">
+                        <span><strong>第4秒</strong>：搭配是 car/method/choice 嗎？</span>
+                    </div>
+                    <div style="background: #E8F5E9; padding: 8px 12px; border-radius: 4px; font-size: 13px; color: var(--green); font-weight: bold;">
+                        ✓ 是 → 直接選 economical，100% 正確
+                    </div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-label">
+                        <span><strong>第5秒</strong>：提交答案</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═════════ 第6部分: 必死背搭配 ═════════ -->
+        <div class="main-section">
+            <div class="section-header">💎 必死背搭配 | 不能錯</div>
+            
+            <div class="card" style="background: linear-gradient(135deg, #E8F5E9, #FFF9E6);">
+                <div class="card-title">✓ 正確搭配</div>
+                <div class="card-content">
+                    <div class="list-item">
+                        <strong><span class="english-word">economical car</span></strong>
+                        <button class="tts-btn" onclick="speak('economical car')">🔊</button>
+                        = 省油車 【超常考】
+                    </div>
+                    <div class="list-item">
+                        <strong><span class="english-word">economical method</span></strong>
+                        <button class="tts-btn" onclick="speak('economical method')">🔊</button>
+                        = 節省方法
+                    </div>
+                    <div class="list-item">
+                        <strong><span class="english-word">economical choice</span></strong>
+                        <button class="tts-btn" onclick="speak('economical choice')">🔊</button>
+                        = 省錢選擇
+                    </div>
+                    <div class="list-item">
+                        <strong>be <span class="english-word">economical</span> <span class="english-word">with</span> money</strong>
+                        <button class="tts-btn" onclick="speak('economical with money')">🔊</button>
+                        = 節省金錢
+                    </div>
+                    <div class="list-item">
+                        <strong><span class="english-word">economical</span> <span class="english-word">use</span> of resources</strong>
+                        <button class="tts-btn" onclick="speak('economical use of resources')">🔊</button>
+                        = 節省資源的使用
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="background: linear-gradient(135deg, #FFEBEE, #FFF3E0);">
+                <div class="card-title">✗ 錯誤搭配</div>
+                <div class="card-content">
+                    <div class="list-item" style="background: #FFEBEE; border-left-color: var(--red);">
+                        <strong><span class="english-word">economic car</span></strong>
+                        <button class="tts-btn" onclick="speak('economic car')">🔊</button>
+                        = <span class="red-highlight">絕對錯誤!</span>
+                    </div>
+                    <div class="list-item" style="background: #FFEBEE; border-left-color: var(--red);">
+                        <strong>grow <span class="english-word">economical</span></strong>
+                        <button class="tts-btn" onclick="speak('grow economical')">🔊</button>
+                        = 無此搭配
+                    </div>
+                    <div class="list-item" style="background: #FFEBEE; border-left-color: var(--red);">
+                        <strong><span class="english-word">economic</span> <span class="english-word">choice</span></strong>
+                        <button class="tts-btn" onclick="speak('economic choice')">🔊</button>
+                        = 不是「省錢選擇」
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═════════ 第7部分: 60秒自測 ═════════ -->
+        <div class="main-section">
+            <div class="section-header">✅ 60秒自測 | 檢查掌握度</div>
+            
+            <div class="memory-card" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                <div style="font-size: 16px; font-weight: bold; margin-bottom: 15px;">
+                    問自己3個問題，全答對就準備好了！
+                </div>
+            </div>
+
+            <div style="background: white; border-radius: 8px; padding: 20px; border: 2px solid var(--teal); margin-bottom: 15px;">
+                <div style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 15px;">
+                    <div style="background: var(--teal); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">Q1</div>
+                    <div>
+                        <strong style="font-size: 15px;">economical car 是什麼？</strong><br><br>
+                        ✓ 秒答「省油車」→ <span class="green-highlight">搭配掌握</span><br>
+                        ✗ 不知道 → 需要背搭配
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: white; border-radius: 8px; padding: 20px; border: 2px solid var(--teal); margin-bottom: 15px;">
+                <div style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 15px;">
+                    <div style="background: var(--teal); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">Q2</div>
+                    <div>
+                        <strong style="font-size: 15px;">economic car 能用嗎？</strong><br><br>
+                        ✓ 答「不能，economic = 經濟系統的」→ <span class="green-highlight">詞義掌握</span><br>
+                        ✗ 不清楚 → 需要回顧易混詞
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: white; border-radius: 8px; padding: 20px; border: 2px solid var(--teal);">
+                <div style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 15px;">
+                    <div style="background: var(--teal); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">Q3</div>
+                    <div>
+                        <strong style="font-size: 15px;">economical 和 efficient 差在哪？</strong><br><br>
+                        ✓ 答「成本 vs 效率」→ <span class="green-highlight">區分掌握</span><br>
+                        ✗ 不清楚 → 需要看對比部分
+                    </div>
+                </div>
+            </div>
+
+            <div class="memory-card" style="background: linear-gradient(135deg, #FFD54F, #FFC107); margin-top: 20px;">
+                <div style="color: #333; font-size: 16px; font-weight: bold;">
+                    全答對 ✓ 準備好了！<br>
+                    <span style="font-size: 13px; opacity: 0.9;">現在打開模擬考試，做 15 題驗證</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═════════ 第8部分: 記憶秘訣 ═════════ -->
+        <div class="main-section">
+            <div class="section-header">🧠 記憶秘訣 | 快速內化</div>
+            
+            <div class="trick-box">
+                <strong>秘訣1：「-cal」是個人行為提示</strong><br>
+                economical (有-cal) = 個人節省行為 (car, choice, method)<br>
+                economic (沒-cal) = 系統層級 (policy, system)
+            </div>
+
+            <div class="trick-box">
+                <strong>秘訣2：「成本向」和「效率向」</strong><br>
+                economical = 成本向 (省錢)<br>
+                efficient = 效率向 (快速)<br>
+                看文意有「reduce costs」選 economical；有「faster」選 efficient
+            </div>
+
+            <div class="trick-box">
+                <strong>秘訣3：「陷阱詞」識別法</strong><br>
+                如果選項有 economic 且文意是「節省」→ 那就是陷阱！<br>
+                聰明人知道用 economical 而不是 economic
+            </div>
+
+            <div class="trick-box">
+                <strong>秘訣4：聯想記憶法</strong><br>
+                <span class="english-word">economical car</span> <button class="tts-btn" onclick="speak('economical car')">🔊</button>
+                → 豐田 Prius (最省油的車)<br>
+                <span class="english-word">economic policy</span> <button class="tts-btn" onclick="speak('economic policy')">🔊</button>
+                → 政府經濟改革政策
+            </div>
+        </div>
+
+        <!-- ═════════ 第9部分: 常見錯誤 ═════════ -->
+        <div class="main-section">
+            <div class="section-header">🚫 常見錯誤 | 必須避免</div>
+            
+            <div style="background: #FFEBEE; border-left: 4px solid var(--red); padding: 15px; margin-bottom: 12px; border-radius: 4px;">
+                <strong style="color: var(--red); font-size: 15px;">❌ 錯誤1：economic car</strong><br>
+                原因：搞混 economical 和 economic<br>
+                後果：這一題永遠錯！<br>
+                補救：死背「economical car」搭配
+            </div>
+
+            <div style="background: #FFEBEE; border-left: 4px solid var(--red); padding: 15px; margin-bottom: 12px; border-radius: 4px;">
+                <strong style="color: var(--red); font-size: 15px;">❌ 錯誤2：efficient 當 economical 用</strong><br>
+                原因：不知道「成本向」和「效率向」的區別<br>
+                後果：文意題經常錯<br>
+                補救：看「成本」字用 economical；看「效率」字用 efficient
+            </div>
+
+            <div style="background: #FFEBEE; border-left: 4px solid var(--red); padding: 15px; margin-bottom: 12px; border-radius: 4px;">
+                <strong style="color: var(--red); font-size: 15px;">❌ 錯誤3：不知道搭配</strong><br>
+                原因：只背了詞義，沒背搭配<br>
+                後果：搭配題全錯<br>
+                補救：必死背「economical car/method/choice」
+            </div>
+
+            <div style="background: #FFEBEE; border-left: 4px solid var(--red); padding: 15px; border-radius: 4px;">
+                <strong style="color: var(--red); font-size: 15px;">❌ 錯誤4：考場還在想意思</strong><br>
+                原因：平時沒充分內化<br>
+                後果：浪費時間，可能做不完<br>
+                補救：今天就把這份資料讀熟！
+            </div>
+        </div>
+
+        <!-- ═════════ 第10部分: 最後提醒 ═════════ -->
+        <div class="main-section">
+            <div class="section-header">💯 終極提醒 | 3件事搞定考試</div>
+            
+            <div class="memory-card" style="background: linear-gradient(135deg, #1A2B5F, #0A7A72);">
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+                    如果只能記住 3 件事：
+                </div>
+                <div style="font-size: 13px; line-height: 2;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 12px; margin-bottom: 10px; border-radius: 4px;">
+                        1️⃣ <strong>economical</strong> = 節省資源的
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 12px; margin-bottom: 10px; border-radius: 4px;">
+                        2️⃣ <strong>economical car</strong> (對) ≠ <strong>economic car</strong> (錯)
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 4px;">
+                        3️⃣ 文意「<strong>省</strong>」→ economical｜「<strong>快</strong>」→ efficient
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">✅ 下一步：打開模擬考試</div>
+                <div class="card-content">
+                    現在你已經掌握了核心知識！<br><br>
+                    <strong>立即打開「economical_15questions_test.html」</strong><br>
+                    逐題做答 → 點擊「顯示答案」 → 看詳細解析<br><br>
+                    完成 15 題後，掌握度就能達到 92%！
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p><strong>💡 economical 知識資料 | 最強內化系統</strong></p>
+        <p>3分鐘速記版 | 完整TTS發音 | 考前冠軍備考</p>
+        <p>點擊 🔊 按鈕，聽英文發音並內化記憶</p>
+    </footer>
+
+    <script>
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+    </script>
+</body>
+</html>
