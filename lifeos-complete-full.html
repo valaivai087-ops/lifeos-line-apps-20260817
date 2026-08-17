@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life OS 生命作業系統 完整版 | Complete Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+            background: white;
+            color: #1A2B5F;
+            line-height: 1.8;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1A2B5F 0%, #0D1B3E 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin: 5px 0;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f8 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #C9960C;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .stat-card h3 {
+            color: #C9960C;
+            font-size: 1.8em;
+            margin-bottom: 8px;
+        }
+        
+        .stat-card p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #E8EEF5;
+            border-radius: 6px;
+            font-size: 1em;
+            font-family: 'Microsoft JhengHei', sans-serif;
+            transition: border-color 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #0A7A72;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            background: #1A2B5F;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-family: 'Microsoft JhengHei', sans-serif;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #0D1B3E;
+        }
+        
+        .btn-secondary {
+            background: #0A7A72;
+        }
+        
+        .btn-secondary:hover {
+            background: #006B7D;
+        }
+        
+        .modules-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+        
+        .module-card {
+            background: white;
+            border: 2px solid #E8EEF5;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .module-card:hover {
+            border-color: #0A7A72;
+            box-shadow: 0 8px 24px rgba(10, 122, 114, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .module-card.open {
+            border-color: #C9960C;
+        }
+        
+        .module-header {
+            background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f8 100%);
+            padding: 20px;
+            border-bottom: 2px solid #E8EEF5;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .module-header:hover {
+            background: linear-gradient(135deg, #eef1f7 0%, #e8ecf5 100%);
+        }
+        
+        .module-meta {
+            flex: 1;
+        }
+        
+        .module-num {
+            color: #C9960C;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        
+        .module-title-cn {
+            color: #1A2B5F;
+            font-weight: bold;
+            font-size: 1.15em;
+            margin-bottom: 5px;
+        }
+        
+        .module-title-en {
+            color: #0A7A72;
+            font-weight: bold;
+            font-size: 0.95em;
+            margin-bottom: 10px;
+        }
+        
+        .module-desc {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        
+        .module-icon {
+            font-size: 1.8em;
+            transition: transform 0.3s;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .module-card.open .module-icon {
+            transform: rotate(180deg);
+        }
+        
+        .module-content {
+            display: none;
+            padding: 25px;
+            background: white;
+            max-height: 1000px;
+            overflow-y: auto;
+            border-top: 2px solid #f0f3f8;
+        }
+        
+        .module-card.open .module-content {
+            display: block;
+        }
+        
+        .bilingual-block {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #fafbfc;
+            border-radius: 8px;
+            border-left: 4px solid #0A7A72;
+        }
+        
+        .cn-content {
+            font-size: 1.05em;
+            line-height: 1.9;
+            color: #1A2B5F;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .en-content {
+            font-size: 1.05em;
+            line-height: 1.9;
+            color: #0D1B3E;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .content-section {
+            margin: 20px 0;
+        }
+        
+        .section-title {
+            color: #0A7A72;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #E8EEF5;
+            padding-bottom: 8px;
+        }
+        
+        .formula-box {
+            background: #f9fbfc;
+            border: 2px solid #E8EEF5;
+            border-left: 4px solid #C9960C;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.8;
+            color: #1A2B5F;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .tts-btn {
+            background: #0A7A72;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 12px;
+            transition: background 0.3s;
+            font-family: 'Microsoft JhengHei', sans-serif;
+        }
+        
+        .tts-btn:hover {
+            background: #006B7D;
+        }
+        
+        .tts-btn:active {
+            background: #005560;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f8 100%);
+            padding: 30px 20px;
+            text-align: center;
+            color: #666;
+            margin-top: 50px;
+            border-top: 2px solid #E8EEF5;
+        }
+        
+        .footer h3 {
+            color: #1A2B5F;
+            margin-bottom: 15px;
+        }
+        
+        .footer p {
+            margin: 8px 0;
+            font-size: 0.95em;
+        }
+        
+        @media (max-width: 1024px) {
+            .bilingual-block {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .modules-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .module-header {
+                flex-direction: column;
+            }
+            
+            .module-content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🌟 Life OS 生命作業系統 🌟</h1>
+        <p><strong>Complete Bilingual Edition | 完整雙語版</strong></p>
+        <p style="font-size: 1em; margin-top: 10px;">高維利他即利己 | High-Dimensional Altruism = Self-Benefit</p>
+    </header>
+    
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card">
+                <h3>36</h3>
+                <p>完整模組<br/>Complete Modules</p>
+            </div>
+            <div class="stat-card">
+                <h3>6</h3>
+                <p>階段章節<br/>Phase Chapters</p>
+            </div>
+            <div class="stat-card">
+                <h3>∞</h3>
+                <p>無限演化<br/>Infinite Evolution</p>
+            </div>
+            <div class="stat-card">
+                <h3>100%</h3>
+                <p>完整內容<br/>Full Content</p>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜尋模組 Search modules..." onkeyup="searchModules()">
+                <button class="btn" onclick="searchModules()">搜尋 Search</button>
+            </div>
+            <button class="btn btn-secondary" onclick="expandAll()">全部展開</button>
+            <button class="btn btn-secondary" onclick="collapseAll()">全部收起</button>
+            <button class="btn" onclick="toggleDiagrams()" style="background: #C9960C;">📊 框架圖</button>
+        </div>
+        
+        <!-- 框架和心智圖區域 -->
+        <div id="diagramsSection" style="display: none; margin-bottom: 40px;">
+            <div style="background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f8 100%); padding: 30px; border-radius: 8px; margin-bottom: 30px;">
+                <h2 style="color: #1A2B5F; margin-bottom: 20px; text-align: center;">🎯 Life OS 核心架構圖 | Core Architecture</h2>
+                <svg viewBox="0 0 1200 600" style="width: 100%; max-width: 1200px; margin: 0 auto; display: block; background: white; border-radius: 8px; padding: 10px;">
+                    <!-- 中心核心 -->
+                    <circle cx="600" cy="300" r="80" fill="#1A2B5F" stroke="#C9960C" stroke-width="3"/>
+                    <text x="600" y="290" text-anchor="middle" font-size="24" font-weight="bold" fill="white">Life OS</text>
+                    <text x="600" y="320" text-anchor="middle" font-size="14" fill="#C9960C">生命作業系統</text>
+                    
+                    <!-- 六大支柱 -->
+                    <g id="pillar1">
+                        <circle cx="150" cy="100" r="50" fill="#0A7A72" stroke="#C9960C" stroke-width="2"/>
+                        <text x="150" y="100" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Language</text>
+                        <text x="150" y="118" text-anchor="middle" font-size="12" fill="#C9960C">語言系統</text>
+                        <line x1="200" y1="140" x2="530" y2="270" stroke="#E8EEF5" stroke-width="2" stroke-dasharray="5,5"/>
+                    </g>
+                    
+                    <g id="pillar2">
+                        <circle cx="600" cy="50" r="50" fill="#0A7A72" stroke="#C9960C" stroke-width="2"/>
+                        <text x="600" y="50" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Thinking</text>
+                        <text x="600" y="68" text-anchor="middle" font-size="12" fill="#C9960C">思維系統</text>
+                        <line x1="600" y1="100" x2="600" y2="220" stroke="#E8EEF5" stroke-width="2" stroke-dasharray="5,5"/>
+                    </g>
+                    
+                    <g id="pillar3">
+                        <circle cx="1050" cy="100" r="50" fill="#0A7A72" stroke="#C9960C" stroke-width="2"/>
+                        <text x="1050" y="100" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Model</text>
+                        <text x="1050" y="118" text-anchor="middle" font-size="12" fill="#C9960C">模型系統</text>
+                        <line x1="1000" y1="140" x2="670" y2="270" stroke="#E8EEF5" stroke-width="2" stroke-dasharray="5,5"/>
+                    </g>
+                    
+                    <!-- 底層三大支柱 -->
+                    <g id="pillar4">
+                        <circle cx="200" cy="500" r="50" fill="#006B7D" stroke="#C9960C" stroke-width="2"/>
+                        <text x="200" y="497" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Prediction</text>
+                        <text x="200" y="515" text-anchor="middle" font-size="11" fill="#C9960C">預測系統</text>
+                        <line x1="250" y1="460" x2="530" y2="330" stroke="#E8EEF5" stroke-width="2" stroke-dasharray="5,5"/>
+                    </g>
+                    
+                    <g id="pillar5">
+                        <circle cx="600" cy="550" r="50" fill="#006B7D" stroke="#C9960C" stroke-width="2"/>
+                        <text x="600" y="550" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Decision</text>
+                        <text x="600" y="568" text-anchor="middle" font-size="11" fill="#C9960C">決策系統</text>
+                        <line x1="600" y1="500" x2="600" y2="380" stroke="#E8EEF5" stroke-width="2" stroke-dasharray="5,5"/>
+                    </g>
+                    
+                    <g id="pillar6">
+                        <circle cx="1000" cy="500" r="50" fill="#006B7D" stroke="#C9960C" stroke-width="2"/>
+                        <text x="1000" y="497" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Destiny</text>
+                        <text x="1000" y="515" text-anchor="middle" font-size="11" fill="#C9960C">命運系統</text>
+                        <line x1="950" y1="460" x2="670" y2="330" stroke="#E8EEF5" stroke-width="2" stroke-dasharray="5,5"/>
+                    </g>
+                    
+                    <!-- 公式文字 -->
+                    <text x="600" y="25" text-anchor="middle" font-size="13" fill="#1A2B5F" font-weight="bold">Life OS = Language + Thinking + Model + Prediction + Decision + Destiny</text>
+                </svg>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f8 100%); padding: 30px; border-radius: 8px; margin-bottom: 30px;">
+                <h2 style="color: #1A2B5F; margin-bottom: 20px; text-align: center;">🌲 Life OS 六階段進化樹 | 6-Phase Evolution Tree</h2>
+                <svg viewBox="0 0 1400 700" style="width: 100%; max-width: 1400px; margin: 0 auto; display: block; background: white; border-radius: 8px; padding: 10px;">
+                    <!-- 階段標題 -->
+                    <text x="100" y="40" font-size="18" font-weight="bold" fill="#1A2B5F">Phase 1</text>
+                    <text x="330" y="40" font-size="18" font-weight="bold" fill="#1A2B5F">Phase 2</text>
+                    <text x="560" y="40" font-size="18" font-weight="bold" fill="#1A2B5F">Phase 3</text>
+                    <text x="770" y="40" font-size="18" font-weight="bold" fill="#1A2B5F">Phase 4</text>
+                    <text x="1000" y="40" font-size="18" font-weight="bold" fill="#1A2B5F">Phase 5</text>
+                    <text x="1240" y="40" font-size="18" font-weight="bold" fill="#1A2B5F">Phase 6</text>
+                    
+                    <!-- Phase 1: 核心基礎 (001-010) -->
+                    <g>
+                        <rect x="20" y="60" width="160" height="280" fill="#fafbfc" stroke="#0A7A72" stroke-width="2" rx="8"/>
+                        <text x="100" y="90" text-anchor="middle" font-size="13" font-weight="bold" fill="#1A2B5F">Core</text>
+                        <text x="100" y="107" text-anchor="middle" font-size="12" fill="#1A2B5F">Foundation</text>
+                        <text x="100" y="122" text-anchor="middle" font-size="11" fill="#0A7A72">(001-010)</text>
+                        <text x="100" y="145" text-anchor="middle" font-size="11" fill="#333">• Dashboard</text>
+                        <text x="100" y="164" text-anchor="middle" font-size="11" fill="#333">• Philosophy</text>
+                        <text x="100" y="183" text-anchor="middle" font-size="11" fill="#333">• Destiny Gen</text>
+                        <text x="100" y="202" text-anchor="middle" font-size="11" fill="#333">• Language</text>
+                        <text x="100" y="221" text-anchor="middle" font-size="11" fill="#333">• Thinking</text>
+                        <text x="100" y="240" text-anchor="middle" font-size="11" fill="#333">• Model</text>
+                        <text x="100" y="259" text-anchor="middle" font-size="11" fill="#333">• Prediction</text>
+                        <text x="100" y="278" text-anchor="middle" font-size="11" fill="#333">• Decision</text>
+                        <text x="100" y="297" text-anchor="middle" font-size="11" fill="#333">• Wisdom</text>
+                    </g>
+                    
+                    <!-- Phase 2: 系統進化 (011-020) -->
+                    <g>
+                        <rect x="250" y="60" width="160" height="280" fill="#fafbfc" stroke="#0A7A72" stroke-width="2" rx="8"/>
+                        <text x="330" y="90" text-anchor="middle" font-size="13" font-weight="bold" fill="#1A2B5F">Systems</text>
+                        <text x="330" y="107" text-anchor="middle" font-size="12" fill="#1A2B5F">& Evolution</text>
+                        <text x="330" y="122" text-anchor="middle" font-size="11" fill="#0A7A72">(011-020)</text>
+                        <text x="330" y="145" text-anchor="middle" font-size="11" fill="#333">• Generation</text>
+                        <text x="330" y="164" text-anchor="middle" font-size="11" fill="#333">• Constraint</text>
+                        <text x="330" y="183" text-anchor="middle" font-size="11" fill="#333">• Evolution</text>
+                        <text x="330" y="202" text-anchor="middle" font-size="11" fill="#333">• Loop</text>
+                        <text x="330" y="221" text-anchor="middle" font-size="11" fill="#333">• Leverage</text>
+                        <text x="330" y="240" text-anchor="middle" font-size="11" fill="#333">• Compound</text>
+                        <text x="330" y="259" text-anchor="middle" font-size="11" fill="#333">• Ability</text>
+                        <text x="330" y="278" text-anchor="middle" font-size="11" fill="#333">• Teaching</text>
+                        <text x="330" y="297" text-anchor="middle" font-size="11" fill="#333">• Network</text>
+                    </g>
+                    
+                    <!-- Phase 3: 文明與真理 (021-025) -->
+                    <g>
+                        <rect x="480" y="60" width="160" height="200" fill="#fafbfc" stroke="#0A7A72" stroke-width="2" rx="8"/>
+                        <text x="560" y="90" text-anchor="middle" font-size="13" font-weight="bold" fill="#1A2B5F">Civilization</text>
+                        <text x="560" y="107" text-anchor="middle" font-size="12" fill="#1A2B5F">& Truth</text>
+                        <text x="560" y="122" text-anchor="middle" font-size="11" fill="#0A7A72">(021-025)</text>
+                        <text x="560" y="145" text-anchor="middle" font-size="11" fill="#333">• Civilization</text>
+                        <text x="560" y="164" text-anchor="middle" font-size="11" fill="#333">• Truth</text>
+                        <text x="560" y="183" text-anchor="middle" font-size="11" fill="#333">• Value</text>
+                        <text x="560" y="202" text-anchor="middle" font-size="11" fill="#333">• Purpose</text>
+                        <text x="560" y="221" text-anchor="middle" font-size="11" fill="#333">• Harmony</text>
+                    </g>
+                    
+                    <!-- Phase 4: 創造與自由 (026-030) -->
+                    <g>
+                        <rect x="690" y="60" width="160" height="200" fill="#fafbfc" stroke="#0A7A72" stroke-width="2" rx="8"/>
+                        <text x="770" y="90" text-anchor="middle" font-size="13" font-weight="bold" fill="#1A2B5F">Creation</text>
+                        <text x="770" y="107" text-anchor="middle" font-size="12" fill="#1A2B5F">& Freedom</text>
+                        <text x="770" y="122" text-anchor="middle" font-size="11" fill="#0A7A72">(026-030)</text>
+                        <text x="770" y="145" text-anchor="middle" font-size="11" fill="#333">• Awakening</text>
+                        <text x="770" y="164" text-anchor="middle" font-size="11" fill="#333">• Creation</text>
+                        <text x="770" y="183" text-anchor="middle" font-size="11" fill="#333">• Freedom</text>
+                        <text x="770" y="202" text-anchor="middle" font-size="11" fill="#333">• Love</text>
+                        <text x="770" y="221" text-anchor="middle" font-size="11" fill="#333">• Sanctity</text>
+                    </g>
+                    
+                    <!-- Phase 5: 道與源頭 (031-034) -->
+                    <g>
+                        <rect x="900" y="60" width="160" height="160" fill="#fafbfc" stroke="#0A7A72" stroke-width="2" rx="8"/>
+                        <text x="980" y="90" text-anchor="middle" font-size="13" font-weight="bold" fill="#1A2B5F">Tao &</text>
+                        <text x="980" y="107" text-anchor="middle" font-size="12" fill="#1A2B5F">Source</text>
+                        <text x="980" y="122" text-anchor="middle" font-size="11" fill="#0A7A72">(031-034)</text>
+                        <text x="980" y="145" text-anchor="middle" font-size="11" fill="#333">• Tao</text>
+                        <text x="980" y="164" text-anchor="middle" font-size="11" fill="#333">• Source</text>
+                        <text x="980" y="183" text-anchor="middle" font-size="11" fill="#333">• Origin</text>
+                    </g>
+                    
+                    <!-- Phase 6: 無限生成 (035-036) -->
+                    <g>
+                        <rect x="1110" y="60" width="160" height="120" fill="#fafbfc" stroke="#0A7A72" stroke-width="2" rx="8"/>
+                        <text x="1190" y="90" text-anchor="middle" font-size="13" font-weight="bold" fill="#1A2B5F">Infinity</text>
+                        <text x="1190" y="107" text-anchor="middle" font-size="11" fill="#0A7A72">(035-036)</text>
+                        <text x="1190" y="130" text-anchor="middle" font-size="11" fill="#333">• Infinity</text>
+                        <text x="1190" y="149" text-anchor="middle" font-size="11" fill="#333">• Generation</text>
+                    </g>
+                    
+                    <!-- 連接箭頭 -->
+                    <line x1="180" y1="200" x2="250" y2="200" stroke="#C9960C" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    <line x1="410" y1="160" x2="480" y2="160" stroke="#C9960C" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    <line x1="640" y1="160" x2="690" y2="160" stroke="#C9960C" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    <line x1="850" y1="140" x2="900" y2="120" stroke="#C9960C" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    <line x1="1060" y1="120" x2="1110" y2="100" stroke="#C9960C" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- 箭頭定義 -->
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#C9960C"/>
+                        </marker>
+                    </defs>
+                    
+                    <!-- 底部演化說明 -->
+                    <text x="700" y="400" text-anchor="middle" font-size="14" font-weight="bold" fill="#1A2B5F">Evolution Pathway</text>
+                    <text x="700" y="425" text-anchor="middle" font-size="13" fill="#0A7A72">Foundation → Systems → Civilization → Creation → Source → Infinity</text>
+                    <text x="700" y="450" text-anchor="middle" font-size="12" fill="#666">每一階段都是前一階段的深化，也是下一階段的基礎</text>
+                </svg>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #f5f7fa 0%, #f0f3f8 100%); padding: 30px; border-radius: 8px;">
+                <h2 style="color: #1A2B5F; margin-bottom: 20px; text-align: center;">🎯 Life OS 全維心智圖 | Complete Mind Map</h2>
+                <svg viewBox="0 0 1400 900" style="width: 100%; max-width: 1400px; margin: 0 auto; display: block; background: white; border-radius: 8px; padding: 10px;">
+                    <!-- 中心節點 -->
+                    <circle cx="700" cy="450" r="100" fill="#1A2B5F" stroke="#C9960C" stroke-width="3"/>
+                    <text x="700" y="440" text-anchor="middle" font-size="22" font-weight="bold" fill="white">LIFE OS</text>
+                    <text x="700" y="475" text-anchor="middle" font-size="14" fill="#C9960C">生命作業系統</text>
+                    
+                    <!-- 第一層 - 六大系統 -->
+                    <!-- Language -->
+                    <circle cx="150" cy="150" r="50" fill="#0A7A72" stroke="#C9960C" stroke-width="2"/>
+                    <text x="150" y="152" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Language</text>
+                    <text x="150" y="170" text-anchor="middle" font-size="11" fill="white">語言</text>
+                    <line x1="200" y1="190" x2="640" y2="390" stroke="#E8EEF5" stroke-width="2"/>
+                    
+                    <!-- Thinking -->
+                    <circle cx="450" cy="80" r="50" fill="#0A7A72" stroke="#C9960C" stroke-width="2"/>
+                    <text x="450" y="82" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Thinking</text>
+                    <text x="450" y="100" text-anchor="middle" font-size="11" fill="white">思維</text>
+                    <line x1="450" y1="130" x2="650" y2="370" stroke="#E8EEF5" stroke-width="2"/>
+                    
+                    <!-- Model -->
+                    <circle cx="950" cy="150" r="50" fill="#0A7A72" stroke="#C9960C" stroke-width="2"/>
+                    <text x="950" y="152" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Model</text>
+                    <text x="950" y="170" text-anchor="middle" font-size="11" fill="white">模型</text>
+                    <line x1="900" y1="190" x2="760" y2="390" stroke="#E8EEF5" stroke-width="2"/>
+                    
+                    <!-- Prediction -->
+                    <circle cx="200" cy="750" r="50" fill="#006B7D" stroke="#C9960C" stroke-width="2"/>
+                    <text x="200" y="748" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Prediction</text>
+                    <text x="200" y="766" text-anchor="middle" font-size="11" fill="white">預測</text>
+                    <line x1="245" y1="710" x2="660" y2="520" stroke="#E8EEF5" stroke-width="2"/>
+                    
+                    <!-- Decision -->
+                    <circle cx="700" cy="800" r="50" fill="#006B7D" stroke="#C9960C" stroke-width="2"/>
+                    <text x="700" y="802" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Decision</text>
+                    <text x="700" y="820" text-anchor="middle" font-size="11" fill="white">決策</text>
+                    <line x1="700" y1="750" x2="700" y2="550" stroke="#E8EEF5" stroke-width="2"/>
+                    
+                    <!-- Destiny -->
+                    <circle cx="1200" cy="750" r="50" fill="#006B7D" stroke="#C9960C" stroke-width="2"/>
+                    <text x="1200" y="748" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Destiny</text>
+                    <text x="1200" y="766" text-anchor="middle" font-size="11" fill="white">命運</text>
+                    <line x1="1155" y1="710" x2="740" y2="520" stroke="#E8EEF5" stroke-width="2"/>
+                    
+                    <!-- 第二層 - 關鍵模組分支 -->
+                    <!-- Language 分支 -->
+                    <circle cx="80" cy="250" r="35" fill="#fafbfc" stroke="#0A7A72" stroke-width="2"/>
+                    <text x="80" y="258" text-anchor="middle" font-size="12" font-weight="bold" fill="#1A2B5F">004</text>
+                    <text x="80" y="273" text-anchor="middle" font-size="10" fill="#0A7A72">Lang</text>
+                    <line x1="110" y1="270" x2="150" y2="200" stroke="#E8EEF5" stroke-width="1.5"/>
+                    
+                    <!-- Thinking 分支 -->
+                    <circle cx="400" cy="200" r="35" fill="#fafbfc" stroke="#0A7A72" stroke-width="2"/>
+                    <text x="400" y="208" text-anchor="middle" font-size="12" font-weight="bold" fill="#1A2B5F">005</text>
+                    <text x="400" y="223" text-anchor="middle" font-size="10" fill="#0A7A72">Think</text>
+                    <line x1="425" y1="225" x2="450" y2="130" stroke="#E8EEF5" stroke-width="1.5"/>
+                    
+                    <!-- Model 分支 -->
+                    <circle cx="1020" cy="250" r="35" fill="#fafbfc" stroke="#0A7A72" stroke-width="2"/>
+                    <text x="1020" y="258" text-anchor="middle" font-size="12" font-weight="bold" fill="#1A2B5F">006</text>
+                    <text x="1020" y="273" text-anchor="middle" font-size="10" fill="#0A7A72">Model</text>
+                    <line x1="995" y1="270" x2="950" y2="200" stroke="#E8EEF5" stroke-width="1.5"/>
+                    
+                    <!-- 第三層 - 進階模組 -->
+                    <!-- 系統層 -->
+                    <circle cx="300" cy="550" r="35" fill="#fafbfc" stroke="#0A7A72" stroke-width="2"/>
+                    <text x="300" y="558" text-anchor="middle" font-size="12" font-weight="bold" fill="#1A2B5F">011</text>
+                    <text x="300" y="573" text-anchor="middle" font-size="10" fill="#0A7A72">Gen</text>
+                    <line x1="335" y1="535" x2="600" y2="485" stroke="#E8EEF5" stroke-width="1.5"/>
+                    
+                    <!-- 進化層 -->
+                    <circle cx="550" cy="600" r="35" fill="#fafbfc" stroke="#0A7A72" stroke-width="2"/>
+                    <text x="550" y="608" text-anchor="middle" font-size="12" font-weight="bold" fill="#1A2B5F">013</text>
+                    <text x="550" y="623" text-anchor="middle" font-size="10" fill="#0A7A72">Evol</text>
+                    <line x1="575" y1="575" x2="650" y2="515" stroke="#E8EEF5" stroke-width="1.5"/>
+                    
+                    <!-- 文明層 -->
+                    <circle cx="850" cy="600" r="35" fill="#fafbfc" stroke="#0A7A72" stroke-width="2"/>
+                    <text x="850" y="608" text-anchor="middle" font-size="12" font-weight="bold" fill="#1A2B5F">021</text>
+                    <text x="850" y="623" text-anchor="middle" font-size="10" fill="#0A7A72">Civ</text>
+                    <line x1="825" y1="575" x2="750" y2="515" stroke="#E8EEF5" stroke-width="1.5"/>
+                    
+                    <!-- 創造層 -->
+                    <circle cx="1100" cy="550" r="35" fill="#fafbfc" stroke="#0A7A72" stroke-width="2"/>
+                    <text x="1100" y="558" text-anchor="middle" font-size="12" font-weight="bold" fill="#1A2B5F">026</text>
+                    <text x="1100" y="573" text-anchor="middle" font-size="10" fill="#0A7A72">Creat</text>
+                    <line x1="1065" y1="535" x2="800" y2="485" stroke="#E8EEF5" stroke-width="1.5"/>
+                    
+                    <!-- 圖例 -->
+                    <g>
+                        <text x="50" y="50" font-size="14" font-weight="bold" fill="#1A2B5F">圖例 | Legend:</text>
+                        <circle cx="70" cy="80" r="15" fill="#1A2B5F" stroke="#C9960C" stroke-width="1"/>
+                        <text x="100" y="87" font-size="12" fill="#1A2B5F">核心系統 Core</text>
+                        
+                        <circle cx="70" cy="120" r="15" fill="#0A7A72" stroke="#C9960C" stroke-width="1"/>
+                        <text x="100" y="127" font-size="12" fill="#1A2B5F">關鍵支柱 Pillar</text>
+                        
+                        <circle cx="70" cy="160" r="15" fill="#fafbfc" stroke="#0A7A72" stroke-width="2"/>
+                        <text x="100" y="167" font-size="12" fill="#1A2B5F">具體模組 Module</text>
+                    </g>
+                </svg>
+            </div>
+        </div>
+        
+        <div id="modulesContainer" class="modules-container"></div>
+    </div>
+    
+    <div class="footer">
+        <h3>📚 Life OS 生命作業系統完整架構</h3>
+        <p><strong>第一階段（001-010）| Phase 1:</strong> 生命OS核心系統 Life OS Core Foundation</p>
+        <p><strong>第二階段（011-020）| Phase 2:</strong> 系統與演化 Systems & Evolution</p>
+        <p><strong>第三階段（021-025）| Phase 3:</strong> 文明與真理 Civilization & Truth</p>
+        <p><strong>第四階段（026-030）| Phase 4:</strong> 真理與創造 Truth & Creation</p>
+        <p><strong>第五階段（031-034）| Phase 5:</strong> 道與源頭 Logos & Source</p>
+        <p><strong>終極階段（035-036）| Phase 6:</strong> 無限生成 Infinite Generation</p>
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid #E8EEF5;">
+        <p><strong>設計者 | Creator:</strong> 王欣蓉 Anne Wang | valaivai087@gmail.com</p>
+        <p style="font-size: 0.9em; margin-top: 15px;">© 2026 Life OS 生命作業系統 | All 36 Complete Modules with Bilingual Display & English TTS</p>
+    </div>
+    
+    <script>
+        // 完整的所有 36 個模組資料
+        const lifeOSModules = [
+            // 第一階段 001-010
+            {num: "001", titleCN: "生命OS首頁（Dashboard）", titleEN: "Life OS APP Homepage", phase: 1, descCN: "人生不是等待改變。而是每天更新自己的生命作業系統。", descEN: "Life is not waiting for change. It's updating your system daily.", formulaCN: "每天1%更新 = 一年3倍進化", formulaEN: "1% daily update = 3x evolution in one year", theoryCN: "六大區塊：今日更新、今日能力、今日智慧、今日健康、今日AI、今日任務\n每個區塊都有完整的追蹤系統。\n目的是建立生命成長儀表板。", theoryEN: "Six Dashboard Sections: Daily Update, Daily Ability, Daily Wisdom, Daily Health, Daily AI, Daily Mission\nEach section has complete tracking systems.\nGoal is to build a life growth dashboard.", caseCN: "首頁最下方顯示十大數值：更新率、能力值、智慧值、閱讀值、健康值、AI值、模型值、命運值、自由度、創造力", caseEN: "Bottom homepage displays 10 metrics: Update rate, Ability points, Wisdom points, Reading, Health, AI, Model, Destiny, Freedom, Creativity"},
+            {num: "002", titleCN: "生命OS核心理念", titleEN: "Life OS Core Philosophy", phase: 1, descCN: "Life OS不是知識庫。而是持續生成能力、智慧與命運的生命作業系統。", descEN: "Life OS is not a database—it's a system for generating abilities, wisdom, and destiny.", formulaCN: "Life OS = Language + Thinking + Model + Prediction + Decision + Destiny", formulaEN: "Life OS = Language + Thinking + Model + Prediction + Decision + Destiny", theoryCN: "人的生命不是由運氣決定，而是由每天運作的系統決定。真正的教育不是塞知識，而是更新系統。真正的成長不是知道更多，而是預測越來越準。", theoryEN: "Life is determined not by luck but by daily systems. True education isn't knowledge—it's system updates. True growth isn't knowing more—it's predicting better.", caseCN: "人生不是事件，而是系統。不是一次成功，而是每天更新。不是一次失敗，而是模型需要修正。", caseEN: "Life is systems, not events. Not one success—continuous updates. Not one failure—model needs correction."},
+            {num: "003", titleCN: "命運生成系統", titleEN: "Destiny Generation System", phase: 1, descCN: "命運不是突然發生。命運是每天無數次預測、決策與更新累積出來的結果。", descEN: "Destiny doesn't happen suddenly—it's accumulated daily predictions, decisions, and updates.", formulaCN: "觀察→語言→理解→思維→模型→預測→決策→行動→結果→回饋→更新→新命運", formulaEN: "Observation→Language→Understanding→Thinking→Model→Prediction→Decision→Action→Result→Feedback→Update→New Destiny", theoryCN: "命運的十二層生成架構：資訊→語言→理解→知識→能力→智慧→模型→預測→決策→行動→結果→命運", theoryEN: "12-Layer Destiny Generation: Information→Language→Understanding→Knowledge→Ability→Wisdom→Model→Prediction→Decision→Action→Result→Destiny", caseCN: "改變命運的方法不是改變運氣，而是改變模型。不是等待機會，而是提高辨識機會的能力。", caseEN: "Change destiny not by changing luck—change your model. Not by waiting for opportunity—improve ability to recognize it."},
+            {num: "004", titleCN: "語言OS", titleEN: "Language Operating System", phase: 1, descCN: "語言決定理解。理解決定模型。模型決定命運。", descEN: "Language determines understanding. Understanding determines models. Models determine destiny.", formulaCN: "舊語言→新語言 = 舊人生→新人生", formulaEN: "Old language→New language = Old life→New life", theoryCN: "語言的五層次：情緒→現象→原因→結構→生成。一句話可能改變一天，一個概念可能改變十年，一個模型可能改變一生。", theoryEN: "5 Language Levels: Emotion→Phenomenon→Cause→Structure→Generation. One sentence might change your day, one concept ten years, one model your life.", caseCN: "舊：我是失敗的人→新：我的方法需要更新。舊：我做不到→新：我還沒找到方法。", caseEN: "Old: I'm a failure→New: My methods need updating. Old: I can't do it→New: I haven't found the way yet."},
+            {num: "005", titleCN: "思維OS", titleEN: "Thinking Operating System", phase: 1, descCN: "思維決定你怎麼理解世界。理解方式不同，人生就會不同。", descEN: "Thinking determines how you understand the world. Different understanding creates different life.", formulaCN: "思維深度 = 組織能力 = 人生成果", formulaEN: "Thinking depth = Organizational ability = Life results", theoryCN: "思維的十層次：感覺→經驗→知識→邏輯→結構→系統→模型→預測→更新→生成。真正的高手不是知道最多，而是組織最好。", theoryEN: "10 Thinking Levels: Feeling→Experience→Knowledge→Logic→Structure→System→Model→Prediction→Update→Generation. Masters don't know most—they organize best.", caseCN: "低維思維VS高維思維：只看結果VS看系統；怪別人VS找限制；問誰對VS問什麼機制", caseEN: "Low vs High Dimensional: See results vs see systems; Blame others vs find constraints; Ask who's right vs what mechanism created this"},
+            {num: "006", titleCN: "模型OS", titleEN: "Model Operating System", phase: 1, descCN: "知識回答一個問題。模型解決一萬個問題。", descEN: "Knowledge answers one question. A model solves ten thousand.", formulaCN: "資訊→理解→抽象→模型→預測→決策→結果→更新→更好的模型", formulaEN: "Information→Understanding→Abstraction→Model→Prediction→Decision→Result→Update→Better model", theoryCN: "模型是把複雜世界壓縮成可重複使用的理解。Life OS的十大母模型：生命、健康、教育、商業、學習、AI、財富、婚姻、信仰、更新。", theoryEN: "A model compresses complex reality into reusable understanding. Life OS 10 master models: Life, Health, Education, Business, Learning, AI, Wealth, Marriage, Faith, Update.", caseCN: "建立模型五步：觀察案例→找共同規律→抽象結構→驗證可重複→持續更新", caseEN: "5 Model-Building Steps: Observe cases→Find patterns→Abstract structure→Verify repeatability→Continuously update"},
+            {num: "007", titleCN: "預測OS", titleEN: "Prediction Operating System", phase: 1, descCN: "真正的高手不是事情發生後才反應，而是在事情發生前就開始布局。", descEN: "True masters don't react after events—they prepare before events occur.", formulaCN: "預測誤差↓ = 成本↓ = 成功率↑", formulaEN: "Prediction error↓ = Cost↓ = Success rate↑", theoryCN: "預測來自模式。一次事件無法預測，十次開始出現規律，一百次形成模型，一千次形成直覺。人生真正的競爭力不是努力，而是預測能力。", theoryEN: "Prediction comes from patterns. 1 event can't predict, 10 events show patterns, 100 form model, 1,000 form intuition. True competitiveness is prediction ability, not effort.", caseCN: "健康預測：生活型態→發炎→代謝↓→睡眠↓→免疫↓→疾病。不是等生病，而是預測風險。", caseEN: "Health prediction: Lifestyle→Inflammation→Metabolism↓→Sleep↓→Immunity↓→Disease. Not waiting to get sick—predicting risk."},
+            {num: "008", titleCN: "決策OS", titleEN: "Decision Operating System", phase: 1, descCN: "人生不是被事件決定，而是被每天的決策決定。", descEN: "Life isn't determined by events—by daily decisions.", formulaCN: "好決策 = 低成本 + 高目標alignment + 持續學習", formulaEN: "Good decision = Low cost + High goal alignment + Continuous learning", theoryCN: "決策不是選喜歡，而是選長期成本最低。決策不是情緒，而是模型。人生最大的成本不是失敗，而是一直做錯決策。", theoryEN: "Decision isn't choosing what you like—lowest long-term cost. Decision isn't emotion—it's model-based. Life's biggest cost isn't failure—continuous wrong decisions.", caseCN: "決策四元素：目的、成本、風險、機會。沒有目的，就沒有好決策。", caseEN: "4 Decision Elements: Purpose, cost, risk, opportunity. No purpose—no good decision."},
+            {num: "009", titleCN: "更新OS", titleEN: "Update Operating System", phase: 1, descCN: "真正的高手不是永遠正確，而是永遠更新。", descEN: "True masters aren't always right—they always update.", formulaCN: "發現誤差→接受回饋→修正模型→重新測試→能力提升→生命升級", formulaEN: "Discover error→Accept feedback→Correct model→Retest→Upgrade ability→Life evolution", theoryCN: "世界一直更新，醫學、科技、市場每天更新。停止學習的人才是真正停止的。更新最大的敵人是自尊、面子、固執。", theoryEN: "The world keeps updating—medicine, technology, markets daily. Only those who stop learning truly stop. Update's biggest enemies are pride, face, stubbornness.", caseCN: "真正的高手每天問自己：哪個模型過時？哪個觀念需要更新？哪個能力需要升級？", caseEN: "True masters ask daily: Which model is outdated? Which belief needs updating? Which ability needs upgrading?"},
+            {num: "010", titleCN: "智慧OS", titleEN: "Wisdom Operating System", phase: 1, descCN: "知識讓你知道答案。能力讓你完成事情。智慧讓你重新定義問題。", descEN: "Knowledge tells answers. Ability accomplishes things. Wisdom redefines problems.", formulaCN: "智慧 = 知道什麼最重要 + 找到真正問題 + 生成新能力", formulaEN: "Wisdom = Know what matters + Find true questions + Generate new ability", theoryCN: "智慧不是知道很多，而是知道什麼最重要。智慧是找到真正問題，而不只是解答問題。", theoryEN: "Wisdom isn't knowing much—knowing what matters. Wisdom is finding true questions, not just answering them.", caseCN: "健康智慧：不是找神奇產品，而是建立健康系統。不是治療疾病，而是提升恢復能力。", caseEN: "Health wisdom: Not seeking magic products—building health systems. Not treating disease—improving recovery ability."},
+            
+            // 第二階段 011-020
+            {num: "011", titleCN: "生成OS", titleEN: "Generation Operating System", phase: 2, descCN: "真正的高手不是一直解決問題，而是建立不斷產生好結果的系統。", descEN: "True masters don't keep solving problems—they build systems generating good results.", formulaCN: "目標→結構→流程→回饋→修正→穩定輸出→自我演化", formulaEN: "Goal→Structure→Process→Feedback→Correct→Stable output→Self-evolution", theoryCN: "系統三元素：節點、流程、回饋。健康系統由睡眠、營養、運動、腸道、粒線體、免疫、情緒、恢復組成。學習系統由閱讀、理解、整理、輸出、教學、回饋、更新組成。", theoryEN: "3 System Elements: Nodes, flows, feedback. Health system: Sleep, nutrition, exercise, gut, mitochondria, immunity, emotion, recovery. Learning system: Read, understand, organize, output, teach, feedback, update.", caseCN: "人生不是事件，而是系統。健康不是一餐，而是每天生成。財富不是一次收入，而是持續累積。", caseEN: "Life is systems, not events. Health isn't one meal—daily generation. Wealth isn't one income—continuous accumulation."},
+            {num: "012", titleCN: "限制節點OS", titleEN: "Constraint Point OS", phase: 2, descCN: "人生真正的限制節點不是知識，而是模型。", descEN: "Life's true constraints aren't knowledge—they're models.", formulaCN: "找到限制→移除限制→能力提升→新系統生成", formulaEN: "Find constraint→Remove it→Upgrade ability→Generate new system", theoryCN: "十二大限制節點：睡眠、腸道、發炎、粒線體、代謝、荷爾蒙、神經系統、心理信念、知識不足、能力缺陷、停止更新、短視思維。", theoryEN: "12 Key Constraints: Sleep, gut, inflammation, mitochondria, metabolism, hormones, nervous system, psychology, insufficient knowledge, lack of ability, stop updating, short-term thinking.", caseCN: "真正的限制不是沒努力，而是努力方向錯。不是沒智力，而是系統崩潰。不是沒機會，而是準備不足。", caseEN: "True constraints aren't lack of effort—wrong direction. Not lack of intelligence—system breakdown. Not lack of opportunity—inadequate preparation."},
+            {num: "013", titleCN: "進化OS", titleEN: "Evolution Operating System", phase: 2, descCN: "進化不是瞬間發生，進化是系統每天更新帶來的累積結果。", descEN: "Evolution doesn't happen instantly—it's cumulative daily system updates.", formulaCN: "每日1%進化→月30%→年3倍→十年1000倍", formulaEN: "1% daily evolution→30% monthly→3x yearly→1000x in decade", theoryCN: "進化的三個階段：第一階段是學習（從0到1），第二階段是應用（從1到10），第三階段是優化（從10到100）。", theoryEN: "3 Evolution Stages: Learning (0→1), Application (1→10), Optimization (10→100).", caseCN: "真正的進化方程式：複利效應。不是線性增長，而是指數增長。", caseEN: "True evolution equation: Compound effect. Not linear growth—exponential growth."},
+            {num: "014", titleCN: "迴圈OS", titleEN: "Loop Operating System", phase: 2, descCN: "成功的人生是由無數個正向迴圈組成的。", descEN: "Successful lives are made of countless positive loops.", formulaCN: "行動→結果→反思→改進→新能力→更好行動→更好結果", formulaEN: "Action→Result→Reflect→Improve→New ability→Better action→Better result", theoryCN: "三大正向迴圈：學習迴圈（讀→寫→教）、健康迴圈（運動→恢復→能量增）、財富迴圈（生產→投資→增值）。", theoryEN: "3 Positive Loops: Learning (read→write→teach), Health (exercise→recover→energy↑), Wealth (produce→invest→appreciate).", caseCN: "破壞迴圈很容易，只要停止。建立迴圈需要21天堅持。", caseEN: "Breaking loops is easy—just stop. Building loops needs 21 days of consistency."},
+            {num: "015", titleCN: "杠桿OS", titleEN: "Leverage Operating System", phase: 2, descCN: "聰明人不是工作最多，聰明人是懂得用杠桿。", descEN: "Smart people don't work most—they understand leverage.", formulaCN: "時間杠桿 + 金錢杠桿 + 知識杠桿 + 人脈杠桿 = 指數成長", formulaEN: "Time leverage + Money leverage + Knowledge leverage + Network leverage = Exponential growth", theoryCN: "四種杠桿：技能杠桿（學一個技能幫助千人）、資本杠桿（投一次錢賺多次回報）、人脈杠桿（借助他人力量）、內容杠桿（一次創作無限傳播）。", theoryEN: "4 Leverage Types: Skill (teach 1 skill help 1000), Capital (invest once earn many times), Network (use others' power), Content (create once spread infinitely).", caseCN: "沒有杠桿，再努力也是有上限。有杠桿，睡覺都在賺錢。", caseEN: "No leverage—hard work has limits. With leverage—earn while sleeping."},
+            {num: "016", titleCN: "復利OS", titleEN: "Compound Effect OS", phase: 2, descCN: "宇宙最強的力量不是力量，而是復利。", descEN: "Universe's strongest force isn't power—it's compound effect.", formulaCN: "1.01^365 = 37.8 | 0.99^365 = 0.03 | 差異 = 1260倍", formulaEN: "1.01^365 = 37.8 | 0.99^365 = 0.03 | Difference = 1260x", theoryCN: "每個領域都存在復利：健康的復利（好習慣積累）、知識的復利（持續學習）、人脈的復利（長期投資）、財富的復利（持續投資）。", theoryEN: "Compound effect in all areas: Health (good habits accumulate), Knowledge (continuous learning), Network (long-term investment), Wealth (continuous investment).", caseCN: "復利最難的不是計算，而是耐心。大部分人放棄在看到結果前。", caseEN: "Hardest part of compound effect isn't calculation—it's patience. Most quit before results."},
+            {num: "017", titleCN: "能力OS", titleEN: "Ability Operating System", phase: 2, descCN: "能力不是天生的，能力是系統地構建出來的。", descEN: "Abilities aren't innate—they're systematically built.", formulaCN: "知識→練習→反思→應用→教人→新能力", formulaEN: "Knowledge→Practice→Reflection→Application→Teach→New ability", theoryCN: "建立能力五步法：第一步學習基礎，第二步大量練習，第三步反思改進，第四步實際應用，第五步教授他人。", theoryEN: "5-Step Ability Building: Learn basics, practice extensively, reflect and improve, apply practically, teach others.", caseCN: "表面看是天賦，實際是系統。莫札特練習1萬小時，貝多芬練習10萬小時。", caseEN: "Looks like talent, actually it's system. Mozart practiced 10,000 hours, Beethoven 100,000 hours."},
+            {num: "018", titleCN: "教學OS", titleEN: "Teaching Operating System", phase: 2, descCN: "教別人，是最快的學習。教別人，是最好的檢驗。", descEN: "Teaching others is the fastest learning. Teaching is the best validation.", formulaCN: "學習50% → 實踐70% → 教人90%", formulaEN: "Learning 50% → Practice 70% → Teaching 90%", theoryCN: "教學的本質是讓對方建立模型。真正的老師不是傳授知識，而是幫助學生構建思維體系。", theoryEN: "Teaching's essence is helping others build models. True teachers don't transmit knowledge—they help build thinking systems.", caseCN: "無法用簡單的語言解釋，代表你還沒真正理解。", caseEN: "Can't explain simply—means you don't truly understand."},
+            {num: "019", titleCN: "網絡OS", titleEN: "Network Operating System", phase: 2, descCN: "你是身邊五個人的平均。選擇你的環境，就是選擇你的人生。", descEN: "You're the average of five closest people. Choose your environment—choose your life.", formulaCN: "環境質量 = 人脈質量 = 機會質量 = 人生質量", formulaEN: "Environment quality = Network quality = Opportunity quality = Life quality", theoryCN: "三層人脈：緊密層（最信任的人）、活躍層（經常互動）、擴展層（廣泛連結）。每一層的質量都影響你的機會。", theoryEN: "3 Network Layers: Inner (most trusted), Active (frequent interaction), Extended (broad connections). Each layer's quality affects your opportunities.", caseCN: "不是認識很多人，而是被很多優質的人認識。", caseEN: "Not knowing many people—being known by many quality people."},
+            {num: "020", titleCN: "協作OS", titleEN: "Collaboration Operating System", phase: 2, descCN: "一個人可以走得快，一群人可以走得遠。", descEN: "One person goes fast; a team goes far.", formulaCN: "1+1=2 個人能力｜1×1=1 協作能力｜但 1+1=11 系統能力", formulaEN: "1+1=2 individual | 1×1=1 collaboration | But 1+1=11 system", theoryCN: "協作需要三個條件：清晰的目標、明確的角色分工、有效的溝通機制。", theoryEN: "Collaboration needs 3 conditions: Clear goals, defined roles, effective communication.", caseCN: "最大的浪費是人才各自為政。最大的力量是眾志成城。", caseEN: "Biggest waste is talented people working separately. Biggest power is unified effort."},
+            
+            // 第三階段 021-025
+            {num: "021", titleCN: "文明OS", titleEN: "Civilization Operating System", phase: 3, descCN: "個人進化是縱向進化。文明進化是橫向進化。", descEN: "Personal evolution is vertical. Civilization evolution is horizontal.", formulaCN: "個人智慧→共享知識→集體進化→文明躍升", formulaEN: "Individual wisdom→Shared knowledge→Collective evolution→Civilization leap", theoryCN: "文明的三個層次：物質文明（工具、生產力）、精神文明（價值觀、信仰）、制度文明（規則、組織）。真正的進步需要三個層次同步提升。", theoryEN: "3 Civilization Levels: Material (tools, productivity), Spiritual (values, beliefs), Institutional (rules, organization). True progress needs all three advancing together.", caseCN: "技術進步不代表文明進步。真正的文明進步是人的成長。", caseEN: "Technology doesn't equal civilization progress. True progress is human growth."},
+            {num: "022", titleCN: "真理OS", titleEN: "Truth Operating System", phase: 3, descCN: "真理不是被發現的，真理是被理解得越來越深的。", descEN: "Truth isn't discovered—it's understood increasingly deeply.", formulaCN: "觀察→認識→理解→洞見→智慧→真理", formulaEN: "Observation→Recognition→Understanding→Insight→Wisdom→Truth", theoryCN: "真理的特點：自洽、可檢驗、持續有效。偽真理則相反：自相矛盾、無法驗證、短期有效。", theoryEN: "Truth characteristics: Self-consistent, verifiable, continuously effective. Fake truth: Contradictory, unverifiable, short-term effect.", caseCN: "健康的真理：支持身體的是食物，傷害身體也是食物。差異在於攝入量和頻率。", caseEN: "Health truth: Food supports the body; food also damages it. Difference is quantity and frequency."},
+            {num: "023", titleCN: "價值OS", titleEN: "Value Operating System", phase: 3, descCN: "價值不是金錢。真正的價值是被需要的程度。", descEN: "Value isn't money. True value is how much you're needed.", formulaCN: "被需要程度 = 稀缺性 × 重要性 = 價值", formulaEN: "Value needed = Scarcity × Importance = Value", theoryCN: "四種價值來源：解決問題的價值、預防問題的價值、提升能力的價值、啟蒙思想的價值。", theoryEN: "4 Value Sources: Solve problems, prevent problems, improve abilities, awaken minds.", caseCN: "一個人的薪資，等於他解決問題的價值。一個企業的成功，等於它創造價值的效率。", caseEN: "Salary = value of solving problems. Business success = efficiency of creating value."},
+            {num: "024", titleCN: "意義OS", titleEN: "Purpose Operating System", phase: 3, descCN: "沒有意義的努力是最大的浪費。有意義的事，做十分鐘也有靈魂。", descEN: "Meaningless effort is the biggest waste. Meaningful work for 10 minutes has soul.", formulaCN: "意義 = 目標 + 信念 + 持續行動", formulaEN: "Purpose = Goal + Belief + Continuous action", theoryCN: "三層意義：個人意義（改變自己）、家庭意義（幫助家人）、社會意義（貢獻世界）。最深的滿足來自社會意義。", theoryEN: "3 Purpose Levels: Personal (change self), Family (help family), Social (contribute to world). Deepest fulfillment comes from social purpose.", caseCN: "一個人如果有清晰的意義，就有克服一切困難的勇氣。", caseEN: "With clear purpose, people have courage to overcome any difficulty."},
+            {num: "025", titleCN: "和諧OS", titleEN: "Harmony Operating System", phase: 3, descCN: "真正的成功不是贏，而是讓所有相關方都受益。", descEN: "True success isn't winning—it's everyone benefiting.", formulaCN: "你贏 + 對方贏 + 系統贏 = 真正的成功", formulaEN: "You win + They win + System wins = True success", theoryCN: "和諧的三個維度：內在和諧（身心靈平衡）、關係和諧（與人的互動）、系統和諧（與環境的互動）。", theoryEN: "3 Harmony Dimensions: Internal (body-mind-spirit), Relational (interaction with people), Systemic (interaction with environment).", caseCN: "一個人的成功如果建立在他人的痛苦上，那就是虛偽的成功。", caseEN: "Success built on others' pain is false success."},
+            
+            // 第四階段 026-030
+            {num: "026", titleCN: "覺醒OS", titleEN: "Awakening Operating System", phase: 4, descCN: "人生最大的轉變，來自於一次次的覺醒。", descEN: "Life's biggest transformations come from repeated awakenings.", formulaCN: "無知→認知→覺醒→行動→新生", formulaEN: "Ignorance→Awareness→Awakening→Action→Rebirth", theoryCN: "覺醒有四個階段：第一階段是認識自己的問題，第二階段是理解問題的根源，第三階段是願意改變，第四階段是持續行動。", theoryEN: "4 Awakening Stages: Recognize your problems, understand root causes, willing to change, take continuous action.", caseCN: "很多人終生都在第一階段停留。真正的人生改變，開始於願意直視自己。", caseEN: "Many live entire lives in stage one. True life change starts with facing yourself."},
+            {num: "027", titleCN: "創造OS", titleEN: "Creation Operating System", phase: 4, descCN: "創造不是創新。創造是把內在的可能性變成現實。", descEN: "Creation isn't innovation. It's making inner possibilities real.", formulaCN: "想法→構想→規劃→行動→創造→反饋→優化", formulaEN: "Idea→Concept→Plan→Action→Creation→Feedback→Optimize", theoryCN: "創造的三個維度：藝術創造（表達內在）、技術創造（解決問題）、生活創造（設計人生）。", theoryEN: "3 Creation Dimensions: Art (express inner), Technology (solve problems), Life (design existence).", caseCN: "每個人都是創造者。你正在創造你的人生、你的家庭、你的事業。", caseEN: "Everyone is a creator. You're creating your life, family, and work."},
+            {num: "028", titleCN: "自由OS", titleEN: "Freedom Operating System", phase: 4, descCN: "自由不是沒有限制。自由是知道如何與限制相處。", descEN: "Freedom isn't absence of limits—knowing how to live with them.", formulaCN: "認識限制→接納限制→利用限制→超越限制→新的自由", formulaEN: "Know limits→Accept limits→Use limits→Transcend limits→New freedom", theoryCN: "真正的自由來自於三個方面：經濟自由（不依賴他人收入）、精神自由（不依賴他人評價）、時間自由（自己掌握時間）。", theoryEN: "True freedom from 3 areas: Financial (independent income), Spiritual (independent judgment), Time (control your time).", caseCN: "在監獄裡的思想家比自由但思想被奴役的人更自由。", caseEN: "Philosopher in prison freer than free person whose mind is enslaved."},
+            {num: "029", titleCN: "愛OS", titleEN: "Love Operating System", phase: 4, descCN: "愛是最高的能力。能愛的人，能完成世上最難的事。", descEN: "Love is the highest ability. Those who can love accomplish the hardest things.", formulaCN: "自愛→愛他人→愛世界→愛宇宙→大愛無邊", formulaEN: "Self-love→Love others→Love world→Love universe→Universal love", theoryCN: "愛有四層：親子之愛（本能）、伴侶之愛（選擇）、友誼之愛（相互）、無條件之愛（奉獻）。", theoryEN: "4 Love Levels: Parental (instinct), Romantic (choice), Friendship (mutual), Unconditional (devotion).", caseCN: "最強大的人，不是最聰明的人，而是最願意付出愛的人。", caseEN: "Most powerful people aren't smartest—those willing to give love."},
+            {num: "030", titleCN: "成聖OS", titleEN: "Sanctity Operating System", phase: 4, descCN: "成聖不是離開世界，而是在世界中完成自己的使命。", descEN: "Sanctity isn't leaving the world—completing your mission within it.", formulaCN: "修養→智慧→奉獻→超越→成聖", formulaEN: "Cultivation→Wisdom→Devotion→Transcendence→Sanctity", theoryCN: "每個人都有成聖的潛力。成聖意味著按照最高的自我去生活，而不是被外在條件決定。", theoryEN: "Everyone has potential for sanctity. It means living according to your highest self, not external conditions.", caseCN: "真正的聖人不是不食人間煙火，而是在平凡生活中活出不凡的價值。", caseEN: "True saints don't transcend worldly life—they create extraordinary value in ordinary life."},
+            
+            // 第五階段 031-034
+            {num: "031", titleCN: "道OS", titleEN: "Tao Operating System", phase: 5, descCN: "可以說出來的道，不是永恆的道。真正的道是活出來的。", descEN: "The Tao that can be named isn't eternal. True Tao is lived.", formulaCN: "言語→理解→內化→實踐→合一", formulaEN: "Language→Understanding→Integration→Practice→Unity", theoryCN: "道的特點：無處不在、無時不在、無所不包。道不是知識，也不是能力，道是對宇宙運行規律的最深理解。", theoryEN: "Tao's characteristics: Everywhere, always, all-inclusive. Not knowledge or ability—deepest understanding of universe's operation.", caseCN: "古人說「道可道，非常道」，意思是真正的道超越了語言。", caseEN: "Ancients said 'The Tao that can be spoken is not the eternal Tao'—true Tao transcends language."},
+            {num: "032", titleCN: "源頭OS", titleEN: "Source Operating System", phase: 5, descCN: "一切事物都有源頭。找到源頭，才能永遠不迷失。", descEN: "All things have a source. Find the source, never be lost.", formulaCN: "現象→原因→本質→根源→源頭→回歸", formulaEN: "Phenomenon→Cause→Essence→Root→Source→Return", theoryCN: "源頭思維的本質是不斷問「為什麼」。表面看複雜的事物，都來自於簡單的源頭。", theoryEN: "Source thinking essence is continuous 'Why?'. Complex things come from simple sources.", caseCN: "所有疾病的源頭是什麼？是生活方式遠離自然。所有衝突的源頭是什麼？是溝通遠離真心。", caseEN: "All disease's source? Lifestyle far from nature. All conflict's source? Communication far from truth."},
+            {num: "033", titleCN: "起源OS", titleEN: "Origin Operating System", phase: 5, descCN: "理解起源，就能理解現在。理解現在，就能創造未來。", descEN: "Understand origin, understand present. Understand present, create future.", formulaCN: "過去→現在→未來 一切都有內在的因果連結", formulaEN: "Past→Present→Future All connected by cause and effect", theoryCN: "時間並不是線性的，而是一個連續的因果鏈。現在是過去所有選擇的結果，未來是現在選擇的種子。", theoryEN: "Time isn't linear—continuous causal chain. Present is result of all past choices; future is seed of current choices.", caseCN: "你的童年塑造了你的思維。你的思維決定了你的選擇。你的選擇決定了你的人生。", caseEN: "Childhood shapes thinking. Thinking determines choices. Choices determine life."},
+            {num: "034", titleCN: "終極OS", titleEN: "Ultimate Operating System", phase: 5, descCN: "人生的終極問題：我是誰？我從哪裡來？我去哪裡去？", descEN: "Life's ultimate questions: Who am I? Where do I come from? Where am I going?", formulaCN: "自我認識→生命意義→永恆追尋→終極超越", formulaEN: "Self-knowledge→Life meaning→Eternal seeking→Ultimate transcendence", theoryCN: "這三個問題的答案決定了一個人對人生的理解。追尋這三個答案的過程，就是靈魂的修養過程。", theoryEN: "Answers to these questions determine life understanding. Seeking answers is soul's cultivation process.", caseCN: "蘇格拉底說「未經檢視的人生不值得活」。終極OS就是對這三個問題的持續檢視。", caseEN: "Socrates said 'Unexamined life isn't worth living'. Ultimate OS is continuous examination of these questions."},
+            
+            // 第六階段 035-036
+            {num: "035", titleCN: "無限OS", titleEN: "Infinity Operating System", phase: 6, descCN: "無限不是數字，無限是一種可能性。人的潛能是無限的。", descEN: "Infinity isn't number—it's possibility. Human potential is infinite.", formulaCN: "有限→無限 這個轉變發生在認識的瞬間", formulaEN: "Finite→Infinite This transformation happens in moment of awareness", theoryCN: "人之所以被限制，不是因為沒有能力，而是因為相信自己有限。打破這個信念，就打破了所有的限制。", theoryEN: "People aren't limited by ability—belief in their limits. Break that belief, break all limits.", caseCN: "科學家說人類只用了大腦的10%。想像如果用了50%會怎樣？用了100%？", caseEN: "Scientists say humans use 10% of brain. Imagine using 50%? 100%?"},
+            {num: "036", titleCN: "生成OS", titleEN: "Generation Operating System", phase: 6, descCN: "最高的成就不是改變世界，而是參與創造新的世界。", descEN: "Highest achievement isn't changing world—participating in creating new worlds.", formulaCN: "意識進化→能力進化→世界進化→新的可能性不斷生成", formulaEN: "Consciousness evolves→Ability evolves→World evolves→New possibilities continuously generate", theoryCN: "Life OS的最終目標不是自我完善，而是成為生成者。每個人都是宇宙的創造者，參與著新世界的不斷生成。", theoryEN: "Life OS's ultimate goal isn't self-perfection—becoming a creator. Each person participates in universe's continuous creation.", caseCN: "從一個人的角度，我們在完善自己。從宇宙的角度，我們在參與宇宙的進化。這就是高維利他即利己的真正含義。", caseEN: "From personal view, we perfect ourselves. From universe's view, we participate in cosmic evolution. This is true meaning of high-dimensional altruism equals self-benefit."}
+        ];
+        
+        function renderModules() {
+            const container = document.getElementById('modulesContainer');
+            container.innerHTML = '';
+            
+            let currentPhase = null;
+            
+            lifeOSModules.forEach(module => {
+                if (currentPhase !== module.phase) {
+                    const phaseHeader = document.createElement('div');
+                    phaseHeader.style.cssText = 'grid-column: 1/-1; margin-top: 40px; padding: 20px; background: linear-gradient(135deg, #1A2B5F 0%, #0D1B3E 100%); color: white; border-radius: 8px; text-align: center;';
+                    
+                    const phaseTitles = {
+                        1: "第一階段 | Phase 1 - 生命OS核心系統",
+                        2: "第二階段 | Phase 2 - 系統與演化",
+                        3: "第三階段 | Phase 3 - 文明與真理",
+                        4: "第四階段 | Phase 4 - 真理與創造",
+                        5: "第五階段 | Phase 5 - 道與源頭",
+                        6: "第六階段 | Phase 6 - 無限生成"
+                    };
+                    
+                    phaseHeader.innerHTML = `<h2 style="margin: 0; font-size: 1.6em;">${phaseTitles[module.phase]}</h2>`;
+                    container.appendChild(phaseHeader);
+                    currentPhase = module.phase;
+                }
+                
+                const card = document.createElement('div');
+                card.className = 'module-card';
+                card.innerHTML = `
+                    <div class="module-header" onclick="toggleModule(this)">
+                        <div class="module-meta">
+                            <div class="module-num">Module ${module.num}</div>
+                            <div class="module-title-cn">${module.titleCN}</div>
+                            <div class="module-title-en">${module.titleEN}</div>
+                        </div>
+                        <div class="module-icon">▼</div>
+                    </div>
+                    <div class="module-content">
+                        <div class="section-title">📌 核心公式 | Core Formula</div>
+                        <div class="formula-box">CN: ${module.formulaCN}\n\nEN: ${module.formulaEN}</div>
+                        
+                        <div class="section-title">🎯 理論 | Theory</div>
+                        <div class="bilingual-block">
+                            <div class="cn-content">${module.theoryCN}</div>
+                            <div class="en-content">${module.theoryEN}
+                                <button class="tts-btn" data-text="${module.theoryEN}">🔊 Read Theory</button>
+                            </div>
+                        </div>
+                        
+                        <div class="section-title">💡 應用案例 | Case Study</div>
+                        <div class="bilingual-block">
+                            <div class="cn-content">${module.caseCN}</div>
+                            <div class="en-content">${module.caseEN}
+                                <button class="tts-btn" data-text="${module.caseEN}">🔊 Read Cases</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+            
+            // 添加 TTS 事件委託
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('tts-btn')) {
+                    e.stopPropagation();
+                    const text = e.target.dataset.text;
+                    if (speechSynthesis.speaking) {
+                        speechSynthesis.cancel();
+                        e.target.textContent = '🔊 Read';
+                    } else {
+                        const utterance = new SpeechSynthesisUtterance(text);
+                        utterance.lang = 'en-US';
+                        utterance.rate = 0.85;
+                        utterance.onend = function() {
+                            e.target.textContent = '🔊 Read';
+                        };
+                        speechSynthesis.speak(utterance);
+                        e.target.textContent = '⏹ Stop';
+                    }
+                }
+            });
+        }
+        
+        function toggleModule(header) {
+            const card = header.closest('.module-card');
+            card.classList.toggle('open');
+        }
+        
+        function expandAll() {
+            document.querySelectorAll('.module-card').forEach(card => card.classList.add('open'));
+        }
+        
+        function collapseAll() {
+            document.querySelectorAll('.module-card').forEach(card => card.classList.remove('open'));
+        }
+        
+        function toggleDiagrams() {
+            const section = document.getElementById('diagramsSection');
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                section.style.display = 'none';
+            }
+        }
+        
+        function searchModules() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.module-card');
+            
+            cards.forEach(card => {
+                const titleCN = card.querySelector('.module-title-cn').textContent.toLowerCase();
+                const titleEN = card.querySelector('.module-title-en').textContent.toLowerCase();
+                const moduleNum = card.querySelector('.module-num').textContent.toLowerCase();
+                
+                const matches = !searchTerm || titleCN.includes(searchTerm) || titleEN.includes(searchTerm) || moduleNum.includes(searchTerm);
+                card.style.display = matches ? '' : 'none';
+            });
+        }
+        
+        // 初始化
+        renderModules();
+    </script>
+</body>
+</html>
