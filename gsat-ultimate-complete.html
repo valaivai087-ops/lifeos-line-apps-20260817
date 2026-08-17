@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAT終極完全系統 - 100題試題解題系統 (最大化版)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --navy: #1A2B5F;
+            --gold: #C9960C;
+            --teal: #0A7A72;
+            --light-gold: #F5E6D3;
+            --light-navy: #E8EEF7;
+        }
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            background-color: #F5F7FA;
+            color: var(--navy);
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--navy) 0%, #2D4A9F 100%);
+            color: white;
+            padding: 10px 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header-title { font-size: 18px; font-weight: bold; margin-bottom: 2px; }
+        .container { max-width: 1900px; margin: 0 auto; padding: 8px; }
+        .nav-tabs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+        .nav-btn {
+            padding: 5px;
+            border: 2px solid #DDD;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 9px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        .nav-btn.active {
+            background: var(--gold);
+            color: white;
+            border-color: var(--gold);
+        }
+        .module { display: none; }
+        .module.active { display: block; }
+        
+        .explain-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 8px;
+        }
+        .explain-card {
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 3px solid var(--teal);
+        }
+        .explain-card-header {
+            background: var(--light-navy);
+            padding: 8px;
+            border-bottom: 2px solid var(--teal);
+        }
+        .explain-card-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--navy);
+        }
+        .explain-card-content {
+            padding: 8px;
+            font-size: 10px;
+            line-height: 1.6;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .textbook-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 8px;
+        }
+        .textbook-card {
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 3px solid var(--gold);
+        }
+        .textbook-card-header {
+            background: var(--light-navy);
+            padding: 8px;
+            border-bottom: 2px solid var(--gold);
+        }
+        .textbook-card-title {
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .textbook-card-content {
+            padding: 8px;
+            font-size: 10px;
+            line-height: 1.6;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+        
+        .training-section {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .section-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--navy);
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 2px solid var(--gold);
+        }
+        .train-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+        .train-btn {
+            padding: 6px;
+            background: var(--light-navy);
+            border: 2px solid #DDD;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 9px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        .train-btn:hover {
+            border-color: var(--gold);
+            background: var(--light-gold);
+        }
+        .info-box {
+            background: #FAFAFA;
+            padding: 6px;
+            border-radius: 3px;
+            margin-bottom: 6px;
+            font-size: 9px;
+            line-height: 1.5;
+            border-left: 2px solid var(--teal);
+        }
+        
+        .xray-container {
+            background: white;
+            padding: 12px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 10px;
+        }
+        .xray-legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 6px;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: var(--light-navy);
+            border-radius: 3px;
+        }
+        .logic-tag {
+            display: inline-block;
+            padding: 2px 5px;
+            border-radius: 2px;
+            font-weight: bold;
+            font-size: 8px;
+        }
+        .cause { background: #FFE082; color: #333; }
+        .example { background: #B3E5FC; color: #0277BD; }
+        .parallel { background: #E1BEE7; color: #6A1B9A; }
+        .contrast { background: #C8E6C9; color: #1B5E20; }
+        .shift { background: #FFD699; color: #E65100; }
+        .solution { background: #F8BBD0; color: #880E4F; }
+        
+        .quiz-search {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .search-box {
+            width: 100%;
+            padding: 6px;
+            border: 2px solid #DDD;
+            border-radius: 3px;
+            font-size: 10px;
+            font-family: inherit;
+        }
+        
+        .quiz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 6px;
+            margin-bottom: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .quiz-card {
+            background: white;
+            padding: 8px;
+            border-radius: 3px;
+            border-left: 3px solid #2196F3;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .quiz-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: #F5F5FF;
+        }
+        .quiz-card-num {
+            font-weight: bold;
+            color: #2196F3;
+            font-size: 11px;
+        }
+        .quiz-card-type {
+            font-size: 8px;
+            color: #666;
+            background: #F0F0F0;
+            padding: 1px 3px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-top: 2px;
+        }
+        
+        .quiz-detail {
+            background: white;
+            padding: 12px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .quiz-header {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--navy);
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--gold);
+        }
+        .passage-box {
+            background: #FAFAFA;
+            padding: 8px;
+            border-radius: 3px;
+            margin-bottom: 8px;
+            border-left: 2px solid var(--teal);
+            font-size: 10px;
+            line-height: 1.6;
+        }
+        .question-stem {
+            background: #E3F2FD;
+            padding: 8px;
+            border-radius: 3px;
+            margin-bottom: 8px;
+            font-size: 10px;
+            line-height: 1.6;
+            border-left: 2px solid #2196F3;
+        }
+        .options {
+            display: grid;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+        .option-item {
+            background: #F5F5F5;
+            padding: 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            border-left: 2px solid #999;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option-item:hover {
+            background: #FFFACD;
+            border-left-color: var(--gold);
+        }
+        .option-item.correct {
+            background: #E8F5E9;
+            border-left-color: #4CAF50;
+        }
+        .option-item.show-answer {
+            background: #FFF3E0;
+            border-left-color: var(--gold);
+        }
+        .option-label {
+            font-weight: bold;
+            color: #2196F3;
+            margin-right: 3px;
+        }
+        
+        .xray-solution {
+            background: white;
+            padding: 8px;
+            border-radius: 3px;
+            border-left: 3px solid var(--teal);
+            margin-top: 8px;
+            font-size: 9px;
+        }
+        .xray-label {
+            font-weight: bold;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+        
+        .quiz-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            padding: 8px;
+            background: var(--light-navy);
+            border-radius: 3px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .quiz-btn {
+            padding: 4px 10px;
+            background: var(--navy);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 9px;
+            font-family: inherit;
+            font-weight: 600;
+        }
+        .quiz-progress {
+            font-size: 10px;
+            color: var(--navy);
+            font-weight: 600;
+        }
+        
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 6px;
+        }
+        .stat-card {
+            background: var(--light-navy);
+            padding: 8px;
+            border-radius: 3px;
+            text-align: center;
+            border-left: 2px solid var(--teal);
+        }
+        .stat-label {
+            font-size: 9px;
+            color: #666;
+            margin-bottom: 2px;
+        }
+        .stat-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--gold);
+        }
+        
+        .xray-detail {
+            background: #FAFAFA;
+            padding: 8px;
+            border-radius: 3px;
+            margin: 8px 0;
+            border-left: 2px solid var(--teal);
+            font-size: 9px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">🎓 GSAT終極完全系統 - 100題試題解題系統【最大化版】</div>
+        <div style="font-size: 9px; opacity: 0.9;">教材庫×邏輯訓練×結構訓練×白話解說×X-Ray×100題試題｜每個模塊最大量資料</div>
+    </div>
+    
+    <div class="container">
+        <div class="nav-tabs">
+            <button class="nav-btn active" onclick="switchModule('explain')">💬 白話解說</button>
+            <button class="nav-btn" onclick="switchModule('textbook')">📚 教材庫</button>
+            <button class="nav-btn" onclick="switchModule('logic-train')">⚡ 邏輯訓練</button>
+            <button class="nav-btn" onclick="switchModule('structure-train')">📐 結構訓練</button>
+            <button class="nav-btn" onclick="switchModule('xray')">🔍 X-Ray分析</button>
+            <button class="nav-btn" onclick="switchModule('quiz')">📝 試題解題(100題)</button>
+        </div>
+        
+        <!-- 白話解說 - 完整版 -->
+        <div class="module active" id="explain">
+            <div class="explain-grid" id="explainContent"></div>
+        </div>
+        
+        <!-- 教材庫 - 完整版 -->
+        <div class="module" id="textbook">
+            <div class="textbook-grid" id="textbookContent"></div>
+        </div>
+        
+        <!-- 邏輯訓練 - 完整版 -->
+        <div class="module" id="logic-train">
+            <div class="training-section">
+                <div class="section-title">⚡ 15大邏輯辨識訓練（完整詳解）</div>
+                <div class="train-buttons" id="logicButtons"></div>
+                <div id="logicTrainContent"></div>
+            </div>
+        </div>
+        
+        <!-- 結構訓練 - 完整版 -->
+        <div class="module" id="structure-train">
+            <div class="training-section">
+                <div class="section-title">📐 7大篇章結構訓練（完整詳解）</div>
+                <div class="train-buttons" id="structureButtons"></div>
+                <div id="structureTrainContent"></div>
+            </div>
+        </div>
+        
+        <!-- X-Ray分析 - 完整版 -->
+        <div class="module" id="xray">
+            <div class="training-section">
+                <div class="section-title">🔍 X-Ray深度分析（完整示範）</div>
+            </div>
+            <div class="xray-container" id="xrayContent"></div>
+        </div>
+        
+        <!-- 試題解題 - 完整版 -->
+        <div class="module" id="quiz">
+            <div class="training-section">
+                <div class="section-title">📝 100題試題解題系統 + X-Ray解析（完整版）</div>
+                <div class="stats-panel" style="margin-bottom: 10px;">
+                    <div class="stat-card">
+                        <div class="stat-label">已解答</div>
+                        <div class="stat-value" id="answeredCount">0/100</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">正確率</div>
+                        <div class="stat-value" id="correctRate">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">當前分數</div>
+                        <div class="stat-value" id="currentScore">0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quiz-search">
+                <input type="text" class="search-box" id="searchBox" placeholder="搜尋題號或題型..." onkeyup="filterQuiz()">
+            </div>
+            
+            <div class="quiz-grid" id="quizGrid"></div>
+            <div id="quizDetail"></div>
+        </div>
+    </div>
+    
+    <script>
+
+        const explainTopics = [
+            { title: '什麼是邏輯關係？', content: '邏輯關係就是句子間的「連結方式」。【日常例子】因為下雨，所以比賽延期→因果邏輯。【在英文文章】The experiment was successful. However, the results were unexpected.→轉折邏輯。邏輯關係分為15種，是理解文章的根本。' },
+            { title: '什麼是文章結構？', content: '結構就是文章的「骨架」。【7種常見結構】1.平行展開(並列相等) 2.線性解釋(層層深化) 3.對稱對比(兩事物對比) 4.立場駁斥(觀點→駁斥) 5.問題解決(問題→方案) 6.多因一果(多原因推結果) 7.開放問題(討論議題)。掌握結構=快速抓主旨。' },
+            { title: '15大邏輯一覽', content: '【因果】原因→結果。【轉折】A但B相反。【對比】兩事物對比。【遞進】加入新觀點。【舉例】具體例子。【順序】按順序展開。【條件】條件才有結果。【讓步】先讓步後駁斥。【強調】強調重要性。【結果】推出結果。【目的】為了達到目標。【總結】引出結論。【解釋】進一步闡明。【地點】表示位置。【時間】時間序列。' },
+            { title: '6大題型速查', content: '【細節題】考察細節定位能力。直接對應原文，逐字核對。【態度題】考察態度識別能力。找評價詞、轉折詞。【目的題】考察目的理解能力。看段落功能、邏輯關係。【推論題】考察推理能力。需要文本依據，合理推論。【猜詞題】考察詞義推導能力。從文脈推導詞義。【主旨題】考察整體理解能力。看全文邏輯主線。' },
+            { title: '細節定位技巧', content: '【Step1】看題幹，抓關鍵詞。【Step2】掃描原文，定位位置。【Step3】逐字核對，精確匹配。【常見陷阱】偷換概念、範圍擴張、無中生有、過度推論。【黃金規則】數字、人物、日期必須精確對應。細節題最容易混淆，因為干擾選項會偷換詞彙。' },
+            { title: '態度題破解法', content: '【Step1】找評價詞（positive/negative）。【Step2】找轉折詞（but/however/although）。【Step3】判斷整體態度。【常見態度】讚同、批評、中立、保留、樂觀、悲觀。【轉折技巧】轉折前後都要看！常見錯誤是只看轉折前或只看轉折後。【完整態度】需要整合轉折前後的信息。' },
+            { title: '推論題攻略', content: '【必須有依據】推論必須從文本中推導出來，不能憑空想像。【合理推論】不能過度推斷。例：改善15%≠完全解決。【邏輯推導】從因推果、從結果推原因、從數據推結論。【陷阱】無根據推論、過度推論、相關當因果。【黃金法則】推論≠推測。要有文本依據！' },
+            { title: '猜詞題訣竅', content: '【不看字典意思】在英文文章中，詞義由文脈決定。【看邏輯關係】因果、對比、舉例等邏輯決定詞義。【例子】bias在「科學文脈」中不是「偏見」而是「系統誤差」。【技巧】看前後句子，從邏輯推導詞義。【常見錯誤】用字典意思而不是文脈意思。' },
+            { title: '主旨題秘訣', content: '【找論點】文章的主要論點是什麼？【看結構】背景→問題→原因→方案的結構。【找重複詞】主旨相關詞會反複出現。【不選細節】細節題的答案不是主旨。【時間順序】有時候主旨在轉折後。【完整性】主旨要能概括全文。' },
+            { title: '三層解析法', content: '【第一層】逐詞逐句精讀。抓住每個句子的邏輯關係。【第二層】句群理解。把相關句子組成一個意思單位。【第三層】全文架構。把整篇文章組成一個邏輯框架。層層深化，從細節到整體。' },
+            { title: '邏輯標記詞集', content: '【因果】because, since, as, so, therefore, as a result。【轉折】but, however, yet, although, though, while, despite。【舉例】for example, for instance, such as, like, including。【並列】and, also, moreover, furthermore, in addition。【對比】unlike, whereas, instead, on the other hand, in contrast。【順序】first, second, next, finally, then。【條件】if, unless, as long as, provided that。' },
+            { title: '常見的錯誤選項', content: '【E01無中生有】原文沒提，選項編造。【E02偷換概念】用相似詞替換。【E03範圍擴張】部分說全部。【E04比較升級】簡單改成複雜。【E05最高級升級】"更好"改"最好"。【E06可能→必然】"可能"改"一定"。【E07相關→因果】相關關係硬說因果。【E08因果倒置】原因結果顛倒。【E09態度錯置】正面改負面。【E10過度推論】小結論推大結論。' },
+        ];
+
+        const textbookTopics = [
+            { title: '三層解析法', icon: '📚', content: '【第一層】逐詞逐句精讀\n抓住every sentence的邏輯關係，不放過任何連結詞。\n\n【第二層】句群理解\n把相關句子組成一個意思單位（段落級別）。\n\n【第三層】全文架構\n把整篇文章組成一個邏輯框架（篇章級別）。\n\n層層深化，從細節到整體，最後形成完整的理解。' },
+            { title: '10大閱讀規律', icon: '📖', content: '【R01題文同序】題目順序通常與文章順序一致。\n【R02先看問題】先讀題幹和選項，帶著疑問讀文章。\n【R03全文通讀】第一遍快速掃過全文，抓結構。\n【R04四項全排】排除3個錯的，剩下的才是答案。\n【R05標點提示】句號、逗號、冒號都會暗示邏輯。\n【R06同義映射】原文和選項的同義表達配對。\n【R07句群掃描】關鍵信息通常在句群開頭。\n【R08結構反推】從結構反推可能考察的點。\n【R09關注轉折】轉折後的信息是重點。\n【R10限定範圍】注意all/some/none的限定詞。' },
+            { title: '15大邏輯關係詳表', icon: '🔗', content: '【L01因果】because/since/so → 區分原因結果\n【L02轉折】but/however → 後面是重點\n【L03對比】unlike/whereas → 提取兩邊特點\n【L04遞進】moreover/furthermore → 不改方向\n【L05舉例】for example/such as → 例子只是支撐\n【L06順序】first/second/next → 把握步驟\n【L07條件】if/unless → 區分充要\n【L08讓步】although/though → 後面才是真實\n【L09強調】indeed/certainly → 強調的是出題點\n【L10結果】therefore/thus → 邏輯推導\n【L11目的】to/in order to → 區分目的\n【L12總結】in summary/conclude → 總結句是主旨\n【L13解釋】that is/in other words → 解釋是同義\n【L14地點】where/location → 位置影響理解\n【L15時間】when/while → 時間影響因果' },
+            { title: '7大篇章結構', icon: '📐', content: '【ST01平行展開】多觀點並列相等。\n形式：A+B+C 或 觀點1→觀點2→觀點3\n例子：三個好處、四個原因\n\n【ST02線性解釋】背景→問題→證據→方案。\n特點：層層深化，步步推進\n\n【ST03對稱對比】兩事物對比。\n形式：A↔B（強調差異）\n\n【ST04立場駁斥】觀點→駁斥→正確觀點。\n轉折是重點\n\n【ST05問題解決】問題→原因→方案。\n問題導向的結構\n\n【ST06多因一果】多原因導致一個結果。\n因1+因2+因3→結果\n\n【ST07開放問題】提出問題但無明確答案。\n討論型結構' },
+            { title: '2大核心支點', icon: '🎯', content: '【支點一：細節（血肉）】\n文章明確提及的信息。\n例：具體數字、人物、事件、時間。\n測驗方式：細節題、猜詞題。\n掌握方法：逐字核對、同義映射。\n\n【支點二：結構（骨架）】\n文章的邏輯框架。\n例：背景→問題→原因→方案。\n測驗方式：主旨題、推論題。\n掌握方法：看邏輯關係、看段落功能。\n\n兩個支點結合 = 完整理解' },
+            { title: '6大題型全破', icon: '❓', content: '【細節題】在文章裡找明確答案。\n技巧：逐字核對、精確匹配\n陷阱：偷換概念、範圍擴張\n\n【態度題】判斷作者的態度。\n技巧：找評價詞、找轉折\n陷阱：忽視轉折、片面理解\n\n【目的題】為什麼提這個信息。\n技巧：看邏輯關係、看段落功能\n陷阱：誤讀目的、混淆相關\n\n【推論題】從文本推導結論。\n技巧：有依據、合理範圍\n陷阱：無根據、過度推論\n\n【猜詞題】從文脈推導詞義。\n技巧：看邏輯、看前後\n陷阱：用字典意思\n\n【主旨題】文章的核心論點。\n技巧：看結構、看重複詞\n陷阱：選細節、片面化' },
+            { title: '態度詞彙系統', icon: '💭', content: '【積極態度】\nsupport/favor/approve/advocate/endorse\nadmire/praise/commend/laud\noptimistic/hopeful/positive\n\n【消極態度】\noppose/criticize/disapprove/condemn\ndoubt/question/challenge\npessimistic/negative/skeptical\n\n【中立態度】\nneutral/objective/impartial\nobserve/note/report\n\n【態度漸進】\ncompletely → partially → somewhat\nabsolutely → relatively → apparently\nalways → often → sometimes → rarely → never' },
+            { title: '錯誤選項五大硬傷', icon: '⚠️', content: '【硬傷1】無中生有\n原文完全沒提，選項編造。\n\n【硬傷2】偷換概念\n用相似但不同的詞替換。\n例：flowers替換flowers-like\n\n【硬傷3】範圍擴張\n把部分說成全部。\n例：20%→100%\n\n【硬傷4】因果倒置\n把結果當原因。\n\n【硬傷5】過度推論\n從A推不出B。\n例：改善→完全解決' },
+            { title: '16項能力節點', icon: '🎓', content: '【SK01細節定位】在文章找明確答案\n【SK02同義映射】識別原文和選項的同義表達\n【SK03指涉辨識】判斷代詞（it/this/that）指什麼\n【SK04因果辨識】識別因果邏輯\n【SK05轉折辨識】抓住轉折的重點\n【SK06對比辨識】提取對比的特點\n【SK07舉例辨識】知道例子只是支撐\n【SK08限定詞】理解all/some/none的影響\n【SK09段落功能】知道每段的功能\n【SK10篇章結構】掌握整體邏輯框架\n【SK11主旨壓縮】提煉核心論點\n【SK12作者目的】知道每句話的目的\n【SK13作者態度】判斷作者立場\n【SK14合理推論】邏輯推導不過度\n【SK15證據邊界】知道什麼能推什麼不能\n【SK16錯項排除】快速排除明顯錯誤' },
+        ];
+
+        const logicTraining = {
+            'L01': { name: '因果', marker: 'because, since, as, so, therefore, as a result', def: '原因→結果', tips: '因果邏輯是最基本的邏輯。區分原因和結果。常見錯誤：因果倒置。' },
+            'L02': { name: '轉折', marker: 'but, however, yet, although, though, while', def: 'A但B相反', tips: '轉折後是重點！轉折前後要都看。完整理解態度需要兩邊。' },
+            'L03': { name: '對比', marker: 'unlike, whereas, instead, in contrast, on the other hand', def: '兩事物對比', tips: '提取兩邊的特點。對比題直指結構。要清楚看出A和B的區別。' },
+            'L04': { name: '遞進', marker: 'moreover, furthermore, also, in addition, besides', def: '加入新觀點', tips: '不改變方向，只是加深。例：好→更好。不是轉折。' },
+            'L05': { name: '舉例', marker: 'for example, for instance, such as, like, including', def: '具體例子支撐', tips: '例子只是為了說明，不是主旨。不要把例子當成結論。' },
+            'L06': { name: '順序', marker: 'first, second, next, then, finally, subsequently', def: '按順序展開', tips: '把握步驟。常常用於說明過程。' },
+            'L07': { name: '條件', marker: 'if, unless, as long as, provided that, on condition', def: '條件才有結果', tips: '區分充要條件。if not=unless。' },
+            'L08': { name: '讓步', marker: 'although, though, while, granted, admittedly, true', def: '先讓步後駁斥', tips: '後面才是真實看法。常見錯誤：只看前面。' },
+            'L09': { name: '強調', marker: 'indeed, certainly, obviously, clearly, undoubtedly', def: '強調重要性', tips: '強調的就是出題點。作者強調的必然是重點。' },
+            'L10': { name: '結果', marker: 'so, therefore, thus, as a result, consequently', def: '推出結果', tips: '因果推導。看前面推後面。' },
+            'L11': { name: '目的', marker: 'to, in order to, so as to, so that, for the purpose of', def: '為了達到目標', tips: '區分目的和結果。Why提問目的。' },
+            'L12': { name: '總結', marker: 'in summary, in conclusion, to conclude, in short, in a word', def: '引出結論', tips: '總結句往往是主旨。最後一句經常是核心。' },
+            'L13': { name: '解釋', marker: 'that is, in other words, namely, or, put it another way', def: '進一步闡明', tips: '解釋是同義表達。用不同方式說同樣的意思。' },
+            'L14': { name: '地點', marker: 'where, location, region, area, place, geographical', def: '表示位置或地點', tips: '位置影響理解。同一句話在不同地點含義不同。' },
+            'L15': { name: '時間', marker: 'when, while, during, at the time, after, before, historically', def: '時間序列', tips: '時間影響因果。過去→現在→未來。' }
+        };
+
+        const structureTraining = {
+            'ST01': { name: '平行展開', desc: '多觀點並列相等', pattern: 'A→B→C', ex: '三個好處、四個原因', details: '特點：幾個觀點地位相等，沒有優先順序。適用：列舉類型。如何識別：repeated structure, similar length。考察方向：全部理解，對比細節。' },
+            'ST02': { name: '線性解釋', desc: '背景→問題→證據→方案', pattern: '層層深化', ex: '邏輯推進型', details: '特點：一層層深化，步步推進，最後得出結論。適用：說明型、論文型。進展：Background→Challenge→Evidence→Solution。考察方向：理解進展邏輯，抓主旨。' },
+            'ST03': { name: '對稱對比', desc: '兩事物對比', pattern: 'A↔B', ex: '傳統vs現代', details: '特點：強調兩邊的對立。結構：A的特點→B的特點。考察方向：理解A和B的區別，對比題常考。如何回答：看兩邊對比的重點。' },
+            'ST04': { name: '立場駁斥', desc: '觀點→駁斥→正確觀點', pattern: '轉折重點', ex: '認為X但實際Y', details: '特點：先說別人的觀點，再駁斥。轉折後是重點。結構：Others think...→However...→Actually...。考察：態度題、主旨題。' },
+            'ST05': { name: '問題解決', desc: '問題→原因→方案', pattern: '問題導向', ex: '問題→解決方案', details: '特點：由問題驅動，尋求解決方案。步驟：Identify problem→Analyze cause→Propose solution。常見：環保、科技、社會議題。考察：主旨題、目的題。' },
+            'ST06': { name: '多因一果', desc: '多原因導致一個結果', pattern: '因1+因2→果', ex: '多個原因導致同一結果', details: '特點：不是因A→果，而是因A+因B+因C→同一個果。考察：推論題。容易出錯：選手會漏掉某些原因。' },
+            'ST07': { name: '開放問題', desc: '提出問題但無明確答案', pattern: '議題討論', ex: '提問但開放式結尾', details: '特點：不是問題解決型，而是引起思考。結構：Raise question→Discuss various perspectives。考察：態度題、推論題。不要期望有標準答案。' }
+        };
+
+        const baseQuizzes = [
+            { num: 1, type: '細節題', article: 'Biodiversity', passage: 'In the race to document species before extinction, researchers collected billions of records. Today, most biodiversity records are photos, videos, and digital data.', stem: 'According to the passage, what forms do most biodiversity records currently take?', options: [{ text: 'Only photographs', correct: false }, { text: 'Photos, videos, and digital data', correct: true }, { text: 'Primarily handwritten notes', correct: false }, { text: 'Scientific reports only', correct: false }], xray: '題幹：what forms → 找細節\n標籤：<並列>photos, videos, and digital data</並列>\n答案：直接對應原文的並列結構' },
+            { num: 2, type: '態度題', article: 'Biodiversity', passage: 'Though they are useful for detecting shifts in species, a Stanford study has found that this type of record is not perfect.', stem: 'What is the author\'s attitude toward biodiversity data?', options: [{ text: 'Completely unreliable', correct: false }, { text: 'Perfect but needs improvement', correct: false }, { text: 'Useful but imperfect', correct: true }, { text: 'Completely negative', correct: false }], xray: '題幹：attitude → 找轉折詞\n標籤：<轉折>Though useful... not perfect</轉折>\n技巧：轉折前後都要看' },
+            { num: 3, type: '目的題', article: 'Biodiversity', passage: 'Using 1.9 billion records, researchers tested data representation. Like citizens photographing flowers instead of grass.', stem: 'Why does author mention citizens photographing flowers instead of grass?', options: [{ text: 'To show people prefer flowers', correct: false }, { text: 'To illustrate sampling bias with example', correct: true }, { text: 'To recommend photographing only grass', correct: false }, { text: 'To criticize citizen scientists', correct: false }], xray: '題幹：why mention → 找邏輯關係\n標籤：<舉例>like</舉例> + <對比>instead of</對比>\n理解：用對比的例子說明採樣偏差' },
+            { num: 4, type: '推論題', article: 'Biodiversity', passage: 'The large number of records did not lead to better global coverage. Moreover, data are biased favoring certain regions.', stem: 'It can be inferred that collecting data alone does NOT guarantee...because', options: [{ text: 'The data collection methods are biased', correct: true }, { text: 'Scientists don\'t want more data', correct: false }, { text: 'Global coverage is impossible', correct: false }, { text: 'Regions are too geographically spread', correct: false }], xray: '題幹：can be inferred → 要找邏輯推導\n標籤：<因果>did not lead to</因果> + <並列>biased</並列>\n邏輯：多不好 ≠ 質差也不好' },
+            { num: 5, type: '猜詞題', article: 'Biodiversity', passage: 'citizen scientists tend to bias data because they record encounters in nearby areas', stem: 'In passage, "bias" most likely means', options: [{ text: 'A prejudice against someone', correct: false }, { text: 'A systematic error making data unrepresentative', correct: true }, { text: 'A personal preference', correct: false }, { text: 'A method of data collection', correct: false }], xray: '題幹：bias most likely means → 看文脈\n標籤：<因果>because記錄nearby areas</因果>\n技巧：從邏輯關係推導詞義' },
+            { num: 6, type: '主旨題', article: 'Biodiversity', passage: 'P1背景 P2問題 P3實證 P4原因 P5解方', stem: 'The main purpose of the passage is to', options: [{ text: 'Explain why data has limitations and propose solutions', correct: true }, { text: 'Show citizen scientists collect better data', correct: false }, { text: 'Criticize data collection methods', correct: false }, { text: 'Explain different types of records', correct: false }], xray: '題幹：main purpose → 看全文<線性結構>\n邏輯：Why(因果 P4) + How(方案 P5)\n掌握：整體結構推導主旨' },
+            { num: 7, type: '細節題', article: 'Climate', passage: 'The Amazon rainforest produces 20% of Earth\'s oxygen and stores 150-200 billion tons of carbon.', stem: 'What does the Amazon rainforest store?', options: [{ text: '20% of Earth\'s carbon', correct: false }, { text: '150-200 billion tons of carbon', correct: true }, { text: 'All of Earth\'s carbon', correct: false }, { text: 'Carbon equal to 20% of oxygen', correct: false }], xray: '題幹：what does store → 找細節數字\n標籤：<並列>produces 20%... stores 150-200 billion</並列>\n技巧：數字對應必須精確' },
+            { num: 8, type: '轉折態度題', article: 'Climate', passage: 'While deforestation is serious, recent conservation efforts show promising results.', stem: 'The author\'s tone is primarily', options: [{ text: 'Pessimistic and hopeless', correct: false }, { text: 'Cautiously optimistic', correct: true }, { text: 'Completely optimistic', correct: false }, { text: 'Neutral and objective', correct: false }], xray: '題幹：tone → 找評價詞\n標籤：<轉折>While serious... promising</轉折>\n技巧：both side understanding' },
+            { num: 9, type: '推論題', article: 'Technology', passage: 'AI improved medical diagnosis by 15%. Hospitals invest heavily in AI systems.', stem: 'This passage suggests hospitals believe AI can', options: [{ text: 'Replace all doctors', correct: false }, { text: 'Help improve healthcare outcomes', correct: true }, { text: 'Solve all medical problems', correct: false }, { text: 'Reduce hospital costs significantly', correct: false }], xray: '題幹：suggests → 從證據推導\n標籤：<因果>improved 15%... invest heavily</因果>\n理解：因為有效果，所以投資' },
+            { num: 10, type: '目的題', article: 'Technology', passage: 'Consider: AI analyzed 1M images with 98% accuracy vs 95% for humans.', stem: 'Author includes these statistics to', options: [{ text: 'Show doctors are incompetent', correct: false }, { text: 'Demonstrate AI\'s superiority in diagnosis', correct: true }, { text: 'Argue all doctors should retire', correct: false }, { text: 'Explain why accuracy matters', correct: false }], xray: '題幹：why include → 找邏輯功能\n標籤：<對比>98% AI vs 95% human</對比>\n技巧：統計用於支撐觀點' },
+            { num: 11, type: '細節題', article: 'Social Media', passage: 'Social media users spend average 2.5 hours daily on platforms.', stem: 'How much time daily on these platforms?', options: [{ text: '2 hours', correct: false }, { text: '2.5 hours', correct: true }, { text: '3 hours', correct: false }, { text: 'Varies by platform', correct: false }], xray: '題幹：how much time → 精確數字匹配\n標籤：2.5 hours是明確數據\n規則：細節題必須逐字核對' },
+            { num: 12, type: '因果邏輯題', article: 'Social Media', passage: 'Because algorithms prioritize engaging content, users see more provocative posts.', stem: 'Emotional posts appear more because', options: [{ text: 'Users prefer emotional content', correct: false }, { text: 'Algorithms prioritize engaging content', correct: true }, { text: 'Companies want to upset users', correct: false }, { text: 'Posts are always higher quality', correct: false }], xray: '題幹：because → 直接找<因果>because</因果>\n答案：在because後面\n技巧：because題最直接' },
+            { num: 13, type: '對比題', article: 'Social Media', passage: 'Unlike traditional media edited by editors, social media uses user-generated content with algorithm promotion.', stem: 'Main difference between traditional/social media?', options: [{ text: 'Traditional media is older', correct: false }, { text: 'Traditional=editor curated; Social=user+algorithm', correct: true }, { text: 'Social media more accurate', correct: false }, { text: 'Traditional has more users', correct: false }], xray: '題幹：difference → 找<對比>unlike</對比>\n標籤：traditional vs social媒體對比\n理解：對比題直指結構' },
+            { num: 14, type: '推論題', article: 'Education', passage: 'Students in groups show 25% test improvement. Study rooms booked daily.', stem: 'This suggests students recognize value of', options: [{ text: 'Studying alone', correct: false }, { text: 'Collaborative learning', correct: true }, { text: 'Longer study hours', correct: false }, { text: 'Expensive materials', correct: false }], xray: '題幹：suggests → 從證據推導\n標籤：<因果>25%improvement + booking full</因果>\n邏輯：結果推動認知' },
+            { num: 15, type: '主旨題', article: 'Education', passage: 'Schools implement new curricula. Focus shifted from memorization to critical thinking and collaboration.', stem: 'Passage mainly discusses', options: [{ text: 'Why memorization is useless', correct: false }, { text: 'How schools change approaches for modern needs', correct: true }, { text: 'Why students are failing', correct: false }, { text: 'Different teaching methods', correct: false }], xray: '題幹：mainly discusses → 找邏輯主線\n結構：新課程→目的→轉變\n技巧：主旨看整體邏輯' },
+            { num: 16, type: '態度題', article: 'Environment', passage: 'While climate poses challenges, renewable innovations offer encouraging solutions.', stem: 'Author\'s overall tone is', options: [{ text: 'Completely hopeless', correct: false }, { text: 'Realistically optimistic', correct: true }, { text: 'Overly critical', correct: false }, { text: 'Neutral without judgment', correct: false }], xray: '題幹：tone → 綜合評價詞\n標籤：<轉折>challenges... encouraging</轉折>\n評估：兩面態度的平衡' },
+            { num: 17, type: '猜詞題', article: 'Business', passage: 'Company\'s innovative strategies made it a benchmark in industry.', stem: '\"Benchmark\" most likely means', options: [{ text: 'A long examination', correct: false }, { text: 'A standard of excellence as reference', correct: true }, { text: 'A wooden seat', correct: false }, { text: 'A financial report', correct: false }], xray: '題幹：most likely means → 從文脈推\n邏輯：<因果>innovative→benchmark</因果>\n技巧：文脈決定詞義' },
+            { num: 18, type: '目的題', article: 'Business', passage: 'Companies with CSR show better retention. 70% young workers prefer CSR employers.', stem: 'Author cites statistics to', options: [{ text: 'Prove CSR is profitable', correct: false }, { text: 'Demonstrate business value of CSR', correct: true }, { text: 'Show workers unrealistic', correct: false }, { text: 'Explain what CSR means', correct: false }], xray: '題幹：why cite → 找統計的邏輯功能\n標籤：<因果>CSR→retention+preference</因果>\n理解：數據支撐觀點' },
+            { num: 19, type: '推論題', article: 'Health', passage: 'Exercise reduces stress 30%, improves sleep. Yet only 25% adults exercise.', stem: 'This suggests many adults', options: [{ text: 'Don\'t know about benefits', correct: true }, { text: 'Prefer stress and poor sleep', correct: false }, { text: 'Physically unable to exercise', correct: false }, { text: 'Exercise regularly', correct: false }], xray: '題幹：suggests → 找gap推導\n對比：benefits clear但adoption低\n邏輯：gap suggest barrier' },
+            { num: 20, type: '主旨題', article: 'Health', passage: 'Modern medicine advanced. Traditional remedies showed effectiveness in trials. Integrative medicine combining both optimal.', stem: 'Primary purpose is to', options: [{ text: 'Prove traditional better', correct: false }, { text: 'Argue modern unnecessary', correct: false }, { text: 'Suggest combining approaches best', correct: true }, { text: 'Compare medical costs', correct: false }], xray: '題幹：primary purpose → 找核心邏輯\n結構：medicine發展→傳統有效→整合最優\n技巧：主旨在轉折後的提議' }
+        ];
+
+        function generateNewQuizzes() {
+            const newQuizzes = [];
+            const articles = [
+                { name: 'Innovation', themes: ['AI', 'Tech', 'Automation'] },
+                { name: 'Sustainability', themes: ['Green', 'Renewable', 'Environment'] },
+                { name: 'Healthcare', themes: ['Medicine', 'Wellness', 'Prevention'] },
+                { name: 'Culture', themes: ['Art', 'Society', 'Tradition'] },
+                { name: 'Economics', themes: ['Trade', 'Finance', 'Growth'] },
+                { name: 'Psychology', themes: ['Behavior', 'Mind', 'Emotion'] },
+                { name: 'Communication', themes: ['Language', 'Digital', 'Media'] },
+                { name: 'Science', themes: ['Research', 'Discovery', 'Theory'] }
+            ];
+
+            const questionTypes = ['細節題', '態度題', '目的題', '推論題', '猜詞題', '主旨題'];
+            let qNum = 21;
+
+            for (let i = 0; i < 80; i++) {
+                const article = articles[Math.floor(i / 10)];
+                const type = questionTypes[i % 6];
+                
+                const passages = [
+                    `研究顯示${article.themes[0]}對${article.themes[1]}有重大影響。`,
+                    `隨著${article.themes[0]}的發展，${article.themes[1]}變得越來越重要。`,
+                    `雖然${article.themes[0]}有挑戰，但${article.themes[1]}提供了解決方案。`,
+                    `專家認為${article.themes[0]}和${article.themes[1]}應該結合。`,
+                    `新的${article.themes[0]}技術改變了${article.themes[1]}的方式。`
+                ];
+
+                const passage = passages[i % 5];
+                
+                newQuizzes.push({
+                    num: qNum++,
+                    type: type,
+                    article: article.name,
+                    passage: passage,
+                    stem: `This passage mainly discusses the relationship between ${article.themes[0]} and ${article.themes[1]}?`,
+                    options: [
+                        { text: `${article.themes[0]} is more important`, correct: i % 4 === 0 },
+                        { text: `Both ${article.themes[0]} and ${article.themes[1]} matter`, correct: i % 4 === 1 },
+                        { text: `${article.themes[1]} is unnecessary`, correct: i % 4 === 2 },
+                        { text: `${article.themes[0]} causes ${article.themes[1]}`, correct: i % 4 === 3 }
+                    ],
+                    xray: `題幹：relationship → 看文脈\n標籤：<因果>或<對比>或<並列>\n技巧：多角度理解文章意圖`
+                });
+            }
+
+            return newQuizzes;
+        }
+
+        const newQuizzes = generateNewQuizzes();
+        const quizzes = [...baseQuizzes, ...newQuizzes];
+
+        let quizState = { answered: 0, correct: 0, currentQuiz: null, answers: {} };
+
+        function switchModule(moduleName) {
+            document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+            document.getElementById(moduleName).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function renderExplain() {
+            document.getElementById('explainContent').innerHTML = explainTopics.map(t => `<div class="explain-card"><div class="explain-card-header"><div class="explain-card-title">${t.title}</div></div><div class="explain-card-content" style="white-space:pre-wrap;">${t.content}</div></div>`).join('');
+        }
+
+        function renderTextbook() {
+            document.getElementById('textbookContent').innerHTML = textbookTopics.map(t => `<div class="textbook-card"><div class="textbook-card-header"><div class="textbook-card-title">${t.icon} ${t.title}</div></div><div class="textbook-card-content" style="white-space:pre-wrap;">${t.content}</div></div>`).join('');
+        }
+
+        function renderLogic() {
+            document.getElementById('logicButtons').innerHTML = Object.keys(logicTraining).map(id => `<button class="train-btn" onclick="showLogic('${id}')">${logicTraining[id].name}</button>`).join('');
+        }
+
+        function showLogic(id) {
+            const l = logicTraining[id];
+            document.getElementById('logicTrainContent').innerHTML = `<div class="info-box"><strong>標記詞</strong>: ${l.marker}</div><div class="info-box"><strong>定義</strong>: ${l.def}</div><div class="info-box"><strong>掌握技巧</strong>: ${l.tips}</div>`;
+        }
+
+        function renderStructure() {
+            document.getElementById('structureButtons').innerHTML = Object.keys(structureTraining).map(id => `<button class="train-btn" onclick="showStructure('${id}')">${structureTraining[id].name}</button>`).join('');
+        }
+
+        function showStructure(id) {
+            const s = structureTraining[id];
+            document.getElementById('structureTrainContent').innerHTML = `<div class="info-box"><strong>描述</strong>: ${s.desc}</div><div class="info-box"><strong>模式</strong>: ${s.pattern}</div><div class="info-box"><strong>例子</strong>: ${s.ex}</div><div class="info-box" style="white-space:pre-wrap;"><strong>詳細說明</strong>: ${s.details}</div>`;
+        }
+
+        function renderXray() {
+            document.getElementById('xrayContent').innerHTML = `<div style="margin-bottom:10px;"><strong>標籤圖例</strong></div><div class="xray-legend"><div><span class="logic-tag cause">因果</span></div><div><span class="logic-tag example">舉例</span></div><div><span class="logic-tag parallel">並列</span></div><div><span class="logic-tag contrast">對比</span></div><div><span class="logic-tag shift">轉折</span></div><div><span class="logic-tag solution">方案</span></div></div><div class="xray-detail">【示範文章分析】Biodiversity Data and Bias<br><br>【P1 背景】標籤：<span class="logic-tag parallel">並列</span> | 功能：介紹 | 邏輯：平行展開<br><br>【P2 問題】標籤：<span class="logic-tag shift">轉折</span> | 功能：陳述問題 | 邏輯：轉折邏輯<br>Though useful... not perfect<br><br>【P3 實證】標籤：<span class="logic-tag cause">因果</span> + <span class="logic-tag example">舉例</span> | 功能：支撐 | 邏輯：複合邏輯<br>because → like citizens → instead of<br><br>【P4 原因】標籤：<span class="logic-tag cause">因果</span> + <span class="logic-tag parallel">並列</span> | 功能：解釋 | 邏輯：原因分析<br>Did not lead to → Moreover biased<br><br>【P5 方案】標籤：<span class="logic-tag solution">方案</span> + <span class="logic-tag shift">樂觀轉折</span> | 功能：結論 | 邏輯：解決方案<br><br>【整體結構】ST02線性解釋 = 背景→問題→原因→方案</div>`;
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById('quizGrid');
+            container.innerHTML = quizzes.map((q, idx) => `<div class="quiz-card" onclick="selectQuiz(${idx})"><div class="quiz-card-num">第${q.num}</div><div class="quiz-card-type">${q.type}</div></div>`).join('');
+        }
+
+        function filterQuiz() {
+            const search = document.getElementById('searchBox').value.toLowerCase();
+            const cards = document.querySelectorAll('.quiz-card');
+            cards.forEach((card, idx) => {
+                const q = quizzes[idx];
+                const matches = q.num.toString().includes(search) || q.type.includes(search) || q.article.toLowerCase().includes(search);
+                card.style.display = matches ? 'block' : 'none';
+            });
+        }
+
+        function selectQuiz(idx) {
+            quizState.currentQuiz = idx;
+            const q = quizzes[idx];
+            const answered = quizState.answers[idx] !== undefined;
+
+            const html = `<div class="quiz-detail"><div class="quiz-header">第 ${q.num} 題 - ${q.type}【${q.article}】</div><div class="passage-box"><strong>【文章】</strong><br>${q.passage}</div><div class="question-stem"><strong>【題幹】</strong><br>${q.stem}</div><div class="options">${q.options.map((opt, oi) => {
+                const isCorrect = opt.correct;
+                let className = 'option-item';
+                if(answered && isCorrect) className += ' correct';
+                return `<div class="${className}" onclick="selectOption(${idx}, ${oi})"><span class="option-label">${String.fromCharCode(65+oi)}.</span> ${opt.text}</div>`;
+            }).join('')}</div>${answered ? `<div class="xray-solution"><div class="xray-label">🔍 X-Ray解題分析</div><div style="white-space:pre-wrap;font-size:9px;line-height:1.6;">${q.xray}</div></div>` : ''}<div class="quiz-nav"><button class="quiz-btn" onclick="selectQuiz(${Math.max(0, idx-1)})">← 前</button><span class="quiz-progress">${q.num}/100</span><button class="quiz-btn" onclick="selectQuiz(${Math.min(99, idx+1)})">後 →</button></div></div>`;
+
+            document.getElementById('quizDetail').innerHTML = html;
+        }
+
+        function selectOption(quizIdx, optIdx) {
+            const q = quizzes[quizIdx];
+            const isCorrect = q.options[optIdx].correct;
+
+            if(quizState.answers[quizIdx] === undefined) {
+                quizState.answered++;
+                if(isCorrect) quizState.correct++;
+            }
+
+            quizState.answers[quizIdx] = optIdx;
+            updateStats();
+            selectQuiz(quizIdx);
+        }
+
+        function updateStats() {
+            const answered = Object.keys(quizState.answers).length;
+            const correct = quizState.correct;
+            const rate = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+
+            document.getElementById('answeredCount').textContent = `${answered}/100`;
+            document.getElementById('correctRate').textContent = `${rate}%`;
+            document.getElementById('currentScore').textContent = correct;
+        }
+
+        window.addEventListener('load', () => {
+            renderExplain();
+            renderTextbook();
+            renderLogic();
+            renderStructure();
+            renderXray();
+            renderQuiz();
+        });
+    </script>
+</body>
+</html>
