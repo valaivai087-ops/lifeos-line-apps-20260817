@@ -1,6 +1,14 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LifeOS APP 完整清單 內容個別化新版</title><style>body{font-family:system-ui,"Noto Sans TC",Arial,sans-serif;line-height:1.75;color:#132033;background:#f6f8fb;margin:0}.wrap{max-width:1120px;margin:auto;padding:36px 20px}h1{font-size:32px;margin:0 0 8px}h2{margin-top:36px;color:#1747a6;border-bottom:2px solid #d8e4ff;padding-bottom:8px}.app{background:white;border:1px solid #dbe3ef;border-radius:10px;padding:20px;margin:16px 0;box-shadow:0 8px 22px #10203312}.meta{color:#52647a}.url{word-break:break-all;color:#1f5bd8}.tag{display:inline-block;background:#eaf1ff;color:#1f5bd8;border-radius:999px;padding:3px 9px;font-weight:700}ol{margin-top:6px}.old{font-size:14px;color:#6a7890}</style></head><body><main class="wrap">
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LifeOS APP 完整清單 內容個別化新版</title><style>body{font-family:system-ui,"Noto Sans TC",Arial,sans-serif;line-height:1.75;color:#132033;background:#f6f8fb;margin:0}.wrap{max-width:1120px;margin:auto;padding:36px 20px}h1{font-size:32px;margin:0 0 8px}h2{margin-top:36px;color:#1747a6;border-bottom:2px solid #d8e4ff;padding-bottom:8px}.app{background:white;border:1px solid #dbe3ef;border-radius:10px;padding:20px;margin:16px 0;box-shadow:0 8px 22px #10203312}.meta{color:#52647a}.url{word-break:break-all;color:#1f5bd8}.tag{display:inline-block;background:#eaf1ff;color:#1f5bd8;border-radius:999px;padding:3px 9px;font-weight:700}ol{margin-top:6px}.old{font-size:14px;color:#6a7890}.catalog-search{position:sticky;top:0;z-index:20;background:#ffffffee;backdrop-filter:blur(10px);border:1px solid #dbe3ef;border-radius:12px;padding:16px;margin:20px 0 24px;box-shadow:0 12px 28px #10203318}.search-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.search-input{flex:1;min-width:240px;font-size:18px;padding:12px 14px;border:1px solid #b9c8de;border-radius:10px;outline:none}.search-input:focus{border-color:#1f5bd8;box-shadow:0 0 0 3px #dbe8ff}.search-btn{background:#1f5bd8;color:white;border:0;border-radius:10px;padding:12px 16px;font-weight:800;cursor:pointer}.search-hint{margin:8px 0 0;color:#52647a;font-size:14px}.search-count{font-weight:800;color:#1747a6}.hidden-by-search{display:none!important}.empty-search{background:white;border:1px dashed #b9c8de;border-radius:10px;padding:22px;margin:18px 0;color:#52647a;text-align:center}</style></head><body><main class="wrap">
 <h1>LifeOS 平台全部 APP 清單（214 個公開 APP）</h1>
 <p class="meta">公開平台：<a href="https://membership-app-e2147.web.app/">https://membership-app-e2147.web.app/</a>｜APP 數量：214｜名稱、介紹、金句、排句已依 APP 內容重新個別化。</p>
+<section class="catalog-search" aria-label="APP 搜尋">
+  <div class="search-row">
+    <input id="appSearch" class="search-input" type="search" placeholder="搜尋 APP 名稱、分類、介紹、網址，例如：英文、醫學、顯化、壓力、團購" autocomplete="off">
+    <button id="clearSearch" class="search-btn" type="button">清除</button>
+  </div>
+  <p class="search-hint">搜尋結果：<span id="searchCount" class="search-count">214</span> 個 APP。可用空格輸入多個關鍵字。</p>
+</section>
+<div id="emptySearch" class="empty-search hidden-by-search">沒有找到符合的 APP，請換一個關鍵字試試。</div>
 
 
 
@@ -3124,4 +3132,43 @@
 <li>打開 認知升維1000 - 雙語學習系統，讓學習、判斷與行動更有結構。</li>
 <li>把這個 APP 分享給需要的人，讓好工具真正被用起來。</li>
 </ol></section>
+<script id="catalog-search-script">
+(function(){
+  const input=document.getElementById('appSearch');
+  const clear=document.getElementById('clearSearch');
+  const count=document.getElementById('searchCount');
+  const empty=document.getElementById('emptySearch');
+  const apps=Array.from(document.querySelectorAll('section.app'));
+  const headings=Array.from(document.querySelectorAll('main.wrap > h2'));
+  const normalize=s=>(s||'').toLowerCase().replace(/\s+/g,' ').trim();
+  const appText=new Map(apps.map(app=>[app,normalize(app.innerText)]));
+  function updateHeadings(){
+    headings.forEach(h=>{
+      let visible=false;
+      let n=h.nextElementSibling;
+      while(n && n.tagName !== 'H2'){
+        if(n.classList && n.classList.contains('app') && !n.classList.contains('hidden-by-search')){ visible=true; break; }
+        n=n.nextElementSibling;
+      }
+      h.classList.toggle('hidden-by-search',!visible);
+    });
+  }
+  function runSearch(){
+    const terms=normalize(input.value).split(' ').filter(Boolean);
+    let shown=0;
+    apps.forEach(app=>{
+      const text=appText.get(app);
+      const ok=terms.length===0 || terms.every(t=>text.includes(t));
+      app.classList.toggle('hidden-by-search',!ok);
+      if(ok) shown++;
+    });
+    count.textContent=String(shown);
+    empty.classList.toggle('hidden-by-search',shown!==0);
+    updateHeadings();
+  }
+  input.addEventListener('input',runSearch);
+  clear.addEventListener('click',()=>{input.value='';runSearch();input.focus();});
+  runSearch();
+})();
+</script>
 </main></body></html>
