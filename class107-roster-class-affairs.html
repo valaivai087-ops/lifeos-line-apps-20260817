@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班級107 學生名冊 B版（班務版）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #2c3e50; min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        .home-page { background: white; border-radius: 15px; padding: 40px; text-align: center; }
+        .home-page h1 { color: #667eea; margin-bottom: 10px; font-size: 36px; }
+        .home-page p { color: #999; margin-bottom: 30px; font-size: 16px; font-weight: bold; }
+        .info-box { background: #e8eaf6; border-left: 4px solid #667eea; padding: 15px; margin-bottom: 30px; border-radius: 8px; color: #3f51b5; }
+        
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 40px 0; }
+        .stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 12px; }
+        .stat-card .number { font-size: 36px; font-weight: bold; }
+        .stat-card .label { font-size: 14px; margin-top: 8px; opacity: 0.9; }
+        
+        .menu-btn { padding: 15px 30px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin: 10px; }
+        .menu-btn:hover { background: #764ba2; }
+        
+        .query-page { background: white; border-radius: 15px; padding: 30px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #667eea; flex-wrap: wrap; gap: 15px; }
+        .header h2 { color: #667eea; flex: 1; }
+        .back-btn { padding: 10px 20px; background: #ddd; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        .search-box { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .search-box input { padding: 10px 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px; flex: 1; min-width: 200px; }
+        .search-box button { padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        .filter-btn { padding: 8px 15px; background: #f0f0f0; border: 2px solid #ddd; border-radius: 5px; cursor: pointer; font-size: 14px; }
+        .filter-btn.active { background: #667eea; color: white; border-color: #667eea; }
+        
+        .table-wrapper { overflow-x: auto; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { background: #667eea; color: white; padding: 10px; text-align: left; font-weight: bold; }
+        td { padding: 8px; border: 1px solid #e0e6ed; }
+        tr:nth-child(even) { background: #f9f9f9; }
+        tr:hover { background: #f0f4ff; }
+        
+        .export-btn { padding: 10px 20px; background: #3c3; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .copy-toast { position: fixed; bottom: 20px; right: 20px; background: #3c3; color: white; padding: 15px 25px; border-radius: 8px; display: none; z-index: 1000; }
+        .copy-toast.show { display: block; animation: slideIn 0.3s; }
+        @keyframes slideIn { from { transform: translateX(400px); } to { transform: translateX(0); } }
+        
+        .version-badge { display: inline-block; background: #667eea; color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-left: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page active" id="homePage">
+            <div class="home-page">
+                <h1>📋 班級107 學生名冊 <span class="version-badge">B版 班務版</span></h1>
+                <p>公開版 - 不包含敏感聯絡資訊</p>
+                <div class="info-box">✅ 此版本已去除敏感資訊，適合日常班級使用。</div>
+                <div class="stat-grid">
+                    <div class="stat-card"><div class="number">26</div><div class="label">總人數</div></div>
+                    <div class="stat-card"><div class="number">11</div><div class="label">男生</div></div>
+                    <div class="stat-card"><div class="number">15</div><div class="label">女生</div></div>
+                    <div class="stat-card"><div class="number">4</div><div class="label">原住民</div></div>
+                </div>
+                <div>
+                    <button class="menu-btn" onclick="goPage('tablePage')">📋 班級名單</button>
+                    <button class="menu-btn" onclick="goPage('searchPage')">🔍 搜尋學生</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="page" id="tablePage">
+            <div class="query-page">
+                <div class="header">
+                    <h2>📋 班級107 學生名單 <span class="version-badge">B版</span></h2>
+                    <button class="back-btn" onclick="goPage('homePage')">← 返回</button>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="tableSearch" placeholder="搜尋..." onkeyup="filterTable()">
+                    <button onclick="filterTable()">🔍</button>
+                    <button class="filter-btn" onclick="toggleGender('all')">全部</button>
+                    <button class="filter-btn" onclick="toggleGender('男')">男生</button>
+                    <button class="filter-btn" onclick="toggleGender('女')">女生</button>
+                    <button class="export-btn" onclick="exportTable()">📥 複製全表</button>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>座號</th><th>學號</th><th>姓名</th><th>性別</th><th>身分</th><th>畢業國中</th></tr></thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="page" id="searchPage">
+            <div class="query-page">
+                <div class="header">
+                    <h2>🔍 搜尋學生 <span class="version-badge">B版</span></h2>
+                    <button class="back-btn" onclick="goPage('homePage')">← 返回</button>
+                </div>
+                <div style="background: #f0f4ff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <input type="number" id="seatFrom" min="1" max="26" placeholder="座號從" style="width: 70px; padding: 8px; margin: 5px;">
+                    到
+                    <input type="number" id="seatTo" min="1" max="26" placeholder="到" style="width: 70px; padding: 8px; margin: 5px;">
+                    <button onclick="searchBySeat()" style="padding: 8px 15px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">搜尋</button>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <button class="filter-btn active" onclick="filterByStatus('all')">全部</button>
+                    <button class="filter-btn" onclick="filterByStatus('一般生')">一般生</button>
+                    <button class="filter-btn" onclick="filterByStatus('原住民')">原住民</button>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>座號</th><th>學號</th><th>姓名</th><th>性別</th><th>身分</th><th>畢業國中</th></tr></thead>
+                        <tbody id="searchResultBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="copy-toast" id="copyToast">✅ 已複製！</div>
+    
+    <script>
+        const students = [
+{座號:1,學號:510089,姓名:"林秉洋",性別:"男",身分:"原住民",畢業國中:"屏東縣縣立萬巒國中"},
+{座號:2,學號:510101,姓名:"林軒福",性別:"男",身分:"一般生",畢業國中:"屏東縣縣立萬巒國中"},
+{座號:3,學號:510109,姓名:"邱亞風",性別:"男",身分:"原住民",畢業國中:"屏東縣縣立光春國中"},
+{座號:4,學號:510124,姓名:"紀柏亨",性別:"男",身分:"一般生",畢業國中:"屏東縣私立南榮國中"},
+{座號:5,學號:510140,姓名:"高御翔",性別:"男",身分:"原住民",畢業國中:"屏東縣縣立內埔國中"},
+{座號:6,學號:510207,姓名:"陳宥宇",性別:"男",身分:"一般生",畢業國中:"屏東縣縣立林邊國中"},
+{座號:7,學號:510223,姓名:"陳暐帆",性別:"男",身分:"一般生",畢業國中:"屏東縣縣立萬丹國中"},
+{座號:8,學號:510258,姓名:"楊永承",性別:"男",身分:"一般生",畢業國中:"屏東縣縣立光春國中"},
+{座號:9,學號:510279,姓名:"劉宏益",性別:"男",身分:"一般生",畢業國中:"屏東縣縣立恆春國中"},
+{座號:10,學號:510291,姓名:"潘亮元",性別:"男",身分:"一般生",畢業國中:"屏東縣私立南榮國中"},
+{座號:11,學號:510350,姓名:"羅偉育",性別:"男",身分:"一般生",畢業國中:"屏東縣縣立萬巒國中"},
+{座號:12,學號:510004,姓名:"尤青雲",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立車城國中"},
+{座號:13,學號:510024,姓名:"江怡嫻",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立潮州國中"},
+{座號:14,學號:510063,姓名:"李貞誼",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立潮州國中"},
+{座號:15,學號:510082,姓名:"周韻儀",性別:"女",身分:"原住民",畢業國中:"屏東縣縣立潮州國中"},
+{座號:16,學號:510148,姓名:"張沁琳",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立內埔國中"},
+{座號:17,學號:510094,姓名:"林盈均",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立潮州國中"},
+{座號:18,學號:510175,姓名:"郭依寧",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立潮州國中"},
+{座號:19,學號:510219,姓名:"陳琳竺",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立潮州國中"},
+{座號:20,學號:510236,姓名:"曾郁惟",性別:"女",身分:"一般生",畢業國中:"屏東縣私立南榮國中"},
+{座號:21,學號:510276,姓名:"趙玉晴",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立潮州國中"},
+{座號:22,學號:510277,姓名:"鄞玉婷",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立竹田國中"},
+{座號:23,學號:510314,姓名:"鄭翊呈",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立萬丹國中"},
+{座號:24,學號:510315,姓名:"鄭翊函",性別:"女",身分:"一般生",畢業國中:"屏東縣私立南榮國中"},
+{座號:25,學號:510327,姓名:"蕭彣涵",性別:"女",身分:"一般生",畢業國中:"屏東縣私立南榮國中"},
+{座號:26,學號:510335,姓名:"戴明潔",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立潮州國中"}
+        ];
+        
+        let currentGender='all',currentStatus='all';
+        
+        function goPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(p).classList.add('active');if(p==='tablePage')renderTable();}
+        
+        function renderTable(){let h='';for(let s of students){if(currentGender!=='all'&&s.性別!==currentGender)continue;h+=`<tr><td>${s.座號}</td><td>${s.學號}</td><td>${s.姓名}</td><td>${s.性別}</td><td>${s.身分}</td><td>${s.畢業國中}</td></tr>`;}document.getElementById('tableBody').innerHTML=h;}
+        
+        function filterTable(){const s=document.getElementById('tableSearch').value.toLowerCase();document.querySelectorAll('#tableBody tr').forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(s)?'':'none';});}
+        
+        function toggleGender(g){currentGender=g;renderTable();}
+        
+        function searchBySeat(){const from=parseInt(document.getElementById('seatFrom').value)||1;const to=parseInt(document.getElementById('seatTo').value)||26;const r=students.filter(s=>s.座號>=from&&s.座號<=to&&(currentStatus==='all'||s.身分===currentStatus));renderSearchResults(r);}
+        
+        function filterByStatus(status){currentStatus=status;document.querySelectorAll('#searchPage .filter-btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');}
+        
+        function renderSearchResults(r){let h='';for(let s of r){h+=`<tr><td>${s.座號}</td><td>${s.學號}</td><td>${s.姓名}</td><td>${s.性別}</td><td>${s.身分}</td><td>${s.畢業國中}</td></tr>`;}document.getElementById('searchResultBody').innerHTML=h;}
+        
+        function exportTable(){let t='座號|學號|姓名|性別|身分|畢業國中\n';for(let s of students){t+=`${s.座號}|${s.學號}|${s.姓名}|${s.性別}|${s.身分}|${s.畢業國中}\n`;}navigator.clipboard.writeText(t);document.getElementById('copyToast').classList.add('show');setTimeout(()=>document.getElementById('copyToast').classList.remove('show'),2000);}
+        
+        renderTable();
+    </script>
+</body>
+</html>

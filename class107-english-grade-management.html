@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班級107 英文完整成績管理系統</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#333;min-height:100vh;padding:15px}
+        .container{max-width:1400px;margin:0 auto}
+        .page{display:none}.page.active{display:block}
+        
+        .header{background:white;border-radius:12px;padding:20px;margin-bottom:20px;text-align:center}
+        .header h1{color:#667eea;font-size:32px;margin-bottom:5px}
+        .header p{color:#999;font-size:13px}
+        
+        .formula-box{background:#e8eaf6;border-radius:12px;padding:12px;margin-bottom:20px;text-align:center;font-size:11px;border-left:4px solid #667eea}
+        .formula-item{display:inline-block;margin:0 10px;font-weight:bold}
+        .percent{color:#667eea;font-weight:bold}
+        
+        .tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+        .tab-btn{padding:12px 20px;background:white;border:2px solid #ddd;border-radius:8px;cursor:pointer;font-weight:bold;transition:all 0.3s;font-size:13px}
+        .tab-btn.active{background:#667eea;color:white;border-color:#667eea}
+        
+        .table-page{background:white;border-radius:12px;padding:20px}
+        .section-title{color:#667eea;font-size:18px;margin-bottom:15px;font-weight:bold}
+        
+        .date-input-group{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+        .date-input-group label{font-weight:bold;font-size:13px}
+        .date-input-group input{padding:8px;border:2px solid #667eea;border-radius:8px;font-size:12px}
+        .date-input-group button{padding:8px 16px;background:#667eea;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:bold;font-size:12px}
+        
+        .table-wrapper{overflow-x:auto;margin:20px 0}
+        table{width:100%;border-collapse:collapse;font-size:12px}
+        th{background:#667eea;color:white;padding:10px;text-align:left;font-weight:bold;position:sticky;top:0}
+        td{padding:8px;border:1px solid #e0e6ed}
+        tr:nth-child(even){background:#f9f9f9}
+        
+        input[type="number"],input[type="date"]{width:100%;padding:6px;border:1px solid #ddd;border-radius:4px;text-align:center;font-size:12px}
+        input[type="number"]:focus,input[type="date"]:focus{outline:none;border-color:#667eea;box-shadow:0 0 5px rgba(102,126,234,0.3)}
+        
+        .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0}
+        .stat-card{background:#f5f5f5;padding:12px;border-radius:8px;border:2px solid #667eea;text-align:center}
+        .stat-card .label{font-weight:bold;font-size:11px;color:#666;margin-bottom:6px}
+        .stat-card .value{font-size:22px;font-weight:bold;color:#667eea}
+        
+        .record-item{background:#f5f5f5;border-radius:8px;padding:12px;margin-bottom:10px;font-size:11px}
+        .record-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+        .record-date{font-weight:bold;color:#667eea}
+        .record-badge{background:#667eea;color:white;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:bold}
+        .btn-sm{padding:4px 10px;background:#ff9800;color:white;border:none;border-radius:4px;cursor:pointer;font-weight:bold;font-size:10px}
+        .btn-sm.delete{background:#d32f2f}
+        
+        .button-group{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+        .btn{padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;font-size:12px}
+        .btn-save{background:#2e7d32;color:white}
+        .btn-export{background:#3c3;color:white}
+        .btn-print{background:#2196f3;color:white}
+        .btn-reset{background:#d32f2f;color:white}
+        .btn-secondary{background:#ff9800;color:white}
+        
+        .final-score{display:inline-block;padding:4px 12px;border-radius:20px;font-weight:bold;font-size:12px}
+        .score-complete{background:#4caf50;color:white}
+        .score-incomplete{background:#ffc107;color:#333}
+        
+        .rank-table{width:100%;border-collapse:collapse;margin:20px 0;font-size:12px}
+        .rank-table th{background:#667eea;color:white;padding:10px}
+        .rank-table td{padding:8px;border:1px solid #e0e6ed}
+        .rank-table tr:nth-child(even){background:#f9f9f9}
+        .rank-badge{display:inline-block;width:28px;height:28px;line-height:28px;text-align:center;border-radius:50%;font-weight:bold;color:white;font-size:12px}
+        .rank-1{background:#ffd700}
+        .rank-2{background:#c0c0c0}
+        .rank-3{background:#cd7f32}
+        
+        .empty-msg{text-align:center;color:#999;padding:30px;font-size:12px}
+        
+        @media print{body{background:white;padding:0}.tabs,.button-group,.date-input-group{display:none}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 班級107 英文完整成績管理系統</h1>
+            <p>課堂記錄 + 段考成績 + 最終評分 + 班級排名 統整版</p>
+        </div>
+        
+        <div class="formula-box">
+            <div class="formula-item">課堂表現 <span class="percent">40%</span></div>
+            <div class="formula-item">第一次段考 <span class="percent">20%</span></div>
+            <div class="formula-item">第二次段考 <span class="percent">20%</span></div>
+            <div class="formula-item">第三次段考 <span class="percent">20%</span></div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="goTab('classPage')">📝 課堂表現記錄</button>
+            <button class="tab-btn" onclick="goTab('examPage')">📋 段考成績</button>
+            <button class="tab-btn" onclick="goTab('calcPage')">🧮 成績計算</button>
+            <button class="tab-btn" onclick="goTab('historyPage')">📊 課堂歷史</button>
+            <button class="tab-btn" onclick="goTab('rankPage')">🏆 排名統計</button>
+        </div>
+        
+        <!-- 課堂表現記錄 -->
+        <div class="page active" id="classPage">
+            <div class="table-page">
+                <h2 class="section-title">📝 新增課堂表現記錄</h2>
+                
+                <div class="date-input-group">
+                    <label>📅 上課日期：</label>
+                    <input type="date" id="classDate" value="">
+                    <button onclick="selectDate()">✓ 確認</button>
+                </div>
+                
+                <div id="dateSelected" style="display:none">
+                    <div style="background:#e8eaf6;padding:12px;border-radius:8px;margin-bottom:15px;font-size:12px">
+                        <p style="color:#667eea;font-weight:bold;margin-bottom:8px">📅 日期：<span id="displayDate"></span></p>
+                        <p style="color:#999">💡 輸入26名學生的課堂表現分數（0-100分）</p>
+                    </div>
+                    
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr><th style="width:50px">座號</th><th style="width:80px">學號</th><th style="width:120px">姓名</th><th>分數(0-100)</th></tr>
+                            </thead>
+                            <tbody id="recordTable"></tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-save" onclick="saveClassRecord()">💾 保存紀錄</button>
+                        <button class="btn btn-secondary" onclick="clearSelection()">🔄 選擇其他日期</button>
+                    </div>
+                </div>
+                
+                <div id="noDateSelected" style="text-align:center;color:#999;padding:40px">
+                    <p>👈 請先選擇上課日期</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 段考成績輸入 -->
+        <div class="page" id="examPage">
+            <div class="table-page">
+                <h2 class="section-title">📋 三次段考成績輸入</h2>
+                <p style="color:#999;font-size:12px;margin-bottom:15px">💡 輸入26名學生的三次段考分數（各100分）</p>
+                
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th style="width:50px">座號</th><th style="width:80px">學號</th><th style="width:120px">姓名</th><th>第一次(20%)</th><th>第二次(20%)</th><th>第三次(20%)</th></tr>
+                        </thead>
+                        <tbody id="examTable"></tbody>
+                    </table>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-save" onclick="saveExamScores()">💾 保存段考成績</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 成績計算 -->
+        <div class="page" id="calcPage">
+            <div class="table-page">
+                <h2 class="section-title">🧮 成績計算結果</h2>
+                
+                <div class="stat-grid" id="statsBox"></div>
+                
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th style="width:50px">座號</th><th style="width:80px">學號</th><th style="width:120px">姓名</th><th>課堂(40%)</th><th>第一次(20%)</th><th>第二次(20%)</th><th>第三次(20%)</th><th>最終成績</th></tr>
+                        </thead>
+                        <tbody id="calcTable"></tbody>
+                    </table>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-print" onclick="printCalc()">🖨️ 列印成績</button>
+                    <button class="btn btn-export" onclick="exportCalc()">📥 導出成績表</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 課堂歷史 -->
+        <div class="page" id="historyPage">
+            <div class="table-page">
+                <h2 class="section-title">📊 課堂表現歷史</h2>
+                <p style="color:#999;font-size:12px;margin-bottom:15px">📌 所有已記錄的課堂表現，最新在上方</p>
+                
+                <div id="historyList"></div>
+            </div>
+        </div>
+        
+        <!-- 排名統計 -->
+        <div class="page" id="rankPage">
+            <div class="table-page">
+                <h2 class="section-title">🏆 成績排名統計</h2>
+                
+                <div class="stat-grid" id="rankStatsBox"></div>
+                
+                <table class="rank-table">
+                    <thead>
+                        <tr><th style="width:50px">排名</th><th style="width:50px">座號</th><th style="width:80px">學號</th><th style="width:120px">姓名</th><th>課堂(40%)</th><th>第一次(20%)</th><th>第二次(20%)</th><th>第三次(20%)</th><th>最終成績</th></tr>
+                    </thead>
+                    <tbody id="rankTable"></tbody>
+                </table>
+                
+                <div class="button-group">
+                    <button class="btn btn-print" onclick="printRank()">🖨️ 列印排名</button>
+                    <button class="btn btn-export" onclick="exportRank()">📥 導出排名</button>
+                    <button class="btn btn-reset" onclick="resetAllData()">🗑️ 清空所有數據</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const students = [
+            {座號:1,學號:510089,姓名:"林秉洋"},{座號:2,學號:510101,姓名:"林軒福"},{座號:3,學號:510109,姓名:"邱亞風"},
+            {座號:4,學號:510124,姓名:"紀柏亨"},{座號:5,學號:510140,姓名:"高御翔"},{座號:6,學號:510207,姓名:"陳宥宇"},
+            {座號:7,學號:510223,姓名:"陳暐帆"},{座號:8,學號:510258,姓名:"楊永承"},{座號:9,學號:510279,姓名:"劉宏益"},
+            {座號:10,學號:510291,姓名:"潘亮元"},{座號:11,學號:510350,姓名:"羅偉育"},{座號:12,學號:510004,姓名:"尤青雲"},
+            {座號:13,學號:510024,姓名:"江怡嫻"},{座號:14,學號:510063,姓名:"李貞誼"},{座號:15,學號:510082,姓名:"周韻儀"},
+            {座號:16,學號:510148,姓名:"張沁琳"},{座號:17,學號:510094,姓名:"林盈均"},{座號:18,學號:510175,姓名:"郭依寧"},
+            {座號:19,學號:510219,姓名:"陳琳竺"},{座號:20,學號:510236,姓名:"曾郁惟"},{座號:21,學號:510276,姓名:"趙玉晴"},
+            {座號:22,學號:510277,姓名:"鄞玉婷"},{座號:23,學號:510314,姓名:"鄭翊呈"},{座號:24,學號:510315,姓名:"鄭翊函"},
+            {座號:25,學號:510327,姓名:"蕭彣涵"},{座號:26,學號:510335,姓名:"戴明潔"}
+        ];
+        
+        let selectedDate=null;
+        
+        function goTab(tab){
+            document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            if(tab==='calcPage') updateCalcPage();
+            if(tab==='historyPage') updateHistory();
+            if(tab==='rankPage') updateRankPage();
+        }
+        
+        function selectDate(){
+            selectedDate=document.getElementById('classDate').value;
+            if(!selectedDate){alert('請選擇日期');return;}
+            document.getElementById('noDateSelected').style.display='none';
+            document.getElementById('dateSelected').style.display='block';
+            document.getElementById('displayDate').textContent=selectedDate;
+            renderRecordTable();
+        }
+        
+        function clearSelection(){
+            selectedDate=null;
+            document.getElementById('classDate').value='';
+            document.getElementById('dateSelected').style.display='none';
+            document.getElementById('noDateSelected').style.display='block';
+        }
+        
+        function renderRecordTable(){
+            let html='';
+            let existingRecord=JSON.parse(localStorage.getItem(`record_${selectedDate}`)||'{}');
+            students.forEach(s=>{
+                let score=existingRecord[s.座號]||'';
+                html+=`<tr><td>${s.座號}</td><td>${s.學號}</td><td>${s.姓名}</td><td><input type="number" min="0" max="100" id="score_${s.座號}" value="${score}"></td></tr>`;
+            });
+            document.getElementById('recordTable').innerHTML=html;
+            setTimeout(()=>document.getElementById('score_1').focus(),100);
+        }
+        
+        function saveClassRecord(){
+            if(!selectedDate){alert('請先選擇日期');return;}
+            let scores={};
+            let hasScore=false;
+            students.forEach(s=>{
+                let val=parseInt(document.getElementById(`score_${s.座號}`).value)||null;
+                if(val!==null){
+                    if(val<0||val>100){alert(`座號${s.座號}分數須在0-100`);return;}
+                    scores[s.座號]=val;
+                    hasScore=true;
+                }
+            });
+            if(!hasScore){alert('至少輸入一個分數');return;}
+            localStorage.setItem(`record_${selectedDate}`,JSON.stringify(scores));
+            alert(`✅ ${selectedDate} 已保存`);
+            clearSelection();
+        }
+        
+        function initExamTable(){
+            let html='';
+            students.forEach(s=>{
+                let data=JSON.parse(localStorage.getItem(`exam_${s.座號}`)||'[0,0,0]');
+                html+=`<tr><td>${s.座號}</td><td>${s.學號}</td><td>${s.姓名}</td><td><input type="number" min="0" max="100" id="exam_${s.座號}_1" value="${data[0]||''}"></td><td><input type="number" min="0" max="100" id="exam_${s.座號}_2" value="${data[1]||''}"></td><td><input type="number" min="0" max="100" id="exam_${s.座號}_3" value="${data[2]||''}"></td></tr>`;
+            });
+            document.getElementById('examTable').innerHTML=html;
+        }
+        
+        function saveExamScores(){
+            students.forEach(s=>{
+                let data=[];
+                for(let i=1;i<=3;i++){
+                    let val=parseInt(document.getElementById(`exam_${s.座號}_${i}`).value)||0;
+                    data.push(val);
+                }
+                localStorage.setItem(`exam_${s.座號}`,JSON.stringify(data));
+            });
+            alert('✅ 段考成績已保存');
+        }
+        
+        function getStudentScore(seatNum){
+            let records=[];
+            for(let k of Object.keys(localStorage)){
+                if(k.startsWith('record_')){
+                    let data=JSON.parse(localStorage.getItem(k));
+                    if(data[seatNum]!==undefined) records.push(data[seatNum]);
+                }
+            }
+            
+            let classAvg=records.length>0?Math.round(records.reduce((a,b)=>a+b,0)/records.length*100)/100:0;
+            let examData=JSON.parse(localStorage.getItem(`exam_${seatNum}`)||'[0,0,0]');
+            let exam1=examData[0]||0;
+            let exam2=examData[1]||0;
+            let exam3=examData[2]||0;
+            
+            let finalScore=(classAvg*0.4+exam1*0.2+exam2*0.2+exam3*0.2);
+            finalScore=Math.round(finalScore*100)/100;
+            
+            return {classAvg,exam1,exam2,exam3,finalScore,isComplete:classAvg>0&&exam1>0&&exam2>0&&exam3>0};
+        }
+        
+        function updateCalcPage(){
+            let html='';
+            let totalFinal=0,validCount=0;
+            
+            students.forEach(s=>{
+                let score=getStudentScore(s.座號);
+                let statusClass=score.isComplete?'score-complete':'score-incomplete';
+                let statusText=score.isComplete?'✅':'⚠️';
+                html+=`<tr><td>${s.座號}</td><td>${s.學號}</td><td>${s.姓名}</td><td>${score.classAvg.toFixed(2)}</td><td>${score.exam1||'--'}</td><td>${score.exam2||'--'}</td><td>${score.exam3||'--'}</td><td><span class="final-score ${statusClass}">${score.finalScore.toFixed(2)}</span></td></tr>`;
+                if(score.isComplete){totalFinal+=score.finalScore;validCount++;}
+            });
+            
+            document.getElementById('calcTable').innerHTML=html;
+            
+            let avgFinal=validCount>0?Math.round(totalFinal/validCount*100)/100:0;
+            let maxFinal=Math.max(...students.map(s=>getStudentScore(s.座號).finalScore));
+            
+            document.getElementById('statsBox').innerHTML=`
+                <div class="stat-card"><div class="label">班級平均</div><div class="value">${avgFinal.toFixed(2)}</div></div>
+                <div class="stat-card"><div class="label">最高分</div><div class="value">${maxFinal.toFixed(2)}</div></div>
+                <div class="stat-card"><div class="label">完成人數</div><div class="value">${validCount}/26</div></div>
+                <div class="stat-card"><div class="label">完成率</div><div class="value">${Math.round(validCount/26*100)}%</div></div>
+            `;
+        }
+        
+        function updateHistory(){
+            let records=[];
+            for(let k of Object.keys(localStorage)){
+                if(k.startsWith('record_')){
+                    let date=k.substring(7);
+                    let data=JSON.parse(localStorage.getItem(k));
+                    let scores=Object.values(data);
+                    let avg=scores.length>0?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length*100)/100:0;
+                    records.push({date,data,count:scores.length,avg});
+                }
+            }
+            records.sort((a,b)=>new Date(b.date)-new Date(a.date));
+            
+            let html='';
+            if(records.length===0){
+                html='<div class="empty-msg">📭 尚無課堂記錄</div>';
+            }else{
+                records.forEach(r=>{
+                    let scoresHtml='';
+                    for(let seatNum in r.data){
+                        let student=students.find(s=>s.座號==seatNum);
+                        scoresHtml+=`<div style="display:inline-block;margin:4px;padding:4px 8px;background:#667eea;color:white;border-radius:4px;font-size:11px"><strong>${student.座號}${student.姓名}</strong>: ${r.data[seatNum]}</div>`;
+                    }
+                    html+=`<div class="record-item">
+                        <div class="record-header">
+                            <div class="record-date">📅 ${r.date}</div>
+                            <div style="display:flex;gap:8px">
+                                <div class="record-badge">平均: ${r.avg.toFixed(2)}</div>
+                                <div class="record-badge" style="background:#2e7d32">記錄: ${r.count}人</div>
+                            </div>
+                            <button class="btn-sm" onclick="toggleDetail('${r.date}')">詳細</button>
+                            <button class="btn-sm delete" onclick="deleteRecord('${r.date}')">刪除</button>
+                        </div>
+                        <div id="detail_${r.date}" style="display:none;margin-top:10px;padding:8px;background:white;border-radius:4px">${scoresHtml}</div>
+                    </div>`;
+                });
+            }
+            document.getElementById('historyList').innerHTML=html;
+        }
+        
+        function toggleDetail(date){
+            let elem=document.getElementById(`detail_${date}`);
+            elem.style.display=elem.style.display==='none'?'block':'none';
+        }
+        
+        function deleteRecord(date){
+            if(!confirm(`確定刪除 ${date} 的記錄？`)) return;
+            localStorage.removeItem(`record_${date}`);
+            updateHistory();
+        }
+        
+        function updateRankPage(){
+            let ranks=students.map(s=>{
+                let score=getStudentScore(s.座號);
+                return {...s,...score};
+            }).filter(s=>s.isComplete).sort((a,b)=>b.finalScore-a.finalScore);
+            
+            let html='';
+            ranks.forEach((s,idx)=>{
+                let badgeClass='';
+                if(idx===0) badgeClass='rank-1';
+                else if(idx===1) badgeClass='rank-2';
+                else if(idx===2) badgeClass='rank-3';
+                html+=`<tr><td><span class="rank-badge ${badgeClass}">${idx+1}</span></td><td>${s.座號}</td><td>${s.學號}</td><td>${s.姓名}</td><td>${s.classAvg.toFixed(2)}</td><td>${s.exam1}</td><td>${s.exam2}</td><td>${s.exam3}</td><td style="font-weight:bold;color:#667eea">${s.finalScore.toFixed(2)}</td></tr>`;
+            });
+            document.getElementById('rankTable').innerHTML=html;
+            
+            let totalCount=ranks.length;
+            let avgFinal=totalCount>0?Math.round(ranks.reduce((a,b)=>a+b.finalScore,0)/totalCount*100)/100:0;
+            
+            document.getElementById('rankStatsBox').innerHTML=`
+                <div class="stat-card"><div class="label">參加排名人數</div><div class="value">${totalCount}/26</div></div>
+                <div class="stat-card"><div class="label">平均成績</div><div class="value">${avgFinal.toFixed(2)}</div></div>
+                <div class="stat-card"><div class="label">最高分</div><div class="value">${ranks[0]?.finalScore.toFixed(2)||'--'}</div></div>
+                <div class="stat-card"><div class="label">最低分</div><div class="value">${ranks[ranks.length-1]?.finalScore.toFixed(2)||'--'}</div></div>
+            `;
+        }
+        
+        function exportCalc(){
+            let csv='座號,學號,姓名,課堂平均,第一次,第二次,第三次,最終成績\n';
+            students.forEach(s=>{
+                let score=getStudentScore(s.座號);
+                csv+=`${s.座號},${s.學號},${s.姓名},${score.classAvg.toFixed(2)},${score.exam1},${score.exam2},${score.exam3},${score.finalScore.toFixed(2)}\n`;
+            });
+            let blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+            let link=document.createElement('a');
+            link.href=URL.createObjectURL(blob);
+            link.download=`班級107英文成績_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+        
+        function exportRank(){
+            let ranks=students.map(s=>{
+                let score=getStudentScore(s.座號);
+                return {...s,...score};
+            }).filter(s=>s.isComplete).sort((a,b)=>b.finalScore-a.finalScore);
+            
+            let csv='排名,座號,學號,姓名,課堂平均,第一次,第二次,第三次,最終成績\n';
+            ranks.forEach((s,idx)=>{
+                csv+=`${idx+1},${s.座號},${s.學號},${s.姓名},${s.classAvg.toFixed(2)},${s.exam1},${s.exam2},${s.exam3},${s.finalScore.toFixed(2)}\n`;
+            });
+            let blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+            let link=document.createElement('a');
+            link.href=URL.createObjectURL(blob);
+            link.download=`班級107英文排名_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+        
+        function printCalc(){window.print();}
+        function printRank(){window.print();}
+        
+        function resetAllData(){
+            if(!confirm('確定清空所有數據？')) return;
+            if(!confirm('再次確認：真的要刪除？')) return;
+            for(let k of Object.keys(localStorage)){
+                if(k.startsWith('record_')||k.startsWith('exam_')) localStorage.removeItem(k);
+            }
+            alert('✅ 已清空');
+            initExamTable();
+            updateHistory();
+        }
+        
+        initExamTable();
+        const today=new Date().toISOString().split('T')[0];
+        document.getElementById('classDate').value=today;
+    </script>
+</body>
+</html>

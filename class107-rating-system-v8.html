@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班級107 評比系統</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #2c3e50; min-height: 100vh; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        /* 首頁 */
+        .home-page { background: white; border-radius: 15px; padding: 40px; }
+        .home-page h1 { color: #667eea; margin-bottom: 10px; font-size: 32px; }
+        .home-page p { color: #666; margin-bottom: 30px; font-size: 16px; }
+        .officers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .officer-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 12px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .officer-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .officer-card h3 { font-size: 20px; margin-bottom: 10px; }
+        .officer-card .nodes-list { font-size: 13px; line-height: 1.6; opacity: 0.95; }
+        .officer-card .nodes-list span { display: inline-block; background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 12px; margin: 2px; }
+        
+        /* 評比頁 */
+        .eval-page { background: white; border-radius: 15px; padding: 30px; }
+        .eval-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #667eea; }
+        .eval-header h2 { color: #667eea; font-size: 28px; }
+        .back-btn { padding: 10px 20px; background: #ddd; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; }
+        .back-btn:hover { background: #ccc; }
+        
+        .nodes-list-eval { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .node-tag { display: inline-block; background: #667eea; color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-right: 8px; margin-bottom: 8px; }
+        
+        .students-container { border-top: 2px solid #eee; padding-top: 30px; }
+        .students-container h3 { color: #667eea; margin-bottom: 20px; font-size: 20px; }
+        
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #667eea; color: white; padding: 12px; text-align: left; font-weight: bold; font-size: 14px; border: 1px solid #ddd; }
+        td { padding: 12px; border: 1px solid #e0e6ed; font-size: 13px; }
+        tr:nth-child(even) { background: #f9f9f9; }
+        tr:hover { background: #f0f4ff; }
+        .seat-no { text-align: center; font-weight: bold; color: #667eea; width: 50px; }
+        .student-name { font-weight: bold; color: #34495e; }
+        .officer-badge { display: inline-block; background: #667eea; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+        .officer-badge.none { background: #ddd; color: #666; }
+        .stars-cell { text-align: center; }
+        .star { font-size: 20px; cursor: pointer; opacity: 0.4; margin: 0 2px; transition: opacity 0.2s; }
+        .star.active { opacity: 1; }
+        .star:hover { opacity: 0.8; }
+        
+        .save-msg { padding: 10px 15px; background: #efe; color: #3c3; border: 1px solid #cfc; border-radius: 5px; margin-bottom: 20px; display: none; }
+        .save-msg.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 首頁 -->
+        <div class="page active" id="homePage">
+            <div class="home-page">
+                <h1>🎓 班級107 評比系統</h1>
+                <p>點擊各股長開始評比該股長負責的評比項目</p>
+                
+                <div style="margin-bottom: 30px; text-align: right;">
+                    <button onclick="showStats()" style="padding: 12px 25px; background: #764ba2; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold;">📊 查看統計</button>
+                </div>
+                
+                <div class="officers-grid" id="officersGrid"></div>
+            </div>
+        </div>
+        
+        <!-- 統計頁 -->
+        <div class="page" id="statsPage">
+            <div class="eval-page">
+                <div class="eval-header">
+                    <h2>📊 評比統計</h2>
+                    <button class="back-btn" onclick="goHome()">← 返回</button>
+                </div>
+                
+                <div style="margin-bottom: 30px;">
+                    <button onclick="showStudentStats()" style="padding: 10px 15px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px; font-weight: bold;">👥 學生評分</button>
+                    <button onclick="showNodeStats()" style="padding: 10px 15px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px; font-weight: bold;">📋 項目統計</button>
+                    <button onclick="showOfficerStats()" style="padding: 10px 15px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">👔 股長進度</button>
+                </div>
+                
+                <div id="statsContent"></div>
+            </div>
+        </div>
+            <div class="eval-page">
+                <div class="eval-header">
+                    <h2 id="evalTitle">-</h2>
+                    <button class="back-btn" onclick="goHome()">← 返回</button>
+                </div>
+                
+                <div class="save-msg" id="saveMsg">✓ 已自動保存</div>
+                
+                <div id="nodesInfo"></div>
+                
+                <div class="students-container">
+                    <h3>評比 26 名學生</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">座號</th>
+                                    <th style="width: 100px;">姓名</th>
+                                    <th style="width: 90px;">學號</th>
+                                    <th style="width: 130px;">幹部身份</th>
+                                    <th style="text-align: center;">評分</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const officers = [
+            { id: 1, name: "江怡嫻", role: "班長", nodes: [23, 24, 25, 27, 29, 30] },
+            { id: 2, name: "陳琳笙", role: "副班長", nodes: [1, 2, 3, 4, 30] },
+            { id: 3, name: "鄭翊函", role: "風紀股長", nodes: [3, 4, 17, 18, 19, 30] },
+            { id: 4, name: "曾郁惟", role: "學藝股長", nodes: [5, 6, 7, 8, 9, 10, 11, 14] },
+            { id: 5, name: "林軒福", role: "服務股長正", nodes: [15, 21, 22, 24] },
+            { id: 6, name: "林秉洋", role: "服務股長副", nodes: [15, 21, 22, 24, 25] },
+            { id: 7, name: "張沁琳", role: "總務股長", nodes: [5, 22, 25, 27] },
+            { id: 8, name: "周韻儀", role: "庶務股長", nodes: [16, 17, 18, 19, 20, 28] },
+            { id: 9, name: "陳宥宇", role: "康樂股長", nodes: [15, 16, 17, 24] },
+            { id: 10, name: "趙玉晴", role: "圖書股長", nodes: [8, 11, 12, 14] },
+            { id: 11, name: "高御翔", role: "合作股長", nodes: [15, 16, 17, 18, 20, 24] },
+            { id: 12, name: "蕭芷涵", role: "環保股長", nodes: [21, 22, 24, 25, 27] },
+            { id: 13, name: "戴明潔", role: "班級代表", nodes: [11, 16, 17, 25, 27] },
+            { id: 14, name: "郭依寧", role: "資訊股長", nodes: [12, 13, 14, 25, 27] }
+        ];
+        
+        const nodes = {
+            1: { name: "出席", standard: "觀察學生是否準時出席，未出席次數" },
+            2: { name: "遲到改善", standard: "觀察遲到情況改善趨勢，是否有進步" },
+            3: { name: "手機管理", standard: "課堂中是否妥善收納手機，未違規次數" },
+            4: { name: "上課專注", standard: "上課時是否專心聽講，需要提醒次數" },
+            5: { name: "課前準備", standard: "是否主動準備上課用品，需要提醒次數" },
+            6: { name: "作業完成", standard: "是否完成作業提交，未交次數" },
+            7: { name: "作業準時", standard: "作業是否按時繳交，遲交次數" },
+            8: { name: "自主學習", standard: "課後是否主動複習溫習，觀察自主學習行為" },
+            9: { name: "訂正能力", standard: "是否主動訂正錯誤，訂正完成率" },
+            10: { name: "錯題追蹤", standard: "是否記錄並追蹤錯誤題目，追蹤完成度" },
+            11: { name: "提問能力", standard: "課堂中是否主動提問，提問品質與次數" },
+            12: { name: "查資料能力", standard: "是否主動查閱資料深化學習，查詢行為頻率" },
+            13: { name: "AI使用能力", standard: "是否妥善使用AI工具輔助學習，使用策略" },
+            14: { name: "筆記能力", standard: "筆記是否完整清晰，是否有整理習慣" },
+            15: { name: "合作能力", standard: "小組活動中是否主動配合，團隊貢獻度" },
+            16: { name: "溝通能力", standard: "是否清楚表達想法，溝通頻率與效能" },
+            17: { name: "傾聽能力", standard: "是否認真傾聽他人意見，尊重他人程度" },
+            18: { name: "衝突處理", standard: "遇到意見不合時，是否能平和解決" },
+            19: { name: "情緒管理", standard: "情緒是否穩定，影響他人次數" },
+            20: { name: "人際邊界", standard: "是否尊重他人隱私與界限，違反次數" },
+            21: { name: "掃地工作", standard: "掃地是否確實完成，衛生品質" },
+            22: { name: "公共物品", standard: "是否妥善使用公共物品，損壞次數" },
+            23: { name: "幹部執行", standard: "幹部是否認真執行職責，執行完成度" },
+            24: { name: "主動幫忙", standard: "是否主動幫助同學，幫助行為頻率" },
+            25: { name: "問題回報", standard: "是否主動回報班級問題，回報有效性" },
+            27: { name: "提出改善", standard: "是否提出班級改善建議，建議品質" },
+            28: { name: "接受反饋", standard: "是否虛心接受他人意見，改進態度" },
+            29: { name: "持續改善", standard: "是否根據反饋持續改進，改善幅度" },
+            30: { name: "無老師運作", standard: "班級在沒有老師時是否能自主運作，自主度" }
+        };
+        
+        const students = [
+            {id: 1, seatNo: 1, name: "林秉洋", stdId: "510009", officerRole: "服務股長副"},
+            {id: 2, seatNo: 2, name: "林軒福", stdId: "510101", officerRole: "服務股長正"},
+            {id: 3, seatNo: 3, name: "邱亞風", stdId: "510109", officerRole: ""},
+            {id: 4, seatNo: 4, name: "紀柏亨", stdId: "510124", officerRole: ""},
+            {id: 5, seatNo: 5, name: "高御翔", stdId: "510140", officerRole: "合作股長"},
+            {id: 6, seatNo: 6, name: "陳宥宇", stdId: "510207", officerRole: "康樂股長"},
+            {id: 7, seatNo: 7, name: "陳暐帆", stdId: "510223", officerRole: ""},
+            {id: 8, seatNo: 8, name: "楊永承", stdId: "510258", officerRole: ""},
+            {id: 9, seatNo: 9, name: "劉宏益", stdId: "510279", officerRole: ""},
+            {id: 10, seatNo: 10, name: "潘亮元", stdId: "510291", officerRole: ""},
+            {id: 11, seatNo: 11, name: "羅偉育", stdId: "510350", officerRole: ""},
+            {id: 12, seatNo: 12, name: "尤青雯", stdId: "510004", officerRole: ""},
+            {id: 13, seatNo: 13, name: "江怡嫻", stdId: "510024", officerRole: "班長"},
+            {id: 14, seatNo: 14, name: "李貞誼", stdId: "510063", officerRole: ""},
+            {id: 15, seatNo: 15, name: "周韻儀", stdId: "510082", officerRole: "庶務股長"},
+            {id: 16, seatNo: 16, name: "張沁琳", stdId: "510148", officerRole: "總務股長"},
+            {id: 17, seatNo: 17, name: "林盈均", stdId: "510094", officerRole: ""},
+            {id: 18, seatNo: 18, name: "郭依寧", stdId: "510175", officerRole: "資訊股長"},
+            {id: 19, seatNo: 19, name: "陳琳笙", stdId: "510219", officerRole: "副班長"},
+            {id: 20, seatNo: 20, name: "曾郁惟", stdId: "510236", officerRole: "學藝股長"},
+            {id: 21, seatNo: 21, name: "趙玉晴", stdId: "510276", officerRole: "圖書股長"},
+            {id: 22, seatNo: 22, name: "鄧玉婷", stdId: "510277", officerRole: ""},
+            {id: 23, seatNo: 23, name: "鄭翊呈", stdId: "510314", officerRole: ""},
+            {id: 24, seatNo: 24, name: "鄭翊函", stdId: "510315", officerRole: "風紀股長"},
+            {id: 25, seatNo: 25, name: "蕭芷涵", stdId: "510327", officerRole: "環保股長"},
+            {id: 26, seatNo: 26, name: "戴明潔", stdId: "510335", officerRole: "班級代表"}
+        ];
+        
+        let currentOfficer = null;
+        let currentNode = null;
+        let ratings = {};
+        
+        function loadData() {
+            const saved = localStorage.getItem('ratings107v8');
+            if (saved) ratings = JSON.parse(saved);
+        }
+        
+        function saveData() {
+            localStorage.setItem('ratings107v8', JSON.stringify(ratings));
+            const msg = document.getElementById('saveMsg');
+            msg.classList.add('show');
+            setTimeout(() => msg.classList.remove('show'), 2000);
+        }
+        
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageName).classList.add('active');
+        }
+        
+        function renderHome() {
+            let html = '';
+            for (let officer of officers) {
+                const nodesList = officer.nodes.map(n => `<span>#${n} ${nodes[n].name}</span>`).join('');
+                html += `
+                    <div class="officer-card" onclick="enterEval(${officer.id})">
+                        <h3>${officer.role}</h3>
+                        <div style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">${officer.name}</div>
+                        <div class="nodes-list">${nodesList}</div>
+                    </div>
+                `;
+            }
+            document.getElementById('officersGrid').innerHTML = html;
+        }
+        
+        function enterEval(officerId) {
+            currentOfficer = officers.find(o => o.id === officerId);
+            
+            // 設定標題
+            document.getElementById('evalTitle').textContent = `${currentOfficer.role} - ${currentOfficer.name}`;
+            
+            // 如果該股長只有 1 個項目，直接進入評分
+            if (currentOfficer.nodes.length === 1) {
+                selectNode(currentOfficer.nodes[0]);
+            } else {
+                // 多個項目，先顯示項目選擇
+                showNodeSelection();
+            }
+            
+            showPage('evalPage');
+        }
+        
+        function showNodeSelection() {
+            let html = '<div style="margin-bottom: 30px;"><strong style="font-size: 18px;">選擇要評比的項目：</strong><br><br>';
+            for (let nodeId of currentOfficer.nodes) {
+                html += `<button style="padding: 12px 20px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; margin: 8px; font-weight: bold;" onclick="selectNode(${nodeId})">#${nodeId} ${nodes[nodeId].name}</button>`;
+            }
+            html += '</div>';
+            document.getElementById('nodesInfo').innerHTML = html;
+            document.getElementById('studentsBody').innerHTML = '';
+        }
+        
+        function selectNode(nodeId) {
+            currentNode = nodeId;
+            const node = nodes[nodeId];
+            
+            // 更新標題顯示當前項目
+            document.getElementById('evalTitle').textContent = `${currentOfficer.role} - ${currentOfficer.name} / 評比項目：#${nodeId} ${node.name}`;
+            
+            // 顯示項目信息和評分提示
+            let html = `<div style="margin-bottom: 20px; background: #f0f4ff; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+                <strong style="color: #667eea; font-size: 16px;">項目 #${nodeId}：${node.name}</strong><br>
+                <div style="color: #666; margin-top: 8px; font-size: 14px;">標準：${node.standard}</div>
+            </div>`;
+            document.getElementById('nodesInfo').innerHTML = html;
+            
+            // 渲染該項目的學生評分表
+            renderStudentsForNode(nodeId);
+        }
+        
+        function renderStudentsForNode(nodeId) {
+            let html = '';
+            for (let s of students) {
+                const key = `o${currentOfficer.id}_n${nodeId}_s${s.id}`;
+                const rating = ratings[key] || 0;
+                
+                let stars = '';
+                for (let i = 1; i <= 5; i++) {
+                    const active = i <= rating ? 'active' : '';
+                    stars += `<span class="star ${active}" onclick="rate(${nodeId}, ${s.id}, ${i})">⭐</span>`;
+                }
+                
+                const badge = s.officerRole ? 
+                    `<span class="officer-badge">${s.officerRole}</span>` :
+                    `<span class="officer-badge none">一般</span>`;
+                
+                html += `<tr>
+                    <td class="seat-no">${s.seatNo}</td>
+                    <td class="student-name">${s.name}</td>
+                    <td>${s.stdId}</td>
+                    <td>${badge}</td>
+                    <td class="stars-cell">${stars}</td>
+                </tr>`;
+            }
+            document.getElementById('studentsBody').innerHTML = html;
+        }
+        
+        function rate(nodeId, studentId, rating) {
+            const key = `o${currentOfficer.id}_n${nodeId}_s${studentId}`;
+            ratings[key] = rating;
+            saveData();
+            renderStudentsForNode(nodeId);
+        }
+        
+        
+        function showStats() {
+            showPage('statsPage');
+            showStudentStats();
+        }
+        
+        function showStudentStats() {
+            let html = '<h3 style="color: #667eea; margin-bottom: 20px;">📊 26名學生評分統計</h3>';
+            
+            const studentScores = [];
+            
+            // 計算每個學生的總分和平均分
+            for (let s of students) {
+                let totalScore = 0;
+                let scoreCount = 0;
+                let scoreDetails = [];
+                
+                // 遍歷所有股長和項目，計算該學生的評分
+                for (let officer of officers) {
+                    for (let nodeId of officer.nodes) {
+                        const key = `o${officer.id}_n${nodeId}_s${s.id}`;
+                        if (ratings[key]) {
+                            totalScore += ratings[key];
+                            scoreCount++;
+                            scoreDetails.push({
+                                officer: officer.role,
+                                node: `#${nodeId} ${nodes[nodeId].name}`,
+                                score: ratings[key]
+                            });
+                        }
+                    }
+                }
+                
+                const avgScore = scoreCount > 0 ? (totalScore / scoreCount).toFixed(2) : 0;
+                studentScores.push({
+                    student: s,
+                    totalScore,
+                    scoreCount,
+                    avgScore,
+                    details: scoreDetails
+                });
+            }
+            
+            // 按平均分排序
+            studentScores.sort((a, b) => parseFloat(b.avgScore) - parseFloat(a.avgScore));
+            
+            html += '<div class="table-wrapper"><table><thead><tr><th>座號</th><th>姓名</th><th>學號</th><th>幹部身份</th><th style="text-align: center;">評比數</th><th style="text-align: center;">平均分</th></tr></thead><tbody>';
+            
+            for (let i = 0; i < studentScores.length; i++) {
+                const item = studentScores[i];
+                const badge = item.student.officerRole ? 
+                    `<span class="officer-badge">${item.student.officerRole}</span>` :
+                    `<span class="officer-badge none">一般</span>`;
+                
+                html += `<tr>
+                    <td class="seat-no">${item.student.seatNo}</td>
+                    <td class="student-name">${item.student.name}</td>
+                    <td>${item.student.stdId}</td>
+                    <td>${badge}</td>
+                    <td style="text-align: center;"><strong>${item.scoreCount}</strong></td>
+                    <td style="text-align: center;"><strong style="color: #667eea; font-size: 16px;">${item.avgScore} ⭐</strong></td>
+                </tr>`;
+            }
+            
+            html += '</tbody></table></div>';
+            
+            document.getElementById('statsContent').innerHTML = html;
+        }
+        
+        function showNodeStats() {
+            let html = '<h3 style="color: #667eea; margin-bottom: 20px;">📋 30項節點評分統計</h3>';
+            
+            const nodeStats = {};
+            
+            // 統計每個節點的評分
+            for (let nodeId in nodes) {
+                nodeStats[nodeId] = {
+                    node: nodes[nodeId],
+                    scores: [],
+                    totalScore: 0,
+                    count: 0
+                };
+                
+                for (let officer of officers) {
+                    if (officer.nodes.includes(parseInt(nodeId))) {
+                        for (let s of students) {
+                            const key = `o${officer.id}_n${nodeId}_s${s.id}`;
+                            if (ratings[key]) {
+                                nodeStats[nodeId].scores.push(ratings[key]);
+                                nodeStats[nodeId].totalScore += ratings[key];
+                                nodeStats[nodeId].count++;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            html += '<div class="table-wrapper"><table><thead><tr><th>項目</th><th>節點名稱</th><th style="text-align: center;">評比數</th><th style="text-align: center;">平均分</th><th style="text-align: center;">最高分</th><th style="text-align: center;">最低分</th></tr></thead><tbody>';
+            
+            for (let nodeId in nodeStats) {
+                const stat = nodeStats[nodeId];
+                const avgScore = stat.count > 0 ? (stat.totalScore / stat.count).toFixed(2) : 0;
+                const maxScore = stat.scores.length > 0 ? Math.max(...stat.scores) : 0;
+                const minScore = stat.scores.length > 0 ? Math.min(...stat.scores) : 0;
+                
+                html += `<tr>
+                    <td style="text-align: center; font-weight: bold; color: #667eea;">#${nodeId}</td>
+                    <td>${stat.node.name}</td>
+                    <td style="text-align: center;"><strong>${stat.count}</strong></td>
+                    <td style="text-align: center;"><strong style="color: #667eea;">${avgScore} ⭐</strong></td>
+                    <td style="text-align: center;">${maxScore > 0 ? '⭐'.repeat(maxScore) : '-'}</td>
+                    <td style="text-align: center;">${minScore > 0 ? '⭐'.repeat(minScore) : '-'}</td>
+                </tr>`;
+            }
+            
+            html += '</tbody></table></div>';
+            
+            document.getElementById('statsContent').innerHTML = html;
+        }
+        
+        function showOfficerStats() {
+            let html = '<h3 style="color: #667eea; margin-bottom: 20px;">👔 14位股長評比進度</h3>';
+            
+            const officerStats = [];
+            
+            // 統計每個股長的評比進度
+            for (let officer of officers) {
+                let totalPossible = officer.nodes.length * students.length;
+                let completed = 0;
+                
+                for (let nodeId of officer.nodes) {
+                    for (let s of students) {
+                        const key = `o${officer.id}_n${nodeId}_s${s.id}`;
+                        if (ratings[key]) {
+                            completed++;
+                        }
+                    }
+                }
+                
+                const percentage = ((completed / totalPossible) * 100).toFixed(1);
+                
+                officerStats.push({
+                    officer,
+                    totalPossible,
+                    completed,
+                    percentage
+                });
+            }
+            
+            // 按完成度排序
+            officerStats.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage));
+            
+            html += '<div class="table-wrapper"><table><thead><tr><th>職位</th><th>股長名字</th><th style="text-align: center;">項目數</th><th style="text-align: center;">已評比</th><th style="text-align: center;">進度</th></tr></thead><tbody>';
+            
+            for (let stat of officerStats) {
+                const barWidth = parseInt(stat.percentage);
+                const barColor = stat.percentage >= 100 ? '#3c3' : stat.percentage >= 50 ? '#667eea' : '#f66';
+                
+                html += `<tr>
+                    <td><strong>${stat.officer.role}</strong></td>
+                    <td>${stat.officer.name}</td>
+                    <td style="text-align: center;">${stat.officer.nodes.length} 項</td>
+                    <td style="text-align: center;"><strong>${stat.completed} / ${stat.totalPossible}</strong></td>
+                    <td style="text-align: center;">
+                        <div style="background: #eee; height: 20px; border-radius: 10px; overflow: hidden; position: relative; min-width: 150px;">
+                            <div style="background: ${barColor}; height: 100%; width: ${barWidth}%; transition: width 0.3s;"></div>
+                            <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #333; font-weight: bold; font-size: 12px;">${stat.percentage}%</span>
+                        </div>
+                    </td>
+                </tr>`;
+            }
+            
+            html += '</tbody></table></div>';
+            
+            document.getElementById('statsContent').innerHTML = html;
+        }
+        
+        function goHome() {
+            currentOfficer = null;
+            currentNode = null;
+            showPage('homePage');
+        }
+        loadData();
+        renderHome();
+    </script>
+</body>
+</html>

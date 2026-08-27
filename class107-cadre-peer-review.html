@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班級107 評比系統 v8+v9 終極版</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#333;min-height:100vh;padding:20px}
+        .container{max-width:1600px;margin:0 auto;display:flex;gap:20px}
+        .main-content{flex:1;min-width:0}
+        .sidebar{width:280px;background:white;border-radius:12px;padding:20px;max-height:90vh;overflow-y:auto;position:sticky;top:20px}
+        
+        .page{display:none}.page.active{display:block}
+        
+        .home-page{background:white;border-radius:15px;padding:40px;text-align:center}
+        .home-page h1{color:#667eea;margin-bottom:10px;font-size:32px}
+        .home-page p{color:#999;margin-bottom:20px;font-size:14px}
+        
+        .period-selector{background:#f0f4ff;border-radius:12px;padding:20px;margin:20px 0}
+        .period-selector h3{color:#667eea;margin-bottom:15px;font-size:16px}
+        .period-tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:15px}
+        .period-tab{padding:10px 20px;background:#ddd;border:none;border-radius:8px;cursor:pointer;font-weight:bold;transition:all 0.3s;font-size:13px}
+        .period-tab.active{background:#667eea;color:white}
+        
+        .period-inputs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:15px;align-items:center}
+        select{padding:10px;border:2px solid #ddd;border-radius:8px;font-size:14px;cursor:pointer}
+        
+        .period-badge{background:#667eea;color:white;padding:8px 15px;border-radius:20px;font-size:12px;font-weight:bold;display:inline-block;margin-top:10px}
+        
+        .officer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin:30px 0}
+        .officer-card{background:#f8f9fa;border:2px solid #e0e0e0;border-radius:12px;padding:20px;cursor:pointer;text-align:center;transition:all 0.3s}
+        .officer-card:hover{border-color:#667eea;background:#f0f4ff;transform:translateY(-5px)}
+        .officer-card .role{font-weight:bold;color:#667eea;margin-bottom:8px;font-size:12px}
+        .officer-card .name{font-size:16px;font-weight:bold;margin-bottom:8px}
+        .officer-card .nodes{font-size:11px;color:#999}
+        
+        .eval-page{background:white;border-radius:15px;padding:30px}
+        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;padding-bottom:20px;border-bottom:2px solid #667eea;flex-wrap:wrap;gap:15px}
+        .header h2{color:#667eea;flex:1;font-size:24px}
+        .header-info{font-size:12px;color:#999}
+        .back-btn{padding:10px 20px;background:#ddd;border:none;border-radius:5px;cursor:pointer;font-weight:bold;font-size:13px}
+        
+        .node-definition{background:#f0f4ff;border-left:4px solid #667eea;padding:20px;border-radius:8px;margin:20px 0;display:none}
+        .node-definition.show{display:block}
+        .node-definition h3{color:#667eea;margin-bottom:10px;font-size:16px}
+        .node-definition .definition{margin-bottom:12px;font-size:14px;line-height:1.6}
+        .standard-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:12px}
+        .standard-item:last-child{border:none}
+        
+        .node-selector{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin:20px 0}
+        .node-btn{padding:10px;background:#f0f0f0;border:2px solid #ddd;border-radius:8px;cursor:pointer;font-weight:bold;transition:all 0.3s;font-size:12px}
+        .node-btn.active{background:#667eea;color:white;border-color:#667eea}
+        
+        .table-wrapper{overflow-x:auto;margin:20px 0}
+        table{width:100%;border-collapse:collapse;font-size:12px}
+        th{background:#667eea;color:white;padding:10px;text-align:left;font-weight:bold}
+        td{padding:8px;border:1px solid #e0e6ed}
+        tr:nth-child(even){background:#f9f9f9}
+        
+        input[type="number"]{width:70px;padding:6px;border:1px solid #ddd;border-radius:4px;text-align:center;font-size:12px}
+        
+        .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:15px 0}
+        .stat-card{background:white;padding:12px;border-radius:8px;border:1px solid #e0e0e0}
+        .stat-card .label{font-weight:bold;font-size:12px;color:#333}
+        .stat-card .value{font-size:22px;font-weight:bold;color:#667eea;margin:6px 0}
+        
+        .total-stats{background:#f0f4ff;border-radius:12px;padding:20px;margin:20px 0}
+        .total-stats h3{color:#667eea;margin-bottom:15px;font-size:16px}
+        
+        .data-management{background:#fff3e0;border-radius:12px;padding:20px;margin:20px 0}
+        .data-management h3{color:#e67e22;margin-bottom:15px;font-size:16px}
+        
+        .period-item{background:white;border-radius:8px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+        .period-info{flex:1;font-size:12px}
+        .period-actions{display:flex;gap:8px}
+        .delete-btn{padding:6px 12px;background:#d32f2f;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:bold;font-size:11px}
+        .export-btn{padding:6px 12px;background:#3c3;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:bold;font-size:11px}
+        
+        .sidebar h3{color:#667eea;font-size:14px;margin-bottom:12px;border-bottom:2px solid #667eea;padding-bottom:8px}
+        .week-section{margin-bottom:15px}
+        .week-title{font-weight:bold;color:#667eea;margin-bottom:6px;font-size:11px;padding:3px 0}
+        .node-link{padding:8px;background:#f5f5f5;border-radius:6px;cursor:pointer;font-size:11px;margin-bottom:4px;transition:all 0.3s;border-left:3px solid transparent}
+        .node-link:hover{background:#e8eaf6;border-left-color:#667eea;color:#667eea}
+        .node-link.active{background:#667eea;color:white}
+        .sidebar-item{padding:8px;background:#f5f5f5;border-radius:6px;cursor:pointer;font-size:12px;margin-bottom:6px;transition:all 0.3s;border-left:3px solid transparent}
+        .sidebar-item:hover{background:#e8eaf6;border-left-color:#667eea;color:#667eea}
+        .sidebar-item.active{background:#667eea;color:white}
+        
+        .warning-box{background:#ffebee;border-left:4px solid #d32f2f;padding:12px;border-radius:8px;margin:12px 0;color:#c62828;font-size:12px}
+        
+        .progress-bar{height:18px;background:#e0e0e0;border-radius:10px;overflow:hidden;margin-top:6px}
+        .progress-fill{height:100%;background:linear-gradient(90deg,#667eea,#764ba2);transition:width 0.3s}
+        
+        .button-group{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+        .save-btn{padding:12px 25px;background:#3c3;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:bold;font-size:14px}
+        .menu-btn{padding:12px 25px;background:#667eea;color:white;border:none;border-radius:5px;cursor:pointer;font-weight:bold;font-size:14px}
+        
+        @media(max-width:1200px){.container{flex-direction:column}.sidebar{width:100%;position:static}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 側邊菜單 -->
+        <div class="sidebar">
+            <h3>📅 評比周期</h3>
+            <div id="periodList" style="margin-bottom:20px"></div>
+            
+            <h3 style="margin-top:20px">📋 30節點快速查詢</h3>
+            <div class="node-menu" id="sidebarMenu" style="font-size:11px"></div>
+            
+            <h3 style="margin-top:20px">🔧 快速功能</h3>
+            <div class="sidebar-item" onclick="goPage('homePage')">🏠 首頁</div>
+            <div class="sidebar-item" onclick="goPage('summaryPage')">📈 本周期統計</div>
+            <div class="sidebar-item" onclick="goPage('dataPage')">💾 數據管理</div>
+        </div>
+        
+        <!-- 主內容區 -->
+        <div class="main-content">
+            <!-- 首頁 -->
+            <div class="page active" id="homePage">
+                <div class="home-page">
+                    <h1>📊 班級107 評比系統</h1>
+                    <p>v8+v9 終極整合版</p>
+                    <p style="font-size:12px;color:#999">14股長 × 30節點 × 26學生 + 周期管理</p>
+                    
+                    <!-- 周期選擇器 -->
+                    <div class="period-selector">
+                        <h3>📅 選擇評比周期</h3>
+                        <div class="period-tabs">
+                            <button class="period-tab active" onclick="setPeriodType('month')">📅 月份</button>
+                            <button class="period-tab" onclick="setPeriodType('quarter')">📆 季度</button>
+                        </div>
+                        
+                        <div class="period-inputs">
+                            <select id="yearSelect" onchange="updatePeriod()" style="width:80px">
+                                <option value="2024">2024年</option>
+                                <option value="2025" selected>2025年</option>
+                                <option value="2026">2026年</option>
+                            </select>
+                            
+                            <select id="periodSelect" onchange="updatePeriod()" style="width:80px">
+                                <option value="1">1月</option>
+                                <option value="2">2月</option>
+                                <option value="3">3月</option>
+                                <option value="4">4月</option>
+                                <option value="5">5月</option>
+                                <option value="6">6月</option>
+                                <option value="7">7月</option>
+                                <option value="8">8月</option>
+                                <option value="9">9月</option>
+                                <option value="10">10月</option>
+                                <option value="11">11月</option>
+                                <option value="12">12月</option>
+                            </select>
+                            
+                            <button class="back-btn" onclick="startNewPeriod()" style="background:#667eea;color:white">✓ 開始</button>
+                        </div>
+                        
+                        <div style="text-align:center">
+                            <span class="period-badge" id="currentPeriodBadge">2025年 1月</span>
+                        </div>
+                    </div>
+                    
+                    <div class="officer-grid" id="officerGrid"></div>
+                    <div class="button-group" style="justify-content:center">
+                        <button class="menu-btn" onclick="goPage('summaryPage')">📊 查看本周期統計</button>
+                        <button class="menu-btn" onclick="goPage('dataPage')" style="background:#e67e22">💾 數據管理</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 評比頁面 -->
+            <div class="page" id="evalPage">
+                <div class="eval-page">
+                    <div class="header">
+                        <div>
+                            <h2 id="officerTitle"></h2>
+                            <div class="header-info">
+                                <div id="officerPeriod"></div>
+                                <div id="officerNodes" style="margin-top:5px"></div>
+                            </div>
+                        </div>
+                        <button class="back-btn" onclick="goPage('homePage')">← 返回</button>
+                    </div>
+                    
+                    <div>
+                        <label style="font-weight:bold;font-size:13px">選擇評比項目：</label>
+                        <div class="node-selector" id="nodeSelector"></div>
+                    </div>
+                    
+                    <!-- 節點詳細說明欄 -->
+                    <div class="node-definition" id="nodeDefinitionBox"></div>
+                    
+                    <div class="table-wrapper">
+                        <table>
+                            <thead id="tableHead"></thead>
+                            <tbody id="evalTable"></tbody>
+                        </table>
+                    </div>
+                    
+                    <button class="save-btn" onclick="saveRatings()">💾 保存評分</button>
+                </div>
+            </div>
+            
+            <!-- 總計統計頁面 -->
+            <div class="page" id="summaryPage">
+                <div class="eval-page">
+                    <div class="header">
+                        <h2>📊 <span id="summaryTitle">2025年1月</span> 評比統計</h2>
+                        <button class="back-btn" onclick="goPage('homePage')">← 返回</button>
+                    </div>
+                    
+                    <div class="total-stats">
+                        <h3>📈 本周期總計統計</h3>
+                        <div class="stat-grid" id="periodStats"></div>
+                    </div>
+                    
+                    <div style="margin-top:30px">
+                        <h3 style="color:#667eea;margin-bottom:12px;font-size:15px">👥 學生平均評分</h3>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead><tr><th>座號</th><th>姓名</th><th>平均分</th><th>評比次數</th><th>進度</th></tr></thead>
+                                <tbody id="studentStats"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top:30px">
+                        <h3 style="color:#667eea;margin-bottom:12px;font-size:15px">👔 股長完成進度</h3>
+                        <div id="officerStats"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 數據管理頁面 -->
+            <div class="page" id="dataPage">
+                <div class="eval-page">
+                    <div class="header">
+                        <h2>💾 數據管理</h2>
+                        <button class="back-btn" onclick="goPage('homePage')">← 返回</button>
+                    </div>
+                    
+                    <div class="data-management">
+                        <h3>📅 歷史評比周期</h3>
+                        <p style="margin-bottom:12px;color:#666;font-size:12px">查看、導出或刪除過去的評比數據</p>
+                        <div id="periodDataList"></div>
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ 警告：</strong>刪除數據後無法恢復，請謹慎操作。
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="export-btn" onclick="exportAllData()">💾 匯出所有數據</button>
+                        <button class="delete-btn" onclick="clearAllData()">🗑️ 清空所有數據</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 30節點完整定義
+        const nodeDefinitions = {
+            1:{name:"出席",week:"第1週",def:"全勤、無缺席、無曠課"},
+            2:{name:"遲到改善",week:"第1週",def:"準時到校、無遲到"},
+            3:{name:"手機管理",week:"第1週",def:"課堂中不使用手機、遵守使用規則"},
+            4:{name:"上課專注",week:"第1週",def:"認真聽講、保持專注"},
+            5:{name:"課前準備",week:"第1週",def:"準時到位、準備好上課用品"},
+            6:{name:"作業完成",week:"第2週",def:"按時完成課堂作業"},
+            7:{name:"作業準時",week:"第2週",def:"作業按期限繳交、不遲交"},
+            8:{name:"自主學習",week:"第2週",def:"主動進行課外學習、閱讀、研究"},
+            9:{name:"訂正能力",week:"第2週",def:"能及時訂正錯誤、改正答案"},
+            10:{name:"錯題追蹤",week:"第2週",def:"追蹤複習錯題、建立錯題本"},
+            11:{name:"提問能力",week:"第2週",def:"主動提出問題、踴躍發言"},
+            12:{name:"查資料能力",week:"第2週",def:"自主查找資料、運用各種資源"},
+            13:{name:"AI使用能力",week:"第2週",def:"正確使用AI工具輔助學習、批判思考"},
+            14:{name:"筆記能力",week:"第2週",def:"做好課堂筆記、記錄要點"},
+            15:{name:"合作能力",week:"第3週",def:"與他人有效協作、完成團隊任務"},
+            16:{name:"溝通能力",week:"第3週",def:"清晰表達想法、有效溝通"},
+            17:{name:"傾聽能力",week:"第3週",def:"認真傾聽他人、尊重他人意見"},
+            18:{name:"衝突處理",week:"第3週",def:"妥善處理衝突、解決分歧"},
+            19:{name:"情緒管理",week:"第3週",def:"控制情緒、保持冷靜"},
+            20:{name:"人際邊界",week:"第3週",def:"尊重他人邊界、維持適當距離"},
+            21:{name:"掃地工作",week:"第4週",def:"認真完成掃地工作、保持衛生"},
+            22:{name:"公共物品",week:"第4週",def:"維護公共物品、不損壞設施"},
+            23:{name:"幹部執行",week:"第1週",def:"認真執行幹部職責"},
+            24:{name:"主動幫忙",week:"第4週",def:"主動幫助他人、積極參與"},
+            25:{name:"問題回報",week:"第4週",def:"主動回報問題、提供反饋"},
+            27:{name:"提出改善",week:"第4週",def:"提出建設性改善建議"},
+            28:{name:"接受反饋",week:"第3週",def:"接受批評和建議、虛心改進"},
+            29:{name:"持續改善",week:"第4週",def:"不斷改進自己、持續進步"},
+            30:{name:"無老師運作",week:"第4週",def:"班級能自主運作、自我管理"}
+        };
+
+        const officers = [
+            {id:1,role:"班長",name:"江怡嫻",seat:13,nodes:[23,24,25,27,29,30]},
+            {id:2,role:"副班長",name:"陳琳竺",seat:19,nodes:[1,2,3,4,30]},
+            {id:3,role:"風紀股長",name:"鄭翊函",seat:24,nodes:[3,4,17,18,19,30]},
+            {id:4,role:"學藝股長",name:"曾郁惟",seat:20,nodes:[5,6,7,8,9,10,11,14]},
+            {id:5,role:"服務股長(正)",name:"林軒福",seat:2,nodes:[15,21,22,24]},
+            {id:6,role:"服務股長(副)",name:"林秉洋",seat:1,nodes:[15,21,22,24,25]},
+            {id:7,role:"總務股長",name:"張沁琳",seat:16,nodes:[5,22,25,27]},
+            {id:8,role:"庶務股長",name:"周韻儀",seat:15,nodes:[16,17,18,19,20,28]},
+            {id:9,role:"康樂股長",name:"陳宥宇",seat:6,nodes:[15,16,17,24]},
+            {id:10,role:"圖書股長",name:"趙玉晴",seat:21,nodes:[8,11,12,14]},
+            {id:11,role:"合作股長",name:"高御翔",seat:5,nodes:[15,16,17,18,20,24]},
+            {id:12,role:"環保股長",name:"蕭彣涵",seat:25,nodes:[21,22,24,25,27]},
+            {id:13,role:"班級代表",name:"戴明潔",seat:26,nodes:[11,16,17,25,27]},
+            {id:14,role:"資訊股長",name:"郭依寧",seat:18,nodes:[12,13,14,25,27]}
+        ];
+        
+        const students = [
+            {座號:1,學號:510089,姓名:"林秉洋"},{座號:2,學號:510101,姓名:"林軒福"},{座號:3,學號:510109,姓名:"邱亞風"},
+            {座號:4,學號:510124,姓名:"紀柏亨"},{座號:5,學號:510140,姓名:"高御翔"},{座號:6,學號:510207,姓名:"陳宥宇"},
+            {座號:7,學號:510223,姓名:"陳暐帆"},{座號:8,學號:510258,姓名:"楊永承"},{座號:9,學號:510279,姓名:"劉宏益"},
+            {座號:10,學號:510291,姓名:"潘亮元"},{座號:11,學號:510350,姓名:"羅偉育"},{座號:12,學號:510004,姓名:"尤青雲"},
+            {座號:13,學號:510024,姓名:"江怡嫻"},{座號:14,學號:510063,姓名:"李貞誼"},{座號:15,學號:510082,姓名:"周韻儀"},
+            {座號:16,學號:510148,姓名:"張沁琳"},{座號:17,學號:510094,姓名:"林盈均"},{座號:18,學號:510175,姓名:"郭依寧"},
+            {座號:19,學號:510219,姓名:"陳琳竺"},{座號:20,學號:510236,姓名:"曾郁惟"},{座號:21,學號:510276,姓名:"趙玉晴"},
+            {座號:22,學號:510277,姓名:"鄞玉婷"},{座號:23,學號:510314,姓名:"鄭翊呈"},{座號:24,學號:510315,姓名:"鄭翊函"},
+            {座號:25,學號:510327,姓名:"蕭彣涵"},{座號:26,學號:510335,姓名:"戴明潔"}
+        ];
+        
+        let currentOfficer=null,currentNode=null,currentPeriod="2025-1",periodType="month";
+        
+        function getPeriodLabel(){
+            let [year,period]=currentPeriod.split('-');
+            return periodType==='month'?`${year}年${period}月`:`${year}年第${period}季`;
+        }
+        
+        function setPeriodType(type){
+            periodType=type;
+            document.querySelectorAll('.period-tab').forEach(t=>t.classList.remove('active'));
+            event.target.classList.add('active');
+            let select=document.getElementById('periodSelect');
+            if(type==='month'){
+                select.innerHTML='<option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8">8月</option><option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>';
+            }else{
+                select.innerHTML='<option value="1">第1季</option><option value="2">第2季</option><option value="3">第3季</option><option value="4">第4季</option>';
+            }
+        }
+        
+        function updatePeriod(){
+            let year=document.getElementById('yearSelect').value;
+            let period=document.getElementById('periodSelect').value;
+            currentPeriod=`${year}-${period}`;
+            document.getElementById('currentPeriodBadge').textContent=getPeriodLabel();
+        }
+        
+        function startNewPeriod(){
+            updatePeriod();
+            alert(`✅ 已切換到 ${getPeriodLabel()} 評比周期`);
+            initHome();
+            loadPeriodList();
+        }
+        
+        function loadPeriodList(){
+            let html='';
+            let allPeriods=new Set();
+            for(let k of Object.keys(localStorage)){
+                if(k.startsWith('rating_')){
+                    let parts=k.split('_');
+                    if(parts.length>=2) allPeriods.add(parts[1]);
+                }
+            }
+            let sortedPeriods=[...allPeriods].sort().reverse();
+            sortedPeriods.forEach(p=>{
+                let isActive=p===currentPeriod;
+                let label=p.includes('-')?(()=>{
+                    let [y,per]=p.split('-');
+                    return `${y}-${per}`;
+                })():'未知';
+                html+=`<div class="sidebar-item ${isActive?'active':''}" onclick="switchPeriod('${p}')" style="margin-bottom:4px">${label}</div>`;
+            });
+            document.getElementById('periodList').innerHTML=html||'<p style="color:#999;font-size:11px">尚無評比數據</p>';
+        }
+        
+        function switchPeriod(period){
+            currentPeriod=period;
+            loadPeriodList();
+            document.getElementById('currentPeriodBadge').textContent=getPeriodLabel();
+            goPage('homePage');
+            initHome();
+        }
+        
+        function initSidebar(){
+            let html='<div class="week-section"><div class="week-title">第1週 自律週</div>';
+            [1,2,3,4,5,23].forEach(n=>{
+                html+=`<div class="node-link" onclick="showNodeDesc(${n})">#${n} ${nodeDefinitions[n].name}</div>`;
+            });
+            html+='</div><div class="week-section"><div class="week-title">第2週 學習週</div>';
+            [6,7,8,9,10,11,12,13,14].forEach(n=>{
+                html+=`<div class="node-link" onclick="showNodeDesc(${n})">#${n} ${nodeDefinitions[n].name}</div>`;
+            });
+            html+='</div><div class="week-section"><div class="week-title">第3週 合作週</div>';
+            [15,16,17,18,19,20,28].forEach(n=>{
+                html+=`<div class="node-link" onclick="showNodeDesc(${n})">#${n} ${nodeDefinitions[n].name}</div>`;
+            });
+            html+='</div><div class="week-section"><div class="week-title">第4週Agency週</div>';
+            [21,22,24,25,27,29,30].forEach(n=>{
+                html+=`<div class="node-link" onclick="showNodeDesc(${n})">#${n} ${nodeDefinitions[n].name}</div>`;
+            });
+            html+='</div>';
+            document.getElementById('sidebarMenu').innerHTML=html;
+        }
+        
+        function showNodeDesc(n){
+            document.querySelectorAll('.node-link').forEach(l=>l.classList.remove('active'));
+            event.target.closest('.node-link')?.classList.add('active');
+            const def=nodeDefinitions[n];
+            let standard=['⭐ 提醒後仍未完成','⭐⭐ 需多次提醒','⭐⭐⭐ 提醒一次後完成','⭐⭐⭐⭐ 不用提醒自己完成','⭐⭐⭐⭐⭐ 不用提醒還能幫助別人'];
+            alert(`📌 節點 #${n}: ${def.name}\n\n📝 定義：${def.def}\n\n📊 評分標準：\n${standard.join('\n')}`);
+        }
+        
+        function initHome(){
+            let html='';
+            officers.forEach(o=>{
+                html+=`<div class="officer-card" onclick="selectOfficer(${o.id})"><div class="role">${o.role}</div><div class="name">${o.name}</div><div class="nodes">座號${o.seat}</div></div>`;
+            });
+            document.getElementById('officerGrid').innerHTML=html;
+        }
+        
+        function selectOfficer(id){
+            currentOfficer=officers.find(o=>o.id===id);
+            currentNode=currentOfficer.nodes[0];
+            renderEvalPage();
+            goPage('evalPage');
+        }
+        
+        function renderEvalPage(){
+            document.getElementById('officerTitle').textContent=`${currentOfficer.role} - ${currentOfficer.name}`;
+            document.getElementById('officerPeriod').textContent=`周期：${getPeriodLabel()}`;
+            document.getElementById('officerNodes').textContent=`負責節點：#${currentOfficer.nodes.join(', #')}`;
+            
+            let nodeHtml='';
+            currentOfficer.nodes.forEach(n=>{
+                nodeHtml+=`<button class="node-btn ${n===currentNode?'active':''}" onclick="selectNode(${n})">#${n}</button>`;
+            });
+            document.getElementById('nodeSelector').innerHTML=nodeHtml;
+            showNodeDefinition();
+            renderEvalTable();
+        }
+        
+        function selectNode(n){
+            currentNode=n;
+            document.querySelectorAll('.node-btn').forEach(b=>b.classList.remove('active'));
+            event.target.closest('.node-btn')?.classList.add('active');
+            showNodeDefinition();
+            renderEvalTable();
+        }
+        
+        function showNodeDefinition(){
+            const def=nodeDefinitions[currentNode];
+            const box=document.getElementById('nodeDefinitionBox');
+            let standard=['⭐提醒後仍未完成','⭐⭐需多次提醒','⭐⭐⭐提醒一次後完成','⭐⭐⭐⭐不用提醒自己完成','⭐⭐⭐⭐⭐不用提醒還能幫助別人'];
+            let html=`<h3>節點 #${currentNode}: ${def.name}</h3><div style="margin-bottom:12px;font-size:13px"><strong>定義：</strong> ${def.def}</div><div><h4 style="margin-bottom:8px;font-size:12px">評分標準：</h4>`;
+            standard.forEach(s=>{
+                html+=`<div class="standard-item"><span style="color:#667eea;font-weight:bold;width:80px">${s.split(' ')[0]}</span><span>${s.substring(s.indexOf(' ')+1)}</span></div>`;
+            });
+            html+='</div>';
+            box.innerHTML=html;
+            box.classList.add('show');
+        }
+        
+        function renderEvalTable(){
+            let head=`<tr><th>座號</th><th>學號</th><th>姓名</th><th>評分</th></tr>`;
+            document.getElementById('tableHead').innerHTML=head;
+            
+            let body='';
+            students.forEach(s=>{
+                let key=`rating_${currentPeriod}_o${currentOfficer.id}_n${currentNode}_s${s.座號}`;
+                let val=localStorage.getItem(key)||'';
+                body+=`<tr><td>${s.座號}</td><td>${s.學號}</td><td>${s.姓名}</td><td><input type="number" id="${key}" min="1" max="5" value="${val}"></td></tr>`;
+            });
+            document.getElementById('evalTable').innerHTML=body;
+        }
+        
+        function saveRatings(){
+            students.forEach(s=>{
+                let key=`rating_${currentPeriod}_o${currentOfficer.id}_n${currentNode}_s${s.座號}`;
+                let val=document.getElementById(key).value;
+                if(val) localStorage.setItem(key,val);
+            });
+            alert('✅ 已保存！');
+        }
+        
+        function goPage(p){
+            document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+            document.getElementById(p).classList.add('active');
+            if(p==='summaryPage') showSummary();
+            if(p==='dataPage') showDataManagement();
+        }
+        
+        function showSummary(){
+            document.getElementById('summaryTitle').textContent=getPeriodLabel();
+            
+            let totalEvals=0,totalScore=0;
+            for(let k of Object.keys(localStorage)){
+                if(k.startsWith(`rating_${currentPeriod}_`)){
+                    let v=parseInt(localStorage.getItem(k));
+                    if(!isNaN(v)){totalScore+=v;totalEvals++;}
+                }
+            }
+            let avgScore=totalEvals>0?(totalScore/totalEvals).toFixed(2):'-';
+            
+            document.getElementById('periodStats').innerHTML=`
+                <div class="stat-card"><div class="label">評比次數</div><div class="value">${totalEvals}</div></div>
+                <div class="stat-card"><div class="label">平均評分</div><div class="value">${avgScore}</div></div>
+                <div class="stat-card"><div class="label">完成比例</div><div class="value">${totalEvals>0?Math.round((totalEvals/(officers.length*students.length*30))*100)+'%':'-'}</div></div>
+            `;
+            
+            let studentHtml='';
+            students.forEach(s=>{
+                let scores=[],count=0;
+                officers.forEach(o=>{
+                    o.nodes.forEach(n=>{
+                        let key=`rating_${currentPeriod}_o${o.id}_n${n}_s${s.座號}`;
+                        let val=localStorage.getItem(key);
+                        if(val){scores.push(parseInt(val));count++;}
+                    });
+                });
+                let avg=scores.length>0?(scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(2):'-';
+                let percent=Math.round((count/(officers.length*30))*100);
+                studentHtml+=`<tr><td>${s.座號}</td><td>${s.姓名}</td><td style="font-weight:bold;color:#667eea">${avg}</td><td>${count}</td><td><div class="progress-bar" style="width:100px"><div class="progress-fill" style="width:${percent}%"></div></div></td></tr>`;
+            });
+            document.getElementById('studentStats').innerHTML=studentHtml;
+            
+            let officerHtml='';
+            officers.forEach(o=>{
+                let total=o.nodes.length*students.length,count=0;
+                o.nodes.forEach(n=>{
+                    students.forEach(s=>{
+                        let key=`rating_${currentPeriod}_o${o.id}_n${n}_s${s.座號}`;
+                        if(localStorage.getItem(key)) count++;
+                    });
+                });
+                let percent=Math.round((count/total)*100);
+                officerHtml+=`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px"><span style="font-weight:bold">${o.role} ${o.name}</span><span style="color:#667eea;font-weight:bold">${percent}%</span></div><div class="progress-bar"><div class="progress-fill" style="width:${percent}%"></div></div></div>`;
+            });
+            document.getElementById('officerStats').innerHTML=officerHtml;
+        }
+        
+        function showDataManagement(){
+            let html='';
+            let allPeriods=new Set();
+            for(let k of Object.keys(localStorage)){
+                if(k.startsWith('rating_')){
+                    let parts=k.split('_');
+                    if(parts.length>=2) allPeriods.add(parts[1]);
+                }
+            }
+            let sortedPeriods=[...allPeriods].sort().reverse();
+            
+            sortedPeriods.forEach(p=>{
+                let [y,per]=p.split('-');
+                let label=`${y}年${per}月`;
+                let count=0;
+                for(let k of Object.keys(localStorage)){
+                    if(k.startsWith(`rating_${p}_`)) count++;
+                }
+                
+                html+=`<div class="period-item">
+                    <div class="period-info">
+                        <div style="font-weight:bold;margin-bottom:4px">${label}</div>
+                        <div style="font-size:11px;color:#999">共${count}筆評比</div>
+                    </div>
+                    <div class="period-actions">
+                        <button class="export-btn" onclick="exportPeriodData('${p}')">📥 導出</button>
+                        <button class="delete-btn" onclick="deletePeriodData('${p}')">🗑️ 刪除</button>
+                    </div>
+                </div>`;
+            });
+            
+            document.getElementById('periodDataList').innerHTML=html||'<p style="color:#999;font-size:12px">尚無評比數據</p>';
+        }
+        
+        function deletePeriodData(period){
+            if(!confirm(`確定要刪除 ${period} 的所有評比數據嗎？`)) return;
+            for(let k of Object.keys(localStorage)){
+                if(k.startsWith(`rating_${period}_`)) localStorage.removeItem(k);
+            }
+            alert('✅ 已刪除');
+            showDataManagement();
+            loadPeriodList();
+        }
+        
+        function exportPeriodData(period){
+            let csv='座號,學號,姓名,股長編號,節點編號,評分\n';
+            for(let k of Object.keys(localStorage)){
+                if(k.startsWith(`rating_${period}_`)){
+                    let parts=k.split('_');
+                    if(parts.length>=6){
+                        let oId=parts[3].substring(1);
+                        let nId=parts[4].substring(1);
+                        let sId=parts[5].substring(1);
+                        let student=students.find(st=>st.座號==sId);
+                        let val=localStorage.getItem(k);
+                        if(student) csv+=`${student.座號},${student.學號},${student.姓名},${oId},${nId},${val}\n`;
+                    }
+                }
+            }
+            let blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+            let link=document.createElement('a');
+            link.href=URL.createObjectURL(blob);
+            link.download=`班級107評比_${period}.csv`;
+            link.click();
+        }
+        
+        function exportAllData(){
+            let csv='周期,座號,學號,姓名,股長編號,節點編號,評分\n';
+            for(let k of Object.keys(localStorage)){
+                if(k.startsWith('rating_')){
+                    let parts=k.split('_');
+                    if(parts.length>=6){
+                        let period=`${parts[1]}_${parts[2]}`;
+                        let oId=parts[3].substring(1);
+                        let nId=parts[4].substring(1);
+                        let sId=parts[5].substring(1);
+                        let student=students.find(st=>st.座號==sId);
+                        let val=localStorage.getItem(k);
+                        if(student) csv+=`${period},${student.座號},${student.學號},${student.姓名},${oId},${nId},${val}\n`;
+                    }
+                }
+            }
+            let blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+            let link=document.createElement('a');
+            link.href=URL.createObjectURL(blob);
+            link.download=`班級107評比_全部.csv`;
+            link.click();
+        }
+        
+        function clearAllData(){
+            if(!confirm('確定要刪除所有評比數據嗎？')) return;
+            if(!confirm('再次確認：真的要刪除嗎？')) return;
+            for(let k of Object.keys(localStorage)){
+                if(k.startsWith('rating_')) localStorage.removeItem(k);
+            }
+            alert('✅ 已清空所有數據');
+            loadPeriodList();
+            initHome();
+        }
+        
+        initHome();
+        initSidebar();
+        loadPeriodList();
+    </script>
+</body>
+</html>

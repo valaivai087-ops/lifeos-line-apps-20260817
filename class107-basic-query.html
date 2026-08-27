@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班級107完整資料查詢系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 13px;
+        }
+        
+        .stat-card .number {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .tabs {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
+            overflow-x: auto;
+        }
+        
+        .tab-btn {
+            padding: 10px 18px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .tab-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .controls input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .controls input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .controls button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+            font-size: 14px;
+        }
+        
+        .controls button:hover {
+            background: #764ba2;
+        }
+        
+        .table-wrapper {
+            background: white;
+            border-radius: 12px;
+            overflow: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        
+        th {
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 600;
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        th:last-child {
+            border-right: none;
+        }
+        
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+            border-right: 1px solid #f5f5f5;
+        }
+        
+        td:last-child {
+            border-right: none;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9ff;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        
+        .badge.male {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .badge.female {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+        
+        .badge.indigenous {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .badge.regular {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+        
+        .badge.position {
+            background: #fff3e0;
+            color: #e65100;
+            font-size: 12px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .copy-btn {
+            padding: 5px 10px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: opacity 0.3s;
+        }
+        
+        .copy-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .footer {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+        }
+        
+        .export-section {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .export-section button {
+            padding: 10px 18px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+        
+        .export-section button:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .success-msg {
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .success-msg.show {
+            display: block;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .modal-body {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #333;
+        }
+        
+        .modal-row {
+            margin-bottom: 12px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .modal-label {
+            font-weight: bold;
+            color: #667eea;
+            min-width: 100px;
+        }
+        
+        .modal-value {
+            flex: 1;
+        }
+        
+        .close-btn {
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 班級107完整資料查詢系統</h1>
+            <p>整合成員基本資料、身分、畢業國中、監護人及職位 | 支援搜尋、查詢及匯出</p>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="number">26</div>
+                    <div class="label">總人數</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">25</div>
+                    <div class="label">一般生</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">1</div>
+                    <div class="label">原住民</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">14</div>
+                    <div class="label">幹部職位</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="success-msg" id="successMsg">✓ 複製成功！</div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('complete', this)">📌 完整資料</button>
+            <button class="tab-btn" onclick="switchTab('positions', this)">🎖️ 幹部名單</button>
+            <button class="tab-btn" onclick="switchTab('identity', this)">🪪 身分統計</button>
+        </div>
+        
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="搜尋學號、姓名、監護人或國中...">
+            <button onclick="resetFilter()">重設</button>
+        </div>
+        
+        <div id="complete" class="tab-content active">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>座號</th>
+                            <th>學號</th>
+                            <th>姓名</th>
+                            <th>性別</th>
+                            <th>身分</th>
+                            <th>畢業國中</th>
+                            <th>監護人</th>
+                            <th>職位</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBodyComplete"></tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="positions" class="tab-content">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>職位</th>
+                            <th>座號</th>
+                            <th>學號</th>
+                            <th>姓名</th>
+                            <th>性別</th>
+                            <th>監護人</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBodyPositions"></tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="identity" class="tab-content">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>座號</th>
+                            <th>學號</th>
+                            <th>姓名</th>
+                            <th>性別</th>
+                            <th>身分</th>
+                            <th>畢業國中</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBodyIdentity"></tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <strong>🎯 使用說明：</strong><br>
+            📌 完整資料：檢視所有成員完整資訊 | 🎖️ 幹部名單：僅顯示有職位的幹部 | 🪪 身分統計：依身分別統計
+            
+            <div class="export-section">
+                <button onclick="exportJSON()">📥 下載 JSON</button>
+                <button onclick="exportCSV()">📊 下載 CSV</button>
+                <button onclick="copyAllText()">📋 全部複製</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div class="modal-header" id="modalTitle"></div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+    
+    <script>
+        const students = [
+            {id: 1, studentId: "510089", name: "林乘洋", gender: "男", identity: "一般生", school: "屏東縣縣立萬鶴國中", guardian: "簡惠美", position: "服務股長(副)"},
+            {id: 2, studentId: "510101", name: "林軒福", gender: "男", identity: "一般生", school: "屏東縣縣立光春國中", guardian: "高秀雯", position: "服務股長(正)"},
+            {id: 3, studentId: "510109", name: "邱亞風", gender: "男", identity: "一般生", school: "屏東縣私立南樂國中", guardian: "盧瑞芬", position: "無"},
+            {id: 4, studentId: "510124", name: "紀柏亨", gender: "男", identity: "一般生", school: "屏東縣縣立內埤國中", guardian: "林孟儒", position: "無"},
+            {id: 5, studentId: "510140", name: "高御翔", gender: "男", identity: "一般生", school: "屏東縣縣立林邊國中", guardian: "陳奐維", position: "合作股長"},
+            {id: 6, studentId: "510207", name: "陳宥宇", gender: "男", identity: "一般生", school: "屏東縣縣立萬丹國中", guardian: "陳立峰", position: "康樂股長"},
+            {id: 7, studentId: "510223", name: "陳曜帆", gender: "男", identity: "一般生", school: "屏東縣縣立光春國中", guardian: "李鴻琇", position: "無"},
+            {id: 8, studentId: "510258", name: "楊永承", gender: "男", identity: "一般生", school: "屏東縣縣立光春國中", guardian: "劉龍燁", position: "無"},
+            {id: 9, studentId: "510279", name: "劉宏益", gender: "男", identity: "一般生", school: "屏東縣縣立恆春國中", guardian: "潘俊中", position: "無"},
+            {id: 10, studentId: "510291", name: "潘亮元", gender: "男", identity: "一般生", school: "屏東縣縣立南樂國中", guardian: "羅聖智", position: "無"},
+            {id: 11, studentId: "510350", name: "羅偉育", gender: "男", identity: "一般生", school: "屏東縣縣立車城國中", guardian: "尤怡嵩", position: "無"},
+            {id: 12, studentId: "510004", name: "尤青雯", gender: "女", identity: "一般生", school: "屏東縣縣立車城國中", guardian: "李玉淳", position: "無"},
+            {id: 13, studentId: "510024", name: "江怡娟", gender: "女", identity: "一般生", school: "屏東縣縣立潮州國中", guardian: "李政國", position: "班長"},
+            {id: 14, studentId: "510063", name: "李貞蒨", gender: "女", identity: "一般生", school: "屏東縣縣立潮州國中", guardian: "顏云琴", position: "無"},
+            {id: 15, studentId: "510082", name: "周韻儂", gender: "女", identity: "原住民", school: "屏東縣縣立潮州國中", guardian: "張梓城", position: "庶務股長"},
+            {id: 16, studentId: "510148", name: "張心琳", gender: "女", identity: "一般生", school: "屏東縣縣立內埤國中", guardian: "陳羽晴", position: "總務股長"},
+            {id: 17, studentId: "510094", name: "林盈均", gender: "女", identity: "一般生", school: "屏東縣私立潮州國中", guardian: "郭美均", position: "無"},
+            {id: 18, studentId: "510175", name: "郭依辛", gender: "女", identity: "一般生", school: "屏東縣私立潮州國中", guardian: "陳吉興", position: "資訊股長"},
+            {id: 19, studentId: "510219", name: "陳琳絲", gender: "女", identity: "一般生", school: "屏東縣縣立潮州國中", guardian: "曾勤能", position: "副班長"},
+            {id: 20, studentId: "510236", name: "曾郁惟", gender: "女", identity: "一般生", school: "屏東縣私立南樂國中", guardian: "趙志堅", position: "學藝股長"},
+            {id: 21, studentId: "510276", name: "趙玉晴", gender: "女", identity: "一般生", school: "屏東縣縣立潮州國中", guardian: "鄒東宏", position: "圖書股長"},
+            {id: 22, studentId: "510277", name: "鄭玉婷", gender: "女", identity: "一般生", school: "屏東縣縣立竹田國中", guardian: "鄒東宏", position: "無"},
+            {id: 23, studentId: "510314", name: "鄭羽昱", gender: "女", identity: "一般生", school: "屏東縣縣立恆丹國中", guardian: "鄒全忠", position: "無"},
+            {id: 24, studentId: "510315", name: "鄭羽函", gender: "女", identity: "一般生", school: "屏東縣私立南樂國中", guardian: "鄒冠學", position: "風紀股長"},
+            {id: 25, studentId: "510327", name: "溫炫涵", gender: "女", identity: "一般生", school: "屏東縣私立南樂國中", guardian: "薛瓦凱", position: "環保股長"},
+            {id: 26, studentId: "510335", name: "戴明潔", gender: "女", identity: "一般生", school: "屏東縣縣立潮州國中", guardian: "林芸如", position: "班級代表"}
+        ];
+        
+        let filteredStudents = [...students];
+        
+        function renderCompleteTable() {
+            const tbody = document.getElementById('tableBodyComplete');
+            tbody.innerHTML = '';
+            
+            filteredStudents.forEach(student => {
+                const row = document.createElement('tr');
+                const genderBadge = student.gender === "男" ? '<span class="badge male">👨 男</span>' : '<span class="badge female">👩 女</span>';
+                const identityBadge = student.identity === "原住民" ? 
+                    '<span class="badge indigenous">原住民</span>' : 
+                    '<span class="badge regular">一般生</span>';
+                const positionBadge = student.position === "無" ? 
+                    '<span style="color:#999">-</span>' : 
+                    `<span class="badge position">${student.position}</span>`;
+                
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td><strong>${student.studentId}</strong></td>
+                    <td>${student.name}</td>
+                    <td>${genderBadge}</td>
+                    <td>${identityBadge}</td>
+                    <td style="font-size:12px">${student.school}</td>
+                    <td>${student.guardian}</td>
+                    <td>${positionBadge}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="copy-btn" onclick="showDetail(${student.id})">詳情</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function renderPositionsTable() {
+            const tbody = document.getElementById('tableBodyPositions');
+            tbody.innerHTML = '';
+            
+            const positionStudents = filteredStudents.filter(s => s.position !== "無");
+            positionStudents.forEach(student => {
+                const row = document.createElement('tr');
+                const genderBadge = student.gender === "男" ? '<span class="badge male">👨</span>' : '<span class="badge female">👩</span>';
+                
+                row.innerHTML = `
+                    <td><span class="badge position">${student.position}</span></td>
+                    <td>${student.id}</td>
+                    <td><strong>${student.studentId}</strong></td>
+                    <td>${student.name}</td>
+                    <td>${genderBadge}</td>
+                    <td>${student.guardian}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="copy-btn" onclick="showDetail(${student.id})">詳情</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function renderIdentityTable() {
+            const tbody = document.getElementById('tableBodyIdentity');
+            tbody.innerHTML = '';
+            
+            filteredStudents.forEach((student, idx) => {
+                const row = document.createElement('tr');
+                const genderBadge = student.gender === "男" ? '<span class="badge male">👨 男</span>' : '<span class="badge female">👩 女</span>';
+                const identityBadge = student.identity === "原住民" ? 
+                    '<span class="badge indigenous">原住民</span>' : 
+                    '<span class="badge regular">一般生</span>';
+                
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td><strong>${student.studentId}</strong></td>
+                    <td>${student.name}</td>
+                    <td>${genderBadge}</td>
+                    <td>${identityBadge}</td>
+                    <td style="font-size:12px">${student.school}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="copy-btn" onclick="showDetail(${student.id})">詳情</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function renderAllTables() {
+            renderCompleteTable();
+            renderPositionsTable();
+            renderIdentityTable();
+        }
+        
+        function showDetail(studentId) {
+            const student = students.find(s => s.id === studentId);
+            if (!student) return;
+            
+            document.getElementById('modalTitle').textContent = `${student.name} (${student.studentId})`;
+            document.getElementById('modalBody').innerHTML = `
+                <div class="modal-row">
+                    <span class="modal-label">座號：</span>
+                    <span class="modal-value">${student.id}</span>
+                </div>
+                <div class="modal-row">
+                    <span class="modal-label">學號：</span>
+                    <span class="modal-value">${student.studentId}</span>
+                </div>
+                <div class="modal-row">
+                    <span class="modal-label">姓名：</span>
+                    <span class="modal-value">${student.name}</span>
+                </div>
+                <div class="modal-row">
+                    <span class="modal-label">性別：</span>
+                    <span class="modal-value">${student.gender}</span>
+                </div>
+                <div class="modal-row">
+                    <span class="modal-label">身分：</span>
+                    <span class="modal-value">${student.identity}</span>
+                </div>
+                <div class="modal-row">
+                    <span class="modal-label">畢業國中：</span>
+                    <span class="modal-value">${student.school}</span>
+                </div>
+                <div class="modal-row">
+                    <span class="modal-label">監護人：</span>
+                    <span class="modal-value">${student.guardian}</span>
+                </div>
+                <div class="modal-row">
+                    <span class="modal-label">職位：</span>
+                    <span class="modal-value">${student.position}</span>
+                </div>
+            `;
+            document.getElementById('detailModal').classList.add('show');
+        }
+        
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('show');
+        }
+        
+        function filterStudents() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            filteredStudents = students.filter(student => 
+                student.studentId.toLowerCase().includes(searchText) ||
+                student.name.toLowerCase().includes(searchText) ||
+                student.guardian.toLowerCase().includes(searchText) ||
+                student.school.toLowerCase().includes(searchText)
+            );
+            renderAllTables();
+        }
+        
+        function resetFilter() {
+            document.getElementById('searchInput').value = '';
+            filteredStudents = [...students];
+            renderAllTables();
+        }
+        
+        function switchTab(tabName, button) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            button.classList.add('active');
+        }
+        
+        function copyAllText() {
+            const text = filteredStudents.map(s => 
+                `${s.id}|${s.studentId}|${s.name}|${s.gender}|${s.identity}|${s.school}|${s.guardian}|${s.position}`
+            ).join('\n');
+            navigator.clipboard.writeText(text).then(() => {
+                showSuccess('✓ 全部資料已複製！');
+            });
+        }
+        
+        function exportJSON() {
+            const jsonData = JSON.stringify(filteredStudents, null, 2);
+            const blob = new Blob([jsonData], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '班級107完整資料.json';
+            a.click();
+        }
+        
+        function exportCSV() {
+            const csv = "座號,學號,姓名,性別,身分別,畢業國中,監護人,職位\n" + 
+                filteredStudents.map(s => `${s.id},${s.studentId},${s.name},${s.gender},${s.identity},${s.school},${s.guardian},${s.position}`).join('\n');
+            const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '班級107完整資料.csv';
+            a.click();
+        }
+        
+        function showSuccess(msg = '✓ 複製成功！') {
+            const msgEl = document.getElementById('successMsg');
+            msgEl.textContent = msg;
+            msgEl.classList.add('show');
+            setTimeout(() => msgEl.classList.remove('show'), 2000);
+        }
+        
+        document.getElementById('searchInput').addEventListener('input', filterStudents);
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target == modal) {
+                modal.classList.remove('show');
+            }
+        }
+        
+        // 初始化
+        renderAllTables();
+    </script>
+</body>
+</html>

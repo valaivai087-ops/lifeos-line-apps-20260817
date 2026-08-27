@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班級107 完整資料查詢系統 A版（行政版）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #d32f2f 0%, #f57c00 100%); color: #2c3e50; min-height: 100vh; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        .home-page { background: white; border-radius: 15px; padding: 40px; text-align: center; }
+        .home-page h1 { color: #d32f2f; margin-bottom: 10px; font-size: 36px; }
+        .home-page p { color: #999; margin-bottom: 30px; font-size: 16px; font-weight: bold; }
+        .warning-box { background: #ffebee; border-left: 4px solid #d32f2f; padding: 15px; margin-bottom: 30px; border-radius: 8px; color: #c62828; font-weight: bold; }
+        
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 40px 0; }
+        .stat-card { background: linear-gradient(135deg, #d32f2f 0%, #f57c00 100%); color: white; padding: 25px; border-radius: 12px; }
+        .stat-card .number { font-size: 36px; font-weight: bold; }
+        .stat-card .label { font-size: 14px; margin-top: 8px; opacity: 0.9; }
+        
+        .menu-btn { padding: 15px 30px; background: #d32f2f; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin: 10px; }
+        .menu-btn:hover { background: #f57c00; }
+        
+        .query-page { background: white; border-radius: 15px; padding: 30px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #d32f2f; flex-wrap: wrap; gap: 15px; }
+        .header h2 { color: #d32f2f; flex: 1; }
+        .back-btn { padding: 10px 20px; background: #ddd; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        .search-box { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .search-box input { padding: 10px 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px; flex: 1; min-width: 200px; }
+        .search-box button { padding: 10px 20px; background: #d32f2f; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        .table-wrapper { overflow-x: auto; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        th { background: #d32f2f; color: white; padding: 10px; text-align: left; font-weight: bold; white-space: nowrap; }
+        td { padding: 8px; border: 1px solid #e0e6ed; }
+        tr:nth-child(even) { background: #f9f9f9; }
+        tr:hover { background: #ffe0b2; }
+        
+        .export-btn { padding: 10px 20px; background: #3c3; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .copy-toast { position: fixed; bottom: 20px; right: 20px; background: #3c3; color: white; padding: 15px 25px; border-radius: 8px; display: none; z-index: 1000; }
+        .copy-toast.show { display: block; animation: slideIn 0.3s; }
+        @keyframes slideIn { from { transform: translateX(400px); } to { transform: translateX(0); } }
+        
+        .version-badge { display: inline-block; background: #d32f2f; color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-left: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page active" id="homePage">
+            <div class="home-page">
+                <h1>🔐 班級107 完整資料查詢系統 <span class="version-badge">A版 行政版</span></h1>
+                <p>包含所有敏感資訊 - 僅供導師使用</p>
+                <div class="warning-box">⚠️ 【保密提醒】此版本包含高度敏感聯絡資料。請勿外洩。</div>
+                <div class="stat-grid">
+                    <div class="stat-card"><div class="number">26</div><div class="label">總人數</div></div>
+                    <div class="stat-card"><div class="number">11</div><div class="label">男生</div></div>
+                    <div class="stat-card"><div class="number">15</div><div class="label">女生</div></div>
+                    <div class="stat-card"><div class="number">4</div><div class="label">原住民</div></div>
+                </div>
+                <div>
+                    <button class="menu-btn" onclick="goPage('tablePage')">📋 完整資料表</button>
+                    <button class="menu-btn" onclick="goPage('searchPage')">🔍 進階搜尋</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="page" id="tablePage">
+            <div class="query-page">
+                <div class="header">
+                    <h2>📋 班級107 完整資料表 <span class="version-badge">A版</span></h2>
+                    <button class="back-btn" onclick="goPage('homePage')">← 返回</button>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="tableSearch" placeholder="搜尋..." onkeyup="filterTable()">
+                    <button onclick="filterTable()">🔍</button>
+                    <button class="export-btn" onclick="exportTable()">📥 複製全表</button>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>座號</th><th>學號</th><th>姓名</th><th>性別</th><th>身分</th><th>畢業國中</th><th>監護人</th><th>戶籍電話</th><th>手機</th><th>戶籍地址</th></tr></thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="page" id="searchPage">
+            <div class="query-page">
+                <div class="header">
+                    <h2>🔍 進階搜尋 <span class="version-badge">A版</span></h2>
+                    <button class="back-btn" onclick="goPage('homePage')">← 返回</button>
+                </div>
+                <div style="background: #fff3e0; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <input type="text" id="guardian" placeholder="監護人名稱" style="width: 250px; padding: 8px; margin: 5px;">
+                    <button onclick="searchByGuardian()" style="padding: 8px 15px; background: #d32f2f; color: white; border: none; border-radius: 5px; cursor: pointer;">搜尋</button>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead><tr><th>座號</th><th>學號</th><th>姓名</th><th>監護人</th><th>戶籍電話</th><th>手機</th><th>住址</th></tr></thead>
+                        <tbody id="searchResultBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="copy-toast" id="copyToast">✅ 已複製！</div>
+    
+    <script>
+        const students = [
+{座號:1,學號:510089,姓名:"林秉洋",性別:"男",身分:"原住民",畢業國中:"屏東縣縣立萬巒國中",監護人:"簡惠美",戶籍電話:"",手機:"0989214651",戶籍地址:"屏東縣萬巒鄉新厝村清安路35-7號"},
+{座號:2,學號:510101,姓名:"林軒福",性別:"男",身分:"一般生",畢業國中:"屏東縣縣立萬巒國中",監護人:"潘竹時",戶籍電話:"7833530",手機:"0973472518",戶籍地址:"屏東縣萬巒鄉五溝村德勝路17號"},
+{座號:3,學號:510109,姓名:"邱亞風",性別:"男",身分:"原住民",畢業國中:"屏東縣縣立光春國中",監護人:"高秀雯",戶籍電話:"7871748",手機:"0981077894",戶籍地址:"屏東縣來義鄉義林村義新路8巷16號"},
+{座號:4,學號:510124,姓名:"紀柏亨",性別:"男",身分:"一般生",畢業國中:"屏東縣私立南榮國中",監護人:"盧瑞芳",戶籍電話:"0915772987",手機:"0915772987",戶籍地址:"屏東縣潮州鎮忠誠路12號"},
+{座號:5,學號:510140,姓名:"高御翔",性別:"男",身分:"原住民",畢業國中:"屏東縣縣立內埔國中",監護人:"林孝儀",戶籍電話:"",手機:"0963019676",戶籍地址:"屏東縣內埔鄉內埔村康寧路156號五樓之二"},
+{座號:6,學號:510207,姓名:"陳宥宇",性別:"男",身分:"一般生",畢業國中:"屏東縣縣立林邊國中",監護人:"陳奕維",戶籍電話:"",手機:"0922161989",戶籍地址:"屏東縣林邊鄉竹林村5鄰中興路82號"},
+{座號:7,學號:510223,姓名:"陳暐帆",性別:"男",身分:"一般生",畢業國中:"屏東縣縣立萬丹國中",監護人:"陳立峰",戶籍電話:"087770958",手機:"0939558253",戶籍地址:"屏東縣萬丹鄉萬全村21鄰萬榮街133號"},
+{座號:8,學號:510258,姓名:"楊永承",性別:"男",身分:"一般生",畢業國中:"屏東縣縣立光春國中",監護人:"李鴻玲",戶籍電話:"0915157138",手機:"",戶籍地址:"屏東縣潮州鎮復興路172巷40號"},
+{座號:9,學號:510279,姓名:"劉宏益",性別:"男",身分:"一般生",畢業國中:"屏東縣縣立恆春國中",監護人:"劉龍輝",戶籍電話:"",手機:"0971125906",戶籍地址:"屏東縣恆春鎮城北里20鄰中正路232巷147弄6號"},
+{座號:10,學號:510291,姓名:"潘亮元",性別:"男",身分:"一般生",畢業國中:"屏東縣私立南榮國中",監護人:"潘俊中",戶籍電話:"0925038766",手機:"0925038766",戶籍地址:"屏東縣萬巒鄉佳和村佳興路29之5號"},
+{座號:11,學號:510350,姓名:"羅偉育",性別:"男",身分:"一般生",畢業國中:"屏東縣縣立萬巒國中",監護人:"羅聖智",戶籍電話:"7815520",手機:"0920884297",戶籍地址:"屏東縣萬巒鄉萬和村南進路71巷40號"},
+{座號:12,學號:510004,姓名:"尤青雲",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立車城國中",監護人:"尤怡藻",戶籍電話:"0911926237",手機:"0911926237",戶籍地址:"屏東縣車城鄉新街村4鄰新街路19號"},
+{座號:13,學號:510024,姓名:"江怡嫻",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立潮州國中",監護人:"李玉淳",戶籍電話:"087887569",手機:"0910840569",戶籍地址:"屏東縣潮州鎮永春里21鄰永康街269號"},
+{座號:14,學號:510063,姓名:"李貞誼",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立潮州國中",監護人:"李政國",戶籍電話:"087882501",手機:"",戶籍地址:"屏東縣潮州鎮三星里21鄰三德路12號"},
+{座號:15,學號:510082,姓名:"周韻儀",性別:"女",身分:"原住民",畢業國中:"屏東縣縣立潮州國中",監護人:"顧云絜",戶籍電話:"087871611",手機:"0932662151",戶籍地址:"屏東縣來義鄉義新路7巷22號"},
+{座號:16,學號:510148,姓名:"張沁琳",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立內埔國中",監護人:"張梓城",戶籍電話:"",手機:"0988089675",戶籍地址:"屏東縣內埔鄉德美路416號"},
+{座號:17,學號:510094,姓名:"林盈均",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立潮州國中",監護人:"陳羽靖",戶籍電話:"",手機:"0980836289",戶籍地址:"屏東縣潮州鎮永春里光輪三巷4號"},
+{座號:18,學號:510175,姓名:"郭依寧",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立潮州國中",監護人:"郭美均",戶籍電話:"",手機:"0913770661",戶籍地址:"屏東縣潮州鎮光春里12鄰光明路26之1號"},
+{座號:19,學號:510219,姓名:"陳琳竺",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立潮州國中",監護人:"陳吉興",戶籍電話:"",手機:"0982896124",戶籍地址:"屏東縣潮州鎮光華里8鄰南京路140號"},
+{座號:20,學號:510236,姓名:"曾郁惟",性別:"女",身分:"一般生",畢業國中:"屏東縣私立南榮國中",監護人:"曾賢能",戶籍電話:"0971090045",手機:"0971090045",戶籍地址:"屏東縣潮州鎮大同路58巷53號"},
+{座號:21,學號:510276,姓名:"趙玉晴",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立潮州國中",監護人:"趙志堅",戶籍電話:"087888785",手機:"0935608197",戶籍地址:"屏東縣潮州鎮三星里9鄰三星路209巷13號"},
+{座號:22,學號:510277,姓名:"鄞玉婷",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立竹田國中",監護人:"鄞東宏",戶籍電話:"087891150",手機:"0929167322",戶籍地址:"屏東縣竹田鄉鳳明村3鄰鳳安路59巷29號"},
+{座號:23,學號:510314,姓名:"鄭翊呈",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立萬丹國中",監護人:"鄭全壯",戶籍電話:"087770221",手機:"0920815789",戶籍地址:"屏東縣萬丹鄉寶厝村11鄰萬新路1391號"},
+{座號:24,學號:510315,姓名:"鄭翊函",性別:"女",身分:"一般生",畢業國中:"屏東縣私立南榮國中",監護人:"鄭堃學",戶籍電話:"0922296958",手機:"0922296958",戶籍地址:"屏東縣潮州鎮朝昇東路89號"},
+{座號:25,學號:510327,姓名:"蕭彣涵",性別:"女",身分:"一般生",畢業國中:"屏東縣私立南榮國中",監護人:"蕭亙凱",戶籍電話:"0936304520",手機:"0936304520",戶籍地址:"屏東縣潮州鎮通潮2巷12之2號"},
+{座號:26,學號:510335,姓名:"戴明潔",性別:"女",身分:"一般生",畢業國中:"屏東縣縣立潮州國中",監護人:"林芸如",戶籍電話:"7890730",手機:"",戶籍地址:"屏東縣潮州鎮萬年路116巷1號"}
+        ];
+        
+        function goPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(p).classList.add('active');if(p==='tablePage')renderTable();}
+        
+        function renderTable(){let h='';for(let s of students){h+=`<tr><td>${s.座號}</td><td>${s.學號}</td><td>${s.姓名}</td><td>${s.性別}</td><td>${s.身分}</td><td>${s.畢業國中}</td><td>${s.監護人}</td><td>${s.戶籍電話}</td><td>${s.手機}</td><td>${s.戶籍地址}</td></tr>`;}document.getElementById('tableBody').innerHTML=h;}
+        
+        function filterTable(){const s=document.getElementById('tableSearch').value.toLowerCase();document.querySelectorAll('#tableBody tr').forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(s)?'':'none';});}
+        
+        function searchByGuardian(){const n=document.getElementById('guardian').value;const r=students.filter(s=>s.監護人.includes(n));let h='';for(let s of r){h+=`<tr><td>${s.座號}</td><td>${s.學號}</td><td>${s.姓名}</td><td>${s.監護人}</td><td>${s.戶籍電話}</td><td>${s.手機}</td><td>${s.戶籍地址}</td></tr>`;}document.getElementById('searchResultBody').innerHTML=h;}
+        
+        function exportTable(){let t='座號|學號|姓名|性別|身分|畢業國中|監護人|戶籍電話|手機|住址\n';for(let s of students){t+=`${s.座號}|${s.學號}|${s.姓名}|${s.性別}|${s.身分}|${s.畢業國中}|${s.監護人}|${s.戶籍電話}|${s.手機}|${s.戶籍地址}\n`;}navigator.clipboard.writeText(t);document.getElementById('copyToast').classList.add('show');setTimeout(()=>document.getElementById('copyToast').classList.remove('show'),2000);}
+        
+        renderTable();
+    </script>
+</body>
+</html>
