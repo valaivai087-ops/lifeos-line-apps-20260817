@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>能力養成系統 v2.0 | 智慧教育總表</title>
+    <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.app-wrapper {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.tab-menu {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 2rem;
+  background: white;
+  padding: 1rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.tab-btn {
+  padding: 12px 24px;
+  border: 2px solid #ddd;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.tab-btn:hover {
+  border-color: #667eea;
+  background: #f5f7fa;
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border-color: #667eea;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.dashboard {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.dashboard-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #f5f7fa, #f0f2f7);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border-left: 5px solid #667eea;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.stat-progress {
+  width: 100%;
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.stat-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transition: width 0.3s;
+}
+
+.ability-framework {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.framework-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ability-dimensions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.dimension-card {
+  background: linear-gradient(135deg, #f9f9f9, #f5f5f5);
+  border: 1.5px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s;
+}
+
+.dimension-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.2);
+}
+
+.dimension-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dimension-level {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.level-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.level-dot:hover {
+  transform: scale(1.1);
+}
+
+.level-dot.active {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.level-label {
+  font-size: 12px;
+  color: #999;
+  margin-top: 8px;
+}
+
+.dimension-desc {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.6;
+}
+
+.growth-chart {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.chart-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.radar-chart {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.learning-path {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.path-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.path-stages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.stage-card {
+  background: linear-gradient(135deg, #f5f7fa, #f0f2f7);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border-top: 4px solid #667eea;
+  position: relative;
+}
+
+.stage-number {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.stage-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.stage-desc {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.stage-progress {
+  width: 100%;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.stage-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.achievement-board {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.achievement-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.achievement-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.achievement-item {
+  background: linear-gradient(135deg, #f5f7fa, #f0f2f7);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.achievement-item:hover {
+  transform: translateY(-4px);
+  border-color: #667eea;
+}
+
+.achievement-item.locked {
+  opacity: 0.5;
+}
+
+.achievement-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.achievement-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+}
+
+.cycle-management {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.cycle-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.cycle-item {
+  background: linear-gradient(135deg, #f5f7fa, #f0f2f7);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border-left: 5px solid #667eea;
+}
+
+.cycle-date {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 8px;
+}
+
+.cycle-topic {
+  font-size: 15px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.cycle-result {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.cycle-completion {
+  font-size: 12px;
+  color: #999;
+}
+
+.report-button {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.report-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+}
+
+.summary-table th {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.summary-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 13px;
+}
+
+.summary-table tr:hover {
+  background: #f9f9f9;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-primary {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.badge-success {
+  background: #e8f5e9;
+  color: #388e3c;
+}
+
+.badge-warning {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.export-section {
+  background: linear-gradient(135deg, #f5f7fa, #f0f2f7);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.btn-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 13px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background: #d0d0d0;
+}
+
+.skills-matrix {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.matrix-grid {
+  display: grid;
+  grid-template-columns: 150px repeat(5, 1fr);
+  gap: 1px;
+  background: #ddd;
+  padding: 1px;
+}
+
+.matrix-cell {
+  background: white;
+  padding: 12px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.matrix-header {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.matrix-label {
+  text-align: left;
+}
+
+.matrix-level-1 { background: #ffebee; }
+.matrix-level-2 { background: #fff3e0; }
+.matrix-level-3 { background: #fffde7; }
+.matrix-level-4 { background: #f1f8e9; }
+.matrix-level-5 { background: #e8f5e9; }
+
+.footer {
+  text-align: center;
+  color: white;
+  margin-top: 2rem;
+  font-size: 13px;
+}
+
+.header-section {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.header-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.header-subtitle {
+  font-size: 16px;
+  color: #666;
+}
+    </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+  <!-- 標題 -->
+  <div class="header-section">
+    <div class="header-title">🎓 能力養成系統 v2.0</div>
+    <div class="header-subtitle">智慧教育總表 | 能力養成機制</div>
+  </div>
+
+  <!-- 選項卡 -->
+  <div class="tab-menu">
+    <button class="tab-btn active" onclick="switchTab('dashboard')">📊 教育總表</button>
+    <button class="tab-btn" onclick="switchTab('framework')">🎯 能力框架</button>
+    <button class="tab-btn" onclick="switchTab('learning')">📚 學習路徑</button>
+    <button class="tab-btn" onclick="switchTab('cycles')">🔄 迴圈記錄</button>
+    <button class="tab-btn" onclick="switchTab('report')">📈 進度報告</button>
+  </div>
+
+  <!-- 1. 智慧教育總表 -->
+  <div id="dashboard" class="tab-content active">
+    <div class="dashboard">
+      <div class="dashboard-title">📊 智慧教育總表</div>
+      
+      <div class="dashboard-grid">
+        <div class="stat-card">
+          <div class="stat-label">總迴圈次數</div>
+          <div class="stat-value" id="totalCycles">0</div>
+          <div class="stat-progress">
+            <div class="stat-bar" style="width: 35%"></div>
+          </div>
+          <div style="font-size: 12px; color: #999; margin-top: 8px;">目標: 100次</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">平均完成度</div>
+          <div class="stat-value" id="avgCompletion">0%</div>
+          <div class="stat-progress">
+            <div class="stat-bar" id="completionBar" style="width: 0%"></div>
+          </div>
+          <div style="font-size: 12px; color: #999; margin-top: 8px;">目標: 80%</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">能力成熟度</div>
+          <div class="stat-value" id="capabilityMaturity">初級</div>
+          <div class="stat-progress">
+            <div class="stat-bar" style="width: 45%"></div>
+          </div>
+          <div style="font-size: 12px; color: #999; margin-top: 8px;">進度: 初級 → 進階</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">學習主題數</div>
+          <div class="stat-value" id="topicCount">0</div>
+          <div class="stat-progress">
+            <div class="stat-bar" style="width: 28%"></div>
+          </div>
+          <div style="font-size: 12px; color: #999; margin-top: 8px;">覆蓋領域數</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">預測準確度</div>
+          <div class="stat-value" id="predictionAccuracy">0%</div>
+          <div class="stat-progress">
+            <div class="stat-bar" id="accuracyBar" style="width: 0%"></div>
+          </div>
+          <div style="font-size: 12px; color: #999; margin-top: 8px;">時間估算準確率</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">遷移成功率</div>
+          <div class="stat-value" id="transferSuccess">0%</div>
+          <div class="stat-progress">
+            <div class="stat-bar" id="transferBar" style="width: 0%"></div>
+          </div>
+          <div style="font-size: 12px; color: #999; margin-top: 8px;">能力遷移驗證</div>
+        </div>
+      </div>
+
+      <!-- 核心指標說明 -->
+      <div style="background: #f9f9f9; border-radius: 12px; padding: 1.5rem; margin-top: 2rem;">
+        <div style="font-weight: 700; margin-bottom: 1rem; color: #333;">📌 核心教育指標</div>
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>指標名稱</th>
+              <th>定義</th>
+              <th>當前值</th>
+              <th>目標值</th>
+              <th>狀態</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>迴圈完成率</strong></td>
+              <td>完成8個模組迴圈的次數</td>
+              <td id="metric1">0/100</td>
+              <td>100次</td>
+              <td><span class="badge badge-warning">進行中</span></td>
+            </tr>
+            <tr>
+              <td><strong>平均完成度</strong></td>
+              <td>每次迴圈中的行動完成百分比</td>
+              <td id="metric2">0%</td>
+              <td>80%</td>
+              <td><span class="badge badge-warning">進行中</span></td>
+            </tr>
+            <tr>
+              <td><strong>預測準確度</strong></td>
+              <td>預估時間 vs 實際時間的誤差率</td>
+              <td id="metric3">0%</td>
+              <td>85%</td>
+              <td><span class="badge badge-warning">進行中</span></td>
+            </tr>
+            <tr>
+              <td><strong>能力遷移率</strong></td>
+              <td>成功在新情境中應用能力的比例</td>
+              <td id="metric4">0%</td>
+              <td>90%</td>
+              <td><span class="badge badge-warning">進行中</span></td>
+            </tr>
+            <tr>
+              <td><strong>學習領域覆蓋</strong></td>
+              <td>涉及的不同學習主題數</td>
+              <td id="metric5">0個</td>
+              <td>20個+</td>
+              <td><span class="badge badge-primary">擴展中</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 能力框架 -->
+  <div id="framework" class="tab-content">
+    <div class="ability-framework">
+      <div class="framework-title">🎯 能力養成框架</div>
+
+      <div style="background: #f9f9f9; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+        <div style="font-weight: 700; margin-bottom: 1rem; color: #333;">8大核心能力維度</div>
+        
+        <div class="ability-dimensions">
+          <!-- 維度1: 診斷能力 -->
+          <div class="dimension-card">
+            <div class="dimension-name">🔍 問題診斷能力</div>
+            <div class="dimension-level">
+              <div class="level-dot">1</div>
+              <div class="level-dot active">2</div>
+              <div class="level-dot">3</div>
+              <div class="level-dot">4</div>
+              <div class="level-dot">5</div>
+            </div>
+            <div class="level-label">當前等級: 進階 (2/5)</div>
+            <div class="dimension-desc">
+              能夠清晰描述問題、找到根本原因、區分症狀與瓶頸
+            </div>
+          </div>
+
+          <!-- 維度2: 行動力 -->
+          <div class="dimension-card">
+            <div class="dimension-name">🚀 最小行動力</div>
+            <div class="dimension-level">
+              <div class="level-dot active">1</div>
+              <div class="level-dot active">2</div>
+              <div class="level-dot">3</div>
+              <div class="level-dot">4</div>
+              <div class="level-dot">5</div>
+            </div>
+            <div class="level-label">當前等級: 中級 (2/5)</div>
+            <div class="dimension-desc">
+              能夠快速識別MVP、低成本驗證、今日可執行
+            </div>
+          </div>
+
+          <!-- 維度3: 反饋能力 -->
+          <div class="dimension-card">
+            <div class="dimension-name">📊 結果反饋能力</div>
+            <div class="dimension-level">
+              <div class="level-dot">1</div>
+              <div class="level-dot">2</div>
+              <div class="level-dot active">3</div>
+              <div class="level-dot">4</div>
+              <div class="level-dot">5</div>
+            </div>
+            <div class="level-label">當前等級: 中等 (3/5)</div>
+            <div class="dimension-desc">
+              客觀記錄結果、定量測量、避免主觀評價
+            </div>
+          </div>
+
+          <!-- 維度4: 分析能力 -->
+          <div class="dimension-card">
+            <div class="dimension-name">🔬 預測誤差分析</div>
+            <div class="dimension-level">
+              <div class="level-dot">1</div>
+              <div class="level-dot">2</div>
+              <div class="level-dot">3</div>
+              <div class="level-dot active">4</div>
+              <div class="level-dot">5</div>
+            </div>
+            <div class="level-label">當前等級: 高級 (4/5)</div>
+            <div class="dimension-desc">
+              分析預期與實際差異、提取誤差規律、形成洞見
+            </div>
+          </div>
+
+          <!-- 維度5: 迭代能力 -->
+          <div class="dimension-card">
+            <div class="dimension-name">⚡ 模型迭代能力</div>
+            <div class="dimension-level">
+              <div class="level-dot">1</div>
+              <div class="level-dot active">2</div>
+              <div class="level-dot">3</div>
+              <div class="level-dot">4</div>
+              <div class="level-dot">5</div>
+            </div>
+            <div class="level-label">當前等級: 進階 (2/5)</div>
+            <div class="dimension-desc">
+              基於學習更新理解、制定改進方案、確定新目標
+            </div>
+          </div>
+
+          <!-- 維度6: 遷移能力 -->
+          <div class="dimension-card">
+            <div class="dimension-name">🌍 能力遷移能力</div>
+            <div class="dimension-level">
+              <div class="level-dot">1</div>
+              <div class="level-dot">2</div>
+              <div class="level-dot active">3</div>
+              <div class="level-dot">4</div>
+              <div class="level-dot">5</div>
+            </div>
+            <div class="level-label">當前等級: 中等 (3/5)</div>
+            <div class="dimension-desc">
+              在新情境中應用、測試能力、發現新挑戰
+            </div>
+          </div>
+
+          <!-- 維度7: 系統思維 -->
+          <div class="dimension-card">
+            <div class="dimension-name">🧠 系統思維能力</div>
+            <div class="dimension-level">
+              <div class="level-dot">1</div>
+              <div class="level-dot">2</div>
+              <div class="level-dot active">3</div>
+              <div class="level-dot">4</div>
+              <div class="level-dot">5</div>
+            </div>
+            <div class="level-label">當前等級: 中等 (3/5)</div>
+            <div class="dimension-desc">
+              看見完整迴圈、理解系統邏輯、建立心智模型
+            </div>
+          </div>
+
+          <!-- 維度8: 自我管理 -->
+          <div class="dimension-card">
+            <div class="dimension-name">🎯 自我管理能力</div>
+            <div class="dimension-level">
+              <div class="level-dot">1</div>
+              <div class="level-dot">2</div>
+              <div class="level-dot">3</div>
+              <div class="level-dot active">4</div>
+              <div class="level-dot">5</div>
+            </div>
+            <div class="level-label">當前等級: 高級 (4/5)</div>
+            <div class="dimension-desc">
+              目標設定、進度追蹤、持續迭代、自我評估
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 整體能力成熟度模型 -->
+      <div style="background: #f9f9f9; border-radius: 12px; padding: 1.5rem;">
+        <div style="font-weight: 700; margin-bottom: 1rem; color: #333;">📈 能力成熟度等級</div>
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>等級</th>
+              <th>名稱</th>
+              <th>特徵</th>
+              <th>進度</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge" style="background: #e3f2fd; color: #1976d2;">1</span></td>
+              <td><strong>初級 Novice</strong></td>
+              <td>剛開始學習、需要指引、試錯中學習</td>
+              <td><span class="badge badge-success">已達成</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge" style="background: #fff3e0; color: #f57c00;">2</span></td>
+              <td><strong>進階 Advanced</strong></td>
+              <td>有基本認知、能執行簡單任務、偶有獨立判斷</td>
+              <td><span class="badge badge-success">進行中</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge" style="background: #fffde7; color: #f9a825;">3</span></td>
+              <td><strong>中等 Competent</strong></td>
+              <td>能獨立完成、有系統方法、可應對常見情況</td>
+              <td><span class="badge badge-primary">下一目標</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge" style="background: #f1f8e9; color: #689f38;">4</span></td>
+              <td><strong>高級 Proficient</strong></td>
+              <td>深度理解、能教導他人、應對複雜情況</td>
+              <td><span class="badge badge-primary">遠期目標</span></td>
+            </tr>
+            <tr>
+              <td><span class="badge" style="background: #e8f5e9; color: #2e7d32;">5</span></td>
+              <td><strong>專家 Expert</strong></td>
+              <td>高度精通、創新應用、領域領導者</td>
+              <td><span class="badge badge-primary">遠期目標</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 學習路徑 -->
+  <div id="learning" class="tab-content">
+    <div class="learning-path">
+      <div class="path-title">📚 能力養成學習路徑</div>
+
+      <div class="path-stages">
+        <div class="stage-card">
+          <div class="stage-number">1</div>
+          <div class="stage-name">自我認知</div>
+          <div class="stage-desc">
+            建立診斷能力，清楚認識自己的問題與瓶頸
+          </div>
+          <div class="stage-progress">
+            <div class="stage-bar" style="width: 60%"></div>
+          </div>
+          <div style="font-size: 11px; color: #999; margin-top: 8px;">進度: 6/10迴圈</div>
+        </div>
+
+        <div class="stage-card">
+          <div class="stage-number">2</div>
+          <div class="stage-name">快速行動</div>
+          <div class="stage-desc">
+            開發最小行動力，培養今日行動習慣
+          </div>
+          <div class="stage-progress">
+            <div class="stage-bar" style="width: 45%"></div>
+          </div>
+          <div style="font-size: 11px; color: #999; margin-top: 8px;">進度: 4/10迴圈</div>
+        </div>
+
+        <div class="stage-card">
+          <div class="stage-number">3</div>
+          <div class="stage-name">結果導向</div>
+          <div class="stage-desc">
+            學習客觀記錄、精準測量、數據驅動
+          </div>
+          <div class="stage-progress">
+            <div class="stage-bar" style="width: 50%"></div>
+          </div>
+          <div style="font-size: 11px; color: #999; margin-top: 8px;">進度: 5/10迴圈</div>
+        </div>
+
+        <div class="stage-card">
+          <div class="stage-number">4</div>
+          <div class="stage-name">反思分析</div>
+          <div class="stage-desc">
+            開發分析能力，從誤差中提取洞見
+          </div>
+          <div class="stage-progress">
+            <div class="stage-bar" style="width: 70%"></div>
+          </div>
+          <div style="font-size: 11px; color: #999; margin-top: 8px;">進度: 7/10迴圈</div>
+        </div>
+
+        <div class="stage-card">
+          <div class="stage-number">5</div>
+          <div class="stage-name">迭代升級</div>
+          <div class="stage-desc">
+            建立迭代習慣，持續改進心智模型
+          </div>
+          <div class="stage-progress">
+            <div class="stage-bar" style="width: 35%"></div>
+          </div>
+          <div style="font-size: 11px; color: #999; margin-top: 8px;">進度: 3/10迴圈</div>
+        </div>
+
+        <div class="stage-card">
+          <div class="stage-number">6</div>
+          <div class="stage-name">能力遷移</div>
+          <div class="stage-desc">
+            發展遷移測試能力，驗證真實能力
+          </div>
+          <div class="stage-progress">
+            <div class="stage-bar" style="width: 40%"></div>
+          </div>
+          <div style="font-size: 11px; color: #999; margin-top: 8px;">進度: 4/10迴圈</div>
+        </div>
+      </div>
+
+      <!-- 技能矩陣 -->
+      <div style="margin-top: 2rem;">
+        <div style="font-weight: 700; margin-bottom: 1rem; color: #333;">🎓 技能掌握矩陣</div>
+        <div class="skills-matrix">
+          <div class="matrix-grid">
+            <div class="matrix-cell matrix-header">技能名稱</div>
+            <div class="matrix-cell matrix-header">第1-10輪</div>
+            <div class="matrix-cell matrix-header">第11-20輪</div>
+            <div class="matrix-cell matrix-header">第21-40輪</div>
+            <div class="matrix-cell matrix-header">第41-70輪</div>
+            <div class="matrix-cell matrix-header">第71-100輪</div>
+
+            <div class="matrix-cell matrix-label">問題診斷</div>
+            <div class="matrix-cell matrix-level-2">初步</div>
+            <div class="matrix-cell matrix-level-3">掌握</div>
+            <div class="matrix-cell matrix-level-4">精通</div>
+            <div class="matrix-cell matrix-level-5">專家</div>
+            <div class="matrix-cell matrix-level-5">大師</div>
+
+            <div class="matrix-cell matrix-label">快速行動</div>
+            <div class="matrix-cell matrix-level-1">探索</div>
+            <div class="matrix-cell matrix-level-2">初步</div>
+            <div class="matrix-cell matrix-level-4">精通</div>
+            <div class="matrix-cell matrix-level-5">專家</div>
+            <div class="matrix-cell matrix-level-5">大師</div>
+
+            <div class="matrix-cell matrix-label">結果測量</div>
+            <div class="matrix-cell matrix-level-1">探索</div>
+            <div class="matrix-cell matrix-level-3">掌握</div>
+            <div class="matrix-cell matrix-level-4">精通</div>
+            <div class="matrix-cell matrix-level-5">專家</div>
+            <div class="matrix-cell matrix-level-5">大師</div>
+
+            <div class="matrix-cell matrix-label">誤差分析</div>
+            <div class="matrix-cell matrix-level-2">初步</div>
+            <div class="matrix-cell matrix-level-3">掌握</div>
+            <div class="matrix-cell matrix-level-4">精通</div>
+            <div class="matrix-cell matrix-level-5">專家</div>
+            <div class="matrix-cell matrix-level-5">大師</div>
+
+            <div class="matrix-cell matrix-label">模型迭代</div>
+            <div class="matrix-cell matrix-level-1">探索</div>
+            <div class="matrix-cell matrix-level-2">初步</div>
+            <div class="matrix-cell matrix-level-3">掌握</div>
+            <div class="matrix-cell matrix-level-4">精通</div>
+            <div class="matrix-cell matrix-level-5">專家</div>
+
+            <div class="matrix-cell matrix-label">能力遷移</div>
+            <div class="matrix-cell matrix-level-1">探索</div>
+            <div class="matrix-cell matrix-level-1">探索</div>
+            <div class="matrix-cell matrix-level-2">初步</div>
+            <div class="matrix-cell matrix-level-4">精通</div>
+            <div class="matrix-cell matrix-level-5">專家</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. 迴圈記錄 -->
+  <div id="cycles" class="tab-content">
+    <div class="cycle-management">
+      <div class="dashboard-title">🔄 迴圈記錄 & 成就</div>
+
+      <div class="achievement-board" style="margin-top: 2rem;">
+        <div class="achievement-title">🏆 成就徽章系統</div>
+        
+        <div class="achievement-grid">
+          <div class="achievement-item">
+            <div class="achievement-icon">🎯</div>
+            <div class="achievement-name">第一步</div>
+            <div style="font-size: 11px; color: #999; margin-top: 4px;">完成1個迴圈</div>
+          </div>
+
+          <div class="achievement-item">
+            <div class="achievement-icon">🚀</div>
+            <div class="achievement-name">快速起步</div>
+            <div style="font-size: 11px; color: #999; margin-top: 4px;">完成5個迴圈</div>
+          </div>
+
+          <div class="achievement-item">
+            <div class="achievement-icon">⭐</div>
+            <div class="achievement-name">堅持者</div>
+            <div style="font-size: 11px; color: #999; margin-top: 4px;">完成10個迴圈</div>
+          </div>
+
+          <div class="achievement-item">
+            <div class="achievement-icon">💪</div>
+            <div class="achievement-name">實踐者</div>
+            <div style="font-size: 11px; color: #999; margin-top: 4px;">完成20個迴圈</div>
+          </div>
+
+          <div class="achievement-item">
+            <div class="achievement-icon">🔥</div>
+            <div class="achievement-name">破冰者</div>
+            <div style="font-size: 11px; color: #999; margin-top: 4px;">完成50個迴圈</div>
+          </div>
+
+          <div class="achievement-item">
+            <div class="achievement-icon">👑</div>
+            <div class="achievement-name">大師</div>
+            <div style="font-size: 11px; color: #999; margin-top: 4px;">完成100個迴圈</div>
+          </div>
+
+          <div class="achievement-item locked">
+            <div class="achievement-icon">🌟</div>
+            <div class="achievement-name">完美迴圈</div>
+            <div style="font-size: 11px; color: #999; margin-top: 4px;">100% 完成度</div>
+          </div>
+
+          <div class="achievement-item locked">
+            <div class="achievement-icon">🎓</div>
+            <div class="achievement-name">遷移大師</div>
+            <div style="font-size: 11px; color: #999; margin-top: 4px;">5個領域遷移</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem; background: #f9f9f9; border-radius: 12px; padding: 1.5rem;">
+        <div style="font-weight: 700; margin-bottom: 1rem; color: #333;">📋 最近迴圈記錄</div>
+        
+        <div class="cycle-list">
+          <div class="cycle-item">
+            <div class="cycle-date">2026-08-28</div>
+            <div class="cycle-topic">🎯 職涯規劃決策</div>
+            <div class="cycle-result">
+              探索了3個職業方向，發現決策需要更多信息蒐集時間，修正了時間預估模型。
+            </div>
+            <div class="cycle-completion">✅ 完成度: 85% | 用時: 45分鐘</div>
+          </div>
+
+          <div class="cycle-item">
+            <div class="cycle-date">2026-08-27</div>
+            <div class="cycle-topic">📚 英文學習方法</div>
+            <div class="cycle-result">
+              應用最小行動原則，每天15分鐘系統學習，發現語境練習比單詞背誦更有效。
+            </div>
+            <div class="cycle-completion">✅ 完成度: 90% | 用時: 30分鐘</div>
+          </div>
+
+          <div class="cycle-item">
+            <div class="cycle-date">2026-08-26</div>
+            <div class="cycle-topic">💼 工作流程優化</div>
+            <div class="cycle-result">
+              通過系統分析，找到工作中的瓶頸，實施改進後效率提升20%。
+            </div>
+            <div class="cycle-completion">✅ 完成度: 80% | 用時: 60分鐘</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 進度報告 -->
+  <div id="report" class="tab-content">
+    <div class="dashboard">
+      <div class="dashboard-title">📈 個人成長報告</div>
+
+      <div class="export-section">
+        <div style="font-weight: 700; margin-bottom: 1rem; color: #333;">📊 生成個人報告</div>
+        <div style="font-size: 13px; color: #666; line-height: 1.6; margin-bottom: 1rem;">
+          根據迴圈數據自動生成個人成長分析報告。可選擇時間週期和分析維度。
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="generateReport('week')">📅 週報</button>
+          <button class="btn btn-primary" onclick="generateReport('month')">📅 月報</button>
+          <button class="btn btn-primary" onclick="generateReport('quarter')">📅 季報</button>
+          <button class="btn btn-secondary" onclick="exportData()">⬇️ 導出Excel</button>
+          <button class="btn btn-secondary" onclick="exportPDF()">📄 導出PDF</button>
+        </div>
+      </div>
+
+      <!-- 成長趨勢 -->
+      <div style="background: #f9f9f9; border-radius: 12px; padding: 1.5rem; margin-top: 2rem;">
+        <div style="font-weight: 700; margin-bottom: 1rem; color: #333;">📈 8週成長趨勢分析</div>
+        
+        <table class="summary-table">
+          <thead>
+            <tr>
+              <th>週次</th>
+              <th>迴圈次數</th>
+              <th>平均完成度</th>
+              <th>預測準確度</th>
+              <th>能力等級</th>
+              <th>主題領域</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>第1週</td>
+              <td>2次</td>
+              <td>65%</td>
+              <td>60%</td>
+              <td><span class="badge badge-warning">初級</span></td>
+              <td>決策、學習</td>
+            </tr>
+            <tr>
+              <td>第2週</td>
+              <td>3次</td>
+              <td>72%</td>
+              <td>68%</td>
+              <td><span class="badge badge-warning">初級</span></td>
+              <td>工作、時間管理</td>
+            </tr>
+            <tr>
+              <td>第3週</td>
+              <td>2次</td>
+              <td>75%</td>
+              <td>70%</td>
+              <td><span class="badge badge-primary">進階</span></td>
+              <td>溝通、關係</td>
+            </tr>
+            <tr>
+              <td>第4週</td>
+              <td>4次</td>
+              <td>78%</td>
+              <td>75%</td>
+              <td><span class="badge badge-primary">進階</span></td>
+              <td>創意、問題解決</td>
+            </tr>
+            <tr>
+              <td>目前合計</td>
+              <td>11次</td>
+              <td>73%</td>
+              <td>69%</td>
+              <td><span class="badge badge-primary">進階</span></td>
+              <td>6個領域</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 下一步建議 -->
+      <div style="background: linear-gradient(135deg, #e3f2fd, #f3e5f5); border-radius: 12px; padding: 1.5rem; margin-top: 2rem; border-left: 5px solid #667eea;">
+        <div style="font-weight: 700; margin-bottom: 1rem; color: #333;">💡 下一步建議</div>
+        
+        <div style="font-size: 13px; color: #666; line-height: 1.8;">
+          <p style="margin-bottom: 1rem;">
+            ✅ <strong>保持节奏：</strong> 目前每週平均2.75個迴圈，建議提升到每週4-5個，加速能力成長。
+          </p>
+          <p style="margin-bottom: 1rem;">
+            ✅ <strong>優化預測：</strong> 時間預估準確度已達69%，繼續改進模型，目標85%。
+          </p>
+          <p style="margin-bottom: 1rem;">
+            ✅ <strong>擴展領域：</strong> 已涉及6個領域，建議在遷移測試中探索跨領域應用。
+          </p>
+          <p>
+            ✅ <strong>追求卓越：</strong> 下一階段重點：從「進階」升級到「中等」，完成度目標80%。
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部 -->
+  <div class="footer">
+    <p>🎓 能力養成系統 v2.0 | 智慧教育總表 + 能力養成機制</p>
+    <p style="margin-top: 8px;">整合8大核心能力維度 | 支援多維度評估 | 科學的能力成熟度模型</p>
+  </div>
+</div>
+
+<script>
+function switchTab(tabName) {
+  // 隱藏所有標籤頁
+  document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  
+  // 移除所有按鈕的active狀態
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  // 顯示選中的標籤頁
+  document.getElementById(tabName).classList.add('active');
+  
+  // 激活對應的按鈕
+  event.target.classList.add('active');
+}
+
+function generateReport(period) {
+  const periodNames = {
+    'week': '週',
+    'month': '月',
+    'quarter': '季'
+  };
+  alert(`✅ 正在生成${periodNames[period]}報告...\n\n本功能將生成詳細的個人成長分析報告，包括：\n• 迴圈完成統計\n• 能力成長曲線\n• 領域覆蓋分析\n• 預測準確度趨勢\n• 個性化建議`);
+}
+
+function exportData() {
+  alert('✅ 正在導出Excel數據...\n\n導出內容：\n• 所有迴圈記錄\n• 能力評估數據\n• 成就追蹤\n• 進度統計');
+}
+
+function exportPDF() {
+  alert('✅ 正在生成PDF報告...\n\n報告內容：\n• 完整的成長分析\n• 能力維度評估\n• 學習路徑進度\n• 視覺化圖表');
+}
+
+// 初始化統計數據
+window.addEventListener('load', () => {
+  updateDashboardStats();
+});
+
+function updateDashboardStats() {
+  // 更新統計數據
+  document.getElementById('totalCycles').textContent = '11';
+  document.getElementById('avgCompletion').textContent = '73%';
+  document.getElementById('completionBar').style.width = '73%';
+  document.getElementById('capabilityMaturity').textContent = '進階';
+  document.getElementById('topicCount').textContent = '6';
+  document.getElementById('predictionAccuracy').textContent = '69%';
+  document.getElementById('accuracyBar').style.width = '69%';
+  document.getElementById('transferSuccess').textContent = '60%';
+  document.getElementById('transferBar').style.width = '60%';
+  
+  // 更新指標表
+  document.getElementById('metric1').textContent = '11/100';
+  document.getElementById('metric2').textContent = '73%';
+  document.getElementById('metric3').textContent = '69%';
+  document.getElementById('metric4').textContent = '60%';
+  document.getElementById('metric5').textContent = '6個';
+}
+</script>
+
+</body>
+</html>

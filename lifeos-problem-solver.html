@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LifeOS Problem Solver — 一次完成診斷、學習、行動</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; }
+body { 
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; 
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  color: #1a1a1a;
+  overflow: hidden;
+}
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background: #fff;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.header-title { font-size: 24px; font-weight: 600; }
+.header-subtitle { font-size: 12px; opacity: 0.9; margin-top: 2px; }
+.lang-toggle {
+  display: flex;
+  gap: 8px;
+  background: rgba(255,255,255,0.2);
+  padding: 6px;
+  border-radius: 20px;
+}
+.lang-btn {
+  padding: 6px 14px;
+  border: none;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.lang-btn.active {
+  background: rgba(255,255,255,0.3);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.lang-btn:hover { background: rgba(255,255,255,0.2); }
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  scroll-behavior: smooth;
+}
+.page {
+  display: none;
+  animation: fadeIn 0.4s ease-out;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.progress-container {
+  margin-bottom: 2rem;
+}
+.progress-bar {
+  height: 3px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  transition: width 0.4s ease;
+  box-shadow: 0 0 8px rgba(102, 126, 234, 0.6);
+}
+
+.page-title { font-size: 28px; font-weight: 600; margin-bottom: 0.5rem; color: #1a1a1a; }
+.page-subtitle { font-size: 14px; color: #666; margin-bottom: 1.5rem; }
+
+.empty-state { text-align: center; padding: 3rem 0; }
+.empty-state-icon { font-size: 64px; margin-bottom: 1rem; }
+.empty-state-text { font-size: 16px; color: #666; margin-bottom: 1rem; }
+
+.choices {
+  display: grid;
+  gap: 12px;
+  margin-top: 1rem;
+}
+.choice {
+  padding: 1.2rem;
+  border: 2px solid #e0e0e0;
+  background: #fafafa;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+.choice:hover {
+  border-color: #667eea;
+  background: #f0f4ff;
+  transform: translateX(4px);
+}
+.choice-strong { font-weight: 600; font-size: 15px; color: #1a1a1a; }
+.choice-desc { font-size: 13px; color: #888; margin-top: 4px; }
+.choice.selected {
+  border-color: #667eea;
+  background: #e8ecff;
+}
+
+.card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: all 0.2s;
+}
+.card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+.label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #999; font-weight: 600; margin-bottom: 8px; display: block; }
+.value { font-size: 18px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px; }
+.desc { font-size: 14px; color: #555; line-height: 1.6; }
+
+.result-section {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+.result-section:last-child { border-bottom: none; padding-bottom: 0; }
+.result-section-title { font-size: 12px; text-transform: uppercase; color: #667eea; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; }
+.result-section-value { font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px; }
+.result-section-desc { font-size: 13px; color: #666; line-height: 1.6; }
+
+.model-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.model-box {
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid;
+}
+.model-box.old {
+  border-left-color: #e74c3c;
+  background: #ffe8e8;
+}
+.model-box.new {
+  border-left-color: #27ae60;
+  background: #e8f8f0;
+}
+.model-label { font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+.model-old .model-label { color: #c0392b; }
+.model-new .model-label { color: #1e8449; }
+.model-text { font-size: 14px; font-weight: 500; }
+
+.action-step {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+.action-number {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  background: #667eea;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+.action-text { font-size: 15px; color: #1a1a1a; font-weight: 500; line-height: 1.4; }
+
+.scenario-option {
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  background: #fafafa;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.scenario-option:hover {
+  border-color: #667eea;
+  background: #f0f4ff;
+}
+.scenario-letter {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  background: #e0e0e0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 13px;
+}
+.scenario-option:hover .scenario-letter {
+  background: #667eea;
+  color: white;
+}
+.scenario-text { font-size: 14px; color: #1a1a1a; }
+
+.playbook-card {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border: 2px solid #667eea;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.playbook-title { font-size: 22px; font-weight: 700; margin-bottom: 1.5rem; color: #667eea; }
+.playbook-item {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+}
+.playbook-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+.playbook-label { font-size: 11px; text-transform: uppercase; font-weight: 700; color: #667eea; letter-spacing: 0.5px; }
+.playbook-value { font-size: 15px; font-weight: 500; color: #1a1a1a; line-height: 1.5; }
+
+.btn-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+.btn {
+  padding: 12px 18px;
+  border: 2px solid #e0e0e0;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn:hover {
+  border-color: #667eea;
+  color: #667eea;
+  transform: translateY(-2px);
+}
+.btn-primary {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.btn-primary:hover {
+  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+  transform: translateY(-2px);
+}
+.btn-tts {
+  background: linear-gradient(90deg, #f093fb, #f5576c);
+  color: white;
+  border: none;
+}
+.btn-tts:hover {
+  box-shadow: 0 8px 16px rgba(245, 87, 108, 0.3);
+  transform: translateY(-2px);
+}
+
+.footer {
+  padding: 1rem;
+  border-top: 1px solid #e0e0e0;
+  background: #f8f9fa;
+  text-align: center;
+  font-size: 12px;
+  color: #999;
+}
+
+.bilingual-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.bilingual-col { padding: 0.5rem; background: #f8f9fa; border-radius: 6px; }
+.bilingual-label { font-size: 10px; text-transform: uppercase; color: #999; font-weight: 600; margin-bottom: 4px; }
+.bilingual-text { font-size: 13px; color: #1a1a1a; }
+@media (max-width: 600px) {
+  .bilingual-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div>
+      <div class="header-title" id="appTitle">LifeOS Problem Solver</div>
+      <div class="header-subtitle" id="appSubtitle">一次診斷、學習、行動</div>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLanguage('zh')">中文</button>
+      <button class="lang-btn" onclick="setLanguage('en')">English</button>
+      <button class="lang-btn" onclick="toggleBilingual()" style="margin-left: 8px; background: rgba(255,255,255,0.1);">🌐 <span id="bilingual-label">雙語</span></button>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Page 1: Home -->
+    <div class="page active" id="page-home">
+      <div class="empty-state">
+        <div class="empty-state-icon">🎯</div>
+        <h1 class="page-title" id="homeTitle">你現在最想改善什麼？</h1>
+        <p class="empty-state-text" id="homeSubtitle">遇到問題時打開，一次完成診斷、學習、行動</p>
+      </div>
+      <div class="choices" id="homeChoices"></div>
+    </div>
+
+    <!-- Page 2: Pattern -->
+    <div class="page" id="page-pattern">
+      <div class="progress-container">
+        <div class="progress-bar"><div class="progress-fill" style="width: 25%;"></div></div>
+      </div>
+      <h2 class="page-title" id="patternTitle">你比較像哪一種？</h2>
+      <p class="page-subtitle" id="patternSubtitle">選擇最符合你的狀況</p>
+      <div class="choices" id="patternChoices"></div>
+    </div>
+
+    <!-- Page 3: Diagnosis -->
+    <div class="page" id="page-diagnosis">
+      <div class="progress-container">
+        <div class="progress-bar"><div class="progress-fill" style="width: 50%;"></div></div>
+      </div>
+      <h2 class="page-title" id="diagTitle">關鍵分流</h2>
+      <p class="page-subtitle" id="diagSubtitle">幫助我們精準診斷</p>
+      <div class="choices" id="diagChoices"></div>
+    </div>
+
+    <!-- Page 4: Results -->
+    <div class="page" id="page-results">
+      <div class="progress-container">
+        <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
+      </div>
+      <h2 class="page-title" id="resultsTitle">你的診斷結果</h2>
+
+      <div class="card">
+        <span class="label" id="label1">表面問題</span>
+        <div class="value" id="resultProblem">拖延</div>
+      </div>
+
+      <div class="card">
+        <span class="label" id="label2">可能的模式</span>
+        <div class="value" id="resultPattern">任務過大</div>
+        <div class="desc" id="resultPatternDesc">導致問題的根本原因</div>
+      </div>
+
+      <div class="card">
+        <span class="label" id="label3">最大瓶頸</span>
+        <div class="value" id="resultBottleneck">啟動摩擦</div>
+        <div class="desc" id="resultBottleneckDesc">優先解決的地方</div>
+      </div>
+
+      <div class="card">
+        <span class="label" id="label4">30秒速懂</span>
+        <div class="desc" id="resultMechanism">機制說明</div>
+      </div>
+
+      <div class="card">
+        <span class="label" id="label5">舊模型 vs 新模型</span>
+        <div class="model-comparison">
+          <div class="model-box old">
+            <div class="model-label model-old" id="label-old">舊想法</div>
+            <div class="model-text" id="resultOldModel">我要逼自己把事情做完</div>
+          </div>
+          <div class="model-box new">
+            <div class="model-label model-new" id="label-new">新想法</div>
+            <div class="model-text" id="resultNewModel">我只需要把下一步縮小到容易開始</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="goToAction()" id="continueBtn">繼續：立即行動</button>
+    </div>
+
+    <!-- Page 5: Action -->
+    <div class="page" id="page-action">
+      <div class="progress-container">
+        <div class="progress-bar"><div class="progress-fill" style="width: 85%;"></div></div>
+      </div>
+      <h2 class="page-title" id="actionTitle">現在做 60 秒</h2>
+      <p class="page-subtitle" id="actionSubtitle">最小可執行的第一步</p>
+
+      <div class="card">
+        <div id="actionSteps"></div>
+      </div>
+
+      <button class="btn btn-primary" onclick="goToTransfer()" id="actionBtn">完成 60 秒 → 情境測驗</button>
+    </div>
+
+    <!-- Page 6: Transfer -->
+    <div class="page" id="page-transfer">
+      <div class="progress-container">
+        <div class="progress-bar"><div class="progress-fill" style="width: 90%;"></div></div>
+      </div>
+      <h2 class="page-title" id="transferTitle">情境測驗</h2>
+      <p class="page-subtitle" id="transferSubtitle">測試你是否真的理解了</p>
+
+      <div class="card">
+        <p style="margin-bottom: 1.5rem; font-size: 15px;" id="scenarioText">情境文本</p>
+        <div id="scenarioChoices"></div>
+      </div>
+    </div>
+
+    <!-- Page 7: Playbook -->
+    <div class="page" id="page-playbook">
+      <div class="progress-container">
+        <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
+      </div>
+
+      <div class="playbook-card">
+        <h2 class="playbook-title" id="playbookTitle">我的解套卡</h2>
+
+        <div class="playbook-item">
+          <div class="playbook-label" id="pb-label1">我的問題</div>
+          <div class="playbook-value" id="pb-problem">拖延</div>
+        </div>
+
+        <div class="playbook-item">
+          <div class="playbook-label" id="pb-label2">我的 Pattern</div>
+          <div class="playbook-value" id="pb-pattern">任務過大→逃避</div>
+        </div>
+
+        <div class="playbook-item">
+          <div class="playbook-label" id="pb-label3">我的 Bottleneck</div>
+          <div class="playbook-value" id="pb-bottleneck">啟動摩擦</div>
+        </div>
+
+        <div class="playbook-item">
+          <div class="playbook-label" id="pb-label4">真正缺的</div>
+          <div class="playbook-value" id="pb-missing">不是意志力，而是系統改變</div>
+        </div>
+
+        <div class="playbook-item">
+          <div class="playbook-label" id="pb-label5">今天學到</div>
+          <div class="playbook-value" id="pb-lesson">Bottleneck 診斷</div>
+        </div>
+
+        <div class="playbook-item">
+          <div class="playbook-label" id="pb-label6">現在做</div>
+          <div class="playbook-value" id="pb-action">縮小第一步</div>
+        </div>
+
+        <div class="playbook-item">
+          <div class="playbook-label" id="pb-label7">不要做</div>
+          <div class="playbook-value" id="pb-avoid">逼自己一次完成</div>
+        </div>
+
+        <div class="playbook-item">
+          <div class="playbook-label" id="pb-label8">下次訊號</div>
+          <div class="playbook-value" id="pb-signal">想到就不想開始</div>
+        </div>
+
+        <div class="playbook-item">
+          <div class="playbook-label" id="pb-label9">立即問</div>
+          <div class="playbook-value" id="pb-question">第一步還能再縮小嗎？</div>
+        </div>
+
+        <div class="playbook-item">
+          <div class="playbook-label" id="pb-label10">我的規則</div>
+          <div class="playbook-value" id="pb-rule">如果卡住，檢查 Bottleneck</div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn" onclick="downloadPlaybook()">📥 <span id="btn-download">下載</span></button>
+        <button class="btn" onclick="copyPlaybook()">📋 <span id="btn-copy">複製</span></button>
+        <button class="btn btn-tts" onclick="speakPlaybook()">🔊 <span id="btn-tts">英文朗讀</span></button>
+      </div>
+
+      <button class="btn btn-primary" onclick="restart()" style="margin-top: 1.5rem;" id="restartBtn">回到首頁</button>
+    </div>
+  </div>
+
+  <div class="footer" id="footer">LifeOS Problem Solver v1.0 — 帶走解套卡，下次自己處理</div>
+</div>
+
+<script>
+const LANG_ZH = 'zh', LANG_EN = 'en';
+let lang = LANG_ZH;
+let bilingualMode = false;
+let currProblem, currPattern, currDiagnosis;
+
+const i18n = {
+  zh: {
+    appTitle: 'LifeOS 問題解套系統',
+    appSubtitle: '一次診斷、學習、行動',
+    homeTitle: '你現在最想改善什麼？',
+    homeSubtitle: '遇到問題時打開，一次完成診斷、學習、行動',
+    patternTitle: '你比較像哪一種？',
+    patternSubtitle: '選擇最符合你的狀況',
+    diagTitle: '關鍵分流',
+    diagSubtitle: '幫助我們精準診斷',
+    resultsTitle: '你的診斷結果',
+    label1: '表面問題',
+    label2: '可能的模式',
+    label3: '最大瓶頸',
+    label4: '30秒速懂',
+    label5: '舊模型 vs 新模型',
+    labelOld: '舊想法',
+    labelNew: '新想法',
+    continueBtn: '繼續：立即行動',
+    actionTitle: '現在做 60 秒',
+    actionSubtitle: '最小可執行的第一步',
+    actionBtn: '完成 60 秒 → 情境測驗',
+    transferTitle: '情境測驗',
+    transferSubtitle: '測試你是否真的理解了',
+    playbookTitle: '我的解套卡',
+    btnDownload: '下載',
+    btnCopy: '複製',
+    btnTts: '英文朗讀',
+    restartBtn: '回到首頁',
+    footer: 'LifeOS Problem Solver v1.0 — 帶走解套卡，下次自己處理',
+    pbLabel1: '我的問題',
+    pbLabel2: '我的 Pattern',
+    pbLabel3: '我的 Bottleneck',
+    pbLabel4: '真正缺的',
+    pbLabel5: '今天學到',
+    pbLabel6: '現在做',
+    pbLabel7: '不要做',
+    pbLabel8: '下次訊號',
+    pbLabel9: '立即問',
+    pbLabel10: '我的規則',
+  },
+  en: {
+    appTitle: 'LifeOS Problem Solver',
+    appSubtitle: 'Diagnosis. Learning. Action.',
+    homeTitle: 'What do you want to improve?',
+    homeSubtitle: 'Open when you hit a problem. Complete diagnosis, learning, and action in one session.',
+    patternTitle: 'Which pattern fits you best?',
+    patternSubtitle: 'Choose what resonates most',
+    diagTitle: 'Key diagnosis',
+    diagSubtitle: 'Help us identify your exact bottleneck',
+    resultsTitle: 'Your diagnosis',
+    label1: 'Surface problem',
+    label2: 'Pattern',
+    label3: 'Bottleneck',
+    label4: '30-second breakdown',
+    label5: 'Old vs New',
+    labelOld: 'Old way',
+    labelNew: 'New way',
+    continueBtn: 'Next: Take action',
+    actionTitle: 'Do this in 60 seconds',
+    actionSubtitle: 'Minimum viable first step',
+    actionBtn: 'Done → Scenario test',
+    transferTitle: 'Scenario test',
+    transferSubtitle: 'Did you really understand?',
+    playbookTitle: 'My personal playbook',
+    btnDownload: 'Download',
+    btnCopy: 'Copy',
+    btnTts: 'Speak English',
+    restartBtn: 'Back to home',
+    footer: 'LifeOS Problem Solver v1.0 — Take your playbook and handle it yourself next time',
+    pbLabel1: 'My problem',
+    pbLabel2: 'My pattern',
+    pbLabel3: 'My bottleneck',
+    pbLabel4: 'Really missing',
+    pbLabel5: 'Learned today',
+    pbLabel6: 'Do now',
+    pbLabel7: 'Don\'t do',
+    pbLabel8: 'Next signal',
+    pbLabel9: 'Ask immediately',
+    pbLabel10: 'My rule',
+  }
+};
+
+const problems = {
+  procrastination: {
+    zh: {
+      name: '拖延',
+      desc: '總是推遲重要的事情',
+      patterns: [
+        { id: 'task-size', text: '事情太大，不知道怎麼開始' },
+        { id: 'motivation', text: '知道怎麼做，但就是不想做' },
+        { id: 'fear', text: '怕做不好，所以一直不開始' },
+        { id: 'priority', text: '事情太多，不知道先做哪件' },
+      ],
+      diagnoses: {
+        'task-size': [
+          { id: 'no-clarity', text: '連第一步都不知道', bottleneck: '清晰度不足' },
+          { id: 'too-big', text: '知道第一步，但覺得太大', bottleneck: '任務規模' },
+          { id: 'activation', text: '第一步很簡單，但還是不想開始', bottleneck: '啟動障礙' },
+        ],
+      },
+      result: {
+        problem: '拖延',
+        pattern: '任務過大→啟動困難→逃避→壓力增加→更不想開始',
+        bottleneck: '啟動摩擦',
+        mechanism: '你現在可能不是缺乏自律。而是任務的啟動成本高於目前可用資源。大腦看到「完成報告」，可能感受到高負荷。改成「打開檔案＋寫標題」，啟動成本下降。因此：不要先提高意志力。先降低Friction。',
+        oldModel: '我要逼自己把事情做完',
+        newModel: '我只需要把下一步縮小到容易開始',
+        actionSteps: ['打開你要做的東西', '只完成第一個最小步驟', '60秒後可以停止'],
+        scenario: '你要準備一份20頁報告，一想到就不想做',
+        scenarios: [
+          { id: 'a', text: '逼自己今晚做完' },
+          { id: 'b', text: '等有動力' },
+          { id: 'c', text: '先建立檔案＋寫三個標題', correct: true },
+          { id: 'd', text: '責怪自己' }
+        ],
+      }
+    },
+    en: {
+      name: 'Procrastination',
+      desc: 'Constantly delaying important tasks',
+      patterns: [
+        { id: 'task-size', text: 'Task too big, don\'t know where to start' },
+        { id: 'motivation', text: 'Know what to do, just can\'t get started' },
+        { id: 'fear', text: 'Afraid to fail, so avoid starting' },
+        { id: 'priority', text: 'Too many tasks, don\'t know priority' },
+      ],
+      diagnoses: {
+        'task-size': [
+          { id: 'no-clarity', text: 'Don\'t even know first step', bottleneck: 'Clarity bottleneck' },
+          { id: 'too-big', text: 'Know first step but it feels huge', bottleneck: 'Task size bottleneck' },
+          { id: 'activation', text: 'First step is simple, still can\'t start', bottleneck: 'Activation bottleneck' },
+        ],
+      },
+      result: {
+        problem: 'Procrastination',
+        pattern: 'Big task → high activation cost → avoidance → stress → more resistance',
+        bottleneck: 'Activation friction',
+        mechanism: 'You\'re probably not lacking discipline. The task\'s activation cost exceeds your resources. Your brain sees "complete report" and feels overloaded. Change to "open file + write title" and activation drops. Therefore: don\'t increase willpower. Decrease friction.',
+        oldModel: 'I must force myself to complete it',
+        newModel: 'I just need to shrink the first step to make it easy',
+        actionSteps: ['Open what you need to work on', 'Complete only the tiniest first step', 'You can stop after 60 seconds'],
+        scenario: 'You need a 20-page report and dread starting',
+        scenarios: [
+          { id: 'a', text: 'Force yourself to finish tonight' },
+          { id: 'b', text: 'Wait until you feel motivated' },
+          { id: 'c', text: 'Create file + write three headings', correct: true },
+          { id: 'd', text: 'Blame yourself' }
+        ],
+      }
+    }
+  },
+  anxiety: {
+    zh: {
+      name: '焦慮',
+      desc: '擔心未來，無法集中',
+      patterns: [
+        { id: 'uncertainty', text: '不確定會發生什麼' },
+        { id: 'control', text: '想控制卻無能為力' },
+        { id: 'overthink', text: '一直反覆思考最壞情況' },
+      ],
+      diagnoses: {
+        'uncertainty': [
+          { id: 'unknown', text: '完全不知道會怎樣', bottleneck: '資訊不足' },
+          { id: 'known-risk', text: '知道可能的風險', bottleneck: '無法接納不確定' },
+        ],
+      },
+      result: {
+        problem: '焦慮',
+        pattern: '不確定→大腦想保護→過度估計風險→持續警戒→疲勞',
+        bottleneck: '不確定性耐受',
+        mechanism: '焦慮通常來自對未知的保護。它試圖通過最壞推演來保護你，但反而增加負擔。嘗試收集資訊，或接納某些事物無法完全控制。',
+        oldModel: '我必須消除所有風險和不確定',
+        newModel: '我可以在接納不確定的同時採取行動',
+        actionSteps: ['列出你最擔心的三件具體的事', '對每件事寫「如果發生我會...」計畫', '提醒自己：焦慮是保護，不是預測'],
+        scenario: '明天有個重要會議，你開始想像各種出錯',
+        scenarios: [
+          { id: 'a', text: '試圖預測和排除所有風險' },
+          { id: 'b', text: '準備好、接納不確定、專注休息', correct: true },
+          { id: 'c', text: '取消會議' },
+          { id: 'd', text: '一整夜思考可能發生的事' }
+        ],
+      }
+    },
+    en: {
+      name: 'Anxiety',
+      desc: 'Worry about the future, can\'t focus',
+      patterns: [
+        { id: 'uncertainty', text: 'Uncertain what will happen' },
+        { id: 'control', text: 'Want control but feel powerless' },
+        { id: 'overthink', text: 'Keep imagining worst-case' },
+      ],
+      diagnoses: {
+        'uncertainty': [
+          { id: 'unknown', text: 'Completely unknown outcome', bottleneck: 'Information gap' },
+          { id: 'known-risk', text: 'Know the possible risks', bottleneck: 'Intolerance of uncertainty' },
+        ],
+      },
+      result: {
+        problem: 'Anxiety',
+        pattern: 'Uncertainty → brain protects → overestimate risk → alert state → exhaustion',
+        bottleneck: 'Uncertainty tolerance',
+        mechanism: 'Anxiety stems from your brain\'s protection mechanism. It tries to keep you safe by imagining worst-cases, but increases burden. Try gathering information or accepting some things cannot be controlled.',
+        oldModel: 'I must eliminate all risk and uncertainty',
+        newModel: 'I can take action while accepting uncertainty',
+        actionSteps: ['List three specific things you\'re worried about', 'For each, write an "if it happens, I will..." plan', 'Remind yourself: anxiety is protective, not predictive'],
+        scenario: 'Important meeting tomorrow and you\'re imagining things going wrong',
+        scenarios: [
+          { id: 'a', text: 'Try to predict and prevent all risks' },
+          { id: 'b', text: 'Prepare well, accept uncertainty, focus on rest', correct: true },
+          { id: 'c', text: 'Cancel the meeting' },
+          { id: 'd', text: 'Spend all night thinking about what could happen' }
+        ],
+      }
+    }
+  },
+  fatigue: {
+    zh: {
+      name: '疲勞',
+      desc: '缺乏能量，經常無力',
+      patterns: [
+        { id: 'recovery', text: '休息不足或睡眠差' },
+        { id: 'overload', text: '過度透支體力和精力' },
+        { id: 'motivation', text: '做的事沒有意義，所以無力' },
+      ],
+      diagnoses: {
+        'recovery': [
+          { id: 'sleep-bad', text: '睡眠品質差', bottleneck: '恢復不足' },
+          { id: 'rest-bad', text: '睡眠還好，但休息時間很少', bottleneck: '恢復時間不足' },
+        ],
+      },
+      result: {
+        problem: '疲勞',
+        pattern: '透支>恢復 或 睡眠品質差 → 身體持續告急 → 更難做任何事',
+        bottleneck: '恢復資源',
+        mechanism: '疲勞通常是消耗 > 補充。檢查睡眠品質、白天恢復時間，以及是否做著沒意義的事。有時精神疲勞源於工作與價值觀不符。',
+        oldModel: '我應該更努力堅持下去',
+        newModel: '我需要找到恢復來源，再行動',
+        actionSteps: ['檢查最近3天睡眠時間和品質', '找一個恢復活動：走路、坐著或音樂', '做15分鐘，觀察能量變化'],
+        scenario: '下午3點時你完全沒有能量推進工作',
+        scenarios: [
+          { id: 'a', text: '喝咖啡強撐' },
+          { id: 'b', text: '停下來，做15分鐘恢復，再評估', correct: true },
+          { id: 'c', text: '責怪自己懶惰' },
+          { id: 'd', text: '努力推自己繼續' }
+        ],
+      }
+    },
+    en: {
+      name: 'Fatigue',
+      desc: 'Lack of energy, often exhausted',
+      patterns: [
+        { id: 'recovery', text: 'Insufficient rest or poor sleep' },
+        { id: 'overload', text: 'Depleting physical and mental energy' },
+        { id: 'motivation', text: 'Doing meaningless work drains energy' },
+      ],
+      diagnoses: {
+        'recovery': [
+          { id: 'sleep-bad', text: 'Poor sleep quality', bottleneck: 'Inadequate recovery' },
+          { id: 'rest-bad', text: 'Sleep is okay but little rest time', bottleneck: 'Insufficient recovery time' },
+        ],
+      },
+      result: {
+        problem: 'Fatigue',
+        pattern: 'Depletion > recovery OR poor sleep → body stays in crisis → harder to do anything',
+        bottleneck: 'Recovery resources',
+        mechanism: 'Fatigue means depletion exceeds replenishment. Check sleep quality, daytime recovery time, and whether work aligns with values. Sometimes fatigue is mental—from misaligned work.',
+        oldModel: 'I should push harder and persist',
+        newModel: 'I need to find recovery sources first',
+        actionSteps: ['Check last 3 days: sleep hours and quality', 'Find one recovery activity: walk, sit quietly, music', 'Do 15 minutes, observe energy shift'],
+        scenario: 'It\'s 3 PM and you have zero energy to push work forward',
+        scenarios: [
+          { id: 'a', text: 'Drink coffee and push through' },
+          { id: 'b', text: 'Stop, do 15-min recovery, then reassess', correct: true },
+          { id: 'c', text: 'Blame yourself for being lazy' },
+          { id: 'd', text: 'Force yourself to keep working' }
+        ],
+      }
+    }
+  },
+  'phone-addiction': {
+    zh: {
+      name: '手機成癮',
+      desc: '頻繁被打斷，難以專注',
+      patterns: [
+        { id: 'cue', text: '一直被通知和提示打斷' },
+        { id: 'reward', text: '習慣性打開來找快樂' },
+        { id: 'escape', text: '用來逃避不適感或無聊' },
+      ],
+      diagnoses: {
+        'cue': [
+          { id: 'visible', text: '手機就在眼前', bottleneck: 'Cue暴露' },
+          { id: 'notifications', text: '通知不斷', bottleneck: '環境刺激' },
+        ],
+      },
+      result: {
+        problem: '手機停不下來',
+        pattern: 'Cue（視覺/通知） → 自動反應 → 刷屏 → 時間流失',
+        bottleneck: '環境設計',
+        mechanism: '大多數手機成癮不是缺乏自制力。而是周圍環境（手機可見、通知常開）一直觸發自動行為。改變環境比改變意志力更有效。',
+        oldModel: '我需要更強的意志力不碰手機',
+        newModel: '我需要改變環境，減少Cue和通知',
+        actionSteps: ['把手機移到看不見的地方', '關閉所有非必要通知', '用一個簡單工具計時使用'],
+        scenario: '你試圖專注工作，手機就在桌上',
+        scenarios: [
+          { id: 'a', text: '靠意志力不看手機' },
+          { id: 'b', text: '把手機移到另一個房間，關閉通知', correct: true },
+          { id: 'c', text: '用限制軟體禁止訪問' },
+          { id: 'd', text: '每5分鐘看一次' }
+        ],
+      }
+    },
+    en: {
+      name: 'Phone addiction',
+      desc: 'Constantly interrupted, hard to focus',
+      patterns: [
+        { id: 'cue', text: 'Constantly interrupted by notifications' },
+        { id: 'reward', text: 'Habitually open seeking a hit' },
+        { id: 'escape', text: 'Use it to escape discomfort' },
+      ],
+      diagnoses: {
+        'cue': [
+          { id: 'visible', text: 'Phone is visible', bottleneck: 'Cue exposure' },
+          { id: 'notifications', text: 'Notifications constant', bottleneck: 'Environmental trigger' },
+        ],
+      },
+      result: {
+        problem: 'Can\'t stop checking phone',
+        pattern: 'Cue (visual/notifications) → automatic reaction → scrolling → time vanishes',
+        bottleneck: 'Environment design',
+        mechanism: 'Most phone addiction isn\'t willpower failure. It\'s the environment (phone visible, notifications on) constantly triggering behavior. Changing environment is more effective than willpower.',
+        oldModel: 'I need stronger willpower to avoid my phone',
+        newModel: 'I need to change my environment to reduce cues',
+        actionSteps: ['Move phone out of sight', 'Turn off all non-essential notifications', 'Use a simple timer to track usage'],
+        scenario: 'You\'re trying to focus on work with your phone on the desk',
+        scenarios: [
+          { id: 'a', text: 'Rely on willpower to not check it' },
+          { id: 'b', text: 'Move phone to another room, disable notifications', correct: true },
+          { id: 'c', text: 'Use app restrictions to block it' },
+          { id: 'd', text: 'Check it every 5 minutes' }
+        ],
+      }
+    }
+  },
+  sleep: {
+    zh: {
+      name: '睡眠問題',
+      desc: '入睡困難或睡眠品質差',
+      patterns: [
+        { id: 'onset', text: '入睡困難' },
+        { id: 'maintenance', text: '容易中途醒來' },
+        { id: 'quality', text: '睡眠不深，不夠恢復' },
+      ],
+      diagnoses: {
+        'onset': [
+          { id: 'mind', text: '腦子停不下來，想太多', bottleneck: '心理激活' },
+          { id: 'body', text: '身體緊繃或不適', bottleneck: '身體激活' },
+        ],
+      },
+      result: {
+        problem: '睡眠問題',
+        pattern: '睡前大腦/身體激活高 → 難以進入睡眠 → 疲勞 → 更難睡',
+        bottleneck: '睡前激活',
+        mechanism: '睡眠不是意志的問題，是激活水平的問題。睡前1-2小時，減少刺激（手機、工作、激烈討論），做降低激活的活動（深呼吸、靜坐、溫水澡）。',
+        oldModel: '我應該更努力入睡',
+        newModel: '我需要在睡前降低身心激活',
+        actionSteps: ['睡前30分鐘放下手機', '做3分鐘深呼吸或簡單伸展', '確認房間溫度和光線'],
+        scenario: '晚上11點了，你還在想工作的事，完全睡不著',
+        scenarios: [
+          { id: 'a', text: '強行躺著，希望快點睡著' },
+          { id: 'b', text: '起來做5分鐘放鬆活動，等身體平靜再躺下', correct: true },
+          { id: 'c', text: '檢查手機看有沒有訊息' },
+          { id: 'd', text: '越想越焦慮' }
+        ],
+      }
+    },
+    en: {
+      name: 'Sleep issues',
+      desc: 'Difficulty falling asleep or poor quality',
+      patterns: [
+        { id: 'onset', text: 'Difficulty falling asleep' },
+        { id: 'maintenance', text: 'Wake up frequently' },
+        { id: 'quality', text: 'Sleep is shallow, not restorative' },
+      ],
+      diagnoses: {
+        'onset': [
+          { id: 'mind', text: 'Mind won\'t stop, overthinking', bottleneck: 'Mental activation' },
+          { id: 'body', text: 'Body is tense or uncomfortable', bottleneck: 'Physical activation' },
+        ],
+      },
+      result: {
+        problem: 'Sleep problems',
+        pattern: 'High brain/body activation before bed → hard to fall asleep → fatigue → sleep harder',
+        bottleneck: 'Pre-sleep activation',
+        mechanism: 'Sleep isn\'t a willpower issue, it\'s an activation level issue. 1-2 hours before bed, reduce stimuli (phone, work, intense discussions) and do calming activities (deep breathing, sitting quietly, warm bath).',
+        oldModel: 'I should try harder to fall asleep',
+        newModel: 'I need to lower activation before bed',
+        actionSteps: ['Put phone away 30 min before sleep', 'Do 3 minutes deep breathing or gentle stretching', 'Check room temperature and light'],
+        scenario: 'It\'s 11 PM, you\'re thinking about work and completely awake',
+        scenarios: [
+          { id: 'a', text: 'Force yourself to lie there and hope' },
+          { id: 'b', text: 'Get up, do 5 min calming activity, then try again', correct: true },
+          { id: 'c', text: 'Check phone for messages' },
+          { id: 'd', text: 'Get more anxious thinking about it' }
+        ],
+      }
+    }
+  },
+  overwhelm: {
+    zh: {
+      name: '事情太多',
+      desc: '不知道先做哪件事',
+      patterns: [
+        { id: 'priority', text: '無法判斷優先順序' },
+        { id: 'capacity', text: '超過了自己的能力範圍' },
+        { id: 'clarity', text: '每件事都不清楚，無法開始' },
+      ],
+      diagnoses: {
+        'priority': [
+          { id: 'all-equal', text: '所有事都感覺一樣重要', bottleneck: '優先級不明' },
+          { id: 'too-many', text: '知道優先級，但還是太多', bottleneck: '容量超載' },
+        ],
+      },
+      result: {
+        problem: '事情太多',
+        pattern: '太多輸入 → 無法優先排序 → 樣樣不能開始 → 壓力和焦慮',
+        bottleneck: '優先級和容量',
+        mechanism: '當事情太多時，大腦無法決定先做什麼，結果什麼都開始不了。解決方法不是做更多，而是明確決定「現在只做這三件」，其他的推遲。',
+        oldModel: '我應該想辦法全部做完',
+        newModel: '我先決定現在的三個優先項，其他的主動推遲',
+        actionSteps: ['把所有待做事項列出來', '選出現在最重要的三件', '其他的明確推遲到下週'],
+        scenario: '你有20件事要做，完全不知道從何開始',
+        scenarios: [
+          { id: 'a', text: '試著同時開始所有事項' },
+          { id: 'b', text: '列表、選三件優先、推遲其他', correct: true },
+          { id: 'c', text: '做最快能完成的事' },
+          { id: 'd', text: '焦慮地思考應該先做什麼' }
+        ],
+      }
+    },
+    en: {
+      name: 'Too much to do',
+      desc: 'Don\'t know where to start',
+      patterns: [
+        { id: 'priority', text: 'Can\'t determine priority' },
+        { id: 'capacity', text: 'Exceeded capacity' },
+        { id: 'clarity', text: 'Nothing is clear, can\'t start' },
+      ],
+      diagnoses: {
+        'priority': [
+          { id: 'all-equal', text: 'Everything feels equally important', bottleneck: 'Priority unclear' },
+          { id: 'too-many', text: 'Know priority, still too many', bottleneck: 'Capacity overload' },
+        ],
+      },
+      result: {
+        problem: 'Too much to do',
+        pattern: 'Too many inputs → can\'t prioritize → can\'t start anything → stress and paralysis',
+        bottleneck: 'Priority and capacity',
+        mechanism: 'When there\'s too much, your brain can\'t decide what\'s first, so nothing gets started. The solution isn\'t doing more—it\'s clearly deciding "I\'ll do these three things now, rest waits."',
+        oldModel: 'I should find a way to get everything done',
+        newModel: 'I pick three priorities now and deliberately postpone the rest',
+        actionSteps: ['List all your to-dos', 'Pick the three most important now', 'Explicitly postpone everything else'],
+        scenario: 'You have 20 things to do and don\'t know where to start',
+        scenarios: [
+          { id: 'a', text: 'Try to start everything at once' },
+          { id: 'b', text: 'List, pick three priorities, postpone rest', correct: true },
+          { id: 'c', text: 'Do the fastest task' },
+          { id: 'd', text: 'Anxiously think about what to prioritize' }
+        ],
+      }
+    }
+  }
+};
+
+function setText(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+function setLanguage(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  updateUI();
+  
+  // 如果已在診斷流程中，重新渲染當前頁面內容
+  if (currProblem) {
+    renderPatternsForLanguage();
+  }
+  if (currPattern) {
+    renderDiagnosesForLanguage();
+  }
+  if (currDiagnosis) {
+    renderResultsForLanguage();
+  }
+}
+
+function toggleBilingual() {
+  bilingualMode = !bilingualMode;
+  const btn = event.target.closest('.lang-btn');
+  btn.classList.toggle('active');
+  setText('bilingual-label', bilingualMode ? '✓ 中英' : '雙語');
+  
+  // 重新渲染當前頁面
+  if (currProblem) renderPatternsForLanguage();
+  if (currPattern) renderDiagnosesForLanguage();
+  if (currDiagnosis) renderResultsForLanguage();
+}
+
+function renderPatternsForLanguage() {
+  if (bilingualMode) {
+    // 同時顯示中英
+    const zhData = problems[currProblem]['zh'];
+    const enData = problems[currProblem]['en'];
+    const html = zhData.patterns.map((p, i) => `
+      <div class="choice" onclick="selectPattern('${p.id}')">
+        <div class="bilingual-row">
+          <div class="bilingual-col">
+            <div class="bilingual-label">中文</div>
+            <div class="bilingual-text" style="font-weight: 600;">${p.text}</div>
+          </div>
+          <div class="bilingual-col">
+            <div class="bilingual-label">English</div>
+            <div class="bilingual-text" style="font-weight: 600;">${enData.patterns[i].text}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('patternChoices').innerHTML = html;
+  } else {
+    // 只顯示當前語言
+    const data = problems[currProblem][lang];
+    document.getElementById('patternChoices').innerHTML = data.patterns.map(p => `
+      <div class="choice" onclick="selectPattern('${p.id}')">
+        <div class="choice-strong">${p.text}</div>
+      </div>
+    `).join('');
+  }
+}
+
+function renderDiagnosesForLanguage() {
+  const zhData = problems[currProblem]['zh'];
+  const enData = problems[currProblem]['en'];
+  const zhDiagnoses = zhData.diagnoses[currPattern];
+  const enDiagnoses = enData.diagnoses[currPattern];
+  
+  if (bilingualMode) {
+    const html = zhDiagnoses.map((d, i) => `
+      <div class="choice" onclick="selectDiagnosis('${d.id}')">
+        <div class="bilingual-row">
+          <div class="bilingual-col">
+            <div class="bilingual-label">中文</div>
+            <div class="bilingual-text" style="font-weight: 600;">${d.text}</div>
+          </div>
+          <div class="bilingual-col">
+            <div class="bilingual-label">English</div>
+            <div class="bilingual-text" style="font-weight: 600;">${enDiagnoses[i].text}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('diagChoices').innerHTML = html;
+  } else {
+    const data = problems[currProblem][lang];
+    const diagnoses = data.diagnoses[currPattern];
+    document.getElementById('diagChoices').innerHTML = diagnoses.map(d => `
+      <div class="choice" onclick="selectDiagnosis('${d.id}')">
+        <div class="choice-strong">${d.text}</div>
+      </div>
+    `).join('');
+  }
+}
+
+function renderResultsForLanguage() {
+  const zhData = problems[currProblem]['zh'].result;
+  const enData = problems[currProblem]['en'].result;
+  
+  if (bilingualMode) {
+    document.getElementById('resultProblem').innerHTML = `
+      <div class="bilingual-row">
+        <div class="bilingual-col"><strong>${zhData.problem}</strong></div>
+        <div class="bilingual-col"><strong>${enData.problem}</strong></div>
+      </div>`;
+    document.getElementById('resultPattern').innerHTML = `
+      <div class="bilingual-row">
+        <div class="bilingual-col">${zhData.pattern}</div>
+        <div class="bilingual-col">${enData.pattern}</div>
+      </div>`;
+    document.getElementById('resultBottleneck').innerHTML = `
+      <div class="bilingual-row">
+        <div class="bilingual-col">${zhData.bottleneck}</div>
+        <div class="bilingual-col">${enData.bottleneck}</div>
+      </div>`;
+    document.getElementById('resultMechanism').innerHTML = `
+      <div class="bilingual-row">
+        <div class="bilingual-col">${zhData.mechanism}</div>
+        <div class="bilingual-col">${enData.mechanism}</div>
+      </div>`;
+    document.getElementById('resultOldModel').innerHTML = `
+      <div class="bilingual-row">
+        <div class="bilingual-col">${zhData.oldModel}</div>
+        <div class="bilingual-col">${enData.oldModel}</div>
+      </div>`;
+    document.getElementById('resultNewModel').innerHTML = `
+      <div class="bilingual-row">
+        <div class="bilingual-col">${zhData.newModel}</div>
+        <div class="bilingual-col">${enData.newModel}</div>
+      </div>`;
+  } else {
+    const data = problems[currProblem][lang].result;
+    document.getElementById('resultProblem').textContent = data.problem;
+    document.getElementById('resultPattern').textContent = data.pattern;
+    document.getElementById('resultBottleneck').textContent = data.bottleneck;
+    document.getElementById('resultMechanism').textContent = data.mechanism;
+    document.getElementById('resultOldModel').textContent = data.oldModel;
+    document.getElementById('resultNewModel').textContent = data.newModel;
+  }
+}
+
+function updateUI() {
+  const t = i18n[lang];
+  setText('appTitle', t.appTitle);
+  setText('appSubtitle', t.appSubtitle);
+  setText('footer', t.footer);
+  setText('homeTitle', t.homeTitle);
+  setText('homeSubtitle', t.homeSubtitle);
+  setText('patternTitle', t.patternTitle);
+  setText('patternSubtitle', t.patternSubtitle);
+  setText('diagTitle', t.diagTitle);
+  setText('diagSubtitle', t.diagSubtitle);
+  setText('resultsTitle', t.resultsTitle);
+  setText('label1', t.label1);
+  setText('label2', t.label2);
+  setText('label3', t.label3);
+  setText('label4', t.label4);
+  setText('label5', t.label5);
+  setText('label-old', t.labelOld);
+  setText('label-new', t.labelNew);
+  setText('continueBtn', t.continueBtn);
+  setText('actionTitle', t.actionTitle);
+  setText('actionSubtitle', t.actionSubtitle);
+  setText('actionBtn', t.actionBtn);
+  setText('transferTitle', t.transferTitle);
+  setText('transferSubtitle', t.transferSubtitle);
+  setText('btnDownload', t.btnDownload);
+  setText('btnCopy', t.btnCopy);
+  setText('btnTts', t.btnTts);
+  setText('restartBtn', t.restartBtn);
+  setText('playbookTitle', i18n[lang].playbookTitle);
+  for (let i = 1; i <= 10; i++) {
+    setText(`pb-label${i}`, t[`pbLabel${i}`]);
+  }
+}
+
+function renderHome() {
+  if (bilingualMode) {
+    const html = Object.entries(problems).map(([id, data]) => {
+      const zhD = data['zh'];
+      const enD = data['en'];
+      return `
+        <div class="choice" onclick="selectProblem('${id}')">
+          <div class="bilingual-row">
+            <div class="bilingual-col">
+              <div class="bilingual-label">中文</div>
+              <div class="bilingual-text" style="font-weight: 600;">${zhD.name}</div>
+              <div style="font-size: 12px; color: #888;">${zhD.desc}</div>
+            </div>
+            <div class="bilingual-col">
+              <div class="bilingual-label">English</div>
+              <div class="bilingual-text" style="font-weight: 600;">${enD.name}</div>
+              <div style="font-size: 12px; color: #888;">${enD.desc}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    document.getElementById('homeChoices').innerHTML = html;
+  } else {
+    const html = Object.entries(problems).map(([id, data]) => {
+      const d = data[lang];
+      return `
+        <div class="choice" onclick="selectProblem('${id}')">
+          <div class="choice-strong">${d.name}</div>
+          <div class="choice-desc">${d.desc}</div>
+        </div>
+      `;
+    }).join('');
+    document.getElementById('homeChoices').innerHTML = html;
+  }
+}
+
+function selectProblem(id) {
+  currProblem = id;
+  if (bilingualMode) {
+    const zhData = problems[id]['zh'];
+    const enData = problems[id]['en'];
+    const html = zhData.patterns.map((p, i) => `
+      <div class="choice" onclick="selectPattern('${p.id}')">
+        <div class="bilingual-row">
+          <div class="bilingual-col">
+            <div class="bilingual-label">中文</div>
+            <div class="bilingual-text" style="font-weight: 600;">${p.text}</div>
+          </div>
+          <div class="bilingual-col">
+            <div class="bilingual-label">English</div>
+            <div class="bilingual-text" style="font-weight: 600;">${enData.patterns[i].text}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('patternChoices').innerHTML = html;
+  } else {
+    const data = problems[id][lang];
+    document.getElementById('patternChoices').innerHTML = data.patterns.map(p => `
+      <div class="choice" onclick="selectPattern('${p.id}')">
+        <div class="choice-strong">${p.text}</div>
+      </div>
+    `).join('');
+  }
+  showPage('page-pattern');
+}
+
+function selectPattern(id) {
+  currPattern = id;
+  const zhData = problems[currProblem]['zh'];
+  const enData = problems[currProblem]['en'];
+  const zhDiagnoses = zhData.diagnoses[id];
+  const enDiagnoses = enData.diagnoses[id];
+  
+  if (bilingualMode) {
+    const html = zhDiagnoses.map((d, i) => `
+      <div class="choice" onclick="selectDiagnosis('${d.id}')">
+        <div class="bilingual-row">
+          <div class="bilingual-col">
+            <div class="bilingual-label">中文</div>
+            <div class="bilingual-text" style="font-weight: 600;">${d.text}</div>
+          </div>
+          <div class="bilingual-col">
+            <div class="bilingual-label">English</div>
+            <div class="bilingual-text" style="font-weight: 600;">${enDiagnoses[i].text}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('diagChoices').innerHTML = html;
+  } else {
+    const data = problems[currProblem][lang];
+    const diagnoses = data.diagnoses[id];
+    document.getElementById('diagChoices').innerHTML = diagnoses.map(d => `
+      <div class="choice" onclick="selectDiagnosis('${d.id}')">
+        <div class="choice-strong">${d.text}</div>
+      </div>
+    `).join('');
+  }
+  showPage('page-diagnosis');
+}
+
+function selectDiagnosis(id) {
+  currDiagnosis = id;
+  const zhData = problems[currProblem]['zh'].result;
+  const enData = problems[currProblem]['en'].result;
+  
+  if (bilingualMode) {
+    document.getElementById('resultProblem').innerHTML = `
+      <div class="bilingual-row">
+        <div class="bilingual-col"><strong>${zhData.problem}</strong></div>
+        <div class="bilingual-col"><strong>${enData.problem}</strong></div>
+      </div>`;
+    document.getElementById('resultPattern').innerHTML = `
+      <div class="bilingual-row">
+        <div class="bilingual-col">${zhData.pattern}</div>
+        <div class="bilingual-col">${enData.pattern}</div>
+      </div>`;
+    document.getElementById('resultBottleneck').innerHTML = `
+      <div class="bilingual-row">
+        <div class="bilingual-col">${zhData.bottleneck}</div>
+        <div class="bilingual-col">${enData.bottleneck}</div>
+      </div>`;
+    document.getElementById('resultMechanism').innerHTML = `
+      <div class="bilingual-row">
+        <div class="bilingual-col">${zhData.mechanism}</div>
+        <div class="bilingual-col">${enData.mechanism}</div>
+      </div>`;
+    document.getElementById('resultOldModel').innerHTML = `
+      <div class="bilingual-row">
+        <div class="bilingual-col">${zhData.oldModel}</div>
+        <div class="bilingual-col">${enData.oldModel}</div>
+      </div>`;
+    document.getElementById('resultNewModel').innerHTML = `
+      <div class="bilingual-row">
+        <div class="bilingual-col">${zhData.newModel}</div>
+        <div class="bilingual-col">${enData.newModel}</div>
+      </div>`;
+  } else {
+    const data = problems[currProblem][lang].result;
+    document.getElementById('resultProblem').textContent = data.problem;
+    document.getElementById('resultPattern').textContent = data.pattern;
+    document.getElementById('resultBottleneck').textContent = data.bottleneck;
+    document.getElementById('resultMechanism').textContent = data.mechanism;
+    document.getElementById('resultOldModel').textContent = data.oldModel;
+    document.getElementById('resultNewModel').textContent = data.newModel;
+  }
+  showPage('page-results');
+}
+
+function goToAction() {
+  const zhData = problems[currProblem]['zh'].result;
+  const enData = problems[currProblem]['en'].result;
+  
+  if (bilingualMode) {
+    document.getElementById('actionSteps').innerHTML = zhData.actionSteps.map((s, i) => `
+      <div class="action-step">
+        <div class="action-number">${i + 1}</div>
+        <div class="action-text">
+          <div class="bilingual-row" style="gap: 0.5rem;">
+            <div style="flex: 1;"><strong style="color: #667eea;">中</strong> ${s}</div>
+            <div style="flex: 1;"><strong style="color: #764ba2;">EN</strong> ${enData.actionSteps[i]}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  } else {
+    const data = problems[currProblem][lang].result;
+    document.getElementById('actionSteps').innerHTML = data.actionSteps.map((s, i) => `
+      <div class="action-step">
+        <div class="action-number">${i + 1}</div>
+        <div class="action-text">${s}</div>
+      </div>
+    `).join('');
+  }
+  showPage('page-action');
+}
+
+function goToTransfer() {
+  const zhData = problems[currProblem]['zh'].result;
+  const enData = problems[currProblem]['en'].result;
+  
+  document.getElementById('scenarioText').innerHTML = bilingualMode ? `
+    <div class="bilingual-row">
+      <div class="bilingual-col">
+        <strong style="color: #667eea;">中文場景</strong><br>${zhData.scenario}
+      </div>
+      <div class="bilingual-col">
+        <strong style="color: #764ba2;">English Scenario</strong><br>${enData.scenario}
+      </div>
+    </div>
+  ` : (lang === 'zh' ? zhData.scenario : enData.scenario);
+  
+  if (bilingualMode) {
+    document.getElementById('scenarioChoices').innerHTML = zhData.scenarios.map((s, i) => `
+      <div class="scenario-option" onclick="selectScenario('${s.id}')">
+        <div class="scenario-letter">${String.fromCharCode(65 + i)}</div>
+        <div class="scenario-text">
+          <div class="bilingual-row" style="gap: 0.5rem; margin: 0;">
+            <div style="flex: 1; font-size: 12px;">${s.text}</div>
+            <div style="flex: 1; font-size: 12px; color: #666;">${enData.scenarios[i].text}</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  } else {
+    const data = problems[currProblem][lang].result;
+    document.getElementById('scenarioChoices').innerHTML = data.scenarios.map((s, i) => `
+      <div class="scenario-option" onclick="selectScenario('${s.id}')">
+        <div class="scenario-letter">${String.fromCharCode(65 + i)}</div>
+        <div class="scenario-text">${s.text}</div>
+      </div>
+    `).join('');
+  }
+  showPage('page-transfer');
+}
+
+function selectScenario(id) {
+  const data = problems[currProblem][lang].result;
+  const isCorrect = data.scenarios.find(s => s.id === id).correct;
+  if (isCorrect) goToPlaybook();
+  else alert(lang === 'zh' ? '試試看別的選項...' : 'Try another option...');
+}
+
+function goToPlaybook() {
+  const zhData = problems[currProblem]['zh'].result;
+  const enData = problems[currProblem]['en'].result;
+  
+  if (bilingualMode) {
+    document.getElementById('playbookTitle').innerHTML = `<span style="color: #667eea;">我的 ${zhData.problem}</span> / <span style="color: #764ba2;">My ${enData.problem}</span> <span style="font-size: 18px;">解套卡</span>`;
+    
+    // 設置所有playbook項目為雙語
+    for (let i = 1; i <= 10; i++) {
+      const pbKey = `pb-label${i}`;
+      const pbValKey = `pb-${['problem', 'pattern', 'bottleneck', 'missing', 'lesson', 'action', 'avoid', 'signal', 'question', 'rule'][i-1]}`;
+      
+      if (i === 1) {
+        document.getElementById('pb-problem').innerHTML = `<div class="bilingual-row"><div>${zhData.problem}</div><div>${enData.problem}</div></div>`;
+      } else if (i === 2) {
+        document.getElementById('pb-pattern').innerHTML = `<div class="bilingual-row"><div style="font-size: 12px;">${zhData.pattern}</div><div style="font-size: 12px;">${enData.pattern}</div></div>`;
+      } else if (i === 3) {
+        document.getElementById('pb-bottleneck').innerHTML = `<div class="bilingual-row"><div>${zhData.bottleneck}</div><div>${enData.bottleneck}</div></div>`;
+      } else if (i === 6) {
+        document.getElementById('pb-action').innerHTML = `<div class="bilingual-row"><div style="font-size: 12px;">${zhData.actionSteps.slice(0, 2).join(' + ')}</div><div style="font-size: 12px;">${enData.actionSteps.slice(0, 2).join(' + ')}</div></div>`;
+      } else if (i === 7) {
+        document.getElementById('pb-avoid').innerHTML = `<div class="bilingual-row"><div>${zhData.oldModel}</div><div>${enData.oldModel}</div></div>`;
+      } else if (i === 10) {
+        document.getElementById('pb-rule').innerHTML = `<div class="bilingual-row"><div style="font-size: 12px;">${lang === 'zh' ? '如果卡住，檢查 Bottleneck，而不是增加意志力' : 'If stuck, check bottleneck, don\'t add willpower'}</div><div style="font-size: 12px;">${enData.problem === 'Procrastination' ? 'If stuck, check bottleneck, don\'t add willpower' : 'Adapt your approach based on bottleneck'}</div></div>`;
+      }
+    }
+  } else {
+    const data = problems[currProblem][lang].result;
+    document.getElementById('playbookTitle').textContent = (lang === 'zh' ? '我的 ' : 'My ') + data.problem + (lang === 'zh' ? ' 解套卡' : ' Playbook');
+    document.getElementById('pb-problem').textContent = data.problem;
+    document.getElementById('pb-pattern').textContent = data.pattern;
+    document.getElementById('pb-bottleneck').textContent = data.bottleneck;
+    document.getElementById('pb-missing').textContent = lang === 'zh' ? '不是意志力，而是系統改變' : 'Not willpower, system change';
+    document.getElementById('pb-lesson').textContent = lang === 'zh' ? 'Bottleneck、Friction、System Design' : 'Bottleneck, Friction, System Design';
+    document.getElementById('pb-action').textContent = data.actionSteps.slice(0, 2).join(' + ');
+    document.getElementById('pb-avoid').textContent = data.oldModel;
+    document.getElementById('pb-signal').textContent = lang === 'zh' ? '「想到就不想開始」的感受' : 'Feeling dread when thinking of it';
+    document.getElementById('pb-question').textContent = lang === 'zh' ? '「我能把這件事拆得更小嗎？」' : 'Can I break this down further?';
+    document.getElementById('pb-rule').textContent = lang === 'zh' ? '如果卡住，檢查 Bottleneck，而不是增加意志力' : 'If stuck, check bottleneck, don\'t add willpower';
+  }
+  showPage('page-playbook');
+}
+
+function speakPlaybook() {
+  if (!('speechSynthesis' in window)) {
+    alert(lang === 'zh' ? '你的瀏覽器不支援語音功能' : 'Speech synthesis not supported');
+    return;
+  }
+  
+  const enData = problems[currProblem]['en'].result;
+  const text = `
+    My problem: ${enData.problem}
+    My pattern: ${enData.pattern}
+    My bottleneck: ${enData.bottleneck}
+    What I really need: Not willpower, system change
+    What I learned: Bottleneck, Friction, System Design
+    Do now: ${enData.actionSteps.slice(0, 2).join(' and ')}
+    Don't do: ${enData.oldModel}
+    My signal: Feeling dread when thinking of it
+    Ask immediately: Can I break this down further?
+    My rule: If stuck, check bottleneck, don't add willpower
+  `;
+  
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = 0.95;
+  utterance.pitch = 1;
+  speechSynthesis.speak(utterance);
+}
+
+function downloadPlaybook() {
+  const content = `
+LIFEOS PERSONAL PLAYBOOK
+========================
+Problem: ${document.getElementById('pb-problem').textContent}
+Pattern: ${document.getElementById('pb-pattern').textContent}
+Bottleneck: ${document.getElementById('pb-bottleneck').textContent}
+Really missing: ${document.getElementById('pb-missing').textContent}
+Learned: ${document.getElementById('pb-lesson').textContent}
+Do now: ${document.getElementById('pb-action').textContent}
+Don't do: ${document.getElementById('pb-avoid').textContent}
+Signal: ${document.getElementById('pb-signal').textContent}
+Ask: ${document.getElementById('pb-question').textContent}
+My rule: ${document.getElementById('pb-rule').textContent}
+  `.trim();
+  const blob = new Blob([content], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'my-playbook.txt';
+  a.click();
+}
+
+function copyPlaybook() {
+  const text = `
+LIFEOS PERSONAL PLAYBOOK
+Problem: ${document.getElementById('pb-problem').textContent}
+Pattern: ${document.getElementById('pb-pattern').textContent}
+Bottleneck: ${document.getElementById('pb-bottleneck').textContent}
+Really missing: ${document.getElementById('pb-missing').textContent}
+Learned: ${document.getElementById('pb-lesson').textContent}
+Do now: ${document.getElementById('pb-action').textContent}
+Don't do: ${document.getElementById('pb-avoid').textContent}
+Signal: ${document.getElementById('pb-signal').textContent}
+Ask: ${document.getElementById('pb-question').textContent}
+My rule: ${document.getElementById('pb-rule').textContent}
+  `.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    alert(lang === 'zh' ? '已複製到剪貼簿' : 'Copied to clipboard');
+  });
+}
+
+function restart() {
+  currProblem = currPattern = currDiagnosis = null;
+  renderHome();
+  showPage('page-home');
+  if (bilingualMode) {
+    const html = Object.entries(problems).map(([id, data]) => {
+      const zhD = data['zh'];
+      const enD = data['en'];
+      return `
+        <div class="choice" onclick="selectProblem('${id}')">
+          <div class="bilingual-row">
+            <div class="bilingual-col">
+              <div class="bilingual-label">中文</div>
+              <div class="bilingual-text" style="font-weight: 600;">${zhD.name}</div>
+              <div style="font-size: 12px; color: #888;">${zhD.desc}</div>
+            </div>
+            <div class="bilingual-col">
+              <div class="bilingual-label">English</div>
+              <div class="bilingual-text" style="font-weight: 600;">${enD.name}</div>
+              <div style="font-size: 12px; color: #888;">${enD.desc}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    document.getElementById('homeChoices').innerHTML = html;
+  } else {
+    renderHome();
+  }
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  renderHome();
+  updateUI();
+});
+</script>
+</body>
+</html>

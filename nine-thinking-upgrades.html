@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>九大思維升級｜每組30個差異 / Nine Mindset Upgrades</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --navy: #1A2B5F;
+            --gold: #C9960C;
+            --teal: #0A7A72;
+            --bg: #ffffff;
+            --text: #1A1A1A;
+            --border: #e8e8e8;
+        }
+        
+        body {
+            font-family: 'Microsoft JhengHei', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+            font-size: 18px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            border-bottom: 3px solid var(--gold);
+            padding-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 42px;
+            color: var(--navy);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 24px;
+            color: var(--teal);
+            margin-bottom: 20px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .nav-tabs button {
+            background: var(--border);
+            border: 2px solid var(--border);
+            padding: 12px 20px;
+            cursor: pointer;
+            font-family: 'Microsoft JhengHei', sans-serif;
+            font-size: 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tabs button:hover {
+            background: var(--gold);
+            color: white;
+            border-color: var(--gold);
+        }
+        
+        .nav-tabs button.active {
+            background: var(--navy);
+            color: white;
+            border-color: var(--navy);
+        }
+        
+        .upgrade-section {
+            display: none;
+        }
+        
+        .upgrade-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .upgrade-title {
+            font-size: 32px;
+            color: var(--navy);
+            margin-bottom: 15px;
+        }
+        
+        .core-diff {
+            background: #f5f5f5;
+            border-left: 4px solid var(--gold);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+        
+        .core-diff-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 15px;
+        }
+        
+        .core-diff-item {
+            padding: 10px;
+        }
+        
+        .core-diff-item strong {
+            color: var(--navy);
+        }
+        
+        .core-diff-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .differences-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .diff-card {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .diff-card:hover {
+            border-color: var(--gold);
+            box-shadow: 0 4px 12px rgba(201, 150, 12, 0.1);
+        }
+        
+        .diff-header {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+            color: white;
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .diff-header:hover {
+            background: linear-gradient(135deg, var(--teal) 0%, var(--navy) 100%);
+        }
+        
+        .diff-number {
+            background: rgba(201, 150, 12, 0.3);
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin-right: 10px;
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        .expand-icon {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .diff-card.open .expand-icon {
+            transform: rotate(180deg);
+        }
+        
+        .diff-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .diff-card.open .diff-content {
+            max-height: 500px;
+        }
+        
+        .diff-body {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .diff-column {
+            padding-right: 15px;
+            border-right: 2px solid var(--border);
+        }
+        
+        .diff-column:last-child {
+            border-right: none;
+            padding-right: 0;
+        }
+        
+        .diff-column h4 {
+            color: var(--navy);
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .diff-column p {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+        
+        .text-with-tts {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .text-content {
+            flex: 1;
+        }
+        
+        .lang-label {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 6px;
+        }
+        
+        .tts-button {
+            background: var(--teal);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Microsoft JhengHei', sans-serif;
+            font-size: 14px;
+            margin-top: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .tts-button:hover {
+            background: var(--navy);
+            transform: scale(1.05);
+        }
+        
+        .tts-button.playing {
+            background: var(--gold);
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .quote-section {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+            color: white;
+            padding: 30px;
+            margin-top: 30px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 20px;
+            line-height: 1.8;
+        }
+        
+        .quote-section .tts-button {
+            background: var(--gold);
+            margin-top: 15px;
+        }
+        
+        .controls {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .controls button {
+            background: var(--navy);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Microsoft JhengHei', sans-serif;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+        
+        .controls button:hover {
+            background: var(--teal);
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            font-family: 'Microsoft JhengHei', sans-serif;
+            font-size: 16px;
+        }
+        
+        .stats {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+            
+            .subtitle {
+                font-size: 18px;
+            }
+            
+            .diff-body {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .diff-column {
+                border-right: none;
+                border-bottom: 2px solid var(--border);
+                padding-right: 0;
+                padding-bottom: 15px;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .nav-tabs button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>九大思維升級</h1>
+            <div class="subtitle">每組30個差異 | Nine Mindset Upgrades</div>
+        </header>
+        
+        <div class="controls">
+            <input type="text" id="searchBox" class="search-box" placeholder="搜尋差異 / Search differences...">
+            <button onclick="expandAll()">全部展開 / Expand All</button>
+            <button onclick="collapseAll()">全部收合 / Collapse All</button>
+        </div>
+        
+        <div class="stats" id="stats"></div>
+        
+        <div class="nav-tabs" id="navTabs"></div>
+        
+        <div id="content"></div>
+    </div>
+    
+    <script>
+        const upgrades = [
+            {
+                id: 1,
+                title: "時間思維 → 價值思維",
+                englishTitle: "Time Thinking → Value Thinking",
+                coreTitle: "Core Difference",
+                coreCH: "時間思維問：「我花了多少時間？」",
+                coreEN: "Time thinking asks: 'How much time did I spend?'",
+                coreCH2: "價值思維問：「這段時間產生了什麼價值？」",
+                coreEN2: "Value thinking asks: 'What value did this time create?'",
+                quote: "真正稀缺的不是時間，而是把有限時間轉成高價值成果的能力。",
+                quoteEN: "What's truly scarce is not time, but the ability to convert limited time into high-value results.",
+                differences: [
+                    { num: "01", time: "工作8小時", value: "8小時創造多少有效成果？", timeEN: "Worked 8 hours", valueEN: "How much productive output did those 8 hours create?" },
+                    { num: "02", time: "今天很忙", value: "今天解決了什麼重要問題？", timeEN: "Had a busy day", valueEN: "What important problems did I solve today?" },
+                    { num: "03", time: "做得久", value: "做得久是否真的更有產出？", timeEN: "Spent a long time", valueEN: "Does more time actually mean more output?" },
+                    { num: "04", time: "按工時計價", value: "按解決問題的價值思考", timeEN: "Pricing by hourly rate", valueEN: "Think about pricing by value of problems solved" },
+                    { num: "05", time: "努力量重要", value: "有效產出重要", timeEN: "Effort quantity matters", valueEN: "Effective output matters" },
+                    { num: "06", time: "每件事平均分配時間", value: "高價值任務優先", timeEN: "Distribute time equally", valueEN: "Prioritize high-value tasks" },
+                    { num: "07", time: "有空才學習", value: "優先投資高複利能力", timeEN: "Learn only when free", valueEN: "Prioritize investing in high-ROI capabilities" },
+                    { num: "08", time: "把行程塞滿", value: "把重要事情保護起來", timeEN: "Fill every slot", valueEN: "Protect important tasks" },
+                    { num: "09", time: "多做", value: "做對", timeEN: "Do more", valueEN: "Do it right" },
+                    { num: "10", time: "延長工時", value: "提高單位時間產值", timeEN: "Extend work hours", valueEN: "Increase output per hour" },
+                    { num: "11", time: "自己完成最快", value: "能否授權、工具化、自動化？", timeEN: "I can finish it fastest", valueEN: "Can I delegate, tool, or automate it?" },
+                    { num: "12", time: "重複回答問題", value: "把答案做成FAQ、教材或APP", timeEN: "Repeatedly answer questions", valueEN: "Turn answers into FAQ, materials, or apps" },
+                    { num: "13", time: "上一堂課算一堂", value: "學生真正形成什麼能力？", timeEN: "Teaching one class counts as one", valueEN: "What capabilities did students actually form?" },
+                    { num: "14", time: "寫一篇文章", value: "文章能否持續建立信任？", timeEN: "Write an article", valueEN: "Does the article continuously build trust?" },
+                    { num: "15", time: "服務一個人一次", value: "能否形成可重複使用的Solution？", timeEN: "Serve one person once", valueEN: "Can I create a reusable solution?" },
+                    { num: "16", time: "每天找客戶", value: "能否建立讓客戶主動找到你的入口？", timeEN: "Find clients every day", valueEN: "Can I build an entry point where clients find me?" },
+                    { num: "17", time: "一直製作內容", value: "內容能否形成Content Asset？", timeEN: "Keep making content", valueEN: "Does content form a content asset?" },
+                    { num: "18", time: "一直學新東西", value: "學習能否轉成Capability？", timeEN: "Keep learning new things", valueEN: "Does learning convert to capability?" },
+                    { num: "19", time: "一天完成10件事", value: "哪一件真正推動目標？", timeEN: "Complete 10 tasks a day", valueEN: "Which one actually drives the goal?" },
+                    { num: "20", time: "省5分鐘", value: "省下來的5分鐘重新配置到哪裡？", timeEN: "Save 5 minutes", valueEN: "Where do I redeploy the saved 5 minutes?" },
+                    { num: "21", time: "退休＝不工作", value: "建立不完全依賴工時的資產", timeEN: "Retirement = stop working", valueEN: "Build assets that don't depend entirely on hours" },
+                    { num: "22", time: "收入跟時間綁定", value: "讓作品、IP、系統產生收入", timeEN: "Income tied to hours", valueEN: "Let work, IP, systems generate income" },
+                    { num: "23", time: "投入越多越好", value: "先看Marginal Return", timeEN: "More input is better", valueEN: "First check marginal returns" },
+                    { num: "24", time: "所有時間都要有效率", value: "休息也能恢復未來產能", timeEN: "All time must be efficient", valueEN: "Rest also restores future capacity" },
+                    { num: "25", time: "免費＝沒有成本", value: "注意力與機會成本仍然存在", timeEN: "Free = no cost", valueEN: "Attention and opportunity costs still exist" },
+                    { num: "26", time: "便宜就值得買", value: "它替我節省或創造多少價值？", timeEN: "Cheap is worth buying", valueEN: "How much value does it save or create?" },
+                    { num: "27", time: "事情快做完", value: "事情是否值得做？", timeEN: "Task is almost done", valueEN: "Is the task worth doing at all?" },
+                    { num: "28", time: "管理分鐘", value: "管理Priority", timeEN: "Manage minutes", valueEN: "Manage priorities" },
+                    { num: "29", time: "人生有多少時間？", value: "生命時間交換了什麼？", timeEN: "How much time do I have?", valueEN: "What have I exchanged my lifetime for?" },
+                    { num: "30", time: "Time Management", value: "Value Allocation", timeEN: "Time Management", valueEN: "Value Allocation" }
+                ]
+            },
+            {
+                id: 2,
+                title: "暴富思維 → 複利思維",
+                englishTitle: "Get-Rich-Quick Thinking → Compound Thinking",
+                coreTitle: "Core Difference",
+                coreCH: "暴富思維追求一次翻身。",
+                coreEN: "Get-rich-quick thinking seeks one-time transformation.",
+                coreCH2: "複利思維建立可以反覆累積的Generator。",
+                coreEN2: "Compound thinking builds a repeatable accumulation generator.",
+                quote: "真正強大的不是某一次賺很多，而是今天的成果能成為明天的本金。",
+                quoteEN: "Real strength isn't making a lot once; it's making today's result tomorrow's principal.",
+                differences: [
+                    { num: "01", time: "一次賺很多", value: "持續累積", timeEN: "Make a lot once", valueEN: "Accumulate continuously" },
+                    { num: "02", time: "找下一個機會", value: "建立長期系統", timeEN: "Find the next opportunity", valueEN: "Build a long-term system" },
+                    { num: "03", time: "追熱門", value: "建立能力", timeEN: "Chase trends", valueEN: "Build capability" },
+                    { num: "04", time: "押單一機會", value: "管理風險", timeEN: "Bet on one opportunity", valueEN: "Manage risk" },
+                    { num: "05", time: "結果導向短期", value: "過程可持續", timeEN: "Short-term results orientation", valueEN: "Process is sustainable" },
+                    { num: "06", time: "追求爆發", value: "追求不中斷", timeEN: "Pursue explosion", valueEN: "Pursue continuity" },
+                    { num: "07", time: "忽略本金安全", value: "先避免永久性損失", timeEN: "Ignore principal safety", valueEN: "First avoid permanent loss" },
+                    { num: "08", time: "高報酬最重要", value: "報酬×時間×存活更重要", timeEN: "High returns matter most", valueEN: "Returns × Time × Survival matter most" },
+                    { num: "09", time: "一次作品爆紅", value: "持續累積Content Asset", timeEN: "One viral work", valueEN: "Continuously accumulate content assets" },
+                    { num: "10", time: "突然很多粉絲", value: "持續累積Trust", timeEN: "Suddenly many followers", valueEN: "Continuously accumulate trust" },
+                    { num: "11", time: "認識大人物", value: "長期建立Network", timeEN: "Meet an important person", valueEN: "Build network long-term" },
+                    { num: "12", time: "買一堂神課", value: "每天提升一點Skill", timeEN: "Take one magic course", valueEN: "Improve skills every day" },
+                    { num: "13", time: "找到神奇方法", value: "持續Feedback與Update", timeEN: "Find magical method", valueEN: "Continuous feedback and updates" },
+                    { num: "14", time: "一次成交", value: "會員與復購", timeEN: "One transaction", valueEN: "Membership and repeat purchase" },
+                    { num: "15", time: "流量爆發", value: "Distribution Asset", timeEN: "Traffic explosion", valueEN: "Distribution asset" },
+                    { num: "16", time: "一次賺錢", value: "可重複Cash Flow", timeEN: "Make money once", valueEN: "Repeatable cash flow" },
+                    { num: "17", time: "只看收益", value: "同時看Downside", timeEN: "Only look at upside", valueEN: "Also look at downside" },
+                    { num: "18", time: "FOMO", value: "紀律", timeEN: "FOMO", valueEN: "Discipline" },
+                    { num: "19", time: "追價格", value: "累積價值", timeEN: "Chase price", valueEN: "Accumulate value" },
+                    { num: "20", time: "頻繁換策略", value: "讓有效策略有時間發酵", timeEN: "Frequently change strategy", valueEN: "Let effective strategy ferment" },
+                    { num: "21", time: "每天問結果", value: "定期看趨勢", timeEN: "Ask about results daily", valueEN: "Check trends periodically" },
+                    { num: "22", time: "羨慕別人的爆發", value: "建立自己的累積曲線", timeEN: "Envy others' explosions", valueEN: "Build your own accumulation curve" },
+                    { num: "23", time: "財富＝錢", value: "財富＝多種Capital", timeEN: "Wealth = money", valueEN: "Wealth = multiple capital types" },
+                    { num: "24", time: "短期最大化", value: "長期生存最大化", timeEN: "Maximize short-term", valueEN: "Maximize long-term survival" },
+                    { num: "25", time: "槓桿先上", value: "先建立穩定底盤", timeEN: "Leverage first", valueEN: "Build stable base first" },
+                    { num: "26", time: "賺到就花", value: "部分成果重新投入", timeEN: "Spend what I earn", valueEN: "Reinvest some earnings" },
+                    { num: "27", time: "追求一次正確", value: "持續小幅更新", timeEN: "Seek one correct path", valueEN: "Continuous small updates" },
+                    { num: "28", time: "靠運氣翻身", value: "提高成功Probability", timeEN: "Rely on luck", valueEN: "Increase success probability" },
+                    { num: "29", time: "追求奇蹟", value: "建立Mechanism", timeEN: "Pursue miracles", valueEN: "Build mechanism" },
+                    { num: "30", time: "我要突然變有錢", value: "我要建立持續生成財富的系統", timeEN: "I want to suddenly be rich", valueEN: "I want to build a continuous wealth-generating system" }
+                ]
+            },
+            {
+                id: 3,
+                title: "知識思維 → 能力思維",
+                englishTitle: "Knowledge Thinking → Capability Thinking",
+                coreTitle: "Core Difference",
+                coreCH: "知識思維問：「我知道嗎？」",
+                coreEN: "Knowledge thinking asks: 'Do I know?'",
+                coreCH2: "能力思維問：「遇到真實問題，我做得出來嗎？」",
+                coreEN2: "Capability thinking asks: 'Can I actually do it when facing real problems?'",
+                quote: "真正學會的證據，不是能說出答案，而是情境改變後仍然做得出來。",
+                quoteEN: "True learning is proved not by stating answers, but by doing it even when circumstances change.",
+                differences: [
+                    { num: "01", time: "知道", value: "做到", timeEN: "Know", valueEN: "Do it" },
+                    { num: "02", time: "記住答案", value: "生成答案", timeEN: "Remember answers", valueEN: "Generate answers" },
+                    { num: "03", time: "收藏", value: "調用", timeEN: "Collect", valueEN: "Apply" },
+                    { num: "04", time: "看懂", value: "實作", timeEN: "Understand", valueEN: "Implement" },
+                    { num: "05", time: "會講", value: "會做", timeEN: "Can explain", valueEN: "Can do it" },
+                    { num: "06", time: "知道原理", value: "能應用原理", timeEN: "Know the principle", valueEN: "Can apply the principle" },
+                    { num: "07", time: "知道工具", value: "知道何時使用", timeEN: "Know the tool", valueEN: "Know when to use it" },
+                    { num: "08", time: "背方法", value: "選方法", timeEN: "Memorize method", valueEN: "Choose method" },
+                    { num: "09", time: "老師告訴我", value: "自己判斷", timeEN: "Teacher tells me", valueEN: "Judge for myself" },
+                    { num: "10", time: "AI給答案", value: "能驗證AI答案", timeEN: "AI gives answer", valueEN: "Can verify AI's answer" },
+                    { num: "11", time: "看100篇文章", value: "完成一次Reality Test", timeEN: "Read 100 articles", valueEN: "Complete one reality test" },
+                    { num: "12", time: "知道Bottleneck", value: "找得到Bottleneck", timeEN: "Know bottlenecks exist", valueEN: "Can find bottlenecks" },
+                    { num: "13", time: "知道Feedback", value: "能利用Feedback修正", timeEN: "Know about feedback", valueEN: "Can use feedback to correct" },
+                    { num: "14", time: "知道Prediction Error", value: "錯了會Update", timeEN: "Know prediction error concept", valueEN: "Update when wrong" },
+                    { num: "15", time: "會做熟悉題", value: "陌生題仍能處理", timeEN: "Solve familiar problems", valueEN: "Handle unfamiliar ones too" },
+                    { num: "16", time: "模仿案例", value: "跨情境Transfer", timeEN: "Copy examples", valueEN: "Transfer across contexts" },
+                    { num: "17", time: "需要提示", value: "逐漸不需要提示", timeEN: "Need hints", valueEN: "Gradually need fewer hints" },
+                    { num: "18", time: "回答問題", value: "定義問題", timeEN: "Answer questions", valueEN: "Define problems" },
+                    { num: "19", time: "記流程", value: "根據Context調整流程", timeEN: "Memorize process", valueEN: "Adjust process by context" },
+                    { num: "20", time: "知道溝通技巧", value: "衝突時用得出來", timeEN: "Know communication skills", valueEN: "Use them in conflict" },
+                    { num: "21", time: "知道投資原理", value: "市場恐慌時仍能執行紀律", timeEN: "Know investment principles", valueEN: "Execute discipline in panics" },
+                    { num: "22", time: "知道要設界線", value: "真正說得出口", timeEN: "Know I should set boundaries", valueEN: "Actually say it" },
+                    { num: "23", time: "知道要自律", value: "能設計Environment", timeEN: "Know I should be disciplined", valueEN: "Design environment for it" },
+                    { num: "24", time: "知道英文", value: "陌生文章讀得懂", timeEN: "Know English", valueEN: "Understand unfamiliar articles" },
+                    { num: "25", time: "懂AI", value: "AI能替自己產生真實成果", timeEN: "Understand AI", valueEN: "AI generates real results for me" },
+                    { num: "26", time: "上完課", value: "行為發生改變", timeEN: "Finish course", valueEN: "Behavior actually changes" },
+                    { num: "27", time: "資訊增加", value: "選擇空間增加", timeEN: "Information increases", valueEN: "Choices expand" },
+                    { num: "28", time: "答案庫", value: "Solution Generator", timeEN: "Answer library", valueEN: "Solution generator" },
+                    { num: "29", time: "Information Transfer", value: "Capability Formation", timeEN: "Information transfer", valueEN: "Capability formation" },
+                    { num: "30", time: "我知道了", value: "下一次遇到，我做得出來", timeEN: "I know it now", valueEN: "Next time, I can do it" }
+                ]
+            },
+            {
+                id: 4,
+                title: "固定思維 → 更新思維",
+                englishTitle: "Fixed Thinking → Update Thinking",
+                coreTitle: "Core Difference",
+                coreCH: "固定思維保護既有Model。",
+                coreEN: "Fixed thinking protects existing models.",
+                coreCH2: "更新思維讓Model接受Reality檢驗。",
+                coreEN2: "Update thinking lets models face reality checks.",
+                quote: "智慧不是擁有永遠正確的模型，而是Reality改變時，你有能力更新模型。",
+                quoteEN: "Wisdom isn't having forever-correct models; it's updating them when reality changes.",
+                differences: [
+                    { num: "01", time: "我就是這樣", value: "我現在是這樣", timeEN: "I'm just like this", valueEN: "I'm like this now" },
+                    { num: "02", time: "個性不能改", value: "Pattern可以訓練", timeEN: "Personality can't change", valueEN: "Patterns can be trained" },
+                    { num: "03", time: "我不會", value: "我還不會", timeEN: "I can't", valueEN: "I can't yet" },
+                    { num: "04", time: "失敗證明能力不足", value: "失敗提供Error Data", timeEN: "Failure proves lack of ability", valueEN: "Failure provides error data" },
+                    { num: "05", time: "保護答案", value: "檢驗答案", timeEN: "Protect answers", valueEN: "Test answers" },
+                    { num: "06", time: "被糾正很丟臉", value: "Feedback很有價值", timeEN: "Being corrected is embarrassing", valueEN: "Feedback is valuable" },
+                    { num: "07", time: "我要證明自己對", value: "我要更接近Reality", timeEN: "I need to prove myself right", valueEN: "I want to approach reality" },
+                    { num: "08", time: "經驗就是答案", value: "經驗只是Prior", timeEN: "Experience is the answer", valueEN: "Experience is just prior data" },
+                    { num: "09", time: "以前有效", value: "現在還有效嗎？", timeEN: "It worked before", valueEN: "Does it work now?" },
+                    { num: "10", time: "環境應該配合我", value: "環境變了，策略也要變", timeEN: "Environment should adapt to me", valueEN: "When environment changes, strategy must too" },
+                    { num: "11", time: "一次選擇定終身", value: "保留Optionality", timeEN: "One choice defines forever", valueEN: "Preserve optionality" },
+                    { num: "12", time: "錯誤要隱藏", value: "錯誤要快速暴露", timeEN: "Hide mistakes", valueEN: "Expose mistakes quickly" },
+                    { num: "13", time: "避免Prediction Error", value: "利用Prediction Error", timeEN: "Avoid prediction errors", valueEN: "Use prediction errors" },
+                    { num: "14", time: "不知道很可怕", value: "不知道是Learning入口", timeEN: "Not knowing is scary", valueEN: "Not knowing is learning entry" },
+                    { num: "15", time: "計畫不能變", value: "目標穩定，路徑可調整", timeEN: "Plans can't change", valueEN: "Goals stable, paths flexible" },
+                    { num: "16", time: "我是老師所以要有答案", value: "老師也可以共同探索", timeEN: "As teacher I must have answers", valueEN: "Teachers can explore together" },
+                    { num: "17", time: "學生不行", value: "哪個Skill尚未形成？", timeEN: "Students are hopeless", valueEN: "Which skills haven't formed yet?" },
+                    { num: "18", time: "產品不好賣", value: "哪個Value Hypothesis錯了？", timeEN: "Product won't sell", valueEN: "Which value hypothesis was wrong?" },
+                    { num: "19", time: "市場不懂我", value: "我是否沒有傳達價值？", timeEN: "Market doesn't get me", valueEN: "Did I fail to communicate value?" },
+                    { num: "20", time: "APP沒人用", value: "User Behavior告訴我什麼？", timeEN: "App has no users", valueEN: "What does user behavior tell me?" },
+                    { num: "21", time: "堅持就是美德", value: "錯誤方向需要停止", timeEN: "Persistence is virtue", valueEN: "Wrong direction must stop" },
+                    { num: "22", time: "改變等於否定過去", value: "改變代表吸收新資料", timeEN: "Change means denying the past", valueEN: "Change means absorbing new data" },
+                    { num: "23", time: "尋找永遠正確", value: "建立持續校正", timeEN: "Seek eternal correctness", valueEN: "Build continuous calibration" },
+                    { num: "24", time: "身份固定", value: "Identity可以演化", timeEN: "Identity is fixed", valueEN: "Identity can evolve" },
+                    { num: "25", time: "能力是天生", value: "能力可以形成", timeEN: "Ability is innate", valueEN: "Ability can be formed" },
+                    { num: "26", time: "我要避免錯", value: "我要降低重複犯同類錯誤", timeEN: "I must avoid mistakes", valueEN: "I'll lower repeated mistake types" },
+                    { num: "27", time: "世界應該穩定", value: "變化本身就是Input", timeEN: "World should be stable", valueEN: "Change itself is input" },
+                    { num: "28", time: "找到答案", value: "建立Learning Loop", timeEN: "Find the answer", valueEN: "Build learning loop" },
+                    { num: "29", time: "維持舊模型", value: "Reality優先於Model", timeEN: "Maintain old model", valueEN: "Reality comes before model" },
+                    { num: "30", time: "我是什麼人？", value: "我正在成為什麼人？", timeEN: "Who am I?", valueEN: "Who am I becoming?" }
+                ]
+            },
+            {
+                id: 5,
+                title: "忙碌思維 → 結果思維",
+                englishTitle: "Busy Thinking → Result Thinking",
+                coreTitle: "Core Difference",
+                coreCH: "忙碌把Activity當Progress。",
+                coreEN: "Busy thinking mistakes activity for progress.",
+                coreCH2: "結果思維檢查Output與Outcome。",
+                coreEN2: "Result thinking checks output and outcome.",
+                quote: "忙碌最危險的地方，是它很容易製造「我正在前進」的錯覺。",
+                quoteEN: "The danger of busyness is the illusion of moving forward.",
+                differences: [
+                    { num: "01", time: "今天做很多", value: "今天推進什麼？", timeEN: "Did many things", valueEN: "What did I advance?" },
+                    { num: "02", time: "工時很長", value: "產出多少？", timeEN: "Long hours", valueEN: "How much output?" },
+                    { num: "03", time: "開很多會", value: "產生什麼決策？", timeEN: "Many meetings", valueEN: "What decisions were made?" },
+                    { num: "04", time: "回很多訊息", value: "解決什麼問題？", timeEN: "Many messages", valueEN: "What problems solved?" },
+                    { num: "05", time: "一直備課", value: "學生能力提升嗎？", timeEN: "Always preparing lessons", valueEN: "Did student capability improve?" },
+                    { num: "06", time: "一直讀書", value: "能處理問題嗎？", timeEN: "Always reading", valueEN: "Can I handle problems?" },
+                    { num: "07", time: "一直發文", value: "建立信任嗎？", timeEN: "Always posting", valueEN: "Building trust?" },
+                    { num: "08", time: "一直推銷", value: "需求匹配嗎？", timeEN: "Always selling", valueEN: "Matching needs?" },
+                    { num: "09", time: "一直做APP", value: "有人真正使用嗎？", timeEN: "Always building apps", valueEN: "Are people actually using it?" },
+                    { num: "10", time: "功能很多", value: "核心痛點解掉嗎？", timeEN: "Many features", valueEN: "Core pain point solved?" },
+                    { num: "11", time: "努力", value: "有效", timeEN: "Effort", valueEN: "Effective" },
+                    { num: "12", time: "Task完成", value: "Goal前進", timeEN: "Task completed", valueEN: "Goal advanced" },
+                    { num: "13", time: "追求完成量", value: "追求影響量", timeEN: "Pursue completion count", valueEN: "Pursue impact" },
+                    { num: "14", time: "所有事情都做", value: "重要事情先做", timeEN: "Do everything", valueEN: "Do important first" },
+                    { num: "15", time: "沒有空", value: "重新配置Priority", timeEN: "No time", valueEN: "Reconfigure priorities" },
+                    { num: "16", time: "增加Input", value: "檢查Output", timeEN: "Increase input", valueEN: "Check output" },
+                    { num: "17", time: "疲累＝努力", value: "疲累不等於價值", timeEN: "Tired = working hard", valueEN: "Tired ≠ value" },
+                    { num: "18", time: "每天塞滿", value: "保留Buffer", timeEN: "Pack every slot", valueEN: "Keep buffer" },
+                    { num: "19", time: "自己處理", value: "找最高效率Generator", timeEN: "Handle it myself", valueEN: "Find best generator" },
+                    { num: "20", time: "問題來就處理", value: "減少問題再次生成", timeEN: "Fix problems as they come", valueEN: "Prevent problems from recurring" },
+                    { num: "21", time: "救火", value: "修System", timeEN: "Fight fires", valueEN: "Fix system" },
+                    { num: "22", time: "症狀處理", value: "找Mechanism", timeEN: "Treat symptoms", valueEN: "Find mechanism" },
+                    { num: "23", time: "增加力氣", value: "降低Friction", timeEN: "Add strength", valueEN: "Lower friction" },
+                    { num: "24", time: "工作量", value: "Value Created", timeEN: "Work volume", valueEN: "Value created" },
+                    { num: "25", time: "老師講很多", value: "學生會很多", timeEN: "Teacher teaches a lot", valueEN: "Students learn a lot" },
+                    { num: "26", time: "APP看很多", value: "新Behavior形成", timeEN: "Use app a lot", valueEN: "New behavior forms" },
+                    { num: "27", time: "營養資訊很多", value: "使用者做出更安全合理的健康行動", timeEN: "Lots of health info", valueEN: "Users make safer health choices" },
+                    { num: "28", time: "有進度感", value: "有Reality Evidence", timeEN: "Feeling progress", valueEN: "Reality evidence" },
+                    { num: "29", time: "Activity", value: "Outcome", timeEN: "Activity", valueEN: "Outcome" },
+                    { num: "30", time: "今天多努力？", value: "今天哪個關鍵變數改變了？", timeEN: "How hard today?", valueEN: "What key variable changed today?" }
+                ]
+            },
+            {
+                id: 6,
+                title: "輸贏思維 → 理解思維",
+                englishTitle: "Win-Lose Thinking → Understanding Thinking",
+                coreTitle: "Core Difference",
+                coreCH: "輸贏思維想證明誰對。",
+                coreEN: "Win-lose thinking wants to prove who's right.",
+                coreCH2: "理解思維想知道事情如何生成。",
+                coreEN2: "Understanding thinking wants to know how things are generated.",
+                quote: "真正高階的對話，不是最後誰閉嘴，而是雙方對Reality的解析度都提高了。",
+                quoteEN: "High-level dialogue isn't who closes their mouth; it's both parties raising their reality resolution.",
+                differences: [
+                    { num: "01", time: "誰對？", value: "為什麼不同？", timeEN: "Who's right?", valueEN: "Why the difference?" },
+                    { num: "02", time: "我要贏", value: "我要看懂", timeEN: "I must win", valueEN: "I want to understand" },
+                    { num: "03", time: "保護立場", value: "檢查模型", timeEN: "Protect position", valueEN: "Check model" },
+                    { num: "04", time: "反駁", value: "提問", timeEN: "Rebut", valueEN: "Ask" },
+                    { num: "05", time: "找漏洞", value: "找Mechanism", timeEN: "Find holes", valueEN: "Find mechanism" },
+                    { num: "06", time: "對方錯", value: "對方看見什麼我沒看見？", timeEN: "They're wrong", valueEN: "What did they see that I missed?" },
+                    { num: "07", time: "非黑即白", value: "Context是什麼？", timeEN: "Black or white", valueEN: "What's the context?" },
+                    { num: "08", time: "站隊", value: "拆變數", timeEN: "Take a side", valueEN: "Decompose variables" },
+                    { num: "09", time: "人身判斷", value: "分析行為", timeEN: "Judge the person", valueEN: "Analyze behavior" },
+                    { num: "10", time: "他很懶", value: "Friction在哪裡？", timeEN: "They're lazy", valueEN: "Where's the friction?" },
+                    { num: "11", time: "學生不乖", value: "Behavior如何生成？", timeEN: "Students won't obey", valueEN: "How does behavior form?" },
+                    { num: "12", time: "伴侶不愛我", value: "雙方需求與模式是什麼？", timeEN: "Partner doesn't love me", valueEN: "What are both parties' needs and patterns?" },
+                    { num: "13", time: "孩子叛逆", value: "自主需求是否增加？", timeEN: "Child is rebellious", valueEN: "Did autonomy needs increase?" },
+                    { num: "14", time: "客戶不懂", value: "Value是否清楚？", timeEN: "Customer doesn't understand", valueEN: "Is value clear?" },
+                    { num: "15", time: "市場錯了", value: "市場正在提供什麼Feedback？", timeEN: "Market is wrong", valueEN: "What feedback is market giving?" },
+                    { num: "16", time: "我不能認錯", value: "認錯可以增加Model Precision", timeEN: "I can't be wrong", valueEN: "Being wrong increases precision" },
+                    { num: "17", time: "輸＝弱", value: "輸＝Data", timeEN: "Losing = weak", valueEN: "Losing = data" },
+                    { num: "18", time: "不同＝威脅", value: "不同＝新資訊", timeEN: "Different = threat", valueEN: "Different = new info" },
+                    { num: "19", time: "辯論目的在勝利", value: "對話目的在降低認知盲區", timeEN: "Debate to win", valueEN: "Talk to reduce blind spots" },
+                    { num: "20", time: "證明自己", value: "逼近Reality", timeEN: "Prove myself", valueEN: "Approach reality" },
+                    { num: "21", time: "評價人", value: "理解Generator", timeEN: "Judge people", valueEN: "Understand generators" },
+                    { num: "22", time: "責怪", value: "找Cause", timeEN: "Blame", valueEN: "Find cause" },
+                    { num: "23", time: "處罰Output", value: "修改Input與Environment", timeEN: "Punish output", valueEN: "Change input and environment" },
+                    { num: "24", time: "情緒反擊", value: "先取得資料", timeEN: "Respond emotionally", valueEN: "Gather data first" },
+                    { num: "25", time: "誰應該改？", value: "哪些Variable可以改？", timeEN: "Who should change?", valueEN: "What variables can change?" },
+                    { num: "26", time: "保護Identity", value: "允許Identity更新", timeEN: "Protect identity", valueEN: "Allow identity to update" },
+                    { num: "27", time: "一次定論", value: "保留Hypothesis", timeEN: "One conclusion", valueEN: "Hold hypothesis" },
+                    { num: "28", time: "我要被證明正確", value: "我允許Reality證明我錯", timeEN: "Prove me right", valueEN: "Let reality prove me wrong" },
+                    { num: "29", time: "Competition", value: "Learning", timeEN: "Competition", valueEN: "Learning" },
+                    { num: "30", time: "我要贏過你", value: "我要比昨天更接近真相", timeEN: "I want to beat you", valueEN: "I want to be closer to truth" }
+                ]
+            },
+            {
+                id: 7,
+                title: "攀附思維 → 共生思維",
+                englishTitle: "Attachment Thinking → Symbiotic Thinking",
+                coreTitle: "Core Difference",
+                coreCH: "攀附問：「你能給我什麼？」",
+                coreEN: "Attachment asks: 'What can you give me?'",
+                coreCH2: "共生問：「我們能共同創造什麼？」",
+                coreEN2: "Symbiotic asks: 'What can we co-create?'",
+                quote: "最高品質的關係不是「我離不開你」，而是「我們各自完整，連結後又創造出更大的共同價值」。",
+                quoteEN: "Best relationships aren't 'I need you'; they're 'We're each complete and create more value together.'",
+                differences: [
+                    { num: "01", time: "找強者靠", value: "讓自己也有價值", timeEN: "Attach to strong people", valueEN: "Become valuable yourself" },
+                    { num: "02", time: "取得資源", value: "交換資源", timeEN: "Get resources", valueEN: "Exchange resources" },
+                    { num: "03", time: "被帶", value: "共同前進", timeEN: "Be led", valueEN: "Move forward together" },
+                    { num: "04", time: "依賴", value: "互補", timeEN: "Depend", valueEN: "Complement" },
+                    { num: "05", time: "我要認識厲害的人", value: "我要成為值得認識的人", timeEN: "Want to know impressive people", valueEN: "Want to be worth knowing" },
+                    { num: "06", time: "索取Network", value: "貢獻Network", timeEN: "Extract network", valueEN: "Contribute network" },
+                    { num: "07", time: "靠關係得到機會", value: "用能力放大機會", timeEN: "Get opportunities via connections", valueEN: "Amplify opportunities with ability" },
+                    { num: "08", time: "關係是資源", value: "關係是共同價值網路", timeEN: "Relationships are resources", valueEN: "Relationships are co-value networks" },
+                    { num: "09", time: "討好", value: "真誠交換", timeEN: "Appease", valueEN: "Exchange genuinely" },
+                    { num: "10", time: "怕失去", value: "保留獨立性", timeEN: "Fear losing", valueEN: "Preserve independence" },
+                    { num: "11", time: "對方越強我越安全", value: "雙方能力越強系統越穩", timeEN: "Stronger person means safer", valueEN: "Stronger both means stabler" },
+                    { num: "12", time: "需要被拯救", value: "彼此支持但各自負責", timeEN: "Need rescue", valueEN: "Support each other but self-responsible" },
+                    { num: "13", time: "犧牲界線", value: "尊重界線", timeEN: "Sacrifice boundaries", valueEN: "Respect boundaries" },
+                    { num: "14", time: "只有接受", value: "也能給予", timeEN: "Only receive", valueEN: "Can also give" },
+                    { num: "15", time: "尋找靠山", value: "建立Network", timeEN: "Seek backing", valueEN: "Build network" },
+                    { num: "16", time: "單向流動", value: "雙向Value Flow", timeEN: "One-way flow", valueEN: "Two-way value flow" },
+                    { num: "17", time: "關係維持靠利益", value: "利益＋信任＋共同成長", timeEN: "Relationships maintained by interest", valueEN: "Interest + trust + growth" },
+                    { num: "18", time: "害怕對方離開", value: "即使分開也保有完整自我", timeEN: "Fear them leaving", valueEN: "Complete even if separate" },
+                    { num: "19", time: "把能力外包", value: "互補但不放棄核心能力", timeEN: "Outsource ability", valueEN: "Complement but keep core" },
+                    { num: "20", time: "老師給答案", value: "師生共同生成能力", timeEN: "Teacher gives answer", valueEN: "Co-generate ability" },
+                    { num: "21", time: "會員依賴平台", value: "平台讓會員長出能力", timeEN: "Members depend on platform", valueEN: "Platform grows members" },
+                    { num: "22", time: "粉絲消費內容", value: "Community共同產生Value", timeEN: "Fans consume content", valueEN: "Community co-creates value" },
+                    { num: "23", time: "客戶只是買家", value: "客戶Feedback共同改善產品", timeEN: "Customers just buy", valueEN: "Customers co-improve" },
+                    { num: "24", time: "合作＝利用", value: "合作＝Positive-Sum", timeEN: "Cooperation = using", valueEN: "Cooperation = positive-sum" },
+                    { num: "25", time: "誰比較有用？", value: "彼此如何互補？", timeEN: "Who's more useful?", valueEN: "How do we complement?" },
+                    { num: "26", time: "權力不對稱", value: "價值互補", timeEN: "Power asymmetry", valueEN: "Value complementarity" },
+                    { num: "27", time: "靠別人成功", value: "一起擴大成功空間", timeEN: "Succeed via others", valueEN: "Expand success together" },
+                    { num: "28", time: "Dependency", value: "Interdependence", timeEN: "Dependency", valueEN: "Interdependence" },
+                    { num: "29", time: "找到大樹", value: "形成森林", timeEN: "Find big tree", valueEN: "Form forest" },
+                    { num: "30", time: "取得別人的能量", value: "共同生成更大的能量", timeEN: "Get their energy", valueEN: "Co-generate bigger energy" }
+                ]
+            },
+            {
+                id: 8,
+                title: "計較思維 → 修復思維",
+                englishTitle: "Calculation Thinking → Repair Thinking",
+                coreTitle: "Core Difference",
+                coreCH: "計較思維追蹤「誰欠誰」。",
+                coreEN: "Calculation thinking tracks 'who owes whom'.",
+                coreCH2: "修復思維關心「系統怎麼重新運作」。",
+                coreEN2: "Repair thinking cares about 'how the system works again'.",
+                quote: "真正的放下不是假裝沒受傷，而是不再讓昨天的傷持續控制明天的資源配置。",
+                quoteEN: "Real letting go isn't pretending you weren't hurt; it's not letting yesterday's wound control tomorrow's allocation.",
+                differences: [
+                    { num: "01", time: "誰錯？", value: "怎麼改善？", timeEN: "Who's wrong?", valueEN: "How to improve?" },
+                    { num: "02", time: "誰欠我？", value: "真正損失是什麼？", timeEN: "Who owes me?", valueEN: "What's the real loss?" },
+                    { num: "03", time: "我要討回來", value: "我要恢復什麼？", timeEN: "I want to recoup", valueEN: "What do I want to restore?" },
+                    { num: "04", time: "記仇", value: "記教訓", timeEN: "Hold grudges", valueEN: "Remember lessons" },
+                    { num: "05", time: "重播事件", value: "提取Learning", timeEN: "Replay events", valueEN: "Extract learning" },
+                    { num: "06", time: "處罰對方", value: "避免再次發生", timeEN: "Punish them", valueEN: "Prevent recurrence" },
+                    { num: "07", time: "贏得道歉", value: "恢復安全與信任", timeEN: "Get apology", valueEN: "Restore safety and trust" },
+                    { num: "08", time: "翻舊帳", value: "找Repeated Pattern", timeEN: "Bring up past", valueEN: "Find repeated pattern" },
+                    { num: "09", time: "你上次也這樣", value: "我們的互動Pattern是什麼？", timeEN: "You did this last time", valueEN: "What's our interaction pattern?" },
+                    { num: "10", time: "要求公平到每一分", value: "追求長期互惠", timeEN: "Demand fairness to the penny", valueEN: "Seek long-term reciprocity" },
+                    { num: "11", time: "情緒出口", value: "問題出口", timeEN: "Emotional outlet", valueEN: "Problem outlet" },
+                    { num: "12", time: "證明受害", value: "恢復Agency", timeEN: "Prove victimhood", valueEN: "Restore agency" },
+                    { num: "13", time: "一直問為什麼是我", value: "現在我還能做什麼？", timeEN: "Why is this me?", valueEN: "What can I do now?" },
+                    { num: "14", time: "追究人格", value: "修改Behavior", timeEN: "Judge character", valueEN: "Change behavior" },
+                    { num: "15", time: "對方一定要改", value: "找到自己的Control Variable", timeEN: "They must change", valueEN: "Find my control variables" },
+                    { num: "16", time: "傷害後繼續糾纏", value: "必要時設Boundary", timeEN: "Stay entangled after harm", valueEN: "Set boundary if needed" },
+                    { num: "17", time: "原諒＝沒事", value: "原諒與重新信任可以分開", timeEN: "Forgiveness = nothing happened", valueEN: "Forgiveness and trust can separate" },
+                    { num: "18", time: "關係一定要恢復原狀", value: "也可能建立新的關係結構", timeEN: "Restore to original", valueEN: "Build new relationship structure" },
+                    { num: "19", time: "一定要討回公道", value: "評估成本、收益與界線", timeEN: "Must get justice", valueEN: "Weigh cost, benefit, boundaries" },
+                    { num: "20", time: "誰付出比較多", value: "系統是否長期失衡？", timeEN: "Who gave more?", valueEN: "Is system chronically imbalanced?" },
+                    { num: "21", time: "學生犯錯就處罰", value: "學生需要形成哪個Skill？", timeEN: "Punish student error", valueEN: "What skill should form?" },
+                    { num: "22", time: "孩子不聽話", value: "親子系統哪裡失效？", timeEN: "Child won't obey", valueEN: "Where's the parent-child system failing?" },
+                    { num: "23", time: "員工犯錯", value: "流程為什麼允許錯誤發生？", timeEN: "Employee made mistake", valueEN: "Why did process allow it?" },
+                    { num: "24", time: "產品被抱怨", value: "Complaint提供什麼Feedback？", timeEN: "Product gets complaints", valueEN: "What feedback does complaint give?" },
+                    { num: "25", time: "失敗浪費時間", value: "把失敗轉成Asset", timeEN: "Failure wasted time", valueEN: "Turn failure to asset" },
+                    { num: "26", time: "沉浸過去", value: "重新配置未來", timeEN: "Dwell in past", valueEN: "Allocate future" },
+                    { num: "27", time: "情緒正義", value: "功能恢復", timeEN: "Emotional justice", valueEN: "Function recovery" },
+                    { num: "28", time: "找戰犯", value: "找Bottleneck", timeEN: "Find culprit", valueEN: "Find bottleneck" },
+                    { num: "29", time: "Blame", value: "Learning＋Boundary＋Redesign", timeEN: "Blame", valueEN: "Learning + boundary + redesign" },
+                    { num: "30", time: "我要證明你錯", value: "我要讓這個問題不再重複生成", timeEN: "Prove you wrong", valueEN: "Stop this problem recurring" }
+                ]
+            },
+            {
+                id: 9,
+                title: "全面思維 → 槓桿思維",
+                englishTitle: "Comprehensive Thinking → Leverage Thinking",
+                coreTitle: "Core Difference",
+                coreCH: "全面思維問：「還有什麼可以做？」",
+                coreEN: "Comprehensive asks: 'What else can I do?'",
+                coreCH2: "槓桿思維問：「哪一個節點改變後，其他問題會一起改善？」",
+                coreEN2: "Leverage asks: 'Which single node, when changed, fixes everything?'",
+                quote: "真正高階的努力，不是每個地方都用力，而是找到那個「一動，全局跟著動」的節點。",
+                quoteEN: "Real mastery isn't working everywhere; it's finding the node where one move shifts everything.",
+                differences: [
+                    { num: "01", time: "全部改善", value: "先改關鍵點", timeEN: "Improve everything", valueEN: "Fix critical point first" },
+                    { num: "02", time: "每件事都重要", value: "重要性不平均", timeEN: "Everything's important", valueEN: "Importance is uneven" },
+                    { num: "03", time: "平均用力", value: "非線性配置資源", timeEN: "Effort equally", valueEN: "Allocate non-linearly" },
+                    { num: "04", time: "補所有弱點", value: "先解Bottleneck", timeEN: "Fix all weaknesses", valueEN: "Solve bottleneck first" },
+                    { num: "05", time: "做100件事", value: "找改變最大的1件", timeEN: "Do 100 things", valueEN: "Find the 1 that changes most" },
+                    { num: "06", time: "更多努力", value: "更好的作用點", timeEN: "More effort", valueEN: "Better leverage point" },
+                    { num: "07", time: "增加資源", value: "重新配置資源", timeEN: "Add resources", valueEN: "Reallocate resources" },
+                    { num: "08", time: "增加時間", value: "降低Friction", timeEN: "Add time", valueEN: "Lower friction" },
+                    { num: "09", time: "增加人力", value: "改善流程", timeEN: "Add people", valueEN: "Improve process" },
+                    { num: "10", time: "增加功能", value: "改善核心User Journey", timeEN: "Add features", valueEN: "Fix core user journey" },
+                    { num: "11", time: "增加APP", value: "先做好總導航與分流", timeEN: "Add apps", valueEN: "Master navigation first" },
+                    { num: "12", time: "增加文章", value: "讓內容導向Action", timeEN: "Add articles", valueEN: "Content drives action" },
+                    { num: "13", time: "學生全部補強", value: "先找主要失分來源", timeEN: "Strengthen all students", valueEN: "Find main failure source" },
+                    { num: "14", time: "所有單字都背", value: "先處理高頻與高影響字彙", timeEN: "Memorize all words", valueEN: "Master high-frequency high-impact" },
+                    { num: "15", time: "班級每件事老師管", value: "Design Environment", timeEN: "Teacher manages everything", valueEN: "Design environment" },
+                    { num: "16", time: "孩子所有問題都管", value: "先培養自我管理能力", timeEN: "Fix all child problems", valueEN: "Build self-management first" },
+                    { num: "17", time: "健康所有指標一起改", value: "先處理高影響且可改善的生活節點", timeEN: "Optimize all health metrics", valueEN: "Fix high-impact changeable nodes" },
+                    { num: "18", time: "公司全面改革", value: "先找Constraint", timeEN: "Comprehensive company reform", valueEN: "Find constraint first" },
+                    { num: "19", time: "產品什麼都有", value: "先解一個高痛點問題", timeEN: "Product has everything", valueEN: "Solve one high-pain problem" },
+                    { num: "20", time: "服務所有人", value: "先服務最適合的核心族群", timeEN: "Serve everyone", valueEN: "Serve best-fit core first" },
+                    { num: "21", time: "所有平台經營", value: "先建立最有效Distribution", timeEN: "Manage all platforms", valueEN: "Master best distribution" },
+                    { num: "22", time: "增加粉絲", value: "先增加Trust與Conversion", timeEN: "Gain followers", valueEN: "Build trust and conversion" },
+                    { num: "23", time: "增加營收", value: "先找限制營收的核心節點", timeEN: "Increase revenue", valueEN: "Find revenue constraint" },
+                    { num: "24", time: "增加工作", value: "建立Asset", timeEN: "Add work", valueEN: "Build asset" },
+                    { num: "25", time: "增加收入來源", value: "先建立一個可重複Generator", timeEN: "Add income sources", valueEN: "Build one repeatable generator" },
+                    { num: "26", time: "所有問題同時解", value: "找Priority Node", timeEN: "Solve all problems at once", valueEN: "Find priority node" },
+                    { num: "27", time: "追求100分", value: "先從40→70", timeEN: "Aim for 100%", valueEN: "Go from 40 to 70 first" },
+                    { num: "28", time: "Perfect Solution", value: "Minimum Effective Intervention", timeEN: "Perfect solution", valueEN: "Minimum effective intervention" },
+                    { num: "29", time: "Linear Effort", value: "Nonlinear Return", timeEN: "Linear effort", valueEN: "Nonlinear return" },
+                    { num: "30", time: "我要把人生全部整理好", value: "哪一個節點改善後，整個人生系統會一起變容易？", timeEN: "Fix my whole life", valueEN: "Which node fixes the whole system?" }
+                ]
+            }
+        ];
+        
+        // Initialize
+        function init() {
+            renderNavTabs();
+            renderFirstUpgrade();
+            setupEventListeners();
+            updateStats();
+            loadVoices();
+        }
+        
+        function renderNavTabs() {
+            const navTabs = document.getElementById('navTabs');
+            navTabs.innerHTML = '';
+            upgrades.forEach((upgrade, index) => {
+                const btn = document.createElement('button');
+                btn.textContent = upgrade.title;
+                btn.className = index === 0 ? 'active' : '';
+                btn.onclick = () => switchUpgrade(index);
+                navTabs.appendChild(btn);
+            });
+        }
+        
+        function renderFirstUpgrade() {
+            switchUpgrade(0);
+        }
+        
+        function switchUpgrade(index) {
+            document.querySelectorAll('.upgrade-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tabs button').forEach((b, i) => {
+                b.classList.toggle('active', i === index);
+            });
+            renderUpgrade(upgrades[index]);
+        }
+        
+        function renderUpgrade(upgrade) {
+            const content = document.getElementById('content');
+            let html = `<div class="upgrade-section active">
+                <h2 class="upgrade-title">${upgrade.title} | ${upgrade.englishTitle}</h2>
+                <div class="core-diff">
+                    <div class="core-diff-row">
+                        <div class="core-diff-item">
+                            <strong style="color:var(--navy);">${upgrade.title}</strong>
+                            <p>${upgrade.coreCH}</p>
+                            <button class="tts-button" onclick="speakText('${upgrade.coreEN.replace(/'/g, "\\'")}', event)">🔊 ${upgrade.coreEN}</button>
+                        </div>
+                        <div class="core-diff-item">
+                            <strong style="color:var(--teal);">${upgrade.englishTitle}</strong>
+                            <p>${upgrade.coreEN}</p>
+                            <button class="tts-button" onclick="speakText('${upgrade.coreEN.replace(/'/g, "\\'")}', event)">🔊 Speak</button>
+                        </div>
+                    </div>
+                    <div class="core-diff-row">
+                        <div class="core-diff-item">
+                            <p>${upgrade.coreCH2}</p>
+                            <button class="tts-button" onclick="speakText('${upgrade.coreEN2.replace(/'/g, "\\'")}', event)">🔊 ${upgrade.coreEN2}</button>
+                        </div>
+                        <div class="core-diff-item">
+                            <p>${upgrade.coreEN2}</p>
+                            <button class="tts-button" onclick="speakText('${upgrade.coreEN2.replace(/'/g, "\\'")}', event)">🔊 Speak</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="differences-grid" id="diffs"></div>
+                <div class="quote-section">
+                    <p>💡 ${upgrade.quote}</p>
+                    <button class="tts-button" onclick="speakText('${upgrade.quoteEN.replace(/'/g, "\\'")}', event)">🔊 Speak Quote</button>
+                    <p style="font-size: 18px; margin-top: 15px; margin-bottom: 10px;">${upgrade.quoteEN}</p>
+                </div>
+            </div>`;
+            
+            content.innerHTML = html;
+            
+            const diffsContainer = document.getElementById('diffs');
+            upgrade.differences.forEach((diff, idx) => {
+                const card = document.createElement('div');
+                card.className = 'diff-card';
+                card.innerHTML = `
+                    <div class="diff-header" onclick="toggleCard(this)">
+                        <div style="display: flex; align-items: center; flex: 1; gap: 15px;">
+                            <span class="diff-number">${diff.num}</span>
+                            <div style="flex: 1;">
+                                <div style="font-size: 14px; color: #666; margin-bottom: 2px;">舊框架</div>
+                                <span>${diff.time}</span>
+                            </div>
+                            <div style="width: 2px; height: 30px; background: var(--border);"></div>
+                            <div style="flex: 1;">
+                                <div style="font-size: 14px; color: #666; margin-bottom: 2px;">新框架</div>
+                                <span>${diff.value}</span>
+                            </div>
+                        </div>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <div class="diff-content">
+                        <div class="diff-body">
+                            <div class="diff-column">
+                                <h4>中文 🇹🇼</h4>
+                                <div class="text-with-tts">
+                                    <div class="text-content">
+                                        <div class="lang-label">舊框架</div>
+                                        <p>${diff.time}</p>
+                                    </div>
+                                </div>
+                                <div class="text-with-tts">
+                                    <div class="text-content">
+                                        <div class="lang-label">新框架</div>
+                                        <p>${diff.value}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="diff-column">
+                                <h4>English 🇺🇸</h4>
+                                <div class="text-with-tts">
+                                    <div class="text-content">
+                                        <div class="lang-label">Old thinking</div>
+                                        <p>${diff.timeEN}</p>
+                                    </div>
+                                    <button class="tts-button" onclick="speakText('${diff.timeEN.replace(/'/g, "\\'")}', event)">🔊</button>
+                                </div>
+                                <div class="text-with-tts">
+                                    <div class="text-content">
+                                        <div class="lang-label">New thinking</div>
+                                        <p>${diff.valueEN}</p>
+                                    </div>
+                                    <button class="tts-button" onclick="speakText('${diff.valueEN.replace(/'/g, "\\'")}', event)">🔊</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                diffsContainer.appendChild(card);
+            });
+        }
+        
+        function toggleCard(header) {
+            const card = header.closest('.diff-card');
+            card.classList.toggle('open');
+        }
+        
+        function setupEventListeners() {
+            document.getElementById('searchBox').addEventListener('input', filterDifferences);
+        }
+        
+        function filterDifferences() {
+            const query = document.getElementById('searchBox').value.toLowerCase();
+            document.querySelectorAll('.diff-card').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(query) ? 'block' : 'none';
+            });
+        }
+        
+        function expandAll() {
+            document.querySelectorAll('.diff-card').forEach(card => {
+                card.classList.add('open');
+            });
+        }
+        
+        function collapseAll() {
+            document.querySelectorAll('.diff-card').forEach(card => {
+                card.classList.remove('open');
+            });
+        }
+        
+        function updateStats() {
+            const totalDiffs = upgrades.reduce((sum, u) => sum + u.differences.length, 0);
+            document.getElementById('stats').textContent = `共 ${upgrades.length} 組思維升級 | ${totalDiffs} 個具體差異 | Total: ${upgrades.length} Upgrades | ${totalDiffs} Specific Differences`;
+        }
+        
+        let voices = [];
+        
+        function loadVoices() {
+            if (window.speechSynthesis.getVoices().length > 0) {
+                voices = window.speechSynthesis.getVoices();
+            } else {
+                window.speechSynthesis.onvoiceschanged = () => {
+                    voices = window.speechSynthesis.getVoices();
+                };
+                setTimeout(() => {
+                    voices = window.speechSynthesis.getVoices();
+                }, 500);
+            }
+        }
+        
+        function speakText(text, event) {
+            if (event) {
+                event.stopPropagation();
+                const btn = event.target.closest('.tts-button');
+                if (btn) {
+                    btn.classList.add('playing');
+                }
+            }
+            
+            window.speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.85;
+            
+            utterance.onend = () => {
+                if (event) {
+                    const btn = event.target.closest('.tts-button');
+                    if (btn) {
+                        btn.classList.remove('playing');
+                    }
+                }
+            };
+            
+            utterance.onerror = () => {
+                if (event) {
+                    const btn = event.target.closest('.tts-button');
+                    if (btn) {
+                        btn.classList.remove('playing');
+                    }
+                }
+            };
+            
+            const enVoice = voices.find(v => v.lang.startsWith('en-US'));
+            if (enVoice) utterance.voice = enVoice;
+            
+            window.speechSynthesis.speak(utterance);
+        }
+        
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

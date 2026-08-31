@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeOS v4.0 — 18大Skill × 6大引擎 × 完整資料庫</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", sans-serif;
+            background: #f5f7fa; color: #333; line-height: 1.6; 
+        }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; }
+        .header h1 { font-size: 28px; margin-bottom: 8px; }
+        .header p { font-size: 13px; opacity: 0.9; }
+        
+        .main-container { display: grid; grid-template-columns: 220px 1fr; gap: 0; min-height: calc(100vh - 80px); }
+        
+        .sidebar { background: white; border-right: 1px solid #e0e0e0; overflow-y: auto; max-height: calc(100vh - 80px); }
+        .sidebar-section { border-bottom: 1px solid #f0f0f0; }
+        .sidebar-title { padding: 12px 16px; font-weight: 700; font-size: 12px; color: #667eea; background: #f9fafb; text-transform: uppercase; letter-spacing: 0.5px; }
+        .sidebar-item { padding: 10px 16px; cursor: pointer; font-size: 12px; color: #555; transition: all 0.2s; border-left: 3px solid transparent; }
+        .sidebar-item:hover { background: #f5f5f5; color: #667eea; }
+        .sidebar-item.active { background: #f0f4ff; color: #667eea; border-left-color: #667eea; font-weight: 500; }
+        
+        .content { background: white; overflow-y: auto; max-height: calc(100vh - 80px); }
+        .content-card { padding: 24px; max-width: 1400px; margin: 0 auto; }
+        
+        .banner-section { background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border: 2px solid #667eea; border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+        .banner-section h2 { font-size: 20px; color: #333; margin-bottom: 12px; }
+        .banner-section .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; }
+        .stat-card { background: white; padding: 12px; border-radius: 6px; text-align: center; }
+        .stat-num { font-size: 22px; font-weight: bold; color: #667eea; }
+        .stat-label { font-size: 11px; color: #666; margin-top: 4px; }
+        
+        .skill-header { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px; }
+        .skill-info { background: #f9fafb; padding: 16px; border-radius: 8px; border: 1px solid #e0e0e0; cursor: pointer; transition: all 0.2s; }
+        .skill-info:hover { border-color: #667eea; transform: translateY(-2px); }
+        .skill-name { font-size: 16px; font-weight: 700; color: #333; margin-bottom: 6px; }
+        .skill-meta { font-size: 12px; color: #666; line-height: 1.6; }
+        
+        .engine-section { background: #f9fafb; padding: 16px; border-radius: 8px; margin-bottom: 24px; border-left: 4px solid #667eea; }
+        .engine-title { font-size: 16px; font-weight: 700; color: #333; margin-bottom: 12px; }
+        .engine-desc { font-size: 12px; color: #666; margin-bottom: 12px; line-height: 1.6; }
+        
+        .app-item-compact { background: #f9fafb; padding: 12px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #e0e0e0; transition: all 0.2s; }
+        .app-item-compact:hover { background: #f0f4ff; border-color: #667eea; }
+        .app-item-name { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 4px; }
+        .app-item-desc { font-size: 12px; color: #666; }
+        .app-item-function { font-size: 11px; color: #999; margin-top: 4px; }
+        
+        .engine-matrix { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 12px; }
+        .engine-matrix th { background: #f5f5f5; padding: 10px; text-align: left; border: 1px solid #e0e0e0; font-weight: 600; }
+        .engine-matrix td { padding: 10px; border: 1px solid #e0e0e0; }
+        .engine-matrix tr:hover { background: #f9fafb; }
+        
+        .search-box { width: 100%; padding: 10px 12px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 12px; margin-bottom: 16px; }
+        
+        .tag { display: inline-block; background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; margin-right: 4px; }
+        .tag.energy-low { background: #e0f2fe; color: #0284c7; }
+        .tag.energy-medium { background: #fef3c7; color: #92400e; }
+        .tag.energy-high { background: #fee2e2; color: #991b1b; }
+        
+        .hidden { display: none; }
+        .view-section { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        @media (max-width: 768px) {
+            .main-container { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 LifeOS v4.0 — 完整資料庫</h1>
+        <p>18大Skill分類 | 6大引擎 | 完整詳細介紹 | 功能對標</p>
+    </div>
+
+    <div class="main-container">
+        <div class="sidebar">
+            <!-- 18大Skill菜單 -->
+            <div class="sidebar-section">
+                <div class="sidebar-title">📌 18大Skill分類</div>
+                <div class="sidebar-item active" onclick="switchView('skill-all', this)">全部Skill概覽</div>
+                <div class="sidebar-item" onclick="switchView('skill-1', this)">①睡眠</div>
+                <div class="sidebar-item" onclick="switchView('skill-2', this)">②能量</div>
+                <div class="sidebar-item" onclick="switchView('skill-3', this)">③身體症狀</div>
+                <div class="sidebar-item" onclick="switchView('skill-4', this)">④情緒</div>
+                <div class="sidebar-item" onclick="switchView('skill-5', this)">⑤認知/決策</div>
+                <div class="sidebar-item" onclick="switchView('skill-6', this)">⑥注意力</div>
+                <div class="sidebar-item" onclick="switchView('skill-7', this)">⑦學習</div>
+                <div class="sidebar-item" onclick="switchView('skill-8', this)">⑧英文</div>
+                <div class="sidebar-item" onclick="switchView('skill-9', this)">⑨AI/知識</div>
+                <div class="sidebar-item" onclick="switchView('skill-10', this)">⑩關係</div>
+                <div class="sidebar-item" onclick="switchView('skill-11', this)">⑪溝通</div>
+                <div class="sidebar-item" onclick="switchView('skill-12', this)">⑫時間</div>
+                <div class="sidebar-item" onclick="switchView('skill-13', this)">⑬空間</div>
+                <div class="sidebar-item" onclick="switchView('skill-14', this)">⑭工作</div>
+                <div class="sidebar-item" onclick="switchView('skill-15', this)">⑮財富</div>
+                <div class="sidebar-item" onclick="switchView('skill-16', this)">⑯決策</div>
+                <div class="sidebar-item" onclick="switchView('skill-17', this)">⑰自主/High Agency</div>
+                <div class="sidebar-item" onclick="switchView('skill-18', this)">⑱模型更新</div>
+            </div>
+
+            <!-- 6大引擎菜單 -->
+            <div class="sidebar-section">
+                <div class="sidebar-title">⚙️ 6大引擎</div>
+                <div class="sidebar-item" onclick="switchView('engine-all', this)">所有引擎</div>
+                <div class="sidebar-item" onclick="switchView('engine-physical', this)">🏥 物理引擎</div>
+                <div class="sidebar-item" onclick="switchView('engine-internal', this)">🧠 內控引擎</div>
+                <div class="sidebar-item" onclick="switchView('engine-learning', this)">📚 學習引擎</div>
+                <div class="sidebar-item" onclick="switchView('engine-social', this)">👥 社交引擎</div>
+                <div class="sidebar-item" onclick="switchView('engine-execution', this)">⚙️ 執行引擎</div>
+                <div class="sidebar-item" onclick="switchView('engine-crossing', this)">🔀 交叉引擎</div>
+            </div>
+
+            <!-- 功能視圖 -->
+            <div class="sidebar-section">
+                <div class="sidebar-title">🔍 功能視圖</div>
+                <div class="sidebar-item" onclick="switchView('view-skill-engine-map', this)">Skill-引擎對標</div>
+                <div class="sidebar-item" onclick="switchView('view-app-matrix', this)">APP效果矩陣</div>
+                <div class="sidebar-item" onclick="switchView('view-search', this)">全域搜尋</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="content-card">
+                <!-- Skill概覽 -->
+                <div id="skill-all" class="view-section">
+                    <div class="banner-section">
+                        <h2>📌 18大Skill 完整分類</h2>
+                        <p style="font-size: 12px; color: #666; margin-bottom: 16px;">LifeOS系統的18個核心能力維度，分布於6大引擎中</p>
+                        <div class="stats">
+                            <div class="stat-card">
+                                <div class="stat-num">18</div>
+                                <div class="stat-label">Skill維度</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-num">6</div>
+                                <div class="stat-label">引擎層級</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-num">85+</div>
+                                <div class="stat-label">APP數量</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-header" id="skill-grid"></div>
+                </div>
+
+                <!-- 單個Skill視圖 -->
+                <div id="skill-view" class="view-section hidden"></div>
+
+                <!-- 引擎視圖 -->
+                <div id="engine-view" class="view-section hidden"></div>
+
+                <!-- Skill-引擎對標 -->
+                <div id="view-skill-engine-map" class="view-section hidden">
+                    <div class="banner-section">
+                        <h2>🔗 Skill - 引擎 - APP 完整對標</h2>
+                    </div>
+                    <div id="skill-engine-matrix"></div>
+                </div>
+
+                <!-- APP效果矩陣 -->
+                <div id="view-app-matrix" class="view-section hidden">
+                    <div class="banner-section">
+                        <h2>📊 APP效果矩陣</h2>
+                    </div>
+                    <div id="app-matrix-table"></div>
+                </div>
+
+                <!-- 全域搜尋 -->
+                <div id="view-search" class="view-section hidden">
+                    <div class="banner-section">
+                        <h2>🔍 全域搜尋APP</h2>
+                        <input type="text" class="search-box" placeholder="輸入APP名稱..." id="global-search" onkeyup="globalSearch()">
+                    </div>
+                    <div id="search-results"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Skill數據庫 - 修復版本
+        const skillsDatabase = {
+            'skill-1': { name: '①睡眠', engine: '物理引擎', description: '睡眠質量、節律修復', apps: ['你的節律正在悄悄崩壞', '大腦更新系統'] },
+            'skill-2': { name: '②能量', engine: '物理引擎', description: '體力恢復、疲勞管理', apps: ['你不是懶你是皮質醇太高', '大腦更新系統'] },
+            'skill-3': { name: '③身體症狀', engine: '物理引擎', description: '症狀診斷、生理平衡', apps: ['七大生理平衡系統'] },
+            'skill-4': { name: '④情緒', engine: '內控引擎', description: '情緒管理、心態調整', apps: ['情緒煉金術終極版', '幸福問題診斷APP'] },
+            'skill-5': { name: '⑤認知/決策', engine: '內控引擎', description: '思維深化、決策能力', apps: ['母體模型系統APP', 'Life OS決策樹'] },
+            'skill-6': { name: '⑥注意力', engine: '內控引擎', description: '專注力、自律建立', apps: ['Focus OS', 'High Agency作業系統'] },
+            'skill-7': { name: '⑦學習', engine: '學習引擎', description: '系統學習、知識積累', apps: ['36課系統', '化學學習OS'] },
+            'skill-8': { name: '⑧英文', engine: '學習引擎', description: '語言能力、詞彙拓展', apps: ['學測字根王', 'Grammar Master 750題'] },
+            'skill-9': { name: '⑨AI/知識', engine: '學習引擎', description: 'AI時代能力', apps: ['AI時代130能力系統'] },
+            'skill-10': { name: '⑩關係', engine: '社交引擎', description: '人際關係、連結品質', apps: ['關係導航雙語APP'] },
+            'skill-11': { name: '⑪溝通', engine: '社交引擎', description: '表達能力、互動品質', apps: ['高主動性溝通完整系統'] },
+            'skill-12': { name: '⑫時間', engine: '執行引擎', description: '時間管理、效率優化', apps: ['Focus OS', '時間管理Pro'] },
+            'skill-13': { name: '⑬空間', engine: '執行引擎', description: '空間整理、秩序管理', apps: ['秩序系統'] },
+            'skill-14': { name: '⑭工作', engine: '執行引擎', description: '工作效率、執行力', apps: ['複利槓桿模型×AI'] },
+            'skill-15': { name: '⑮財富', engine: '交叉引擎', description: '財務管理、收入提升', apps: ['財富完整診斷MAX', 'WealthOS 12層整合版'] },
+            'skill-16': { name: '⑯決策', engine: '交叉引擎', description: '決策能力、預測力', apps: ['Life OS決策樹', '系統除錯180因果鏈'] },
+            'skill-17': { name: '⑰自主/High Agency', engine: '交叉引擎', description: '主動性、自我驅動', apps: ['High Agency作業系統'] },
+            'skill-18': { name: '⑱模型更新', engine: '交叉引擎', description: '系統優化、自我進化', apps: ['Prediction Error系統'] }
+        };
+
+        // APP資料庫
+        const appDatabase = {
+            '你的節律正在悄悄崩壞': { skills: ['①睡眠'], engine: '物理引擎', functions: ['節律檢測', '時差修復'], improvement: '入睡 -30min', energy: 'medium' },
+            '你不是懶你是皮質醇太高': { skills: ['②能量'], engine: '物理引擎', functions: ['皮質醇診斷', '疲勞分析'], improvement: '能量 +40%', energy: 'low' },
+            '大腦更新系統': { skills: ['①睡眠', '②能量'], engine: '物理引擎', functions: ['神經診斷', '壓力修復'], improvement: '睡眠 +60%', energy: 'high' },
+            '七大生理平衡系統': { skills: ['③身體症狀'], engine: '物理引擎', functions: ['訊號檢測', '平衡診斷'], improvement: '症狀 -50%', energy: 'medium' },
+            '情緒煉金術終極版': { skills: ['④情緒'], engine: '內控引擎', functions: ['情緒識別', '轉化方案'], improvement: '穩定 +40%', energy: 'high' },
+            '幸福問題診斷APP': { skills: ['④情緒'], engine: '內控引擎', functions: ['快速診斷', '改善方案'], improvement: '快樂 +2-3級', energy: 'low' },
+            '母體模型系統APP': { skills: ['⑤認知/決策'], engine: '內控引擎', functions: ['模型庫', '應用練習'], improvement: '深度 +60%', energy: 'high' },
+            'Focus OS': { skills: ['⑥注意力', '⑫時間'], engine: ['內控引擎', '執行引擎'], functions: ['專注診斷', '時間優化'], improvement: '時間 +200%', energy: 'medium' },
+            '36課系統': { skills: ['⑦學習'], engine: '學習引擎', functions: ['課程結構', '內容組織'], improvement: '效率 +100%', energy: 'high' },
+            '學測字根王': { skills: ['⑧英文'], engine: '學習引擎', functions: ['字根庫', '單字練習'], improvement: '詞彙 +1000', energy: 'medium' },
+            '關係導航雙語APP': { skills: ['⑩關係'], engine: '社交引擎', functions: ['關係診斷', '改善方案'], improvement: '衝突 -60%', energy: 'medium' },
+            '高主動性溝通完整系統': { skills: ['⑪溝通'], engine: '社交引擎', functions: ['溝通診斷', '技巧練習'], improvement: '表達 +70%', energy: 'high' },
+            '複利槓桿模型×AI': { skills: ['⑭工作'], engine: '執行引擎', functions: ['模型教學', '應用練習'], improvement: '效率 +200%', energy: 'high' },
+            '財富完整診斷MAX': { skills: ['⑮財富'], engine: '交叉引擎', functions: ['財務評估', '方案分析'], improvement: '清晰 +100%', energy: 'high' },
+            'WealthOS 12層整合版': { skills: ['⑮財富'], engine: '交叉引擎', functions: ['層級結構', '財富生成'], improvement: '收入 +5倍', energy: 'high' },
+            'Life OS決策樹': { skills: ['⑤認知/決策', '⑯決策'], engine: '交叉引擎', functions: ['決策框架', '評估方案'], improvement: '決策 +80%', energy: 'high' },
+            'High Agency作業系統': { skills: ['⑥注意力', '⑰自主/High Agency'], engine: '內控引擎', functions: ['主動性診斷', '能力提升'], improvement: '主動性 +60%', energy: 'high' },
+            'Prediction Error系統': { skills: ['⑱模型更新'], engine: '交叉引擎', functions: ['誤差記錄', '模型優化'], improvement: '準確度 +25%', energy: 'medium' }
+        };
+
+        // 引擎映射
+        const engineMap = {
+            'engine-physical': { name: '🏥 物理引擎', desc: '管理身體能量、恢復、健康' },
+            'engine-internal': { name: '🧠 內控引擎', desc: '管理情緒、認知、注意力' },
+            'engine-learning': { name: '📚 學習引擎', desc: '系統化學習、語言、知識' },
+            'engine-social': { name: '👥 社交引擎', desc: '人際關係、溝通能力' },
+            'engine-execution': { name: '⚙️ 執行引擎', desc: '時間、空間、工作效率' },
+            'engine-crossing': { name: '🔀 交叉引擎', desc: '財富、決策、自主、進化' }
+        };
+
+        // 初始化技能網格
+        function initSkillGrid() {
+            const grid = document.getElementById('skill-grid');
+            grid.innerHTML = '';
+            Object.entries(skillsDatabase).forEach(([key, skill]) => {
+                const card = document.createElement('div');
+                card.className = 'skill-info';
+                card.innerHTML = `
+                    <div class="skill-name">${skill.name}</div>
+                    <div class="skill-meta">
+                        <strong>引擎：</strong> ${skill.engine}<br/>
+                        <strong>描述：</strong> ${skill.description}
+                    </div>
+                `;
+                card.onclick = () => switchView(key, document.querySelector(`.sidebar-item[onclick*="${key}"]`));
+                grid.appendChild(card);
+            });
+        }
+
+        // 切換視圖
+        function switchView(viewId, element) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            if (element) element.classList.add('active');
+
+            if (viewId === 'skill-all') {
+                document.getElementById('skill-all').classList.remove('hidden');
+            } else if (viewId.startsWith('skill-')) {
+                renderSkillView(viewId);
+            } else if (viewId.startsWith('engine-')) {
+                renderEngineView(viewId);
+            } else if (viewId === 'view-skill-engine-map') {
+                document.getElementById('view-skill-engine-map').classList.remove('hidden');
+                renderSkillEngineMap();
+            } else if (viewId === 'view-app-matrix') {
+                document.getElementById('view-app-matrix').classList.remove('hidden');
+                renderAppMatrix();
+            } else if (viewId === 'view-search') {
+                document.getElementById('view-search').classList.remove('hidden');
+            }
+        }
+
+        // 渲染Skill視圖
+        function renderSkillView(skillId) {
+            const skill = skillsDatabase[skillId];
+            const view = document.getElementById('skill-view');
+            view.classList.remove('hidden');
+            
+            let html = `
+                <div class="engine-section">
+                    <div class="engine-title">${skill.name}</div>
+                    <div class="engine-desc">${skill.description}</div>
+                    <div style="font-size: 12px; color: #666;">
+                        <strong>所屬引擎：</strong> ${skill.engine}
+                    </div>
+                </div>
+                <div style="background: white; padding: 16px; border-radius: 8px;">
+                    <h3 style="font-size: 14px; margin-bottom: 12px; color: #333;">關聯APP</h3>
+            `;
+            
+            skill.apps.forEach(appName => {
+                const app = appDatabase[appName];
+                if (app) {
+                    html += `
+                        <div class="app-item-compact">
+                            <div class="app-item-name">${appName}</div>
+                            <div class="app-item-function">
+                                功能：${app.functions.join(' | ')} | 
+                                改善：${app.improvement} | 
+                                能量：<span class="tag energy-${app.energy}">${app.energy}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            html += '</div>';
+            view.innerHTML = html;
+        }
+
+        // 渲染引擎視圖
+        function renderEngineView(engineId) {
+            const engineInfo = engineMap[engineId];
+            const view = document.getElementById('engine-view');
+            view.classList.remove('hidden');
+            
+            let html = `
+                <div class="engine-section">
+                    <div class="engine-title">${engineInfo.name}</div>
+                    <div class="engine-desc">${engineInfo.desc}</div>
+                </div>
+                <div style="background: white; padding: 16px; border-radius: 8px;">
+                    <h3 style="font-size: 14px; margin-bottom: 12px; color: #333;">該引擎下的APP</h3>
+            `;
+            
+            Object.entries(appDatabase).forEach(([appName, app]) => {
+                const appEngine = Array.isArray(app.engine) ? app.engine : [app.engine];
+                const engineNameMap = {
+                    '物理引擎': 'engine-physical',
+                    '內控引擎': 'engine-internal',
+                    '學習引擎': 'engine-learning',
+                    '社交引擎': 'engine-social',
+                    '執行引擎': 'engine-execution',
+                    '交叉引擎': 'engine-crossing'
+                };
+                
+                if (appEngine.some(e => engineNameMap[e] === engineId)) {
+                    html += `
+                        <div class="app-item-compact">
+                            <div class="app-item-name">${appName}</div>
+                            <div class="app-item-function">
+                                功能：${app.functions.join(' | ')} | 改善：${app.improvement}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            html += '</div>';
+            view.innerHTML = html;
+        }
+
+        // 渲染對標表
+        function renderSkillEngineMap() {
+            const container = document.getElementById('skill-engine-matrix');
+            let html = `<table class="engine-matrix"><tr><th>Skill</th><th>引擎</th><th>APP數</th><th>描述</th></tr>`;
+            
+            Object.entries(skillsDatabase).forEach(([key, skill]) => {
+                html += `<tr><td><strong>${skill.name}</strong></td><td>${skill.engine}</td><td>${skill.apps.length}</td><td>${skill.description}</td></tr>`;
+            });
+            
+            html += '</table>';
+            container.innerHTML = html;
+        }
+
+        // 渲染APP矩陣
+        function renderAppMatrix() {
+            const container = document.getElementById('app-matrix-table');
+            let html = `<table class="engine-matrix"><tr><th>APP</th><th>所屬Skill</th><th>引擎</th><th>改善</th></tr>`;
+            
+            Object.entries(appDatabase).forEach(([name, app]) => {
+                const skills = Array.isArray(app.skills) ? app.skills.join(', ') : app.skills;
+                const engines = Array.isArray(app.engine) ? app.engine.join(', ') : app.engine;
+                html += `<tr><td><strong>${name}</strong></td><td>${skills}</td><td>${engines}</td><td>${app.improvement}</td></tr>`;
+            });
+            
+            html += '</table>';
+            container.innerHTML = html;
+        }
+
+        // 全域搜尋
+        function globalSearch() {
+            const query = document.getElementById('global-search').value.toLowerCase();
+            const results = document.getElementById('search-results');
+            
+            if (!query) {
+                results.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            Object.entries(appDatabase).forEach(([name, app]) => {
+                if (name.toLowerCase().includes(query)) {
+                    const skills = Array.isArray(app.skills) ? app.skills.join(', ') : app.skills;
+                    html += `
+                        <div class="app-item-compact">
+                            <div class="app-item-name">${name}</div>
+                            <div class="app-item-function">
+                                Skill：${skills} | 功能：${app.functions.join(' | ')}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            results.innerHTML = html || '<p style="color: #999; text-align: center; padding: 20px;">未找到相關APP</p>';
+        }
+
+        // 初始化
+        initSkillGrid();
+    </script>
+</body>
+</html>

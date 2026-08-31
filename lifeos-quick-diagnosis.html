@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeOS 簡要診斷｜推薦妳最適合的APP</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      color: #2d3748;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #718096;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .diagnosis-panel {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+
+    .diagnosis-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .question-group {
+      margin-bottom: 25px;
+    }
+
+    .question-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .option-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .option-btn {
+      padding: 12px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .option-btn:hover {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+
+    .option-btn.selected {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    .slider-container {
+      margin-top: 10px;
+    }
+
+    .slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #e2e8f0;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #667eea;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #667eea;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #718096;
+      margin-top: 5px;
+    }
+
+    .slider-value {
+      text-align: center;
+      font-weight: 600;
+      color: #667eea;
+      margin-top: 8px;
+    }
+
+    .recommendation-panel {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      min-height: 500px;
+    }
+
+    .recommendation-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 10px;
+    }
+
+    .recommendation-subtitle {
+      font-size: 13px;
+      color: #718096;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .recommendation-status {
+      text-align: center;
+      color: #a0aec0;
+      font-size: 14px;
+      padding: 40px 20px;
+    }
+
+    .app-recommendation {
+      background: linear-gradient(135deg, #f0f4ff 0%, #f9f7ff 100%);
+      border-left: 4px solid #667eea;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+      transition: all 0.3s;
+    }
+
+    .app-recommendation:hover {
+      transform: translateX(5px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+    }
+
+    .app-rank {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      background: #667eea;
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 32px;
+      font-weight: 700;
+      font-size: 14px;
+      margin-right: 12px;
+    }
+
+    .app-info {
+      display: inline-block;
+      vertical-align: top;
+      flex: 1;
+    }
+
+    .app-name {
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .app-reason {
+      font-size: 13px;
+      color: #718096;
+      line-height: 1.5;
+    }
+
+    .match-score {
+      display: inline-block;
+      background: #fef3c7;
+      color: #d97706;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .diagnostic-info {
+      background: #f0f4ff;
+      border-left: 4px solid #667eea;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 13px;
+      color: #4a5568;
+      line-height: 1.6;
+    }
+
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 13px;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #2d3748;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e0;
+    }
+
+    .diagnosis-result {
+      background: #f7fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      font-size: 13px;
+    }
+
+    .result-label {
+      color: #667eea;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .result-value {
+      color: #2d3748;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+
+      .option-buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .action-buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎯 LifeOS 簡要診斷</h1>
+      <p>2分鐘快速診斷 | 立即推薦最適合妳的APP</p>
+    </div>
+
+    <div class="main-content">
+      <!-- Left: Diagnosis -->
+      <div class="diagnosis-panel">
+        <div class="diagnosis-title">📋 妳現在最想改善什麼？</div>
+
+        <!-- Q1: Domain -->
+        <div class="question-group">
+          <label class="question-label">1. 主要困擾領域</label>
+          <div class="option-buttons">
+            <button class="option-btn" onclick="selectOption('domain', 'english')">📚 英文</button>
+            <button class="option-btn" onclick="selectOption('domain', 'emotion')">😊 情緒</button>
+            <button class="option-btn" onclick="selectOption('domain', 'focus')">👁️ 注意力</button>
+            <button class="option-btn" onclick="selectOption('domain', 'sleep')">😴 睡眠</button>
+            <button class="option-btn" onclick="selectOption('domain', 'learning')">🧠 學習</button>
+            <button class="option-btn" onclick="selectOption('domain', 'decision')">⚖️ 決策</button>
+            <button class="option-btn" onclick="selectOption('domain', 'relationship')">💑 關係</button>
+            <button class="option-btn" onclick="selectOption('domain', 'health')">🏥 健康</button>
+          </div>
+        </div>
+
+        <!-- Q2: Urgency -->
+        <div class="question-group">
+          <label class="question-label">2. 改善的急迫程度</label>
+          <div class="slider-container">
+            <input type="range" min="1" max="10" value="5" class="slider" id="urgency_slider" onchange="updateSliderValue('urgency')">
+            <div class="slider-labels">
+              <span>可以等</span>
+              <span>很急迫</span>
+            </div>
+            <div class="slider-value">急迫程度：<span id="urgency_display">5</span>/10</div>
+          </div>
+        </div>
+
+        <!-- Q3: Timeline -->
+        <div class="question-group">
+          <label class="question-label">3. 希望多久看到改變</label>
+          <div class="option-buttons">
+            <button class="option-btn" onclick="selectOption('timeline', '1_week')">🚀 1週內</button>
+            <button class="option-btn" onclick="selectOption('timeline', '2_weeks')">📅 2週</button>
+            <button class="option-btn" onclick="selectOption('timeline', '1_month')">📍 1個月</button>
+            <button class="option-btn" onclick="selectOption('timeline', '3_months')">📈 3個月</button>
+          </div>
+        </div>
+
+        <!-- Q4: Effort -->
+        <div class="question-group">
+          <label class="question-label">4. 每天可以投入的時間</label>
+          <div class="option-buttons">
+            <button class="option-btn" onclick="selectOption('effort', '5min')">⚡ 5分鐘</button>
+            <button class="option-btn" onclick="selectOption('effort', '15min')">⏱️ 15分鐘</button>
+            <button class="option-btn" onclick="selectOption('effort', '30min')">⌛ 30分鐘</button>
+            <button class="option-btn" onclick="selectOption('effort', '1hour')">🎯 1小時以上</button>
+          </div>
+        </div>
+
+        <!-- Q5: Current Status -->
+        <div class="question-group">
+          <label class="question-label">5. 妳現在的狀態</label>
+          <div class="option-buttons">
+            <button class="option-btn" onclick="selectOption('status', 'aware')">🤔 知道問題</button>
+            <button class="option-btn" onclick="selectOption('status', 'trying')">💪 已在努力</button>
+            <button class="option-btn" onclick="selectOption('status', 'stuck')">🚫 卡住了</button>
+            <button class="option-btn" onclick="selectOption('status', 'failing')">❌ 試過沒效</button>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="generateRecommendation()" style="width: 100%; margin-top: 20px;">
+          🔍 分析診斷 → 推薦APP
+        </button>
+      </div>
+
+      <!-- Right: Recommendation -->
+      <div class="recommendation-panel">
+        <div class="recommendation-title">✨ 推薦給妳</div>
+        <div class="recommendation-subtitle">基於妳的診斷結果</div>
+
+        <div id="recommendation_container">
+          <div class="recommendation-status">
+            👈 請先完成左邊的診斷<br>
+            系統會立即推薦最適合妳的APP
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 診斷數據
+    const diagnosis = {
+      domain: null,
+      urgency: 5,
+      timeline: null,
+      effort: null,
+      status: null
+    };
+
+    // APP推薦規則庫
+    const appRecommendations = {
+      english: {
+        apps: [
+          { id: 1, name: 'GSAT英文完整診斷系統', score: 0.95, reason: '找出妳的英文弱點' },
+          { id: 2, name: 'B1英文句型結構樹', score: 0.82, reason: '掌握核心句型' },
+          { id: 3, name: '英文易混字系統', score: 0.78, reason: '解決相似字困擾' }
+        ]
+      },
+      emotion: {
+        apps: [
+          { id: 50, name: '焦慮工程', score: 0.93, reason: '降低焦慮感' },
+          { id: 51, name: '信念實驗室', score: 0.88, reason: '改變限制信念' },
+          { id: 52, name: '情緒煉金術完整版', score: 0.85, reason: '管理情緒爆發' }
+        ]
+      },
+      focus: {
+        apps: [
+          { id: 60, name: '注意力問題診斷APP', score: 0.90, reason: '找出分心原因' },
+          { id: 61, name: '手機自律系統', score: 0.87, reason: '戒掉手機成癮' },
+          { id: 62, name: 'Focus OS完整版', score: 0.92, reason: '進入深度專注' }
+        ]
+      },
+      sleep: {
+        apps: [
+          { id: 70, name: '睡眠優化系統', score: 0.96, reason: '7天內改善睡眠' }
+        ]
+      },
+      learning: {
+        apps: [
+          { id: 90, name: '高中學習診斷系統', score: 0.92, reason: '找出學科弱點' },
+          { id: 91, name: '高中課業管理系統', score: 0.89, reason: '減輕課業壓力' }
+        ]
+      },
+      decision: {
+        apps: [
+          { id: 80, name: 'Life OS決策樹', score: 0.94, reason: '人生重大決策' },
+          { id: 81, name: '優先順序系統', score: 0.91, reason: '理清輕重緩急' },
+          { id: 84, name: '人生方向診斷', score: 0.88, reason: '找到真正想要' }
+        ]
+      },
+      relationship: {
+        apps: [
+          { id: 100, name: '關係工程系統', score: 0.90, reason: '改善親密關係' },
+          { id: 101, name: '溝通診斷系統', score: 0.87, reason: '改進溝通方式' },
+          { id: 102, name: '親子關係修復系統', score: 0.85, reason: '重建親子信任' }
+        ]
+      },
+      health: {
+        apps: [
+          { id: 120, name: '健康導航系統', score: 0.88, reason: '健康問題有答案' },
+          { id: 121, name: '營養選品系統', score: 0.86, reason: '選對補品用對方式' }
+        ]
+      }
+    };
+
+    // 時間軸調整因子
+    const timelineMultiplier = {
+      '1_week': 1.3, // 更激進的推薦
+      '2_weeks': 1.1,
+      '1_month': 1.0,
+      '3_months': 0.9 // 更深入的推薦
+    };
+
+    // 投入時間調整因子
+    const effortMultiplier = {
+      '5min': 0.8, // 推薦快速見效的
+      '15min': 0.9,
+      '30min': 1.0,
+      '1hour': 1.2 // 推薦深度的
+    };
+
+    // 狀態調整因子
+    const statusMultiplier = {
+      'aware': 1.0,
+      'trying': 0.95,
+      'stuck': 1.1, // 推薦更強力的工具
+      'failing': 1.3 // 推薦徹底改變方向的
+    };
+
+    function selectOption(category, value) {
+      diagnosis[category] = value;
+      
+      // 更新UI
+      const buttons = event.target.parentElement.querySelectorAll('.option-btn');
+      buttons.forEach(btn => btn.classList.remove('selected'));
+      event.target.classList.add('selected');
+    }
+
+    function updateSliderValue(category) {
+      const slider = document.getElementById(category + '_slider');
+      const display = document.getElementById(category + '_display');
+      const value = slider.value;
+      diagnosis[category] = parseInt(value);
+      display.textContent = value;
+    }
+
+    function generateRecommendation() {
+      // 檢查是否完整填寫
+      if (!diagnosis.domain || !diagnosis.timeline || !diagnosis.effort || !diagnosis.status) {
+        alert('請完成所有問題再繼續');
+        return;
+      }
+
+      // 取得該領域的APP
+      const domainApps = appRecommendations[diagnosis.domain]?.apps || [];
+      
+      if (!domainApps.length) {
+        alert('暫無該領域的APP推薦');
+        return;
+      }
+
+      // 計算調整後的分數
+      const multiplier = 
+        timelineMultiplier[diagnosis.timeline] * 
+        effortMultiplier[diagnosis.effort] * 
+        statusMultiplier[diagnosis.status];
+
+      const scoredApps = domainApps.map(app => ({
+        ...app,
+        adjusted_score: app.score * multiplier,
+        urgency_bonus: diagnosis.urgency > 7 ? 0.1 : 0,
+        final_score: (app.score * multiplier) + (diagnosis.urgency > 7 ? 0.1 : 0)
+      })).sort((a, b) => b.final_score - a.final_score);
+
+      // 顯示推薦
+      displayRecommendation(scoredApps);
+    }
+
+    function displayRecommendation(apps) {
+      const container = document.getElementById('recommendation_container');
+      
+      let diagnosticText = '📊 妳的診斷結果：';
+      diagnosticText += `<br>領域：${getDomainLabel(diagnosis.domain)}`;
+      diagnosticText += `<br>急迫程度：${diagnosis.urgency}/10`;
+      diagnosticText += `<br>預期時間：${getTimelineLabel(diagnosis.timeline)}`;
+      diagnosticText += `<br>每日投入：${getEffortLabel(diagnosis.effort)}`;
+      diagnosticText += `<br>現狀：${getStatusLabel(diagnosis.status)}`;
+
+      let html = `<div class="diagnostic-info">${diagnosticText}</div>`;
+      
+      html += `<div style="font-size: 12px; color: #667eea; font-weight: 600; margin-bottom: 15px; text-transform: uppercase;">
+        📱 推薦的APP（由高到低）
+      </div>`;
+
+      apps.forEach((app, index) => {
+        const matchPercent = Math.round(app.final_score * 100);
+        html += `
+          <div class="app-recommendation">
+            <span class="app-rank">${index + 1}</span>
+            <div class="app-info">
+              <div class="app-name">${app.name}</div>
+              <div class="app-reason">${app.reason}</div>
+              <div class="match-score">匹配度 ${matchPercent}%</div>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `
+        <div class="action-buttons">
+          <button class="btn btn-primary" onclick="startApp('${apps[0].id}')">
+            🚀 開始使用第1個
+          </button>
+          <button class="btn btn-secondary" onclick="resetDiagnosis()">
+            🔄 重新診斷
+          </button>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    function startApp(appId) {
+      alert(`即將開啟 APP #${appId}\n\n(在實際系統中會導向該APP)`);
+    }
+
+    function resetDiagnosis() {
+      diagnosis.domain = null;
+      diagnosis.urgency = 5;
+      diagnosis.timeline = null;
+      diagnosis.effort = null;
+      diagnosis.status = null;
+
+      // 清除UI
+      document.querySelectorAll('.option-btn.selected').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+
+      document.getElementById('urgency_slider').value = 5;
+      document.getElementById('urgency_display').textContent = 5;
+
+      document.getElementById('recommendation_container').innerHTML = `
+        <div class="recommendation-status">
+          👈 請先完成左邊的診斷<br>
+          系統會立即推薦最適合妳的APP
+        </div>
+      `;
+    }
+
+    function getDomainLabel(domain) {
+      const labels = {
+        'english': '📚 英文',
+        'emotion': '😊 情緒',
+        'focus': '👁️ 注意力',
+        'sleep': '😴 睡眠',
+        'learning': '🧠 學習',
+        'decision': '⚖️ 決策',
+        'relationship': '💑 關係',
+        'health': '🏥 健康'
+      };
+      return labels[domain] || domain;
+    }
+
+    function getTimelineLabel(timeline) {
+      const labels = {
+        '1_week': '1週內',
+        '2_weeks': '2週',
+        '1_month': '1個月',
+        '3_months': '3個月'
+      };
+      return labels[timeline] || timeline;
+    }
+
+    function getEffortLabel(effort) {
+      const labels = {
+        '5min': '5分鐘',
+        '15min': '15分鐘',
+        '30min': '30分鐘',
+        '1hour': '1小時以上'
+      };
+      return labels[effort] || effort;
+    }
+
+    function getStatusLabel(status) {
+      const labels = {
+        'aware': '知道問題',
+        'trying': '已在努力',
+        'stuck': '卡住了',
+        'failing': '試過沒效'
+      };
+      return labels[status] || status;
+    }
+  </script>
+</body>
+</html>

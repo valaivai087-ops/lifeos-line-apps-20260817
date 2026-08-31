@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeOS 整合診斷 | 一次搞定你的方向與能力</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --border: #bdc3c7;
+            --text: #2c3e50;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .step-indicator {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--light);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .step-indicator.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .step-indicator.completed {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .step-label {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        /* Tabs */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .content-box {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Category Grid */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .category-btn {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .category-btn:hover {
+            border-color: var(--secondary);
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .category-btn.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .category-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        /* Assessment Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .form-group input[type="range"] {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .slider-value {
+            font-weight: bold;
+            color: var(--secondary);
+            margin-top: 5px;
+        }
+
+        /* Skill Input */
+        .skill-input-section {
+            margin-bottom: 30px;
+        }
+
+        .skill-category {
+            margin-bottom: 20px;
+        }
+
+        .category-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .skill-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .skill-btn {
+            padding: 8px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .skill-btn:hover {
+            border-color: var(--secondary);
+            background: #f0f7ff;
+        }
+
+        .skill-btn.selected {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        /* Skill Evaluation */
+        .evaluation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .skill-card {
+            background: #f8f9fa;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.2s;
+        }
+
+        .skill-card:hover {
+            border-color: var(--secondary);
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.15);
+        }
+
+        .skill-name {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        .skill-dimension {
+            margin-bottom: 8px;
+            display: grid;
+            grid-template-columns: 80px 1fr 35px;
+            gap: 8px;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .skill-dimension label {
+            color: #555;
+        }
+
+        .skill-dimension input {
+            height: 5px;
+            cursor: pointer;
+        }
+
+        .skill-dimension .value {
+            font-weight: 600;
+            color: var(--secondary);
+            text-align: right;
+        }
+
+        .skill-score {
+            background: var(--secondary);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Results */
+        .result-section {
+            margin-bottom: 25px;
+            border-left: 4px solid var(--secondary);
+            padding-left: 20px;
+        }
+
+        .result-section h3 {
+            color: var(--primary);
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .result-section p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .bottleneck-badge {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .recommendation-card {
+            background: #f0f7ff;
+            border-left: 4px solid var(--secondary);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        /* Minimum Action */
+        .minimum-action {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .minimum-action h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .action-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .action-text {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #d5dbdb;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        /* Rank Item */
+        .rank-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+            margin-bottom: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            align-items: start;
+        }
+
+        .rank-item-left {
+            display: flex;
+            gap: 8px;
+        }
+
+        .rank-number {
+            background: var(--secondary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .rank-info h4 {
+            color: var(--primary);
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+
+        .rank-info p {
+            font-size: 12px;
+            color: #555;
+        }
+
+        .rank-score {
+            text-align: right;
+        }
+
+        .rank-score-value {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--secondary);
+        }
+
+        .rank-score-label {
+            font-size: 11px;
+            color: #7f8c8d;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .skill-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .rank-item {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 LifeOS 整合診斷</h1>
+            <p>一次搞定「我現在要做什麼」+ 「我有什麼能力」</p>
+            
+            <div class="progress-bar">
+                <div class="progress-step">
+                    <div class="step-indicator active" id="step-1-indicator">1</div>
+                    <div class="step-label">選擇問題</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-indicator" id="step-2-indicator">2</div>
+                    <div class="step-label">評估現況</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-indicator" id="step-3-indicator">3</div>
+                    <div class="step-label">盤點Skill</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-indicator" id="step-4-indicator">4</div>
+                    <div class="step-label">完整診斷</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 1: Category Selection -->
+        <div class="tab-content active" id="step-1">
+            <div class="content-box">
+                <h2 style="margin-bottom: 20px;">你現在最想改善什麼？</h2>
+                <div class="category-grid" id="categoryGrid"></div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="goBack()">清除選擇</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Assessment Form -->
+        <div class="tab-content" id="step-2">
+            <div class="content-box">
+                <h2 style="margin-bottom: 20px;" id="assessmentTitle">評估你的狀況</h2>
+                
+                <div class="form-group">
+                    <label>痛苦程度 (0=完全不痛, 10=極度痛苦)</label>
+                    <input type="range" min="0" max="10" value="5" id="painLevel" 
+                           oninput="updateSliderDisplay(this, 'painDisplay')">
+                    <div class="slider-value" id="painDisplay">5</div>
+                </div>
+
+                <div class="form-group">
+                    <label>急迫度 (0=可以等, 10=必須馬上改變)</label>
+                    <input type="range" min="0" max="10" value="5" id="urgency" 
+                           oninput="updateSliderDisplay(this, 'urgencyDisplay')">
+                    <div class="slider-value" id="urgencyDisplay">5</div>
+                </div>
+
+                <div class="form-group">
+                    <label>影響程度 (0=影響小, 10=影響整個人生)</label>
+                    <input type="range" min="0" max="10" value="5" id="impact" 
+                           oninput="updateSliderDisplay(this, 'impactDisplay')">
+                    <div class="slider-value" id="impactDisplay">5</div>
+                </div>
+
+                <div class="form-group">
+                    <label>可控制程度 (0=完全無法控制, 10=完全可以控制)</label>
+                    <input type="range" min="0" max="10" value="5" id="controllability" 
+                           oninput="updateSliderDisplay(this, 'controllabilityDisplay')">
+                    <div class="slider-value" id="controllabilityDisplay">5</div>
+                </div>
+
+                <div class="form-group">
+                    <label>目前能量 (0=極度疲勞, 10=精力充沛)</label>
+                    <input type="range" min="0" max="10" value="5" id="energy" 
+                           oninput="updateSliderDisplay(this, 'energyDisplay')">
+                    <div class="slider-value" id="energyDisplay">5</div>
+                </div>
+
+                <div class="form-group">
+                    <label>每天可投入時間 (分鐘)</label>
+                    <input type="text" id="availableTime" placeholder="例: 30, 60, 120" value="30">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="nextStep(3)">下一步：盤點Skill</button>
+                    <button class="btn btn-secondary" onclick="goBack()">返回選擇</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Skill Inventory -->
+        <div class="tab-content" id="step-3">
+            <div class="content-box">
+                <h2 style="margin-bottom: 20px;">選擇你現有的技能</h2>
+                <p style="color: #7f8c8d; margin-bottom: 20px;">勾選已有的，或自訂新技能</p>
+                
+                <div class="skill-input-section">
+                    <div class="skill-category">
+                        <div class="category-title">🎓 教育類</div>
+                        <div class="skill-buttons" id="category-education"></div>
+                    </div>
+
+                    <div class="skill-category">
+                        <div class="category-title">💬 溝通類</div>
+                        <div class="skill-buttons" id="category-communication"></div>
+                    </div>
+
+                    <div class="skill-category">
+                        <div class="category-title">🤖 AI/技術</div>
+                        <div class="skill-buttons" id="category-ai"></div>
+                    </div>
+
+                    <div class="skill-category">
+                        <div class="category-title">💼 商業類</div>
+                        <div class="skill-buttons" id="category-business"></div>
+                    </div>
+
+                    <div class="skill-category">
+                        <div class="category-title">📝 創作類</div>
+                        <div class="skill-buttons" id="category-content"></div>
+                    </div>
+
+                    <div class="skill-category">
+                        <div class="category-title">🧠 其他</div>
+                        <div class="skill-buttons" id="category-other"></div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="font-weight: 600; display: block; margin-bottom: 10px;">自訂技能</label>
+                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px;">
+                        <input type="text" id="customSkillInput" placeholder="輸入技能名稱，按Enter新增">
+                        <button class="btn btn-secondary btn-small" onclick="addCustomSkill()">新增</button>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; margin-bottom: 20px;" id="selectedSkillsList"></div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="nextStep(4)" id="evalBtn" disabled>下一步：評估Skill</button>
+                    <button class="btn btn-secondary" onclick="backStep()">返回評估</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Evaluation & Final Result -->
+        <div class="tab-content" id="step-4">
+            <div class="content-box" id="evaluationContainer">
+                <h2 style="margin-bottom: 15px;">評估你的Skill (8個維度)</h2>
+                <p style="color: #7f8c8d; margin-bottom: 15px; font-size: 13px;">為每個技能評分，系統會找出最值得發展的方向</p>
+                <div class="evaluation-grid" id="evaluationGrid"></div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="generateFinalResults()">生成完整診斷</button>
+                    <button class="btn btn-secondary" onclick="backStep()">返回選擇</button>
+                </div>
+            </div>
+
+            <div class="content-box hidden" id="resultsContainer">
+                <div id="resultsContent"></div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="exportResults()">匯出診斷結果</button>
+                    <button class="btn btn-secondary" onclick="startOver()">重新診斷</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============ Configuration ============
+        const CATEGORIES = {
+            "health": { icon: "❤️", name: "健康", bottleneck_hints: ["缺乏系統", "資訊混亂"] },
+            "energy": { icon: "⚡", name: "能量", bottleneck_hints: ["工作高壓", "恢復不足"] },
+            "emotion": { icon: "😊", name: "情緒", bottleneck_hints: ["壓力高", "支持不足"] },
+            "relationship": { icon: "🤝", name: "關係", bottleneck_hints: ["溝通障礙", "時間不足"] },
+            "learning": { icon: "📚", name: "學習", bottleneck_hints: ["方法不當", "動力不足"] },
+            "english": { icon: "🌍", name: "英文", bottleneck_hints: ["時間不足", "方法枯燥"] },
+            "work": { icon: "💼", name: "工作", bottleneck_hints: ["被動執行", "AI風險"] },
+            "ai": { icon: "🤖", name: "AI", bottleneck_hints: ["學習曲線陡", "應用場景少"] },
+            "time": { icon: "⏰", name: "時間", bottleneck_hints: ["優先級混亂", "打斷頻繁"] },
+            "wealth": { icon: "💰", name: "財富", bottleneck_hints: ["收入單一", "支出無控"] },
+            "second_income": { icon: "💵", name: "第二收入", bottleneck_hints: ["不知道做什麼", "時間不足"] },
+            "ip": { icon: "📖", name: "IP", bottleneck_hints: ["知識零散", "缺乏體系"] },
+            "investment": { icon: "📈", name: "投資", bottleneck_hints: ["知識不足", "風險承受低"] },
+            "direction": { icon: "🧭", name: "人生方向", bottleneck_hints: ["目標模糊", "選項太多"] }
+        };
+
+        const SKILLS_DB = {
+            education: ["英文教學", "高考準備", "線上教學", "課程設計", "教材編寫", "學習系統建立"],
+            communication: ["簡報技巧", "文案撰寫", "社群經營", "內容創作", "溝通協調", "談判協商"],
+            ai: ["ChatGPT應用", "提示詞工程", "內容生成", "資料分析", "HTML/CSS", "JavaScript"],
+            business: ["市場分析", "商業策略", "定價模型", "銷售技巧", "財務管理", "產品設計"],
+            content: ["寫作", "影片製作", "圖形設計", "播客製作", "社群內容", "電子書編寫"],
+            other: ["時間管理", "壓力管理", "建立習慣", "健康管理", "財務規劃", "人脈拓展"]
+        };
+
+        const SKILL_DIMENSIONS = [
+            { name: "能力程度", min: 0, max: 10 },
+            { name: "市場需求", min: 0, max: 10 },
+            { name: "問題痛度", min: 0, max: 10 },
+            { name: "稀缺程度", min: 0, max: 10 },
+            { name: "AI替代率", min: 0, max: 10 },
+            { name: "願付價格", min: 0, max: 10 },
+            { name: "可重複性", min: 0, max: 10 },
+            { name: "資產化度", min: 0, max: 10 }
+        ];
+
+        // ============ State ============
+        let currentStep = 1;
+        let selectedCategory = null;
+        let selectedSkills = [];
+        let skillEvaluations = {};
+        let assessmentData = {};
+
+        // ============ Initialization ============
+        function init() {
+            renderCategories();
+            renderSkillCategories();
+        }
+
+        function renderCategories() {
+            const grid = document.getElementById("categoryGrid");
+            grid.innerHTML = Object.entries(CATEGORIES).map(([key, value]) => `
+                <div class="category-btn" onclick="selectCategory('${key}')">
+                    <div class="category-icon">${value.icon}</div>
+                    <div>${value.name}</div>
+                </div>
+            `).join("");
+        }
+
+        function selectCategory(key) {
+            selectedCategory = key;
+            const categoryName = CATEGORIES[key].name;
+            document.getElementById("assessmentTitle").textContent = `評估你的${categoryName}狀況`;
+            nextStep(2);
+        }
+
+        function renderSkillCategories() {
+            Object.entries(SKILLS_DB).forEach(([category, skills]) => {
+                const container = document.getElementById(`category-${category}`);
+                const html = skills.map(skill => 
+                    `<button class="skill-btn" onclick="toggleSkill('${skill}')">${skill}</button>`
+                ).join("");
+                container.innerHTML = html;
+            });
+        }
+
+        function toggleSkill(skillName) {
+            const index = selectedSkills.indexOf(skillName);
+            if (index > -1) {
+                selectedSkills.splice(index, 1);
+            } else {
+                selectedSkills.push(skillName);
+            }
+            
+            updateSelectedList();
+            document.getElementById("evalBtn").disabled = selectedSkills.length === 0;
+        }
+
+        function addCustomSkill() {
+            const input = document.getElementById("customSkillInput");
+            const skillName = input.value.trim();
+            
+            if (skillName && !selectedSkills.includes(skillName)) {
+                selectedSkills.push(skillName);
+                updateSelectedList();
+                document.getElementById("evalBtn").disabled = selectedSkills.length === 0;
+                input.value = "";
+            }
+        }
+
+        function updateSelectedList() {
+            const container = document.getElementById("selectedSkillsList");
+            
+            document.querySelectorAll(".skill-btn").forEach(btn => {
+                const skillName = btn.textContent;
+                if (selectedSkills.includes(skillName)) {
+                    btn.classList.add("selected");
+                } else {
+                    btn.classList.remove("selected");
+                }
+            });
+
+            const html = selectedSkills.map(skill => 
+                `<div style="background: var(--secondary); color: white; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; font-size: 12px;">
+                    ${skill}
+                    <button onclick="toggleSkill('${skill}')" style="background: rgba(255,255,255,0.3); border: none; color: white; cursor: pointer; padding: 2px 6px; border-radius: 3px; font-size: 12px;">✕</button>
+                </div>`
+            ).join("");
+            
+            container.innerHTML = html;
+        }
+
+        function updateSliderDisplay(input, displayId) {
+            document.getElementById(displayId).textContent = input.value;
+        }
+
+        function nextStep(step) {
+            if (step === 2) {
+                // Save assessment before moving
+            } else if (step === 4) {
+                // Render evaluation grid
+                renderEvaluationGrid();
+            }
+            
+            showStep(step);
+        }
+
+        function backStep() {
+            showStep(currentStep - 1);
+        }
+
+        function goBack() {
+            selectedCategory = null;
+            selectedSkills = [];
+            skillEvaluations = {};
+            assessmentData = {};
+            showStep(1);
+        }
+
+        function startOver() {
+            goBack();
+        }
+
+        function showStep(step) {
+            document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+            document.getElementById(`step-${step}`).classList.add("active");
+            
+            // Update progress indicators
+            for (let i = 1; i <= 4; i++) {
+                const indicator = document.getElementById(`step-${i}-indicator`);
+                if (i < step) {
+                    indicator.classList.add("completed");
+                    indicator.classList.remove("active");
+                } else if (i === step) {
+                    indicator.classList.add("active");
+                    indicator.classList.remove("completed");
+                } else {
+                    indicator.classList.remove("active", "completed");
+                }
+            }
+
+            currentStep = step;
+            window.scrollTo(0, 0);
+        }
+
+        function renderEvaluationGrid() {
+            const grid = document.getElementById("evaluationGrid");
+            
+            const html = selectedSkills.map(skill => `
+                <div class="skill-card">
+                    <div class="skill-name">
+                        ${skill}
+                        <span class="skill-score" id="score-${skill}">計算中</span>
+                    </div>
+                    ${SKILL_DIMENSIONS.map((dim, index) => `
+                        <div class="skill-dimension">
+                            <label>${dim.name}</label>
+                            <input type="range" min="0" max="10" value="5" 
+                                   onchange="updateSkillScore('${skill}', ${index}, this.value)">
+                            <span class="value" id="dim-${skill}-${index}">5</span>
+                        </div>
+                    `).join("")}
+                </div>
+            `).join("");
+
+            grid.innerHTML = html;
+
+            selectedSkills.forEach(skill => {
+                if (!skillEvaluations[skill]) {
+                    skillEvaluations[skill] = {
+                        dimensions: Array(8).fill(5),
+                        score: 0
+                    };
+                }
+            });
+        }
+
+        function updateSkillScore(skill, dimensionIndex, value) {
+            if (!skillEvaluations[skill]) {
+                skillEvaluations[skill] = {
+                    dimensions: Array(8).fill(5),
+                    score: 0
+                };
+            }
+
+            skillEvaluations[skill].dimensions[dimensionIndex] = parseInt(value);
+            document.getElementById(`dim-${skill}-${dimensionIndex}`).textContent = value;
+
+            const dims = skillEvaluations[skill].dimensions;
+            const score = Math.round((dims[0] * dims[1] * dims[3]) / 10 * (1 - dims[4]/10) * (dims[6] + dims[7]) / 20 * 100) / 100;
+            skillEvaluations[skill].score = score;
+            
+            document.getElementById(`score-${skill}`).textContent = score.toFixed(1);
+        }
+
+        function generateFinalResults() {
+            // Save assessment data
+            assessmentData = {
+                category: selectedCategory,
+                pain: parseInt(document.getElementById("painLevel").value),
+                urgency: parseInt(document.getElementById("urgency").value),
+                impact: parseInt(document.getElementById("impact").value),
+                controllability: parseInt(document.getElementById("controllability").value),
+                energy: parseInt(document.getElementById("energy").value),
+                availableTime: parseInt(document.getElementById("availableTime").value),
+                timestamp: new Date().toISOString()
+            };
+
+            const baseScore = (assessmentData.impact * assessmentData.urgency * assessmentData.controllability) / 10;
+            const energyAdjustment = assessmentData.energy >= 5 ? 1 : 0.8;
+            const priorityScore = (baseScore * energyAdjustment).toFixed(2);
+            assessmentData.priorityScore = priorityScore;
+
+            // Sort skills by score
+            const ranked = Object.entries(skillEvaluations)
+                .sort(([_, a], [__, b]) => b.score - a.score);
+
+            const cat = CATEGORIES[selectedCategory];
+            const bottleneck = cat.bottleneck_hints[0];
+
+            let html = `
+                <div class="result-section">
+                    <h3>🎯 你的完整診斷結果</h3>
+                </div>
+
+                <div class="result-section">
+                    <h3>📊 問題診斷</h3>
+                    <p><strong>選擇問題:</strong> ${cat.name}</p>
+                    <p><strong>痛苦程度:</strong> ${assessmentData.pain}/10</p>
+                    <p><strong>優先級分數:</strong> ${assessmentData.priorityScore}/100</p>
+                    <div class="bottleneck-badge" style="margin-top: 12px;">
+                        <strong>🎯 最大Bottleneck:</strong> ${bottleneck}
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="result-section">
+                    <h3>💪 你的Skill排名 (TOP 5)</h3>
+                    <div style="margin-top: 12px;">
+            `;
+
+            ranked.slice(0, 5).forEach(([skill, data], index) => {
+                const dims = data.dimensions;
+                html += `
+                    <div class="rank-item">
+                        <div class="rank-item-left">
+                            <div class="rank-number">${index + 1}</div>
+                            <div class="rank-info">
+                                <h4>${skill}</h4>
+                                <p>能力: ${dims[0]}/10 | 市場需求: ${dims[1]}/10 | 稀缺: ${dims[3]}/10</p>
+                            </div>
+                        </div>
+                        <div class="rank-score">
+                            <div class="rank-score-value">${data.score.toFixed(1)}</div>
+                            <div class="rank-score-label">資產化得分</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="minimum-action">
+                    <h3>🎬 現在只做一件事</h3>
+                    <div class="action-card">
+                        <div class="action-text">
+                            用「${ranked[0][0]}」這個技能，找1個客戶驗證市場需求
+                        </div>
+                        <div style="font-size: 13px; margin-top: 10px; opacity: 0.9;">
+                            ✅ 7天內完成這個最小動作
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <h3>📋 30天驗證計畫</h3>
+                    <div class="recommendation-card" style="margin-bottom: 10px;">
+                        <strong>第1週 (Day 1-7):</strong> 設計最小可行產品 (MVP)
+                    </div>
+                    <div class="recommendation-card" style="margin-bottom: 10px;">
+                        <strong>第2週 (Day 8-14):</strong> 訪談3個潛在客戶
+                    </div>
+                    <div class="recommendation-card" style="margin-bottom: 10px;">
+                        <strong>第3週 (Day 15-21):</strong> 根據反饋調整產品
+                    </div>
+                    <div class="recommendation-card">
+                        <strong>第4週 (Day 22-30):</strong> 小規模推廣，測試轉換率
+                    </div>
+                </div>
+            `;
+
+            document.getElementById("resultsContent").innerHTML = html;
+            document.getElementById("evaluationContainer").classList.add("hidden");
+            document.getElementById("resultsContainer").classList.remove("hidden");
+        }
+
+        function exportResults() {
+            const exportData = {
+                assessment: assessmentData,
+                category: CATEGORIES[selectedCategory],
+                skills: skillEvaluations,
+                timestamp: new Date().toLocaleString('zh-TW')
+            };
+
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `lifeos_diagnosis_${new Date().getTime()}.json`;
+            link.click();
+        }
+
+        window.addEventListener("load", init);
+    </script>
+</body>
+</html>

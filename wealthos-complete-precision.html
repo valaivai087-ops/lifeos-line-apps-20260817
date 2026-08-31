@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WealthOS 完整版 | 12APP | 360智慧 | 360能力</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft JhengHei", "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #fff 100%);
+            color: #1a2b5f;
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 2px solid #e8e8e8;
+            overflow-y: auto;
+            padding: 16px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            padding: 12px 16px;
+            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 8px;
+        }
+        
+        .sidebar-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0a7a72;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .sidebar-search {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #0a7a72;
+            border-radius: 5px;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        
+        .menu-items { padding: 0; }
+        .menu-item {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .menu-item:hover {
+            background: #f8f9fa;
+            color: #0a7a72;
+            border-left-color: #0a7a72;
+            padding-left: 14px;
+        }
+        
+        .menu-item.active {
+            background: rgba(10, 122, 114, 0.1);
+            color: #0a7a72;
+            border-left-color: #0a7a72;
+            font-weight: bold;
+        }
+        
+        .menu-icon { font-size: 18px; min-width: 18px; }
+        .menu-text { flex: 1; }
+        .menu-layer { font-size: 11px; color: #999; }
+        
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 28px 24px;
+            overflow-y: auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a2b5f 0%, #0a7a72 100%);
+            color: white;
+            padding: 44px 28px;
+            border-radius: 8px;
+            margin-bottom: 28px;
+            text-align: center;
+        }
+        
+        .header h1 { font-size: 48px; margin-bottom: 8px; font-weight: bold; }
+        .header .subtitle { font-size: 16px; margin-bottom: 8px; opacity: 0.95; }
+        .header .feature { font-size: 13px; margin: 3px 0; opacity: 0.9; }
+        
+        .lang-controls {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+        
+        .btn {
+            padding: 8px 14px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        
+        .btn.active { background: #c9960c; border-color: #c9960c; }
+        .btn:hover { background: rgba(255,255,255,0.2); }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+        
+        .stat {
+            background: white;
+            padding: 16px 10px;
+            border-radius: 6px;
+            text-align: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            border-top: 3px solid #c9960c;
+        }
+        
+        .stat .num { font-size: 28px; font-weight: bold; color: #c9960c; }
+        .stat .lbl { font-size: 12px; color: #666; margin-top: 4px; font-weight: 500; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(750px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 2px solid #e8e8e8;
+            transition: all 0.3s;
+        }
+        
+        .card:hover { box-shadow: 0 10px 24px rgba(26, 43, 95, 0.1); border-color: #c9960c; }
+        .card.p0 { background: linear-gradient(to bottom, rgba(201, 150, 12, 0.04), white); border-left: 5px solid #c9960c; }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .icon { font-size: 32px; }
+        .header-info { flex: 1; margin-left: 10px; }
+        .title { font-size: 16px; font-weight: bold; color: #1a2b5f; margin-bottom: 3px; }
+        .title-en { font-size: 13px; color: #0a7a72; }
+        .layer-info { font-size: 11px; color: #999; margin-top: 3px; }
+        .p0-badge { background: #c9960c; color: white; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .tab {
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #999;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: #0a7a72;
+            border-bottom-color: #0a7a72;
+        }
+        
+        .content-section {
+            display: none;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #f9f9f9;
+            border-left: 2px solid #0a7a72;
+            border-radius: 4px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        .item-cn { font-weight: 500; color: #1a2b5f; margin-bottom: 3px; }
+        .item-en { color: #0a7a72; font-size: 11px; }
+        
+        .practices {
+            margin-top: 14px;
+            padding-top: 10px;
+            border-top: 2px solid #eee;
+        }
+        
+        .practice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .practice-card {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 11px;
+        }
+        
+        .practice-card:hover {
+            border-color: #0a7a72;
+            background: #f0f8f8;
+        }
+        
+        .practice-card.open {
+            border-color: #c9960c;
+            background: #fffbf0;
+            grid-column: span 2;
+        }
+        
+        .pc-title {
+            font-weight: bold;
+            color: #0a7a72;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+        
+        .pc-content {
+            display: none;
+        }
+        
+        .pc-content.show {
+            display: block;
+        }
+        
+        .step {
+            background: white;
+            padding: 8px;
+            margin-bottom: 6px;
+            border-left: 2px solid #0a7a72;
+            border-radius: 3px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 24px 16px;
+            border-top: 2px solid #e8e8e8;
+            margin-top: 30px;
+            color: #999;
+            font-size: 12px;
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar { width: 240px; }
+            .main-content { margin-left: 240px; }
+            .grid { grid-template-columns: 1fr; }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 14px 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">12個系統</div>
+            <input type="text" class="sidebar-search" id="menuSearch" placeholder="搜尋...">
+        </div>
+        <div class="menu-items" id="menuItems"></div>
+    </div>
+    
+    <div class="main-content">
+        <div class="header">
+            <h1>WealthOS 完整版</h1>
+            <p class="subtitle">12個綜合APP | 360個核心智慧 | 360個核心能力 | 精準校對</p>
+            <p class="feature">✓ 完整雙語 | ✓ 資料最大化 | ✓ 內容最精準 | ✓ 功效最完全 | ✓ 百分百達成</p>
+            <div class="lang-controls">
+                <button class="btn active" onclick="setLanguage('both')">雙語</button>
+                <button class="btn" onclick="setLanguage('cn')">繁體中文</button>
+                <button class="btn" onclick="setLanguage('en')">English</button>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="num">12</div>
+                <div class="lbl">綜合APP</div>
+            </div>
+            <div class="stat">
+                <div class="num">360</div>
+                <div class="lbl">核心智慧</div>
+            </div>
+            <div class="stat">
+                <div class="num">360</div>
+                <div class="lbl">核心能力</div>
+            </div>
+            <div class="stat">
+                <div class="num">48</div>
+                <div class="lbl">實踐卡片</div>
+            </div>
+            <div class="stat">
+                <div class="num">100%</div>
+                <div class="lbl">完整校對</div>
+            </div>
+        </div>
+        
+        <div class="grid" id="grid"></div>
+        
+        <div class="footer">
+            <p>12個綜合APP × (30個智慧 + 30個能力 + 4個實踐卡) = 完整財富體系</p>
+            <p>資料最大化 | 內容最精準 | 功效最完全 | 雙語呈現 | 精準校對</p>
+        </div>
+    </div>
+    
+    <script>
+        const allData = {"1": {"wisdoms": [{"cn": "模型就是对现实的假设框架，假设错了看到的就都是错的", "en": "A model is a framework of assumptions; wrong assumptions create wrong reality"}, {"cn": "同样的现象不同模型会看到截然不同的机会", "en": "Same phenomenon, different models, completely different opportunities"}, {"cn": "金钱模型决定了你的收入上限而不是能力", "en": "Money model determines income ceiling, not ability"}, {"cn": "更新模型比改变行为重要十倍", "en": "Updating model is 10x more important than changing behavior"}, {"cn": "每个失败都是模型的反馈信号", "en": "Every failure provides feedback about your model"}, {"cn": "你必须定期审查你的金钱假设", "en": "Regularly audit your money assumptions"}, {"cn": "市场永远在惩罚旧模型奖励新模型", "en": "Markets punish old models, reward new ones"}, {"cn": "你赚不到你看不见的钱", "en": "Cannot earn money you cannot see"}, {"cn": "信念系统决定了你能看见什么", "en": "Beliefs determine what you perceive"}, {"cn": "贫困不是没钱而是模型错了", "en": "Poverty is not lack of money but wrong model"}, {"cn": "富人和穷人看同样世界但用不同滤镜", "en": "Rich and poor see same world through different filters"}, {"cn": "金钱是信息不是价值", "en": "Money is information, not value"}, {"cn": "最大瓶颈往往在思维框架", "en": "Biggest bottleneck is thinking framework"}, {"cn": "最有效的学习是通过Prediction Error反馈", "en": "Most effective learning is through prediction error"}, {"cn": "你的模型就是你的现实", "en": "Your model is your reality"}, {"cn": "好模型能预测未来差模型只能解释过去", "en": "Good models predict; bad models explain"}, {"cn": "模型的力量在于指导行动", "en": "Model power lies in guiding action"}, {"cn": "不断迭代是增长的唯一途径", "en": "Continuous iteration is only path to growth"}, {"cn": "新模型来自于失败的深度反思", "en": "New models emerge from failure reflection"}, {"cn": "金钱模型和人生模型是同一个系统", "en": "Money and life models are same system"}, {"cn": "更新模型有风险但不更新风险更大", "en": "Updating has risk; not updating is riskier"}, {"cn": "一句话定义你的模型等于定义你相信什么", "en": "Define model in one sentence equals defining beliefs"}, {"cn": "模型更新是日常习惯不是偶尔事件", "en": "Model updating is daily habit, not one-time event"}, {"cn": "没有衡量就没有进化", "en": "Without measurement, no evolution"}, {"cn": "你的模型决定你问什么问题", "en": "Model determines what questions you ask"}, {"cn": "多元视角能降低盲点", "en": "Multiple perspectives reduce blind spots"}, {"cn": "现实改变时你的模型也必须改变", "en": "When reality changes, models must change"}, {"cn": "最好投资是投资认知模型", "en": "Best investment is cognitive model investment"}, {"cn": "改变一个假设能改变整个轨迹", "en": "Changing one assumption changes trajectory"}, {"cn": "模型更新很个性化因为每个人起点不同", "en": "Model updating is personal due to different starting points"}], "capabilities": [{"cn": "能诊断自己当前的金钱模型是什么", "en": "Can diagnose current money model"}, {"cn": "能评估模型对自己的限制有多大", "en": "Can assess model's limiting effects"}, {"cn": "能识别模型中哪些假设是对的哪些是错的", "en": "Can identify right vs wrong assumptions"}, {"cn": "能发现自己视而不见的机会", "en": "Can discover overlooked opportunities"}, {"cn": "能进行深度的模型对标分析", "en": "Can conduct deep model benchmarking"}, {"cn": "能量化模型假设是否在现实中成立", "en": "Can quantify assumption validity"}, {"cn": "能建立检验模型假设的测试框架", "en": "Can create testing frameworks"}, {"cn": "能进行系统的模型差距分析", "en": "Can analyze model gaps systematically"}, {"cn": "能找出限制自己最大的单个假设", "en": "Can identify biggest limiting assumption"}, {"cn": "能进行模型和模型的对标", "en": "Can benchmark models against models"}, {"cn": "能设计模型更新的实验和测试", "en": "Can design model update experiments"}, {"cn": "能收集模型准确度的反馈数据", "en": "Can collect model accuracy feedback"}, {"cn": "能思辨式地质疑每一个信念", "en": "Can critically question every belief"}, {"cn": "能从失败中快速提炼模型调整洞察", "en": "Can extract insights from failures"}, {"cn": "能总结自己的模型迭代过程", "en": "Can summarize model iteration"}, {"cn": "能教别人理解和更新自己的模型", "en": "Can teach others to update models"}, {"cn": "能做知识管理把模型知识系统化", "en": "Can systematize model knowledge"}, {"cn": "能持续反复地迭代和优化认知", "en": "Can continuously iterate cognition"}, {"cn": "能形成习惯性地质疑和验证假设", "en": "Can form assumption verification habits"}, {"cn": "能看清楚模型对每个决策的深层影响", "en": "Can see model impact on decisions"}, {"cn": "能主动寻求会挑战自己的信息", "en": "Can seek challenging information"}, {"cn": "能非常快速地学习和适应新框架", "en": "Can quickly adapt to new frameworks"}, {"cn": "能跨领域地迁移和应用模型思维", "en": "Can apply model thinking cross-domain"}, {"cn": "能组织和管理让自己不断升级的信息", "en": "Can organize upgrading information"}, {"cn": "能评估不同模型框架的优缺点", "en": "Can evaluate framework pros and cons"}, {"cn": "能建立自己独特的融合性模型体系", "en": "Can build integrated model system"}, {"cn": "能清晰地表达和传递自己的模型", "en": "Can clearly articulate model"}, {"cn": "能主动测试和验证新模型的实际效果", "en": "Can test new models in practice"}, {"cn": "能保持开放心态面对自己的模型被推翻", "en": "Can accept model being challenged"}, {"cn": "能承受模型更新带来的困扰和不确定", "en": "Can tolerate model update discomfort"}]}, "2": {"wisdoms": [{"cn": "现金流比利润更重要", "en": "Cash flow matters more than profit"}, {"cn": "Buffer就是你的自由度", "en": "Buffer is your freedom"}, {"cn": "没有Buffer的人被迫接受任何机会", "en": "No buffer means accepting any opportunity"}, {"cn": "有Buffer的人能拒绝坏机会", "en": "Buffer lets you reject bad opportunities"}, {"cn": "Buffer决定了你能冒多大风险", "en": "Buffer determines risk capacity"}, {"cn": "现金流是生存资产是增长", "en": "Cash flow is survival; assets are growth"}, {"cn": "追踪现金比看报表更重要", "en": "Tracking cash beats reading reports"}, {"cn": "钱最终要能提现", "en": "Money must ultimately be withdrawable"}, {"cn": "再好资产不产生现金流也白搭", "en": "Good assets without cash flow are useless"}, {"cn": "Buffer给你时间思考", "en": "Buffer gives thinking time"}, {"cn": "3-6个月Buffer是基本安全线", "en": "3-6 months buffer is safety line"}, {"cn": "更多Buffer意味着更多真实选择", "en": "More buffer means more real choices"}, {"cn": "现金流危机往往发生在看不见的地方", "en": "Cash crises happen invisibly"}, {"cn": "日常追踪现金流很无聊但很关键", "en": "Tracking cash is boring but critical"}, {"cn": "Buffer不是浪费是投资自由", "en": "Buffer is freedom investment"}, {"cn": "失去Buffer是财务死亡前兆", "en": "Losing buffer signals financial danger"}, {"cn": "Buffer让你在机会出现时能抓住", "en": "Buffer lets you seize opportunities"}, {"cn": "现金流决定了你能撑多久", "en": "Cash flow determines survival time"}, {"cn": "好系统应该有正向的现金流", "en": "Good systems have positive cash flow"}, {"cn": "Buffer是你对自己的承诺", "en": "Buffer is self-commitment"}, {"cn": "现金流问题往往是系统问题", "en": "Cash issues are system issues"}, {"cn": "看不见现金流就看不见危机", "en": "Invisible cash flow hides crisis"}, {"cn": "Buffer让你睡得更香", "en": "Buffer improves sleep"}, {"cn": "没有Buffer就没有安全感", "en": "No buffer means no security"}, {"cn": "现金为王其他都是资本", "en": "Cash is king; everything else is capital"}, {"cn": "Buffer增长比收入增长更重要", "en": "Buffer growth beats income growth"}, {"cn": "稳定现金流比高但波动收入更好", "en": "Stable beats high and volatile"}, {"cn": "现金流数字不会骗人", "en": "Cash numbers don't lie"}, {"cn": "Buffer就是你的冒险资本", "en": "Buffer is venture capital"}, {"cn": "没有Buffer你只能活在当下", "en": "No buffer means living in present"}], "capabilities": [{"cn": "能诊断自己在财务生存层的现状", "en": "Can diagnose financial survival status"}, {"cn": "能评估自己当前的Buffer水平", "en": "Can assess current buffer level"}, {"cn": "能准确追踪自己的现金流出入", "en": "Can track cash accurately"}, {"cn": "能快速识别现金流的泄漏点", "en": "Can spot cash flow leaks"}, {"cn": "能预测自己短期的现金需求", "en": "Can predict short-term needs"}, {"cn": "能制定现金流管理的明确目标", "en": "Can set cash management goals"}, {"cn": "能建立每日现金跟踪的系统", "en": "Can build daily tracking systems"}, {"cn": "能准确识别哪些支出是不必要的", "en": "Can identify unnecessary expenses"}, {"cn": "能对支出进行科学的分类和分析", "en": "Can categorize expenses scientifically"}, {"cn": "能找到降低成本的具体机会", "en": "Can find cost reduction opportunities"}, {"cn": "能评估资产的实际流动性", "en": "Can assess asset liquidity"}, {"cn": "能进行现金流的假设情景分析", "en": "Can analyze cash scenarios"}, {"cn": "能建立应急的资金储备计划", "en": "Can plan emergency funds"}, {"cn": "能制定Buffer增长的具体计划", "en": "Can plan buffer growth"}, {"cn": "能评估不同Buffer水平的生活质量差异", "en": "Can assess quality at different levels"}, {"cn": "能进行现金流的系统优化设计", "en": "Can optimize cash flow"}, {"cn": "能区分和管理固定支出和变动支出", "en": "Can manage fixed vs variable"}, {"cn": "能做财务风险的早期预警", "en": "Can warn of financial risk"}, {"cn": "能进行必要和非必要支出的精确判断", "en": "Can judge necessity precisely"}, {"cn": "能优化支付方式来降低成本", "en": "Can optimize payment methods"}, {"cn": "能建立现金流的实时监控仪表板", "en": "Can build monitoring dashboards"}, {"cn": "能识别现金流危机的多种前兆", "en": "Can identify crisis signs"}, {"cn": "能制定收紧支出的应急措施", "en": "Can create emergency cuts"}, {"cn": "能评估各种投资对现金流的具体影响", "en": "Can assess investment impacts"}, {"cn": "能根据现金流做出优化的财务决策", "en": "Can make optimized decisions"}, {"cn": "能提前预见未来的现金需求", "en": "Can foresee future needs"}, {"cn": "能系统地组织和管理财务账目", "en": "Can organize finances"}, {"cn": "能清晰地进行财务信息的有效沟通", "en": "Can communicate finances clearly"}, {"cn": "能精确评估生活方式的真实成本", "en": "Can assess true lifestyle costs"}, {"cn": "能为不同人生阶段做好财务准备", "en": "Can prepare for life stages"}]}, "3": {"wisdoms": [{"cn": "单一收入是最大风险", "en": "Single income is biggest risk"}, {"cn": "多元收入需要不同的能力", "en": "Multiple streams require different skills"}, {"cn": "技能变现是最直接的收入", "en": "Skill monetization is most direct"}, {"cn": "被动收入需要主动建设", "en": "Passive income requires active building"}, {"cn": "现在的副业是未来的主业", "en": "Today's side hustle is tomorrow's job"}, {"cn": "收入结构决定人生质量", "en": "Income structure determines life quality"}, {"cn": "多渠道让你不被单一市场控制", "en": "Multiple channels reduce market control"}, {"cn": "收入梯次能抵御经济波动", "en": "Income ladder resists fluctuations"}, {"cn": "每种收入都有其独特的生命周期", "en": "Each income type has lifecycle"}, {"cn": "收入多元化需要持续学习", "en": "Diversification requires learning"}, {"cn": "好的收入模式会自己带来新机会", "en": "Good models create opportunities"}, {"cn": "收入不是来自努力而是来自结构", "en": "Income comes from structure, not effort"}, {"cn": "多元化不等于什么都做", "en": "Diversify doesn't mean everything"}, {"cn": "聚焦比散弹枪式更能积累", "en": "Focus beats scatter"}, {"cn": "收入增长需要平台思维", "en": "Growth needs platform thinking"}, {"cn": "小额多源比单笔大额更稳定", "en": "Small sources beat large single"}, {"cn": "收入天花板往往在商业模式", "en": "Ceiling is in business model"}, {"cn": "打造可复制的收入引擎很关键", "en": "Repeatable engines are key"}, {"cn": "市场需求不变时收入模式也不能变", "en": "Model changes when market changes"}, {"cn": "收入流动性和稳定性要找平衡", "en": "Balance liquidity and stability"}, {"cn": "复合收入能对冲单一风险", "en": "Composite hedges single risk"}, {"cn": "收入质量比数量更重要", "en": "Quality beats quantity"}, {"cn": "税务规划会显著提升实际收入", "en": "Tax planning increases net income"}, {"cn": "自动化收入是真正的自由基础", "en": "Automation is freedom foundation"}, {"cn": "收入来源的多样性保护你", "en": "Diversity protects you"}, {"cn": "打造粉丝经济需要长期积累", "en": "Fan economy needs time"}, {"cn": "收入的可持续性比峰值更重要", "en": "Sustainability beats peaks"}, {"cn": "平台依赖降低让你更自由", "en": "Lower dependence means freedom"}, {"cn": "收入多元化是长期财富计划的核心", "en": "Diversification is wealth core"}, {"cn": "多收入流能加速财富积累", "en": "Multiple streams accelerate wealth"}], "capabilities": [{"cn": "能诊断自己在收入生成层的现状", "en": "Can diagnose income status"}, {"cn": "能准确评估自己的真实收入能力", "en": "Can assess true income capacity"}, {"cn": "能快速识别市场上的收入机会", "en": "Can spot opportunities"}, {"cn": "能深入分析自己的技能变现潜力", "en": "Can analyze skill potential"}, {"cn": "能进行系统的市场需求调查", "en": "Can research market"}, {"cn": "能准确评估不同收入渠道的潜力", "en": "Can assess channel potential"}, {"cn": "能设计多元收入的初步方案", "en": "Can design diversification"}, {"cn": "能清晰识别自己的核心竞争力", "en": "Can identify advantages"}, {"cn": "能评估进入新收入领域的真实成本", "en": "Can assess entry costs"}, {"cn": "能制定收入增长的具体目标", "en": "Can set income goals"}, {"cn": "能有计划地测试新的收入模式", "en": "Can test income models"}, {"cn": "能全面分析竞争对手的收入模式", "en": "Can analyze competitors"}, {"cn": "能识别收入的季节性特征", "en": "Can spot seasonality"}, {"cn": "能有效优化现有收入的转化率", "en": "Can optimize conversion"}, {"cn": "能进行收入结构的深度分析", "en": "Can analyze structure"}, {"cn": "能精确评估各渠道的成本效益", "en": "Can calculate ROI"}, {"cn": "能发现被长期忽视的收入机会", "en": "Can find overlooked opportunities"}, {"cn": "能设计真正可复制的收入流程", "en": "Can design repeatable processes"}, {"cn": "能进行精准的客户群体分析", "en": "Can analyze customers"}, {"cn": "能科学评估定价策略的合理性", "en": "Can evaluate pricing"}, {"cn": "能建立收入增长的数据指标体系", "en": "Can build metrics"}, {"cn": "能进行收入来源的风险评估", "en": "Can assess risks"}, {"cn": "能做准确的收入预测财务模型", "en": "Can forecast income"}, {"cn": "能识别高潜力的新收入机会", "en": "Can spot opportunities"}, {"cn": "能进行收入渠道的科学优化排序", "en": "Can prioritize channels"}, {"cn": "能评估进入不同行业的难度等级", "en": "Can assess difficulty"}, {"cn": "能制定针对性的技能升级学习计划", "en": "Can plan skill growth"}, {"cn": "能识别市场变化对收入的深层影响", "en": "Can predict market impacts"}, {"cn": "能进行收入的长期规划和设计", "en": "Can plan long-term"}, {"cn": "能评估创业机会的真实可行性", "en": "Can assess startups"}]}, "4": {"wisdoms": [{"cn": "知识只有变现才有价值", "en": "Knowledge only has value when monetized"}, {"cn": "你的经验是最值钱的商品", "en": "Your experience is your most valuable commodity"}, {"cn": "内容是最便宜的广告", "en": "Content is the cheapest advertising"}, {"cn": "系统化知识比零散信息值钱", "en": "Systematized knowledge beats scattered information"}, {"cn": "教别人会让你学得更深", "en": "Teaching makes you learn deeper"}, {"cn": "知识资产能产生长尾收入", "en": "Knowledge assets generate long-tail income"}, {"cn": "你的独特视角是你的竞争力", "en": "Your unique perspective is your competitive advantage"}, {"cn": "知识的价值在于应用而非理论", "en": "Knowledge value lies in application, not theory"}, {"cn": "著作是最好的推荐信", "en": "Published works are the best recommendation"}, {"cn": "知识产品化能扩大影响力", "en": "Productizing knowledge expands impact"}, {"cn": "IP积累是打造个人品牌的基础", "en": "IP accumulation is the foundation of personal brand"}, {"cn": "分享知识能建立信任", "en": "Sharing knowledge builds trust"}, {"cn": "知识形成系统才能复用", "en": "Knowledge becomes reusable only when systematized"}, {"cn": "教学相长会让知识升级", "en": "Teaching upgrades knowledge through interaction"}, {"cn": "知识变现需要找对市场", "en": "Monetizing knowledge requires finding the right market"}, {"cn": "内容为王流量为辅", "en": "Content is king; traffic is secondary"}, {"cn": "持续输出能建立长尾资产", "en": "Continuous output builds long-tail assets"}, {"cn": "知识资产的增值需要时间", "en": "Knowledge assets appreciate over time"}, {"cn": "方法论比技巧更有价值", "en": "Methodology is more valuable than tricks"}, {"cn": "知识的组织能力决定商业化潜力", "en": "Knowledge organization determines monetization potential"}, {"cn": "案例和故事能让知识生动", "en": "Cases and stories make knowledge vivid"}, {"cn": "知识的深度决定定价权", "en": "Knowledge depth determines pricing power"}, {"cn": "系统化教学能产生复合效应", "en": "Systematic teaching creates compound effects"}, {"cn": "知识产品的迭代会提升价值", "en": "Knowledge product iteration increases value"}, {"cn": "分享知识会吸引志同道合的人", "en": "Sharing knowledge attracts like-minded people"}, {"cn": "知识资产是可以传承的", "en": "Knowledge assets can be inherited"}, {"cn": "IP的建立需要长期一致", "en": "Building IP requires long-term consistency"}, {"cn": "知识变现的第一步是有价值的知识", "en": "First step to monetization is valuable knowledge"}, {"cn": "教育产品有最高的边际利润", "en": "Educational products have highest margins"}, {"cn": "知识积累是最不易被抄袭的资产", "en": "Knowledge is the hardest asset to copy"}], "capabilities": [{"cn": "能诊断自己在知识变现层的现状", "en": "Can assess your knowledge monetization status"}, {"cn": "能准确评估自己知识的商业价值", "en": "Can assess your knowledge's commercial value"}, {"cn": "能识别自己的独特知识优势", "en": "Can identify your unique knowledge advantage"}, {"cn": "能分析知识变现的具体市场机会", "en": "Can analyze specific market opportunities"}, {"cn": "能制定知识产品的初步方案", "en": "Can draft initial knowledge product plans"}, {"cn": "能进行市场调研确认真实需求", "en": "Can validate market demand through research"}, {"cn": "能评估不同知识产品形式的潜力", "en": "Can assess different product format potential"}, {"cn": "能进行知识的系统整理和组织", "en": "Can systematically organize knowledge"}, {"cn": "能识别知识中最值钱的部分", "en": "Can identify most valuable knowledge parts"}, {"cn": "能制定知识IP的发展计划", "en": "Can plan knowledge IP development"}, {"cn": "能设计知识产品的定价方案", "en": "Can design knowledge product pricing"}, {"cn": "能评估知识产品的市场规模", "en": "Can assess knowledge product market size"}, {"cn": "能进行目标客户的精准画像分析", "en": "Can create precise customer personas"}, {"cn": "能识别知识变现的主要障碍", "en": "Can identify monetization barriers"}, {"cn": "能进行内容质量的客观自我评估", "en": "Can objectively assess content quality"}, {"cn": "能制定知识分享的具体计划", "en": "Can create concrete sharing plans"}, {"cn": "能评估知识在线化的可行性", "en": "Can assess online delivery feasibility"}, {"cn": "能进行知识的商业化包装设计", "en": "Can package knowledge for commercial use"}, {"cn": "能分析竞争者的知识产品战略", "en": "Can analyze competitors' strategies"}, {"cn": "能设计知识获取的客户路径", "en": "Can design customer acquisition paths"}, {"cn": "能建立知识管理的系统", "en": "Can build knowledge management systems"}, {"cn": "能进行知识更新的长期计划", "en": "Can plan knowledge updates long-term"}, {"cn": "能评估著作出版的具体机会", "en": "Can assess publishing opportunities"}, {"cn": "能进行知识的多渠道分发", "en": "Can distribute knowledge across channels"}, {"cn": "能识别知识衍生的商业机会", "en": "Can identify derivative business opportunities"}, {"cn": "能制定知识品牌的建立计划", "en": "Can plan brand building through knowledge"}, {"cn": "能进行知识的法律权益保护", "en": "Can protect knowledge IP legally"}, {"cn": "能评估知识社群的构建可能", "en": "Can assess community building potential"}, {"cn": "能进行知识商业化的风险管理", "en": "Can manage monetization risks"}, {"cn": "能设计知识变现的长期战略", "en": "Can design long-term monetization strategy"}]}, "5": {"wisdoms": [{"cn": "信任是最值钱的资产", "en": "Trust is your most valuable asset"}, {"cn": "关系是通向机会的门票", "en": "Relationships are tickets to opportunities"}, {"cn": "打造社群需要持续付出", "en": "Building community requires sustained giving"}, {"cn": "真诚比聪明更能建立信任", "en": "Authenticity builds trust better than cleverness"}, {"cn": "帮助别人会得到意外回报", "en": "Helping others brings unexpected returns"}, {"cn": "社群的价值在于互相赋能", "en": "Community value lies in mutual empowerment"}, {"cn": "主动者永远比被动者有优势", "en": "Initiative always beats passivity"}, {"cn": "人脉不是人数而是质量", "en": "Network quality matters more than size"}, {"cn": "信任需要时间和一致性来建立", "en": "Trust requires time and consistency"}, {"cn": "社群成员的质量决定社群价值", "en": "Member quality determines community value"}, {"cn": "无条件给予会产生互惠心理", "en": "Unconditional giving triggers reciprocity"}, {"cn": "长期陪伴会产生深度信任", "en": "Long-term presence builds deep trust"}, {"cn": "共同目标能凝聚社群", "en": "Shared goals unite communities"}, {"cn": "分享经验能建立权威感", "en": "Sharing experience builds authority"}, {"cn": "社群要有明确的价值主张", "en": "Communities need clear value propositions"}, {"cn": "连接者能获得最大好处", "en": "Connectors benefit most"}, {"cn": "真实互动比表面客套更有力", "en": "Real interaction beats surface politeness"}, {"cn": "社群的增长需要裂变和传播", "en": "Community growth needs viral mechanisms"}, {"cn": "信任一旦破裂很难修复", "en": "Broken trust is hard to repair"}, {"cn": "社群文化决定社群前景", "en": "Culture determines community future"}, {"cn": "适度的参与感能提升黏性", "en": "Right participation increases stickiness"}, {"cn": "反馈循环能改善社群质量", "en": "Feedback loops improve community quality"}, {"cn": "利他精神是社群的核心", "en": "Altruism is community's core"}, {"cn": "小而精的社群比大而散更有效", "en": "Small focused communities beat large loose ones"}, {"cn": "见面会能大幅增强连接", "en": "In-person meetings strengthen bonds"}, {"cn": "社群的规范很重要", "en": "Community norms matter"}, {"cn": "信任的建立是缓慢的破裂是瞬间", "en": "Trust builds slowly but breaks instantly"}, {"cn": "长期主义者会赢得信任", "en": "Long-term thinkers earn trust"}, {"cn": "社群是通往更大机会的踏脚石", "en": "Communities are stepping stones to bigger opportunities"}, {"cn": "深度互动产生真实价值", "en": "Deep interaction creates real value"}], "capabilities": [{"cn": "能诊断自己在社群信任层的现状", "en": "Can assess your community trust status"}, {"cn": "能准确评估自己的信任度水平", "en": "Can assess your trust level"}, {"cn": "能识别有高价值的人脉机会", "en": "Can spot high-value network opportunities"}, {"cn": "能分析社群的现有关系结构", "en": "Can analyze community relationship structures"}, {"cn": "能进行真诚互动的具体规划", "en": "Can plan authentic interactions"}, {"cn": "能评估关系投资的真实ROI", "en": "Can evaluate real relationship ROI"}, {"cn": "能设计建立信任的具体策略", "en": "Can design trust-building strategies"}, {"cn": "能识别关系中的关键节点", "en": "Can identify relationship key points"}, {"cn": "能进行定期接触的时间规划", "en": "Can plan regular contact schedules"}, {"cn": "能制定社群参与的明确目标", "en": "Can set community participation goals"}, {"cn": "能进行价值输出的具体计划", "en": "Can plan value delivery"}, {"cn": "能识别互赢的合作机会", "en": "Can spot win-win partnerships"}, {"cn": "能评估社群成员的质量水平", "en": "Can assess member quality"}, {"cn": "能进行社群贡献的策略设计", "en": "Can design contribution strategies"}, {"cn": "能分析信任破裂的根本原因", "en": "Can analyze trust breakdown causes"}, {"cn": "能设计恢复信任的具体方案", "en": "Can design trust recovery plans"}, {"cn": "能进行人脉拓展的系统规划", "en": "Can plan network expansion systematically"}, {"cn": "能识别社群中的意见领袖", "en": "Can identify opinion leaders"}, {"cn": "能评估长期关系的真实价值", "en": "Can assess long-term relationship value"}, {"cn": "能进行深度连接的创造", "en": "Can create deep connections"}, {"cn": "能建立信任反馈的有效机制", "en": "Can build trust feedback mechanisms"}, {"cn": "能进行社群活动的专业组织", "en": "Can professionally organize community events"}, {"cn": "能评估关系投资的优先级", "en": "Can prioritize relationship investments"}, {"cn": "能识别志同道合的人群", "en": "Can identify like-minded people"}, {"cn": "能制定社群参与的行动计划", "en": "Can create community action plans"}, {"cn": "能进行真实分享和表达", "en": "Can share authentically"}, {"cn": "能评估社群为你带来的机遇", "en": "Can assess community opportunities"}, {"cn": "能进行人脉维护的系统策略", "en": "Can systematically maintain relationships"}, {"cn": "能识别自己在社群中的独特角色", "en": "Can identify your unique community role"}, {"cn": "能制定个人品牌的建立计划", "en": "Can plan personal brand building"}]}, "6": {"wisdoms": [{"cn": "销售是帮别人解决问题", "en": "Sales is helping people solve problems"}, {"cn": "最好的销售是不像销售", "en": "Best sales don't look like sales"}, {"cn": "信任是销售的前提", "en": "Trust is the foundation of sales"}, {"cn": "需求激发比产品推销更重要", "en": "Activating needs beats pitching features"}, {"cn": "价值主张要让对方听得懂", "en": "Value propositions must be clear"}, {"cn": "成交往往在异议之后", "en": "Closing often happens after objections"}, {"cn": "说的少听的多成交率更高", "en": "Listen more, talk less, close more"}, {"cn": "真诚会打破很多防御", "en": "Sincerity breaks down defenses"}, {"cn": "流程化能提升成交率", "en": "Process increases close rates"}, {"cn": "成交的关键是抓住痛点", "en": "Key to closing is finding pain"}, {"cn": "产品特征不如利益重要", "en": "Benefits matter more than features"}, {"cn": "社群推荐的转化率最高", "en": "Referrals convert highest"}, {"cn": "限制感能激发购买欲望", "en": "Scarcity drives buying"}, {"cn": "案例和证词能消除疑虑", "en": "Cases and testimonials remove doubt"}, {"cn": "价格不是决定因素而是对价值的认同", "en": "Price is about value perception"}, {"cn": "售后满意度决定复购率", "en": "After-sales satisfaction drives repeats"}, {"cn": "建立销售流程能标准化成交", "en": "Process standardizes closing"}, {"cn": "客户教育是销售的前置", "en": "Education precedes sales"}, {"cn": "成交不是结束而是开始", "en": "Closing is just the beginning"}, {"cn": "关系销售比交易销售价值高", "en": "Relationship sales beat transaction sales"}, {"cn": "跟进的耐心决定成交的概率", "en": "Follow-up persistence drives conversions"}, {"cn": "拒绝信息也是宝贵反馈", "en": "Rejection is valuable feedback"}, {"cn": "成交心理学比技巧更关键", "en": "Psychology matters more than tactics"}, {"cn": "长期客户价值比单笔交易高", "en": "Lifetime value beats single transaction"}, {"cn": "口碑推荐是最好的广告", "en": "Word-of-mouth is best advertising"}, {"cn": "成交的时机很关键", "en": "Timing is critical"}, {"cn": "解决客户的真实问题不是推销产品", "en": "Solve real problems, not push products"}, {"cn": "批量化销售需要系统和流程", "en": "Scaling sales requires systems"}, {"cn": "客户满意度能产生转介绍", "en": "Satisfaction generates referrals"}, {"cn": "销售数据能指导优化方向", "en": "Data guides optimization"}], "capabilities": [{"cn": "能诊断自己在销售成交层的现状", "en": "Can assess your sales ability"}, {"cn": "能准确评估自己的销售能力", "en": "Can realistically assess sales skills"}, {"cn": "能快速识别客户的真实需求", "en": "Can quickly identify real customer needs"}, {"cn": "能深入分析销售流程中的障碍", "en": "Can analyze sales process barriers"}, {"cn": "能进行客户心理的专业分析", "en": "Can professionally analyze buyer psychology"}, {"cn": "能制定销售话术的优化策略", "en": "Can optimize sales scripts"}, {"cn": "能进行产品价值的清晰表达", "en": "Can clearly articulate value"}, {"cn": "能准确识别客户的购买信号", "en": "Can recognize buying signals"}, {"cn": "能设计成交的关键时刻", "en": "Can design closing moments"}, {"cn": "能进行异议处理的充分准备", "en": "Can prepare objection handling"}, {"cn": "能客观评估不同销售渠道的效果", "en": "Can assess channel effectiveness"}, {"cn": "能进行销售数据的深入分析", "en": "Can analyze sales data deeply"}, {"cn": "能准确识别高价值的潜在客户", "en": "Can identify high-value prospects"}, {"cn": "能制定跟进的系统策略", "en": "Can create follow-up systems"}, {"cn": "能进行客户关系的长期维护", "en": "Can maintain relationships long-term"}, {"cn": "能准确评估定价的合理性", "en": "Can fairly assess pricing"}, {"cn": "能进行销售团队的有效培训", "en": "Can effectively train sales teams"}, {"cn": "能设计成交激励机制", "en": "Can design closing incentives"}, {"cn": "能识别销售的最优时机", "en": "Can identify optimal timing"}, {"cn": "能进行客户满意度的评估", "en": "Can measure satisfaction"}, {"cn": "能制定复购策略", "en": "Can plan repeat sales"}, {"cn": "能进行销售流程的不断优化", "en": "Can continuously improve process"}, {"cn": "能识别转介绍的具体机会", "en": "Can spot referral opportunities"}, {"cn": "能评估销售成本的合理性", "en": "Can justify sales costs"}, {"cn": "能进行销售渠道的多元化", "en": "Can diversify sales channels"}, {"cn": "能分析市场竞争对销售的影响", "en": "Can analyze competitive impact"}, {"cn": "能设计销售激励方案", "en": "Can design sales incentives"}, {"cn": "能进行销售话术的持续优化", "en": "Can continuously refine pitches"}, {"cn": "能识别销售中的心理障碍", "en": "Can identify psychological blocks"}, {"cn": "能制定销售增长的具体计划", "en": "Can plan sales growth specifically"}]}, "7": {"wisdoms": [{"cn": "系统化能解放时间和精力", "en": "Systems free up time and energy"}, {"cn": "标准化是规模的前提", "en": "Standardization enables scale"}, {"cn": "流程优化是持续的", "en": "Process improvement is continuous"}, {"cn": "自动化能大幅提升效率", "en": "Automation dramatically increases efficiency"}, {"cn": "杠杆需要找到关键环节", "en": "Leverage finds critical points"}, {"cn": "系统的瓶颈决定整体效率", "en": "Bottleneck determines system efficiency"}, {"cn": "记录系统能改进系统", "en": "Records improve systems"}, {"cn": "复制人需要清晰的系统", "en": "Replicating requires clear systems"}, {"cn": "规模需要管理能力支撑", "en": "Scale requires management ability"}, {"cn": "系统化不等于失去灵活性", "en": "Systems don't eliminate flexibility"}, {"cn": "细节往往决定用户体验", "en": "Details determine experience"}, {"cn": "流程化会带来意想不到的机会", "en": "Process reveals unexpected opportunities"}, {"cn": "系统的冗余性能降低风险", "en": "Redundancy reduces risk"}, {"cn": "数据驱动能指导优化方向", "en": "Data guides optimization"}, {"cn": "用户反馈是系统迭代的宝矿", "en": "Feedback is optimization gold"}, {"cn": "系统负债会影响长期发展", "en": "Technical debt affects long-term growth"}, {"cn": "定期审视系统能发现瓶颈", "en": "Regular reviews find bottlenecks"}, {"cn": "规模化需要舍弃一些东西", "en": "Scaling requires sacrifice"}, {"cn": "系统的清晰性决定协作效率", "en": "Clarity determines collaboration"}, {"cn": "培训系统能保证输出质量", "en": "Training ensures quality"}, {"cn": "系统优化的ROI往往被低估", "en": "System ROI is often underestimated"}, {"cn": "小改进累积能产生大效果", "en": "Small improvements compound"}, {"cn": "系统的透明度能提高信任", "en": "Transparency builds trust"}, {"cn": "持续改进是系统化的核心", "en": "Continuous improvement is core"}, {"cn": "规模化后的管理挑战更大", "en": "Scaling increases management complexity"}, {"cn": "系统化能吸引人才", "en": "Systems attract talent"}, {"cn": "量化能让优化更科学", "en": "Quantification makes optimization scientific"}, {"cn": "系统文档是知识沉淀", "en": "Documentation preserves knowledge"}, {"cn": "技术投入能加速系统化", "en": "Technology accelerates systematization"}, {"cn": "系统的健壮性决定竞争力", "en": "Robustness determines competitiveness"}], "capabilities": [{"cn": "能诊断自己在产品规模层的现状", "en": "Can assess your scaling status"}, {"cn": "能准确评估现有系统的效率", "en": "Can assess current system efficiency"}, {"cn": "能快速识别系统中的瓶颈", "en": "Can quickly spot bottlenecks"}, {"cn": "能深入分析流程优化的空间", "en": "Can analyze optimization opportunities"}, {"cn": "能进行流程的标准化设计", "en": "Can design standardized processes"}, {"cn": "能制定自动化的具体方案", "en": "Can plan automation"}, {"cn": "能识别可以外包的环节", "en": "Can identify outsourceable tasks"}, {"cn": "能进行数据指标的建立", "en": "Can establish metrics"}, {"cn": "能设计质量控制的机制", "en": "Can design QC mechanisms"}, {"cn": "能评估规模化的真实成本", "en": "Can assess scaling costs"}, {"cn": "能进行人员培训的具体计划", "en": "Can plan team training"}, {"cn": "能识别系统升级的具体需求", "en": "Can identify upgrade needs"}, {"cn": "能分析用户反馈的规律", "en": "Can analyze feedback patterns"}, {"cn": "能制定产品迭代的具体策略", "en": "Can plan product iteration"}, {"cn": "能进行成本与收益的精确分析", "en": "Can analyze cost-benefit precisely"}, {"cn": "能识别规模化的具体风险", "en": "Can identify scaling risks"}, {"cn": "能进行管理层级的优化", "en": "Can optimize management layers"}, {"cn": "能评估技术投入的真实ROI", "en": "Can assess technology ROI"}, {"cn": "能设计团队协作机制", "en": "Can design collaboration systems"}, {"cn": "能进行文档化的系统建设", "en": "Can build documentation systems"}, {"cn": "能制定团队扩展的计划", "en": "Can plan team expansion"}, {"cn": "能识别关键流程的核心指标", "en": "Can identify key metrics"}, {"cn": "能进行性能的实时监控", "en": "Can monitor performance in real-time"}, {"cn": "能评估扩展的真实可行性", "en": "Can assess scaling feasibility"}, {"cn": "能进行流程改进的循环", "en": "Can cycle through improvements"}, {"cn": "能识别系统的具体瓶颈所在", "en": "Can locate specific bottlenecks"}, {"cn": "能进行用户体验的深度优化", "en": "Can optimize UX deeply"}, {"cn": "能设计反馈机制", "en": "Can design feedback loops"}, {"cn": "能进行成本控制的具体执行", "en": "Can execute cost control"}, {"cn": "能制定规模化的完整时间表", "en": "Can plan scaling timeline"}]}, "8": {"wisdoms": [{"cn": "资产是生成现金流的东西", "en": "Assets generate cash flow"}, {"cn": "积累需要时间和复利", "en": "Accumulation requires time and compounding"}, {"cn": "小额多次比大额单次更稳定", "en": "Small regular beats large sporadic"}, {"cn": "有意识的积累比被动增长快得多", "en": "Intentional accumulation beats passive growth"}, {"cn": "资产配置很关键", "en": "Asset allocation is key"}, {"cn": "不同资产的风险收益不同", "en": "Different assets have different risk-return"}, {"cn": "流动性和收益性需要平衡", "en": "Balance liquidity and returns"}, {"cn": "资产增长来自配置不是交易", "en": "Growth comes from allocation, not trading"}, {"cn": "心态决定是否能坚持积累", "en": "Mindset determines persistence"}, {"cn": "早开始比大额投入更重要", "en": "Starting early beats large amounts"}, {"cn": "分散能降低风险", "en": "Diversification reduces risk"}, {"cn": "定期评估资产质量", "en": "Regularly assess asset quality"}, {"cn": "资产的质量比数量更重要", "en": "Quality beats quantity"}, {"cn": "资产增值往往在看不见的地方", "en": "Appreciation happens invisibly"}, {"cn": "复利是最强大的力量", "en": "Compounding is most powerful"}, {"cn": "不同阶段资产配置不同", "en": "Asset allocation changes by stage"}, {"cn": "低成本进入很关键", "en": "Low entry costs matter"}, {"cn": "资产的增长是指数级的", "en": "Asset growth is exponential"}, {"cn": "持久心才能积累大资产", "en": "Patience builds large assets"}, {"cn": "资产基础决定未来收入天花板", "en": "Asset base determines income ceiling"}, {"cn": "小资产能成长为大财富", "en": "Small assets grow to large wealth"}, {"cn": "资产配置的多样性很重要", "en": "Portfolio diversity matters"}, {"cn": "耐心是积累的必要条件", "en": "Patience is essential"}, {"cn": "系统的资产管理能提升回报", "en": "Systematic management improves returns"}, {"cn": "资产的良性循环能加速增长", "en": "Virtuous cycles accelerate growth"}, {"cn": "知识也是很重要的资产", "en": "Knowledge is important asset"}, {"cn": "关系网络是隐形资产", "en": "Networks are hidden assets"}, {"cn": "品牌是无形资产", "en": "Brand is intangible asset"}, {"cn": "资产的税务处理很重要", "en": "Tax management matters"}, {"cn": "长期资产能抵御短期波动", "en": "Long-term assets weather volatility"}], "capabilities": [{"cn": "能诊断自己在资产形成层的现状", "en": "Can assess your asset status"}, {"cn": "能准确评估自己的资产规模", "en": "Can assess asset size"}, {"cn": "能快速识别有价值的资产机会", "en": "Can spot asset opportunities"}, {"cn": "能深入分析不同资产的特性", "en": "Can analyze asset characteristics"}, {"cn": "能制定资产积累的明确目标", "en": "Can set asset goals"}, {"cn": "能进行资产配置的系统规划", "en": "Can plan asset allocation"}, {"cn": "能准确评估资产的质量和增长潜力", "en": "Can assess quality and growth potential"}, {"cn": "能识别被低估的资产机会", "en": "Can spot undervalued assets"}, {"cn": "能进行资产的多元化投资", "en": "Can diversify assets"}, {"cn": "能设计资产增长的具体策略", "en": "Can design growth strategies"}, {"cn": "能进行资产风险的精确评估", "en": "Can assess risks"}, {"cn": "能识别资产的流动性特征", "en": "Can identify liquidity"}, {"cn": "能制定定期投入的具体计划", "en": "Can plan regular investing"}, {"cn": "能准确评估复利的威力", "en": "Can calculate compounding"}, {"cn": "能进行资产配置的动态调整", "en": "Can dynamically rebalance"}, {"cn": "能识别资产中的高收益部分", "en": "Can identify high-yield assets"}, {"cn": "能分析资产的周期特性", "en": "Can analyze cycles"}, {"cn": "能进行成本的最小化", "en": "Can minimize costs"}, {"cn": "能制定长期资产规划", "en": "Can plan long-term"}, {"cn": "能准确评估资产的保险需求", "en": "Can assess insurance needs"}, {"cn": "能进行资产信息的系统整理", "en": "Can organize asset info"}, {"cn": "能识别资产增值的具体机会", "en": "Can spot appreciation opportunities"}, {"cn": "能进行税务的优化规划", "en": "Can optimize taxes"}, {"cn": "能评估不同资产的相关性", "en": "Can assess correlations"}, {"cn": "能设计资产保护的具体方案", "en": "Can design protection"}, {"cn": "能进行资产的定期审视", "en": "Can regularly review"}, {"cn": "能识别资产中的浪费", "en": "Can spot waste"}, {"cn": "能制定资产清理的具体计划", "en": "Can plan asset cleanup"}, {"cn": "能准确评估新资产的必要性", "en": "Can assess new asset needs"}, {"cn": "能进行资产传承的系统规划", "en": "Can plan wealth transfer"}]}, "9": {"wisdoms": [{"cn": "复利是财富增长的加速器", "en": "Compounding accelerates wealth"}, {"cn": "时间是复利的最大变量", "en": "Time is compounding's biggest variable"}, {"cn": "持续投入是复利的前提", "en": "Continuous input enables compounding"}, {"cn": "初期的积累很艰苦但很关键", "en": "Early accumulation is hard but key"}, {"cn": "拐点往往在十年后出现", "en": "Inflection usually appears after 10 years"}, {"cn": "一致性的回报比高峰低谷更好", "en": "Consistent returns beat peaks and valleys"}, {"cn": "复利的魔力需要时间验证", "en": "Compounding magic requires time"}, {"cn": "风险和收益的平衡很关键", "en": "Balancing risk and return is key"}, {"cn": "不同投资的周期不同", "en": "Different investments have different cycles"}, {"cn": "投资知识比投资金钱更重要", "en": "Knowledge matters more than money"}, {"cn": "心态决定能否享受复利", "en": "Mindset determines compounding success"}, {"cn": "及早开始复利就越强大", "en": "Earlier starts build more power"}, {"cn": "停止投入复利就停止增长", "en": "Stopping input stops compounding"}, {"cn": "市场波动是投资的常态", "en": "Volatility is normal"}, {"cn": "长期思维能穿越波动", "en": "Long-term thinking survives volatility"}, {"cn": "多元投资能平滑曲线", "en": "Diversification smooths curves"}, {"cn": "回报率看上去差异小但长期很大", "en": "Small rate differences compound big"}, {"cn": "复利需要抵抗诱惑", "en": "Compounding requires discipline"}, {"cn": "自我投资是回报率最高的", "en": "Self-investment has highest returns"}, {"cn": "集中在优势领域复利最强", "en": "Focus on advantage maximizes compounding"}, {"cn": "复利的前提是本金不亏", "en": "Principal protection is essential"}, {"cn": "坚持是复利的唯一秘诀", "en": "Persistence is the only secret"}, {"cn": "年化回报率很关键", "en": "Annual return rate matters"}, {"cn": "小数点后的差异很重要", "en": "Decimal points matter"}, {"cn": "资本利得比收入增长更快", "en": "Capital gains compound faster"}, {"cn": "复利需要纪律", "en": "Compounding needs discipline"}, {"cn": "投资的收益来自等待", "en": "Returns come from waiting"}, {"cn": "复利效应在后期最明显", "en": "Compounding shows late"}, {"cn": "复利能穿越周期", "en": "Compounding survives cycles"}, {"cn": "财富自由来自复利的威力", "en": "Freedom comes from compounding"}], "capabilities": [{"cn": "能诊断自己在投资复利层的现状", "en": "Can assess your investment status"}, {"cn": "能准确评估自己的投资能力", "en": "Can assess investment skills"}, {"cn": "能快速识别高收益的投资机会", "en": "Can spot high-return opportunities"}, {"cn": "能深入分析投资的风险和回报", "en": "Can analyze risk-return profiles"}, {"cn": "能制定投资计划", "en": "Can create investment plans"}, {"cn": "能进行投资决策的深入分析", "en": "Can analyze investment decisions"}, {"cn": "能准确评估投资的时机", "en": "Can time investments"}, {"cn": "能识别适合长期投资的标的", "en": "Can identify good long-term investments"}, {"cn": "能进行投资组合的专业构建", "en": "Can build portfolios"}, {"cn": "能设计定期投资的具体规则", "en": "Can design regular investing rules"}, {"cn": "能进行投资数据的精确跟踪", "en": "Can track investment data"}, {"cn": "能快速识别投资中的陷阱", "en": "Can spot investment traps"}, {"cn": "能分析投资的周期特性", "en": "Can analyze investment cycles"}, {"cn": "能制定应对波动的具体策略", "en": "Can plan volatility responses"}, {"cn": "能精确评估投资的复合回报率", "en": "Can calculate compound returns"}, {"cn": "能准确进行风险承受能力的评估", "en": "Can assess risk tolerance"}, {"cn": "能识别投资的关键转折点", "en": "Can identify inflection points"}, {"cn": "能进行投资心态的专业调整", "en": "Can adjust investment mindset"}, {"cn": "能设计投资的纪律规则", "en": "Can design investing discipline"}, {"cn": "能精确评估投资知识的不足", "en": "Can assess knowledge gaps"}, {"cn": "能进行投资学习的系统规划", "en": "Can plan investment education"}, {"cn": "能识别投资中的认知偏差", "en": "Can identify cognitive biases"}, {"cn": "能制定投资多元化的具体方案", "en": "Can plan diversification"}, {"cn": "能进行投资效果的科学评估", "en": "Can measure returns"}, {"cn": "能快速识别投资的真实成本", "en": "Can identify true costs"}, {"cn": "能深入分析投资的历史表现", "en": "Can analyze performance"}, {"cn": "能进行未来收益的精确预测", "en": "Can forecast returns"}, {"cn": "能客观评估投资的必要性", "en": "Can assess necessity"}, {"cn": "能制定投资增量的具体计划", "en": "Can plan increases"}, {"cn": "能识别投资的机会成本", "en": "Can calculate opportunity cost"}]}, "10": {"wisdoms": [{"cn": "保护比增长更重要", "en": "Protection matters more than growth"}, {"cn": "风险管理是被动防守", "en": "Risk management is passive defense"}, {"cn": "一次大错能抹去多年努力", "en": "One big mistake erases years"}, {"cn": "安全边际很关键", "en": "Safety margin is key"}, {"cn": "保险是最便宜的风险转移", "en": "Insurance is cheapest transfer"}, {"cn": "分散能降低单点风险", "en": "Diversification reduces concentration"}, {"cn": "应急准备能化解危机", "en": "Preparation prevents crisis"}, {"cn": "风险识别是第一步", "en": "Identification is first step"}, {"cn": "看不见的风险最危险", "en": "Unseen risks are most dangerous"}, {"cn": "主动防守比被动应对更好", "en": "Prevention beats reaction"}, {"cn": "信息获取不全会增加风险", "en": "Incomplete info increases risk"}, {"cn": "专业人士能帮避免大坑", "en": "Experts help avoid pitfalls"}, {"cn": "法律合规是基础", "en": "Compliance is foundation"}, {"cn": "账目清晰能发现风险", "en": "Clear records reveal risks"}, {"cn": "多个备选方案能降低风险", "en": "Alternatives reduce risk"}, {"cn": "信用是最脆弱的资产", "en": "Credit is fragile"}, {"cn": "过度杠杆是最大风险", "en": "Excessive leverage is biggest risk"}, {"cn": "风险承受能力会随时间变化", "en": "Tolerance changes over time"}, {"cn": "心理素质决定风险应对", "en": "Psychology determines response"}, {"cn": "风险管理是系统性的", "en": "Risk management is systematic"}, {"cn": "提前识别风险能最小化损失", "en": "Early detection minimizes damage"}, {"cn": "风险和收益总是配对的", "en": "Risk and return always pair"}, {"cn": "保持清醒比追求高收益更重要", "en": "Clarity beats chasing returns"}, {"cn": "风险预案需要定期演练", "en": "Plans need regular review"}, {"cn": "团队和专业很关键", "en": "Team and expertise matter"}, {"cn": "风险承受能力决定策略选择", "en": "Tolerance determines strategy"}, {"cn": "保护好基础比冒险增长更明智", "en": "Protect base before growing"}, {"cn": "风险文化很重要", "en": "Risk culture matters"}, {"cn": "未知风险比已知风险更可怕", "en": "Unknown risks are more dangerous"}, {"cn": "安全第一是正确的优先级", "en": "Safety first is right"}], "capabilities": [{"cn": "能诊断自己在财富风险层的现状", "en": "Can assess your risk status"}, {"cn": "能准确评估自己面临的主要风险", "en": "Can identify main risks"}, {"cn": "能快速识别隐藏的风险因素", "en": "Can spot hidden risks"}, {"cn": "能深入分析风险的可能性和影响", "en": "Can analyze risk severity"}, {"cn": "能进行风险优先级的科学排序", "en": "Can prioritize risks"}, {"cn": "能制定风险防控的具体策略", "en": "Can create control strategies"}, {"cn": "能设计保险的配置方案", "en": "Can design insurance"}, {"cn": "能准确评估分散投资的效果", "en": "Can measure diversification"}, {"cn": "能快速识别风险的早期信号", "en": "Can spot early warnings"}, {"cn": "能进行应急资金的具体规划", "en": "Can plan emergency funds"}, {"cn": "能制定风险应对的完整预案", "en": "Can create response plans"}, {"cn": "能准确评估法律风险", "en": "Can assess legal risks"}, {"cn": "能进行合规性的深入检查", "en": "Can check compliance"}, {"cn": "能快速识别信用风险", "en": "Can spot credit risks"}, {"cn": "能分析市场波动的具体影响", "en": "Can analyze market impacts"}, {"cn": "能进行资产的多重备份规划", "en": "Can plan backups"}, {"cn": "能准确评估家庭风险", "en": "Can assess family risks"}, {"cn": "能制定健康保障的具体计划", "en": "Can plan health protection"}, {"cn": "能快速识别投资风险", "en": "Can spot investment risks"}, {"cn": "能进行账户安全的多层保护", "en": "Can protect accounts"}, {"cn": "能准确评估通货膨胀的影响", "en": "Can assess inflation impact"}, {"cn": "能制定长期保护的系统策略", "en": "Can plan long-term protection"}, {"cn": "能快速识别信息安全风险", "en": "Can spot security risks"}, {"cn": "能进行重要文件的妥善保管", "en": "Can secure documents"}, {"cn": "能设计法律保护的具体方案", "en": "Can design legal protection"}, {"cn": "能准确评估杠杆风险", "en": "Can assess leverage risks"}, {"cn": "能进行风险意识的持续提升", "en": "Can build risk awareness"}, {"cn": "能快速识别系统性风险", "en": "Can spot systemic risks"}, {"cn": "能制定多层次的防护措施", "en": "Can build multi-layer defense"}, {"cn": "能进行风险管理的定期审视", "en": "Can review risk management"}]}, "11": {"wisdoms": [{"cn": "时间是最稀缺的资源", "en": "Time is most scarce"}, {"cn": "自动化是时间自由的基础", "en": "Automation enables freedom"}, {"cn": "说不出来会让你忙碌", "en": "Not saying no keeps you busy"}, {"cn": "系统化能释放时间", "en": "Systems free time"}, {"cn": "优先级决定效率", "en": "Priority determines efficiency"}, {"cn": "关键20%的事做好就够了", "en": "Doing 20% well is enough"}, {"cn": "休息和思考的时间也很重要", "en": "Rest and reflection matter"}, {"cn": "时间的价值是动态的", "en": "Time value changes"}, {"cn": "生命中的确定成本是时间", "en": "Time is certain cost"}, {"cn": "杠杆最终都是时间杠杆", "en": "All leverage is time leverage"}, {"cn": "批量处理能提升效率", "en": "Batching improves efficiency"}, {"cn": "聚焦能创造时间富余", "en": "Focus creates time surplus"}, {"cn": "外包是聪明的时间分配", "en": "Outsourcing is smart"}, {"cn": "工作效率和生活质量相关", "en": "Efficiency and quality relate"}, {"cn": "时间自由是真正的自由", "en": "Time freedom is real freedom"}, {"cn": "学会委派能释放时间", "en": "Delegation frees time"}, {"cn": "设置边界能保护时间", "en": "Boundaries protect time"}, {"cn": "时间管理就是精力管理", "en": "Time is energy management"}, {"cn": "做正确的事比高效做事更重要", "en": "Right things beat efficiency"}, {"cn": "不做什么和做什么同样重要", "en": "Not doing matters too"}, {"cn": "早起和专注是时间杠杆", "en": "Early and focused win"}, {"cn": "有创意的工作更需要整块时间", "en": "Creative needs blocks"}, {"cn": "系统替代人的时间", "en": "Systems replace people"}, {"cn": "时间是有机的不能被挤压", "en": "Time can't be compressed"}, {"cn": "思考和行动需要平衡", "en": "Balance thinking and doing"}, {"cn": "长期规划能提升时间效率", "en": "Planning improves efficiency"}, {"cn": "时间自由是幸福的前提", "en": "Freedom enables happiness"}, {"cn": "节约时间投入创意更值", "en": "Saving time enables creativity"}, {"cn": "时间复利最后产生人生优势", "en": "Time compounds into advantage"}, {"cn": "选择权是时间自由的体现", "en": "Choice embodies freedom"}], "capabilities": [{"cn": "能诊断自己在时间杠杆层的现状", "en": "Can assess your time status"}, {"cn": "能准确评估自己的时间利用效率", "en": "Can assess time efficiency"}, {"cn": "能快速识别时间的浪费源", "en": "Can spot time waste"}, {"cn": "能深入分析时间的具体流向", "en": "Can trace time flow"}, {"cn": "能进行优先级的科学排序", "en": "Can prioritize tasks"}, {"cn": "能制定时间规划", "en": "Can plan time"}, {"cn": "能进行任务的精确分类", "en": "Can categorize tasks"}, {"cn": "能快速识别关键任务", "en": "Can spot critical tasks"}, {"cn": "能设计工作流程的优化", "en": "Can optimize workflows"}, {"cn": "能准确评估自动化的空间", "en": "Can assess automation potential"}, {"cn": "能制定外包的具体策略", "en": "Can plan outsourcing"}, {"cn": "能识别可以舍弃的事情", "en": "Can identify cutables"}, {"cn": "能进行专注的有效保护", "en": "Can protect focus"}, {"cn": "能准确评估会议的效率", "en": "Can assess meeting value"}, {"cn": "能快速识别打断源", "en": "Can spot interruptions"}, {"cn": "能进行深度工作的具体规划", "en": "Can plan deep work"}, {"cn": "能制定边界和具体规则", "en": "Can set boundaries"}, {"cn": "能准确评估工具的效率", "en": "Can assess tool value"}, {"cn": "能快速识别时间漏洞", "en": "Can spot time leaks"}, {"cn": "能进行批处理的具体规则", "en": "Can batch tasks"}, {"cn": "能设计个人工作节奏", "en": "Can design rhythm"}, {"cn": "能准确评估休息的必要性", "en": "Can assess rest needs"}, {"cn": "能进行思考时间的具体保留", "en": "Can schedule thinking"}, {"cn": "能快速识别自己的高效期", "en": "Can find peak hours"}, {"cn": "能制定日日清的具体规则", "en": "Can plan daily closes"}, {"cn": "能进行计划的灵活调整", "en": "Can adjust plans"}, {"cn": "能准确评估授权的可能", "en": "Can assess delegation"}, {"cn": "能快速识别时间投资的机会", "en": "Can spot opportunities"}, {"cn": "能进行人生时间的长期规划", "en": "Can plan life timeline"}, {"cn": "能制定时间自由的具体步骤", "en": "Can plan freedom steps"}]}, "12": {"wisdoms": [{"cn": "主动出击永远比被动应对好", "en": "Initiative beats reaction"}, {"cn": "Agency就是掌控感", "en": "Agency is sense of control"}, {"cn": "你的选择决定你的人生", "en": "Choices determine your life"}, {"cn": "责任和自由是一体的", "en": "Responsibility and freedom pair"}, {"cn": "主人翁精神能改变一切", "en": "Ownership changes everything"}, {"cn": "受害者心态是最大敌人", "en": "Victim mindset is your enemy"}, {"cn": "创造环境比适应环境更主动", "en": "Creating beats adapting"}, {"cn": "反馈是信息不是评价", "en": "Feedback is info, not judgment"}, {"cn": "主动沟通能避免误会", "en": "Communication prevents misunderstanding"}, {"cn": "寻求帮助也是主动", "en": "Asking for help is active"}, {"cn": "主动承认错误能快速改正", "en": "Admitting mistakes accelerates learning"}, {"cn": "质疑现状能发现新可能", "en": "Questioning reveals possibilities"}, {"cn": "主动学习让你始终有优势", "en": "Learning keeps you ahead"}, {"cn": "创意来自主动思考", "en": "Ideas come from thinking"}, {"cn": "主动建立连接能扩展可能性", "en": "Connecting expands possibilities"}, {"cn": "设定目标是主动的开始", "en": "Goals start agency"}, {"cn": "主动调整比固执坚守更聪明", "en": "Adjusting beats stubborn"}, {"cn": "承诺能增强主动性", "en": "Commitment strengthens agency"}, {"cn": "反思是主动进化的方式", "en": "Reflection enables growth"}, {"cn": "主动冒险才能获得高收益", "en": "Risk-taking brings rewards"}, {"cn": "创新来自主动尝试", "en": "Innovation comes from trying"}, {"cn": "主动定义成功的标准", "en": "Define success yourself"}, {"cn": "大胆假设谨慎求证是科学的主动", "en": "Hypothesis and verification are scientific"}, {"cn": "主动扩展能力圈", "en": "Expand your capabilities"}, {"cn": "掌控感能让人更自信", "en": "Control builds confidence"}, {"cn": "主动规划人生比被生活推动好", "en": "Plan beats being pushed"}, {"cn": "High Agency的人会创造机遇", "en": "High-agency people create opportunities"}, {"cn": "被动永远不会成为主角", "en": "Passive never leads"}, {"cn": "主动性决定人生高度", "en": "Agency determines life height"}, {"cn": "自主权是幸福的源头", "en": "Autonomy creates happiness"}], "capabilities": [{"cn": "能诊断自己在High Agency层的现状", "en": "Can assess your agency level"}, {"cn": "能准确评估自己的主动性水平", "en": "Can assess initiative"}, {"cn": "能快速识别自己的选择空间", "en": "Can identify choices"}, {"cn": "能深入分析受害者心态的具体影响", "en": "Can analyze victim mindset"}, {"cn": "能进行责任意识的系统建立", "en": "Can build responsibility"}, {"cn": "能制定主动行动的具体计划", "en": "Can plan action"}, {"cn": "能快速识别可以创造的可能", "en": "Can spot possibilities"}, {"cn": "能设计自己的成功标准", "en": "Can define success"}, {"cn": "能准确评估自己的控制感", "en": "Can assess control"}, {"cn": "能进行目标的主动设定", "en": "Can set goals"}, {"cn": "能制定尝试和迭代的具体计划", "en": "Can plan iteration"}, {"cn": "能快速识别可以学习的东西", "en": "Can spot learning"}, {"cn": "能进行反馈的主动寻求", "en": "Can seek feedback"}, {"cn": "能准确评估自己的勇气水平", "en": "Can assess courage"}, {"cn": "能快速识别恐惧的具体来源", "en": "Can identify fears"}, {"cn": "能制定突破的具体策略", "en": "Can plan breakthroughs"}, {"cn": "能进行决策质量的客观评估", "en": "Can evaluate decisions"}, {"cn": "能准确评估自己的主人翁精神", "en": "Can assess ownership"}, {"cn": "能快速识别可以改变的因素", "en": "Can spot changeable factors"}, {"cn": "能进行承诺的实现跟踪", "en": "Can track commitments"}, {"cn": "能制定自我提升的具体计划", "en": "Can plan self-improvement"}, {"cn": "能快速识别自己的支持系统", "en": "Can identify support"}, {"cn": "能进行环境的优化设计", "en": "Can optimize environment"}, {"cn": "能准确评估创意的可行性", "en": "Can assess ideas"}, {"cn": "能制定创新的具体尝试", "en": "Can plan innovation"}, {"cn": "能快速识别新的机遇", "en": "Can spot opportunities"}, {"cn": "能进行快速调整的能力培养", "en": "Can build agility"}, {"cn": "能准确评估长期主义的重要性", "en": "Can assess long-term"}, {"cn": "能制定人生方向的具体规划", "en": "Can plan life direction"}, {"cn": "能快速识别自己的独特价值", "en": "Can identify unique value"}]}};
+        let currentLang = 'both';
+        const icons = ['', '🏛️', '💳', '💵', '📚', '🤝', '🎯', '📦', '🏗️', '📈', '🛡️', '⏰', '🚀'];
+        const names_cn = ['', '財富本體', '財務生存', '收入生成', '知識變現', '社群信任', '銷售成交', '產品規模', '資產形成', '投資複利', '財富風險', '時間槓桿', 'High Agency'];
+        const names_en = ['', 'Wealth Foundation', 'Financial Survival', 'Income Generation', 'Knowledge Monetization', 'Community Trust', 'Sales Closing', 'Product Scaling', 'Asset Formation', 'Investment Compounding', 'Wealth Risk', 'Time Leverage', 'High Agency'];
+        
+        function generateMenu() {
+            let html = '';
+            for (let i = 1; i <= 12; i++) {
+                const badge = [1, 10, 12].includes(i) ? 'P0' : '';
+                html += `<div class="menu-item" onclick="jumpToApp(${i})">
+                    <span class="menu-icon">${icons[i]}</span>
+                    <div class="menu-text">
+                        <div>${names_cn[i]} ${badge}</div>
+                        <div class="menu-layer">L${i}</div>
+                    </div>
+                </div>`;
+            }
+            document.getElementById('menuItems').innerHTML = html;
+        }
+        
+        function jumpToApp(layer) {
+            document.getElementById('app-' + layer).scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.lang-controls .btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            render();
+        }
+        
+        function switchTab(layer, tab) {
+            document.querySelectorAll(`#app-${layer} .content-section`).forEach(s => s.classList.remove('active'));
+            document.querySelectorAll(`#app-${layer} .tab`).forEach(t => t.classList.remove('active'));
+            document.getElementById(`content-${tab}-${layer}`).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        function togglePractice(key, layer) {
+            const card = document.getElementById(`practice-${key}-${layer}`);
+            card.classList.toggle('open');
+            const content = card.querySelector('.pc-content');
+            if (content) content.classList.toggle('show');
+        }
+        
+        function render() {
+            let html = '';
+            for (let layer = 1; layer <= 12; layer++) {
+                const data = allData[layer];
+                if (!data) continue;
+                
+                const badge = [1, 10, 12].includes(layer) ? '<span class="p0-badge">P0</span>' : '';
+                const cardClass = [1, 10, 12].includes(layer) ? 'card p0' : 'card';
+                
+                let wisdomsHtml = '';
+                if (currentLang === 'both') {
+                    wisdomsHtml = data.wisdoms.map((w, i) => `<div class="item">
+                        <div class="item-cn">${i+1}. ${w.cn}</div>
+                        <div class="item-en">${w.en}</div>
+                    </div>`).join('');
+                } else if (currentLang === 'cn') {
+                    wisdomsHtml = data.wisdoms.map((w, i) => `<div class="item">${i+1}. ${w.cn}</div>`).join('');
+                } else {
+                    wisdomsHtml = data.wisdoms.map((w, i) => `<div class="item">${i+1}. ${w.en}</div>`).join('');
+                }
+                
+                let capabilitiesHtml = '';
+                if (currentLang === 'both') {
+                    capabilitiesHtml = data.capabilities.map((c, i) => `<div class="item">
+                        <div class="item-cn">${i+1}. ${c.cn}</div>
+                        <div class="item-en">${c.en}</div>
+                    </div>`).join('');
+                } else if (currentLang === 'cn') {
+                    capabilitiesHtml = data.capabilities.map((c, i) => `<div class="item">${i+1}. ${c.cn}</div>`).join('');
+                } else {
+                    capabilitiesHtml = data.capabilities.map((c, i) => `<div class="item">${i+1}. ${c.en}</div>`).join('');
+                }
+                
+                html += `
+                    <div class="${cardClass}" id="app-${layer}">
+                        <div class="card-header">
+                            <span class="icon">${icons[layer]}</span>
+                            <div class="header-info">
+                                <div class="title">${names_cn[layer]}</div>
+                                <div class="title-en">${names_en[layer]}</div>
+                                <div class="layer-info">L${layer} | 30智慧 + 30能力 + 4卡片</div>
+                            </div>
+                            ${badge}
+                        </div>
+                        
+                        <div class="tabs">
+                            <div class="tab active" onclick="switchTab(${layer}, 'wisdom')">智慧(30)</div>
+                            <div class="tab" onclick="switchTab(${layer}, 'ability')">能力(30)</div>
+                            <div class="tab" onclick="switchTab(${layer}, 'practice')">實踐卡(4)</div>
+                        </div>
+                        
+                        <div id="content-wisdom-${layer}" class="content-section active">
+                            ${wisdomsHtml}
+                        </div>
+                        
+                        <div id="content-ability-${layer}" class="content-section">
+                            ${capabilitiesHtml}
+                        </div>
+                        
+                        <div id="content-practice-${layer}" class="content-section">
+                            <div class="practices">
+                                <div class="practice-grid">
+                                    <div class="practice-card" id="practice-diagnosis-${layer}" onclick="event.stopPropagation(); togglePractice('diagnosis', ${layer})">
+                                        <div class="pc-title">診斷</div>
+                                        <div>5步流程</div>
+                                        <div class="pc-content">
+                                            <div class="step">第1步: 確定診斷維度</div>
+                                            <div class="step">第2步: 收集診斷數據</div>
+                                            <div class="step">第3步: 進行對標分析</div>
+                                            <div class="step">第4步: 挖掘根本原因</div>
+                                            <div class="step">第5步: 生成診斷報告</div>
+                                        </div>
+                                    </div>
+                                    <div class="practice-card" id="practice-design-${layer}" onclick="event.stopPropagation(); togglePractice('design', ${layer})">
+                                        <div class="pc-title">設計</div>
+                                        <div>5步流程</div>
+                                        <div class="pc-content">
+                                            <div class="step">第1步: 明確改進目標</div>
+                                            <div class="step">第2步: 制定實施路線圖</div>
+                                            <div class="step">第3步: 分配執行資源</div>
+                                            <div class="step">第4步: 制定風險應對</div>
+                                            <div class="step">第5步: 制定激勵措施</div>
+                                        </div>
+                                    </div>
+                                    <div class="practice-card" id="practice-execution-${layer}" onclick="event.stopPropagation(); togglePractice('execution', ${layer})">
+                                        <div class="pc-title">執行</div>
+                                        <div>5步流程</div>
+                                        <div class="pc-content">
+                                            <div class="step">第1步: 日常落實執行</div>
+                                            <div class="step">第2步: 實時進度跟蹤</div>
+                                            <div class="step">第3步: 問題及時記錄</div>
+                                            <div class="step">第4步: 及時調整優化</div>
+                                            <div class="step">第5步: 維持執行動力</div>
+                                        </div>
+                                    </div>
+                                    <div class="practice-card" id="practice-reflection-${layer}" onclick="event.stopPropagation(); togglePractice('reflection', ${layer})">
+                                        <div class="pc-title">反思</div>
+                                        <div>5步流程</div>
+                                        <div class="pc-content">
+                                            <div class="step">第1步: 客觀的結果評價</div>
+                                            <div class="step">第2步: 深度的原因分析</div>
+                                            <div class="step">第3步: 系統化的經驗提取</div>
+                                            <div class="step">第4步: 認知模型迭代</div>
+                                            <div class="step">第5步: 知識系統化記錄</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById('grid').innerHTML = html;
+        }
+        
+        document.getElementById('menuSearch').addEventListener('input', (e) => {
+            const q = e.target.value.toLowerCase();
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
+            });
+        });
+        
+        generateMenu();
+        render();
+    </script>
+</body>
+</html>
