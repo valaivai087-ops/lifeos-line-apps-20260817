@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>能力診斷系統 — 癌友+大眾</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 36px; margin-bottom: 12px; font-weight: 800; }
+        .header .subtitle { font-size: 16px; opacity: 0.95; line-height: 1.8; }
+        .content { padding: 40px 30px; min-height: 600px; }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* 路線卡片 */
+        .route-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 40px 0; }
+        .route-card {
+            padding: 40px;
+            border: 4px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .route-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 12px 36px rgba(102, 126, 234, 0.25);
+            transform: translateY(-5px);
+        }
+        .route-card h3 { font-size: 26px; font-weight: 800; color: #333; margin-bottom: 15px; }
+        .route-card p { font-size: 16px; color: #666; line-height: 1.8; }
+        
+        /* 導航標籤 */
+        .nav-tabs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .nav-tab {
+            padding: 14px;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+        .nav-tab:hover {
+            border-color: #667eea;
+            background: #f5f7ff;
+        }
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        
+        /* 問題區塊 */
+        .question-block {
+            margin-bottom: 25px;
+            padding: 24px;
+            background: #f9f9f9;
+            border-left: 6px solid #667eea;
+            border-radius: 8px;
+        }
+        .question-id { font-size: 13px; color: #999; font-weight: 700; background: #e8e8e8; padding: 4px 10px; border-radius: 3px; display: inline-block; }
+        .question-title { font-size: 18px; font-weight: 700; color: #333; margin: 10px 0; }
+        .quote-box {
+            background: white;
+            padding: 16px;
+            border-left: 4px solid #f5576c;
+            border-radius: 6px;
+            margin: 12px 0;
+            font-size: 15px;
+            color: #555;
+            font-style: italic;
+            line-height: 1.8;
+            font-weight: 600;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin: 14px 0;
+        }
+        .error-box {
+            background: #fff3cd;
+            padding: 14px;
+            border-left: 4px solid #ffc107;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #664d03;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+        .error-box strong { display: block; margin-bottom: 6px; }
+        .updated-box {
+            background: #d4edda;
+            padding: 14px;
+            border-left: 4px solid #28a745;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #155724;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+        .updated-box strong { display: block; margin-bottom: 6px; }
+        .limitation-leverage {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin: 14px 0;
+        }
+        .limitation-item {
+            background: #fff0f3;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #c5192d;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+        .limitation-item strong { display: block; margin-bottom: 6px; }
+        .leverage-item {
+            background: #d1f3d1;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #206b20;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+        .leverage-item strong { display: block; margin-bottom: 6px; }
+        .capability-badge {
+            display: inline-block;
+            padding: 7px 14px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        /* 按鈕 */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 120px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(102, 126, 234, 0.35);
+        }
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #e0e0e0;
+            font-weight: 700;
+        }
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        /* 社群區塊 */
+        .community-block {
+            margin-top: 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+        }
+        .community-block h2 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+        .community-block p {
+            font-size: 16px;
+            margin-bottom: 25px;
+            line-height: 1.8;
+            font-weight: 500;
+        }
+        .community-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        /* 響應式 */
+        @media (max-width: 768px) {
+            .content { padding: 25px 15px; }
+            .header { padding: 35px 15px; }
+            .header h1 { font-size: 26px; }
+            .header .subtitle { font-size: 14px; }
+            .route-grid,
+            .comparison-grid,
+            .limitation-leverage,
+            .nav-tabs { grid-template-columns: 1fr; }
+            .button-group { flex-direction: column; }
+            button { width: 100%; }
+            .question-title { font-size: 16px; }
+            .quote-box { font-size: 14px; }
+            .community-block {
+                padding: 25px;
+                margin-top: 30px;
+            }
+            .community-block h2 {
+                font-size: 22px;
+            }
+            .community-block p {
+                font-size: 14px;
+            }
+            .community-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌿 能力診斷系統</h1>
+            <p class="subtitle">100個癌友故事 + 70個生活困境<br>用最簡單的語言看清自己，找到改變的關鍵</p>
+        </div>
+
+        <div class="content">
+            <!-- 主頁 -->
+            <div id="landing-page" class="page active">
+                <h2 style="text-align: center; font-size: 28px; margin-bottom: 20px; color: #333; font-weight: 800;">選擇你的路線</h2>
+
+                <div class="route-grid">
+                    <div class="route-card" onclick="startDiagnosis('cancer')">
+                        <h3>🏥 癌友版</h3>
+                        <p style="margin: 15px 0;">
+                            100個真實故事<br>
+                            剛確診、治療、副作用<br>
+                            復發擔心、重新生活<br>
+                            人生智慧
+                        </p>
+                        <div style="margin-top: 15px; font-size: 13px; color: #999; font-weight: 600;">
+                            → 10大人生主題
+                        </div>
+                    </div>
+                    <div class="route-card" onclick="startDiagnosis('wellness')">
+                        <h3>🌈 大眾版</h3>
+                        <p style="margin: 15px 0;">
+                            70個生活困境<br>
+                            工作壓力、情緒困擾<br>
+                            身體健康、人際關係<br>
+                            習慣養成、自我照顧
+                        </p>
+                        <div style="margin-top: 15px; font-size: 13px; color: #999; font-weight: 600;">
+                            → 7大生活領域
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 社群入口 -->
+                <div style="margin-top: 50px; padding: 40px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 12px; text-align: center; color: white;">
+                    <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 18px;">🌟 加入我們的社群</h2>
+                    <p style="font-size: 17px; margin-bottom: 30px; line-height: 1.9; font-weight: 500;">
+                        與200+癌友和關心者一起分享故事、互相支持<br>
+                        每週有專業醫療人員駐診，有問題可直接提問
+                    </p>
+                    
+                    <a href="https://line.me/R/ti/g/4-yfOVEEh6" target="_blank" style="display: inline-block; padding: 20px 50px; background: white; color: #f5576c; border-radius: 10px; font-size: 20px; font-weight: 800; text-decoration: none; transition: all 0.3s; cursor: pointer; margin-bottom: 20px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);">
+                        進入 LINE 社群 →
+                    </a>
+                    
+                    <p style="font-size: 14px; margin-top: 15px; opacity: 0.98; font-weight: 600;">
+                        https://line.me/R/ti/g/4-yfOVEEh6
+                    </p>
+                </div>
+            </div>
+
+            <!-- 癌友診斷頁 -->
+            <div id="cancer-page" class="page">
+                <h2 style="font-size: 24px; color: #333; margin-bottom: 25px; font-weight: 800;">🏥 癌友100題</h2>
+                <div class="nav-tabs" id="cancer-nav"></div>
+                <div id="cancer-questions"></div>
+                <div class="button-group">
+                    <button class="btn-secondary" onclick="goHome()">返回首頁</button>
+                </div>
+            </div>
+
+            <!-- 大眾診斷頁 -->
+            <div id="wellness-page" class="page">
+                <h2 style="font-size: 24px; color: #333; margin-bottom: 25px; font-weight: 800;">🌈 大眾生活版</h2>
+                <div class="nav-tabs" id="wellness-nav"></div>
+                <div id="wellness-questions"></div>
+                <div class="button-group">
+                    <button class="btn-secondary" onclick="goHome()">返回首頁</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 癌友版題庫（簡化版本） ==========
+        const cancerTopics = {
+            'A': { title: '剛確診 01-10', questions: [
+                { id: 'A01', title: '大腦當機', quote: '先穩住自己，不用一天搞懂全部。', wrong: '我必須立刻搞清楚所有癌症的事', right: '先知道病是什麼、下一步要做什麼就好', stuck: '恐慌', key: '確定下一步', skill: '穩住心神' },
+                { id: 'A02', title: '資訊爆炸', quote: '看得越多，反而越不知道信誰。', wrong: '看越多資訊就越安全', right: '先看跟自己決定有關的就夠', stuck: '被資訊淹沒', key: '挑有用的資訊', skill: '分辨資訊' },
+                { id: 'A03', title: '頭昏腦脹', quote: '重大事件發生時，大腦當機是正常的。', wrong: '我應該立刻冷靜', right: '先休息，穩定了再想下一步', stuck: '整個人懵', key: '讓自己穩下來', skill: '認出自己的感受' },
+                { id: 'A04', title: '急著決定', quote: '越急的時候，越要慢下來做大決定。', wrong: '趕快做什麼都比什麼不做好', right: '重大決定前先確認有根據', stuck: '急得不行', key: '按下暫停鍵', skill: '做好決定' },
+                { id: 'A05', title: '不知道問什麼', quote: '好的問題，能幫你省掉很多無謂的擔心。', wrong: '醫生會主動告訴我全部', right: '我需要準備清單來問', stuck: '就是不知道問啥', key: '準備問題清單', skill: '會提問' },
+                { id: 'A06', title: '偏方誘惑', quote: '在最害怕的時候，最需要保護自己的判斷力。', wrong: '有人成功，我也一定有效', right: '別人的故事≠我的證據', stuck: '被希望沖昏頭', key: '冷靜查證', skill: '分辨真假' },
+                { id: 'A07', title: '非得樂觀', quote: '真正的陪伴，不是禁止你害怕。', wrong: '負面想法會害我病情更糟', right: '可以害怕，也可以同時求救', stuck: '得假裝沒事', key: '允許自己害怕', skill: '管理情緒' },
+                { id: 'A08', title: '病名一樣治法卻不同', quote: '名字相同，不代表治療方式相同。', wrong: '都叫癌症，治療應該差不多', right: '病期、病理、我的身體狀況才決定治療', stuck: '搞不清楚', key: '了解自己的病', skill: '懂自己的病' },
+                { id: 'A09', title: '狂查資訊', quote: '真正需要的不是更多資訊，而是懂怎麼用。', wrong: '不停查才能放心', right: '有可信的資訊來源和停止點', stuck: '停不下來', key: '設定查資訊的邊界', skill: '管理資訊' },
+                { id: 'A10', title: '什麼都控制不了', quote: '控制不了全部，不代表什麼都做不了。', wrong: '癌症來了我什麼都沒辦法', right: '把注意力放在自己真的能做的事', stuck: '無力感', key: '專注能控制的事', skill: '找到自己能做的' }
+            ]},
+            'B': { title: '理解疾病 11-20', questions: [
+                { id: 'B11', title: '癌症是啥', quote: '先理解它，恐懼才不會亂補答案。', wrong: '癌症像魔鬼一樣突然出現', right: '是細胞出了問題，需要好好瞭解', stuck: '神秘可怕', key: '知道是啥', skill: '基本知識' },
+                { id: 'B12', title: '良惡不分', quote: '腫瘤跟癌症不一樣。', wrong: '只要長腫瘤就是癌症', right: '要看醫生檢查才能判斷', stuck: '搞不清楚', key: '了解差異', skill: '分清概念' },
+                { id: 'B13', title: '疾病位置', quote: '知道病在哪裡，才懂為什麼這樣治。', wrong: '癌症就是有或沒有', right: '位置和大小都會影響治療', stuck: '二選一', key: '知道位置和程度', skill: '理解分期' },
+                { id: 'B14', title: '為什麼會得癌', quote: '癌症不是單一原因，是很多原因累積。', wrong: '一定有一個原因導致', right: '是多個原因一起才發生', stuck: '怪自己', key: '接受複雜性', skill: '懂病的機制' },
+                { id: 'B15', title: '擴散', quote: '擴散不是「跑掉」那麼簡單。', wrong: '癌細胞只是跑到別的地方', right: '需要經過很多步驟才會擴散', stuck: '太簡化', key: '了解過程', skill: '懂擴散怎樣發生' },
+                { id: 'B16', title: '同病不同治', quote: '治療的是你，不只是病的名字。', wrong: '同一種癌就是同一種治法', right: '期數、體質、狀況都會改變治療', stuck: '套公式', key: '了解個別化', skill: '知道自己的特殊性' },
+                { id: 'B17', title: '分期號碼', quote: '分期號碼不是宣判，而是治療的指南。', wrong: '數字大＝死定了', right: '數字是用來評估和計畫的', stuck: '數字恐懼', key: '知道分期的意思', skill: '讀懂分期' },
+                { id: 'B18', title: '病理報告', quote: '看懂報告，就開始看懂自己的病。', wrong: '報告交給醫生，我不用懂', right: '我也可以讀懂重點並提問', stuck: '有門檻', key: '學會讀報告', skill: '自己讀報告' },
+                { id: 'B19', title: '生物標記', quote: '現在不只問「在哪裡」，也問「什麼特徵」。', wrong: '是什麼癌決定全部', right: '細胞特徵會影響選擇', stuck: '知識不足', key: '了解特徵', skill: '知道新醫學' },
+                { id: 'B20', title: '會復發嗎', quote: '治完是里程碑，不是永遠沒事的保證。', wrong: '治完＝永遠沒事', right: '依計畫追蹤＋活好現在', stuck: '不確定', key: '接受不確定', skill: '懂風險' }
+            ]},
+            'C': { title: '治療決策 21-30', questions: [
+                { id: 'C21', title: '五大治療法', quote: '先知道各種治療幹嘛，再決定要用哪個。', wrong: '全部治療都只是殺癌', right: '不同治療做不同事，適用不同情況', stuck: '混亂', key: '畫出治療地圖', skill: '懂治療' },
+                { id: 'C22', title: '治療先後', quote: '治療的順序本身就是策略的一部分。', wrong: '一定先開刀最好', right: '順序要看病情和目標', stuck: '固執想法', key: '了解為什麼這順序', skill: '明白治療路徑' },
+                { id: 'C23', title: '標準治療', quote: '標準不是隨便，是有根據堆積而成。', wrong: '標準＝舊辦法', right: '標準治療通常有最多證據', stuck: '喜歡新東西', key: '信任有根據的選擇', skill: '理解證據' },
+                { id: 'C24', title: '第二意見', quote: '第二意見不是不信任，是重大決策的確認。', wrong: '問第二位醫生會惹第一位不開心', right: '複雜的決定可以多問一次', stuck: '人情壓力', key: '敢問第二意見', skill: '做好決定' },
+                { id: 'C25', title: '最新療法', quote: '最新不代表最適合你。', wrong: '越新越好', right: '要看是否適合、有沒有證據、危險性', stuck: '追逐新東西', key: '評估適合度', skill: '判斷好壞' },
+                { id: 'C26', title: '只想殺癌', quote: '治療不是比誰最猛，而是整體利益。', wrong: '越強的治療越好', right: '療效、副作用、身體狀況都要考慮', stuck: '單一想法', key: '整體考慮', skill: '權衡輕重' },
+                { id: 'C27', title: '副作用要不要', quote: '好的選擇，是知道自己在交換什麼。', wrong: '有副作用就不好', right: '評估有沒有效、有多大風險、能不能承受', stuck: '害怕副作用', key: '看清楚在交換什麼', skill: '權衡利弊' },
+                { id: 'C28', title: '治療前問什麼', quote: '問題問得清楚，選擇就有根據。', wrong: '聽醫生說就好', right: '主動問目標、選項、危險、替代方案', stuck: '被動', key: '敢提問', skill: '醫病溝通' },
+                { id: 'C29', title: '治療沒效', quote: '一條路不通，不代表路都斷了。', wrong: '一次失效＝完全沒希望', right: '重新評估後還有其他選項', stuck: '絕望', key: '重新規劃', skill: '調整計畫' },
+                { id: 'C30', title: '做好決定', quote: '好決定不一定保證好結果，但有根據。', wrong: '選對了就一定成功', right: '好決定+可能遇到不確定的結果', stuck: '結果論', key: '做有根據的選擇', skill: '決策品質' }
+            ]},
+            'D': { title: '副作用困難 31-40', questions: [
+                { id: 'D31', title: '累得要死', quote: '累不只要忍，應該評估原因。', wrong: '有癌症就該累，忍著就好', right: '疲勞有原因，可以評估怎麼改善', stuck: '被迫接受', key: '主動回報', skill: '觀察症狀' },
+                { id: 'D32', title: '吃不下', quote: '吃不下不是意志力弱。', wrong: '硬著頭皮吃', right: '找原因、調整吃的方式、求救', stuck: '沒辦法', key: '評估原因', skill: '營養應對' },
+                { id: 'D33', title: '噁心想吐', quote: '先讓吃變容易，比強迫多吃重要。', wrong: '忍忍就過', right: '主動處理噁心，調整飲食', stuck: '只能忍', key: '症狀控制', skill: '症狀管理' },
+                { id: 'D34', title: '一直掉重', quote: '體重下降不是數字，應該及時處理。', wrong: '治療就是會瘦，正常', right: '持續掉應該立刻跟醫生說', stuck: '拖著', key: '早期處理', skill: '營養監測' },
+                { id: 'D35', title: '嘴巴潰爛', quote: '嘴巴能不能吃，會影響全身營養。', wrong: '嘴破就忍著', right: '趕快處理，恢復進食', stuck: '疼痛', key: '口腔照護', skill: '口腔保健' },
+                { id: 'D36', title: '睡眠亂掉', quote: '睡不好不是小事，可以改善。', wrong: '有癌症睡眠亂很正常', right: '找原因並跟醫療團隊討論', stuck: '失眠折磨', key: '尋求改善', skill: '睡眠管理' },
+                { id: 'D37', title: '手腳發麻', quote: '副作用越早說，越早有辦法處理。', wrong: '等到療程結束再說', right: '立刻記錄並回報', stuck: '怕麻煩', key: '敢說', skill: '症狀回報' },
+                { id: 'D38', title: '腸胃打結', quote: '小問題不要等變大問題才說。', wrong: '拉肚子、便秘自己想辦法', right: '持續不好要跟醫生說', stuck: '自己硬撐', key: '知道何時就醫', skill: '腸胃管理' },
+                { id: 'D39', title: '怕說副作用', quote: '回報不是抱怨，是重要資訊。', wrong: '說副作用會顯得脆弱', right: '症狀資訊幫助醫療決策', stuck: '說不出口', key: '敢開口', skill: '醫病合作' },
+                { id: 'D40', title: '忍耐比賽', quote: '治療不是看誰最會忍。', wrong: '能忍＝夠勇敢', right: '觀察、回報、處理也是勇敢', stuck: '忍耐文化', key: '症狀管理', skill: '自我照顧' }
+            ]},
+            'E': { title: '心理情緒 41-50', questions: [
+                { id: 'E41', title: '必須樂觀', quote: '癌友不欠誰一張樂觀臉。', wrong: '樂觀才會好', right: '情緒不是治療成敗的考試', stuck: '情緒壓抑', key: '允許真實', skill: '情緒接納' },
+                { id: 'E42', title: '哭是弱嗎', quote: '勇敢不是不哭，而是哭完還有人陪著。', wrong: '哭＝弱', right: '情緒表達也是調適', stuck: '羞恥感', key: '敢表達', skill: '情緒調節' },
+                { id: 'E43', title: '夜間崩潰', quote: '白天撐住，不代表心理沒累積。', wrong: '白天正常＝我沒事', right: '看見累積的壓力', stuck: '壓抑', key: '找出口', skill: '自我覺察' },
+                { id: 'E44', title: '為什麼是我', quote: '有些問題沒公平答案，但人生還可以繼續。', wrong: '找到原因才能放下', right: '有些事無法解釋，但要接受', stuck: '尋找終極答案', key: '接受＋行動', skill: '接受現實' },
+                { id: 'E45', title: '孤單感', quote: '被理解，本身就是一種支持。', wrong: '只能自己扛', right: '找到能聽懂自己的人', stuck: '孤立', key: '建立支持', skill: '連結' },
+                { id: 'E46', title: '別想太多', quote: '真正陪伴，不是關掉情緒，而是容納它。', wrong: '安慰＝叫別人別想', right: '先聽，陪著，再問需要什麼', stuck: '急著解決', key: '好好傾聽', skill: '溝通' },
+                { id: 'E47', title: '脾氣差', quote: '憤怒下面，常常藏著害怕、痛和無力。', wrong: '我脾氣變壞了', right: '找到下面的真實需求', stuck: '只看表面', key: '情緒命名', skill: '情緒辨識' },
+                { id: 'E48', title: '需要幫助', quote: '需要幫忙，不代表你輸了。', wrong: '應該自己撐', right: '影響生活就該找人幫', stuck: '有污名', key: '敢求救', skill: '求助' },
+                { id: 'E49', title: '什麼是勇敢', quote: '勇敢不是沒恐懼，而是恐懼沒拿走行動。', wrong: '勇敢＝不怕', right: '怕但還是往前走', stuck: '完美勇敢想像', key: '下一步', skill: '韌性' },
+                { id: 'E50', title: '拿回力量', quote: '控制不了病，仍能決定今天怎麼過。', wrong: '癌症決定一切', right: '找回還能選擇的部分', stuck: '完全無力', key: '選擇權', skill: '主體性' }
+            ]},
+            'F': { title: '家人關係 51-60', questions: [
+                { id: 'F51', title: '家人怎麼陪', quote: '最好的幫忙，是先問「你現在需要什麼？」', wrong: '愛＝一直出主意', right: '先理解需求再幫', stuck: '過度介入', key: '先問再幫', skill: '好陪伴' },
+                { id: 'F52', title: '一定會好', quote: '希望可以陪，但不用假裝知道未來。', wrong: '保證最能安慰', right: '說真話＋陪著反而穩固', stuck: '空洞承諾', key: '當下陪伴', skill: '真實溝通' },
+                { id: 'F53', title: '家人找偏方', quote: '很多控制背後，其實藏著害怕失去。', wrong: '他就是固執', right: '看見恐懼，設立安全邊界', stuck: '恐懼', key: '安全邊界', skill: '理解關係' },
+                { id: 'F54', title: '只聊病情', quote: '病人不只有癌症一個身份。', wrong: '應該只關心病', right: '也聊生活、興趣、日常', stuck: '被疾病化', key: '還原生活', skill: '尊重人' },
+                { id: 'F55', title: '怕拖累', quote: '讓人幫，不等於你沒價值。', wrong: '全自己扛才不拖累', right: '合理分工，照護才持久', stuck: '罪惡感', key: '分工', skill: '接受支持' },
+                { id: 'F56', title: '照顧者累', quote: '長期照顧中，照顧者也不能被耗盡。', wrong: '照顧者只能撐', right: '休息、輪替、求救也是責任', stuck: '耗竭', key: '尋求協助', skill: '照顧管理' },
+                { id: 'F57', title: '夫妻改變', quote: '病會改變角色，關係需要重新學習。', wrong: '愛就該自然知道怎麼做', right: '需求要重新說清楚', stuck: '期待落差', key: '溝通', skill: '關係調整' },
+                { id: 'F58', title: '跟孩子說', quote: '孩子需要適齡的真實，不是零資訊。', wrong: '完全不說才能保護', right: '適齡說明＋允許提問', stuck: '害怕傷害', key: '適齡溝通', skill: '家庭溝通' },
+                { id: 'F59', title: '關係重新排序', quote: '重大事件會讓關係排序。', wrong: '朋友越多越幸福', right: '看見誰真的在', stuck: '失落', key: '品質勝過數量', skill: '關係辨識' },
+                { id: 'F60', title: '陪但不替代', quote: '陪伴不是替他活，而是守著他的選擇權。', wrong: '愛＝替病人決定', right: '提供資訊和支持，尊重他的決定', stuck: '控制', key: '自主權', skill: '尊重自主' }
+            ]},
+            'G': { title: '重新生活 61-70', questions: [
+                { id: 'G61', title: '治完後', quote: '療程結束，是下一階段開始，不是恢復原廠。', wrong: '治完就該跟以前一樣', right: '恢復可能需要時間', stuck: '急著正常', key: '漸進恢復', skill: '重新適應' },
+                { id: 'G62', title: '還是很累', quote: '恢復不是比速度。', wrong: '我怎麼還沒好', right: '根據身體狀況逐步恢復', stuck: '自責', key: '合理節奏', skill: '自我照顧' },
+                { id: 'G63', title: '回工作', quote: '回生活，不代表第一天就100%。', wrong: '要立刻達到以前效率', right: '分階段增加工作量', stuck: '過度要求', key: '漸進負荷', skill: '節奏管理' },
+                { id: 'G64', title: '要不要運動', quote: '活動是拿回生活能力，不是證明自己。', wrong: '越操越快好', right: '根據醫囑和狀態慢慢來', stuck: '過度用力', key: '循序漸進', skill: '身體管理' },
+                { id: 'G65', title: '什麼才重要', quote: '病有時迫人問：什麼值得我的時間？', wrong: '忙＝有價值', right: '把有限時間給重要的人事物', stuck: '慣性忙碌', key: '優先順序', skill: '人生排序' },
+                { id: 'G66', title: '朋友變少', quote: '朋友變少，不代表人生變差。', wrong: '人越多越幸福', right: '品質可能比數量重要', stuck: '害怕孤單', key: '高品質連結', skill: '關係篩選' },
+                { id: 'G67', title: '時間有限', quote: '錢可能再賺，今天不會再回來。', wrong: '以後再做', right: '重要的事不要無限延期', stuck: '拖延習慣', key: '現在開始', skill: '時間管理' },
+                { id: 'G68', title: '不只防復發', quote: '活著不只避免壞事，也是擁有好日子。', wrong: '每天都要防癌', right: '追蹤外也要恢復生活', stuck: '恐懼中心', key: '生活品質', skill: '生活重建' },
+                { id: 'G69', title: '身體改變', quote: '身體留下改變，不代表你的價值減少。', wrong: '改變＝不完整', right: '重新跟身體相處', stuck: '身體羞恥', key: '自我接納', skill: '身體接納' },
+                { id: 'G70', title: '不必變厲害', quote: '大病後，你不欠世界一個勵志故事。', wrong: '一定要因此蛻變成功', right: '活得符合自己就夠', stuck: '成長壓力', key: '真實生活', skill: '自我允許' }
+            ]}
+        };
+
+        // ========== 大眾版題庫（新增） ==========
+        const wellnessTopics = {
+            'W1': { title: '工作與壓力 01-10', questions: [
+                { id: 'W01', title: '上班要死', quote: '忙不是有價值的證明。', wrong: '忙碌＝成功', right: '效率和休息同樣重要', stuck: '無法喘息', key: '設定邊界', skill: '時間管理' },
+                { id: 'W02', title: '被不公平對待', quote: '你的感受是真的，但可以選擇怎麼回應。', wrong: '只能忍著', right: '有選擇和界線', stuck: '委屈', key: '有邊界', skill: '自我保護' },
+                { id: 'W03', title: '無法專注', quote: '分心時，先問自己在擔心什麼。', wrong: '就是不夠努力', right: '分心有原因', stuck: '自責', key: '找原因', skill: '自我察覺' },
+                { id: 'W04', title: '年紀焦慮', quote: '時間永遠不會是「完美的」。', wrong: '現在還不是時候', right: '開始永遠比完美的時間晚到', stuck: '等待', key: '現在就開始', skill: '行動' },
+                { id: 'W05', title: '與老闆衝突', quote: '事情和人格是兩回事。', wrong: '他不同意＝不認同我', right: '意見不同不代表人不好', stuck: '個人化', key: '分開事實和感受', skill: '溝通' },
+                { id: 'W06', title: '轉職糾結', quote: '留下和離開都不是完美選擇。', wrong: '必須找到完美工作', right: '在不完美中做決定', stuck: '無法決定', key: '接受選擇的代價', skill: '決策' },
+                { id: 'W07', title: '成就感不足', quote: '成就感來自於自己，不是別人的認可。', wrong: '別人認可才代表成功', right: '自己認可同樣重要', stuck: '外在尋求', key: '內在認可', skill: '自信' },
+                { id: 'W08', title: '同事八卦', quote: '別人怎麼說，反映的是他們，不是你。', wrong: '要讓所有人滿意', right: '無法讓所有人高興', stuck: '被評論', key: '活在自己的評價', skill: '邊界' },
+                { id: 'W09', title: '工作沒興趣', quote: '熱情不是工作的前提，意義是。', wrong: '一定要熱愛才做', right: '有意義的工作夠了', stuck: '尋找熱情', key: '找到意義', skill: '動機' },
+                { id: 'W10', title: '怕被淘汰', quote: '持續學習，但不用完美。', wrong: '必須什麼都懂', right: '持續成長＋接受不懂', stuck: '全知恐懼', key: '學習而非完美', skill: '終身學習' }
+            ]},
+            'W2': { title: '情緒與心理 11-20', questions: [
+                { id: 'W11', title: '焦慮失眠', quote: '睡眠和焦慮是對話，不是戰爭。', wrong: '必須睡著才算成功', right: '改善焦慮根本，睡眠跟著改善', stuck: '強迫睡眠', key: '處理焦慮', skill: '睡眠改善' },
+                { id: 'W12', title: '一直想起往事', quote: '過去是信息，不是判決。', wrong: '老是想起＝我有問題', right: '大腦想起代表未處理', stuck: '自責', key: '處理故事', skill: '心理調整' },
+                { id: 'W13', title: '容易情緒爆炸', quote: '情緒爆炸前，慢一步。', wrong: '不該生氣', right: '允許氣，但選擇怎麼做', stuck: '壓抑or爆發', key: '中間路線', skill: '情緒管理' },
+                { id: 'W14', title: '覺得很無意義', quote: '無意義常是疲勞訊號。', wrong: '人生沒希望', right: '可能需要休息和重新連結', stuck: '絕望', key: '檢查身心狀態', skill: '自我照護' },
+                { id: 'W15', title: '比較和自貶', quote: '比較是快樂的殺手。', wrong: '應該跟別人一樣好', right: '跟昨天的自己比', stuck: '永遠不夠', key: '只比昨天', skill: '自我接納' },
+                { id: 'W16', title: '怎樣都不開心', quote: '持續不快樂是信號，要聽。', wrong: '就是我的問題', right: '可能是環境、關係或身心狀態', stuck: '無望', key: '找出原因', skill: '自我察覺' },
+                { id: 'W17', title: '怕被拋棄', quote: '別人的離開，都會發生。', wrong: '要做完美的人才能被愛', right: '愛來自於接納真實的自己', stuck: '完美努力', key: '被愛是條件交換以外', skill: '自我價值' },
+                { id: 'W18', title: '罪惡感很重', quote: '罪惡感是用來改變，不是自虐。', wrong: '應該一直自責', right: '改變或放下', stuck: '無限內疚', key: '行動或放手', skill: '自我寬恕' },
+                { id: 'W19', title: '社交恐懼', quote: '害怕社交，通常害怕的不是人。', wrong: '就是我內向', right: '可能害怕評判或尷尬', stuck: '躲避', key: '了解真實害怕', skill: '社交能力' },
+                { id: 'W20', title: '空虛感', quote: '空虛常常是信號，你需要什麼。', wrong: '我有毛病', right: '聽聽這個空虛在說什麼', stuck: '否定', key: '傾聽需求', skill: '連結' }
+            ]},
+            'W3': { title: '身體與健康 21-30', questions: [
+                { id: 'W21', title: '身體容易疲勞', quote: '累是身體的語言。', wrong: '應該可以一直精力充沛', right: '聽聽累在說什麼', stuck: '硬撐', key: '聽累的信息', skill: '身體覺察' },
+                { id: 'W22', title: '容易感冒', quote: '常感冒時，先看壓力。', wrong: '體質就是這樣', right: '壓力大時免疫力下降', stuck: '無奈', key: '降低壓力', skill: '壓力管理' },
+                { id: 'W23', title: '消化不好', quote: '腸胃反映心理狀態。', wrong: '只是吃得不對', right: '壓力、焦慮都會影響消化', stuck: '換食物', key: '先檢查心理', skill: '身心連結' },
+                { id: 'W24', title: '頭痛頸痛', quote: '痛不是來亂的。', wrong: '忍忍就過', right: '身體在說它過載了', stuck: '忽視', key: '找到過載點', skill: '身體信號' },
+                { id: 'W25', title: '皮膚問題', quote: '皮膚最誠實。', wrong: '就是遺傳', right: '壓力、飲食、睡眠都會改變', stuck: '怪遺傳', key: '整體改善', skill: '健康管理' },
+                { id: 'W26', title: '月經不規律', quote: '月經和壓力、營養都相關。', wrong: '女人就是這樣', right: '有很多可以調整', stuck: '接受', key: '評估原因', skill: '健康管理' },
+                { id: 'W27', title: '體重困擾', quote: '體重不只是數字。', wrong: '減重＝成功', right: '健康和自我接納更重要', stuck: '體重焦慮', key: '健康而非數字', skill: '身體接納' },
+                { id: 'W28', title: '沒精力運動', quote: '沒精力運動時，先休息。', wrong: '必須堅持運動', right: '身體在叫停，聽它', stuck: '強迫自己', key: '正確的休息', skill: '聆聽身體' },
+                { id: 'W29', title: '吃東西找安慰', quote: '安慰進肚子，但心還是難受。', wrong: '吃就不會難受', right: '暫時緩解，還是要處理根源', stuck: '食物成癮', key: '處理真實困難', skill: '情緒管理' },
+                { id: 'W30', title: '健檢結果恐慌', quote: '異常≠疾病。', wrong: '一個異常＝一定有病', right: '需要進一步檢查和諮詢', stuck: '恐慌', key: '專業評估', skill: '冷靜判斷' }
+            ]},
+            'W4': { title: '關係與溝通 31-40', questions: [
+                { id: 'W31', title: '伴侶不理解', quote: '理解要慢慢建立，不會自動出現。', wrong: '他應該懂我', right: '要說出來，他才能懂', stuck: '失望', key: '主動溝通', skill: '表達' },
+                { id: 'W32', title: '朋友圈變少', quote: '朋友少不代表孤獨。', wrong: '朋友越多越好', right: '深度重於數量', stuck: '孤單恐懼', key: '品質連結', skill: '關係篩選' },
+                { id: 'W33', title: '家人干涉太多', quote: '愛可以表現成尊重。', wrong: '他們就是控制狂', right: '他們害怕，用控制表達', stuck: '衝突', key: '看見恐懼', skill: '理解關係' },
+                { id: 'W34', title: '感覺被忽視', quote: '被看見，要自己先看見自己。', wrong: '別人應該在意我', right: '先好好看著自己', stuck: '外在尋求', key: '自我認可', skill: '自信' },
+                { id: 'W35', title: '無法說「不」', quote: '「不」是保護自己的邊界。', wrong: '說不會傷害別人', right: '界線清楚，關係才健康', stuck: '過度給予', key: '學會拒絕', skill: '邊界' },
+                { id: 'W36', title: '人際衝突', quote: '衝突代表有需求沒被聽見。', wrong: '避免衝突最好', right: '好的衝突會深化關係', stuck: '逃避', key: '直面溝通', skill: '溝通' },
+                { id: 'W37', title: '怕被拒絕', quote: '拒絕是對方的選擇，不是你的價值。', wrong: '一定要被所有人接納', right: '被拒也沒什麼了不起', stuck: '完美人設', key: '接受不被喜歡', skill: '自我接納' },
+                { id: 'W38', title: '關係中總是退讓', quote: '退讓多了，會忘了自己要什麼。', wrong: '愛＝犧牲', right: '健康的愛是雙方都好', stuck: '失去自己', key: '重新找回需求', skill: '自我主張' },
+                { id: 'W39', title: '孤獨但害怕親密', quote: '親密恐懼常來自於過去傷害。', wrong: '我就是害怕', right: '可以慢慢學會信任', stuck: '矛盾', key: '處理信任', skill: '親密能力' },
+                { id: 'W40', title: '容易信任錯人', quote: '信任是好品質，但要加上判斷力。', wrong: '信任所有人', right: '相信人，但設防線', stuck: '被傷害', key: '信任+警惕', skill: '判斷力' }
+            ]},
+            'W5': { title: '人生方向 41-50', questions: [
+                { id: 'W41', title: '不知道要什麼', quote: '不知道很正常，探索就會清楚。', wrong: '應該很確定自己要什麼', right: '試試就知道', stuck: '迷茫', key: '開始嘗試', skill: '自我探索' },
+                { id: 'W42', title: '被期望壓死', quote: '別人的期望，終究不是你的人生。', wrong: '要活成別人想要的樣子', right: '你的人生歸你決定', stuck: '違背自己', key: '承認這是你的人生', skill: '自主' },
+                { id: 'W43', title: '覺得起晚了', quote: '現在永遠不是太晚。', wrong: '太老了，沒有機會', right: '時間足夠讓你開始', stuck: '年紀焦慮', key: '相信現在', skill: '行動' },
+                { id: 'W44', title: '害怕改變', quote: '改變恐懼，但不改變代價更大。', wrong: '保持現狀＝安全', right: '舒適區之外才有成長', stuck: '滯留', key: '跨越邊界', skill: '勇氣' },
+                { id: 'W45', title: '怕失敗', quote: '失敗是資料，不是判決。', wrong: '失敗＝我不行', right: '失敗教我什麼', stuck: '躲避風險', key: '看見失敗的價值', skill: '韌性' },
+                { id: 'W46', title: '人生沒有夢想', quote: '夢想可以中途出現。', wrong: '沒夢想＝沒未來', right: '現在沒有，不代表永遠沒有', stuck: '空虛', key: '保持開放', skill: '連結熱情' },
+                { id: 'W47', title: '成功的定義不清', quote: '成功是你自己定義。', wrong: '應該跟別人一樣的成功', right: '對你有意義就是成功', stuck: '盲目追尋', key: '自己定義成功', skill: '價值觀' },
+                { id: 'W48', title: '走別人的路', quote: '活成自己，比活成別人好。', wrong: '複製別人的成功', right: '找自己的路', stuck: '失控感', key: '活出自己', skill: '自信' },
+                { id: 'W49', title: '人生沒有意義', quote: '意義是做出來的，不是找出來的。', wrong: '應該有個終極意義', right: '在日常中創造意義', stuck: '尋求感', key: '開始創造', skill: '意義感' },
+                { id: 'W50', title: '怕人生浪費', quote: '人生最浪費的，是停著。', wrong: '必須完美利用每一分鐘', right: '行動本身就有價值', stuck: '完美主義', key: '開始行動', skill: '執行力' }
+            ]},
+            'W6': { title: '營養與自我照顧 51-60', questions: [
+                { id: 'W51', title: '飲食混亂', quote: '吃是愛自己的第一步。', wrong: '吃什麼無所謂', right: '吃對了，身心都跟著好', stuck: '不在乎', key: '用食物愛自己', skill: '營養意識' },
+                { id: 'W52', title: '廢話食物成癮', quote: '成癮的食物，通常在逃避情緒。', wrong: '就是嘴饞', right: '可能在自我安慰', stuck: '否認', key: '聽聽真實需求', skill: '情緒管理' },
+                { id: 'W53', title: '健身計畫總是放棄', quote: '運動不用完美，規律最重要。', wrong: '非要高強度才算', right: '輕鬆持續 > 猛然放棄', stuck: '全或無', key: '可持續的運動', skill: '習慣' },
+                { id: 'W54', title: '睡不夠還硬撐', quote: '睡眠是身體的修復。', wrong: '少睡可以多做', right: '好睡眠反而效率高', stuck: '低估睡眠', key: '把睡眠當優先', skill: '自我照護' },
+                { id: 'W55', title: '知道怎麼做但做不到', quote: '知道和做到，是兩回事。', wrong: '我就是沒毅力', right: '環境和動機需要調整', stuck: '自責', key: '改變環境', skill: '行為改變' },
+                { id: 'W56', title: '無法堅持計畫', quote: '計畫太完美，常常不執行。', wrong: '應該堅持原計畫', right: '靈活調整，持續比完美重要', stuck: '僵硬', key: '漸進調整', skill: '執行力' },
+                { id: 'W57', title: '自我照護太貴', quote: '照顧自己不一定要花大錢。', wrong: '自我照護只有昂貴選項', right: '有很多免費的方式', stuck: '放棄', key: '找到適合的方式', skill: '照護' },
+                { id: 'W58', title: '沒時間照顧自己', quote: '沒時間，通常是沒優先化。', wrong: '太忙了', right: '挪出時間給自己', stuck: '永遠不夠時間', key: '重新排序優先級', skill: '時間管理' },
+                { id: 'W59', title: '不知道怎麼放鬆', quote: '放鬆是可以學的。', wrong: '我就是放不下來', right: '從小事開始練習', stuck: '慣性緊張', key: '練習放鬆', skill: '放鬆技巧' },
+                { id: 'W60', title: '照顧自己=自私', quote: '照顧自己是負責任。', wrong: '應該優先照顧別人', right: '你好了，才能好好照顧人', stuck: '內疚', key: '允許優先自己', skill: '自我價值' }
+            ]},
+            'W7': { title: '習慣與生活重建 61-70', questions: [
+                { id: 'W61', title: '習慣改不掉', quote: '新習慣需要時間和環境。', wrong: '應該靠意志力', right: '環境會決定習慣', stuck: '意志力竭盡', key: '改變環境', skill: '習慣形成' },
+                { id: 'W62', title: '拖延成病', quote: '拖延常常是害怕，不是懶。', wrong: '我太懶', right: '通常害怕失敗或評判', stuck: '自責', key: '找到真實害怕', skill: '行動' },
+                { id: 'W63', title: '重複同樣的錯誤', quote: '重複錯誤，代表還沒真的學到。', wrong: '我就是改不了', right: '可能沒找到根本原因', stuck: '無望', key: '深入找原因', skill: '反思' },
+                { id: 'W64', title: '生活沒有秩序', quote: '秩序來自於一點一點建立。', wrong: '要全部一起改', right: '從一個小習慣開始', stuck: '混亂', key: '單一改變', skill: '系統化' },
+                { id: 'W65', title: '對自己沒有期許', quote: '期許是給自己的愛。', wrong: '沒期許比較放鬆', right: '有目標會更有活力', stuck: '無力感', key: '設定目標', skill: '動機' },
+                { id: 'W66', title: '反覆失敗後放棄', quote: '失敗次數多，是因為你還在嘗試。', wrong: '失敗太多次就該放棄', right: '堅持和靈活調整', stuck: '挫折', key: '修正方法', skill: '韌性' },
+                { id: 'W67', title: '無法開始新事物', quote: '開始永遠比完美時機早到。', wrong: '等到準備好', right: '開始就是準備', stuck: '準備癱瘓', key: '立刻開始', skill: '行動' },
+                { id: 'W68', title: '生活重複和無聊', quote: '單調是信號，要改變了。', wrong: '人生就是這樣', right: '可以加入新元素', stuck: '麻木', key: '嘗試新東西', skill: '多樣化' },
+                { id: 'W69', title: '怎樣都改不了', quote: '改變需要時間、環境、支持三個條件。', wrong: '我沒辦法', right: '可能少了某個條件', stuck: '絕望', key: '檢查三個條件', skill: '改變策略' },
+                { id: 'W70', title: '不知道目前哪裡要改', quote: '先聽聽身體和心理在說什麼。', wrong: '應該改進全部', right: '先改最急迫的', stuck: '不知所措', key: '優先排序', skill: '自我察覺' }
+            ]}
+        };
+
+        // 全局狀態
+        let currentRoute = null;
+        let currentCategory = null;
+
+        // 開始診斷
+        function startDiagnosis(route) {
+            currentRoute = route;
+            document.getElementById('landing-page').classList.remove('active');
+            
+            if (route === 'cancer') {
+                document.getElementById('cancer-page').classList.add('active');
+                renderCancerNav();
+                renderCancerQuestions('A');
+            } else {
+                document.getElementById('wellness-page').classList.add('active');
+                renderWellnessNav();
+                renderWellnessQuestions('W1');
+            }
+        }
+
+        // 癌友版
+        function renderCancerNav() {
+            const cats = Object.keys(cancerTopics);
+            let html = '';
+            cats.forEach(cat => {
+                html += `<div class="nav-tab ${cat === 'A' ? 'active' : ''}" data-cat="${cat}" onclick="handleCancerNav(this)">${cancerTopics[cat].title}</div>`;
+            });
+            document.getElementById('cancer-nav').innerHTML = html;
+        }
+
+        function handleCancerNav(el) {
+            const cat = el.getAttribute('data-cat');
+            document.querySelectorAll('#cancer-nav .nav-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            renderCancerQuestions(cat);
+        }
+
+        function renderCancerQuestions(cat) {
+            currentCategory = cat;
+            const qs = cancerTopics[cat].questions;
+            let html = '';
+            qs.forEach(q => {
+                html += `<div class="question-block">
+                    <div style="margin-bottom: 10px;">
+                        <span class="question-id">${q.id}</span>
+                        <span class="question-title" style="margin-left: 12px;">${q.title}</span>
+                    </div>
+                    <div class="quote-box">💬 "${q.quote}"</div>
+                    <div class="comparison-grid">
+                        <div class="error-box"><strong>我原本以為</strong><br>${q.wrong}</div>
+                        <div class="updated-box"><strong>後來發現</strong><br>${q.right}</div>
+                    </div>
+                    <div class="limitation-leverage">
+                        <div class="limitation-item"><strong>卡住的地方</strong><br>${q.stuck}</div>
+                        <div class="leverage-item"><strong>改變的關鍵</strong><br>${q.key}</div>
+                    </div>
+                    <span class="capability-badge">${q.skill}</span>
+                </div>`;
+            });
+            document.getElementById('cancer-questions').innerHTML = html;
+        }
+
+        // 大眾版
+        function renderWellnessNav() {
+            const cats = Object.keys(wellnessTopics);
+            let html = '';
+            cats.forEach(cat => {
+                html += `<div class="nav-tab ${cat === 'W1' ? 'active' : ''}" data-cat="${cat}" onclick="handleWellnessNav(this)">${wellnessTopics[cat].title}</div>`;
+            });
+            document.getElementById('wellness-nav').innerHTML = html;
+        }
+
+        function handleWellnessNav(el) {
+            const cat = el.getAttribute('data-cat');
+            document.querySelectorAll('#wellness-nav .nav-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            renderWellnessQuestions(cat);
+        }
+
+        function renderWellnessQuestions(cat) {
+            currentCategory = cat;
+            const qs = wellnessTopics[cat].questions;
+            let html = '';
+            qs.forEach(q => {
+                html += `<div class="question-block">
+                    <div style="margin-bottom: 10px;">
+                        <span class="question-id">${q.id}</span>
+                        <span class="question-title" style="margin-left: 12px;">${q.title}</span>
+                    </div>
+                    <div class="quote-box">💬 "${q.quote}"</div>
+                    <div class="comparison-grid">
+                        <div class="error-box"><strong>我原本以為</strong><br>${q.wrong}</div>
+                        <div class="updated-box"><strong>後來發現</strong><br>${q.right}</div>
+                    </div>
+                    <div class="limitation-leverage">
+                        <div class="limitation-item"><strong>卡住的地方</strong><br>${q.stuck}</div>
+                        <div class="leverage-item"><strong>改變的關鍵</strong><br>${q.key}</div>
+                    </div>
+                    <span class="capability-badge">${q.skill}</span>
+                </div>`;
+            });
+            document.getElementById('wellness-questions').innerHTML = html;
+        }
+
+        // 返回首頁
+        function goHome() {
+            document.getElementById('cancer-page').classList.remove('active');
+            document.getElementById('wellness-page').classList.remove('active');
+            document.getElementById('landing-page').classList.add('active');
+            currentRoute = null;
+            currentCategory = null;
+        }
+    </script>
+</body>
+</html>
