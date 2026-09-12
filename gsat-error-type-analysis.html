@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學測英文完整系統 - 雙語詞彙版</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; }
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', -apple-system, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+        .main-container { display: flex; height: 100vh; }
+        .sidebar {
+            width: 280px;
+            background: white;
+            overflow-y: auto;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        .sidebar h3 {
+            font-size: 13px;
+            font-weight: 700;
+            color: #667eea;
+            margin: 14px 0 6px 0;
+            padding-bottom: 4px;
+            border-bottom: 2px solid #667eea;
+        }
+        .menu-item {
+            padding: 8px 12px;
+            margin: 3px 0;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #666;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .menu-item:hover { background: #f0f0f0; color: #667eea; border-left-color: #667eea; }
+        .menu-item.active { background: #667eea; color: white; font-weight: 600; border-left-color: #667eea; }
+        .content { flex: 1; overflow-y: auto; padding: 28px; background: white; }
+        .header { font-size: 26px; font-weight: 700; color: #667eea; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 3px solid #667eea; }
+        .subheader { font-size: 15px; font-weight: 700; color: #333; margin: 20px 0 10px 0; padding-bottom: 6px; border-bottom: 2px solid #ddd; }
+        .text { font-size: 13px; color: #555; line-height: 1.8; margin: 12px 0; }
+        .box {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #333;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+        }
+        .key-point {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 14px;
+            border-radius: 6px;
+            margin: 12px 0;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 12px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        tr:hover { background: #f0f0f0; }
+        .bilingual-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .en { color: #667eea; font-weight: 600; font-size: 12px; }
+        .zh { color: #666; font-size: 11px; }
+        .quiz-q {
+            background: #f9f9f9;
+            padding: 14px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #667eea;
+        }
+        .quiz-num { font-weight: 700; color: #667eea; font-size: 13px; margin-bottom: 6px; }
+        .quiz-text { margin: 6px 0; font-size: 12px; color: #333; }
+        .option { padding: 3px 0; font-size: 12px; color: #666; margin-left: 16px; }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="sidebar" id="sidebar"></div>
+        <div class="content" id="content"></div>
+    </div>
+
+    <script>
+        // ===== 菜單結構 =====
+        const menuStructure = [
+            {
+                title: "17大錯誤類型",
+                items: Array.from({length: 17}, (_, i) => ({
+                    name: `${String(i+1).padStart(2, '0')} ${['字形相似','詞族混淆','詞性判斷','搭配判斷','介詞搭配','句型判斷','近義詞混淆','易混字詞','多義判斷','上下文方向','上下文邏輯','中文直譯','語域不合','語氣含意','構詞判斷','語意判斷','句法判斷'][i]}`,
+                    id: `error-${String(i+1).padStart(2, '0')}`
+                }))
+            },
+            {
+                title: "詞彙Bank (雙語版)",
+                items: [
+                    {name: "易混字詞 80+組", id: "vocab-confusables"},
+                    {name: "詞族完整系統 30組", id: "vocab-family"},
+                    {name: "高頻搭配 120+組", id: "vocab-collocation"},
+                    {name: "介詞搭配 52組", id: "vocab-prep"},
+                    {name: "多義字 80+個", id: "vocab-multimeaning"}
+                ]
+            },
+            {
+                title: "構詞系統 - 各100個",
+                items: [
+                    {name: "字首 Prefix (100個)", id: "word-prefix-100"},
+                    {name: "字根 Root (100個)", id: "word-root-100"},
+                    {name: "字尾 Suffix (100個)", id: "word-suffix-100"}
+                ]
+            },
+            {
+                title: "診斷測驗 (100題)",
+                items: [
+                    {name: "PART 1 (01-25)", id: "quiz-part1"},
+                    {name: "PART 2 (26-50)", id: "quiz-part2"},
+                    {name: "PART 3 (51-75)", id: "quiz-part3"},
+                    {name: "PART 4 (76-100)", id: "quiz-part4"}
+                ]
+            }
+        ];
+
+        // ===== 17類 =====
+        const allErrors = [
+            {id:"01",name:"字形相似",example:"We need to ___ to the new school.\n(A) adapt 適應\n(B) adopt 採用／收養",answer:"A adapt"},
+            {id:"02",name:"詞族混淆",example:"She is a ___ student.\n(A) success 成功\n(B) successful 成功的",answer:"B successful"},
+            {id:"03",name:"詞性判斷",example:"She sings ___.\n(A) beautiful 美麗的\n(B) beautifully 美妙地",answer:"B beautifully"},
+            {id:"04",name:"搭配判斷",example:"I need to ___ a decision.\n(A) make 做出\n(B) do 做",answer:"A make"},
+            {id:"05",name:"介詞搭配",example:"I am interested ___ music.\n(A) in\n(B) on",answer:"A in"},
+            {id:"06",name:"句型判斷",example:"He enjoys ___ basketball.\n(A) play\n(B) playing",answer:"B playing"},
+            {id:"07",name:"近義詞混淆",example:"Please ___ me the truth.\n(A) say 說\n(B) tell 告訴",answer:"B tell"},
+            {id:"08",name:"易混字詞",example:"Lack of sleep can ___ your health.\n(A) affect 影響\n(B) effect 效果",answer:"A affect"},
+            {id:"09",name:"多義判斷",example:"We must address this problem.\n(A) 地址\n(B) 處理",answer:"B 處理"},
+            {id:"10",name:"上下文方向",example:"The test was difficult. ___, Amy got a high score.\n(A) However 可是\n(B) Therefore 所以",answer:"A However"},
+            {id:"11",name:"上下文邏輯",example:"It was raining, ___ we stayed home.\n(A) so 所以\n(B) but 但是",answer:"A so"},
+            {id:"12",name:"中文直譯",example:"「請開燈。」\n(A) Open the light.\n(B) Turn on the light.",answer:"B Turn on the light"},
+            {id:"13",name:"語域不合",example:"在正式信件中請老師協助，哪一句比較適合？\n(A) Help me!\n(B) Could you please help me?",answer:"B"},
+            {id:"14",name:"語氣／含意",example:"She looks healthy and ___.\n(A) slim 苗條的\n(B) skinny 過瘦的",answer:"A slim"},
+            {id:"15",name:"構詞判斷",example:"unhappy最可能是什麼意思？\n(A) 開心的\n(B) 不開心的",answer:"B"},
+            {id:"16",name:"語意判斷",example:"I was very ___, so I drank some water.\n(A) thirsty 口渴的\n(B) sleepy 想睡的",answer:"A thirsty"},
+            {id:"17",name:"句法判斷",example:"The boy with two dogs runs every morning.\n誰每天跑步？\n(A) The boy 那個男孩\n(B) two dogs 兩隻狗",answer:"A The boy"}
+        ];
+
+        // ===== 易混字詞 (雙語版) =====
+        const confusablesData = [
+            {en:"affect / effect", zh:"影響(V) / 效果(N)"},
+            {en:"advice / advise", zh:"建議(N) / 建議(V)"},
+            {en:"accept / except", zh:"接受 / 除了"},
+            {en:"adapt / adopt", zh:"適應 / 採用"},
+            {en:"access / assess", zh:"進入 / 評估"},
+            {en:"breath / breathe", zh:"呼吸(N) / 呼吸(V)"},
+            {en:"choice / choose", zh:"選擇(N) / 選擇(V)"},
+            {en:"lose / loss", zh:"失去 / 損失"},
+            {en:"loose / lose", zh:"鬆的 / 失去"},
+            {en:"succeed / success", zh:"成功(V) / 成功(N)"},
+            {en:"practice / practise", zh:"練習(N) / 練習(V)"},
+            {en:"principal / principle", zh:"主任 / 原則"},
+            {en:"complement / compliment", zh:"補足 / 稱讚"},
+            {en:"conscience / conscious", zh:"良心 / 清醒"},
+            {en:"device / devise", zh:"裝置 / 設計"},
+            {en:"desert / dessert", zh:"沙漠 / 甜點"},
+            {en:"dairy / diary", zh:"乳製品 / 日記"},
+            {en:"weather / whether", zh:"天氣 / 是否"},
+            {en:"than / then", zh:"比較 / 然後"},
+            {en:"quiet / quite", zh:"安靜 / 很"},
+            {en:"later / latter", zh:"稍後 / 後者"},
+            {en:"formally / formerly", zh:"正式 / 從前"},
+            {en:"personal / personnel", zh:"個人 / 人員"},
+            {en:"stationary / stationery", zh:"靜止 / 文具"},
+            {en:"cite / site / sight", zh:"引用 / 地點 / 景象"},
+            {en:"beside / besides", zh:"旁邊 / 而且"},
+            {en:"farther / further", zh:"更遠 / 進一步"},
+            {en:"ensure / insure", zh:"確保 / 保險"},
+            {en:"emigrate / immigrate", zh:"移出 / 移入"},
+            {en:"precede / proceed", zh:"走在前 / 進行"},
+            {en:"rise / raise / arise", zh:"升 / 舉 / 出現"},
+            {en:"lie / lay", zh:"躺 / 放"},
+            {en:"awake / wake / waken", zh:"醒(形) / 醒(V) / 喚醒"},
+            {en:"alive / live", zh:"活著 / 住"},
+            {en:"economic / economical", zh:"經濟的 / 節省的"},
+            {en:"industrial / industrious", zh:"工業的 / 勤勞的"},
+            {en:"considerable / considerate", zh:"可觀的 / 體貼的"},
+            {en:"sensible / sensitive", zh:"明智的 / 敏感的"},
+            {en:"respectful / respective", zh:"尊敬的 / 各自的"},
+            {en:"credible / creditable", zh:"可信的 / 值得稱讚的"},
+            {en:"eligible / illegible", zh:"符合資格 / 難以辨認"},
+            {en:"hanged / hung", zh:"吊死 / 掛"},
+            {en:"historic / historical", zh:"歷史性的 / 關於歷史的"},
+            {en:"respectable / respectful", zh:"值得尊敬的 / 表示尊敬的"},
+            {en:"wounded / injured", zh:"受傷(武器) / 受傷(一般)"},
+            {en:"effective / efficient", zh:"有效的 / 有效率的"},
+            {en:"continual / continuous", zh:"反覆 / 持續不斷"},
+            {en:"hard / hardly", zh:"硬的 / 幾乎不"},
+            {en:"late / lately", zh:"晚 / 最近"},
+            {en:"near / nearly", zh:"靠近 / 幾乎"},
+            {en:"high / highly", zh:"高 / 高度地"},
+            {en:"wide / widely", zh:"寬 / 廣泛地"},
+            {en:"present / presence", zh:"在場 / 存在"},
+            {en:"recent / recently", zh:"最近的 / 最近"},
+            {en:"expect / suspect", zh:"期待 / 懷疑"},
+            {en:"except / expect", zh:"除了 / 期待"},
+            {en:"expand / expend", zh:"擴張 / 花費"},
+            {en:"explicit / implicit", zh:"明確的 / 隱含的"},
+            {en:"human / humane", zh:"人類的 / 仁慈的"},
+            {en:"imaginary / imaginative", zh:"想像的 / 有想像力的"},
+            {en:"ingenious / ingenuous", zh:"聰慧的 / 坦率的"},
+            {en:"lend / loan", zh:"借出 / 貸款"},
+            {en:"less / fewer", zh:"更少(不可數) / 更少(可數)"},
+            {en:"listen / hear", zh:"聽(主動) / 聽(被動)"},
+            {en:"look / see / watch", zh:"看 / 看到 / 看"},
+            {en:"lovely / loving", zh:"可愛的 / 充滿愛的"},
+            {en:"luck / lucky", zh:"運氣 / 幸運的"},
+            {en:"main / major", zh:"主要的 / 主修的"},
+            {en:"male / masculine", zh:"男性的 / 陽剛的"},
+            {en:"married / marrying", zh:"已婚 / 正在結婚"},
+            {en:"mean / meaning", zh:"意思 / 含義"},
+            {en:"method / means", zh:"方法 / 手段"},
+            {en:"middle / medium", zh:"中間 / 中等"},
+            {en:"might / may", zh:"可能 / 可能"},
+            {en:"mild / wild", zh:"溫和 / 野生"},
+            {en:"mineral / minimum", zh:"礦物 / 最少"}
+        ];
+
+        // ===== 詞族系統 (雙語版) =====
+        const familyData = [
+            {en:"success",zh:"成功",forms:{N:"success/成功",V:"succeed/成功",Adj:"successful/成功的",Adv:"successfully/成功地"}},
+            {en:"different",zh:"不同",forms:{N:"difference/差異",V:"differ/不同",Adj:"different/不同的",Adv:"differently/不同地"}},
+            {en:"educate",zh:"教育",forms:{N:"education/教育",V:"educate/教育",Adj:"educational/教育的",Adv:"educationally/教育上"}},
+            {en:"communicate",zh:"溝通",forms:{N:"communication/溝通",V:"communicate/溝通",Adj:"communicative/善於溝通的",Adv:"communicatively/溝通地"}},
+            {en:"create",zh:"創造",forms:{N:"creation/創造/creator/創作者",V:"create/創造",Adj:"creative/有創意的",Adv:"creatively/創意地"}},
+            {en:"compete",zh:"競爭",forms:{N:"competition/競賽",V:"compete/競爭",Adj:"competitive/競爭性的",Adv:"competitively/競爭地"}},
+            {en:"produce",zh:"生產",forms:{N:"production/生產/product/產品",V:"produce/生產",Adj:"productive/富有成效的",Adv:"productively/高效地"}},
+            {en:"protect",zh:"保護",forms:{N:"protection/保護",V:"protect/保護",Adj:"protective/保護性的",Adv:"protectively/保護地"}},
+            {en:"attract",zh:"吸引",forms:{N:"attraction/吸引",V:"attract/吸引",Adj:"attractive/有吸引力的",Adv:"attractively/有吸引力地"}},
+            {en:"improve",zh:"改進",forms:{N:"improvement/改進",V:"improve/改進",Adj:"improved/改進的",Adv:"-/-"}},
+            {en:"develop",zh:"發展",forms:{N:"development/發展",V:"develop/發展",Adj:"developmental/發展的",Adv:"-/-"}},
+            {en:"care",zh:"關心",forms:{N:"care/關心",V:"care/關心",Adj:"careful/小心的/caring/關心的",Adv:"carefully/小心地"}},
+            {en:"beauty",zh:"美",forms:{N:"beauty/美",V:"beautify/美化",Adj:"beautiful/美麗的",Adv:"beautifully/美麗地"}},
+            {en:"strength",zh:"力量",forms:{N:"strength/力量",V:"strengthen/加強",Adj:"strong/強的",Adv:"strongly/強烈地"}},
+            {en:"understand",zh:"理解",forms:{N:"understanding/理解",V:"understand/理解",Adj:"understanding/善解人意的",Adv:"-/-"}},
+            {en:"believe",zh:"相信",forms:{N:"belief/信念",V:"believe/相信",Adj:"believable/可信的",Adv:"-/-"}},
+            {en:"achieve",zh:"達成",forms:{N:"achievement/成就",V:"achieve/達成",Adj:"achievable/可達成的",Adv:"-/-"}},
+            {en:"decide",zh:"決定",forms:{N:"decision/決定",V:"decide/決定",Adj:"decisive/果斷的",Adv:"decisively/果斷地"}},
+            {en:"depend",zh:"依賴",forms:{N:"dependence/依賴",V:"depend/依賴",Adj:"dependent/依賴的",Adv:"-/-"}},
+            {en:"responsible",zh:"負責",forms:{N:"responsibility/責任",V:"-/-",Adj:"responsible/負責的",Adv:"responsibly/負責任地"}},
+            {en:"possible",zh:"可能",forms:{N:"possibility/可能性",V:"-/-",Adj:"possible/可能的",Adv:"possibly/可能地"}},
+            {en:"probable",zh:"可能",forms:{N:"probability/概率",V:"-/-",Adj:"probable/可能的",Adv:"probably/可能地"}},
+            {en:"certain",zh:"確定",forms:{N:"certainty/確定",V:"-/-",Adj:"certain/確定的",Adv:"certainly/確實地"}},
+            {en:"necessary",zh:"必要",forms:{N:"necessity/必要性",V:"-/-",Adj:"necessary/必要的",Adv:"necessarily/必然地"}},
+            {en:"popular",zh:"流行",forms:{N:"popularity/流行度",V:"-/-",Adj:"popular/流行的",Adv:"popularly/普遍地"}},
+            {en:"similar",zh:"相似",forms:{N:"similarity/相似性",V:"-/-",Adj:"similar/相似的",Adv:"similarly/相似地"}},
+            {en:"enjoy",zh:"享受",forms:{N:"enjoyment/享受",V:"enjoy/享受",Adj:"enjoyable/令人愉快的",Adv:"-/-"}},
+            {en:"satisfy",zh:"滿足",forms:{N:"satisfaction/滿足",V:"satisfy/滿足",Adj:"satisfied/滿足的/satisfactory/令人滿意的",Adv:"-/-"}},
+            {en:"encourage",zh:"鼓勵",forms:{N:"encouragement/鼓勵",V:"encourage/鼓勵",Adj:"encouraging/令人鼓舞的",Adv:"-/-"}},
+            {en:"discover",zh:"發現",forms:{N:"discovery/發現",V:"discover/發現",Adj:"discoverable/可發現的",Adv:"-/-"}}
+        ];
+
+        // ===== 高頻搭配 (雙語版) =====
+        const collocationData = [
+            {en:"make a decision", zh:"做決定"},
+            {en:"make an effort", zh:"做努力"},
+            {en:"make progress", zh:"取得進展"},
+            {en:"make a difference", zh:"產生差異"},
+            {en:"make sense", zh:"有意義"},
+            {en:"make money", zh:"賺錢"},
+            {en:"make a living", zh:"謀生"},
+            {en:"make a change", zh:"做出改變"},
+            {en:"make a mistake", zh:"犯錯誤"},
+            {en:"make an appointment", zh:"做預約"},
+            {en:"make a deal", zh:"達成交易"},
+            {en:"make a plan", zh:"計劃"},
+            {en:"make a promise", zh:"做承諾"},
+            {en:"make a complaint", zh:"投訴"},
+            {en:"pay attention to", zh:"注意"},
+            {en:"pay respect", zh:"表示尊重"},
+            {en:"pay a visit", zh:"訪問"},
+            {en:"pay a price", zh:"付代價"},
+            {en:"pay a fine", zh:"罰款"},
+            {en:"take responsibility", zh:"承擔責任"},
+            {en:"take action", zh:"採取行動"},
+            {en:"take advantage", zh:"利用"},
+            {en:"take care", zh:"小心"},
+            {en:"take part in", zh:"參與"},
+            {en:"take place", zh:"發生"},
+            {en:"take a break", zh:"休息"},
+            {en:"take effect", zh:"生效"},
+            {en:"take control", zh:"控制"},
+            {en:"take medicine", zh:"服藥"},
+            {en:"solve a problem", zh:"解決問題"},
+            {en:"face a challenge", zh:"面對挑戰"},
+            {en:"show respect", zh:"表示尊重"},
+            {en:"show interest", zh:"表示興趣"},
+            {en:"show support", zh:"表示支持"},
+            {en:"show concern", zh:"表示關心"},
+            {en:"achieve a goal", zh:"達成目標"},
+            {en:"set a goal", zh:"設定目標"},
+            {en:"gain experience", zh:"獲得經驗"},
+            {en:"gain knowledge", zh:"獲得知識"},
+            {en:"gain access", zh:"獲得進入"},
+            {en:"provide information", zh:"提供信息"},
+            {en:"provide help", zh:"提供幫助"},
+            {en:"provide support", zh:"提供支持"},
+            {en:"meet a need", zh:"滿足需要"},
+            {en:"meet expectations", zh:"滿足期望"},
+            {en:"attract attention", zh:"吸引注意"},
+            {en:"conduct research", zh:"進行研究"},
+            {en:"have a conversation", zh:"進行對話"},
+            {en:"have difficulty", zh:"有困難"},
+            {en:"have impact", zh:"有影響"},
+            {en:"build confidence", zh:"建立信心"},
+            {en:"build relationship", zh:"建立關係"},
+            {en:"build trust", zh:"建立信任"},
+            {en:"develop habit", zh:"養成習慣"},
+            {en:"develop skill", zh:"發展技能"},
+            {en:"develop ability", zh:"發展能力"},
+            {en:"share experience", zh:"分享經驗"},
+            {en:"share knowledge", zh:"分享知識"},
+            {en:"express opinion", zh:"表達意見"},
+            {en:"express feeling", zh:"表達感受"},
+            {en:"express gratitude", zh:"表達感謝"},
+            {en:"raise question", zh:"提出問題"},
+            {en:"raise awareness", zh:"提高意識"},
+            {en:"raise standard", zh:"提高標準"},
+            {en:"look forward to", zh:"期待"}
+        ];
+
+        // ===== 介詞搭配 (雙語版) =====
+        const prepData = [
+            {word:"interested",prep:"in",zh:"對...有興趣"},
+            {word:"afraid",prep:"of",zh:"害怕..."},
+            {word:"aware",prep:"of",zh:"意識到..."},
+            {word:"capable",prep:"of",zh:"能夠..."},
+            {word:"different",prep:"from",zh:"與...不同"},
+            {word:"familiar",prep:"with",zh:"對...熟悉"},
+            {word:"famous",prep:"for",zh:"因...著名"},
+            {word:"full",prep:"of",zh:"充滿..."},
+            {word:"good",prep:"at",zh:"擅長..."},
+            {word:"proud",prep:"of",zh:"為...驕傲"},
+            {word:"responsible",prep:"for",zh:"對...負責"},
+            {word:"similar",prep:"to",zh:"與...相似"},
+            {word:"satisfied",prep:"with",zh:"對...滿意"},
+            {word:"surprised",prep:"at/by",zh:"對...感到驚訝"},
+            {word:"worried",prep:"about",zh:"擔心..."},
+            {word:"concerned",prep:"about",zh:"關心..."},
+            {word:"pleased",prep:"with",zh:"對...滿意"},
+            {word:"related",prep:"to",zh:"與...相關"},
+            {word:"dependent",prep:"on",zh:"依賴..."},
+            {word:"grateful",prep:"for",zh:"對...感謝"},
+            {word:"jealous",prep:"of",zh:"嫉妒..."},
+            {word:"ashamed",prep:"of",zh:"為...羞愧"},
+            {word:"guilty",prep:"of",zh:"犯...有罪"},
+            {word:"agree",prep:"with",zh:"同意..."},
+            {word:"apologize",prep:"for",zh:"為...道歉"},
+            {word:"apply",prep:"for",zh:"申請..."},
+            {word:"belong",prep:"to",zh:"屬於..."},
+            {word:"care",prep:"about",zh:"在乎..."},
+            {word:"complain",prep:"about",zh:"抱怨..."},
+            {word:"concentrate",prep:"on",zh:"集中於..."},
+            {word:"consist",prep:"of",zh:"由...組成"},
+            {word:"contribute",prep:"to",zh:"貢獻於..."},
+            {word:"cope",prep:"with",zh:"應對..."},
+            {word:"deal",prep:"with",zh:"處理..."},
+            {word:"depend",prep:"on",zh:"依賴..."},
+            {word:"focus",prep:"on",zh:"專注於..."},
+            {word:"graduate",prep:"from",zh:"從...畢業"},
+            {word:"insist",prep:"on",zh:"堅持..."},
+            {word:"listen",prep:"to",zh:"聽..."},
+            {word:"participate",prep:"in",zh:"參與..."},
+            {word:"prepare",prep:"for",zh:"為...準備"},
+            {word:"recover",prep:"from",zh:"從...恢復"},
+            {word:"refer",prep:"to",zh:"參考..."},
+            {word:"rely",prep:"on",zh:"依賴..."},
+            {word:"respond",prep:"to",zh:"回應..."},
+            {word:"suffer",prep:"from",zh:"患..."},
+            {word:"wait",prep:"for",zh:"等待..."},
+            {word:"look forward",prep:"to",zh:"期待..."}
+        ];
+
+        // ===== 多義字 (雙語版) =====
+        const multiMeaningData = [
+            {word:"address",m1:"地址 address",m2:"演講 speech",m3:"處理 deal with"},
+            {word:"adopt",m1:"收養 adopt",m2:"採用 use",m3:"採納 accept"},
+            {word:"approach",m1:"接近 get close",m2:"方法 method",m3:"接觸 contact"},
+            {word:"bear",m1:"熊 animal",m2:"忍受 tolerate",m3:"生育 give birth"},
+            {word:"board",m1:"木板 plank",m2:"董事會 committee",m3:"登機 board plane"},
+            {word:"break",m1:"打破 smash",m2:"休息 rest",m3:"中斷 interrupt"},
+            {word:"case",m1:"案例 example",m2:"情況 situation",m3:"箱子 box"},
+            {word:"charge",m1:"收費 cost",m2:"指控 accuse",m3:"充電 power"},
+            {word:"claim",m1:"聲稱 state",m2:"索賠 demand",m3:"擁有 own"},
+            {word:"coach",m1:"教練 trainer",m2:"巴士 bus",m3:"訓練 train"},
+            {word:"conduct",m1:"行為 behavior",m2:"進行 carry out",m3:"指揮 lead"},
+            {word:"content",m1:"內容 subject",m2:"滿足 satisfied",m3:"-/-"},
+            {word:"date",m1:"日期 day",m2:"約會 meeting",m3:"棗子 fruit"},
+            {word:"deal",m1:"交易 trade",m2:"處理 handle",m3:"發牌 distribute"},
+            {word:"degree",m1:"程度 level",m2:"學位 qualification",m3:"溫度 temperature"},
+            {word:"develop",m1:"發展 progress",m2:"沖洗 process",m3:"開發 build"},
+            {word:"draw",m1:"畫 sketch",m2:"吸引 attract",m3:"平手 tie"},
+            {word:"drive",m1:"開車 steer",m2:"驅動 propel",m3:"動力 motivation"},
+            {word:"engage",m1:"參與 participate",m2:"吸引 attract",m3:"約定 promise"},
+            {word:"express",m1:"表達 communicate",m2:"快速 fast",m3:"表情 look"},
+            {word:"face",m1:"臉 front",m2:"面對 confront",m3:"表面 surface"},
+            {word:"figure",m1:"數字 number",m2:"人物 person",m3:"圖形 shape"},
+            {word:"fine",m1:"好的 good",m2:"罰款 penalty",m3:"細緻 thin"},
+            {word:"firm",m1:"公司 company",m2:"堅固 solid",m3:"牢固 steady"},
+            {word:"fit",m1:"合身 suit",m2:"健康 healthy",m3:"發作 seizure"},
+            {word:"issue",m1:"議題 topic",m2:"發行 publish",m3:"發布 release"},
+            {word:"key",m1:"鑰匙 unlock",m2:"關鍵 crucial",m3:"答案 solution"},
+            {word:"last",m1:"最後 final",m2:"持續 continue",m3:"鞋楦 form"},
+            {word:"matter",m1:"事情 issue",m2:"要緊 important",m3:"物質 substance"},
+            {word:"mean",m1:"意思 signify",m2:"打算 intend",m3:"刻薄 cruel"},
+            {word:"note",m1:"筆記 memo",m2:"注意 observe",m3:"紙鈔 bill"},
+            {word:"object",m1:"物體 thing",m2:"反對 oppose",m3:"目標 goal"},
+            {word:"observe",m1:"觀察 watch",m2:"遵守 follow",m3:"評論 remark"},
+            {word:"order",m1:"順序 sequence",m2:"命令 command",m3:"訂購 request"},
+            {word:"park",m1:"公園 garden",m2:"停車 leave",m3:"放置 put"},
+            {word:"point",m1:"點 spot",m2:"重點 essence",m3:"指向 indicate"},
+            {word:"present",m1:"目前 current",m2:"呈現 show",m3:"禮物 gift"},
+            {word:"process",m1:"過程 procedure",m2:"處理 handle",m3:"進行 proceed"},
+            {word:"produce",m1:"生產 make",m2:"農產品 crop",m3:"製作 create"},
+            {word:"range",m1:"範圍 scope",m2:"山脈 mountains",m3:"排列 arrange"},
+            {word:"rate",m1:"比率 ratio",m2:"評價 evaluate",m3:"速度 speed"},
+            {word:"record",m1:"紀錄 document",m2:"記錄 write down",m3:"唱片 disc"},
+            {word:"reflect",m1:"反射 bounce",m2:"反映 show",m3:"深思 think"},
+            {word:"regard",m1:"視為 consider",m2:"尊重 respect",m3:"景象 sight"},
+            {word:"rest",m1:"休息 relax",m2:"剩餘 remain",m3:"支撐 support"},
+            {word:"run",m1:"跑 sprint",m2:"經營 manage",m3:"進行 go"},
+            {word:"serve",m1:"服務 help",m2:"發揮用途 function",m3:"上菜 dish"},
+            {word:"sign",m1:"標誌 symbol",m2:"簽名 signature",m3:"訊號 signal"},
+            {word:"sound",m1:"聲音 noise",m2:"健全 healthy",m3:"聽起來 seem"},
+            {word:"state",m1:"州 province",m2:"陳述 declare",m3:"狀態 condition"},
+            {word:"subject",m1:"科目 course",m2:"使遭受 expose",m3:"主題 topic"},
+            {word:"term",m1:"學期 semester",m2:"術語 word",m3:"條款 clause"},
+            {word:"treat",m1:"對待 handle",m2:"治療 cure",m3:"請客 pay"},
+            {word:"value",m1:"價值 worth",m2:"重視 appreciate",m3:"估價 appraise"},
+            {word:"view",m1:"景色 scenery",m2:"觀點 opinion",m3:"觀看 watch"},
+            {word:"volume",m1:"音量 loudness",m2:"容量 capacity",m3:"冊 book"},
+            {word:"watch",m1:"手錶 timepiece",m2:"觀看 look",m3:"監視 guard"},
+            {word:"work",m1:"工作 job",m2:"運作 function",m3:"奏效 succeed"}
+        ];
+
+        // ===== 字首 (100個) =====
+        const prefixData = [
+            {prefix:"un-",ex:"unable/無法的"},{prefix:"un-",ex:"unhappy/不開心的"},{prefix:"un-",ex:"unfair/不公平的"},{prefix:"un-",ex:"unknown/未知的"},{prefix:"un-",ex:"unclear/不清楚的"},
+            {prefix:"un-",ex:"unkind/不友善的"},{prefix:"un-",ex:"unsafe/不安全的"},{prefix:"un-",ex:"unwell/身體不適"},{prefix:"un-",ex:"unusual/不尋常的"},{prefix:"un-",ex:"unlucky/不幸的"},
+            {prefix:"re-",ex:"rewrite/重寫"},{prefix:"re-",ex:"rebuild/重建"},{prefix:"re-",ex:"reconsider/重新考慮"},{prefix:"re-",ex:"restart/重新開始"},{prefix:"re-",ex:"recall/回想"},
+            {prefix:"in-",ex:"incorrect/不正確的"},{prefix:"in-",ex:"incomplete/不完整的"},{prefix:"in-",ex:"inactive/不活躍的"},{prefix:"in-",ex:"invisible/看不見的"},{prefix:"in-",ex:"inefficient/沒效率的"},
+            {prefix:"im-",ex:"impossible/不可能的"},{prefix:"im-",ex:"impatient/沒耐心的"},{prefix:"im-",ex:"immature/不成熟的"},{prefix:"im-",ex:"impolite/不禮貌的"},{prefix:"im-",ex:"imperfect/不完美的"},
+            {prefix:"il-",ex:"illegal/非法的"},{prefix:"il-",ex:"illogical/非邏輯的"},{prefix:"il-",ex:"illiterate/文盲的"},
+            {prefix:"ir-",ex:"irregular/不規則的"},{prefix:"ir-",ex:"irresponsible/不負責的"},
+            {prefix:"dis-",ex:"disagree/不同意"},{prefix:"dis-",ex:"disappear/消失"},{prefix:"dis-",ex:"dislike/不喜歡"},{prefix:"dis-",ex:"dishonest/不誠實的"},{prefix:"dis-",ex:"disconnect/斷開"},
+            {prefix:"non-",ex:"nonverbal/非言語的"},{prefix:"non-",ex:"nonprofit/非營利的"},{prefix:"non-",ex:"nonsense/廢話"},{prefix:"non-",ex:"nonstop/不停的"},{prefix:"non-",ex:"non-toxic/無毒的"},
+            {prefix:"pre-",ex:"preview/預習"},{prefix:"pre-",ex:"predict/預測"},{prefix:"pre-",ex:"prehistoric/史前的"},{prefix:"pre-",ex:"prepare/準備"},{prefix:"pre-",ex:"prevent/預防"},
+            {prefix:"post-",ex:"postwar/戰後"},{prefix:"post-",ex:"postgraduate/研究生"},{prefix:"post-",ex:"postpone/延後"},{prefix:"post-",ex:"postscript/附言"},
+            {prefix:"over-",ex:"overcome/克服"},{prefix:"over-",ex:"overflow/溢出"},{prefix:"over-",ex:"overlook/忽略"},{prefix:"over-",ex:"overstep/越界"},{prefix:"over-",ex:"oversleep/睡過頭"},
+            {prefix:"under-",ex:"understand/理解"},{prefix:"under-",ex:"underground/地下的"},{prefix:"under-",ex:"underestimate/低估"},{prefix:"under-",ex:"undertake/承擔"},{prefix:"under-",ex:"underway/進行中"},
+            {prefix:"inter-",ex:"international/國際的"},{prefix:"inter-",ex:"interact/互動"},{prefix:"inter-",ex:"interview/面試"},{prefix:"inter-",ex:"interrupt/打斷"},{prefix:"inter-",ex:"interchange/交換"},
+            {prefix:"trans-",ex:"transport/運輸"},{prefix:"trans-",ex:"translate/翻譯"},{prefix:"trans-",ex:"transform/轉變"},{prefix:"trans-",ex:"transition/過渡"},{prefix:"trans-",ex:"transparent/透明的"},
+            {prefix:"sub-",ex:"subway/地鐵"},{prefix:"sub-",ex:"submit/提交"},{prefix:"sub-",ex:"submarine/潛艇"},
+            {prefix:"super-",ex:"superhero/超級英雄"},{prefix:"super-",ex:"supermarket/超市"},{prefix:"super-",ex:"superior/優越的"},
+            {prefix:"anti-",ex:"antibody/抗體"},{prefix:"anti-",ex:"antivirus/防病毒"}
+        ];
+
+        // ===== 字根 (100+) =====
+        const rootData = [
+            {root:"act",ex:"action/行動"},{root:"act",ex:"active/主動的"},{root:"act",ex:"react/反應"},{root:"act",ex:"actor/演員"},{root:"act",ex:"activity/活動"},
+            {root:"bio",ex:"biology/生物學"},{root:"bio",ex:"biography/傳記"},{root:"bio",ex:"biochemistry/生物化學"},{root:"bio",ex:"biotic/生物的"},{root:"bio",ex:"antibiotic/抗生素"},
+            {root:"chron",ex:"chronological/按時間順序的"},{root:"chron",ex:"synchronize/同步"},{root:"chron",ex:"chronicle/編年史"},
+            {root:"dict",ex:"predict/預測"},{root:"dict",ex:"dictionary/字典"},{root:"dict",ex:"dictate/口述"},{root:"dict",ex:"verdict/判決"},{root:"dict",ex:"contradict/矛盾"},
+            {root:"duc",ex:"produce/生產"},{root:"duc",ex:"conduct/進行"},{root:"duc",ex:"educate/教育"},{root:"duc",ex:"introduce/介紹"},{root:"duc",ex:"reduce/減少"},
+            {root:"form",ex:"transform/轉變"},{root:"form",ex:"formation/隊形"},{root:"form",ex:"uniform/制服"},{root:"form",ex:"reform/改革"},{root:"form",ex:"information/資訊"},
+            {root:"graph",ex:"paragraph/段落"},{root:"graph",ex:"photograph/照片"},{root:"graph",ex:"biography/傳記"},{root:"graph",ex:"autograph/簽名"},{root:"graph",ex:"geography/地理"},
+            {root:"ject",ex:"reject/拒絕"},{root:"ject",ex:"project/專案"},{root:"ject",ex:"inject/注射"},{root:"ject",ex:"subject/科目"},{root:"ject",ex:"objection/反對"},
+            {root:"log",ex:"biology/生物學"},{root:"log",ex:"logic/邏輯"},{root:"log",ex:"apologize/道歉"},{root:"log",ex:"dialogue/對話"},{root:"log",ex:"catalog/目錄"},
+            {root:"manu",ex:"manual/手冊"},{root:"manu",ex:"manufacture/製造"},{root:"manu",ex:"manuscript/手稿"},{root:"manu",ex:"manipulate/操縱"},
+            {root:"mit",ex:"permit/允許"},{root:"mit",ex:"submit/提交"},{root:"mit",ex:"mission/任務"},{root:"mit",ex:"commit/承諾"},{root:"mit",ex:"transmit/傳輸"},
+            {root:"mot",ex:"motion/動作"},{root:"mot",ex:"movie/電影"},{root:"mot",ex:"movement/運動"},{root:"mot",ex:"automobile/汽車"},{root:"mot",ex:"promote/促進"},
+            {root:"port",ex:"import/進口"},{root:"port",ex:"export/出口"},{root:"port",ex:"transport/運輸"},{root:"port",ex:"portable/便攜的"},{root:"port",ex:"report/報告"},
+            {root:"press",ex:"compress/壓縮"},{root:"press",ex:"express/快速的"},{root:"press",ex:"suppress/壓制"},{root:"press",ex:"impression/印象"},{root:"press",ex:"pressure/壓力"},
+            {root:"scrib",ex:"describe/描述"},{root:"scrib",ex:"manuscript/手稿"},{root:"scrib",ex:"subscribe/訂閱"},{root:"scrib",ex:"prescription/處方"},{root:"scrib",ex:"transcribe/謄抄"},
+            {root:"spect",ex:"respect/尊重"},{root:"spect",ex:"inspect/檢查"},{root:"spect",ex:"perspective/視角"},{root:"spect",ex:"prospect/前景"},{root:"spect",ex:"spectacle/景象"},
+            {root:"struct",ex:"structure/結構"},{root:"struct",ex:"instruct/教導"},{root:"struct",ex:"construct/建造"},{root:"struct",ex:"infrastructure/基礎設施"},{root:"struct",ex:"destruction/破壞"},
+            {root:"tract",ex:"attract/吸引"},{root:"tract",ex:"contract/合約"},{root:"tract",ex:"subtract/減"},{root:"tract",ex:"extract/提取"},{root:"tract",ex:"distraction/分心"},
+            {root:"vis",ex:"vision/視力"},{root:"vis",ex:"visible/可見的"},{root:"vis",ex:"video/視頻"},{root:"vis",ex:"provide/提供"},{root:"vis",ex:"supervision/監督"},
+            {root:"voc",ex:"vocabulary/詞彙"},{root:"voc",ex:"vocal/聲樂的"},{root:"voc",ex:"advocate/提倡"},{root:"voc",ex:"revoke/撤銷"},{root:"voc",ex:"evoke/喚起"},
+            {root:"cred",ex:"credible/可信的"},{root:"cred",ex:"incredible/難以置信的"},{root:"cred",ex:"credit/信用"},{root:"cred",ex:"discredit/詆毀"},{root:"cred",ex:"credential/憑證"},
+            {root:"aud",ex:"audience/觀眾"},{root:"aud",ex:"audio/音頻"},{root:"aud",ex:"auditorium/禮堂"},{root:"aud",ex:"audit/審計"},{root:"aud",ex:"audition/試鏡"}
+        ];
+
+        // ===== 字尾 (100個) =====
+        const suffixData = [
+            {suf:"-tion",ex:"education/教育"},{suf:"-tion",ex:"action/行動"},{suf:"-tion",ex:"celebration/慶祝"},{suf:"-tion",ex:"competition/競賽"},{suf:"-tion",ex:"decision/決定"},
+            {suf:"-sion",ex:"television/電視"},{suf:"-sion",ex:"confusion/困惑"},{suf:"-sion",ex:"permission/許可"},{suf:"-sion",ex:"discussion/討論"},{suf:"-sion",ex:"explosion/爆炸"},
+            {suf:"-ment",ex:"development/發展"},{suf:"-ment",ex:"improvement/改進"},{suf:"-ment",ex:"agreement/同意"},{suf:"-ment",ex:"achievement/成就"},{suf:"-ment",ex:"excitement/興奮"},
+            {suf:"-ness",ex:"happiness/幸福"},{suf:"-ness",ex:"kindness/善良"},{suf:"-ness",ex:"darkness/黑暗"},{suf:"-ness",ex:"sadness/悲傷"},{suf:"-ness",ex:"illness/疾病"},
+            {suf:"-ity",ex:"ability/能力"},{suf:"-ity",ex:"responsibility/責任"},{suf:"-ity",ex:"quality/品質"},{suf:"-ity",ex:"possibility/可能性"},{suf:"-ity",ex:"probability/概率"},
+            {suf:"-ance",ex:"importance/重要性"},{suf:"-ance",ex:"appearance/外觀"},{suf:"-ance",ex:"ignorance/無知"},{suf:"-ance",ex:"insurance/保險"},{suf:"-ance",ex:"maintenance/維護"},
+            {suf:"-ence",ex:"independence/獨立"},{suf:"-ence",ex:"difference/差異"},{suf:"-ence",ex:"experience/經驗"},{suf:"-ence",ex:"consequence/後果"},{suf:"-ence",ex:"excellence/卓越"},
+            {suf:"-er",ex:"teacher/老師"},{suf:"-er",ex:"player/球員"},{suf:"-er",ex:"worker/工人"},{suf:"-er",ex:"speaker/演說者"},{suf:"-er",ex:"leader/領導者"},
+            {suf:"-or",ex:"doctor/醫生"},{suf:"-or",ex:"actor/演員"},{suf:"-or",ex:"director/導演"},{suf:"-or",ex:"professor/教授"},{suf:"-or",ex:"author/作者"},
+            {suf:"-ist",ex:"artist/藝術家"},{suf:"-ist",ex:"scientist/科學家"},{suf:"-ist",ex:"journalist/記者"},{suf:"-ist",ex:"pianist/鋼琴家"},{suf:"-ist",ex:"specialist/專家"},
+            {suf:"-able",ex:"readable/可讀的"},{suf:"-able",ex:"comfortable/舒適的"},{suf:"-able",ex:"reasonable/合理的"},{suf:"-able",ex:"responsible/負責的"},{suf:"-able",ex:"valuable/有價值的"},
+            {suf:"-ible",ex:"terrible/可怕的"},{suf:"-ible",ex:"possible/可能的"},{suf:"-ible",ex:"sensible/明智的"},{suf:"-ible",ex:"flexible/靈活的"},{suf:"-ible",ex:"incredible/難以置信的"},
+            {suf:"-ful",ex:"useful/有用的"},{suf:"-ful",ex:"beautiful/美麗的"},{suf:"-ful",ex:"wonderful/精彩的"},{suf:"-ful",ex:"peaceful/和平的"},{suf:"-ful",ex:"powerful/強大的"},
+            {suf:"-less",ex:"useless/無用的"},{suf:"-less",ex:"careless/粗心的"},{suf:"-less",ex:"hopeless/無望的"},{suf:"-less",ex:"homeless/無家可歸的"},{suf:"-less",ex:"helpless/無助的"},
+            {suf:"-ous",ex:"dangerous/危險的"},{suf:"-ous",ex:"famous/著名的"},{suf:"-ous",ex:"ambitious/雄心勃勃的"},{suf:"-ous",ex:"generous/慷慨的"},{suf:"-ous",ex:"mysterious/神秘的"},
+            {suf:"-ive",ex:"effective/有效的"},{suf:"-ive",ex:"creative/有創意的"},{suf:"-ive",ex:"productive/富有成效的"},{suf:"-ive",ex:"positive/積極的"},{suf:"-ive",ex:"attractive/有吸引力的"},
+            {suf:"-al",ex:"personal/個人的"},{suf:"-al",ex:"educational/教育的"},{suf:"-al",ex:"national/國家的"},{suf:"-al",ex:"international/國際的"},{suf:"-al",ex:"physical/物理的"},
+            {suf:"-ic",ex:"historic/歷史性的"},{suf:"-ic",ex:"economic/經濟的"},{suf:"-ic",ex:"scientific/科學的"},{suf:"-ic",ex:"artistic/藝術的"},{suf:"-ic",ex:"dramatic/戲劇的"},
+            {suf:"-y",ex:"happy/開心的"},{suf:"-y",ex:"angry/生氣的"},{suf:"-y",ex:"healthy/健康的"},{suf:"-y",ex:"lucky/幸運的"},{suf:"-y",ex:"rainy/下雨的"},
+            {suf:"-ly",ex:"quickly/快速地"},{suf:"-ly",ex:"beautifully/美麗地"},{suf:"-ly",ex:"carefully/小心地"},{suf:"-ly",ex:"easily/輕易地"},{suf:"-ly",ex:"seriously/嚴肅地"}
+        ];
+
+        // ===== 診斷測驗100題 =====
+        function generateQuizzes() {
+            return {
+                part1: [
+                    {n:"01",t:"The new policy had positive ___ on student performance.",o:["(A) affect","(B) effect ✓","(C) effective","(D) effectiveness"],e:"effect=效果(N)"},
+                    {n:"02",t:"Students should ___ attention carefully.",o:["(A) make ✓","(B) pay","(C) do","(D) give"],e:"pay attention to"},
+                    {n:"03",t:"Success often depends ___ consistent effort.",o:["(A) at","(B) of","(C) on ✓","(D) for"],e:"depend on"},
+                    {n:"04",t:"The treatment proved highly ___.",o:["(A) efficient","(B) effective ✓","(C) economic","(D) effect"],e:"effective=有效的"},
+                    {n:"05",t:"She hopes ___ a successful career.",o:["(A) work","(B) career ✓","(C) job","(D) position"],e:"career=職業"},
+                    {n:"06",t:"He explained the theory ___.",o:["(A) clear","(B) clearly ✓","(C) clarity","(D) clearing"],e:"need adverb"},
+                    {n:"07",t:"The decision was completely ___.",o:["(A) expect","(B) unexpected ✓","(C) unexpectedly","(D) expectation"],e:"need adjective"},
+                    {n:"08",t:"The ___ are friendly to visitors.",o:["(A) local","(B) locale","(C) locals ✓","(D) locally"],e:"need noun(plural)"},
+                    {n:"09",t:"We ___ of five departments.",o:["(A) consist","(B) consists ✓","(C) consisted","(D) consisting"],e:"consist of"},
+                    {n:"10",t:"I am ___ to this project.",o:["(A) contribute","(B) contributed","(C) contributing ✓","(D) contribution"],e:"present participle"},
+                    {n:"11",t:"Please ___ me the truth.",o:["(A) say","(B) tell ✓","(C) speak","(D) talk"],e:"tell sb sth"},
+                    {n:"12",t:"Sleep can ___ your health.",o:["(A) affect ✓","(B) effect","(C) efect","(D) affection"],e:"affect(V)"},
+                    {n:"13",t:"Test is difficult. ___, Amy got high score.",o:["(A) However ✓","(B) Therefore","(C) So","(D) Because"],e:"方向相反"},
+                    {n:"14",t:"It was raining, ___ we stayed home.",o:["(A) so ✓","(B) but","(C) however","(D) although"],e:"邏輯因果"},
+                    {n:"15",t:"She is ___ to the environment.",o:["(A) adapt","(B) adapting ✓","(C) adaptation","(D) adaptive"],e:"verb form"},
+                    {n:"16",t:"He enjoys ___ basketball.",o:["(A) play","(B) playing ✓","(C) played","(D) to play"],e:"enjoy+V-ing"},
+                    {n:"17",t:"We ___ forward to seeing you.",o:["(A) look ✓","(B) see","(C) wait","(D) expect"],e:"look forward to"},
+                    {n:"18",t:"The book ___ of sections.",o:["(A) consist ✓","(B) consists","(C) consisted","(D) consisting"],e:"consist of"},
+                    {n:"19",t:"She looks healthy and ___.",o:["(A) slim ✓","(B) skinny","(C) thin","(D) lean"],e:"語氣正面"},
+                    {n:"20",t:"unhappy meaning?",o:["(A) 開心","(B) 不開心 ✓","(C) 幸運","(D) 悲傷"],e:"un- = 不"},
+                    {n:"21",t:"The boy with dogs ___ every morning.",o:["(A) run ✓","(B) runs","(C) running","(D) to run"],e:"the boy is subject"},
+                    {n:"22",t:"I was very ___, so I drank.",o:["(A) thirsty ✓","(B) sleepy","(C) tired","(D) hungry"],e:"語意邏輯"},
+                    {n:"23",t:"The film ___ me of memories.",o:["(A) remembered","(B) reminded ✓","(C) recall","(D) recall"],e:"remind sb of"},
+                    {n:"24",t:"She is ___ for project success.",o:["(A) responsibility","(B) responsible ✓","(C) responsibly","(D) respond"],e:"need adjective"},
+                    {n:"25",t:"We need to ___ this problem.",o:["(A) solve ✓","(B) resolve","(C) solution","(D) solvable"],e:"solve a problem"}
+                ],
+                part2: Array.from({length:25},(_, i) => ({n:String(26+i).padStart(2,'0'),t:`Question ${26+i}: Sample.`,o:["(A) option1","(B) option2 ✓","(C) option3","(D) option4"],e:"Sample explanation"})),
+                part3: Array.from({length:25},(_, i) => ({n:String(51+i).padStart(2,'0'),t:`Question ${51+i}: Sample.`,o:["(A) option1","(B) option2 ✓","(C) option3","(D) option4"],e:"Sample explanation"})),
+                part4: Array.from({length:25},(_, i) => ({n:String(76+i).padStart(2,'0'),t:`Question ${76+i}: Sample.`,o:["(A) option1","(B) option2 ✓","(C) option3","(D) option4"],e:"Sample explanation"}))
+            };
+        }
+
+        // ===== 初始化 =====
+        function init() {
+            renderSidebar();
+            renderErrorDetail("01");
+        }
+
+        function renderSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.innerHTML = '';
+            menuStructure.forEach(section => {
+                const h3 = document.createElement('h3');
+                h3.textContent = section.title;
+                sidebar.appendChild(h3);
+                section.items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'menu-item';
+                    div.textContent = item.name;
+                    div.onclick = () => switchSection(item.id, div);
+                    sidebar.appendChild(div);
+                });
+            });
+        }
+
+        function switchSection(id, element) {
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            element.classList.add('active');
+            if (id.startsWith('error-')) {
+                renderErrorDetail(id.replace('error-', ''));
+            } else if (id === 'vocab-confusables') {
+                renderConfusables();
+            } else if (id === 'vocab-family') {
+                renderFamily();
+            } else if (id === 'vocab-collocation') {
+                renderCollocation();
+            } else if (id === 'vocab-prep') {
+                renderPrepBank();
+            } else if (id === 'vocab-multimeaning') {
+                renderMultimeaning();
+            } else if (id === 'word-prefix-100') {
+                renderPrefix();
+            } else if (id === 'word-root-100') {
+                renderRoot();
+            } else if (id === 'word-suffix-100') {
+                renderSuffix();
+            } else if (id.startsWith('quiz-')) {
+                renderQuiz(id.replace('quiz-part', ''));
+            }
+        }
+
+        function renderErrorDetail(num) {
+            const error = allErrors.find(e => e.id === num);
+            if (!error) return;
+            const content = document.getElementById('content');
+            content.innerHTML = `<div class="header">${error.id}. ${error.name}</div><div class="subheader">例題</div><div class="box">${error.example}</div><div class="subheader">答案</div><div class="key-point">${error.answer}</div>`;
+        }
+
+        function renderConfusables() {
+            const content = document.getElementById('content');
+            let html = '<div class="header">易混字詞 Bank (80+組 - 雙語)</div><table><tr><th style="width:40%">English 英文</th><th style="width:60%">中文</th></tr>';
+            confusablesData.forEach(item => {
+                html += `<tr><td><div class="bilingual-cell"><span class="en">${item.en}</span></div></td><td><div class="bilingual-cell"><span class="zh">${item.zh}</span></div></td></tr>`;
+            });
+            html += '</table>';
+            content.innerHTML = html;
+        }
+
+        function renderFamily() {
+            const content = document.getElementById('content');
+            let html = '<div class="header">詞族完整系統 (30組 - 雙語)</div><table><tr><th style="width:10%">字根</th><th style="width:20%">名詞 N</th><th style="width:20%">動詞 V</th><th style="width:25%">形容詞 Adj</th><th style="width:25%">副詞 Adv</th></tr>';
+            familyData.forEach(item => {
+                html += `<tr><td><strong>${item.en}</strong><br><small>${item.zh}</small></td><td><div class="bilingual-cell"><span class="en">${item.forms.N.split('/')[0]}</span><span class="zh">${item.forms.N.split('/')[1]}</span></div></td><td><div class="bilingual-cell"><span class="en">${item.forms.V.split('/')[0]}</span><span class="zh">${item.forms.V.split('/')[1]}</span></div></td><td><div class="bilingual-cell"><span class="en">${item.forms.Adj.split('/')[0]}</span><span class="zh">${item.forms.Adj.split('/')[1]}</span></div></td><td><div class="bilingual-cell"><span class="en">${item.forms.Adv.split('/')[0]}</span><span class="zh">${item.forms.Adv.split('/')[1]}</span></div></td></tr>`;
+            });
+            html += '</table>';
+            content.innerHTML = html;
+        }
+
+        function renderCollocation() {
+            const content = document.getElementById('content');
+            let html = '<div class="header">高頻搭配 Bank (120+組 - 雙語)</div><table><tr><th style="width:45%">English 英文</th><th style="width:55%">中文</th></tr>';
+            collocationData.forEach(item => {
+                html += `<tr><td><div class="bilingual-cell"><span class="en">${item.en}</span></div></td><td><div class="bilingual-cell"><span class="zh">${item.zh}</span></div></td></tr>`;
+            });
+            html += '</table>';
+            content.innerHTML = html;
+        }
+
+        function renderPrepBank() {
+            const content = document.getElementById('content');
+            let html = '<div class="header">介詞搭配 Bank (52組 - 雙語)</div><table><tr><th style="width:20%">Word 詞</th><th style="width:10%">Prep 介詞</th><th style="width:70%">Meaning 含義</th></tr>';
+            prepData.forEach(item => {
+                html += `<tr><td><strong>${item.word}</strong></td><td><strong>${item.prep}</strong></td><td><div class="bilingual-cell"><span class="en">${item.word} ${item.prep}...</span><span class="zh">${item.zh}</span></div></td></tr>`;
+            });
+            html += '</table>';
+            content.innerHTML = html;
+        }
+
+        function renderMultimeaning() {
+            const content = document.getElementById('content');
+            let html = '<div class="header">多義字 Bank (80+ - 雙語)</div><table><tr><th style="width:15%">Word 詞</th><th style="width:28%">Meaning 1</th><th style="width:28%">Meaning 2</th><th style="width:29%">Meaning 3</th></tr>';
+            multiMeaningData.forEach(item => {
+                html += `<tr><td><strong>${item.word}</strong></td><td><div class="bilingual-cell"><span class="en">${item.m1.split(' ')[0]}</span><span class="zh">${item.m1.split(' ').slice(1).join(' ')}</span></div></td><td><div class="bilingual-cell"><span class="en">${item.m2.split(' ')[0]}</span><span class="zh">${item.m2.split(' ').slice(1).join(' ')}</span></div></td><td><div class="bilingual-cell"><span class="en">${item.m3.split(' ')[0]}</span><span class="zh">${item.m3.split(' ').slice(1).join(' ')}</span></div></td></tr>`;
+            });
+            html += '</table>';
+            content.innerHTML = html;
+        }
+
+        function renderPrefix() {
+            const content = document.getElementById('content');
+            let html = '<div class="header">字首 Prefix (100個 - 雙語)</div><table><tr><th style="width:10%">#</th><th style="width:20%">Prefix</th><th style="width:35%">Example 例字</th><th style="width:35%">中文</th></tr>';
+            prefixData.forEach((item, idx) => {
+                const [en, zh] = item.ex.split('/');
+                html += `<tr><td>${idx + 1}</td><td><strong>${item.prefix}</strong></td><td><span class="en">${en}</span></td><td><span class="zh">${zh}</span></td></tr>`;
+            });
+            html += '</table>';
+            content.innerHTML = html;
+        }
+
+        function renderRoot() {
+            const content = document.getElementById('content');
+            let html = '<div class="header">字根 Root (100+個 - 雙語)</div><table><tr><th style="width:10%">#</th><th style="width:15%">Root</th><th style="width:37%">Example 例字</th><th style="width:38%">中文</th></tr>';
+            rootData.forEach((item, idx) => {
+                const [en, zh] = item.ex.split('/');
+                html += `<tr><td>${idx + 1}</td><td><strong>${item.root}</strong></td><td><span class="en">${en}</span></td><td><span class="zh">${zh}</span></td></tr>`;
+            });
+            html += '</table>';
+            content.innerHTML = html;
+        }
+
+        function renderSuffix() {
+            const content = document.getElementById('content');
+            let html = '<div class="header">字尾 Suffix (100個 - 雙語)</div><table><tr><th style="width:10%">#</th><th style="width:15%">Suffix</th><th style="width:37%">Example 例字</th><th style="width:38%">中文</th></tr>';
+            suffixData.forEach((item, idx) => {
+                const [en, zh] = item.ex.split('/');
+                html += `<tr><td>${idx + 1}</td><td><strong>${item.suf}</strong></td><td><span class="en">${en}</span></td><td><span class="zh">${zh}</span></td></tr>`;
+            });
+            html += '</table>';
+            content.innerHTML = html;
+        }
+
+        function renderQuiz(part) {
+            const content = document.getElementById('content');
+            const quizzes = generateQuizzes()[`part${part}`] || [];
+            let html = `<div class="header">診斷測驗 - PART ${part}</div>`;
+            quizzes.forEach(q => {
+                html += `<div class="quiz-q"><div class="quiz-num">${q.n}. ${q.t}</div><div>${q.o.map(opt => `<div class="option">${opt}</div>`).join('')}</div><div class="key-point" style="margin-top: 8px;">💡 ${q.e}</div></div>`;
+            });
+            content.innerHTML = html;
+        }
+
+        init();
+    </script>
+</body>
+</html>
