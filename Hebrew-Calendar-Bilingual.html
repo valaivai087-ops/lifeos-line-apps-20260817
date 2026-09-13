@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>希伯來曆12月雙語系統</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Microsoft YaHei',Arial,sans-serif;font-size:14px;background:#f0f2f5;height:100vh;display:flex;flex-direction:column}
+        header{background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:15px;text-align:center}
+        header h1{font-size:1.4em;margin-bottom:3px}
+        header p{font-size:0.85em}
+        .main{flex:1;display:flex;overflow:hidden}
+        .sidebar{width:220px;background:white;border-right:1px solid #ddd;overflow-y:auto;padding:10px}
+        .btn-month{width:100%;padding:5px;margin:1px 0;border:2px solid #ddd;border-radius:2px;background:white;cursor:pointer;font-size:0.8em;text-align:left}
+        .btn-month.active{background:#667eea;color:white}
+        .content{flex:1;display:flex;flex-direction:column;overflow:hidden}
+        .toolbar{display:flex;gap:5px;padding:8px;background:white;border-bottom:1px solid #ddd;align-items:center;flex-wrap:wrap}
+        .tabs{display:flex;gap:3px;flex:1;overflow-x:auto}
+        .tab-btn{padding:5px 8px;background:none;border:none;cursor:pointer;font-size:0.75em;color:#666;border-bottom:2px solid transparent}
+        .tab-btn.active{color:#667eea;border-bottom-color:#667eea;font-weight:bold}
+        .lang-toggle{display:flex;gap:2px}
+        .lang-btn{padding:3px 6px;border:1px solid #ddd;background:white;cursor:pointer;font-size:0.7em;border-radius:2px}
+        .lang-btn.active{background:#667eea;color:white;border-color:#667eea}
+        .btn-speak{padding:4px 8px;background:#667eea;color:white;border:none;border-radius:2px;cursor:pointer;font-size:0.7em;white-space:nowrap}
+        .btn-speak:hover{background:#764ba2}
+        .data{flex:1;overflow-y:auto;padding:12px;background:white}
+        .section{margin-bottom:8px;border-left:2px solid #667eea;padding-left:8px}
+        .section h4{color:#667eea;font-size:0.85em;margin-bottom:3px}
+        .box{background:#f8f9fa;padding:6px;margin:2px 0;border-radius:2px;font-size:0.85em;line-height:1.4}
+        .zh{display:block}
+        .en{display:none;font-style:italic;color:#555}
+        .en.show{display:block}
+        .hidden{display:none}
+        .speaker{cursor:pointer;color:#667eea;font-size:0.8em}
+        .speaker:hover{color:#764ba2}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Hebrew Calendar - 希伯來曆12月</h1>
+        <p>Bilingual Bilingual System × 雙語系統</p>
+    </header>
+    <div class="main">
+        <div class="sidebar" id="sidebar"></div>
+        <div class="content">
+            <div class="toolbar">
+                <div class="tabs" id="tabs"></div>
+                <div class="lang-toggle">
+                    <button class="lang-btn active" id="lang-zh">中文</button>
+                    <button class="lang-btn" id="lang-en">English</button>
+                </div>
+                <button class="btn-speak" id="speakBtn">🔊 Speak</button>
+            </div>
+            <div class="data" id="data"></div>
+        </div>
+    </div>
+
+    <script>
+let lang = 'zh';
+
+const data = [
+{id:1,name:'尼散月 Nisan',date:'3-4月 Mar-Apr',season:'春季 Spring',climate:'春季回暖，雨季漸退 Warm spring, rainy season fading',events:'逾越、出埃及 Passover Exodus',periods:'逾越節、無酵節 Passover Unleavened Bread',figure:'摩西、以色列百姓 Moses Israelites',bible:'出埃及記12-15章 Exodus 12-15',god:'拯救、帶領、開路 Salvation Guidance Opening ways',human:'相信、預備、跨出去 Faith Preparation Moving forward',wisdom:'有些人生問題，不是需要更會忍耐，而是需要離開舊模式 Some life problems require leaving old patterns',body:'離開長期消耗自己的生活方式 Leave self-draining lifestyles',heart:'辨認限制性信念 Recognize limiting beliefs',spirit:'記念救贖不是完全靠自己掙脫 Redemption is not self-achieved',relation:'停止讓舊傷害模式一直複製 Stop repeating old hurt patterns',family:'不要替孩子走完人生 Do not complete life for children',work:'停止低效方法，開始新方法 Stop old methods start new ones',modelOld:'被綑綁就忍耐 Endure when bound',modelNew:'辨認→離開→建立新生活 Identify Leave Build new life',char:'勇敢 Courage',fruit:'自由、新生、盼望 Freedom New life Hope',blessing:'救贖的恩典 Grace of Redemption',action:'停止一個正在綑綁自己的舊模式 Stop one binding old pattern',course:'01重生道路 03惟一答案 05新生命新生活 07重生變化 01 Path of Rebirth 03 Only Answer 05 New Life Living 07 Transformation'},
+{id:2,name:'以珥月 Iyar',date:'4-5月 Apr-May',season:'春末 Late spring',climate:'氣溫上升，乾季開始 Warming dry season begins',events:'曠野供應、嗎哪 Wilderness provision Manna',periods:'計算俄梅珥 Counting of Omer',figure:'摩西、亞倫、以色列百姓 Moses Aaron Israelites',bible:'出埃及記15-17章 Exodus 15-17',god:'供應、引導、教導依靠 Provision Guidance Teaching trust',human:'需要、焦慮、抱怨 Need Anxiety Complaint',wisdom:'離開舊世界後，不代表新世界立刻完整出現 Leaving old world does not mean new world appears immediately',body:'建立每天基本供應 Establish daily provisions',heart:'面對不知道下一步的不安全感 Face uncertainty',spirit:'學習每日信靠 Learn daily trust',relation:'焦慮時不要把恐懼變成對別人的攻擊 Do not turn fear into attacks',family:'孩子遇到困難時，不必立即消除所有不確定 Do not immediately remove all uncertainty',work:'大目標拆成今天可以完成的一步 Break goals into todays step',modelOld:'看不到答案 No visible answers',modelNew:'只需要忠心走今天能走的一步 Walk todays possible step faithfully',char:'信靠 Trust',fruit:'平安、耐心、知足 Peace Patience Contentment',blessing:'供應的恩典 Grace of Provision',action:'今天只完成最重要的一步 Complete only the most important step',course:'04神兒女確據 06與神對話 17禱告 18禱告應許 04 Certainty as Gods Child 06 Dialogue with God 17 Prayer 18 Prayer Promises'},
+{id:3,name:'西彎月 Sivan',date:'5-6月 May-Jun',season:'初夏 Early summer',climate:'乾燥溫暖，收穫季開始 Dry warm harvest begins',events:'西奈之約、五旬節 Sinai Covenant Shavuot',periods:'五旬節 Shavuot',figure:'摩西、使徒與初代信徒 Moses Apostles Early believers',bible:'出埃及記19-20章 Exodus 19-20',god:'啟示、立約、賜下、差遣 Revelation Covenant Giving Commissioning',human:'聽見、領受、回應 Listening Receiving Responding',wisdom:'領受真理之後，要變成生活 Truth must become life',body:'讓身體實踐信仰 Let body practice faith',heart:'從知道進入理解和運用 Move from knowing to understanding and using',spirit:'領受聖靈、活出信仰 Receive Spirit live faith',relation:'真理不能只用來要求別人 Truth applies to self first',family:'少一點說教，多一點示範 Less teaching more modeling',work:'知識→練習→回饋→修正 Input Practice Feedback Correct',modelOld:'知道 Knowing',modelNew:'知道→實踐→產生果子 Know Practice Fruit equals true life change',char:'順服 Obedience',fruit:'信實、智慧、實踐 Faithfulness Wisdom Practice',blessing:'啟示與能力的恩典 Grace of Revelation Power',action:'把一條已知道的真理，今天實踐一次 Practice one known truth today',course:'08三一神作為 11回復神的話 12聖經與我 16聖靈充滿 08 Triune Gods Works 11 Restore Gods Word 12 Scripture Me 16 Spirits Fullness'},
+{id:4,name:'搭模斯月 Tammuz',date:'6-7月 Jun-Jul',season:'盛夏 High summer',climate:'炎熱乾燥 Hot and dry',events:'城牆被攻破 Wall breached',periods:'17日禁食 17th Tammuz fast',figure:'耶利米、耶路撒冷人 Jeremiah Jerusalem people',bible:'撒迦利亞書8:19 Zechariah 8:19',god:'警告、呼喚、給人回轉機會 Warning Calling Offering return',human:'可能聽見，也可能忽略 May listen or ignore',wisdom:'重大崩潰之前，常常已經出現小訊號 Major collapse preceded by small signals',body:'注意長期忽略的小訊號 Notice long-ignored small signals',heart:'停止應該沒事 Stop probably fine mindset',spirit:'看見生命哪些地方正在偏離 See where life deviates',relation:'小摩擦反覆發生，就值得處理 Repeated friction deserves attention',family:'不要等孩子完全失控才溝通 Do not wait for total breakdown',work:'缺交、低分、拖延都是早期回饋 Missing deadlines low scores delays are feedback',modelOld:'沒有出大事 No crisis',modelNew:'小訊號就是回饋 Small signals are feedback',char:'警醒 Vigilance',fruit:'分辨、節制、修正 Discernment Self-control Correction',blessing:'警告仍是恩典 Warning is grace',action:'找出反覆三次以上的小問題，今天處理 Find pattern repeated 3 times address today',course:'02惟一問題 09認識自己 10思想體系 21得勝禱告 02 Only Problem 09 Know Yourself 10 Belief System 21 Victorious Prayer'},
+{id:5,name:'埃波月 Av',date:'7-8月 Jul-Aug',season:'炎夏 Intense summer',climate:'炎熱乾燥 Hot and dry',events:'聖殿毀壞 Temple destroyed',periods:'9日禁食 9th Av fast',figure:'耶利米、經歷國家災難的百姓 Jeremiah People experiencing disaster',bible:'列王紀下25章 2 Kings 25',god:'審判之中仍留下回轉與重建 Judgment still allows return rebuilding',human:'失去→哀哭→反省→重新開始 Loss Mourning Reflection New beginning',wisdom:'哀傷不是信心失敗 Grief is not faith failure',body:'允許疲憊與哀傷存在 Allow exhaustion and grief',heart:'允許悲傷被命名 Allow grief to be named',spirit:'在痛苦裡向神說真話 Tell God truth in pain',relation:'陪伴不一定需要立即給答案 Companionship does not require answers',family:'孩子難過時，先陪他說出來 Listen before urging resilience',work:'失敗後做復盤，不要把失敗變成身份 Review failures do not make them identity',modelOld:'壓抑→假裝沒事 Suppress Pretend fine',modelNew:'受傷→哀傷→向神傾訴→接受陪伴→重建 Hurt Grieve Tell God Accept company Rebuild',char:'真誠 Authenticity',fruit:'憐憫、盼望、復原 Compassion Hope Restoration',blessing:'陪伴的恩典 Grace of Accompaniment',action:'寫下一件失去：失去了什麼？教會我什麼？ Write one loss What was lost What did it teach',course:'19禱告醫治 27靈得醫治 28心理醫治 29精神醫治 19 Healing Prayer 27 Spirit Healing 28 Soul Healing 29 Mind Healing'},
+{id:6,name:'以祿月 Elul',date:'8-9月 Aug-Sep',season:'夏末 Late summer',climate:'夏末、接近轉季 Summer waning season turning',events:'尼希米城牆完成 Nehemiah walls completed',periods:'悔改季 Season of Repentance',figure:'尼希米 Nehemiah',bible:'尼希米記6:15 Nehemiah 6:15',god:'光照、提醒、呼召歸回 Illumination Reminder Call to return',human:'安靜→省察→承認→預備 Quiet Examine Admit Prepare',wisdom:'真正的悔改，從停止替自己辯護開始 True repentance starts by stopping self-defense',body:'降低過度忙碌，留下安靜 Lower busyness create quiet',heart:'盤點思想、情緒、選擇與關係 Assess thoughts emotions choices relationships',spirit:'重新轉向神 Redirect toward God',relation:'問我需要向誰道歉或修復 Ask who needs my apology',family:'父母也可以向孩子認錯 Parents can apologize to children',work:'做一次完整復盤 Do complete review',modelOld:'錯誤→防衛→合理化 Error Defend Rationalize',modelNew:'錯誤→承認→改變方向→歸回 Error Admit Change direction Return',char:'謙卑 Humility',fruit:'悔改、誠實 Repentance Honesty',blessing:'悔改的恩典 Grace of Repentance',action:'寫下一個我原本以為...但實際上... Write I thought but actually',course:'09認識自己 10思想體系 11回復神的話 20禱告生活 09 Know Yourself 10 Belief System 11 Restore Gods Word 20 Prayer Life'},
+{id:7,name:'提斯利月 Tishrei',date:'9-10月 Sep-Oct',season:'初秋 Early autumn',climate:'炎熱逐漸緩和 Heat moderating',events:'吹角、贖罪、住棚 Shofar Atonement Tabernacles',periods:'吹角日、贖罪日、住棚節 Rosh Hashanah Yom Kippur Sukkot',figure:'祭司、以色列會眾 Priests Israelite congregation',bible:'利未記16、23章 Leviticus 16 23',god:'召聚、提醒、赦罪、同住與供應 Summon Remind Atone Dwell Provide',human:'醒→省察→悔改→歡慶 Awake Examine Repent Celebrate',wisdom:'真正的更新，不是把錯誤藏起來，而是帶到光中 True renewal means bringing errors into light',body:'停下、整理、安息 Stop Organize Rest',heart:'醒→省察→悔改→領受恩典 Awake Examine Repent Receive grace',spirit:'悔改→赦免→信靠→感恩 Repent Forgive Trust Gratitude',relation:'道歉、饒恕、界線、修復 Apologize Forgive Boundaries Repair',family:'建立家庭重新開始文化 Create family fresh start culture',work:'大復盤→找瓶頸→重新配置 Review Find bottlenecks Reconfigure',modelOld:'犯錯→防衛→重複 Error Defend Repeat',modelNew:'被提醒→省察→悔改→恩典→修復→新行動 Reminded Examine Repent Grace Repair New action',char:'敬畏 Awe',fruit:'和好、潔淨、喜樂 Reconciliation Cleansing Joy',blessing:'赦免與同在的恩典 Grace of Forgiveness Presence',action:'修正一件已經知道自己做錯的事 Correct one thing you know was wrong',course:'06與神對話 17禱告 22崇拜生活 31生活醫治 06 Dialogue with God 17 Prayer 22 Worship Life 31 Life Healing'},
+{id:8,name:'赫什萬月 Cheshvan',date:'10-11月 Oct-Nov',season:'秋季 Autumn',climate:'開始轉涼，雨季展開 Cooling rain begins',events:'所羅門聖殿完成 Solomons Temple completed',periods:'無妥拉朝聖大節期 No major Torah pilgrimage festival',figure:'所羅門 Solomon',bible:'列王紀上6:38 1 Kings 6:38',god:'不只在大節期，也在長期建造中工作 Works in long-term building not just festivals',human:'持續→完成→忠心 Continue Complete Faithful',wisdom:'高峰過後，信仰還剩下什麼 What remains after the peak',body:'恢復規律 Restore rhythm',heart:'沒有強烈感動仍繼續 Continue without strong feeling',spirit:'在平凡日子裡忠心 Faithful in ordinary days',relation:'愛不是偶爾的大動作，而是長期可靠 Love is long-term reliability not occasional gestures',family:'每天十分鐘真正陪伴，可能勝過偶爾一次補償 10 min daily beats occasional compensation',work:'建立固定流程與習慣 Build fixed processes and habits',modelOld:'有感覺→我才有信仰 Feeling Faith',modelNew:'沒有特殊感覺，我仍然可以忠心 Without feeling I can still be faithful',char:'忠心 Faithfulness',fruit:'穩定、信實、可靠 Stability Reliability Trustworthiness',blessing:'日常的恩典 Grace of the Ordinary',action:'固定一件每天都做的小事 Establish one daily small practice',course:'20禱告生活 22崇拜生活 23教會生活 24七個現場 20 Prayer Life 22 Worship Life 23 Church Life 24 Seven Places'},
+{id:9,name:'基斯流月 Kislev',date:'11-12月 Nov-Dec',season:'冬初 Early winter',climate:'轉涼、雨量增加 Cooling rain increasing',events:'聖殿被潔淨與重新奉獻 Temple cleansed and rededicated',periods:'修殿節 Hanukkah',figure:'馬加比家族 Maccabees',bible:'馬加比一書4章 1 Maccabees 4',god:'在黑暗歷史中使人有重新奉獻與盼望 In dark history enables rededication and hope',human:'守住→重新奉獻→記念 Hold Rededicate Remember',wisdom:'不能控制黑暗多大，但能決定是否守住光 Can control darkness but can hold light',body:'維持冬季基本生活節奏 Maintain winter basic rhythm',heart:'黑暗環境中保有盼望 Maintain hope in darkness',spirit:'重新奉獻、守住所相信的 Rededicate hold beliefs',relation:'成為別人的一盞燈 Be a light for others',family:'孩子低谷時，陪伴比說教重要 Companionship beats teaching in low points',work:'遇到低潮先守住最低可行進度 Hold minimum viable progress during slumps',modelOld:'等光 Wait for light',modelNew:'不能控制黑暗，但可以決定我的燈是否繼續亮 Can keep my light on',char:'堅定 Steadfastness',fruit:'盼望、良善、勇氣 Hope Goodness Courage',blessing:'光的恩典 Grace of Light',action:'今天為一個人做一件帶來希望的小事 Do one hope-bringing thing for someone',course:'13基督 14基督權柄 16聖靈充滿 25傳福音 13 Christ 14 Christs Authority 16 Spirits Fullness 25 Evangelism'},
+{id:10,name:'提別月 Tevet',date:'12-1月 Dec-Jan',season:'冬季 Winter',climate:'寒涼、多雨 Cold rainy',events:'耶路撒冷被圍 Jerusalem besieged',periods:'10日禁食 10th Tevet fast',figure:'西底家 Zedekiah',bible:'列王紀下25:1 2 Kings 25:1',god:'在局勢尚未明朗時仍推進歷史 Advances history while situation unclear',human:'等待→預備→守住 Wait Prepare Hold',wisdom:'真正的穩定不是沒有風浪，而是風浪中仍有根基 True stability is anchored in storms',body:'守住睡眠、飲食、活動 Maintain sleep food activity',heart:'外界不穩時降低內在混亂 Lower internal chaos when external unstable',spirit:'不因環境艱難就停止信靠 Do not stop trusting despite difficulty',relation:'衝突時先降低反應，再處理問題 Lower response first then address',family:'家庭危機中先建立安全與秩序 Safety order first in family crisis',work:'守住最重要三件事 Hold three most important things',modelOld:'外界穩定→我才能平安 External stability My peace',modelNew:'外界可波動，但我仍能守住自己的核心 External fluctuates but I hold my core',char:'堅忍 Perseverance',fruit:'自制、忍耐、平安 Self-control Patience Peace',blessing:'托住的恩典 Grace of Holding',action:'列出今天一定守住的三件事 List three things you must hold today',course:'18禱告應許 28心理醫治 29精神醫治 31生活醫治 18 Prayer Promises 28 Soul Healing 29 Mind Healing 31 Life Healing'},
+{id:11,name:'細罷特月 Shevat',date:'1-2月 Jan-Feb',season:'冬末 Late winter',climate:'冬季，雨水滋養土地 Winter rains nourish earth',events:'摩西重申律法 Moses reiterates law',periods:'樹木新年 New Year for Trees',figure:'摩西 Moses',bible:'申命記1:3 Deuteronomy 1:3',god:'長期教導→預備百姓進入下一階段 Long-term teaching Prepare for next stage',human:'聽→記住→預備跨越 Listen Remember Prepare to cross',wisdom:'看不見，不代表沒有生長 Unseen does not mean ungrown',body:'建立長期基本習慣 Build long-term habits',heart:'接受成長需要時間 Accept growth takes time',spirit:'在看不見成果時仍忠心 Faithful when fruit unseen',relation:'信任需要時間累積 Trust builds over time',family:'不要只看孩子今天的分數，也看正在形成的能力 See growing abilities beyond scores',work:'每天累積一點，比考前爆衝可靠 Daily accumulation beats last-minute sprint',modelOld:'沒有成果 No fruit',modelNew:'根正在長，也是一種成長 Growing roots is growth too',char:'忍耐 Patience',fruit:'成長、成熟、智慧 Growth Maturity Wisdom',blessing:'滋養的恩典 Grace of Nourishment',action:'選一件值得做100天的事，今天完成第1次 Start one 100-day thing today',course:'11回復神的話 12聖經與我 26基督門徒 36事奉醫治 11 Restore Gods Word 12 Scripture Me 26 Disciple 36 Ministry Healing'},
+{id:12,name:'亞達月 Adar',date:'2-3月 Feb-Mar',season:'冬末春前 Winter-spring transition',climate:'冬季逐漸走向春季 Winter warming toward spring',events:'危機與翻轉 Crisis Reversal',periods:'普珥節 Purim',figure:'以斯帖、末底改 Esther Mordecai',bible:'以斯帖記 Book of Esther',god:'以斯帖記中神未直接出現，卻隱而未見地工作 God unseen but working throughout',human:'害怕→禁食/預備→勇敢→行動 Fear Fast Prepare Courage Action',wisdom:'勇敢不是沒有害怕，而是害怕時仍做應該做的事 Courage is doing right despite fear',body:'從凍結轉向行動 Move from frozen to action',heart:'恐懼仍在，但不讓恐懼決定一切 Fear remains but does not decide',spirit:'在看不清全部計畫時仍忠心回應 Respond faithfully with unclear plans',relation:'關鍵時刻需要有人提醒自己的身份與責任 Need reminders of identity and calling',family:'不是替孩子消滅所有危機，而是培養他面對危機的勇氣 Build courage in children not remove crisis',work:'機會出現時，不要因追求100%確定而永遠不行動 Do not wait for certainty when opportunity appears',modelOld:'等我不害怕再做 Wait until fear gone',modelNew:'看見時機→勇敢行動→成為改變的一部分 See timing Act boldly Become part of change',char:'勇氣 Courage',fruit:'喜樂、慷慨、勇敢 Joy Generosity Courage',blessing:'翻轉與喜樂的恩典 Grace of Reversal Joy',action:'完成一件知道應該做，卻因害怕一直拖延的事 Do one thing delayed from fear',course:'04神兒女確據 24七個現場 25傳福音 26基督門徒 04 Child of God Identity 24 Seven Places 25 Evangelism 26 Discipleship'}
+];
+
+document.addEventListener('DOMContentLoaded', function() {
+    init();
+});
+
+function init() {
+    renderMonths();
+    renderTabs();
+    renderData(0);
+    document.getElementById('lang-zh').addEventListener('click', function() { setLang('zh'); });
+    document.getElementById('lang-en').addEventListener('click', function() { setLang('en'); });
+    document.getElementById('speakBtn').addEventListener('click', function() { speakCurrent(); });
+}
+
+function renderMonths() {
+    let html = '';
+    data.forEach((m, i) => {
+        html += '<button class="btn-month' + (i === 0 ? ' active' : '') + '" onclick="selectMonth(' + i + ')">' + m.id + '. ' + m.name.split(' ')[0] + '</button>';
+    });
+    document.getElementById('sidebar').innerHTML = html;
+}
+
+function renderTabs() {
+    const tabs = ['基本 Basic', '聖經 Bible', '功課 Practice', '模型 Models', '品格 Character', '恩典 Grace'];
+    let html = '';
+    tabs.forEach((t, i) => {
+        html += '<button class="tab-btn' + (i === 0 ? ' active' : '') + '" onclick="switchTab(' + i + ')">' + t + '</button>';
+    });
+    document.getElementById('tabs').innerHTML = html;
+}
+
+function setLang(l) {
+    lang = l;
+    document.getElementById('lang-zh').classList.remove('active');
+    document.getElementById('lang-en').classList.remove('active');
+    if(l === 'zh') document.getElementById('lang-zh').classList.add('active');
+    else document.getElementById('lang-en').classList.add('active');
+    
+    document.querySelectorAll('.zh').forEach(e => e.style.display = 'block');
+    document.querySelectorAll('.en').forEach(e => e.style.display = 'none');
+    if(l === 'en') {
+        document.querySelectorAll('.zh').forEach(e => e.style.display = 'none');
+        document.querySelectorAll('.en').forEach(e => e.style.display = 'block');
+    }
+}
+
+function selectMonth(i) {
+    document.querySelectorAll('.btn-month').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.btn-month')[i].classList.add('active');
+    renderData(i);
+}
+
+function renderData(idx) {
+    const m = data[idx];
+    const keys = ['date', 'season', 'climate', 'events', 'periods', 'figure', 'bible', 'god', 'human', 'wisdom', 'body', 'heart', 'spirit', 'relation', 'family', 'work', 'modelOld', 'modelNew', 'char', 'fruit', 'blessing', 'action', 'course'];
+    const labels = {date:'國曆/Calendar', season:'季節/Season', climate:'氣候/Climate', events:'事件/Events', periods:'節期/Periods', figure:'人物/Figures', bible:'聖經/Scripture', god:'神的作為/Gods Works', human:'人的反應/Human Response', wisdom:'智慧/Wisdom', body:'身體/Body', heart:'心理/Heart', spirit:'靈性/Spirit', relation:'關係/Relations', family:'家庭/Family', work:'工作/Work', modelOld:'舊模型/Old Model', modelNew:'新模型/New Model', char:'品格/Character', fruit:'果子/Fruit', blessing:'恩典/Blessing', action:'行動/Action', course:'36課/36 Courses'};
+    
+    let html = '';
+    keys.forEach(k => {
+        if(m[k]) {
+            const parts = m[k].split(' / ');
+            const zh_text = parts[0] || '';
+            const en_text = parts.slice(1).join(' / ') || parts[0];
+            html += '<div class="section"><h4>' + labels[k] + ' <span class="speaker" onclick="speak(\'' + en_text.replace(/'/g, "&#39;") + '\')">🔊</span></h4>';
+            html += '<div class="box"><span class="zh">' + zh_text + '</span><span class="en">' + en_text + '</span></div></div>';
+        }
+    });
+    document.getElementById('data').innerHTML = html;
+}
+
+function switchTab(i) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-btn')[i].classList.add('active');
+}
+
+function speak(text) {
+    if('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'en-US';
+        u.rate = 0.9;
+        window.speechSynthesis.speak(u);
+    }
+}
+
+function speakCurrent() {
+    const active = document.querySelector('.btn-month.active');
+    if(active) {
+        const idx = Array.from(document.querySelectorAll('.btn-month')).indexOf(active);
+        const texts = document.querySelectorAll('.data .en');
+        let fullText = '';
+        texts.forEach(t => {
+            if(t.style.display !== 'none') fullText += t.innerText + '. ';
+        });
+        if(fullText) speak(fullText);
+    }
+}
+    </script>
+</body>
+</html>
