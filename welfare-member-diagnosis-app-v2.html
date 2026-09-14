@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>福利會員｜人生解套導航</title>
+<style>
+:root{--bg:#f7f5ef;--card:#fff;--ink:#172033;--muted:#687083;--accent:#1d5b4f;--soft:#e8f1ed;--line:#dedbd2}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:720px;margin:auto;padding:22px 16px 50px}.hero{padding:28px 4px 18px}.tag{display:inline-block;background:var(--soft);color:var(--accent);padding:7px 11px;border-radius:999px;font-weight:700;font-size:13px}
+h1{font-size:32px;line-height:1.25;margin:14px 0 10px}h2{font-size:22px;margin:0 0 14px}.lead{font-size:17px;line-height:1.75;color:#41495a}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin:14px 0;box-shadow:0 6px 20px rgba(0,0,0,.04)}
+button,.btn{width:100%;border:0;border-radius:14px;padding:15px 16px;font-size:16px;font-weight:800;cursor:pointer;text-decoration:none;display:block;text-align:center}
+.primary{background:var(--accent);color:white}.secondary{background:var(--soft);color:var(--accent);margin-top:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.choice{background:#fff;border:1px solid var(--line);color:var(--ink);min-height:62px}.choice.sel{border:2px solid var(--accent);background:var(--soft)}
+.small{font-size:13px;color:var(--muted);line-height:1.6}.hidden{display:none}.map{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{padding:13px;border-radius:14px;background:#faf9f5;border:1px solid var(--line);font-size:14px}.lock{font-weight:800;color:var(--accent)}
+.resultline{padding:10px 0;border-bottom:1px dashed var(--line);line-height:1.6}.resultline:last-child{border:0}
+.badge{font-size:12px;font-weight:800;color:var(--accent)}.foot{text-align:center;margin-top:20px}
+@media(max-width:480px){h1{font-size:28px}.grid,.map{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main class="wrap">
+<section id="home">
+<div class="hero"><span class="tag">免費 3 分鐘診斷 × 會員 APP 導航預覽</span>
+<h1>你不用學完很多 APP。<br>你只需要知道：現在該用哪一個。</h1>
+<p class="lead">健康、情緒、關係、學習、AI、決策與人生能力卡住時，先找出真正瓶頸，再看看福利會員工具箱裡有哪些 APP 可以接手幫你。</p></div>
+<div class="card"><h2>福利會員不是買一個 APP</h2>
+<p class="lead">而是得到一整座「人生工具箱」。問題改變，導航就跟著改；你不必每次都重新在網路資訊海裡找答案。</p>
+<div class="map"><div class="tile">健康系統<br><span class="small">睡眠・疲勞・腸胃・營養・健康管理</span></div><div class="tile">情緒系統<br><span class="small">壓力・限制性信念・Model Update</span></div><div class="tile">關係系統<br><span class="small">伴侶・親子・溝通・界線</span></div><div class="tile">學習系統<br><span class="small">英文・閱讀・錯題・學習策略</span></div><div class="tile">AI系統<br><span class="small">AI學習・AI工作・AI思考</span></div><div class="tile">人生能力<br><span class="small">決策・執行力・High Agency・問題解決</span></div></div>
+<button class="primary" onclick="go('q1')">免費找出我現在需要哪類 APP</button></div>
+</section>
+
+<section id="q1" class="hidden"><div class="card"><span class="badge">STEP 1 / 3</span><h2>你現在最想改善什麼？</h2><div class="grid" id="areas"></div><button class="primary" onclick="next1()">下一步</button></div></section>
+<section id="q2" class="hidden"><div class="card"><span class="badge">STEP 2 / 3</span><h2>你現在最像哪一種卡法？</h2><div class="grid" id="blocks"></div><button class="primary" onclick="next2()">下一步</button></div></section>
+<section id="q3" class="hidden"><div class="card"><span class="badge">STEP 3 / 3</span><h2>如果 7 天後只能改善一件事，你最想得到什麼？</h2><div class="grid" id="goals"></div><button class="primary" onclick="diagnose()">產生我的解套導航</button></div></section>
+
+<section id="result" class="hidden">
+<div class="card"><span class="tag">你的解套導航已完成</span><h1 style="font-size:27px">先不要一次解決全部。<br>先走對第一步。</h1>
+<div id="resultText"></div></div>
+<div class="card"><h2>福利會員 APP 導航</h2><p class="lead">依你現在的問題，建議先從這些工具類型開始。</p><div id="apps"></div>
+<p class="lock">🔒 實際 APP 為福利會員專屬。</p><p class="small">非會員先看見導航與用途；加入會員後，才進入完整 APP 工具箱使用。</p></div>
+<div class="card"><h2>為什麼不是再給你更多知識？</h2>
+<div class="resultline">知道問題 ≠ 問題會改變。</div><div class="resultline">真正更新需要：診斷 → 行動 → 回饋 → 修正 → 再測試。</div><div class="resultline">你現在缺的可能不是更多資訊，而是一個持續運作的更新迴路。</div>
+<a class="btn primary" href="https://docs.google.com/forms/d/13y1UGsfNPbGU4Fc7mXoKhcVvZUr4Q9ZDIuh-jKb1H8E/viewform" target="_blank" rel="noopener">我要加入福利會員｜前往登記</a>
+<button class="secondary" onclick="location.reload()">重新診斷</button></div>
+<div class="foot small">健康類結果僅作生活管理與工具導航，不提供疾病診斷或治療建議；有持續或嚴重症狀請尋求合格醫療專業人員評估。</div>
+</section>
+</main>
+<script>
+const data={
+areas:["健康與身體","睡眠與疲勞","腸胃與飲食","情緒與壓力","關係與家庭","學習與英文","AI與工作效率","思考與決策","人生方向","自我成長與能力"],
+blocks:["知道問題，但不知道怎麼開始","試過很多方法，但沒有持續","知道很多道理，但做不到","一直重複相同問題","不知道真正瓶頸在哪裡","需要工具陪我執行","怕漏掉重要變數","想建立可長期使用的方法"],
+goals:["找到真正原因","知道第一步做什麼","建立可持續的方法","降低混亂與焦慮","提升執行力","找到適合我的工具"]
+};
+let ans={area:"",block:"",goal:""};
+function render(id,arr,key){document.getElementById(id).innerHTML=arr.map(x=>`<button class="choice" onclick="pick(this,'${key}','${x}')">${x}</button>`).join("")}
+render("areas",data.areas,"area");render("blocks",data.blocks,"block");render("goals",data.goals,"goal");
+function pick(el,key,val){ans[key]=val;[...el.parentNode.children].forEach(x=>x.classList.remove("sel"));el.classList.add("sel")}
+function go(id){document.querySelectorAll("main>section").forEach(s=>s.classList.add("hidden"));document.getElementById(id).classList.remove("hidden");scrollTo(0,0)}
+function next1(){if(!ans.area)return alert("請先選一項");go("q2")}function next2(){if(!ans.block)return alert("請先選一項");go("q3")}
+const nav={
+"健康與身體":["健康需求診斷 APP","生活型態與健康管理 APP","Model Update 追蹤工具"],
+"睡眠與疲勞":["睡眠導航 APP","疲勞與恢復檢視 APP","每日回饋追蹤 APP"],
+"腸胃與飲食":["腸胃需求導航 APP","飲食與生活紀錄 APP","健康回饋追蹤 APP"],
+"情緒與壓力":["情緒辨識 APP","限制性信念／Prediction Error APP","Model Update APP"],
+"關係與家庭":["關係模式診斷 APP","溝通與界線工具","關係 Model Update APP"],
+"學習與英文":["學習錯誤診斷 APP","英文／閱讀學習工具","錯題與 Retest APP"],
+"AI與工作效率":["AI任務導航 APP","工作拆解與執行 APP","AI思考工具"],
+"思考與決策":["決策診斷 APP","限制 × 槓桿分析 APP","Prediction Error APP"],
+"人生方向":["人生目標函數 APP","選擇與決策 APP","人生 OS 更新工具"],
+"自我成長與能力":["High Agency APP","能力圖譜 APP","Model Update APP"]
+};
+function diagnose(){
+ if(!ans.goal)return alert("請先選一項");
+ let bottleneck=ans.block.includes("不知道真正")?"目前最大瓶頸是「缺少問題排序與診斷」":ans.block.includes("做不到")?"目前最大瓶頸是「理解尚未轉成可執行回饋迴路」":ans.block.includes("沒有持續")?"目前最大瓶頸是「缺少低摩擦、可追蹤的持續機制」":"目前最大瓶頸不是資訊不足，而是需要把問題轉成可測試的下一步";
+ document.getElementById("resultText").innerHTML=`<div class="resultline"><b>目前主題｜</b>${ans.area}</div><div class="resultline"><b>現在卡法｜</b>${ans.block}</div><div class="resultline"><b>7天目標｜</b>${ans.goal}</div><div class="resultline"><b>核心瓶頸｜</b>${bottleneck}</div><div class="resultline"><b>Prediction Error｜</b>舊方法沒有穩定把你帶到想要的結果；這不是單純失敗，而是需要更新方法的訊號。</div><div class="resultline"><b>今天最小行動｜</b>先只選一個最重要問題，停止同時處理所有問題，使用一個對應工具完成一次「診斷 → 行動 → 回饋」。</div>`;
+ document.getElementById("apps").innerHTML=nav[ans.area].map((x,i)=>`<div class="resultline"><b>${i+1}. ${x}</b><br><span class="small">${i==0?"先處理你目前最核心的瓶頸":i==1?"第一層改善後，接著補強下一個節點":"把一次改善變成可持續更新的能力"}</span></div>`).join("");
+ go("result");
+}
+</script></body></html>
