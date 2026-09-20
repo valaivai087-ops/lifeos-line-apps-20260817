@@ -18,7 +18,7 @@ function render(){
  document.getElementById('position').textContent=`第 ${unit} / 15 單元 · 原版完整收錄`;
  applyZoom();
 }
-function makeDoc(){
+function makeOriginalDoc(){
  const doc=library.merged.find(d=>d.unit===unit),section=document.createElement('section');section.className='document exam-document';
  section.innerHTML=`<div class="document-bar"><div class="doc-title">Unit ${pad(unit)} · 每題後附解析教師考卷<small>${doc.examPages.length} 頁</small></div><div class="downloads"><a href="files/unit-${pad(unit)}-inline.docx" download>下載可編輯 Word ↓</a></div></div><p class="reading-help">每題後已附答案與解析。點選英文，字旁會出現發音按鈕。</p>`;
  doc.examPages.forEach((page,index)=>{
@@ -50,3 +50,18 @@ document.getElementById('zoom-in').onclick=()=>{zoom=Math.min(200,zoom+25);apply
 document.getElementById('previous').onclick=()=>setUnit(unit-1);document.getElementById('next').onclick=()=>setUnit(unit+1);
 function readHash(){const p=new URLSearchParams(location.hash.slice(1)),n=Number(p.get('unit'));if(Number.isInteger(n)&&n>=1&&n<=15)unit=n;mode='compare';pages.teacher=0;pages.answer=0;render()}
 document.getElementById('stop-speech').onclick=stopSpeech;document.getElementById('pause-speech').onclick=()=>{if(!('speechSynthesis' in window))return;if(speechSynthesis.paused){speechSynthesis.resume();document.getElementById('pause-speech').textContent='暫停'}else if(speechSynthesis.speaking){speechSynthesis.pause();document.getElementById('pause-speech').textContent='繼續'}};addEventListener('beforeunload',()=>{if('speechSynthesis' in window)speechSynthesis.cancel()});addEventListener('hashchange',()=>{stopSpeech();readHash()});readHash();
+
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function makeDoc(){
+ const root=document.createElement('section');root.className='sentence-document';
+ const gs=SENTENCE_DATA[String(unit)]||[];
+ const toolbar=document.createElement('div');toolbar.className='sentence-menu';toolbar.innerHTML='<strong>原題型・逐句中英解析</strong><select aria-label="選擇題型"><option value="all">全部題型（依原卷順序）</option>'+gs.map((g,i)=>`<option value="${i}">${esc(g.title)}</option>`).join('')+'</select><button class="original-toggle">查看完整原卷與其他題型</button>';root.append(toolbar);
+ const content=document.createElement('div');root.append(content);
+ function paint(){content.replaceChildren();gs.forEach((g,i)=>{if(toolbar.querySelector('select').value!=='all'&&toolbar.querySelector('select').value!==String(i))return;const sec=document.createElement('section');sec.className='type-section';sec.innerHTML=`<h2>${esc(g.title)}</h2>`;
+ g.rows.forEach(r=>{const row=document.createElement('article');row.className='sentence-row';row.innerHTML=`<div class="english-line">${r.html}</div><div class="chinese-line">${esc(r.zh)}</div>${r.notes.map(n=>`<div class="explanation-line"><b>第 ${n.number} 題解析：</b>${esc(n.text)}</div>${n.options?`<div class="question-options">${esc(n.options)}</div>`:''}`).join('')}`;const play=document.createElement('button');play.className='inline-play';play.textContent='▶ 英文朗讀';play.onclick=()=>speakEnglish(r.en,'這一句');row.append(play);sec.append(row)});
+ if(g.visual){const note=document.createElement('p');note.className='visual-note';note.textContent='本題含原始圖表，請點上方「查看完整原卷與其他題型」對照。';sec.append(note)}
+ g.questions.forEach(q=>{const row=document.createElement('article');row.className='question-row';q.html.forEach((h,j)=>{const line=document.createElement('div');line.className='english-line';line.innerHTML=h;row.append(line);const play=document.createElement('button');play.className='inline-play';play.textContent='▶ 朗讀';play.onclick=()=>speakEnglish(q.paragraphs[j],'題目');row.append(play)});const note=document.createElement('div');note.className='explanation-line';note.innerHTML='<b>本題解析：</b>'+esc((q.explanations||[]).slice(1).join(' '));row.append(note);sec.append(row)});content.append(sec)})}
+ toolbar.querySelector('select').onchange=paint;
+ const mixedIndex=gs.findIndex(g=>g.title.includes('混合題'));if(mixedIndex>=0){const jump=document.createElement('button');jump.className='mixed-shortcut';jump.textContent='混合題（文章＋題目）';jump.onclick=()=>{toolbar.querySelector('select').value=String(mixedIndex);paint();toolbar.scrollIntoView({block:'start'})};toolbar.append(jump)}
+ const original=document.createElement('div');original.hidden=true;root.append(original);toolbar.querySelector('button').onclick=()=>{if(!original.children.length)original.append(makeOriginalDoc());original.hidden=!original.hidden;content.hidden=!original.hidden;toolbar.querySelector('button').textContent=original.hidden?'查看完整原卷與其他題型':'回到逐句中英解析'};if(new URLSearchParams(location.search).get("section")==="mixed" && mixedIndex>=0)toolbar.querySelector("select").value=String(mixedIndex);paint();return root;
+}
