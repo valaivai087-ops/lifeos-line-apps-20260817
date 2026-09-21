@@ -1,0 +1,1119 @@
+﻿<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Medical Learning OS｜醫學系國考講義 APP</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #667085;
+      --line: #d8dee8;
+      --bg: #f6f8fb;
+      --panel: #ffffff;
+      --nav: #102033;
+      --nav2: #1b3551;
+      --teal: #0f8b8d;
+      --green: #2f855a;
+      --red: #c2410c;
+      --blue: #2563eb;
+      --gold: #b7791f;
+      --shadow: 0 14px 32px rgba(20, 32, 48, .09);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Microsoft JhengHei", "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button, input, textarea, select { font: inherit; }
+    button {
+      border: 0;
+      cursor: pointer;
+      color: inherit;
+      background: transparent;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+      padding: 20px 16px;
+      color: #edf6ff;
+      background: linear-gradient(180deg, var(--nav), var(--nav2));
+    }
+
+    .brand {
+      padding: 8px 10px 18px;
+      border-bottom: 1px solid rgba(255,255,255,.14);
+    }
+    .brand strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.25;
+    }
+    .brand span {
+      display: block;
+      margin-top: 8px;
+      color: #b8c7d8;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .nav-group { padding: 16px 0 4px; }
+    .nav-label {
+      padding: 8px 10px;
+      color: #9fb2c7;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .nav-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 42px;
+      padding: 10px;
+      border-radius: var(--radius);
+      color: #eaf2fb;
+      text-align: left;
+    }
+    .nav-btn svg { width: 18px; height: 18px; flex: 0 0 18px; }
+    .nav-btn.active, .nav-btn:hover { background: rgba(255,255,255,.12); }
+
+    main {
+      min-width: 0;
+      padding: 24px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin: -24px -24px 20px;
+      padding: 16px 24px;
+      background: rgba(246, 248, 251, .92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .mobile-menu { display: none; }
+    .search {
+      width: min(520px, 100%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      color: var(--ink);
+    }
+    .save-state {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr);
+      gap: 20px;
+      align-items: stretch;
+      margin-bottom: 20px;
+    }
+    .hero-copy {
+      padding: 26px;
+      color: #f7fbff;
+      background: #12344d;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .eyebrow {
+      color: #9ee5dc;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      margin-bottom: 12px;
+      font-size: clamp(30px, 4vw, 54px);
+      line-height: 1.08;
+    }
+    h2 { margin-bottom: 14px; font-size: 24px; }
+    h3 { margin-bottom: 10px; font-size: 17px; }
+    p { line-height: 1.75; }
+
+    .hero-copy p {
+      max-width: 760px;
+      color: #d8e7f4;
+      font-size: 16px;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+    .primary, .secondary, .tiny-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 9px 13px;
+      border-radius: var(--radius);
+      font-weight: 800;
+    }
+    .primary { color: #fff; background: var(--teal); }
+    .secondary { color: #dff5ff; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); }
+    .tiny-btn { min-height: 34px; padding: 7px 10px; background: #eef4fb; color: var(--ink); }
+    .tiny-btn.active { color: #fff; background: var(--teal); }
+    .danger { color: #fff; background: var(--red); }
+
+    .visual {
+      min-height: 360px;
+      padding: 18px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .body-map {
+      width: 100%;
+      height: 100%;
+      min-height: 320px;
+    }
+    .body-map .node { cursor: pointer; transition: transform .2s, opacity .2s; transform-box: fill-box; transform-origin: center; }
+    .body-map .node:hover { transform: scale(1.05); opacity: .9; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .card, .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 6px 18px rgba(20, 32, 48, .04);
+    }
+    .card {
+      min-height: 142px;
+      padding: 16px;
+    }
+    .card button { text-align: left; }
+    .card-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-weight: 900;
+    }
+    .card-title svg { width: 22px; height: 22px; color: var(--teal); }
+    .card p, .muted { color: var(--muted); font-size: 14px; }
+    .metric {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .metric strong { font-size: 30px; line-height: 1; }
+    .metric span { color: var(--muted); font-size: 13px; }
+
+    .section {
+      margin-top: 20px;
+      padding: 20px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .tabs, .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .tab, .chip {
+      min-height: 34px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: #edf2f7;
+      color: #344054;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .tab.active, .chip.active { background: var(--teal); color: #fff; }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, .55fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .chapter-layout {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .chapter-menu {
+      position: sticky;
+      top: 82px;
+      padding: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .chapter-page-btn {
+      width: 100%;
+      min-height: 36px;
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      text-align: left;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .chapter-page-btn.active { background: #e7f7f6; color: #096466; }
+    .chapter-content {
+      min-height: 520px;
+      padding: 22px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .lecture-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .lecture-card {
+      padding: 14px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .ordered-flow {
+      display: grid;
+      gap: 10px;
+      margin: 12px 0 0;
+    }
+    .flow-step {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      min-height: 42px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+    .step-num {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--teal);
+      font-weight: 900;
+    }
+
+    .mindmap {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .mindmap span {
+      min-height: 58px;
+      display: grid;
+      place-items: center;
+      padding: 10px;
+      border-radius: var(--radius);
+      background: #eef6ff;
+      border: 1px solid #cfe2ff;
+      text-align: center;
+      font-weight: 800;
+    }
+    .mindmap span:nth-child(1) { background: #e7f7f6; border-color: #bfe5e3; }
+    .mindmap span:nth-child(5) { background: #fff7e6; border-color: #f4d59b; }
+
+    .question {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+    .option {
+      width: 100%;
+      min-height: 44px;
+      margin-top: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      text-align: left;
+      background: #f8fafc;
+    }
+    .option.correct { border-color: var(--green); background: #edfdf5; }
+    .option.wrong { border-color: var(--red); background: #fff4ef; }
+    .explain {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      background: #f8fafc;
+      border-left: 4px solid var(--teal);
+      line-height: 1.7;
+    }
+    .explain.show { display: block; }
+
+    .task-row, .anki-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .task-row:last-child, .anki-row:last-child { border-bottom: 0; }
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      accent-color: var(--teal);
+    }
+    .progress {
+      height: 10px;
+      overflow: hidden;
+      background: #e7edf5;
+      border-radius: 999px;
+    }
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: var(--teal);
+      transition: width .2s;
+    }
+
+    .stars {
+      display: grid;
+      gap: 10px;
+    }
+    .star-row {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      align-items: center;
+      gap: 12px;
+    }
+    .star-set { display: flex; gap: 4px; }
+    .star {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius);
+      background: #e9eef5;
+      color: #98a2b3;
+      font-weight: 900;
+    }
+    .star.on { background: #fff1be; color: #9a6700; }
+
+    .case-ladder {
+      display: grid;
+      gap: 8px;
+    }
+    .case-ladder label {
+      display: grid;
+      gap: 6px;
+      font-weight: 800;
+      color: #344054;
+    }
+    .case-ladder textarea {
+      min-height: 62px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #edf2f7;
+      color: #475467;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .empty {
+      padding: 18px;
+      border: 1px dashed #b9c4d4;
+      border-radius: var(--radius);
+      color: var(--muted);
+      background: #fbfdff;
+      text-align: center;
+    }
+
+    .kg {
+      width: 100%;
+      min-height: 420px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    @media (max-width: 1100px) {
+      .shell { grid-template-columns: 1fr; }
+      aside {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 20;
+        width: 280px;
+        transform: translateX(-102%);
+        transition: transform .2s;
+      }
+      aside.open { transform: translateX(0); }
+      .mobile-menu { display: inline-flex; }
+      .hero, .two-col, .chapter-layout { grid-template-columns: 1fr; }
+      .chapter-menu { position: static; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 700px) {
+      main { padding: 16px; }
+      .topbar { margin: -16px -16px 16px; padding: 12px 16px; flex-wrap: wrap; }
+      .save-state { width: 100%; }
+      .hero-copy, .visual, .section, .chapter-content { padding: 16px; }
+      .grid, .three-col, .lecture-grid, .mindmap { grid-template-columns: 1fr; }
+      .star-row { grid-template-columns: 1fr; }
+      h1 { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside id="sidebar">
+      <div class="brand">
+        <strong>Medical Learning OS</strong>
+        <span>無 AI Token 版｜預建內容、點選學習、國考推理、長期記憶。</span>
+      </div>
+      <div class="nav-group" id="nav"></div>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <button class="tiny-btn mobile-menu" id="menuBtn" aria-label="開啟選單">☰</button>
+        <label class="search" aria-label="搜尋">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <input id="searchInput" placeholder="搜尋章節、疾病、藥物、英文、國考陷阱">
+        </label>
+        <div class="save-state">
+          <span id="saveDot">●</span>
+          <span id="saveText">本機進度已啟用</span>
+        </div>
+      </div>
+
+      <section class="view active" id="home"></section>
+      <section class="view" id="body"></section>
+      <section class="view" id="lecture"></section>
+      <section class="view" id="disease"></section>
+      <section class="view" id="pharm"></section>
+      <section class="view" id="pbl"></section>
+      <section class="view" id="anki"></section>
+      <section class="view" id="english"></section>
+      <section class="view" id="wrong"></section>
+      <section class="view" id="tasks"></section>
+    </main>
+  </div>
+
+  <script>
+    const icons = {
+      calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>',
+      body: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"></circle><path d="M12 8v13M7 12h10M8 21l4-8 4 8"></path></svg>',
+      book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M4 4v15.5A2.5 2.5 0 0 1 6.5 22H20V6a2 2 0 0 0-2-2H6.5A2.5 2.5 0 0 0 4 6.5"></path></svg>',
+      disease: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"></path><circle cx="12" cy="12" r="8"></circle></svg>',
+      pill: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m10.5 20.5 10-10a4.95 4.95 0 0 0-7-7l-10 10a4.95 4.95 0 0 0 7 7Z"></path><path d="m8.5 8.5 7 7"></path></svg>',
+      pbl: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12c1 1 1 2 1 3h6c0-1 0-2 1-3a7 7 0 0 0-4-12Z"></path></svg>',
+      cards: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="14" height="14" rx="2"></rect><path d="M7 3h12a2 2 0 0 1 2 2v12"></path></svg>',
+      english: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 8 6 6M4 14l6-6 2-3"></path><path d="M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"></path></svg>',
+      wrong: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.3 3.5 2.5 17a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.5a2 2 0 0 0-3.4 0Z"></path><path d="M12 9v4M12 17h.01"></path></svg>',
+      check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"></path></svg>'
+    };
+
+    const navItems = [
+      ['home', '今天讀什麼', icons.calendar],
+      ['body', '人體系統地圖', icons.body],
+      ['lecture', '國考講義', icons.book],
+      ['disease', '疾病地圖', icons.disease],
+      ['pharm', '藥理地圖', icons.pill],
+      ['pbl', 'PBL推理', icons.pbl],
+      ['anki', 'Anki複習', icons.cards],
+      ['english', '醫學英文', icons.english],
+      ['wrong', '今日錯題', icons.wrong],
+      ['tasks', '內容呈現', icons.book]
+    ];
+
+    const chapters = [
+      {
+        id: 'cardio',
+        system: '心血管系統',
+        one: '心血管系統是一套以壓力差推動血流、把氧氣與養分送到全身的循環網路。',
+        goals: ['理解心臟幫浦、血管阻力、血壓調控', '把正常生理連到休克、心衰竭與高血壓', '能用病例線索推回位置、機制與處置'],
+        location: '胸腔縱膈、全身動脈與靜脈、微血管床',
+        concepts: ['前負荷', '後負荷', '收縮力', '心輸出量', '周邊阻力', '血壓回饋'],
+        flow: ['靜脈回流', '右心', '肺循環', '左心', '主動脈', '組織灌流', '靜脈回流'],
+        causality: ['失血使前負荷下降', '心輸出量下降', '交感神經活化', '周邊血管收縮', '皮膚濕冷與少尿'],
+        diseases: ['心衰竭', '高血壓', '急性冠心症'],
+        drugs: ['ACE inhibitor', 'Beta blocker', 'Loop diuretic'],
+        english: ['preload', 'afterload', 'contractility', 'perfusion', 'ischemia'],
+        exam: ['血壓 = 心輸出量 x 周邊阻力', '休克先判斷容量、幫浦、阻力、阻塞', '心衰竭題目常考肺水腫、BNP、利尿劑'],
+        traps: ['把低血壓一律當脫水', '忽略心率太快會降低舒張充填', '把水腫只當腎臟問題'],
+        case: '68歲男性胸悶、冒冷汗、血壓下降、肺部濕囉音，心電圖顯示ST elevation。',
+        memory: '心臟題先問四件事：回來多少、推出多難、打得多強、路上多窄。',
+        graph: ['人體', '心臟', '心肌細胞', '鈣離子', '心衰竭', '利尿劑', 'BNP', 'ACE inhibitor']
+      },
+      {
+        id: 'resp',
+        system: '呼吸系統',
+        one: '呼吸系統用通氣與擴散維持氧氣進入、二氧化碳排出，核心是氣體交換。',
+        goals: ['分清通氣、灌流、擴散三種問題', '能解讀低氧與二氧化碳滯留', '把哮喘、COPD、肺炎放回機制'],
+        location: '鼻腔、氣管、支氣管、肺泡、肺微血管',
+        concepts: ['通氣', '灌流', 'V/Q mismatch', '擴散障礙', '順應性', '呼吸功'],
+        flow: ['吸氣', '肺泡通氣', '肺泡微血管交換', '氧合血回左心', '組織利用', 'CO2回肺排出'],
+        causality: ['支氣管收縮', '氣流阻力上升', '呼氣困難', '空氣滯留', '喘鳴與低氧'],
+        diseases: ['氣喘', 'COPD', '肺炎'],
+        drugs: ['SABA', 'Inhaled corticosteroid', 'Antibiotics'],
+        english: ['ventilation', 'perfusion', 'wheezing', 'hypoxemia', 'compliance'],
+        exam: ['低氧先想V/Q mismatch最常見', '氣喘是可逆性阻塞', 'COPD常見CO2 retention與桶狀胸'],
+        traps: ['看到喘就只給氧，忘了阻塞機制', '把肺炎低氧當純粹換氣不足', '忽略二氧化碳代表通氣'],
+        case: '22歲女性夜間喘鳴、咳嗽，運動後加劇，吸入支氣管擴張劑後改善。',
+        memory: 'O2看交換，CO2看通氣；喘鳴先想小氣道變窄。',
+        graph: ['人體', '肺泡', '第二型肺泡細胞', '表面張力', '氣喘', 'SABA', 'ABG', 'ICS']
+      },
+      {
+        id: 'renal',
+        system: '腎臟與水電解質',
+        one: '腎臟把血液變成可調整的尿液，維持容量、電解質、酸鹼與毒素排除。',
+        goals: ['理解過濾、再吸收、分泌、排泄', '把腎元位置連到藥物與檢驗值', '能用BUN/Cr、Na、K推理病因'],
+        location: '後腹腔腎臟、腎小球、近端小管、亨利氏環、遠端小管、集尿管',
+        concepts: ['GFR', 'RAAS', '鈉水平衡', '鉀調控', '酸鹼調節', '滲透壓'],
+        flow: ['腎小球過濾', '近端再吸收', '亨利氏環濃縮', '遠端調整', '集尿管受ADH影響', '尿液排出'],
+        causality: ['腎灌流下降', 'RAAS活化', '鈉水滯留', '血壓上升', '水腫惡化'],
+        diseases: ['急性腎損傷', '慢性腎病', '腎病症候群'],
+        drugs: ['Loop diuretic', 'Thiazide', 'ACE inhibitor'],
+        english: ['filtration', 'reabsorption', 'secretion', 'creatinine', 'osmolarity'],
+        exam: ['腎前性AKI常有BUN/Cr上升', 'Loop作用在厚上行支', 'ACEi可降低出球小動脈收縮'],
+        traps: ['只背利尿劑名字，不背作用位置', '看到水腫就補白蛋白而不問病因', '忽略高鉀心律風險'],
+        case: '74歲男性腹瀉後少尿、BUN/Cr上升、尿鈉低，血壓偏低。',
+        memory: '腎題先定位：球、近端、環、遠端、集尿管。',
+        graph: ['人體', '腎元', '主細胞', '鈉鉀幫浦', 'AKI', 'Loop diuretic', 'Creatinine', 'ACE inhibitor']
+      }
+    ];
+
+    const knowledge = [
+      {
+        name: '心輸出量',
+        plain: '每分鐘心臟真正打出去的血量。',
+        location: '左心室到主動脈',
+        function: '決定全身灌流與血壓基礎。',
+        mechanism: '心輸出量 = 心率 x 每搏輸出量，受前負荷、後負荷、收縮力影響。',
+        why: '休克、心衰竭、失血都會直接改變它。',
+        exam: '低血壓要拆成CO或SVR問題。',
+        trap: '只看血壓，不看心率、尿量與末梢灌流。',
+        case: '心肌梗塞後低血壓合併肺水腫，代表幫浦失效。',
+        memory: 'HR x SV = CO',
+        chapter: 'cardio'
+      },
+      {
+        name: 'V/Q mismatch',
+        plain: '空氣與血流沒有在同一個地方好好碰面。',
+        location: '肺泡與肺微血管',
+        function: '影響氧氣進血液的效率。',
+        mechanism: '通氣或灌流任一側下降，都會讓氧合變差。',
+        why: '是低氧血症最常見機制之一。',
+        exam: '肺炎、肺栓塞、COPD都可用V/Q思考。',
+        trap: '把所有低氧都當低通氣。',
+        case: '肺炎肺泡充滿滲出液，有血流但通氣差。',
+        memory: 'V是風，Q是血；風血不合就低氧。',
+        chapter: 'resp'
+      },
+      {
+        name: 'GFR',
+        plain: '腎小球每分鐘過濾血漿的能力。',
+        location: '腎小球',
+        function: '反映腎臟清除廢物與調節體液的能力。',
+        mechanism: '由入球與出球小動脈張力、腎灌流壓、腎小球膜狀態決定。',
+        why: '用來判斷AKI與CKD嚴重度。',
+        exam: 'Creatinine上升通常代表GFR下降。',
+        trap: '只看Cr數字，忽略肌肉量與變化速度。',
+        case: '老人脫水後Cr快速上升，補液後改善。',
+        memory: 'GFR是腎臟的流量表。',
+        chapter: 'renal'
+      }
+    ];
+
+    const diseases = [
+      { name: '心衰竭', normal: '心臟能維持足夠輸出量', cause: '缺血、高血壓、瓣膜病', mechanism: '收縮或舒張功能下降', symptoms: '喘、水腫、疲倦', tests: 'BNP、Echo、CXR', treatment: '利尿、ACEi/ARB、Beta blocker、SGLT2i', exam: '肺水腫和BNP是常見線索', chapter: 'cardio' },
+      { name: '氣喘', normal: '小氣道可維持順暢氣流', cause: '過敏、運動、感染', mechanism: '可逆性支氣管收縮與發炎', symptoms: '喘鳴、胸悶、夜咳', tests: '肺功能可逆性、PEF變異', treatment: 'SABA急救、ICS控制', exam: '可逆性阻塞是關鍵', chapter: 'resp' },
+      { name: '急性腎損傷', normal: '腎臟穩定過濾與排泄', cause: '低灌流、腎毒性、阻塞', mechanism: 'GFR快速下降', symptoms: '少尿、水腫、尿毒症', tests: 'Cr、BUN、尿鈉、尿沉渣', treatment: '找病因、停腎毒藥、必要時透析', exam: '先分腎前、腎性、腎後', chapter: 'renal' }
+    ];
+
+    const drugs = [
+      { name: 'ACE inhibitor', site: 'RAAS與出球小動脈', mechanism: '抑制Ang II生成，降低後負荷與醛固酮', adverse: '咳嗽、高鉀、腎功能惡化、血管水腫', contraindication: '懷孕、雙側腎動脈狹窄、高鉀', use: '高血壓、心衰竭、蛋白尿腎病', trap: '開始用藥後要追蹤Cr與K', chapter: 'cardio' },
+      { name: 'SABA', site: '支氣管平滑肌β2受體', mechanism: '放鬆支氣管平滑肌，快速改善阻塞', adverse: '心悸、手抖、低鉀', contraindication: '嚴重心律不整需謹慎', use: '氣喘急性症狀緩解', trap: '只靠SABA代表控制不良，需抗發炎治療', chapter: 'resp' },
+      { name: 'Loop diuretic', site: '亨利氏環厚上行支', mechanism: '抑制Na-K-2Cl cotransporter，增加排鈉排水', adverse: '低鉀、低鎂、耳毒性、脫水', contraindication: '嚴重電解質失衡需先處理', use: '肺水腫、心衰竭水腫、腎病水腫', trap: '作用位置決定副作用與國考考法', chapter: 'renal' }
+    ];
+
+    const questions = [
+      {
+        type: '基礎題',
+        stem: '血壓最直接可拆成下列哪一組關係？',
+        options: ['心輸出量 x 周邊阻力', '肺活量 x 血紅素', 'GFR x 尿量', '白蛋白 x 滲透壓'],
+        answer: 0,
+        why: '平均動脈壓可用心輸出量與全身血管阻力理解。',
+        wrong: '其他選項可影響氧合、腎功能或水腫，但不是血壓主公式。',
+        avoid: '看到血壓題先拆CO與SVR。',
+        related: '心血管系統',
+        disease: '休克、心衰竭',
+        drug: 'Beta blocker、Vasopressor'
+      },
+      {
+        type: '病例題',
+        stem: '年輕女性夜間喘鳴，吸入支氣管擴張劑後改善，最符合哪個核心機制？',
+        options: ['不可逆肺泡破壞', '可逆性支氣管收縮', '肺血管阻塞', '心肌收縮力下降'],
+        answer: 1,
+        why: '氣喘核心是可逆性氣道阻塞與慢性發炎。',
+        wrong: '不可逆肺泡破壞偏COPD，肺血管阻塞偏PE，心肌收縮力下降偏心衰竭。',
+        avoid: '喘要先分氣道、肺泡、血管、心臟。',
+        related: '呼吸系統',
+        disease: '氣喘',
+        drug: 'SABA、ICS'
+      },
+      {
+        type: '推理題',
+        stem: '腹瀉後少尿、BUN/Cr上升、尿鈉低，最可能的AKI類型是？',
+        options: ['腎前性', '急性腎小管壞死', '腎後阻塞', '腎絲球腎炎'],
+        answer: 0,
+        why: '腹瀉造成容量不足，腎臟保鈉保水，BUN/Cr常上升。',
+        wrong: 'ATN尿鈉常較高；腎後需阻塞線索；腎炎常有血尿蛋白尿。',
+        avoid: 'AKI先問灌流、腎實質、出口。',
+        related: '腎臟與水電解質',
+        disease: '急性腎損傷',
+        drug: '避免NSAIDs、調整ACEi'
+      }
+    ];
+
+    const english = {
+      roots: ['cardio 心臟', 'angio 血管', 'pneumo 肺', 'nephro 腎', 'hepato 肝', 'gastro 胃', 'neuro 神經', 'derm 皮膚', 'hemo 血液', 'osteo 骨'],
+      words: ['perfusion 灌流', 'ischemia 缺血', 'dyspnea 呼吸困難', 'edema 水腫', 'filtration 過濾', 'secretion 分泌', 'inflammation 發炎', 'contraindication 禁忌', 'adverse effect 副作用', 'prognosis 預後', 'diagnosis 診斷', 'treatment 治療', 'symptom 症狀', 'sign 徵象', 'mechanism 機制', 'pathophysiology 病理生理', 'compliance 順應性', 'resistance 阻力', 'contractility 收縮力', 'osmolarity 滲透壓'],
+      phrases: ['shortness of breath', 'chest tightness', 'acute kidney injury', 'heart failure', 'drug of choice'],
+      sentences: ['The patient presents with acute chest pain and diaphoresis.', 'A low GFR suggests impaired renal filtration.', 'Wheezing improves after bronchodilator use.', 'BNP is often elevated in heart failure.', 'Treatment should target the underlying mechanism.']
+    };
+
+    const dailyTasks = ['一章閱讀', '一頁總整理', '一張心智圖', '一張流程圖', '一個疾病', '一個藥物', '一個檢驗值', '二十張Anki', '十題國考', '一題病例'];
+    const abilities = ['人體地圖能力', '疾病推理能力', '藥理能力', '病理能力', '檢驗判讀能力', '醫學英文能力', '病例分析能力', 'PBL能力', '國考能力'];
+    const chapterPages = ['一句話理解本章', '本章目標', '人體位置圖', '核心概念圖', '流程圖', '因果圖', '疾病地圖', '藥理地圖', '醫學英文', '國考重點', '錯題', '內容呈現'];
+
+    let state = JSON.parse(localStorage.getItem('medical-os-state') || '{}');
+    state.tasks ||= {};
+    state.answered ||= {};
+    state.wrong ||= [];
+    state.anki ||= {};
+    state.caseNotes ||= {};
+    state.ability ||= {};
+    let activeChapter = chapters[0].id;
+    let activePage = 0;
+
+    function save() {
+      localStorage.setItem('medical-os-state', JSON.stringify(state));
+      document.getElementById('saveText').textContent = '已保存 ' + new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function navTo(id) {
+      document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === id));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.view === id));
+      document.getElementById('sidebar').classList.remove('open');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderNav() {
+      document.getElementById('nav').innerHTML = '<div class="nav-label">首頁</div>' + navItems.map(item =>
+        `<button class="nav-btn ${item[0] === 'home' ? 'active' : ''}" data-view="${item[0]}">${item[2]}<span>${item[1]}</span></button>`
+      ).join('');
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.addEventListener('click', () => navTo(btn.dataset.view)));
+    }
+
+    function bodySvg() {
+      return `<svg class="body-map" viewBox="0 0 520 520" role="img" aria-label="人體系統地圖">
+        <rect x="0" y="0" width="520" height="520" rx="8" fill="#f8fafc"/>
+        <circle cx="260" cy="74" r="42" fill="#dceafe" stroke="#9bbbe8" stroke-width="3"/>
+        <path d="M205 135c18-24 92-24 110 0 16 56 10 145-4 221H209c-14-76-20-165-4-221Z" fill="#eef4ff" stroke="#9bbbe8" stroke-width="3"/>
+        <path d="M210 157c-44 22-70 67-80 125" stroke="#9bbbe8" stroke-width="26" stroke-linecap="round"/>
+        <path d="M310 157c44 22 70 67 80 125" stroke="#9bbbe8" stroke-width="26" stroke-linecap="round"/>
+        <path d="M230 354l-28 120" stroke="#9bbbe8" stroke-width="28" stroke-linecap="round"/>
+        <path d="M290 354l28 120" stroke="#9bbbe8" stroke-width="28" stroke-linecap="round"/>
+        <g class="node" onclick="selectChapter('cardio')">
+          <path d="M260 188c-34-37-86 9-40 52l40 38 40-38c46-43-6-89-40-52Z" fill="#ef4444"/>
+          <text x="260" y="315" text-anchor="middle" fill="#172033" font-size="18" font-weight="800">心血管</text>
+        </g>
+        <g class="node" onclick="selectChapter('resp')">
+          <path d="M232 150c-35 20-47 64-39 109 30-8 48-27 51-60l-3-48Z" fill="#60a5fa"/>
+          <path d="M288 150c35 20 47 64 39 109-30-8-48-27-51-60l3-48Z" fill="#60a5fa"/>
+          <path d="M260 116v92" stroke="#2563eb" stroke-width="9" stroke-linecap="round"/>
+          <text x="260" y="344" text-anchor="middle" fill="#172033" font-size="18" font-weight="800">呼吸</text>
+        </g>
+        <g class="node" onclick="selectChapter('renal')">
+          <path d="M214 286c-21-9-40 9-35 35 4 23 24 39 45 31 18-7 16-58-10-66Z" fill="#22c55e"/>
+          <path d="M306 286c21-9 40 9 35 35-4 23-24 39-45 31-18-7-16-58 10-66Z" fill="#22c55e"/>
+          <text x="260" y="380" text-anchor="middle" fill="#172033" font-size="18" font-weight="800">腎臟</text>
+        </g>
+      </svg>`;
+    }
+
+    window.selectChapter = function(id) {
+      activeChapter = id;
+      activePage = 0;
+      renderLecture();
+      navTo('lecture');
+    };
+
+    function taskPercent() {
+      const done = dailyTasks.filter((_, i) => state.tasks[i]).length;
+      return Math.round(done / dailyTasks.length * 100);
+    }
+
+    function renderHome() {
+      const today = chapters[new Date().getDate() % chapters.length];
+      document.getElementById('home').innerHTML = `
+        <div class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow">Medical Board Exam Designer</div>
+            <h1>醫學系國考講義 APP</h1>
+            <p>今天的任務不是多背一點，而是把理解、畫圖、推理、整合、教學、病例分析與國考解題變成每天自動發生的行為。</p>
+            <div class="hero-actions">
+              <button class="primary" onclick="selectChapter('${today.id}')">${icons.book}開始今日章節</button>
+              <button class="secondary" onclick="navTo('tasks')">${icons.check}查看今日內容</button>
+            </div>
+          </div>
+          <div class="visual">${bodySvg()}</div>
+        </div>
+        <div class="grid">
+          ${navItems.map(item => `<button class="card" onclick="navTo('${item[0]}')"><span class="card-title"><span>${item[1]}</span>${item[2]}</span><p>${homeDesc(item[0])}</p></button>`).join('')}
+        </div>
+        <div class="section">
+          <div class="section-head"><h2>今日內容</h2><span class="tag">內容呈現</span></div>
+          <div class="three-col">
+            <div class="lecture-card"><h3>今天讀什麼</h3><p>${today.system}</p><div class="metric"><strong>${today.concepts.length}</strong><span>核心概念</span></div><p class="muted">${today.concepts.join("、")}</p></div>
+            <div class="lecture-card"><h3>今日推理句</h3><p>${today.one}</p></div>
+            <div class="lecture-card"><h3>今日反思</h3><p>今天真正理解什麼？最大的漏洞在哪裡？能不能畫出來並教同學？</p></div>
+          </div>
+        </div>`;
+    }
+
+    function homeDesc(id) {
+      return {
+        home: '依照進度安排今日章節與核心任務。',
+        body: '從人體、器官、細胞、分子一路連到疾病與治療。',
+        lecture: '每章十二頁固定模板，建立可重複的學習節奏。',
+        disease: '用正常生理到治療的路徑訓練疾病推理。',
+        pharm: '藥物以作用位置、機制、副作用與陷阱整理。',
+        pbl: '病例先定位，再推回正常、失衡、檢查與處置。',
+        anki: '把重點拆成可長期記憶的主動回想卡。',
+        english: '每日字根、單字、片語、句子朗讀與跟讀。',
+        wrong: '記錯誤模型，不只是記答案。',
+        tasks: '把今日章節、疾病、藥物、檢驗值與考題整理成一頁內容。'
+      }[id];
+    }
+
+    function renderBody() {
+      document.getElementById('body').innerHTML = `
+        <div class="section">
+          <div class="section-head"><h2>人體系統地圖</h2><span class="tag">人體 → 器官 → 組織 → 細胞 → 分子 → 疾病 → 藥物 → 檢驗 → 治療</span></div>
+          <div class="two-col">
+            <div class="visual">${bodySvg()}</div>
+            <div>
+              <h3>醫學世界模型</h3>
+              <div class="ordered-flow">${['人體','正常','失衡','症狀','疾病','檢查','診斷','治療','預後'].map((x,i)=>`<div class="flow-step"><span class="step-num">${i+1}</span><strong>${x}</strong></div>`).join('')}</div>
+            </div>
+          </div>
+        </div>
+        <div class="section"><h2>知識圖譜</h2>${knowledgeGraph()}</div>`;
+    }
+
+    function knowledgeGraph() {
+      return `<svg class="kg" viewBox="0 0 860 420">
+        <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8da2bb"/></marker></defs>
+        ${['人體','器官','組織','細胞','分子','疾病','藥物','檢驗','治療'].map((n,i)=>{
+          const x = 70 + (i%5)*170, y = i<5 ? 95 : 275;
+          return `<g><circle cx="${x}" cy="${y}" r="42" fill="${i<5?'#e7f7f6':'#fff7e6'}" stroke="#b8c7d8" stroke-width="2"/><text x="${x}" y="${y+6}" text-anchor="middle" font-size="18" font-weight="800" fill="#172033">${n}</text></g>`;
+        }).join('')}
+        ${[[70,95,240,95],[240,95,410,95],[410,95,580,95],[580,95,750,95],[750,95,70,275],[70,275,240,275],[240,275,410,275],[410,275,580,275]].map(e=>`<line x1="${e[0]+45}" y1="${e[1]}" x2="${e[2]-45}" y2="${e[3]}" stroke="#8da2bb" stroke-width="3" marker-end="url(#arrow)"/>`).join('')}
+        <line x1="580" y1="235" x2="170" y2="125" stroke="#c4a15a" stroke-width="2" stroke-dasharray="6 6"/>
+      </svg>`;
+    }
+
+    function renderLecture() {
+      const ch = chapters.find(c => c.id === activeChapter);
+      document.getElementById('lecture').innerHTML = `
+        <div class="section">
+          <div class="section-head">
+            <h2>國考講義｜${ch.system}</h2>
+            <div class="chips">${chapters.map(c=>`<button class="chip ${c.id===activeChapter?'active':''}" onclick="activeChapter='${c.id}';activePage=0;renderLecture()">${c.system}</button>`).join('')}</div>
+          </div>
+          <div class="chapter-layout">
+            <div class="chapter-menu">${chapterPages.map((p,i)=>`<button class="chapter-page-btn ${i===activePage?'active':''}" onclick="activePage=${i};renderLecture()">${i+1}. ${p}</button>`).join('')}</div>
+            <div class="chapter-content">${chapterPage(ch, activePage)}</div>
+          </div>
+        </div>`;
+    }
+
+    function chapterPage(ch, i) {
+      const renderers = [
+        () => `<h2>${ch.system}</h2><p style="font-size:22px;font-weight:900">${ch.one}</p><div class="mindmap">${ch.concepts.map(x=>`<span>${x}</span>`).join('')}</div>`,
+        () => `<h2>本章目標</h2><div class="ordered-flow">${ch.goals.map((x,n)=>`<div class="flow-step"><span class="step-num">${n+1}</span>${x}</div>`).join('')}</div>`,
+        () => `<h2>人體位置圖</h2><div class="two-col"><div class="visual">${bodySvg()}</div><div><h3>位置</h3><p>${ch.location}</p><h3>定位問題</h3><p>看到題幹先問：病灶在哪裡？影響哪個功能？哪個檢查能證明？</p></div></div>`,
+        () => `<h2>核心概念圖</h2><div class="mindmap">${ch.concepts.map(x=>`<span>${x}</span>`).join('')}</div>`,
+        () => `<h2>流程圖</h2><div class="ordered-flow">${ch.flow.map((x,n)=>`<div class="flow-step"><span class="step-num">${n+1}</span>${x}</div>`).join('')}</div>`,
+        () => `<h2>因果圖</h2><div class="ordered-flow">${ch.causality.map((x,n)=>`<div class="flow-step"><span class="step-num">${n+1}</span>${x}</div>`).join('')}</div>`,
+        () => `<h2>疾病地圖</h2>${renderDiseaseCards(ch.id)}`,
+        () => `<h2>藥理地圖</h2>${renderDrugCards(ch.id)}`,
+        () => `<h2>醫學英文</h2><div class="chips">${ch.english.map(x=>`<span class="chip">${x}</span>`).join('')}</div><p class="muted" style="margin-top:14px">每天朗讀、跟讀，讓英文變成臨床閱讀能力。</p>`,
+        () => `<h2>國考重點</h2><div class="ordered-flow">${ch.exam.map((x,n)=>`<div class="flow-step"><span class="step-num">${n+1}</span>${x}</div>`).join('')}</div><h3 style="margin-top:18px">國考陷阱</h3>${ch.traps.map(x=>`<p class="lecture-card">${x}</p>`).join('')}`,
+        () => `<h2>錯題</h2>${renderQuestions(ch.id)}`,
+        () => `<h2>內容呈現</h2>${dailyContent(ch)}`
+      ];
+      return renderers[i]();
+    }
+
+    function renderDiseaseCards(chapter) {
+      return `<div class="lecture-grid">${diseases.filter(d=>!chapter||d.chapter===chapter).map(d=>`
+        <div class="lecture-card"><h3>${d.name}</h3>
+        <div class="ordered-flow">${['normal','cause','mechanism','symptoms','tests','treatment','exam'].map((k,i)=>`<div class="flow-step"><span class="step-num">${i+1}</span><span><strong>${['正常生理','病因','機制','症狀','檢查','治療','國考考點'][i]}</strong><br>${d[k]}</span></div>`).join('')}</div></div>`).join('')}</div>`;
+    }
+
+    function renderDrugCards(chapter) {
+      return `<div class="lecture-grid">${drugs.filter(d=>!chapter||d.chapter===chapter).map(d=>`
+        <div class="lecture-card"><h3>${d.name}</h3>
+        <p><strong>作用位置：</strong>${d.site}</p><p><strong>作用機制：</strong>${d.mechanism}</p><p><strong>副作用：</strong>${d.adverse}</p><p><strong>禁忌：</strong>${d.contraindication}</p><p><strong>臨床用途：</strong>${d.use}</p><p><strong>國考陷阱：</strong>${d.trap}</p></div>`).join('')}</div>`;
+    }
+
+    function renderQuestions(chapter) {
+      const filtered = questions
+        .map((q, originalIndex) => ({ ...q, originalIndex }))
+        .filter(q => !chapter || chapters.find(c => c.system === q.related)?.id === chapter);
+      return `<div class="ordered-flow">${filtered.map((q, qi)=>`
+        <div class="question"><span class="tag">${q.type}</span><h3>${q.stem}</h3>
+        ${q.options.map((o, oi)=>`<button class="option" onclick="answerQuestion(${q.originalIndex},${oi},this)">${String.fromCharCode(65+oi)}. ${o}</button>`).join('')}
+        <div class="explain">
+          <p><strong>答案：</strong>${String.fromCharCode(65+q.answer)}. ${q.options[q.answer]}</p>
+          <p><strong>為什麼：</strong>${q.why}</p><p><strong>錯在哪：</strong>${q.wrong}</p><p><strong>如何避免：</strong>${q.avoid}</p><p><strong>相關章節：</strong>${q.related}</p><p><strong>延伸疾病：</strong>${q.disease}</p><p><strong>延伸藥物：</strong>${q.drug}</p>
+        </div></div>`).join('') || '<div class="empty">此章題庫建置中。</div>'}</div>`;
+    }
+
+    window.answerQuestion = function(qi, oi, el) {
+      const q = questions[qi];
+      const box = el.parentElement;
+      box.querySelectorAll('.option').forEach((b, i) => {
+        b.classList.toggle('correct', i === q.answer);
+        b.classList.toggle('wrong', i === oi && oi !== q.answer);
+      });
+      box.querySelector('.explain').classList.add('show');
+      if (oi !== q.answer && !state.wrong.find(w => w.stem === q.stem)) {
+        state.wrong.push({ stem: q.stem, errorModel: '把線索當成單一名詞記憶，未回到位置與機制。', correctModel: q.why, update: q.avoid });
+      }
+      save();
+      renderWrong();
+    };
+
+    function dailyContent(ch = chapters.find(c => c.id === activeChapter)) {
+      const chapterDiseases = diseases.filter(d => d.chapter === ch.id);
+      const chapterDrugs = drugs.filter(d => d.chapter === ch.id);
+      const chapterKnowledge = knowledge.filter(k => k.chapter === ch.id);
+      const chapterLabs = (window.labs || []).filter(l => l.chapter === ch.id);
+      const chapterQuestions = questions.filter(q => q.related === ch.system);
+      return `<div class="two-col">
+        <div>
+          <div class="lecture-card"><h3>${ch.system}</h3><p>${ch.one}</p><p><strong>人體位置：</strong>${ch.location}</p><p><strong>記憶法：</strong>${ch.memory}</p></div>
+          <h3 style="margin-top:16px">核心概念</h3>
+          <div class="mindmap">${ch.concepts.map(x=>`<span>${x}</span>`).join('')}</div>
+          <h3 style="margin-top:16px">流程內容</h3>
+          <div class="ordered-flow">${ch.flow.map((x,i)=>`<div class="flow-step"><span class="step-num">${i+1}</span>${x}</div>`).join('')}</div>
+        </div>
+        <div>
+          <div class="lecture-card"><h3>國考重點</h3>${ch.exam.map(x=>`<p>${x}</p>`).join('')}<h3>常見陷阱</h3>${ch.traps.map(x=>`<p>${x}</p>`).join('')}</div>
+          <div class="lecture-card"><h3>病例內容</h3><p>${ch.case}</p></div>
+        </div>
+      </div>
+      <div class="section" style="margin-top:16px"><h2>知識點內容</h2><div class="lecture-grid">${chapterKnowledge.map(k=>`<div class="lecture-card"><h3>${k.name}</h3><p><strong>白話：</strong>${k.plain}</p><p><strong>機制：</strong>${k.mechanism}</p><p><strong>國考陷阱：</strong>${k.trap}</p></div>`).join('') || '<div class="empty">此章知識點建置中。</div>'}</div></div>
+      <div class="section"><h2>疾病內容</h2>${renderDiseaseCards(ch.id)}</div>
+      <div class="section"><h2>藥物內容</h2>${renderDrugCards(ch.id)}</div>
+      <div class="section"><h2>檢驗值內容</h2><div class="lecture-grid">${chapterLabs.map(l=>`<div class="lecture-card"><h3>${l.name}</h3><p><strong>正常值：</strong>${l.normal}</p><p><strong>升高：</strong>${l.high}</p><p><strong>降低：</strong>${l.low}</p><p><strong>臨床意義：</strong>${l.meaning}</p></div>`).join('') || '<div class="empty">此章檢驗值建置中。</div>'}</div></div>
+      <div class="section"><h2>題目內容</h2>${renderQuestions(ch.id)}</div>`;
+    }
+
+    function renderDisease() {
+      document.getElementById('disease').innerHTML = `<div class="section"><div class="section-head"><h2>疾病地圖</h2><span class="tag">每天分析一個疾病</span></div>${renderDiseaseCards()}</div><div class="section"><h2>疾病推理能力</h2>${abilityBlock('疾病不是背名字','每天分析一個疾病','正常生理 → 病因 → 機制 → 症狀 → 檢查 → 治療 → 國考考點','看到疾病立即完成推理')}</div>`;
+    }
+
+    function renderPharm() {
+      document.getElementById('pharm').innerHTML = `<div class="section"><div class="section-head"><h2>藥理地圖</h2><span class="tag">位置決定機制</span></div>${renderDrugCards()}</div><div class="section"><h2>藥理能力</h2>${abilityBlock('藥物不是背名稱','每天一種藥','作用位置 → 作用機制 → 副作用 → 禁忌 → 臨床用途 → 國考陷阱','看到疾病知道用藥原因')}</div>`;
+    }
+
+    function abilityBlock(know, action, tasks, ability) {
+      return `<div class="ordered-flow">
+        ${['知道：'+know, '今天要做什麼：'+action, '五分鐘任務：寫出核心位置與功能', '十分鐘任務：畫出機制流程', '今天完成：'+tasks, '今天檢查：能不能不用看講義講出來', '形成能力：'+ability].map((x,i)=>`<div class="flow-step"><span class="step-num">${i+1}</span>${x}</div>`).join('')}
+      </div>`;
+    }
+
+    function renderPbl() {
+      const ch = chapters.find(c => c.id === activeChapter);
+      const fields = ['位置','功能','正常生理','失衡機制','症狀','檢查','診斷','治療','追蹤'];
+      document.getElementById('pbl').innerHTML = `
+        <div class="section">
+          <div class="section-head"><h2>PBL推理</h2><div class="chips">${chapters.map(c=>`<button class="chip ${c.id===activeChapter?'active':''}" onclick="activeChapter='${c.id}';renderPbl()">${c.system}</button>`).join('')}</div></div>
+          <div class="two-col"><div><h3>病例</h3><p class="lecture-card">${ch.case}</p><div class="case-ladder">${fields.map(f=>`<label>${f}<textarea oninput="state.caseNotes['${ch.id}-${f}']=this.value;save()">${state.caseNotes[ch.id+'-'+f]||''}</textarea></label>`).join('')}</div></div><div><h3>推理提示</h3>${abilityBlock('病例不是猜診斷','先定位再推理','位置 → 功能 → 正常 → 失衡 → 檢查 → 診斷 → 治療','看到病例能完整說明')}</div></div>
+        </div>`;
+    }
+
+    function renderAnki() {
+      const cards = knowledge.flatMap(k => [
+        [`${k.name}的白話一句話？`, k.plain],
+        [`${k.name}為什麼重要？`, k.why],
+        [`${k.name}的國考陷阱？`, k.trap]
+      ]);
+      document.getElementById('anki').innerHTML = `<div class="section"><div class="section-head"><h2>Anki複習</h2><span class="tag">主動回想</span></div>${cards.map((c,i)=>`<div class="anki-row"><input type="checkbox" ${state.anki[i]?'checked':''} onchange="state.anki[${i}]=this.checked;save()"><div><h3>${c[0]}</h3><p class="muted">${c[1]}</p></div></div>`).join('')}</div>`;
+    }
+
+    function renderEnglish() {
+      document.getElementById('english').innerHTML = `<div class="section"><div class="section-head"><h2>醫學英文</h2><span class="tag">10字根・20單字・5片語・5句子</span></div><div class="lecture-grid">
+        <div class="lecture-card"><h3>10字根</h3>${english.roots.map(x=>`<p>${x}</p>`).join('')}</div>
+        <div class="lecture-card"><h3>20單字</h3>${english.words.map(x=>`<p>${x}</p>`).join('')}</div>
+        <div class="lecture-card"><h3>5片語</h3>${english.phrases.map(x=>`<p>${x}</p>`).join('')}</div>
+        <div class="lecture-card"><h3>5句子</h3>${english.sentences.map(x=>`<p>${x}</p>`).join('')}</div>
+      </div>${abilityBlock('英文不是翻譯，是閱讀原文教材的能力','朗讀、跟讀、拆字根','10字根 → 20單字 → 5片語 → 5句子 → 朗讀 → 跟讀','閱讀原文教材')}</div>`;
+    }
+
+    function renderWrong() {
+      document.getElementById('wrong').innerHTML = `<div class="section"><div class="section-head"><h2>今日錯題</h2><button class="tiny-btn danger" onclick="state.wrong=[];save();renderWrong()">清空錯題</button></div>
+        ${state.wrong.length ? state.wrong.map(w=>`<div class="lecture-card"><h3>${w.stem}</h3><p><strong>錯誤模型：</strong>${w.errorModel}</p><p><strong>正確模型：</strong>${w.correctModel}</p><p><strong>如何更新：</strong>${w.update}</p></div>`).join('') : '<div class="empty">目前沒有錯題。答錯題目後，這裡會記錄錯誤模型與修正方向。</div>'}
+      </div>`;
+    }
+
+    function contentPage(ch) {
+      return `<div class="section"><div class="section-head"><h2>${ch.system}｜內容呈現</h2><div class="chips">${chapters.map(c=>`<button class="chip ${c.id===ch.id?'active':''}" onclick="showContentChapter('${c.id}')">${c.system}</button>`).join('')}</div></div></div>${dailyContent(ch)}<div class="section"><h2>能力追蹤</h2><div class="stars">${abilities.map((a,i)=>starRow(a,i)).join('')}</div></div><div class="section"><h2>每日反思</h2><div class="case-ladder">${['今天真正理解什麼？','今天最大的漏洞？','今天哪裡需要重建？','今天能不能畫出來？','今天能不能教同學？'].map(q=>`<label>${q}<textarea></textarea></label>`).join('')}</div></div>`;
+    }
+
+    window.showContentChapter = function(id) {
+      const ch = chapters.find(c => c.id === id) || chapters[0];
+      activeChapter = ch.id;
+      document.getElementById('tasks').innerHTML = contentPage(ch);
+      navTo('tasks');
+    };
+
+    function renderTasks() {
+      const today = chapters[new Date().getDate() % chapters.length];
+      document.getElementById('tasks').innerHTML = contentPage(today);
+    }
+
+    function starRow(label, idx) {
+      const score = state.ability[idx] || 3;
+      return `<div class="star-row"><strong>${label}</strong><div class="star-set">${[1,2,3,4,5].map(n=>`<button class="star ${n<=score?'on':''}" onclick="state.ability[${idx}]=${n};save();renderTasks()">★</button>`).join('')}</div></div>`;
+    }
+
+    function renderSearch(term) {
+      if (!term.trim()) { renderHome(); return; }
+      const t = term.toLowerCase();
+      const results = [
+        ...chapters.map(c => ({ title: c.system, body: c.one, action: `selectChapter('${c.id}')` })),
+        ...knowledge.map(k => ({ title: k.name, body: `${k.plain} ${k.exam} ${k.trap}`, action: `navTo('body')` })),
+        ...diseases.map(d => ({ title: d.name, body: `${d.mechanism} ${d.exam}`, action: `navTo('disease')` })),
+        ...drugs.map(d => ({ title: d.name, body: `${d.mechanism} ${d.trap}`, action: `navTo('pharm')` }))
+      ].filter(r => (r.title + r.body).toLowerCase().includes(t));
+      document.getElementById('home').innerHTML = `<div class="section"><div class="section-head"><h2>搜尋結果</h2><span class="tag">${results.length}筆</span></div><div class="lecture-grid">${results.map(r=>`<button class="lecture-card" onclick="${r.action}"><h3>${r.title}</h3><p>${r.body}</p></button>`).join('') || '<div class="empty">找不到結果。</div>'}</div></div>`;
+      navTo('home');
+    }
+
+    document.getElementById('menuBtn').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
+    document.getElementById('searchInput').addEventListener('input', e => renderSearch(e.target.value));
+
+    renderNav();
+    renderHome();
+    renderBody();
+    renderLecture();
+    renderDisease();
+    renderPharm();
+    renderPbl();
+    renderAnki();
+    renderEnglish();
+    renderWrong();
+    renderTasks();
+  </script>
+  <script src="expanded-data.js"></script>
+  <script src="board-exam-bank.js"></script>
+  <script src="mega-bank.js"></script>
+  <script src="english-enhance.js"></script>
+  <script src="english-lecture-fix.js"></script>
+  <script src="pbl-answers.js"></script>
+  <script src="disease-deep.js"></script>
+  <script src="pbl-examples.js"></script>
+  <script src="english-more.js"></script>
+  <script src="english-word-pronunciation.js"></script>
+  <script src="board-wrongbook.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
