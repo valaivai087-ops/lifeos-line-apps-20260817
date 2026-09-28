@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>病人安全 OS</title>
+<style>
+:root{
+  --bg:#F1F5F6;--surface:#FFFFFF;--sunk:#E8EEF0;--ink:#122229;--muted:#56666D;--line:#D2DCDF;
+  --accent:#0B6A70;--accent-ink:#FFFFFF;--accent-soft:#DAEEEE;
+  --red:#B3261E;--red-ink:#FFFFFF;--red-soft:#FBE5E2;--amber:#8F5500;--amber-soft:#FCEFD7;--green:#2A7146;--green-soft:#DFF1E5;
+  --sans:"PingFang TC","Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;
+  --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;--bg:#0D1618;--surface:#152124;--sunk:#1B2A2E;--ink:#E3ECEE;--muted:#93A6AB;--line:#2A3B3F;
+  --accent:#55C3C5;--accent-ink:#06282A;--accent-soft:#16373A;
+  --red:#FF8B80;--red-ink:#1A0503;--red-soft:#3B1916;--amber:#F1B65A;--amber-soft:#33270F;--green:#7ED39B;--green-soft:#14301F;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;--bg:#0D1618;--surface:#152124;--sunk:#1B2A2E;--ink:#E3ECEE;--muted:#93A6AB;--line:#2A3B3F;
+  --accent:#55C3C5;--accent-ink:#06282A;--accent-soft:#16373A;
+  --red:#FF8B80;--red-ink:#1A0503;--red-soft:#3B1916;--amber:#F1B65A;--amber-soft:#33270F;--green:#7ED39B;--green-soft:#14301F;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6}
+button,input,select,textarea{font:inherit;color:inherit}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--surface);border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:10px 16px}
+header b{font-size:17px;letter-spacing:.04em}
+#q{flex:1 1 260px;min-width:0;font-size:16px;padding:9px 12px 9px 34px;border:1px solid var(--line);border-radius:8px;background:var(--bg) no-repeat 11px center/15px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2378898f' stroke-width='2'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cpath d='M11 11l4 4'/%3E%3C/svg%3E")}
+.shell{display:grid;grid-template-columns:230px minmax(0,1fr)}
+aside{border-right:1px solid var(--line);background:var(--surface);padding:12px 8px;min-height:calc(100vh - 60px)}
+aside .cnt{font-size:12px;color:var(--muted);padding:0 8px 6px}
+aside button{all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:block;padding:8px 10px;border-radius:6px}
+aside button:hover{background:var(--sunk)}
+aside button[aria-current="true"]{background:var(--accent-soft)}
+aside button small{display:block;color:var(--muted);font-size:12px}
+aside .flag{color:var(--red);font-weight:700}
+main{padding-block:20px 60px;padding-inline:clamp(16px,3vw,32px);max-width:960px;width:100%}
+h1{font-size:24px;margin:0;text-wrap:balance}
+h2{font-size:16px;margin:0 0 10px;letter-spacing:.04em}
+section{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin-top:14px}
+.step{display:inline-block;font-family:var(--mono);font-size:12px;background:var(--accent);color:var(--accent-ink);border-radius:4px;padding:0 6px;margin-right:6px}
+.hint{font-size:13px;color:var(--muted);margin:-4px 0 10px}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px 14px}
+label.f{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted)}
+label.f.empty>span::after{content:"　待填";color:var(--amber);font-weight:700}
+input[type=text],input[type=date],select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 10px;font-size:15px;width:100%;color:var(--ink)}
+textarea{min-height:2.8em;resize:vertical}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.auto{display:grid;grid-template-columns:7.5em minmax(0,1fr);border-top:1px solid var(--line);margin-top:12px}
+.auto dt,.auto dd{margin:0;padding:7px 0;border-bottom:1px solid var(--line)}
+.auto dt{color:var(--muted);font-size:13px}
+.auto dd{white-space:pre-wrap;overflow-wrap:anywhere}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:6px 12px;cursor:pointer;font-size:14px;white-space:nowrap}
+.btn:hover{background:var(--sunk)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn.red{background:var(--red);border-color:var(--red);color:var(--red-ink);font-weight:700}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chk{display:flex;gap:8px;align-items:center;padding:6px 10px;border:1px solid var(--line);border-radius:6px;cursor:pointer;background:var(--bg);font-size:14px}
+.chk:has(input:checked){border-color:var(--red);background:var(--red-soft);color:var(--red)}
+.chks{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px;margin-bottom:10px}
+.stop{background:var(--red);color:var(--red-ink);border-radius:8px;padding:16px 18px;margin-top:14px}
+.stop b{font-size:20px;display:block}
+.stop p{margin:4px 0}
+.pill{font-size:12px;padding:1px 8px;border-radius:10px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.pill.red{background:var(--red-soft);color:var(--red);font-weight:700}
+.pill.amber{background:var(--amber-soft);color:var(--amber)}
+.pill.green{background:var(--green-soft);color:var(--green)}
+.list{display:flex;flex-direction:column}
+.item{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item .grow{flex:1 1 220px;min-width:0}
+.item input[type=text]{flex:1 1 180px;width:auto}
+.item.off .grow{color:var(--muted);text-decoration:line-through}
+.addrow{display:grid;grid-template-columns:8em minmax(0,1.4fr) minmax(0,1fr) 10em auto;gap:8px;margin-top:10px}
+@media (max-width:720px){.addrow{grid-template-columns:1fr 1fr}.addrow .btn{grid-column:1/-1}}
+.tl{margin:0;padding:0;list-style:none;font-size:14px}
+.tl li{display:grid;grid-template-columns:6.2em 4.5em minmax(0,1fr);gap:8px;padding:5px 0;border-bottom:1px dashed var(--line)}
+.saved{font-size:12px;color:var(--muted)}
+mark{background:var(--amber-soft);color:inherit;border-radius:2px}
+.guide ol{padding-left:1.3em;margin:0}.guide li{margin:6px 0}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:6px;font-size:14px;z-index:20}
+@media (max-width:760px){
+  .shell{grid-template-columns:1fr}
+  aside{min-height:0;border-right:0;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;gap:4px;padding:8px}
+  aside .cnt{display:none}
+  aside button{width:auto;flex:0 0 auto}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <b>病人安全 OS</b>
+  <input type="search" id="q" placeholder="搜尋：姓名、診斷、產品、症狀" aria-label="搜尋">
+  <button class="btn pri" id="addPt" type="button">＋ 新增病人</button>
+  <button class="btn" id="helpBtn" type="button">如何填寫</button>
+</header>
+<div class="shell">
+  <aside id="list" aria-label="病人清單"></aside>
+  <main id="main"></main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const KEY='psos.clinic.v2';
+const $=s=>document.querySelector(s);
+const h=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const iso=d=>{const x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
+const today=()=>iso(new Date());
+const addDays=(d,n)=>{const x=new Date(d+'T00:00:00');x.setDate(x.getDate()+n);return iso(x)};
+const now=()=>new Date().toTimeString().slice(0,5);
+function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2000)}
+
+/* 醫師要填的欄位：[key, 標籤, 範例寫法, 型態] */
+const FIELDS=[
+  ['name','姓名','王美玲'],
+  ['kind','就診類別','','select',['抗癌輔助','抗老保健','抗癌＋抗老']],
+  ['diagnosis','診斷／主要問題','胰臟癌；抗老寫主訴，如：疲倦、睡眠差'],
+  ['status','疾病狀態','第四期，肝轉移；抗老寫「無癌症病史」'],
+  ['hospitalTx','原醫院治療','某醫學中心腫瘤科，化療每 2 週一次；沒有寫「無」'],
+  ['informed','原治療醫師是否知道本院療程','','select',['','已告知','尚未告知','不適用（無原治療醫師）']],
+  ['chronic','慢性病／長期用藥','高血壓、糖尿病、抗凝血劑；沒有寫「無」'],
+  ['allergies','過敏','沒有請寫「無」，不要留空'],
+  ['labs','最近檢驗','2026-09-10 白血球 3.2、肝腎功能正常'],
+  ['symptoms','最近症狀','上腹悶痛、食慾差，一週瘦 1.5 公斤'],
+  ['lastVisit','上次看診','','date'],
+  ['todayIssue','今天問題','想知道維生素C點滴能不能和化療同時做'],
+  ['nextStep','下一步','向原治療醫師確認化療時程；兩週後回診'],
+];
+const DEFAULT_RULES=['嚴重或持續腹痛','持續嘔吐','無法喝水或進食','呼吸困難','意識改變','明顯出血（吐血、黑便、血便）','突然快速惡化','化療期間發燒 ≥ 38°C','點滴／注射後胸悶、喘、全身蕁麻疹、嘴唇腫','注射部位嚴重紅腫熱痛或化膿'];
+const TYPES=['藥物','營養素','自費療程','自費產品'];
+const SELF=t=>t==='自費療程'||t==='自費產品';
+
+function seed(){
+  const t=today(),d=n=>addDays(t,n);
+  return {rules:DEFAULT_RULES.slice(),rulesNote:'示範規則，尚未經醫師依臨床指引審核',
+    patients:[
+     {id:'demo1',name:'王美玲（示範）',kind:'抗癌輔助',diagnosis:'胰臟癌',status:'第四期，肝轉移',hospitalTx:'某醫學中心腫瘤科，化療每 2 週一次',informed:'尚未告知',chronic:'無',allergies:'',labs:'',symptoms:'上腹悶痛、食慾差',lastVisit:d(-14),todayIssue:'維生素C點滴能不能和化療同時做',nextStep:'',flag:null,
+      meds:[{id:'m1',type:'藥物',name:'Ondansetron 止吐藥（原醫院處方）',dose:'8 mg 需要時',start:d(-40),end:'',cost:0},{id:'m2',type:'營養素',name:'維生素 D3',dose:'1000 IU 每日',start:d(-60),end:'',cost:0},{id:'m3',type:'自費療程',name:'高劑量維生素C 點滴',dose:'每週 1 次',start:d(-3),end:'',cost:4500,consent:true}],
+      fus:[{id:'f1',medId:'m3',day:1,due:d(-2),sym:'',status:'ok',done:d(-2)},{id:'f2',medId:'m3',day:3,due:d(0),sym:'',status:'due'},{id:'f3',medId:'m3',day:7,due:d(4),sym:'',status:'due'}],
+      log:[{d:d(-14),t:'看診',x:'食慾差、上腹悶痛'},{d:d(-3),t:'產品',x:'開始 高劑量維生素C 點滴 每週 1 次｜4,500 元｜已完成自費說明並取得同意；建立 Day 1/3/7 追蹤'},{d:d(-2),t:'追蹤',x:'高劑量維生素C 點滴 Day 1：無異常'}]},
+     {id:'demo2',name:'林志豪（示範）',kind:'抗老保健',diagnosis:'疲倦、睡眠差',status:'無癌症病史',hospitalTx:'無',informed:'不適用（無原治療醫師）',chronic:'高血壓（服用降血壓藥）',allergies:'無',labs:d(-20)+' 血脂偏高，肝腎功能正常',symptoms:'下午容易疲倦',lastVisit:d(-20),todayIssue:'',nextStep:'一個月後複查睡眠與血壓',flag:null,
+      meds:[{id:'n1',type:'藥物',name:'Amlodipine 降血壓藥（外院）',dose:'5 mg 每日',start:d(-400),end:'',cost:0},{id:'n2',type:'自費產品',name:'輔酵素 Q10 膠囊',dose:'1 粒 每日',start:d(-20),end:'',cost:1800,consent:true}],
+      fus:[{id:'g1',medId:'n2',day:1,due:d(-19),sym:'',status:'ok',done:d(-19)},{id:'g2',medId:'n2',day:3,due:d(-17),sym:'輕微胃不適',status:'flag',done:d(-17)},{id:'g3',medId:'n2',day:7,due:d(-13),sym:'',status:'due'}],
+      log:[{d:d(-20),t:'產品',x:'開始 輔酵素 Q10 膠囊 1 粒每日｜1,800 元｜已完成自費說明並取得同意'},{d:d(-17),t:'異常',x:'輔酵素 Q10 膠囊 Day 3：輕微胃不適'}]}]};
+}
+let db;
+try{db=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!db||!db.patients)db=seed();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}}
+let curId=db.patients[0]?.id||null, view='patient';
+
+const P=()=>db.patients.find(p=>p.id===curId);
+const medName=(p,id)=>p.meds.find(m=>m.id===id)?.name||'';
+const log=(p,t,x)=>p.log.push({d:today(),t,x});
+const active=p=>p.meds.filter(m=>!m.end);
+
+/* 搜尋 */
+function hay(p){return [p.name,p.kind,p.diagnosis,p.status,p.symptoms,p.todayIssue,...p.meds.map(m=>m.name)].join(' ')}
+function renderList(){
+  const q=$('#q').value.trim();
+  const hits=db.patients.filter(p=>!q||hay(p).toLowerCase().includes(q.toLowerCase()));
+  const mk=s=>q?h(s).split(h(q)).join(`<mark>${h(q)}</mark>`):h(s);
+  $('#list').innerHTML=`<div class="cnt">${q?`找到 ${hits.length} 位`:`病人 ${db.patients.length} 位`}</div>`+
+    (hits.map(p=>{const due=p.fus.filter(f=>f.status==='flag').length;
+      return `<button type="button" data-pt="${p.id}" aria-current="${p.id===curId&&view==='patient'}">${p.flag?'<span class="flag">⚠ </span>':''}${mk(p.name||'（未命名）')}<small>${mk(p.diagnosis||'')}${due?' ・<span class="flag">異常待評估</span>':''}</small></button>`}).join('')
+     ||`<div class="cnt">找不到「${h(q)}」</div>`);
+}
+
+/* 自動帶出的欄位 */
+function auto(p){
+  const a=active(p),f=m=>`${m.name}${m.dose?'｜'+m.dose:''}｜${m.start} 起`;
+  const buy=p.meds.filter(m=>SELF(m.type)).sort((x,y)=>y.start.localeCompare(x.start))[0];
+  const total=p.meds.filter(m=>SELF(m.type)).reduce((s,m)=>s+(+m.cost||0),0);
+  const reac=p.fus.filter(x=>x.done).sort((x,y)=>y.done.localeCompare(x.done)).slice(0,2).map(x=>`${medName(p,x.medId)} Day ${x.day}：${x.sym||'無異常'}`).join('\n');
+  const dg=[];if(p.flag)dg.push('紅旗：'+p.flag.items.join('、'));p.fus.filter(x=>x.status==='flag').forEach(x=>dg.push(`${medName(p,x.medId)} 使用後異常，待評估`));
+  if(p.informed==='尚未告知'&&(p.kind||'').includes('抗癌'))dg.push('原治療醫師尚未知道本院療程，需確認與化療／標靶是否衝突');
+  return [['目前藥物',a.filter(m=>m.type==='藥物').map(f).join('\n')],['目前營養素',a.filter(m=>m.type==='營養素').map(f).join('\n')],['目前自費項目',a.filter(m=>SELF(m.type)).map(f).join('\n')],['上次購買',buy?`${buy.name}｜${buy.start}`:''],['自費累計',total?total.toLocaleString()+' 元':''],['使用後反應',reac],['危險訊號',dg.join('\n')]];
+}
+
+function renderPatient(){
+  const p=P();
+  if(!p)return `<h1>尚無病人</h1><p>按右上角「＋ 新增病人」開始。</p>`;
+  const t=today();
+  const fld=([k,l,ph,type,opts])=>`<label class="f ${p[k]?'':'empty'}" for="f_${k}"><span>${l}</span>${type==='select'?`<select id="f_${k}" data-k="${k}">${(opts[0]===''?opts:['',...opts]).map(o=>`<option value="${h(o)}" ${p[k]===o?'selected':''}>${o||'— 請選擇 —'}</option>`).join('')}</select>`:type==='date'?`<input type="date" id="f_${k}" data-k="${k}" value="${h(p[k])}">`:`<textarea id="f_${k}" data-k="${k}" rows="1" placeholder="例：${h(ph)}">${h(p[k])}</textarea>`}</label>`;
+  const fuRow=f=>{
+    const st=f.status==='flag'?'<span class="pill red">異常待評估</span>':f.status==='ok'?'<span class="pill green">無異常</span>':f.status==='done'?'<span class="pill">已處置</span>':f.due<t?'<span class="pill amber">逾期</span>':f.due===t?'<span class="pill amber">今天</span>':'<span class="pill">預定</span>';
+    let act='';
+    if(f.status==='due')act=`<input type="text" id="fs_${f.id}" placeholder="病人回報的症狀；沒有就留空"><button class="btn" data-fu="${f.id}">記錄</button>`;
+    if(f.status==='flag')act=`<select id="fh_${f.id}" style="width:auto"><option>已評估，可繼續</option><option>停用此產品</option><option>已轉就醫</option></select><button class="btn red" data-fuh="${f.id}">記錄處置</button>`;
+    return `<div class="item"><div class="grow"><b>${h(medName(p,f.medId))}</b>　<span class="mono">Day ${f.day}｜${f.due}</span>　${st}${f.sym?`<br><span class="hint">${h(f.sym)}${f.handled?'　→ '+h(f.handled):''}</span>`:''}</div>${act}</div>`;
+  };
+  const fus=p.fus.filter(f=>f.status!=='cancel').sort((a,b)=>(a.status==='flag'?-1:0)-(b.status==='flag'?-1:0)||a.due.localeCompare(b.due));
+  return `<div class="row" style="justify-content:space-between"><h1>${h(p.name||'（未命名）')}</h1><span class="saved" id="saved">自動儲存</span></div>
+  ${p.flag?`<div class="stop"><b>請優先接受醫療評估</b><p>符合：${h(p.flag.items.join('、'))}（${h(p.flag.at)}）</p><p>先處理「需不需要立即就醫」，自費產品已暫停新增。危及生命請撥 119。</p>
+    <div class="row" style="margin-top:8px"><input type="text" id="clearNote" placeholder="評估結果，例：已轉急診／評估後可居家觀察" style="flex:1 1 240px;width:auto;color:var(--ink)"><button class="btn" data-act="clearFlag">記錄並解除</button></div></div>`:''}
+
+  <section><h2><span class="step">1</span>病歷</h2><p class="hint">直接在欄位裡打字，會自動儲存。黃色「待填」代表還沒確認，不代表沒有。</p>
+    <div class="fields">${FIELDS.map(fld).join('')}</div>
+    <dl class="auto">${auto(p).map(([k,v])=>`<dt>${k}</dt><dd>${v?h(v):'<span class="hint">—（由下方自動帶出）</span>'}</dd>`).join('')}</dl></section>
+
+  <section><h2><span class="step">2</span>紅旗檢查</h2><p class="hint">病人說不舒服時先勾這裡。任一項成立 → 停止產品流程，先評估就醫。</p>
+    <div class="chks">${db.rules.map((r,i)=>`<label class="chk" for="rf_${i}"><input type="checkbox" id="rf_${i}" value="${h(r)}">${h(r)}</label>`).join('')}</div>
+    <div class="row"><button class="btn red" data-act="checkFlag">送出檢查</button><span class="hint" style="margin:0">${h(db.rulesNote)}</span></div></section>
+
+  <section><h2><span class="step">3</span>藥物・營養素・自費療程／產品</h2><p class="hint">外院處方也要登記，才能核對交互作用。新增營養素或自費項目後，自動建立 Day 1／3／7 追蹤。</p>
+    <div class="list">${p.meds.slice().sort((a,b)=>b.start.localeCompare(a.start)).map(m=>`<div class="item ${m.end?'off':''}"><span class="pill ${SELF(m.type)?'amber':''}">${m.type}</span><div class="grow">${h(m.name)}${m.dose?'｜'+h(m.dose):''}${+m.cost?'｜'+(+m.cost).toLocaleString()+' 元':''}　<span class="mono hint">${m.start}${m.end?' → '+m.end:''}</span></div>${m.end?'':`<button class="btn" data-stop="${m.id}">停用</button>`}</div>`).join('')||'<p class="hint">尚無紀錄</p>'}</div>
+    <div class="addrow">
+      <select id="nm_type" aria-label="類別">${TYPES.map(x=>`<option>${x}</option>`).join('')}</select>
+      <input type="text" id="nm_name" placeholder="名稱，例：維生素C 點滴" aria-label="名稱">
+      <input type="text" id="nm_dose" placeholder="劑量／頻率，例：每週 1 次" aria-label="劑量">
+      <input type="date" id="nm_start" value="${t}" aria-label="開始日期">
+      <button class="btn pri" data-act="addMed">新增</button>
+    </div>
+    <div class="row" style="margin-top:8px"><input type="text" id="nm_cost" placeholder="自費金額（元）" aria-label="自費金額" style="width:11em" inputmode="numeric">
+      <label class="chk" for="nm_consent" style="flex:1 1 320px"><input type="checkbox" id="nm_consent">自費項目：已說明目的、證據程度、可能風險、費用、替代方案與「不做也可以」，病人同意</label></div></section>
+
+  <section><h2><span class="step">4</span>使用後追蹤</h2><p class="hint">問病人：腹痛、嘔吐、腹瀉、皮疹、胸悶或喘、注射部位紅腫、發燒、異常疲倦、其他新症狀。有任何一項就寫下來。</p>
+    <div class="list">${fus.map(fuRow).join('')||'<p class="hint">沒有追蹤項目</p>'}</div></section>
+
+  <section><h2>時間軸</h2><p class="hint">以上每個動作都自動記錄在這裡。</p>
+    <ul class="tl">${p.log.slice().sort((a,b)=>b.d.localeCompare(a.d)).map(e=>`<li><span class="mono">${e.d}</span><span class="pill ${e.t==='紅旗'||e.t==='異常'?'red':''}">${e.t}</span><span>${h(e.x)}</span></li>`).join('')}</ul>
+    <div class="row" style="margin-top:10px"><button class="btn" data-act="copyTl">複製時間軸</button><button class="btn" data-act="delPt" id="delPt">刪除此病人</button></div></section>`;
+}
+
+function renderHelp(){
+  return `<h1>如何填寫</h1>
+  <section class="guide"><h2>看診流程</h2><ol>
+    <li><b>找病人：</b>在最上方搜尋欄打姓名、診斷、產品或症狀。新病人按「＋ 新增病人」。</li>
+    <li><b>①病歷：</b>直接在欄位打字，會自動儲存。過敏沒有請寫「無」；空白會顯示「待填」，提醒還沒確認。</li>
+    <li><b>②紅旗檢查：</b>病人說不舒服就先勾這裡。任一項成立，畫面變紅，自費產品暫停新增，直到醫師寫下評估結果並解除。</li>
+    <li><b>③藥物／自費項目：</b>選類別、寫名稱、劑量、開始日期，按新增。外院處方（化療、降血壓藥、抗凝血劑）也要登記。自費療程／產品要填金額，並勾選「已說明並同意」才能新增。營養素與自費項目會自動排好 Day 1、3、7 追蹤。</li>
+    <li><b>抗癌病人：</b>「原治療醫師是否知道本院療程」選「尚未告知」時，危險訊號會一直提醒，直到確認。</li>
+    <li><b>④追蹤：</b>到期時問病人症狀。沒有症狀直接按「記錄」；有症狀寫下來，會標紅「異常待評估」，評估後選處置。</li>
+    <li><b>時間軸：</b>不用另外寫，發生客訴或異常時按「複製時間軸」即可。</li>
+  </ol></section>
+  <section><h2>紅旗條件（醫師審核後修改）</h2><p class="hint">一行一項。規則必須由醫師依正式臨床指引制定。</p>
+    <textarea id="rulesText" style="min-height:12em">${h(db.rules.join('\n'))}</textarea>
+    <label class="f" for="rulesNote" style="margin-top:8px"><span>審核紀錄</span><input type="text" id="rulesNote" value="${h(db.rulesNote)}" placeholder="例：○○醫師 2026-10-01 依院內急症分流指引審核"></label>
+    <div class="row" style="margin-top:8px"><button class="btn pri" data-act="saveRules">儲存紅旗條件</button></div></section>
+  <section><h2>備份</h2><p class="hint">資料只存在這台電腦的瀏覽器，不連網、不用任何 AI 或 API 金鑰。清除瀏覽器資料就會消失，請定期備份。</p>
+    <div class="row"><button class="btn" data-act="backup">複製備份</button><button class="btn" data-act="restore">貼上備份還原</button></div>
+    <textarea id="bk" placeholder="按「複製備份」後內容會出現在這裡；還原時把備份貼進來再按「貼上備份還原」" style="margin-top:8px;min-height:6em"></textarea></section>`;
+}
+
+function render(){renderList();$('#main').innerHTML=view==='help'?renderHelp():renderPatient();fit()}
+function fit(){document.querySelectorAll('main textarea[data-k]').forEach(t=>{t.style.height='auto';t.style.height=t.scrollHeight+2+'px'})}
+function copy(text,el){const ok=()=>toast('已複製');const fb=()=>{if(el){el.value=text;el.select();toast('已選取，請按 Ctrl+C')}};try{navigator.clipboard.writeText(text).then(ok,fb)}catch(e){fb()}}
+
+/* 自動儲存 */
+document.addEventListener('input',e=>{
+  const k=e.target.dataset.k;if(!k)return;const p=P();
+  p[k]=e.target.value;save();
+  e.target.closest('label').classList.toggle('empty',!e.target.value.trim());
+  if(e.target.tagName==='TEXTAREA'){e.target.style.height='auto';e.target.style.height=e.target.scrollHeight+2+'px'}
+  const s=$('#saved');if(s)s.textContent='已儲存 '+now();
+  if(k==='name'||k==='diagnosis')renderList();
+});
+document.addEventListener('change',e=>{if(e.target.dataset.k){log(P(),'病歷','更新「'+FIELDS.find(f=>f[0]===e.target.dataset.k)[1]+'」');save()}});
+$('#q').addEventListener('input',renderList);
+$('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){const b=$('#list button');if(b)b.click()}});
+$('#addPt').addEventListener('click',()=>{const p={id:uid(),name:'',flag:null,meds:[],fus:[],log:[{d:today(),t:'病歷',x:'建立病歷'}]};db.patients.unshift(p);curId=p.id;view='patient';$('#q').value='';save();render();$('#f_name').focus()});
+$('#helpBtn').addEventListener('click',()=>{view='help';render()});
+
+let delArm=false;
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;const d=b.dataset,p=P();
+  if(d.pt){curId=d.pt;view='patient';delArm=false;render();window.scrollTo(0,0);return}
+  if(d.stop){const m=p.meds.find(x=>x.id===d.stop);m.end=today();p.fus.forEach(f=>{if(f.medId===m.id&&f.status==='due')f.status='cancel'});log(p,'產品','停用 '+m.name);save();render();return}
+  if(d.fu){const f=p.fus.find(x=>x.id===d.fu),s=$('#fs_'+f.id).value.trim();f.sym=s;f.done=today();f.status=s?'flag':'ok';log(p,s?'異常':'追蹤',`${medName(p,f.medId)} Day ${f.day}：${s||'無異常'}`);save();render();toast(s?'已標記異常，請評估':'已記錄');return}
+  if(d.fuh){const f=p.fus.find(x=>x.id===d.fuh),o=$('#fh_'+f.id).value;f.status='done';f.handled=o;
+    if(o==='停用此產品'){const m=p.meds.find(x=>x.id===f.medId);if(m&&!m.end){m.end=today();p.fus.forEach(x=>{if(x.medId===m.id&&x.status==='due')x.status='cancel'})}}
+    log(p,'追蹤',`${medName(p,f.medId)} Day ${f.day} 異常處置：${o}`);save();render();return}
+  switch(d.act){
+    case'checkFlag':{const items=[...document.querySelectorAll('.chks input:checked')].map(i=>i.value);
+      if(items.length){p.flag={items,at:today()+' '+now()};log(p,'紅旗',items.join('、')+' → 停止產品流程，優先醫療評估');save();render();window.scrollTo(0,0)}
+      else{log(p,'紅旗','紅旗檢查：未符合條件');save();render();toast('未符合紅旗條件')}break}
+    case'clearFlag':{const n=$('#clearNote').value.trim();if(!n){toast('請先寫評估結果');$('#clearNote').focus();break}log(p,'紅旗','解除：'+n);p.flag=null;save();render();break}
+    case'addMed':{const type=$('#nm_type').value,name=$('#nm_name').value.trim(),dose=$('#nm_dose').value.trim(),start=$('#nm_start').value||today();
+      if(!name){toast('請輸入名稱');$('#nm_name').focus();break}
+      const cost=+($('#nm_cost').value.replace(/[^\d]/g,''))||0,consent=$('#nm_consent').checked;
+      if(SELF(type)&&p.flag){toast('紅旗處理中，暫停新增自費項目');break}
+      if(SELF(type)&&!consent){toast('自費項目請先完成說明並勾選同意');$('#nm_consent').focus();break}
+      const m={id:uid(),type,name,dose,start,end:'',cost,consent:SELF(type)};p.meds.push(m);
+      if(type!=='藥物')[1,3,7].forEach(n=>p.fus.push({id:uid(),medId:m.id,day:n,due:addDays(start,n),sym:'',status:'due'}));
+      log(p,'產品',`開始 ${name} ${dose}${cost?'｜'+cost.toLocaleString()+' 元':''}${SELF(type)?'｜已完成自費說明並取得同意':''}${type!=='藥物'?'；建立 Day 1/3/7 追蹤':''}`);save();render();toast('已新增');break}
+    case'copyTl':copy(`【時間軸】${p.name}\n`+p.log.slice().sort((a,b)=>a.d.localeCompare(b.d)).map(e=>`${e.d}｜${e.t}｜${e.x}`).join('\n'));break;
+    case'delPt':if(!delArm){delArm=true;b.textContent='再按一次確認刪除';b.classList.add('red');setTimeout(()=>{delArm=false;if(b.isConnected){b.textContent='刪除此病人';b.classList.remove('red')}},4000)}
+      else{db.patients=db.patients.filter(x=>x.id!==p.id);curId=db.patients[0]?.id||null;delArm=false;save();render();toast('已刪除')}break;
+    case'saveRules':db.rules=$('#rulesText').value.split('\n').map(s=>s.trim()).filter(Boolean);db.rulesNote=$('#rulesNote').value.trim()||'尚未審核';save();toast('已儲存');break;
+    case'backup':copy(JSON.stringify(db),$('#bk'));$('#bk').value=JSON.stringify(db);break;
+    case'restore':try{const o=JSON.parse($('#bk').value);if(!o.patients)throw 0;db=o;curId=db.patients[0]?.id;save();view='patient';render();toast('已還原')}catch(err){toast('備份內容不正確')}break;
+  }
+});
+render();
+</script>
+
+</body>
+</html>
