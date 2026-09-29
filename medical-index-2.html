@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>醫學英文閃卡練習機｜醫學英文200核心結構大全</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0F1E;--surface:#111827;--surface2:#1E2A3A;--border:#2A3A4A;
+  --gold:#D4A017;--gold2:#F0C040;--text:#E8EDF5;--muted:#7A8A9A;
+  --green:#1DB954;--red:#E24B4A;--blue:#3B82F6;--purple:#8B5CF6;
+  --teal:#14B8A6;--amber:#F59E0B;
+}
+body{background:var(--bg);color:var(--text);font-family:'Microsoft JhengHei','Noto Sans TC',sans-serif;min-height:100vh}
+header{background:linear-gradient(135deg,#0D1B3E,#1a2744);border-bottom:1px solid var(--gold);padding:1rem 1.5rem;display:flex;align-items:center;gap:12px}
+.logo{font-size:22px;font-weight:700;color:var(--gold)}
+.logo span{color:var(--text);font-size:14px;display:block;font-weight:400}
+nav{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.nav-btn{padding:7px 16px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;font-size:13px;transition:all .15s}
+.nav-btn.active{background:var(--gold);color:#0A0F1E;border-color:var(--gold);font-weight:600}
+.nav-btn:hover:not(.active){border-color:var(--gold);color:var(--gold)}
+
+main{max-width:700px;margin:0 auto;padding:1.5rem}
+
+/* Filter bar */
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.2rem}
+.chip{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:12px;transition:all .15s}
+.chip.on{background:var(--gold);color:#0A0F1E;border-color:var(--gold);font-weight:600}
+.chip:hover:not(.on){border-color:var(--gold);color:var(--gold)}
+
+/* Stats row */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.5rem}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.stat-val{font-size:22px;font-weight:700}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* Flashcard */
+.card-area{perspective:1200px;margin-bottom:1rem}
+.card{width:100%;min-height:280px;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1);cursor:pointer}
+.card.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;width:100%;min-height:280px;backface-visibility:hidden;border-radius:16px;padding:2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.card-front{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--border)}
+.card-back{background:linear-gradient(135deg,#0D2030,#0D1B3E);border:1px solid var(--gold);transform:rotateY(180deg)}
+.card-cat{font-size:11px;color:var(--muted);margin-bottom:.5rem;letter-spacing:2px;text-transform:uppercase}
+.card-word{font-size:36px;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:.5rem}
+.card-ipa{font-size:14px;color:var(--blue);margin-bottom:.5rem}
+.card-hint{font-size:13px;color:var(--muted);margin-top:.5rem}
+.card-zh{font-size:26px;font-weight:700;color:var(--text);margin-bottom:.5rem}
+.card-memory{background:rgba(212,160,23,.1);border:1px solid rgba(212,160,23,.3);border-radius:10px;padding:12px 16px;font-size:13px;color:#D4B870;line-height:1.7;margin-top:.5rem;text-align:left;width:100%}
+.card-roots{font-size:12px;color:var(--teal);margin-top:.5rem;line-height:1.6}
+.flip-hint{font-size:12px;color:var(--muted);text-align:center;margin-bottom:.5rem}
+
+/* Buttons */
+.action-row{display:flex;gap:10px;justify-content:center;margin-bottom:1.5rem}
+.btn-action{flex:1;max-width:160px;padding:12px;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-skip{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+.btn-hard{background:rgba(226,75,74,.15);color:var(--red);border:1px solid var(--red)}
+.btn-ok{background:rgba(245,158,11,.15);color:var(--amber);border:1px solid var(--amber)}
+.btn-easy{background:rgba(29,185,84,.15);color:var(--green);border:1px solid var(--green)}
+.btn-action:hover{filter:brightness(1.2);transform:translateY(-1px)}
+
+/* Progress */
+.prog-track{height:5px;background:var(--surface2);border-radius:3px;margin-bottom:1.2rem;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:3px;transition:width .4s}
+
+/* Mode: Reading */
+.word-list{display:grid;gap:8px}
+.word-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s}
+.word-item:hover{border-color:var(--gold);background:var(--surface2)}
+.wi-word{font-size:16px;font-weight:600;color:var(--gold);min-width:180px}
+.wi-ipa{font-size:11px;color:var(--blue);margin-top:2px}
+.wi-zh{font-size:14px;color:var(--text)}
+.wi-mem{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5}
+.wi-cat{font-size:10px;padding:2px 8px;border-radius:10px;margin-left:auto;white-space:nowrap}
+.status-pill{font-size:10px;padding:2px 8px;border-radius:10px;margin-left:6px}
+.pill-easy{background:rgba(29,185,84,.2);color:var(--green)}
+.pill-ok{background:rgba(245,158,11,.2);color:var(--amber)}
+.pill-hard{background:rgba(226,75,74,.2);color:var(--red)}
+.pill-new{background:var(--surface2);color:var(--muted)}
+
+/* Review done */
+.done-card{background:var(--surface);border:1px solid var(--gold);border-radius:16px;padding:3rem 2rem;text-align:center}
+
+/* Section headers */
+.sec-hdr{font-size:13px;color:var(--muted);margin-bottom:.8rem;letter-spacing:1px;border-bottom:1px solid var(--border);padding-bottom:.5rem}
+
+.empty{text-align:center;padding:3rem 1rem;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">📚 醫學英文閃卡<span>醫學200核心結構大全・第7冊高頻單字</span></div>
+  <nav>
+    <button class="nav-btn active" onclick="showMode('flash')">📖 閃卡練習</button>
+    <button class="nav-btn" onclick="showMode('list')">📋 單字總覽</button>
+    <button class="nav-btn" onclick="showMode('stats')">📊 我的進度</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- FLASH MODE -->
+<div id="mode-flash">
+  <div class="filter-bar" id="flashFilter">
+    <span class="chip on" onclick="setCategory(this,'all')">全部</span>
+    <span class="chip" onclick="setCategory(this,'anatomy')">🦴 解剖</span>
+    <span class="chip" onclick="setCategory(this,'physiology')">⚡ 生理</span>
+    <span class="chip" onclick="setCategory(this,'pathology')">🔬 病理</span>
+    <span class="chip" onclick="setCategory(this,'pharmacology')">💊 藥理</span>
+    <span class="chip" onclick="setCategory(this,'immunology')">🛡 免疫</span>
+    <span class="chip" onclick="setCategory(this,'hard')">🔴 待加強</span>
+  </div>
+  <div class="prog-track"><div class="prog-fill" id="flashProg" style="width:0%"></div></div>
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-val" id="sf-done" style="color:var(--gold)">0</div><div class="stat-lbl">已複習</div></div>
+    <div class="stat-box"><div class="stat-val" id="sf-easy" style="color:var(--green)">0</div><div class="stat-lbl">輕鬆</div></div>
+    <div class="stat-box"><div class="stat-val" id="sf-ok" style="color:var(--amber)">0</div><div class="stat-lbl">還好</div></div>
+    <div class="stat-box"><div class="stat-val" id="sf-hard" style="color:var(--red)">0</div><div class="stat-lbl">待加強</div></div>
+  </div>
+  <div id="flashCardArea">
+    <p class="flip-hint">👆 點擊卡片翻面看答案</p>
+    <div class="card-area">
+      <div class="card" id="theCard" onclick="flipCard()">
+        <div class="card-face card-front" id="frontFace">
+          <div class="card-cat" id="fc-cat"></div>
+          <div class="card-word" id="fc-word">-</div>
+          <div class="card-ipa" id="fc-ipa"></div>
+          <div class="card-hint">⬇ 點擊看中文意思</div>
+        </div>
+        <div class="card-face card-back" id="backFace">
+          <div class="card-cat" id="bc-cat"></div>
+          <div class="card-zh" id="bc-zh">-</div>
+          <div class="card-memory" id="bc-mem"></div>
+          <div class="card-roots" id="bc-roots"></div>
+        </div>
+      </div>
+    </div>
+    <div class="action-row" id="actionRow" style="display:none">
+      <button class="btn-action btn-hard" onclick="rateCard('hard')">😓 待加強</button>
+      <button class="btn-action btn-ok" onclick="rateCard('ok')">🙂 還好</button>
+      <button class="btn-action btn-easy" onclick="rateCard('easy')">😄 輕鬆</button>
+    </div>
+    <div style="text-align:center">
+      <button class="nav-btn" onclick="skipCard()" style="margin:0 auto">跳過 →</button>
+    </div>
+  </div>
+  <div id="flashDone" style="display:none" class="done-card">
+    <div style="font-size:48px;margin-bottom:1rem">🎉</div>
+    <div style="font-size:22px;font-weight:700;color:var(--gold);margin-bottom:.5rem">本輪複習完成！</div>
+    <div id="doneStats" style="color:var(--muted);margin-bottom:1.5rem"></div>
+    <button class="nav-btn active" onclick="restartFlash()">再來一輪</button>
+  </div>
+</div>
+
+<!-- LIST MODE -->
+<div id="mode-list" style="display:none">
+  <div class="filter-bar" id="listFilter">
+    <span class="chip on" onclick="setListCat(this,'all')">全部</span>
+    <span class="chip" onclick="setListCat(this,'anatomy')">🦴 解剖</span>
+    <span class="chip" onclick="setListCat(this,'physiology')">⚡ 生理</span>
+    <span class="chip" onclick="setListCat(this,'pathology')">🔬 病理</span>
+    <span class="chip" onclick="setListCat(this,'pharmacology')">💊 藥理</span>
+    <span class="chip" onclick="setListCat(this,'immunology')">🛡 免疫</span>
+  </div>
+  <div class="word-list" id="wordList"></div>
+</div>
+
+<!-- STATS MODE -->
+<div id="mode-stats" style="display:none">
+  <div class="sec-hdr">📊 學習統計</div>
+  <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
+    <div class="stat-box"><div class="stat-val" id="st-total" style="color:var(--gold)">0</div><div class="stat-lbl">總單字</div></div>
+    <div class="stat-box"><div class="stat-val" id="st-reviewed" style="color:var(--blue)">0</div><div class="stat-lbl">已複習</div></div>
+    <div class="stat-box"><div class="stat-val" id="st-mastered" style="color:var(--green)">0</div><div class="stat-lbl">已掌握</div></div>
+  </div>
+  <div class="sec-hdr" style="margin-top:1rem">各科別進度</div>
+  <div id="catProgress"></div>
+  <div class="sec-hdr" style="margin-top:1.5rem">🔴 待加強單字</div>
+  <div id="hardList"></div>
+</div>
+
+</main>
+
+<script>
+const VOCAB=[
+  // ANATOMY
+  {id:'abdomen',word:'abdomen',ipa:'/ˈæbdəmən/',zh:'腹部',mem:'ab（去除）+domen（掌管）→腹部容納消化器官',cat:'anatomy',roots:'ab+domen'},
+  {id:'thorax',word:'thorax',ipa:'/ˈθɔːræks/',zh:'胸腔',mem:'thor（雷神）+ax（斧）→胸腔如盾牌保護心肺',cat:'anatomy',roots:'thor+ax'},
+  {id:'cranium',word:'cranium',ipa:'/ˈkreɪnɪəm/',zh:'顱骨',mem:'crania（頭）→顱骨保護大腦的骨性外殼',cat:'anatomy',roots:'crania'},
+  {id:'vertebra',word:'vertebra',ipa:'/ˈvɜːtɪbrə/',zh:'脊椎骨',mem:'vert（轉）+ebra→可以轉動的骨→脊椎',cat:'anatomy',roots:'vert+ebra'},
+  {id:'femur',word:'femur',ipa:'/ˈfiːmə/',zh:'股骨',mem:'femur→大腿骨，人體最長最強壯的骨骼',cat:'anatomy',roots:'femur'},
+  {id:'patella',word:'patella',ipa:'/pəˈtɛlə/',zh:'髕骨',mem:'patella（小鍋）→膝蓋骨形狀像小鍋蓋',cat:'anatomy',roots:'patella'},
+  {id:'sternum',word:'sternum',ipa:'/ˈstɜːnəm/',zh:'胸骨',mem:'stern（嚴肅）→胸骨站在胸前中央正色',cat:'anatomy',roots:'stern'},
+  {id:'clavicle',word:'clavicle',ipa:'/ˈklævɪkəl/',zh:'鎖骨',mem:'clavis（鑰匙）→鎖骨像把鑰匙橫在肩膀',cat:'anatomy',roots:'clavis'},
+  {id:'pelvis',word:'pelvis',ipa:'/ˈpɛlvɪs/',zh:'骨盆',mem:'pelv（盆）→承載內臟的骨盆結構',cat:'anatomy',roots:'pelv'},
+  {id:'aorta',word:'aorta',ipa:'/eɪˈɔːtə/',zh:'主動脈',mem:'aort（升起）→血液從心臟升起的主幹血管',cat:'anatomy',roots:'aort'},
+  {id:'capillary',word:'capillary',ipa:'/kəˈpɪlərɪ/',zh:'微血管',mem:'capill（頭髮）+ary→細如頭髮的最細血管',cat:'anatomy',roots:'capill+ary'},
+  {id:'alveolus',word:'alveolus',ipa:'/ælˈviːələs/',zh:'肺泡',mem:'alveo（空洞）+lus（小）→肺部微小氣體交換囊',cat:'anatomy',roots:'alveo+lus'},
+  {id:'glomerulus',word:'glomerulus',ipa:'/ɡlɒˈmɛrjʊləs/',zh:'腎小球',mem:'glomus（球）+ulus（小）→腎元的過濾小球',cat:'anatomy',roots:'glomus+ulus'},
+  {id:'periosteum',word:'periosteum',ipa:'/ˌpɛrɪˈɒstɪəm/',zh:'骨膜',mem:'peri（周圍）+oste（骨）→包覆骨骼外的薄膜',cat:'anatomy',roots:'peri+oste'},
+  {id:'ligament',word:'ligament',ipa:'/ˈlɪɡəmənt/',zh:'韌帶',mem:'lig（綁）+ament→綁住骨骼的纖維組織',cat:'anatomy',roots:'lig+ament'},
+  {id:'tendon',word:'tendon',ipa:'/ˈtɛndən/',zh:'肌腱',mem:'tend（延伸）+on→肌肉延伸連接到骨骼',cat:'anatomy',roots:'tend+on'},
+  {id:'cartilage',word:'cartilage',ipa:'/ˈkɑːtɪlɪdʒ/',zh:'軟骨',mem:'cart（車）+ilage→軟骨如車輪緩衝關節',cat:'anatomy',roots:'cart+ilage'},
+  // PHYSIOLOGY
+  {id:'homeostasis',word:'homeostasis',ipa:'/ˌhəʊmɪəˈsteɪsɪs/',zh:'恆定',mem:'homeo（相同）+stasis（停止）→維持內環境穩定',cat:'physiology',roots:'homeo+stasis'},
+  {id:'cardiac_output',word:'cardiac output',ipa:'/ˈkɑːdɪæk/',zh:'心輸出量',mem:'cardiac（心臟的）+output→每分鐘泵出血液量',cat:'physiology',roots:'cardio+output'},
+  {id:'depolarization',word:'depolarization',ipa:'/ˌdiːpəʊlərɪˈzeɪʃən/',zh:'去極化',mem:'de（去除）+polar（極）→Na+湧入膜電位上升',cat:'physiology',roots:'de+polar'},
+  {id:'peristalsis',word:'peristalsis',ipa:'/ˌpɛrɪˈstɔːlsɪs/',zh:'蠕動',mem:'peri（周圍）+stalsis（收縮）→管道波浪收縮推進',cat:'physiology',roots:'peri+stalsis'},
+  {id:'osmosis',word:'osmosis',ipa:'/ɒzˈməʊsɪs/',zh:'滲透',mem:'osmo（推）+sis→水從低濃度到高濃度流動',cat:'physiology',roots:'osmo+sis'},
+  {id:'diffusion',word:'diffusion',ipa:'/dɪˈfjuːʒən/',zh:'擴散',mem:'diffus（散布）+ion→物質從高濃度往低濃度移動',cat:'physiology',roots:'diffus+ion'},
+  {id:'endocytosis',word:'endocytosis',ipa:'/ˌɛndəsaɪˈtəʊsɪs/',zh:'胞內吞噬',mem:'endo（內）+cyt（細胞）+osis→細胞將物質包入',cat:'physiology',roots:'endo+cyt+osis'},
+  {id:'baroreceptor',word:'baroreceptor',ipa:'/ˌbærəʊrɪˈsɛptə/',zh:'壓力感受器',mem:'baro（壓力）+receptor→感應血壓變化的神經感受器',cat:'physiology',roots:'baro+receptor'},
+  {id:'aldosterone',word:'aldosterone',ipa:'/ælˈdɒstərəʊn/',zh:'醛固酮',mem:'aldo+sterone→保鈉排鉀維持血壓',cat:'physiology',roots:'aldo+sterone'},
+  {id:'proprioception',word:'proprioception',ipa:'/ˌprəʊprɪəˈsɛpʃən/',zh:'本體感覺',mem:'proprio（自身）+ception（接收）→感知肢體位置',cat:'physiology',roots:'proprio+ception'},
+  {id:'sarcomere',word:'sarcomere',ipa:'/ˈsɑːkəmɪə/',zh:'肌節',mem:'sarc（肌）+mere（節）→骨骼肌收縮的基本單位',cat:'physiology',roots:'sarc+mere'},
+  // PATHOLOGY
+  {id:'necrosis',word:'necrosis',ipa:'/nɪˈkrəʊsɪs/',zh:'壞死',mem:'necro（死）+osis→細胞病理性不可逆死亡',cat:'pathology',roots:'necro+osis'},
+  {id:'apoptosis',word:'apoptosis',ipa:'/ˌæpəpˈtəʊsɪs/',zh:'細胞凋亡',mem:'apo（離）+ptosis（落）→程序性有序細胞死亡',cat:'pathology',roots:'apo+ptosis'},
+  {id:'inflammation',word:'inflammation',ipa:'/ˌɪnfləˈmeɪʃən/',zh:'發炎',mem:'in（進入）+flamm（火焰）→紅腫熱痛功能喪失',cat:'pathology',roots:'in+flamm'},
+  {id:'edema',word:'edema',ipa:'/ɪˈdiːmə/',zh:'水腫',mem:'ed（腫）+ema→組織間液過多積聚',cat:'pathology',roots:'ede+ma'},
+  {id:'fibrosis',word:'fibrosis',ipa:'/faɪˈbrəʊsɪs/',zh:'纖維化',mem:'fibr（纖維）+osis→組織修復時纖維增生',cat:'pathology',roots:'fibr+osis'},
+  {id:'dysplasia',word:'dysplasia',ipa:'/dɪsˈpleɪzɪə/',zh:'發育不良',mem:'dys（異常）+plasia（形成）→細胞形態異常癌前病變',cat:'pathology',roots:'dys+plasia'},
+  {id:'hyperplasia',word:'hyperplasia',ipa:'/ˌhaɪpəˈpleɪzɪə/',zh:'增生',mem:'hyper（過多）+plasia（形成）→細胞數目增多',cat:'pathology',roots:'hyper+plasia'},
+  {id:'hypertrophy',word:'hypertrophy',ipa:'/haɪˈpɜːtrəfɪ/',zh:'肥大',mem:'hyper（過多）+trophy（生長）→細胞體積增大',cat:'pathology',roots:'hyper+trophy'},
+  {id:'embolism',word:'embolism',ipa:'/ˈɛmbəlɪzm/',zh:'栓塞',mem:'embol（栓子）+ism→栓子堵塞血管',cat:'pathology',roots:'embol+ism'},
+  {id:'infarction',word:'infarction',ipa:'/ɪnˈfɑːkʃən/',zh:'梗塞',mem:'in（進入）+farc（塞滿）→組織缺血壞死',cat:'pathology',roots:'in+farc+tion'},
+  {id:'hemorrhage',word:'hemorrhage',ipa:'/ˈhɛmərɪdʒ/',zh:'出血',mem:'hemo（血）+rrhage（破裂流出）→血液外溢',cat:'pathology',roots:'hemo+rrhage'},
+  {id:'sepsis',word:'sepsis',ipa:'/ˈsɛpsɪs/',zh:'敗血症',mem:'sep（腐敗）+sis→全身性感染反應綜合症',cat:'pathology',roots:'sep+sis'},
+  {id:'atherosclerosis',word:'atherosclerosis',ipa:'/ˌæθərəsklɪˈrəʊsɪs/',zh:'動脈硬化',mem:'athero（粥）+scler（硬）+osis→血管壁脂質斑塊',cat:'pathology',roots:'athero+scler+osis'},
+  {id:'cirrhosis',word:'cirrhosis',ipa:'/sɪˈrəʊsɪs/',zh:'肝硬化',mem:'cirrh（橙黃）+osis→肝纖維化失代償期',cat:'pathology',roots:'cirrh+osis'},
+  {id:'metastasis',word:'metastasis',ipa:'/mɪˈtæstəsɪs/',zh:'轉移',mem:'meta（改變）+stasis（位置）→癌細胞遠處擴散',cat:'pathology',roots:'meta+stasis'},
+  {id:'cachexia',word:'cachexia',ipa:'/kəˈkɛksɪə/',zh:'惡病質',mem:'cach（壞）+exia（狀態）→癌症晚期嚴重消瘦',cat:'pathology',roots:'cach+exia'},
+  // PHARMACOLOGY
+  {id:'pharmacokinetics',word:'pharmacokinetics',ipa:'/ˌfɑːməkəkɪˈnɛtɪks/',zh:'藥物動力學',mem:'pharmaco（藥）+kinetics（動力）→ADME四過程',cat:'pharmacology',roots:'pharmaco+kinetics'},
+  {id:'bioavailability',word:'bioavailability',ipa:'/ˌbaɪəʊəˌveɪləˈbɪlɪtɪ/',zh:'生體可用率',mem:'bio（生）+availability（可用性）→到達全身循環%',cat:'pharmacology',roots:'bio+availability'},
+  {id:'agonist',word:'agonist',ipa:'/ˈæɡənɪst/',zh:'促效劑',mem:'agon（競爭）+ist→與受體結合並活化它的藥物',cat:'pharmacology',roots:'agon+ist'},
+  {id:'antagonist',word:'antagonist',ipa:'/ænˈtæɡənɪst/',zh:'拮抗劑',mem:'anti（對抗）+agonist→阻斷受體的藥物',cat:'pharmacology',roots:'anti+agonist'},
+  {id:'half_life',word:'half-life',ipa:'/ˈhɑːflaɪf/',zh:'半衰期',mem:'half（半）+life（生命）→血中濃度降低一半所需時間',cat:'pharmacology',roots:'half+life'},
+  {id:'synergism',word:'synergism',ipa:'/ˈsɪnədʒɪzm/',zh:'協同作用',mem:'syn（共同）+ergism（工作）→兩藥效果相加',cat:'pharmacology',roots:'syn+ergism'},
+  {id:'tolerance',word:'tolerance',ipa:'/ˈtɒlərəns/',zh:'耐受性',mem:'toler（承受）+ance→重複用藥後效果降低',cat:'pharmacology',roots:'toler+ance'},
+  {id:'penicillin',word:'penicillin',ipa:'/ˌpɛnɪˈsɪlɪn/',zh:'青黴素',mem:'penicill（畫筆）+in→第一個抗生素β-lactam類',cat:'pharmacology',roots:'penicill+in'},
+  {id:'warfarin',word:'warfarin',ipa:'/ˈwɔːfərɪn/',zh:'華法林',mem:'WARF+arin→維生素K拮抗抗凝血劑',cat:'pharmacology',roots:'warf+arin'},
+  {id:'heparin',word:'heparin',ipa:'/ˈhɛpərɪn/',zh:'肝素',mem:'hepar（肝）+in→抗凝血快速作用於急性期',cat:'pharmacology',roots:'hepar+in'},
+  {id:'insulin',word:'insulin',ipa:'/ˈɪnsjʊlɪn/',zh:'胰島素',mem:'insul（島）+in→胰島β細胞分泌降血糖',cat:'pharmacology',roots:'insul+in'},
+  {id:'therapeutic_index',word:'therapeutic index',ipa:'/ˌθɛrəˈpjuːtɪk/',zh:'治療指數',mem:'LD50/ED50→安全窗口越大越安全',cat:'pharmacology',roots:'therap+eutic'},
+  // IMMUNOLOGY
+  {id:'innate_immunity',word:'innate immunity',ipa:'/ɪˈneɪt/',zh:'固有免疫',mem:'innate（先天）+immunity→非特異性快速防線',cat:'immunology',roots:'innate+immunity'},
+  {id:'adaptive_immunity',word:'adaptive immunity',ipa:'/əˈdæptɪv/',zh:'適應性免疫',mem:'adaptive（適應）+immunity→特異性記憶性防禦',cat:'immunology',roots:'adaptive+immunity'},
+  {id:'macrophage',word:'macrophage',ipa:'/ˈmækrəfeɪdʒ/',zh:'巨噬細胞',mem:'macro（大）+phage（吞噬）→吞噬病原體呈現抗原',cat:'immunology',roots:'macro+phage'},
+  {id:'cytokine',word:'cytokine',ipa:'/ˈsaɪtəkaɪn/',zh:'細胞激素',mem:'cyto（細胞）+kine（移動）→免疫細胞間信號分子',cat:'immunology',roots:'cyto+kine'},
+  {id:'interleukin',word:'interleukin',ipa:'/ˌɪntəˈluːkɪn/',zh:'介白素',mem:'inter（之間）+leukin（白血球）→白血球間信號',cat:'immunology',roots:'inter+leukin'},
+  {id:'interferon',word:'interferon',ipa:'/ˌɪntəˈfɪərɒn/',zh:'干擾素',mem:'inter（之間）+feron（攜帶）→抗病毒蛋白',cat:'immunology',roots:'inter+feron'},
+  {id:'antibody',word:'antibody',ipa:'/ˈæntɪbɒdɪ/',zh:'抗體',mem:'anti（對抗）+body→免疫球蛋白IgG/IgM等',cat:'immunology',roots:'anti+body'},
+  {id:'antigen',word:'antigen',ipa:'/ˈæntɪdʒən/',zh:'抗原',mem:'anti（對抗）+gen（產生）→誘發免疫反應的物質',cat:'immunology',roots:'anti+gen'},
+  {id:'anaphylaxis',word:'anaphylaxis',ipa:'/ˌænəfɪˈlæksɪs/',zh:'過敏性休克',mem:'ana（反）+phylaxis（保護）→危及生命的全身過敏',cat:'immunology',roots:'ana+phylaxis'},
+  {id:'phagocytosis',word:'phagocytosis',ipa:'/ˌfæɡəsaɪˈtəʊsɪs/',zh:'吞噬作用',mem:'phago吞噬+cytosis細胞過程→吞噬固體異物',cat:'immunology',roots:'phago+cyto+osis'},
+  {id:'opsonization',word:'opsonization',ipa:'/ˌɒpsənaɪˈzeɪʃən/',zh:'調理作用',mem:'opson（美食）+ization→抗體標記增強吞噬',cat:'immunology',roots:'opson+ization'},
+  {id:'vaccination',word:'vaccination',ipa:'/ˌvæksɪˈneɪʃən/',zh:'疫苗接種',mem:'vaccin（牛痘）+ation→預防感染性疾病',cat:'immunology',roots:'vaccin+ation'},
+];
+
+let userRatings={};
+try{const s=localStorage.getItem('med_flash_ratings');if(s)userRatings=JSON.parse(s);}catch(e){}
+function saveRatings(){try{localStorage.setItem('med_flash_ratings',JSON.stringify(userRatings));}catch(e){}}
+
+let currentCat='all';
+let currentListCat='all';
+let deck=[];
+let deckIdx=0;
+let sessionStats={easy:0,ok:0,hard:0};
+let isFlipped=false;
+
+function buildDeck(){
+  let pool=VOCAB.filter(v=>currentCat==='all'||(currentCat==='hard'&&userRatings[v.id]==='hard')||v.cat===currentCat);
+  // Sort: hard first, then unrated, then ok, then easy
+  pool.sort((a,b)=>{
+    const order={hard:0,undefined:1,ok:2,easy:3};
+    return (order[userRatings[a.id]]||1)-(order[userRatings[b.id]]||1);
+  });
+  deck=[...pool].sort(()=>Math.random()-.5);
+  if(currentCat==='hard')deck=pool;
+  deckIdx=0;sessionStats={easy:0,ok:0,hard:0};
+  updateSessionStats();
+}
+
+function showCurrentCard(){
+  if(deckIdx>=deck.length){showDone();return;}
+  const v=deck[deckIdx];
+  const catLabels={anatomy:'🦴 解剖學',physiology:'⚡ 生理學',pathology:'🔬 病理學',pharmacology:'💊 藥理學',immunology:'🛡 免疫學'};
+  document.getElementById('fc-cat').textContent=catLabels[v.cat]||v.cat;
+  document.getElementById('fc-word').textContent=v.word;
+  document.getElementById('fc-ipa').textContent=v.ipa;
+  document.getElementById('bc-cat').textContent=catLabels[v.cat]||v.cat;
+  document.getElementById('bc-zh').textContent=v.zh;
+  document.getElementById('bc-mem').innerHTML='💡 '+v.mem;
+  document.getElementById('bc-roots').textContent='字根：'+v.roots;
+  // Reset flip
+  isFlipped=false;
+  document.getElementById('theCard').classList.remove('flipped');
+  document.getElementById('actionRow').style.display='none';
+  // Progress
+  const pct=Math.round(deckIdx/deck.length*100);
+  document.getElementById('flashProg').style.width=pct+'%';
+}
+
+function flipCard(){
+  if(!isFlipped){
+    isFlipped=true;
+    document.getElementById('theCard').classList.add('flipped');
+    document.getElementById('actionRow').style.display='flex';
+  }
+}
+
+function rateCard(rating){
+  if(deckIdx<deck.length){
+    userRatings[deck[deckIdx].id]=rating;
+    sessionStats[rating]++;
+    saveRatings();
+    updateSessionStats();
+  }
+  deckIdx++;
+  showCurrentCard();
+}
+
+function skipCard(){deckIdx++;showCurrentCard();}
+
+function updateSessionStats(){
+  document.getElementById('sf-done').textContent=sessionStats.easy+sessionStats.ok+sessionStats.hard;
+  document.getElementById('sf-easy').textContent=sessionStats.easy;
+  document.getElementById('sf-ok').textContent=sessionStats.ok;
+  document.getElementById('sf-hard').textContent=sessionStats.hard;
+}
+
+function showDone(){
+  document.getElementById('flashCardArea').style.display='none';
+  document.getElementById('flashDone').style.display='block';
+  const total=sessionStats.easy+sessionStats.ok+sessionStats.hard;
+  document.getElementById('doneStats').innerHTML=`輕鬆：${sessionStats.easy}　還好：${sessionStats.ok}　待加強：${sessionStats.hard}<br><span style="color:var(--gold)">掌握率：${total?Math.round(sessionStats.easy/total*100):0}%</span>`;
+}
+
+function restartFlash(){
+  document.getElementById('flashCardArea').style.display='block';
+  document.getElementById('flashDone').style.display='none';
+  buildDeck();showCurrentCard();
+}
+
+function setCategory(el,cat){
+  document.querySelectorAll('#flashFilter .chip').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');currentCat=cat;
+  document.getElementById('flashCardArea').style.display='block';
+  document.getElementById('flashDone').style.display='none';
+  buildDeck();showCurrentCard();
+}
+
+function showMode(m){
+  ['flash','list','stats'].forEach(x=>document.getElementById('mode-'+x).style.display=x===m?'':'none');
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',['flash','list','stats'][i]===m));
+  if(m==='list')renderList();
+  if(m==='stats')renderStats();
+}
+
+function setListCat(el,cat){
+  document.querySelectorAll('#listFilter .chip').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');currentListCat=cat;renderList();
+}
+
+function renderList(){
+  const items=VOCAB.filter(v=>currentListCat==='all'||v.cat===currentListCat);
+  const catLabels={anatomy:'🦴',physiology:'⚡',pathology:'🔬',pharmacology:'💊',immunology:'🛡'};
+  const pillMap={easy:'pill-easy',ok:'pill-ok',hard:'pill-hard'};
+  const pillLabel={easy:'輕鬆',ok:'還好',hard:'待加強'};
+  document.getElementById('wordList').innerHTML=items.map(v=>{
+    const r=userRatings[v.id];
+    return`<div class="word-item">
+      <div><div class="wi-word">${v.word} <span class="status-pill ${r?pillMap[r]:'pill-new'}">${r?pillLabel[r]:'新'}</span></div>
+      <div class="wi-ipa">${v.ipa}</div></div>
+      <div style="flex:1"><div class="wi-zh">${v.zh}</div><div class="wi-mem">${v.mem}</div></div>
+      <span class="wi-cat" style="background:var(--surface2);color:var(--muted)">${catLabels[v.cat]||v.cat}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderStats(){
+  const total=VOCAB.length;
+  const reviewed=Object.keys(userRatings).length;
+  const mastered=Object.values(userRatings).filter(v=>v==='easy').length;
+  document.getElementById('st-total').textContent=total;
+  document.getElementById('st-reviewed').textContent=reviewed;
+  document.getElementById('st-mastered').textContent=mastered;
+  const cats=['anatomy','physiology','pathology','pharmacology','immunology'];
+  const catLabel={anatomy:'🦴 解剖學',physiology:'⚡ 生理學',pathology:'🔬 病理學',pharmacology:'💊 藥理學',immunology:'🛡 免疫學'};
+  const colors={anatomy:'var(--blue)',physiology:'var(--teal)',pathology:'var(--red)',pharmacology:'var(--amber)',immunology:'var(--purple)'};
+  document.getElementById('catProgress').innerHTML=cats.map(c=>{
+    const items=VOCAB.filter(v=>v.cat===c);
+    const k=items.filter(v=>userRatings[v.id]==='easy').length;
+    const pct=Math.round(k/items.length*100);
+    return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px">
+      <span style="min-width:90px;color:var(--muted)">${catLabel[c]}</span>
+      <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+        <div style="width:${pct}%;height:100%;background:${colors[c]};border-radius:4px;transition:width .5s"></div>
+      </div>
+      <span style="min-width:60px;text-align:right;color:var(--muted)">${k}/${items.length} (${pct}%)</span>
+    </div>`;
+  }).join('');
+  const hardItems=VOCAB.filter(v=>userRatings[v.id]==='hard');
+  document.getElementById('hardList').innerHTML=hardItems.length?hardItems.map(v=>`
+    <div class="word-item" style="cursor:default">
+      <div><div class="wi-word">${v.word}</div><div class="wi-ipa">${v.ipa}</div></div>
+      <div style="flex:1"><div class="wi-zh">${v.zh}</div></div>
+    </div>`).join(''):'<div class="empty">👍 沒有待加強單字！</div>';
+}
+
+// Init
+buildDeck();showCurrentCard();
+</script>
+</body>
+</html>
