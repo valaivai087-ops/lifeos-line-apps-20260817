@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新舊模型升級系統｜更新思維，改變命運</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D1B3E;--teal:#1B5E7B;--gold:#8A6200;--lgold:#F5E6C0;
+  --green:#0F6E56;--red:#8B1A1A;
+  --bg:#F2F4F8;--card:#fff;--border:#E0E5EE;--text:#1a1a1a;--text2:#555;--text3:#999;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang TC','Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topnav{background:var(--navy);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-logo{color:var(--lgold);font-size:15px;font-weight:700;display:flex;align-items:center;gap:7px}
+.nav-tabs{display:flex;gap:3px}
+.nav-tab{background:transparent;border:none;color:rgba(255,255,255,.6);font-size:12px;padding:6px 10px;border-radius:8px;cursor:pointer;transition:.15s;white-space:nowrap}
+.nav-tab.active,.nav-tab:hover{background:rgba(255,255,255,.12);color:#fff}
+.page{display:none;padding:1rem}
+.page.active{display:block}
+
+/* hero */
+.hero{background:linear-gradient(150deg,#0D1B3E 0%,#1B5E7B 80%,#0A4A38 100%);color:#fff;padding:2.2rem 1.2rem 1.8rem;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(245,230,192,.15);color:var(--lgold);font-size:11px;padding:4px 12px;border-radius:999px;margin-bottom:12px;font-weight:600}
+.hero-title{font-size:24px;font-weight:700;line-height:1.4;margin-bottom:8px}
+.hero-sub{font-size:13px;opacity:.78;line-height:1.7;margin-bottom:18px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:360px;margin:0 auto 18px}
+.hstat{background:rgba(255,255,255,.1);border-radius:12px;padding:10px 6px;text-align:center}
+.hstat-n{font-size:20px;font-weight:700;color:var(--lgold)}
+.hstat-l{font-size:11px;opacity:.7;margin-top:2px}
+.hero-quote{background:rgba(245,230,192,.12);border:1px solid rgba(245,230,192,.25);border-radius:12px;padding:12px 16px;font-size:13px;color:var(--lgold);line-height:1.7;max-width:380px;margin:0 auto}
+
+/* section */
+.sec-title{font-size:17px;font-weight:600;color:var(--navy);display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.sec-sub{font-size:12px;color:var(--text3);margin-bottom:14px}
+
+/* card */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .18s}
+.card:hover{box-shadow:0 3px 14px rgba(0,0,0,.09);transform:translateY(-1px)}
+.card-row{display:flex;align-items:center;gap:11px}
+.cicon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+
+/* model cards grid */
+.model-grid{display:flex;flex-direction:column;gap:8px}
+
+/* old-new comparison */
+.on-row{display:flex;gap:8px;margin-bottom:8px}
+.on-cell{flex:1;border-radius:10px;padding:10px 11px;font-size:13px;font-weight:600;line-height:1.4}
+.on-old{background:#FDE8E8;color:var(--red);border:1px solid #F5BDBD}
+.on-new{background:#E6F5F0;color:var(--green);border:1px solid #9FE0CE}
+.on-label{font-size:10px;font-weight:700;opacity:.6;margin-bottom:3px}
+.on-mechanism{background:#F5F7FB;border-radius:8px;padding:8px 10px;font-size:12px;color:var(--text2);margin-bottom:4px;display:flex;gap:6px;align-items:center}
+.on-result{background:#FFF8E7;border-radius:8px;padding:8px 10px;font-size:12px;color:var(--gold);font-weight:500;display:flex;gap:6px;align-items:center}
+
+/* tabs inside page */
+.filter-bar{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none}
+.filter-bar::-webkit-scrollbar{display:none}
+.filter-btn{flex-shrink:0;font-size:12px;padding:6px 13px;border-radius:999px;border:1.5px solid var(--border);background:var(--card);color:var(--text2);cursor:pointer;transition:.13s;white-space:nowrap}
+.filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* formula */
+.formula-box{display:flex;flex-direction:column;align-items:center;gap:4px;margin:14px 0}
+.f-step{background:#FFF8E7;border:1.5px solid var(--gold);border-radius:10px;padding:9px 22px;font-size:14px;font-weight:600;color:var(--navy);text-align:center;min-width:160px}
+.f-arrow{font-size:22px;color:var(--gold);line-height:1}
+
+/* vs table */
+.vs-wrap{overflow-x:auto;margin:8px 0}
+.vs-table{width:100%;border-collapse:collapse;font-size:13px}
+.vs-table th{padding:9px 10px;font-size:12px;font-weight:700;color:#fff;text-align:center}
+.vs-table td{padding:8px 10px;border-bottom:1px solid #f0f0f0;vertical-align:top}
+.vs-table tr:last-child td{border-bottom:none}
+.v-old{color:var(--red);font-weight:600}
+.v-new{color:var(--green);font-weight:600}
+
+/* quiz */
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+.q-prog{background:#EAEEF5;border-radius:4px;height:4px;margin-bottom:16px}
+.q-fill{height:100%;border-radius:4px;background:var(--teal);transition:.4s}
+.q-text{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:14px;line-height:1.5}
+.q-opt{display:block;width:100%;background:#F8F9FC;border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:13px;cursor:pointer;text-align:left;margin-bottom:7px;transition:.13s;color:var(--text)}
+.q-opt:hover{border-color:var(--teal);background:#E8F4FB}
+.q-opt.correct{background:#E6F5F0;border-color:var(--green);color:var(--green);font-weight:600}
+.q-opt.wrong{background:#FDE8E8;border-color:var(--red);color:var(--red)}
+.q-explain{background:#F5F7FB;border-radius:10px;padding:11px;font-size:13px;color:var(--text2);line-height:1.65;margin-top:8px;display:none}
+.score-card{background:linear-gradient(135deg,var(--navy),var(--teal));color:#fff;border-radius:16px;padding:22px;text-align:center;margin-bottom:14px}
+.score-big{font-size:52px;font-weight:700;color:var(--lgold)}
+
+/* insight box */
+.ibox{border-radius:12px;padding:13px;margin:10px 0;border-left:4px solid}
+.ibox.gold{background:#FFF8E7;border-color:var(--gold)}
+.ibox.teal{background:#E8F4FB;border-color:var(--teal)}
+.ibox.green{background:#E6F5F0;border-color:var(--green)}
+.ibox.red{background:#FDE8E8;border-color:var(--red)}
+.ibox-lbl{font-size:11px;font-weight:700;margin-bottom:5px}
+.ibox-txt{font-size:13px;color:var(--navy);line-height:1.7}
+
+/* random drill */
+.drill-card{background:linear-gradient(135deg,#0D1B3E,#1B5E7B);border-radius:16px;padding:20px;color:#fff;margin-bottom:12px;text-align:center}
+.drill-old{font-size:13px;opacity:.65;margin-bottom:10px}
+.drill-question{font-size:20px;font-weight:700;color:var(--lgold);margin-bottom:16px;line-height:1.4}
+.drill-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.drill-opt{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);border-radius:10px;padding:12px;font-size:14px;cursor:pointer;color:#fff;transition:.13s}
+.drill-opt:hover{background:rgba(255,255,255,.22)}
+.drill-opt.right{background:rgba(15,110,86,.4);border-color:#9FE0CE}
+.drill-opt.wrong{background:rgba(139,26,26,.3);border-color:#F5BDBD}
+.drill-explain{background:rgba(255,255,255,.1);border-radius:10px;padding:12px;font-size:13px;line-height:1.65;margin-top:8px;display:none}
+
+/* mother model */
+.mother-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.mother-cell{border-radius:10px;padding:10px;text-align:center;font-size:13px;font-weight:600}
+.m-low{background:#FDE8E8;color:var(--red)}
+.m-high{background:#E6F5F0;color:var(--green)}
+
+/* level badge */
+.level-badge{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 10px;font-size:11px;font-weight:700}
+
+/* btn */
+.btn-main{display:block;width:100%;background:var(--navy);color:#fff;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;margin-top:10px}
+.btn-main:hover{background:var(--teal)}
+.btn-sec{display:block;width:100%;background:#F0F2F7;color:var(--navy);border:none;border-radius:12px;padding:12px;font-size:14px;cursor:pointer;margin-top:8px}
+.btn-gold{background:var(--gold);color:#fff}
+.btn-gold:hover{background:#6B4C00}
+
+/* toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:9px 20px;border-radius:999px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* progress bar */
+.pbar{background:#EAEEF5;border-radius:4px;height:7px;margin-bottom:10px}
+.pfill{height:100%;border-radius:4px;transition:.4s}
+</style>
+</head>
+<body>
+<div class="topnav">
+  <div class="nav-logo"><i class="ti ti-arrows-exchange"></i> 模型升級</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="G('home')">首頁</button>
+    <button class="nav-tab" onclick="G('browse')">瀏覽</button>
+    <button class="nav-tab" onclick="G('drill')">刷題</button>
+    <button class="nav-tab" onclick="G('mother')">母模型</button>
+    <button class="nav-tab" onclick="G('quiz')">測驗</button>
+  </div>
+</div>
+
+<!-- ══════════ HOME ══════════ -->
+<div id="page-home" class="page active">
+  <div class="hero" style="margin:-1rem -1rem 1rem">
+    <div class="hero-badge"><i class="ti ti-refresh"></i> 更新思維，改變命運</div>
+    <div class="hero-title">新舊模型升級系統</div>
+    <div class="hero-sub">200+ 個思維升級對照<br>從生存模式走向進化模式</div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-n">200+</div><div class="hstat-l">模型對照</div></div>
+      <div class="hstat"><div class="hstat-n">15層</div><div class="hstat-l">壓縮層次</div></div>
+      <div class="hstat"><div class="hstat-n">10類</div><div class="hstat-l">思維主題</div></div>
+    </div>
+    <div class="hero-quote" id="home-quote"></div>
+  </div>
+
+  <div class="sec-title"><i class="ti ti-bolt" style="color:var(--gold)"></i> 核心公式</div>
+  <div class="sec-sub">所有升級都指向這一條路</div>
+  <div class="formula-box" id="home-formula"></div>
+
+  <div class="sec-title" style="margin-top:20px"><i class="ti ti-layers-subtract" style="color:var(--teal)"></i> 終極壓縮——5個母轉換</div>
+  <div class="sec-sub">200+ 個模型，最終收斂成這5組</div>
+  <div class="mother-grid">
+    <div class="mother-cell m-low">記憶</div><div class="mother-cell m-high">建模</div>
+    <div class="mother-cell m-low">努力</div><div class="mother-cell m-high">槓桿</div>
+    <div class="mother-cell m-low">控制</div><div class="mother-cell m-high">適應</div>
+    <div class="mother-cell m-low">答案</div><div class="mother-cell m-high">提問</div>
+    <div class="mother-cell m-low">生存</div><div class="mother-cell m-high">進化</div>
+  </div>
+
+  <div class="ibox gold" style="margin-top:14px">
+    <div class="ibox-lbl" style="color:var(--gold)">▌ 最高維金句</div>
+    <div class="ibox-txt">弱者看事件，普通人看方法，高手看結構，大師看系統。<br><br>真正改變命運的，不是你做了什麼事，而是：你用什麼模型在理解世界。</div>
+  </div>
+
+  <div class="ibox teal" style="margin-top:10px">
+    <div class="ibox-lbl" style="color:var(--teal)">▌ 命運公式</div>
+    <div class="ibox-txt" style="text-align:center;font-size:16px;font-weight:600;color:var(--navy)">
+      命運 = 模型品質 × 更新速度 × 持續時間
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
+    <button class="btn-main" onclick="G('browse')" style="margin:0">📚 瀏覽模型</button>
+    <button class="btn-main btn-gold" onclick="G('drill')" style="margin:0">🎯 隨機刷題</button>
+  </div>
+</div>
+
+<!-- ══════════ BROWSE ══════════ -->
+<div id="page-browse" class="page">
+  <div class="sec-title"><i class="ti ti-layout-list" style="color:var(--teal)"></i> 全部模型</div>
+  <div class="sec-sub">按主題篩選，點擊查看詳細解析</div>
+  <div class="filter-bar" id="filter-bar"></div>
+  <div id="browse-list"></div>
+</div>
+
+<!-- ══════════ DRILL ══════════ -->
+<div id="page-drill" class="page">
+  <div class="sec-title"><i class="ti ti-brain" style="color:var(--gold)"></i> 隨機刷題</div>
+  <div class="sec-sub">看到舊模型，猜出對應的新模型</div>
+  <div id="drill-area"></div>
+</div>
+
+<!-- ══════════ MOTHER ══════════ -->
+<div id="page-mother" class="page">
+  <div class="sec-title"><i class="ti ti-infinity" style="color:var(--navy)"></i> 母體模型</div>
+  <div class="sec-sub">15層壓縮後的最高維度視角</div>
+
+  <div class="ibox teal">
+    <div class="ibox-lbl" style="color:var(--teal)">▌ 什麼是母模型？</div>
+    <div class="ibox-txt">母模型是能解釋所有具體模型的更高維框架。掌握10個母模型，就能理解200+個具體模型的底層邏輯。</div>
+  </div>
+
+  <div class="sec-title" style="margin-top:16px"><i class="ti ti-layers" style="color:var(--teal)"></i> 思維升維六代</div>
+  <div id="thinking-levels"></div>
+
+  <div class="sec-title" style="margin-top:16px"><i class="ti ti-table" style="color:var(--navy)"></i> 10個核心母模型</div>
+  <div class="vs-wrap">
+    <table class="vs-table">
+      <thead><tr><th style="background:var(--red)">低維人生</th><th style="background:var(--green)">高維人生</th><th style="background:var(--teal)">本質轉換</th></tr></thead>
+      <tbody id="mother-table-body"></tbody>
+    </table>
+  </div>
+
+  <div class="sec-title" style="margin-top:16px"><i class="ti ti-chart-line" style="color:var(--gold)"></i> 人生演化六階</div>
+  <div id="six-stages"></div>
+
+  <div class="ibox gold" style="margin-top:14px">
+    <div class="ibox-lbl" style="color:var(--gold)">▌ 最終母公式</div>
+    <div class="ibox-txt"><b>低維人生：</b>控制結果 → 害怕誤差 → 抵抗改變 → 停滯<br><br><b>高維人生：</b>觀察現實 → 建立模型 → 接受誤差 → 快速修正 → 持續更新 → 創造價值<br><br>真正的人生升級不是學更多東西，而是：淘汰更多過時模型。</div>
+  </div>
+
+  <div class="sec-title" style="margin-top:16px"><i class="ti ti-robot" style="color:var(--teal)"></i> AI時代對照</div>
+  <div class="vs-wrap">
+    <table class="vs-table">
+      <thead><tr><th style="background:var(--red)">工業時代模型</th><th style="background:var(--green)">AI時代模型</th></tr></thead>
+      <tbody id="ai-table-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════ QUIZ ══════════ -->
+<div id="page-quiz" class="page">
+  <div id="quiz-area"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════
+
+const MODELS = [
+  // 成功思維
+  {cat:'成功思維',old:'努力就會成功',nw:'正確方向×持續努力才會成功',mech:'工業時代勞力思維',result:'方向錯，努力變內耗'},
+  {cat:'成功思維',old:'知道很多就是厲害',nw:'能預測未來才是真厲害',mech:'學校重記憶',result:'預測力決定競爭力'},
+  {cat:'成功思維',old:'先有結果才有信心',nw:'先有行動才有信心',mech:'信心迷思',result:'打破拖延'},
+  {cat:'成功思維',old:'等有動力再做',nw:'先做才有動力',mech:'情緒依賴',result:'啟動正循環'},
+  {cat:'成功思維',old:'強者不會害怕',nw:'強者能帶著害怕前進',mech:'英雄神話',result:'增加行動力'},
+  {cat:'成功思維',old:'成功靠競爭',nw:'成功靠合作',mech:'零和思維',result:'創造共贏'},
+  {cat:'成功思維',old:'追求高效率',nw:'追求高槓桿',mech:'工具迷思',result:'放大價值'},
+  {cat:'成功思維',old:'做很多事情',nw:'完成關鍵事情',mech:'忙碌文化',result:'聚焦成果'},
+  {cat:'成功思維',old:'人生追求成功',nw:'人生追求持續升級',mech:'終點思維',result:'保持進化'},
+  {cat:'成功思維',old:'堅持永不放棄',nw:'錯了就調整方向',mech:'固執文化',result:'降低沉沒成本'},
+
+  // 學習成長
+  {cat:'學習成長',old:'學習是記憶',nw:'學習是建模',mech:'背誦教育',result:'理解才能遷移'},
+  {cat:'學習成長',old:'考試考知識',nw:'考試考預測能力',mech:'答案思維',result:'看懂出題邏輯'},
+  {cat:'學習成長',old:'教育是接受知識',nw:'教育是升級思維',mech:'傳統教育觀',result:'提升智慧'},
+  {cat:'學習成長',old:'知道就等於會',nw:'做到才等於會',mech:'知識錯覺',result:'強化能力'},
+  {cat:'學習成長',old:'收集資訊最重要',nw:'消化資訊最重要',mech:'資訊焦慮',result:'形成洞察'},
+  {cat:'學習成長',old:'多學一些再開始',nw:'先開始再學更多',mech:'準備成癮',result:'縮短成長期'},
+  {cat:'學習成長',old:'先追求答案',nw:'先理解問題',mech:'急於求解',result:'提高解題品質'},
+  {cat:'學習成長',old:'找方法最重要',nw:'找原理最重要',mech:'技巧崇拜',result:'具備遷移能力'},
+  {cat:'學習成長',old:'遇到高手會自卑',nw:'遇到高手是學習機會',mech:'比較心理',result:'加速成長'},
+  {cat:'學習成長',old:'讀書為了考試',nw:'讀書為了解世界',mech:'分數導向',result:'提高認知深度'},
+
+  // 失敗錯誤
+  {cat:'失敗錯誤',old:'失敗很可怕',nw:'失敗是誤差修正',mech:'自尊綁定結果',result:'錯誤變成進化資料'},
+  {cat:'失敗錯誤',old:'追求沒有錯誤',nw:'追求快速修正',mech:'完美主義',result:'成長速度提升'},
+  {cat:'失敗錯誤',old:'多做多錯',nw:'多驗證多進化',mech:'害怕犯錯',result:'提升學習率'},
+  {cat:'失敗錯誤',old:'被批評是攻擊',nw:'被批評是回饋',mech:'自我防衛',result:'優化模型'},
+  {cat:'失敗錯誤',old:'認錯代表失敗',nw:'認錯代表升級',mech:'面子文化',result:'加速成長'},
+  {cat:'失敗錯誤',old:'犯錯代表笨',nw:'犯錯代表正在學習',mech:'完美主義',result:'加速成長'},
+  {cat:'失敗錯誤',old:'把錯誤藏起來',nw:'把錯誤系統化',mech:'面子文化',result:'累積智慧'},
+  {cat:'失敗錯誤',old:'沒問題就是好事',nw:'發現問題就是好事',mech:'逃避誤差',result:'提前修正'},
+  {cat:'失敗錯誤',old:'問題是障礙',nw:'問題是課程',mech:'受害者思維',result:'提高韌性'},
+  {cat:'失敗錯誤',old:'被拒絕很丟臉',nw:'被拒絕是資料收集',mech:'自我價值綁定',result:'提高成功率'},
+
+  // 情緒心態
+  {cat:'情緒心態',old:'痛苦是懲罰',nw:'痛苦是更新通知',mech:'逃避不舒服',result:'痛苦指出模型漏洞'},
+  {cat:'情緒心態',old:'情緒是敵人',nw:'情緒是訊號',mech:'壓抑文化',result:'情緒反映系統狀態'},
+  {cat:'情緒心態',old:'情況好才感恩',nw:'感恩讓情況變好',mech:'被動思維',result:'提升韌性'},
+  {cat:'情緒心態',old:'事情失控就焦慮',nw:'事情失控就更新模型',mech:'控制依賴',result:'增加適應力'},
+  {cat:'情緒心態',old:'情緒來了就反應',nw:'情緒來了先觀察',mech:'本能反射',result:'提高穩定度'},
+  {cat:'情緒心態',old:'擔心未來',nw:'準備未來',mech:'焦慮模式',result:'提高掌控感'},
+  {cat:'情緒心態',old:'壓力有害',nw:'適當壓力促進成長',mech:'壓力恐懼',result:'激發潛能'},
+  {cat:'情緒心態',old:'希望人生沒風浪',nw:'希望自己有韌性',mech:'控制幻想',result:'提高適應力'},
+  {cat:'情緒心態',old:'成功後才能快樂',nw:'快樂才能持續成功',mech:'延遲幸福',result:'提升續航力'},
+  {cat:'情緒心態',old:'遇到打擊先難過',nw:'遇到打擊先分析',mech:'情緒主導',result:'快速恢復'},
+
+  // 時間行動
+  {cat:'時間行動',old:'忙碌代表價值',nw:'產出代表價值',mech:'瞎忙文化',result:'創造真正成果'},
+  {cat:'時間行動',old:'多做準備',nw:'多做測試',mech:'過度規劃',result:'提高效率'},
+  {cat:'時間行動',old:'計畫越詳細越好',nw:'快速驗證越重要',mech:'規劃迷思',result:'降低試錯成本'},
+  {cat:'時間行動',old:'等準備好再開始',nw:'開始才會準備好',mech:'完美主義',result:'行動產生能力'},
+  {cat:'時間行動',old:'時間很多',nw:'注意力有限',mech:'時間錯覺',result:'提升專注力'},
+  {cat:'時間行動',old:'有空再運動',nw:'運動創造時間',mech:'短視思維',result:'提升能量密度'},
+  {cat:'時間行動',old:'把時間填滿',nw:'把價值放大',mech:'忙碌文化',result:'提升產能'},
+  {cat:'時間行動',old:'靠意志力做事',nw:'靠環境設計做事',mech:'自我要求文化',result:'系統勝過意志'},
+  {cat:'時間行動',old:'想清楚再做',nw:'邊做邊清楚',mech:'分析癱瘓',result:'加速學習'},
+  {cat:'時間行動',old:'等靈感',nw:'建立習慣',mech:'情緒依賴',result:'穩定輸出'},
+
+  // 財富系統
+  {cat:'財富系統',old:'工作換時間',nw:'建立系統換價值',mech:'勞工思維',result:'系統產生複利'},
+  {cat:'財富系統',old:'靠體力賺錢',nw:'靠模型賺錢',mech:'勞力市場',result:'認知產生槓桿'},
+  {cat:'財富系統',old:'花錢是消費',nw:'花錢是配置資源',mech:'消費文化',result:'提高投資報酬'},
+  {cat:'財富系統',old:'省錢最重要',nw:'提高創造價值能力最重要',mech:'匱乏思維',result:'放大收入來源'},
+  {cat:'財富系統',old:'追求穩定收入',nw:'建立多元收入流',mech:'單點依賴',result:'提高抗風險能力'},
+  {cat:'財富系統',old:'做自己擅長的事',nw:'做有槓桿的事',mech:'舒適圈思維',result:'放大成果'},
+  {cat:'財富系統',old:'先賺錢再健康',nw:'健康是最大資產',mech:'短期交換',result:'提高生命品質'},
+  {cat:'財富系統',old:'有錢才自由',nw:'預測能力才自由',mech:'財富崇拜',result:'降低不確定性'},
+  {cat:'財富系統',old:'多存錢最重要',nw:'多創造現金流最重要',mech:'防禦思維',result:'提高流動性'},
+  {cat:'財富系統',old:'追求高薪',nw:'追求高價值密度',mech:'薪資思維',result:'增加自由度'},
+
+  // 人際關係
+  {cat:'人際關係',old:'人脈是認識很多人',nw:'人脈是創造價值',mech:'社交數量思維',result:'價值吸引合作'},
+  {cat:'人際關係',old:'溝通是說服別人',nw:'溝通是理解模型',mech:'輸贏思維',result:'理解才能影響'},
+  {cat:'人際關係',old:'愛是控制對方',nw:'愛是幫助成長',mech:'恐懼失去',result:'成長產生連結'},
+  {cat:'人際關係',old:'被理解才快樂',nw:'理解別人才快樂',mech:'自我中心',result:'提高關係品質'},
+  {cat:'人際關係',old:'多認識高手',nw:'學會高手思維',mech:'人脈崇拜',result:'提高認知'},
+  {cat:'人際關係',old:'找貴人幫忙',nw:'先成為別人的貴人',mech:'索取思維',result:'吸引資源'},
+  {cat:'人際關係',old:'被喜歡最重要',nw:'被尊重更重要',mech:'討好人格',result:'建立邊界'},
+  {cat:'人際關係',old:'遇到衝突先贏',nw:'遇到衝突先理解',mech:'輸贏思維',result:'降低內耗'},
+  {cat:'人際關係',old:'成功靠一個人',nw:'成功靠系統協作',mech:'個人英雄論',result:'建立合作能力'},
+  {cat:'人際關係',old:'多承諾代表負責',nw:'守承諾才是負責',mech:'討好文化',result:'建立信任'},
+
+  // 身份自我
+  {cat:'身份自我',old:'知道自己是誰',nw:'不斷重塑自己',mech:'固定身份',result:'擴大可能性'},
+  {cat:'身份自我',old:'命運是天注定',nw:'命運是長期決策累積',mech:'宿命思維',result:'每天都在塑造未來'},
+  {cat:'身份自我',old:'自由是隨心所欲',nw:'自由是不被舊模型綁架',mech:'放縱誤解',result:'更新能力越強越自由'},
+  {cat:'身份自我',old:'成熟是年紀大',nw:'成熟是修正速度快',mech:'年齡崇拜',result:'回饋能力決定成熟'},
+  {cat:'身份自我',old:'智慧是知道很多',nw:'智慧是預測更準',mech:'知識迷思',result:'降低決策誤差'},
+  {cat:'身份自我',old:'安全感來自外界',nw:'安全感來自能力',mech:'依賴環境',result:'能力創造穩定'},
+  {cat:'身份自我',old:'要先被認可',nw:'先創造價值',mech:'外求思維',result:'吸引資源靠近'},
+  {cat:'身份自我',old:'找到自己',nw:'持續創造自己',mech:'固定身份觀',result:'擴大自由度'},
+  {cat:'身份自我',old:'改變想法是背叛自己',nw:'改變想法是升級自己',mech:'固定身份認同',result:'提高適應力'},
+  {cat:'身份自我',old:'活著是生存',nw:'活著是持續進化',mech:'生存模式',result:'創造生命價值'},
+
+  // 系統思維
+  {cat:'系統思維',old:'遇到問題找答案',nw:'遇到問題找模型',mech:'線性思維',result:'解決同類問題'},
+  {cat:'系統思維',old:'解決眼前問題',nw:'解決產生問題的結構',mech:'頭痛醫頭',result:'根本性改善'},
+  {cat:'系統思維',old:'今天過得去就好',nw:'建立長期複利',mech:'短期思維',result:'命運持續改善'},
+  {cat:'系統思維',old:'事情做完就好',nw:'事情做好系統化',mech:'任務思維',result:'成果可複製'},
+  {cat:'系統思維',old:'看見結果才相信',nw:'相信可能性才看見結果',mech:'經驗依賴',result:'打開新機會'},
+  {cat:'系統思維',old:'問題出現再處理',nw:'提前預防問題',mech:'消防員思維',result:'降低風險'},
+  {cat:'系統思維',old:'疾病是敵人',nw:'疾病是警報器',mech:'症狀導向思維',result:'找出失衡根源'},
+  {cat:'系統思維',old:'靠熱情做事',nw:'靠機制做事',mech:'情緒驅動',result:'穩定輸出'},
+  {cat:'系統思維',old:'人生是競賽',nw:'人生是進化',mech:'比較文化',result:'保持成長'},
+  {cat:'系統思維',old:'世界應該公平',nw:'世界是機率分布',mech:'理想主義',result:'提高適應能力'},
+];
+
+const CATS = ['全部', ...Array.from(new Set(MODELS.map(m=>m.cat)))];
+
+const QUOTES = [
+  '真正拉開差距的，不是智商，不是背景，不是運氣\n而是：你多久更新一次自己的模型',
+  '限制人生的從來不是無知\n而是：抱著錯誤模型不願更新',
+  '人生最大的錯誤不是犯錯\n而是：用昨天的模型，解決今天的問題',
+  '弱者看事件，普通人看方法\n高手看結構，大師看系統',
+  '命運不是被發現的\n命運是被持續更新的模型創造出來的',
+  '高成長者在做三件事：預測明天的問題、創造明天的價值、更新明天的模型',
+];
+
+const MAIN_FORMULA = ['觀察','建模','預測','行動','結果','誤差','修正','更新','進化','自由'];
+
+const MOTHER_MODELS = [
+  ['記憶','建模','用模型代替記憶，才能遷移'],
+  ['努力','槓桿','方向+槓桿 > 單純努力'],
+  ['控制','適應','複雜系統無法控制，只能適應'],
+  ['答案','提問','好問題比好答案更珍貴'],
+  ['情緒化','回饋化','情緒是訊號，不是行動依據'],
+  ['線性','系統','世界是迴路，不是直線'],
+  ['靜態','動態','一切在演化，停止即退化'],
+  ['生存','進化','從活下去到活得更好'],
+  ['固定','更新','更新速度決定自由度'],
+  ['宿命','創造','每個決策都在塑造命運'],
+];
+
+const SIX_STAGES = [
+  {n:1,title:'第一階：求生存',desc:'解決眼前問題，避開危機',color:'var(--red)'},
+  {n:2,title:'第二階：求成功',desc:'追求外在成就，建立地位',color:'#C07800'},
+  {n:3,title:'第三階：求自由',desc:'不被外在定義，掌握選擇',color:GOLD},
+  {n:4,title:'第四階：求智慧',desc:'看見本質，建立高維模型',color:'var(--teal)'},
+  {n:5,title:'第五階：求創造',desc:'創造新價值，設計新系統',color:'var(--navy)'},
+  {n:6,title:'第六階：求演化',desc:'改變系統的演化方向',color:'var(--green)'},
+];
+
+const AI_MODELS = [
+  ['記住答案','建立模型'],['努力工作','設計系統'],['增加時間','增加槓桿'],
+  ['收集資訊','提煉洞察'],['追求穩定','提升適應'],['控制變化','駕馭變化'],
+  ['解決問題','預防問題'],['爭奪資源','創造資源'],['跟隨趨勢','創造趨勢'],
+  ['成為工具人','成為系統設計者'],
+];
+
+const THINKING_LEVELS = [
+  {gen:'第一代思維',q:'誰對？誰錯？',style:'對錯思維'},
+  {gen:'第二代思維',q:'怎麼做？',style:'方法思維'},
+  {gen:'第三代思維',q:'為什麼會這樣？',style:'系統思維'},
+  {gen:'第四代思維',q:'如何變得更好？',style:'演化思維'},
+  {gen:'第五代思維',q:'這個系統是怎麼被創造出來的？',style:'生成思維'},
+  {gen:'第六代思維',q:'如何創造新的遊戲規則？',style:'文明思維'},
+];
+
+const QUIZ_QUESTIONS = [
+  {q:'「努力就會成功」這個舊模型，為何是錯的？',opts:['努力沒有意義','方向錯誤，努力只是在加速走向錯誤終點','成功完全靠運氣','努力會讓人疲勞'],correct:1,explain:'努力很重要，但方向更重要。工業時代勞力換報酬的邏輯，在知識時代已不適用。正確方向×持續努力，才能真正成功。'},
+  {q:'「失敗是誤差修正」這個新模型，核心含義是？',opts:['失敗不重要','失敗讓人傷心','每次失敗都是讓模型更準確的資料','多失敗幾次就成功了'],correct:2,explain:'把失敗從「自尊的威脅」重框為「系統的資料」，就能解放行動力。每次失敗告訴你：這個假設在這個情境下不成立，需要更新。'},
+  {q:'為什麼「收集資訊」是舊模型，「消化資訊」是新模型？',opts:['資訊本身沒有價值','資訊太多記不住','沒有消化，資訊只是雜訊，消化才能形成洞察','消化比較省時間'],correct:2,explain:'資訊時代最大的陷阱是資訊焦慮——拼命收集但從不整合。真正的競爭力來自洞察，而洞察需要消化：從資訊中提取規律，建立預測模型。'},
+  {q:'「先有行動才有信心」這個新模型，打破了什麼迷思？',opts:['信心不重要','行動之前不需要準備','等待信心出現再行動，反而永遠不會行動','行動比思考重要'],correct:2,explain:'信心迷思讓人陷入等待循環。事實上，信心是行動的副產品，不是前提。每一次行動，不論結果，都在積累真實的自我效能感。'},
+  {q:'「靠機制做事」比「靠熱情做事」好在哪裡？',opts:['熱情沒有用','機制讓你不用思考','熱情起伏不定，機制才能穩定輸出','機制比較容易建立'],correct:2,explain:'熱情是不可靠的燃料，它會起伏、消退。系統和機制是穩定的基礎設施。最終能持續輸出的人，靠的不是永遠充沛的熱情，而是設計良好的節律機制。'},
+  {q:'「命運是長期決策累積」這個模型，對每天的選擇意味著什麼？',opts:['每個選擇都沒差','大決策才重要','每一天的每個選擇，都在微幅改變命運的軌跡','命運已經決定了'],correct:2,explain:'宿命思維讓人放棄主導權。複利思維則讓你看見：今天的每一個小決策，都在塑造明年、十年後的你。命運是無數個「今天」的長期積累。'},
+  {q:'「模型品質 × 更新速度 × 持續時間 = 命運」，最常被忽略的是哪個？',opts:['模型品質','更新速度','持續時間','三個同等重要'],correct:2,explain:'大多數人專注於學習新知識（模型品質），卻忽略了持續時間的複利效應。一個普通的模型，持續應用30年，效果遠超過一個好模型應用3年。時間是最強大的乘數。'},
+  {q:'「系統最重要」比「目標最重要」好在哪裡？',opts:['目標不重要','系統自動完成一切','達成目標後系統持續運作，持續輸出成果','系統比較容易設計'],correct:2,explain:'詹姆斯·克利爾說：「你得到的不是你的目標，而是你的系統。」目標只能達成一次，系統則持續運作。建立好系統，成果自然作為副產品湧現。'},
+  {q:'「弱者看事件，高手看結構」是什麼意思？',opts:['高手對事件沒感覺','事件不重要','高手看到產生事件的系統機制，而非只看表面現象','看結構比較省力'],correct:2,explain:'每個事件背後都有生成它的結構和機制。只看事件，你能解決這一次；看到結構，你能預防下一次；改變結構，你能從根本上改變結果的類型。'},
+  {q:'為什麼「淘汰過時模型」比「學習新模型」更重要？',opts:['學習新東西很累','舊模型完全沒用','過時的舊模型會主動干擾新模型的應用','新模型很難學'],correct:2,explain:'心理學中的「認知慣性」解釋了這個現象：舊模型不會自動消失，它們會在熟悉的情境中被自動啟用。先清除過時框架，新模型才能真正取而代之。'},
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let currentCat = '全部';
+let drillIdx = 0, drillModels = [], drillScore = 0, drillTotal = 0;
+let quizState = {cur:0, score:0, done:false, answered:[]};
+let quoteIdx = Math.floor(Math.random()*QUOTES.length);
+
+// ═══════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════
+function G(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const labels={home:'首頁',browse:'瀏覽',drill:'刷題',mother:'母模型',quiz:'測驗'};
+  document.querySelectorAll('.nav-tab').forEach(t=>{if(t.textContent.trim()===labels[id])t.classList.add('active');});
+  if(id==='browse')renderBrowse();
+  if(id==='drill')startDrill();
+  if(id==='mother')renderMother();
+  if(id==='quiz')renderQuiz();
+}
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+function shuffle(arr){return arr.slice().sort(()=>Math.random()-.5);}
+
+// ═══════════════════════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════════════════════
+function initHome(){
+  document.getElementById('home-quote').textContent=QUOTES[quoteIdx];
+  const fbox=document.getElementById('home-formula');
+  fbox.innerHTML=MAIN_FORMULA.map((s,i)=>`
+    <div class="f-step">${s}</div>
+    ${i<MAIN_FORMULA.length-1?'<div class="f-arrow">↓</div>':''}
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// BROWSE
+// ═══════════════════════════════════════════════════════════
+function renderBrowse(){
+  // filter bar
+  const fb=document.getElementById('filter-bar');
+  fb.innerHTML=CATS.map(c=>`<button class="filter-btn ${c===currentCat?'active':''}" onclick="setFilter('${c}')">${c}</button>`).join('');
+
+  const list=document.getElementById('browse-list');
+  const filtered=currentCat==='全部'?MODELS:MODELS.filter(m=>m.cat===currentCat);
+  const perPage=20;
+  const shown=filtered.slice(0,Math.min(list.dataset.shown?+list.dataset.shown:perPage,filtered.length));
+
+  list.innerHTML=shown.map((m,i)=>`
+    <div class="card" style="padding:12px" onclick="this.classList.toggle('open-card')">
+      <div class="on-row">
+        <div class="on-cell on-old"><div class="on-label">舊模型 ❌</div>${m.old}</div>
+        <div class="on-cell on-new"><div class="on-label">新模型 ✅</div>${m.nw}</div>
+      </div>
+      <div class="on-mechanism"><i class="ti ti-arrows-exchange" style="font-size:14px;color:var(--teal)"></i><span>生成機制：${m.mech}</span></div>
+      <div class="on-result"><i class="ti ti-trending-up" style="font-size:14px"></i><span>核心結果：${m.result}</span></div>
+    </div>
+  `).join('');
+
+  if(filtered.length>perPage){
+    const loaded=shown.length;
+    if(loaded<filtered.length){
+      list.innerHTML+=`<button class="btn-sec" onclick="loadMore(${loaded},${perPage})">載入更多（剩 ${filtered.length-loaded} 條）</button>`;
+    }
+  }
+  list.dataset.shown=shown.length;
+}
+
+function setFilter(cat){currentCat=cat;document.getElementById('browse-list').dataset.shown=20;renderBrowse();}
+function loadMore(loaded,perPage){document.getElementById('browse-list').dataset.shown=loaded+perPage;renderBrowse();}
+
+// ═══════════════════════════════════════════════════════════
+// DRILL
+// ═══════════════════════════════════════════════════════════
+function startDrill(){
+  drillModels=shuffle(MODELS).slice(0,20);
+  drillIdx=0; drillScore=0; drillTotal=0;
+  renderDrill();
+}
+
+function renderDrill(){
+  const area=document.getElementById('drill-area');
+  if(drillIdx>=drillModels.length){
+    const pct=Math.round(drillScore/drillTotal*100);
+    area.innerHTML=`
+      <div class="score-card">
+        <div style="font-size:13px;opacity:.7;margin-bottom:8px">刷題完成！</div>
+        <div class="score-big">${drillScore}/${drillTotal}</div>
+        <div style="font-size:14px;opacity:.8;margin-top:8px">答對率 ${pct}%　${pct>=80?'🔥模型升級中！':pct>=60?'👍持續更新！':'📚繼續練習！'}</div>
+      </div>
+      <button class="btn-main" onclick="startDrill()">再刷一輪</button>
+      <button class="btn-sec" onclick="G('browse')">查看所有模型</button>`;
+    return;
+  }
+
+  const m=drillModels[drillIdx];
+  // Generate 3 wrong options
+  const wrongPool=shuffle(MODELS.filter(x=>x.nw!==m.nw)).slice(0,3).map(x=>x.nw);
+  const opts=shuffle([m.nw,...wrongPool]);
+
+  const pct=Math.round(drillIdx/drillModels.length*100);
+  area.innerHTML=`
+    <div style="margin-bottom:4px;font-size:12px;color:var(--text3)">題目 ${drillIdx+1} / ${drillModels.length}</div>
+    <div class="q-prog"><div class="q-fill" style="width:${pct}%"></div></div>
+    <div class="drill-card">
+      <div class="drill-old">舊模型</div>
+      <div class="drill-question">${m.old}</div>
+      <div style="font-size:12px;opacity:.6;margin-bottom:10px">⬇ 對應的新模型是？</div>
+    </div>
+    <div class="drill-opts" id="drill-opts">
+      ${opts.map((o,i)=>`<button class="drill-opt" onclick="answerDrill('${o.replace(/'/g,'&apos;')}','${m.nw.replace(/'/g,'&apos;')}','${m.mech.replace(/'/g,'&apos;')}','${m.result.replace(/'/g,'&apos;')}',this)">${o}</button>`).join('')}
+    </div>
+    <div class="drill-explain" id="drill-exp"></div>
+    <div style="text-align:center;font-size:12px;color:rgba(255,255,255,.5);margin-top:6px">已答對 ${drillScore} 題</div>`;
+}
+
+function answerDrill(chosen,correct,mech,result,btn){
+  if(btn.disabled)return;
+  drillTotal++;
+  document.querySelectorAll('.drill-opt').forEach(b=>{b.style.pointerEvents='none';b.disabled=true;});
+  const exp=document.getElementById('drill-exp');
+  if(chosen===correct){
+    btn.classList.add('right'); drillScore++;
+    exp.innerHTML=`✅ 正確！生成機制：${mech}　核心結果：${result}`;
+    exp.style.display='block';
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.drill-opt').forEach(b=>{if(b.textContent===correct)b.classList.add('right');});
+    exp.innerHTML=`❌ 新模型是：<b>${correct}</b><br>生成機制：${mech}　核心結果：${result}`;
+    exp.style.display='block';
+  }
+  setTimeout(()=>{drillIdx++;renderDrill();},1800);
+}
+
+// ═══════════════════════════════════════════════════════════
+// MOTHER
+// ═══════════════════════════════════════════════════════════
+function renderMother(){
+  // thinking levels
+  const tl=document.getElementById('thinking-levels');
+  const levelColors=['var(--red)','#C07800','var(--gold)','var(--teal)','var(--navy)','var(--green)'];
+  tl.innerHTML=THINKING_LEVELS.map((l,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;padding:11px 13px;background:var(--card);border-radius:12px;border-left:4px solid ${levelColors[i]}">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:${levelColors[i]}">${l.style}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:1px">${l.gen}</div>
+      </div>
+      <div style="margin-left:auto;font-size:13px;color:var(--text2);text-align:right;font-style:italic">${l.q}</div>
+    </div>
+  `).join('');
+
+  // mother table
+  const tbody=document.getElementById('mother-table-body');
+  tbody.innerHTML=MOTHER_MODELS.map(([l,h,e],i)=>`
+    <tr style="background:${i%2===0?'#F8F9FC':'#fff'}">
+      <td class="v-old">${l}</td>
+      <td class="v-new">${h}</td>
+      <td style="font-size:12px;color:var(--text2)">${e}</td>
+    </tr>`).join('');
+
+  // six stages
+  const ss=document.getElementById('six-stages');
+  ss.innerHTML=SIX_STAGES.map((s,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:${i<5?'4px':'0'}">
+      <div style="width:32px;height:32px;border-radius:50%;background:${s.color};color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">${s.n}</div>
+      <div style="flex:1;padding:10px 12px;background:var(--card);border-radius:10px;border-left:3px solid ${s.color}">
+        <div style="font-size:13px;font-weight:600;color:var(--navy)">${s.title}</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">${s.desc}</div>
+      </div>
+      ${i<5?'<div style="color:var(--gold);font-size:16px;flex-shrink:0">↓</div>':''}
+    </div>`).join('');
+
+  // AI table
+  const aib=document.getElementById('ai-table-body');
+  aib.innerHTML=AI_MODELS.map(([o,n],i)=>`
+    <tr style="background:${i%2===0?'#F8F9FC':'#fff'}">
+      <td class="v-old">${o}</td><td class="v-new">${n}</td>
+    </tr>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════════════════════════
+function renderQuiz(){
+  const area=document.getElementById('quiz-area');
+  if(quizState.done){renderQuizScore();return;}
+  const q=QUIZ_QUESTIONS[quizState.cur];
+  const pct=Math.round(quizState.cur/QUIZ_QUESTIONS.length*100);
+  area.innerHTML=`
+    <div style="margin-bottom:4px;font-size:12px;color:var(--text3)">題目 ${quizState.cur+1} / ${QUIZ_QUESTIONS.length}</div>
+    <div class="q-prog"><div class="q-fill" style="width:${pct}%"></div></div>
+    <div class="qcard">
+      <div class="q-text">${q.q}</div>
+      ${q.opts.map((o,i)=>`<button class="q-opt" onclick="answerQuiz(${i})">${o}</button>`).join('')}
+      <div class="q-explain" id="q-explain">${q.explain}</div>
+    </div>
+    <div style="text-align:center;font-size:12px;color:var(--text3);margin-top:4px">已答對 ${quizState.score} 題</div>`;
+}
+
+function answerQuiz(idx){
+  if(quizState.answered[quizState.cur])return;
+  quizState.answered[quizState.cur]=true;
+  const q=QUIZ_QUESTIONS[quizState.cur];
+  document.querySelectorAll('.q-opt').forEach((b,i)=>{
+    b.style.pointerEvents='none';
+    if(i===q.correct)b.classList.add('correct');
+    else if(i===idx&&idx!==q.correct)b.classList.add('wrong');
+  });
+  document.getElementById('q-explain').style.display='block';
+  if(idx===q.correct)quizState.score++;
+  setTimeout(()=>{
+    quizState.cur++;
+    if(quizState.cur>=QUIZ_QUESTIONS.length){quizState.done=true;renderQuizScore();}
+    else renderQuiz();
+  },2200);
+}
+
+function renderQuizScore(){
+  const pct=Math.round(quizState.score/QUIZ_QUESTIONS.length*100);
+  const msg=pct>=80?'🔥 模型升級高手！你對新思維有深刻理解':pct>=60?'👍 理解不錯，繼續深化！':'📚 繼續學習模型，再來挑戰！';
+  document.getElementById('quiz-area').innerHTML=`
+    <div class="score-card">
+      <div style="font-size:13px;opacity:.7;margin-bottom:8px">測驗完成！</div>
+      <div class="score-big">${quizState.score}/${QUIZ_QUESTIONS.length}</div>
+      <div style="font-size:14px;opacity:.8;margin-top:8px">正確率 ${pct}%</div>
+      <div style="font-size:14px;margin-top:10px;line-height:1.5">${msg}</div>
+    </div>
+    <div class="ibox gold">
+      <div class="ibox-lbl" style="color:var(--gold)">▌ 記住這個公式</div>
+      <div class="ibox-txt" style="text-align:center;font-size:15px;font-weight:600">命運 = 模型品質 × 更新速度 × 持續時間</div>
+    </div>
+    <button class="btn-main" onclick="resetQuiz()">再測一次</button>
+    <button class="btn-sec" onclick="G('mother')">學習母模型</button>`;
+}
+
+function resetQuiz(){quizState={cur:0,score:0,done:false,answered:[]};renderQuiz();}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+initHome();
+renderBrowse();
+</script>
+</body>
+</html>
