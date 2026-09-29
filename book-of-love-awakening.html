@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>愛的覺醒之書</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400&family=Ma+Shan+Zheng&display=swap');
+
+  :root {
+    --ink: #1a1208;
+    --gold: #b8860b;
+    --gold-light: #d4a843;
+    --cream: #faf6ee;
+    --parchment: #f2ead8;
+    --warm-grey: #8a7c6a;
+    --chapter-bg: #f5efe2;
+    --divider: #c8a96a;
+    --shadow: rgba(90, 60, 20, 0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #e8dcc8;
+    font-family: 'Noto Serif TC', serif;
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── Book wrapper ── */
+  .book {
+    max-width: 720px;
+    margin: 0 auto;
+    background: var(--cream);
+    box-shadow: 0 8px 60px rgba(80,50,10,0.25), inset 4px 0 12px rgba(180,140,60,0.08);
+    border-left: 6px solid var(--gold);
+  }
+
+  /* ── Cover ── */
+  .cover {
+    background: linear-gradient(165deg, #1a1208 0%, #2d1f0a 45%, #1a1208 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 60% 50% at 50% 40%, rgba(184,134,11,0.18) 0%, transparent 70%),
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(184,134,11,0.04) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(184,134,11,0.04) 40px);
+    pointer-events: none;
+  }
+
+  .cover-ornament {
+    font-size: 2rem;
+    color: var(--gold);
+    letter-spacing: 0.5em;
+    margin-bottom: 32px;
+    opacity: 0.7;
+    animation: fadein 2s ease;
+  }
+
+  .cover-title {
+    font-size: clamp(2.4rem, 6vw, 3.8rem);
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 0.18em;
+    text-align: center;
+    line-height: 1.4;
+    animation: fadein 1.8s ease;
+    text-shadow: 0 2px 30px rgba(212,168,67,0.4);
+  }
+
+  .cover-subtitle {
+    margin-top: 20px;
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: rgba(250,246,238,0.65);
+    letter-spacing: 0.3em;
+    text-align: center;
+    animation: fadein 2.2s ease;
+  }
+
+  .cover-line {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 28px auto;
+    animation: fadein 2s ease;
+  }
+
+  .cover-verse {
+    max-width: 360px;
+    text-align: center;
+    color: rgba(250,246,238,0.5);
+    font-size: 0.9rem;
+    line-height: 2;
+    letter-spacing: 0.08em;
+    animation: fadein 2.6s ease;
+  }
+
+  @keyframes fadein { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+  /* ── TOC ── */
+  .toc {
+    padding: 60px 50px 50px;
+    background: var(--parchment);
+    border-bottom: 1px solid var(--divider);
+  }
+
+  .toc-title {
+    font-size: 1.1rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 36px;
+    font-weight: 300;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px dotted rgba(184,134,11,0.25);
+    cursor: pointer;
+    transition: color 0.2s;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .toc-item:hover { color: var(--gold); }
+
+  .toc-num {
+    font-size: 0.75rem;
+    color: var(--gold);
+    font-weight: 300;
+    min-width: 36px;
+    letter-spacing: 0.05em;
+  }
+
+  .toc-name {
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    flex: 1;
+  }
+
+  /* ── Chapter ── */
+  .chapter {
+    padding: 70px 55px 60px;
+    border-bottom: 1px solid rgba(200,169,106,0.3);
+    scroll-margin-top: 30px;
+  }
+
+  .chapter:nth-child(even) { background: rgba(242,234,216,0.35); }
+
+  .chapter-num {
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    font-weight: 300;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .chapter-title {
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.1em;
+    line-height: 1.45;
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .chapter-title::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 2px;
+    background: var(--gold);
+    margin-top: 16px;
+  }
+
+  .chapter-lead {
+    font-size: 1.05rem;
+    color: var(--gold);
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    margin: 20px 0 32px;
+    font-style: italic;
+  }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: 40px;
+  }
+
+  .section-title {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    margin-bottom: 14px;
+    padding-left: 14px;
+    border-left: 3px solid var(--gold-light);
+    line-height: 1.5;
+  }
+
+  .body-text {
+    font-size: 1rem;
+    line-height: 2;
+    color: #2c1f0c;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    margin-bottom: 18px;
+  }
+
+  /* ── Pull-quote ── */
+  .quote {
+    margin: 36px 0;
+    padding: 24px 30px 24px 40px;
+    background: rgba(184,134,11,0.06);
+    border-left: 4px solid var(--gold);
+    border-radius: 0 6px 6px 0;
+    position: relative;
+  }
+
+  .quote::before {
+    content: '❝';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 1.8rem;
+    color: var(--gold);
+    opacity: 0.4;
+    line-height: 1;
+  }
+
+  .quote p {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: #2c1f0c;
+    letter-spacing: 0.06em;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  /* ── Verse / poem ── */
+  .verse {
+    margin: 32px auto;
+    max-width: 480px;
+    text-align: center;
+    padding: 28px;
+    position: relative;
+  }
+
+  .verse::before, .verse::after {
+    content: '◈';
+    display: block;
+    color: var(--gold);
+    opacity: 0.45;
+    font-size: 0.8rem;
+    margin: 6px 0;
+    letter-spacing: 0.4em;
+  }
+
+  .verse p {
+    font-size: 0.98rem;
+    line-height: 2.2;
+    color: #3a2810;
+    letter-spacing: 0.1em;
+    font-weight: 300;
+  }
+
+  /* ── List ── */
+  .wisdom-list {
+    padding-left: 0;
+    list-style: none;
+    margin: 20px 0;
+  }
+
+  .wisdom-list li {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 9px 0;
+    font-size: 0.98rem;
+    line-height: 1.85;
+    color: #2c1f0c;
+    letter-spacing: 0.04em;
+    font-weight: 300;
+    border-bottom: 1px solid rgba(200,169,106,0.18);
+  }
+
+  .wisdom-list li::before {
+    content: '◆';
+    color: var(--gold);
+    font-size: 0.55rem;
+    margin-top: 0.55em;
+    flex-shrink: 0;
+  }
+
+  /* ── Key phrases ── */
+  .key {
+    font-weight: 500;
+    color: var(--gold);
+  }
+
+  /* ── Divider ornament ── */
+  .ornament {
+    text-align: center;
+    color: var(--gold);
+    font-size: 0.85rem;
+    letter-spacing: 0.5em;
+    margin: 36px 0;
+    opacity: 0.5;
+  }
+
+  /* ── Back matter ── */
+  .colophon {
+    padding: 50px;
+    background: linear-gradient(180deg, #1a1208 0%, #2d1f0a 100%);
+    text-align: center;
+    color: rgba(250,246,238,0.5);
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    line-height: 2.4;
+  }
+
+  .colophon-title {
+    color: var(--gold-light);
+    font-size: 1.1rem;
+    letter-spacing: 0.3em;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  @media print {
+    body { background: white; }
+    .book { box-shadow: none; border-left: none; max-width: 100%; }
+    .cover { min-height: auto; padding: 80px 40px; page-break-after: always; }
+    .chapter { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="book">
+
+  <!-- ══════ COVER ══════ -->
+  <div class="cover">
+    <div class="cover-ornament">✦ ✦ ✦</div>
+    <h1 class="cover-title">愛的覺醒之書</h1>
+    <div class="cover-line"></div>
+    <p class="cover-subtitle">回到內在的家</p>
+    <div class="cover-line"></div>
+    <p class="cover-verse">
+      當你全然活在當下這一刻<br>
+      這一刻就是全部的時刻<br>
+      你就這麼從這一刻流向下一刻<br>
+      像呼吸一樣自然
+    </p>
+    <div class="cover-ornament" style="margin-top:40px">✦ ✦ ✦</div>
+  </div>
+
+  <!-- ══════ TOC ══════ -->
+  <nav class="toc" id="toc">
+    <p class="toc-title">目　　錄</p>
+    <a class="toc-item" href="#ch1"><span class="toc-num">第一章</span><span class="toc-name">愛的本質——從恐懼到自由</span></a>
+    <a class="toc-item" href="#ch2"><span class="toc-num">第二章</span><span class="toc-name">接納自己——解開自我批判的枷鎖</span></a>
+    <a class="toc-item" href="#ch3"><span class="toc-num">第三章</span><span class="toc-name">關係的鏡子——與父母、家人的療癒</span></a>
+    <a class="toc-item" href="#ch4"><span class="toc-num">第四章</span><span class="toc-name">內在靜默——靜心與活在當下</span></a>
+    <a class="toc-item" href="#ch5"><span class="toc-num">第五章</span><span class="toc-name">情緒的智慧——讓感受成為通道</span></a>
+    <a class="toc-item" href="#ch6"><span class="toc-num">第六章</span><span class="toc-name">服務與感恩——業瑜伽的精髓</span></a>
+    <a class="toc-item" href="#ch7"><span class="toc-num">第七章</span><span class="toc-name">愛自己——生命最根本的法則</span></a>
+    <a class="toc-item" href="#ch8"><span class="toc-num">第八章</span><span class="toc-name">覺醒——回到合一的美好世界</span></a>
+  </nav>
+
+  <!-- ══════ CH 1 ══════ -->
+  <section class="chapter" id="ch1">
+    <span class="chapter-num">第 一 章</span>
+    <h2 class="chapter-title">愛的本質<br>從恐懼到自由</h2>
+    <p class="chapter-lead">每個幻相，不論化身為何種形式，都離不開恐懼</p>
+
+    <div class="section">
+      <h3 class="section-title">愛與恐懼的兩極</h3>
+      <p class="body-text">
+        在這世界上，人類的問題不在於價值觀、道德律、功成名就，也不在於追求幸福、快樂、成長、自由——而是，我們都活在「恐懼」當中。比起死亡，我們更害怕活著。
+      </p>
+      <p class="body-text">
+        有信心，就沒有恐懼；沒有信心，恐懼就出現了。憂慮和恐懼是圍繞著我們的可怕力量，它們毒害生命的根源、破壞和諧、運行中的效率，生機和活力。
+      </p>
+    </div>
+
+    <div class="quote">
+      <p>每個幻相，不論化身為何種形式，都離不開恐懼。你若想從自身之外尋找愛，反而會在自身之內看到恨與恐懼。愛的幻相，不可能帶給人平安——平安，只可能來自愛的真相。</p>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">恐懼的面孔</h3>
+      <ul class="wisdom-list">
+        <li>被羞辱的恐懼</li>
+        <li>被藐視的恐懼</li>
+        <li>被責難的恐懼</li>
+        <li>被毀謗的恐懼</li>
+        <li>被遺忘的恐懼</li>
+        <li>被冤枉的恐懼</li>
+        <li>被訕笑的恐懼</li>
+        <li>被懷疑的恐懼</li>
+      </ul>
+      <p class="body-text">認出這些恐懼，不是為了對抗它們，而是去看見：它們全都是愛的需求與失落。</p>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">超越恐懼的路</h3>
+      <p class="body-text">
+        在危急的時刻，頭腦（小我）終於想不出把戲而舉了白旗，只能臣服於高層力量——於是「當你向神走一步，神會向你走一百步」的恩典就發生了。
+      </p>
+      <p class="body-text">
+        相反的，<span class="key">喜悅、快樂和勇氣</span>，將治癒恐懼的毒害根源，讓生活運行有效率，給精神加乘的力量。一個快樂的人不會是一個危險的人。只有一個快樂與喜悅的人，才可以真正去愛。
+      </p>
+    </div>
+
+    <div class="verse">
+      <p>
+        不要告訴你的神你的問題有多大<br>
+        告訴你的問題你的神有多強大<br>
+        ——<br>
+        當你認出生命中的恩典時<br>
+        恩典就會倍增
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════ CH 2 ══════ -->
+  <section class="chapter" id="ch2">
+    <span class="chapter-num">第 二 章</span>
+    <h2 class="chapter-title">接納自己<br>解開自我批判的枷鎖</h2>
+    <p class="chapter-lead">要發現愛，你必須接納自己真實的樣子</p>
+
+    <div class="section">
+      <h3 class="section-title">比較的根源</h3>
+      <p class="body-text">
+        比較，基本上源自於你不接受自己的生命、父母、身體、能力、思想與情緒。當你抗拒事實，試圖成為某個你所不是的樣子時，你受苦於破壞性的情緒，如憤怒、嫉妒、憎恨、沮喪，這些情緒使你喪失智慧。
+      </p>
+      <p class="body-text">
+        所有的問題都源自於喪失智慧，<span class="key">接納可以使你從這些問題解脫</span>。但要如何接納呢？不是去瞭解、解釋或辯護某個情況，而是去經驗這個狀況背後的痛苦。
+      </p>
+    </div>
+
+    <div class="quote">
+      <p>當我們談到接納時，不是說你做了一些努力，然後就接受它；而是當你不再抗拒，接納就發生了。內在接納帶來智慧的覺醒，自卑感就自然消失了。</p>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">看見自己的陰影</h3>
+      <p class="body-text">
+        每個人的內在，都有許多的恐懼、傷痛和罪惡感。這些負面情緒，使我們在關係中不自覺地去傷害他人，也使我們與他人疏離。因為不喜歡自己黑暗負面的一面，我們不斷想改變自己，使自己更好。然而，這只會在內在創造出更多的衝突，使我們更痛苦。
+      </p>
+      <p class="body-text">
+        當我們<span class="key">接納自己，願意去看見並經驗內在傷痛時</span>，什麼都不用做，衝突就自然消失，我們身心也怡然自在。接納自己，人際關係自然和諧，我們也會恢復與所有動物、植物和神的連結。
+      </p>
+    </div>
+
+    <div class="ornament">◈ ◈ ◈</div>
+
+    <div class="section">
+      <h3 class="section-title">接納陰影，生命重獲自由</h3>
+      <p class="body-text">
+        接納真實的自己，接納自己生命的所有面向，包括妒忌、虛榮、傲慢等所謂的「陰影」，看見這些陰影背後是否潛藏著：渴望被看見的期待？害怕被拋棄的隱憂？懷疑不配得的自卑？
+      </p>
+      <p class="body-text">
+        讓自己活在內外一致、身心靈統合的狀態裡，無論是陽光還是陰影，都是生命的寶貴資源，善待、善用它們。你會發現讓生命重獲自由、安心自在的出口，居然不在別處，只在「陰影」裡。
+      </p>
+    </div>
+
+    <div class="verse">
+      <p>
+        道德感不是真實的你<br>
+        當你接受自己也有陰影面<br>
+        接納自己本為「陽與陰」的結合體<br>
+        你就不再需要任何面具與盾牌了<br>
+        ——<br>
+        成為自己，讓生命全然綻放
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════ CH 3 ══════ -->
+  <section class="chapter" id="ch3">
+    <span class="chapter-num">第 三 章</span>
+    <h2 class="chapter-title">關係的鏡子<br>與父母、家人的療癒</h2>
+    <p class="chapter-lead">你與父母的關係形成了你所有其他關係的模子</p>
+
+    <div class="section">
+      <h3 class="section-title">關係就是一面鏡子</h3>
+      <p class="body-text">
+        你會發現，你所有努力的背後都是渴望著被人們所愛。改善與父母的關係是最重要的，因為所有的關係都反映了你與父母的關係——你與家人、朋友、同事的關係，都取決於你與父母的關係。一旦你與父母的關係改善了，一切都會改善。
+      </p>
+    </div>
+
+    <div class="quote">
+      <p>如果你與父親之間的關係很糟糕，你很可能就會有財務問題；如果你與母親之間的關係很差，你就會有不必要的障礙。生命會反映出關係中的問題，因為生命就是關係。</p>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">問父母的八個重要問題</h3>
+      <p class="body-text">我們的情感問題、事業問題、親子問題的根源，往往都可以在家族系統中找到原因。從現在開始，問父母或問自己這樣的問題吧：</p>
+      <ul class="wisdom-list">
+        <li>能跟我分享一下您小時候的故事嗎？</li>
+        <li>能說說我小時候的事情嗎？</li>
+        <li>您最想給我什麼樣的建議呢？</li>
+        <li>什麼事讓您最幸福、最驕傲？</li>
+        <li>您最大的遺憾是什麼？如果有機會，您會怎麼做？</li>
+        <li>哪件事對您影響最大？</li>
+        <li>您百年之後我們該怎麼做？</li>
+        <li>跟我說說您的父母或祖父母好嗎？</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">陪伴就是愛</h3>
+      <p class="body-text">
+        陪伴病人，尤其是生病的父母，是生命最有魅力的時刻之一。被疾病弄得牙都掉光、臉上都是暗斑的媽媽，在好幾年面對生死疾病下，已經放下自卑與恐懼，願意讓人看見跟她搞自拍——這份轉變，就是覺醒。
+      </p>
+    </div>
+
+    <div class="ornament">◈ ◈ ◈</div>
+
+    <div class="section">
+      <h3 class="section-title">一個父親能為孩子做的最好的事</h3>
+      <div class="verse">
+        <p>就是好好愛他的媽媽</p>
+      </div>
+      <p class="body-text">
+        如果你與父母的關係很好，如果你對父母有關心與愛，你的孩子也會對你有關心與愛。你留給孩子的不僅是你的遺產，還有你的態度與人際關係。
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════ CH 4 ══════ -->
+  <section class="chapter" id="ch4">
+    <span class="chapter-num">第 四 章</span>
+    <h2 class="chapter-title">內在靜默<br>靜心與活在當下</h2>
+    <p class="chapter-lead">靜心，是完全不造作的狀態，是完全的放鬆，是一種深層的無為</p>
+
+    <div class="section">
+      <h3 class="section-title">頭腦與心的差別</h3>
+      <p class="body-text">
+        靜心就是跟自己的心在一起。靜心不是一天到晚跟自己的頭腦在一起。頭腦給我們帶來很多的便利，它讓我們擁有知識，知道如何應對日常的工作生活，但是，過度地用腦卻會給我們製造麻煩。
+      </p>
+      <p class="body-text">
+        因為頭腦是二元對立的、非此即彼的，所以頭腦是一個是非婆——你這兒剛想了東，它一會兒又要弄出個西來，它是製造衝突與分裂的高手。心的品質與頭腦的品質正好相反，它是寧靜的、包容的，它不會做判斷，它只會提供足夠的空間，它是懂得欣賞與接納的，它是等待，它是愛。
+      </p>
+    </div>
+
+    <div class="quote">
+      <p>如果深深地沉入自己的心，會處在一種全知的狀態——因為我知道每個人的內心都是愛，都是寧靜，都是和平與富足。我們根本不需要外求，我們只會變得更靜默。</p>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">活在當下的流</h3>
+      <p class="body-text">
+        這個法門讓我「存在」——存在著去愛他人、服侍他人，在人間傳遞無條件的愛。當你全然活在當下這一刻時，這一刻就是全部的時刻，感覺就像時間慢了下來；當你的心智變得安靜時，你進入了愛之流，然後，你就這麼從這一刻流向下一刻，像呼吸一樣自然。
+      </p>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">靜心的觀想練習</h3>
+      <div class="verse">
+        <p>
+          你坐在地球表面打坐<br>
+          你的身體是一棵大樹<br>
+          由「會陰」長出大樹的根，到地球的中心<br>
+          所有的根充滿了地球<br>
+          你的上半身是大樹的枝葉<br>
+          向上向外成長<br>
+          你的樹葉與宇宙有互應的光合作用<br>
+          你接受陽光能量<br>
+          從你的樹葉釋放出去
+        </p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">靜心：「我是充滿愛的覺知」</h3>
+      <p class="body-text">
+        現在就成為愛。向水學習為人要「謙卑低下」，向水學習處事要「隨遇而安」，向水學習修心要「清澈透明」。當你超越了需要的幻覺，你便能「一無所需，享受一切」地活在世間。
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════ CH 5 ══════ -->
+  <section class="chapter" id="ch5">
+    <span class="chapter-num">第 五 章</span>
+    <h2 class="chapter-title">情緒的智慧<br>讓感受成為通道</h2>
+    <p class="chapter-lead">愛你的情緒，有助於釋放那些情緒</p>
+
+    <div class="section">
+      <h3 class="section-title">情緒不是敵人</h3>
+      <p class="body-text">
+        我們越是忽略創傷醜陋，我們就越被它耗盡；因為它會一直纏擾著我們，讓我們一直被思緒所佔據。如果可以將注意力放在創傷與痛苦上——傾聽它、經驗它，它就會消失了……然後，可以被看見了，自然就自在地笑了。
+      </p>
+    </div>
+
+    <div class="quote">
+      <p>舉例來說，你現在感到悲傷，覺知到悲傷的存在，接納它，允許自己去經驗那份悲傷。除非悲傷被認出來並且承認它，否則就不會轉化與移動。</p>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">寬恕的力量</h3>
+      <p class="body-text">
+        平安，從來都不是由外境來決定的。平安，來自寬恕。其實，真正讓自己受傷痛苦的，全是自己對人事物的看法、定義、詮釋、評斷。所以寬恕，就是將這些原本沒有的東西——放下。
+      </p>
+      <p class="body-text">
+        如果你無法寬恕，你就會毀壞自己。所以寬恕別人，不是為了別人，而是為了自己。我們對待別人的方式，實際上是反映我們對待自己的方式；改善與自己的關係，才可能與別人建立起真正良好的關係。
+      </p>
+    </div>
+
+    <div class="quote">
+      <p>如果你無法寬恕，你可以做的最好的事情是：像抱著新生嬰兒般抱著你的傷痛，不去批判它、譴責它、或為它辯護，就是溫柔抱著它，抱著傷痛與經驗痛苦。奇妙的是，你會發現它非常痛，但漸漸地，你就會發覺你發現了自由與喜悅，而喜悅就會轉化為愛。</p>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">窗外沒有別人，只有自己</h3>
+      <p class="body-text">
+        我看到了其他人的問題，我認為他們是有問題的，他們需要改變自己，才能更好地生活。可最後才發現，是我把內心的期待、不美好、不接納、不愛自己投射到了別人的身上，認為是別人的錯。我最需要拯救的是我自己，我也只能拯救我自己。
+      </p>
+      <p class="body-text">
+        生活中的每一個面向都帶給我啟迪，我開始習慣於將槍口衝著自己。若我還有受傷的心，受傷便展現給我；若我還有懷疑的心，懷疑便展現給我；若我有批判的心，批判便展現給我——<span class="key">當我改變自己時，外在的一切都潛移默化地發生了改變</span>，生活變得輕鬆不費力。
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════ CH 6 ══════ -->
+  <section class="chapter" id="ch6">
+    <span class="chapter-num">第 六 章</span>
+    <h2 class="chapter-title">服務與感恩<br>業瑜伽的精髓</h2>
+    <p class="chapter-lead">真正的感謝是來自於內在的感動與盈滿，並且必然導致謙遜與奉獻</p>
+
+    <div class="section">
+      <h3 class="section-title">無我的服務</h3>
+      <p class="body-text">
+        「愛每一個人，服侍每一個人，記住神。」或者「餵養人們。」當我問：「要怎樣才能知道神？」他說：「任何形式都是崇拜神最好的形式，萬事萬物當中都有神。」這些簡單的教導——要愛，要服務，要憶起——成了我一生的標竿。
+      </p>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">感恩的深義</h3>
+      <p class="body-text">
+        當我們細心觀察時，就會發現萬物都要為他所接受的一切，感謝地球。當孩子誕生時，他要感謝母親撫育他，要感謝父親所提供的安全環境。學生要感恩從教師所學得的知識與智慧。我們甚至要去感謝植物、動物與所有神的創造。
+      </p>
+      <p class="body-text">
+        有感恩的人，成長地比沒有感恩的人要迅速許多。
+      </p>
+    </div>
+
+    <div class="quote">
+      <p>如果你有錢在銀行中，你可以購買任何你想要的東西。同樣地，在你的善業帳戶中，如果你擁有善業，你就可以將它兌現為任何你想要的東西。</p>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">處理事情，不要掉進問題裡</h3>
+      <p class="body-text">
+        處理事情，是針對事件的本身處理，不要掉進問題本身。一旦掉進他的問題，結果別人沒問題，自己卻有問題。能提供能量，讓他看到自己的問題，有能力去解決自己的問題，才是真正的幫助。
+      </p>
+      <p class="body-text">
+        當你很平靜的時候，這份平靜的能量會協助你完成一切。越不愛自己，能量消耗越快。當你內在找到平靜的時候，你就可以跟人家分享這份平靜，不斷地把光和愛傳給別人，就不會消耗能量。
+      </p>
+    </div>
+
+    <div class="ornament">◈ ◈ ◈</div>
+
+    <div class="verse">
+      <p>
+        幸福集中於心中持有願眾人幸福的人<br>
+        幸福會避開不顧他人、只求自身幸福的人<br>
+        ——<br>
+        你所謂的成功<br>
+        並不單以財務獨立衡量<br>
+        這樣的成功，我們稱之為「幸福」
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════ CH 7 ══════ -->
+  <section class="chapter" id="ch7">
+    <span class="chapter-num">第 七 章</span>
+    <h2 class="chapter-title">愛自己<br>生命最根本的法則</h2>
+    <p class="chapter-lead">愛自己，是生命的法則，除非愛自己，你不可能滋養到別人</p>
+
+    <div class="section">
+      <h3 class="section-title">愛的詩章</h3>
+      <div class="verse">
+        <p>
+          請你愛我之前先愛你自己<br>
+          愛我的同時也愛著你自己<br>
+          你若不愛你自己<br>
+          你便無法來愛我<br>
+          這是愛的法則<br>
+          因為——<br>
+          你不可能給出你沒有的東西<br>
+          你的愛，只能經由你而流向我<br>
+          若你是乾涸的，我便不能被你滋養<br>
+          ——<br>
+          你的愛便不是真愛而是自我犧牲<br>
+          然而，那不是我想要的<br>
+          ——<br>
+          愛自己，是生命的法則<br>
+          我願意看到充滿愛和滋養的你<br>
+          而不是自我犧牲的你<br>
+          因為，我也愛你
+        </p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">療癒就是愛自己</h3>
+      <p class="body-text">
+        療癒就代表愛自己，如果你想改善你的人生，就必須療癒你的生命。愛自己就是提升自己最好的方法。當你提升了自己，你也改善了你的世界。
+      </p>
+      <p class="body-text">
+        我們來世界的目的，是為了給自己愛，為了能夠接納自己。當你失去自我、失去獨立性的時候，你的能量不足夠消耗。<span class="key">要完全的屬於自己</span>——當你要提升的時候，就是要完全的屬於自己。
+      </p>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">快樂是可以選擇的</h3>
+      <p class="body-text">
+        一個人快不快樂，有50%由基因決定，有10%因境遇而起，還有40%可以透過行為和想法增進我們的快樂。快樂不必向外「尋找」，我們可以透過選擇改變與管理心境讓自己快樂起來。<span class="key">快樂只須內找，不必外求。</span>
+      </p>
+      <ul class="wisdom-list">
+        <li>他們花很多時間陪家人、朋友，培養並享受這些人際關係</li>
+        <li>他們很自然地對所擁有的一切表示感恩</li>
+        <li>他們常是第一個幫助夥伴跟陌生人的人</li>
+        <li>他們對未來抱持樂觀</li>
+        <li>他們享受生活樂趣，努力活在當下</li>
+        <li>他們養成每星期運動的習慣</li>
+        <li>他們堅守人生目標和抱負</li>
+        <li>面對挑戰時，他們顯示出自信與勇氣</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════ CH 8 ══════ -->
+  <section class="chapter" id="ch8">
+    <span class="chapter-num">第 八 章</span>
+    <h2 class="chapter-title">覺醒<br>回到合一的美好世界</h2>
+    <p class="chapter-lead">當你覺醒時，你將看見這世界是多麼美麗、多麼完美</p>
+
+    <div class="section">
+      <h3 class="section-title">從分裂到合一</h3>
+      <p class="body-text">
+        當你能夠看見與接納自己內在的一切，全然經驗你所有的情緒痛苦時，你內在的衝突就消失了；當衝突消失時，你就會感到無限的喜悅，這無限的喜悅就會轉化為愛。隨著愛在你的心中綻放，你的意識就會擴展，你開始覺得與你所看見、所聽見與所感覺的一切事物連結著——<span class="key">這即是合一</span>。
+      </p>
+    </div>
+
+    <div class="quote">
+      <p>當你覺醒時，你將第一次開始過生活。你將看見這世界是多麼美麗、多麼完美，你將真正開始將它當作一場遊戲般嬉戲。一旦你充滿了愛和喜悅，你的外在世界就會自然變得繁榮。</p>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">靈性成長的藝術</h3>
+      <p class="body-text">
+        靈性成長的藝術，在於你多快放下自己的執著。每個人都有自己的道途要走、自己的「業」要處理，你必須尊崇你獨特的路，不可模仿別人的旅行方式。聆聽自己的心，聽聽你真正需要什麼，從這些靈修法門中取用對自己有幫助的善加利用，其餘的就丟掉。
+      </p>
+    </div>
+
+    <div class="section">
+      <h3 class="section-title">以「寬恕」為橋，破一切執著</h3>
+      <ul class="wisdom-list">
+        <li>以「寬恕」，破判斷（等於修空性）</li>
+        <li>以「弟兄是救主」，破我執</li>
+        <li>以「人際關係當道場」，破分別心</li>
+        <li>「給就是受」，破二元</li>
+        <li>「教即是學」，破先後高下</li>
+        <li>「神聖一刻」，破時間</li>
+        <li>「本來圓滿」，破修持</li>
+      </ul>
+    </div>
+
+    <div class="ornament">◈ ◈ ◈</div>
+
+    <div class="section">
+      <h3 class="section-title">生命最後的祝福</h3>
+      <p class="body-text">
+        神不應該是一件信仰的事情，僅是以信仰接近神是沒有意義的。神必須被發現，神必須對你是真實的，必須是活生生的經驗。
+      </p>
+      <div class="verse">
+        <p>
+          今天你會花點時間靜下心來<br>
+          找個不被擾的時間空間<br>
+          把思緒沈澱下來，回到你內在的空間<br>
+          連結內在的神性<br>
+          深深感受到你與創造你的力量有直接的連繫<br>
+          如此一來，你裝了滿滿的愛<br>
+          每個人都裝了滿滿愛<br>
+          這世界滿滿的愛的流動<br>
+          再也沒有人需要向外渴求愛<br>
+          這畫面多麼美麗
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ COLOPHON ══════ -->
+  <div class="colophon">
+    <span class="colophon-title">◈ 結語 ◈</span>
+    <p>
+      噢，神啊，解除我<br><br>
+      生命的本質是生生不息的流動<br>
+      生命如此，愛如此<br><br>
+      請藉此機會好好愛自己<br><br>
+      ✦ ✦ ✦<br><br>
+      It took me 20+ years before I understood<br>
+      that the most powerful weapon is a smile,<br>
+      and the strongest force is love.<br><br>
+      我花了超過20年的時間<br>
+      才體會最厲害的武器是微笑<br>
+      最強大的力量是愛
+    </p>
+  </div>
+
+</div><!-- /book -->
+</body>
+</html>
