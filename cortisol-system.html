@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>你不是懶，你是皮質醇太高</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#141010;
+  --warm:#FAF7F3;
+  --rust:#A63200;
+  --rust-lt:#FEF0E8;
+  --ember:#C44E00;
+  --sage:#3E6040;
+  --sage-lt:#EBF2EB;
+  --stone:#5A5250;
+  --stone-lt:#F0EDEA;
+  --gold:#896200;
+  --gold-lt:#FBF4E2;
+  --border:#E0D8D0;
+  --text2:#574E48;
+  --text3:#9A8E88;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans TC',sans-serif;
+  background:var(--warm);color:var(--ink);
+  min-height:100vh;line-height:1.7;
+}
+
+/* NAV */
+.nav{
+  background:var(--ink);padding:13px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+}
+.nav-brand{
+  font-family:'Noto Serif TC',serif;
+  font-size:14px;font-weight:700;color:#FAF7F3;
+  letter-spacing:.06em;
+}
+.nav-buy{
+  background:var(--ember);color:#fff;
+  font-size:13px;font-weight:600;
+  padding:7px 15px;border-radius:3px;
+  text-decoration:none;transition:.15s;
+}
+.nav-buy:hover{background:var(--rust)}
+
+/* HERO */
+.hero{
+  background:var(--ink);
+  padding:3.5rem 1.4rem 3rem;
+  position:relative;overflow:hidden;
+}
+.hero-glow{
+  position:absolute;top:0;left:50%;
+  transform:translateX(-50%);
+  width:500px;height:300px;
+  background:radial-gradient(ellipse,rgba(164,50,0,.3) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-label{
+  font-size:11px;font-weight:600;letter-spacing:.14em;
+  color:rgba(255,255,255,.4);text-transform:uppercase;
+  margin-bottom:14px;
+}
+.hero-title{
+  font-family:'Noto Serif TC',serif;
+  font-size:clamp(24px,6.5vw,36px);
+  font-weight:900;color:#FAF7F3;
+  line-height:1.3;margin-bottom:14px;
+}
+.hero-title .accent{
+  color:#E8A070;
+  border-bottom:2px solid rgba(232,160,112,.35);
+}
+.hero-poem{
+  font-size:14px;color:rgba(255,255,255,.55);
+  line-height:2;margin-bottom:28px;
+  border-left:2px solid rgba(232,160,112,.3);
+  padding-left:14px;
+}
+.hero-poem strong{color:#E8A070;font-weight:500}
+.hero-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--ember);color:#fff;
+  font-size:14px;font-weight:600;
+  padding:13px 26px;border-radius:3px;
+  text-decoration:none;transition:.15s;
+  box-shadow:0 4px 18px rgba(164,50,0,.45);
+}
+.hero-btn:hover{background:var(--rust);transform:translateY(-1px)}
+
+/* SECTION */
+.sec{padding:2.2rem 1.3rem}
+.sec-alt{background:#fff}
+.sec-label{
+  font-size:11px;font-weight:600;letter-spacing:.12em;
+  color:var(--text3);text-transform:uppercase;
+  margin-bottom:8px;display:flex;align-items:center;gap:8px;
+}
+.sec-label::before{content:'';width:16px;height:1px;background:currentColor;display:block}
+.sec-h{
+  font-family:'Noto Serif TC',serif;
+  font-size:21px;font-weight:700;color:var(--ink);
+  margin-bottom:6px;line-height:1.4;
+}
+.sec-sub{font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.7}
+
+/* CORTISOL DAMAGE CARDS */
+.damage-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}
+.dmg-card{
+  background:#fff;border:1px solid var(--border);
+  border-radius:6px;padding:13px;
+}
+.dmg-icon{font-size:22px;margin-bottom:6px}
+.dmg-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.dmg-desc{font-size:12px;color:var(--text2);line-height:1.5}
+.dmg-chain{font-size:11px;color:var(--rust);margin-top:5px;line-height:1.5}
+
+/* SELF TEST */
+.test-wrap{
+  background:var(--rust-lt);
+  border:1.5px solid rgba(164,50,0,.2);
+  border-radius:8px;overflow:hidden;
+  margin:14px 0;
+}
+.test-header{
+  background:var(--rust);
+  padding:12px 16px;
+  font-size:13px;font-weight:700;color:#fff;
+  display:flex;align-items:center;gap:7px;
+}
+.test-body{padding:14px}
+.test-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:9px 0;
+  border-bottom:1px solid rgba(164,50,0,.1);
+}
+.test-item:last-child{border-bottom:none}
+.test-check{
+  width:20px;height:20px;border-radius:3px;
+  border:1.5px solid rgba(164,50,0,.3);
+  flex-shrink:0;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:.15s;background:#fff;
+}
+.test-check.checked{background:var(--rust);border-color:var(--rust);color:#fff}
+.test-label{font-size:13px;color:var(--ink);line-height:1.5}
+.test-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.test-score{
+  background:#fff;border-radius:6px;
+  padding:12px;margin-top:12px;
+  display:flex;align-items:center;gap:12px;
+}
+.test-score-n{
+  font-family:'Noto Serif TC',serif;
+  font-size:32px;font-weight:900;color:var(--rust);
+  flex-shrink:0;
+}
+.test-score-msg{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* SYSTEMS ACCORDION */
+.sys-list{display:flex;flex-direction:column;gap:8px}
+.sys-item{
+  background:#fff;border:1px solid var(--border);
+  border-radius:6px;overflow:hidden;
+}
+.sys-head{
+  display:flex;align-items:center;gap:11px;
+  padding:13px 14px;cursor:pointer;
+}
+.sys-num{
+  font-family:'Noto Serif TC',serif;
+  font-size:18px;font-weight:900;
+  color:var(--border);flex-shrink:0;width:28px;
+}
+.sys-info{flex:1}
+.sys-name{font-size:14px;font-weight:600;color:var(--ink)}
+.sys-tag{font-size:11px;color:var(--text3);margin-top:1px}
+.sys-arr{color:var(--text3);font-size:17px;transition:.2s}
+.sys-body{display:none;padding:0 14px 14px;border-top:1px solid var(--border)}
+.sys-body.open{display:block}
+.sys-path{
+  font-size:13px;color:var(--text2);
+  line-height:1.7;padding:10px 0;
+}
+.sys-path strong{color:var(--rust)}
+.nut-list{display:flex;flex-direction:column;gap:5px;margin:6px 0}
+.nut-row{
+  background:var(--sage-lt);
+  border:1px solid rgba(62,96,64,.15);
+  border-radius:4px;padding:8px 12px;
+  display:flex;gap:8px;align-items:flex-start;
+}
+.nut-dot{color:var(--sage);font-size:13px;flex-shrink:0;margin-top:2px}
+.nut-content{font-size:13px;color:var(--ink);line-height:1.5}
+.nut-name{font-weight:600;color:var(--sage)}
+.nut-cta-inline{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  background:var(--ink);color:#FAF7F3;
+  font-size:13px;font-weight:600;
+  padding:11px;border-radius:4px;
+  text-decoration:none;margin-top:12px;
+  transition:.15s;
+}
+.nut-cta-inline:hover{background:var(--ember)}
+
+/* THREE CIRCLES */
+.circles-wrap{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:8px;margin:14px 0;
+}
+.circle-card{
+  background:#fff;border:1px solid var(--border);
+  border-radius:6px;padding:13px 10px;text-align:center;
+}
+.circle-icon{font-size:26px;margin-bottom:6px}
+.circle-name{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.circle-desc{font-size:11px;color:var(--text3);line-height:1.5}
+
+/* QUIZ */
+.quiz-card{
+  background:#fff;border:1px solid var(--border);
+  border-radius:8px;overflow:hidden;
+}
+.quiz-prog-bar{height:3px;background:#EDE8E2}
+.quiz-prog-fill{height:100%;background:var(--sage);transition:.4s}
+.quiz-inner{padding:18px}
+.quiz-q{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:14px;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:7px}
+.quiz-opt{
+  background:var(--warm);
+  border:1.5px solid var(--border);
+  border-radius:4px;padding:11px 13px;
+  font-size:13px;color:var(--ink);
+  cursor:pointer;text-align:left;
+  transition:.13s;line-height:1.5;
+}
+.quiz-opt:hover,.quiz-opt.sel{border-color:var(--sage);background:var(--sage-lt)}
+.quiz-nav{display:flex;gap:8px;margin-top:14px}
+.btn-primary{
+  flex:1;background:var(--ink);color:#FAF7F3;
+  border:none;border-radius:4px;padding:12px;
+  font-size:14px;font-weight:600;cursor:pointer;transition:.15s;
+}
+.btn-primary:hover{background:var(--ember)}
+.btn-primary:disabled{background:#C0BAB5;cursor:not-allowed}
+.btn-ghost{
+  background:transparent;color:var(--text2);
+  border:1px solid var(--border);border-radius:4px;
+  padding:12px 14px;font-size:14px;cursor:pointer;
+}
+
+/* RESULT */
+.result-card{
+  background:var(--ink);border-radius:8px;
+  padding:20px;margin-bottom:12px;
+}
+.result-type{
+  font-size:11px;font-weight:600;letter-spacing:.1em;
+  color:rgba(255,255,255,.4);text-transform:uppercase;
+  margin-bottom:8px;
+}
+.result-title{
+  font-family:'Noto Serif TC',serif;
+  font-size:20px;font-weight:700;
+  color:#E8A070;margin-bottom:10px;line-height:1.35;
+}
+.result-desc{font-size:13px;color:rgba(255,255,255,.7);line-height:1.7}
+.result-priority{
+  background:#fff;border:1px solid var(--border);
+  border-radius:8px;padding:14px;margin-bottom:10px;
+}
+.priority-label{
+  font-size:11px;font-weight:700;letter-spacing:.08em;
+  color:var(--text3);text-transform:uppercase;margin-bottom:10px;
+}
+.priority-item{
+  display:flex;gap:9px;align-items:flex-start;
+  padding:8px 0;border-bottom:1px solid var(--border);
+}
+.priority-item:last-child{border-bottom:none}
+.pri-dot{color:var(--sage);font-size:14px;flex-shrink:0;margin-top:1px}
+.pri-name{font-size:13px;font-weight:600;color:var(--ink)}
+.pri-fn{font-size:12px;color:var(--text3);margin-top:1px}
+.buy-btn-full{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--ember);color:#fff;
+  font-size:15px;font-weight:700;
+  padding:14px;border-radius:4px;
+  text-decoration:none;transition:.15s;
+  box-shadow:0 4px 16px rgba(164,50,0,.35);
+}
+.buy-btn-full:hover{background:var(--rust)}
+
+/* REPAIR ORDER */
+.repair-steps{
+  display:flex;flex-direction:column;
+  gap:0;margin:14px 0;
+}
+.rep-row{display:flex;align-items:stretch;gap:0}
+.rep-num-col{
+  display:flex;flex-direction:column;align-items:center;
+  width:32px;flex-shrink:0;
+}
+.rep-circle{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--ink);color:#FAF7F3;
+  font-family:'Noto Serif TC',serif;
+  font-size:13px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.rep-line{width:1px;flex:1;background:var(--border);margin:3px 0}
+.rep-row:last-child .rep-line{display:none}
+.rep-content{
+  flex:1;padding:0 0 16px 12px;
+}
+.rep-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.rep-items{font-size:12px;color:var(--text2);line-height:1.7}
+
+/* STICKY */
+.sticky{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--ink);border-top:1px solid rgba(255,255,255,.08);
+  padding:11px 16px;z-index:200;
+  display:flex;gap:10px;align-items:center;
+}
+.sticky-txt{flex:1;font-size:12px;color:rgba(255,255,255,.5);line-height:1.4}
+.sticky-txt b{color:#E8A070;display:block;font-size:13px;margin-bottom:1px}
+.sticky-cta{
+  background:var(--ember);color:#fff;
+  font-size:13px;font-weight:700;
+  padding:11px 16px;border-radius:3px;
+  text-decoration:none;white-space:nowrap;
+  flex-shrink:0;transition:.15s;
+}
+.sticky-cta:hover{background:var(--rust)}
+.spacer{height:70px}
+
+.toast{
+  position:fixed;bottom:75px;left:50%;transform:translateX(-50%);
+  background:#333;color:#fff;padding:8px 18px;
+  border-radius:999px;font-size:13px;
+  opacity:0;transition:.3s;pointer-events:none;z-index:999;white-space:nowrap;
+}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">皮質醇修復計畫</div>
+  <a class="nav-buy" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">立即選購</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-label">功能醫學 × 皮質醇修復</div>
+  <h1 class="hero-title">你不是懶<br>你不是胖<br>你是<span class="accent">皮質醇太高</span></h1>
+  <div class="hero-poem">
+    以前的獅子是森林裡的猛獸<br>
+    <strong>現代人的獅子</strong><br>
+    是房貸・是 KPI<br>
+    是永遠回不完的訊息<br><br>
+    身體分不出真假<br>
+    它只知道：<strong>⚠ 危險還在</strong>
+  </div>
+  <a class="hero-btn" href="#quiz">▶ 測測你的皮質醇程度</a>
+</div>
+
+<!-- DAMAGE -->
+<div class="sec sec-alt">
+  <div class="sec-label">高皮質醇正在做什麼</div>
+  <h2 class="sec-h">你以為是老化，其實是壓力在破壞你</h2>
+  <p class="sec-sub">皮質醇長期升高，七大系統全部受損。一個接一個，你以為互不相關的症狀，其實同一個源頭。</p>
+  <div class="damage-grid">
+    <div class="dmg-card">
+      <div class="dmg-icon">💪</div>
+      <div class="dmg-title">分解肌肉</div>
+      <div class="dmg-chain">→ 膠原蛋白流失<br>→ 臉垮・身材鬆垮</div>
+    </div>
+    <div class="dmg-card">
+      <div class="dmg-icon">🍩</div>
+      <div class="dmg-title">囤積脂肪</div>
+      <div class="dmg-chain">→ 壓力肚<br>→ 腰腹難瘦</div>
+    </div>
+    <div class="dmg-card">
+      <div class="dmg-icon">🔥</div>
+      <div class="dmg-title">拉高血糖</div>
+      <div class="dmg-chain">→ 發炎加劇<br>→ 加速老化</div>
+    </div>
+    <div class="dmg-card">
+      <div class="dmg-icon">🛡</div>
+      <div class="dmg-title">抑制免疫</div>
+      <div class="dmg-chain">→ 黏膜反覆發炎<br>→ 動不動就感冒</div>
+    </div>
+  </div>
+</div>
+
+<!-- SELF TEST -->
+<div class="sec">
+  <div class="sec-label">自我檢測</div>
+  <h2 class="sec-h">勾看你中了幾個</h2>
+  <p class="sec-sub">不需要抽血，身體早就在告訴你了。</p>
+  <div class="test-wrap">
+    <div class="test-header">🚨 高皮質醇症狀自測</div>
+    <div class="test-body" id="test-body"></div>
+  </div>
+</div>
+
+<!-- SYSTEMS -->
+<div class="sec sec-alt">
+  <div class="sec-label">功能醫學七大系統</div>
+  <h2 class="sec-h">找出是哪裡壞了</h2>
+  <p class="sec-sub">每個系統都有精準的修復方式。點開你最有感覺的，看看怎麼補。</p>
+  <div class="sys-list" id="sys-list"></div>
+</div>
+
+<!-- THREE CIRCLES -->
+<div class="sec">
+  <div class="sec-label">三循環關鍵</div>
+  <h2 class="sec-h">三個卡一個，皮質醇就降不下來</h2>
+  <div class="circles-wrap">
+    <div class="circle-card">
+      <div class="circle-icon">🌬</div>
+      <div class="circle-name">氣循環</div>
+      <div class="circle-desc">自律神經<br>交感/副交感</div>
+    </div>
+    <div class="circle-card">
+      <div class="circle-icon">💧</div>
+      <div class="circle-name">血循環</div>
+      <div class="circle-desc">微血管彈性<br>氧氣輸送</div>
+    </div>
+    <div class="circle-card">
+      <div class="circle-icon">🌊</div>
+      <div class="circle-name">水循環</div>
+      <div class="circle-desc">脾胃代謝<br>水液運化</div>
+    </div>
+  </div>
+  <div style="background:var(--gold-lt);border:1px solid rgba(137,98,0,.2);border-radius:6px;padding:13px;font-size:13px;color:var(--gold);line-height:1.7;font-weight:500">
+    💡 補了很多卻沒用？先確認你的三循環有沒有都通。哪個卡住，皮質醇就降不下來。
+  </div>
+</div>
+
+<!-- REPAIR ORDER -->
+<div class="sec sec-alt">
+  <div class="sec-label">修復順序</div>
+  <h2 class="sec-h">不是靠意志力，而是修復系統</h2>
+  <p class="sec-sub">順序錯了，補再多也白費。先做最底層的。</p>
+  <div class="repair-steps" id="repair-steps"></div>
+</div>
+
+<!-- QUIZ -->
+<div class="sec" id="quiz">
+  <div class="sec-label">2 分鐘自我測驗</div>
+  <h2 class="sec-h">你的壓力，正在破壞哪個系統？</h2>
+  <p class="sec-sub">根據你的狀況，找出最需要優先修復的地方。</p>
+  <div id="quiz-area"></div>
+</div>
+
+<!-- FINAL CTA -->
+<div class="sec" style="background:var(--ink);padding:2.5rem 1.4rem">
+  <div style="text-align:center;margin-bottom:20px">
+    <div class="sec-label" style="color:rgba(255,255,255,.3);justify-content:center">修復系統，不靠意志力</div>
+    <h2 style="font-family:'Noto Serif TC',serif;font-size:22px;font-weight:700;color:#FAF7F3;margin-bottom:8px;line-height:1.4">努力抗壓，不如修復系統</h2>
+    <p style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;max-width:300px;margin:0 auto">健身減脂，不如先降皮質醇。你要的是系統修復，不是意志力。</p>
+  </div>
+  <a class="buy-btn-full" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank" style="max-width:320px;margin:0 auto;display:flex">
+    ☕ 前往選購修復方案
+  </a>
+  <p style="text-align:center;font-size:12px;color:rgba(255,255,255,.25);margin-top:10px">7-ELEVEN myship · 冠貞生技</p>
+</div>
+
+<div class="spacer"></div>
+<div class="sticky">
+  <div class="sticky-txt"><b>皮質醇修復方案</b>補對才有效，找出你的類型</div>
+  <a class="sticky-cta" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">立即選購 →</a>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SHOP='https://myship.7-11.com.tw/general/detail/GM2407210007294';
+
+// ── TEST ITEMS ────────────────────────────────────
+const TEST_ITEMS=[
+  {label:'向心性肥胖（水牛背・滿月臉）',sub:'脂肪囤積在腹部與頸背'},
+  {label:'半夜 3 點醒，很難再入睡',sub:'皮質醇覺醒反應失調'},
+  {label:'情緒過載：易怒 × 焦慮 × 想哭',sub:'神經傳導物質失衡'},
+  {label:'腦霧：注意力下降，記憶變差',sub:'海馬迴受壓力損傷'},
+  {label:'喝水都腫，早上臉特別腫',sub:'水循環與脾胃代謝卡住'},
+];
+
+let checkedCount=0;
+function buildTest(){
+  const wrap=document.getElementById('test-body');
+  wrap.innerHTML=TEST_ITEMS.map((t,i)=>`
+    <div class="test-item">
+      <div class="test-check" id="tc-${i}" onclick="toggleCheck(${i})"></div>
+      <div>
+        <div class="test-label">${t.label}</div>
+        <div class="test-sub">${t.sub}</div>
+      </div>
+    </div>`).join('')+`
+    <div class="test-score">
+      <div class="test-score-n" id="score-n">0</div>
+      <div class="test-score-msg" id="score-msg">勾選你有的症狀，看看你的皮質醇程度</div>
+    </div>`;
+}
+function toggleCheck(i){
+  const el=document.getElementById('tc-'+i);
+  const on=el.classList.toggle('checked');
+  on?el.textContent='✓':el.textContent='';
+  checkedCount=document.querySelectorAll('.test-check.checked').length;
+  document.getElementById('score-n').textContent=checkedCount;
+  const msgs=['皮質醇可能偏高，建議預防性補充','⚠ 皮質醇明顯過高，優先修復內分泌系統','🚨 皮質醇嚴重超載，建議立即啟動修復方案','🚨 全面超載，先睡好、補鎂、修腸道'];
+  document.getElementById('score-msg').textContent=
+    checkedCount===0?'勾選你有的症狀，看看你的皮質醇程度':
+    checkedCount<=1?msgs[0]:checkedCount<=2?msgs[1]:checkedCount<=3?msgs[2]:msgs[3];
+}
+
+// ── SYSTEM DATA ───────────────────────────────────
+const SYSTEMS=[
+  {
+    num:'①',name:'內分泌系統',tag:'腎上腺長期過勞',
+    path:'皮質醇長期升高 → <strong>腎上腺耗竭</strong> → 皮質醇耐受 → 對壓力不再有正確反應',
+    nuts:[
+      {name:'鎂',fn:'穩定神經電流，幫助壓力調節'},
+      {name:'加強 B 群（B5/B6）',fn:'壓力荷爾蒙合成必需輔因子'},
+      {name:'維生素 C（高劑量）',fn:'腎上腺是全身 Vit-C 濃度最高的器官'},
+      {name:'刺五加・人參皂甘複方',fn:'適應原草本，降低 HPA 軸過度活化'},
+    ],
+  },
+  {
+    num:'②',name:'神經系統',tag:'交感神經長期亢奮，副交感關機',
+    path:'交感神經鎖死 → <strong>迷走神經低活性</strong> → HRV 降低 → 副交感無法啟動修復',
+    nuts:[
+      {name:'3:2:6:2 呼吸法',fn:'直接啟動迷走神經，最快的神經修復方式'},
+      {name:'高濃度負離子機',fn:'降低氧化壓力，穩定自律神經'},
+      {name:'接地線枕頭套',fn:'夜間副交感啟動，修復深睡眠品質'},
+    ],
+  },
+  {
+    num:'③',name:'粒線體系統',tag:'壓力=能量大量消耗',
+    path:'慢性壓力 → <strong>ATP 大量消耗</strong> → 粒線體功能下降 → 疲勞・腦霧・修復停滯',
+    nuts:[
+      {name:'CoQ10（粒腺寶）',fn:'提升 ATP 產能，啟動細胞呼吸'},
+      {name:'B 群複方',fn:'代謝循環的核心輔酶'},
+      {name:'鎂',fn:'穩定粒線體膜電位，防止 ATP 漏損'},
+    ],
+  },
+  {
+    num:'④',name:'腸道系統',tag:'壓力破壞腸黏膜，發炎入血',
+    path:'皮質醇高 → <strong>腸道屏障破壞</strong> → 腸漏 → 發炎因子入血 → 全身性慢性發炎',
+    nuts:[
+      {name:'丁酸',fn:'修復腸壁屏障，調節腸道免疫耐受'},
+      {name:'孢子益生菌',fn:'穩定菌相，抵抗壓力造成的菌叢失衡'},
+      {name:'水循環中草藥包（脾胃健）',fn:'改善脾胃代謝，降低腸漏'},
+    ],
+  },
+  {
+    num:'⑤',name:'免疫系統',tag:'長期高皮質醇→免疫失衡',
+    path:'皮質醇 → <strong>抑制 NK 細胞</strong> → T 細胞失衡 → 黏膜反覆發炎 → 免疫監控下降',
+    nuts:[
+      {name:'維生素 D3＋K2',fn:'調節 T 細胞，恢復免疫監控'},
+      {name:'鋅',fn:'穩定免疫傳導，黏膜修復'},
+      {name:'乳鐵蛋白',fn:'保護黏膜屏障，第一線免疫防禦'},
+    ],
+  },
+  {
+    num:'⑥',name:'微循環系統',tag:'久坐+壓力→微血管缺氧',
+    path:'交感亢奮 → <strong>微血管收縮</strong> → 末梢缺氧 → 細胞廢物堆積 → 疲勞・水腫',
+    nuts:[
+      {name:'氣循環草本包',fn:'改善自律神經，促進氣血流通'},
+      {name:'血循環草本包',fn:'改善血流黏稠，降低微循環阻力'},
+      {name:'高濃度負離子機',fn:'降低自由基，恢復微血管彈性'},
+    ],
+  },
+  {
+    num:'⑦',name:'代謝系統',tag:'高皮質醇=囤積模式',
+    path:'皮質醇 → <strong>胰島素阻抗</strong> → 血糖升高 → 脂肪囤積 → AMPK 抑制 → 代謝鈍化',
+    nuts:[
+      {name:'斷糖・穩定蛋白質攝入',fn:'切斷皮質醇↔胰島素的惡性循環'},
+      {name:'AMPK 活化（薑黃・苦瓜提取）',fn:'啟動細胞代謝開關，對抗囤積模式'},
+      {name:'鎂',fn:'改善胰島素敏感性，穩定血糖節律'},
+    ],
+  },
+];
+
+function buildSystems(){
+  const wrap=document.getElementById('sys-list');
+  wrap.innerHTML=SYSTEMS.map((s,i)=>`
+    <div class="sys-item">
+      <div class="sys-head" onclick="toggleSys(${i})">
+        <div class="sys-num">${s.num}</div>
+        <div class="sys-info">
+          <div class="sys-name">${s.name}</div>
+          <div class="sys-tag">${s.tag}</div>
+        </div>
+        <span class="sys-arr" id="sarr-${i}">›</span>
+      </div>
+      <div class="sys-body" id="sbody-${i}">
+        <div class="sys-path">${s.path}</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:7px">精準補充方案</div>
+        <div class="nut-list">
+          ${s.nuts.map(n=>`<div class="nut-row">
+            <span class="nut-dot">✦</span>
+            <div class="nut-content"><span class="nut-name">${n.name}</span> — ${n.fn}</div>
+          </div>`).join('')}
+        </div>
+        <a class="nut-cta-inline" href="${SHOP}" target="_blank">選購「${s.name}」方案 →</a>
+      </div>
+    </div>`).join('');
+}
+function toggleSys(i){
+  const b=document.getElementById('sbody-'+i);
+  const a=document.getElementById('sarr-'+i);
+  const on=b.classList.toggle('open');
+  a.textContent=on?'⌄':'›';
+}
+
+// ── REPAIR STEPS ──────────────────────────────────
+const REPAIR=[
+  {
+    title:'先睡好',
+    items:'接地線枕頭套 + 高濃度負離子機\n啟動夜間副交感，修復睡眠節律',
+  },
+  {
+    title:'補鎂 + B 群',
+    items:'神經電流穩定，腎上腺支持\n大多數人長期缺乏，是最底層的修復',
+  },
+  {
+    title:'修腸道',
+    items:'水循環草本包 + 丁酸 + 益生菌\n切斷腸漏→發炎→皮質醇的惡性循環',
+  },
+  {
+    title:'活化粒線體',
+    items:'CoQ10 + NAC + 維生素 C\n能量系統恢復，才有力氣真正修復',
+  },
+];
+
+function buildRepair(){
+  const wrap=document.getElementById('repair-steps');
+  wrap.innerHTML=REPAIR.map((r,i)=>`
+    <div class="rep-row">
+      <div class="rep-num-col">
+        <div class="rep-circle">${i+1}</div>
+        <div class="rep-line"></div>
+      </div>
+      <div class="rep-content">
+        <div class="rep-title">${r.title}</div>
+        <div class="rep-items">${r.items.replace(/\n/g,'<br>')}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── QUIZ ─────────────────────────────────────────
+const QS=[
+  {
+    q:'你最常出現哪種身體症狀？',
+    opts:['腹部肥胖、腰圍變大','疲勞感很重、補了還是累','腸胃不好、容易脹氣或腹瀉','皮膚問題、容易感冒、黏膜發炎'],
+    scores:[2,1,3,0],
+  },
+  {
+    q:'你的睡眠狀況是？',
+    opts:['睡得還行，但早上很難起','常常半夜 2-4 點醒來','入睡困難，腦袋停不下來','睡很久仍不解乏'],
+    scores:[0,2,1,1],
+  },
+  {
+    q:'你的情緒模式是？',
+    opts:['情緒很穩，但感覺麻木空洞','容易爆發、焦慮、莫名想哭','有壓力就腸胃出問題','容易冷漠、不想動、提不起勁'],
+    scores:[1,2,3,0],
+  },
+  {
+    q:'你覺得目前最需要修復的是？',
+    opts:['讓我能好好睡覺','讓我的腸胃回到正常','讓我的能量回來，不再這麼累','讓我的情緒穩定下來'],
+    scores:[2,3,1,0],
+  },
+];
+
+const RESULTS=[
+  {
+    range:[0,3],type:'神經過載型',
+    title:'你的問題根源：交感神經長期鎖死',
+    desc:'你的身體一直在「準備戰鬥」，從來沒有真正放鬆過。副交感神經幾乎關機，這讓你的所有修復都無從啟動。',
+    priority:[
+      {name:'鎂＋鉀',fn:'穩定神經電流，降低高警報狀態'},
+      {name:'接地線枕頭套',fn:'夜間副交感啟動，深睡修復'},
+      {name:'維生素 D3＋K2',fn:'免疫調節，情緒穩定基礎'},
+    ],
+  },
+  {
+    range:[4,7],type:'腎上腺耗竭型',
+    title:'你的問題根源：腎上腺已經精疲力竭',
+    desc:'長期高壓讓你的腎上腺過度運作，皮質醇節律崩壞。你感覺到的疲勞不是懶，是腎上腺發出的 SOS。',
+    priority:[
+      {name:'維生素 C（高劑量分次）',fn:'腎上腺核心抗氧化，壓力消耗最大'},
+      {name:'加強 B 群＋刺五加',fn:'腎上腺支持，適應原降低 HPA 活化'},
+      {name:'CoQ10',fn:'粒線體能量修復，重啟細胞活力'},
+    ],
+  },
+  {
+    range:[8,10],type:'腸道發炎型',
+    title:'你的問題根源：腸道屏障已經破損',
+    desc:'壓力破壞了你的腸黏膜，發炎因子不斷入血。這不只是腸胃問題，它正在拖累你的免疫、情緒和能量。',
+    priority:[
+      {name:'丁酸',fn:'修復腸壁屏障，免疫耐受核心'},
+      {name:'水循環草本包（脾胃健）',fn:'脾胃代謝修復，水液運化'},
+      {name:'孢子益生菌',fn:'重建菌相，長期腸道穩定'},
+    ],
+  },
+  {
+    range:[11,99],type:'粒線體耗損型',
+    title:'你的問題根源：細胞能量工廠停擺',
+    desc:'慢性壓力讓你的粒線體大量消耗 ATP，身體已進入節能模式。補了沒用，是因為細胞根本沒有力氣吸收。',
+    priority:[
+      {name:'CoQ10（粒腺寶）',fn:'直接提升 ATP，啟動粒線體修復'},
+      {name:'NAC',fn:'提升穀胱甘肽，清除氧化壓力'},
+      {name:'B 群＋鎂',fn:'代謝輔酶＋粒線體膜電位穩定'},
+    ],
+  },
+];
+
+let qState={cur:0,answers:[],done:false};
+
+function renderQuiz(){
+  const area=document.getElementById('quiz-area');
+  if(qState.done){renderQResult();return;}
+  const q=QS[qState.cur];
+  const pct=Math.round(qState.cur/QS.length*100);
+  const sel=qState.answers[qState.cur];
+  area.innerHTML=`
+    <div class="quiz-card">
+      <div class="quiz-prog-bar"><div class="quiz-prog-fill" style="width:${pct}%"></div></div>
+      <div class="quiz-inner">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px">第 ${qState.cur+1} 題 / 共 ${QS.length} 題</div>
+        <div class="quiz-q">${q.q}</div>
+        <div class="quiz-opts">
+          ${q.opts.map((o,i)=>`<button class="quiz-opt ${sel===i?'sel':''}" onclick="pickAns(${i})">${o}</button>`).join('')}
+        </div>
+        <div class="quiz-nav">
+          ${qState.cur>0?`<button class="btn-ghost" onclick="qBack()">上一題</button>`:''}
+          <button class="btn-primary" onclick="qNext()" ${sel===undefined?'disabled':''}>
+            ${qState.cur<QS.length-1?'下一題 →':'查看我的修復方案 →'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function pickAns(i){qState.answers[qState.cur]=i;renderQuiz();}
+function qBack(){if(qState.cur>0){qState.cur--;renderQuiz();}}
+function qNext(){
+  if(qState.answers[qState.cur]===undefined)return;
+  qState.cur++;
+  if(qState.cur>=QS.length){qState.done=true;renderQResult();}
+  else renderQuiz();
+}
+
+function renderQResult(){
+  const total=qState.answers.reduce((s,a,i)=>s+(QS[i].scores[a]||0),0);
+  const res=RESULTS.find(r=>total>=r.range[0]&&total<=r.range[1])||RESULTS[RESULTS.length-1];
+  document.getElementById('quiz-area').innerHTML=`
+    <div class="result-card">
+      <div class="result-type">${res.type}</div>
+      <div class="result-title">${res.title}</div>
+      <div class="result-desc">${res.desc}</div>
+    </div>
+    <div class="result-priority">
+      <div class="priority-label">你的優先修復方案</div>
+      ${res.priority.map(p=>`
+        <div class="priority-item">
+          <span class="pri-dot">✦</span>
+          <div>
+            <div class="pri-name">${p.name}</div>
+            <div class="pri-fn">${p.fn}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+    <a class="buy-btn-full" href="${SHOP}" target="_blank">☕ 依這個方案選購 →</a>
+    <div style="text-align:center;margin-top:10px">
+      <button style="background:none;border:none;font-size:13px;color:var(--text3);cursor:pointer" onclick="resetQuiz()">重新測驗</button>
+    </div>`;
+}
+function resetQuiz(){qState={cur:0,answers:[],done:false};renderQuiz();}
+
+// ── INIT ─────────────────────────────────────────
+buildTest();
+buildSystems();
+buildRepair();
+renderQuiz();
+</script>
+</body>
+</html>
