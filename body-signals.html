@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12個身體訊號｜讀懂生命的作業系統</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Microsoft JhengHei','PingFang TC','Noto Sans TC',sans-serif;background:#071520;min-height:100vh;color:#fff;}
+
+/* HERO */
+.hero{background:linear-gradient(160deg,#071520 0%,#0d2535 55%,#071520 100%);border-bottom:1px solid rgba(0,200,150,0.2);padding:2.5rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% -10%,rgba(0,200,150,0.1) 0%,transparent 65%);pointer-events:none;}
+.hero-badge{display:inline-block;font-size:11px;letter-spacing:2px;color:#00C896;border:1px solid rgba(0,200,150,0.35);padding:4px 18px;border-radius:100px;margin-bottom:1rem;position:relative;}
+.hero-title{font-size:24px;font-weight:700;color:#fff;letter-spacing:2px;margin-bottom:6px;position:relative;}
+.hero-title em{color:#00C896;font-style:normal;}
+.hero-sub{font-size:13px;color:rgba(255,255,255,0.45);letter-spacing:1px;margin-bottom:1.25rem;position:relative;}
+.hero-divider{width:80px;height:1px;background:linear-gradient(90deg,transparent,#00C896,transparent);margin:0 auto 1.25rem;}
+.hero-formula{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;position:relative;}
+.hero-tag{font-size:11px;padding:5px 14px;border-radius:100px;background:rgba(0,200,150,0.08);border:1px solid rgba(0,200,150,0.2);color:#00C896;}
+.prog-bar{background:rgba(255,255,255,0.05);border-radius:100px;height:3px;margin:1.5rem 1.5rem 0;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,#00C896,#B8860B);border-radius:100px;transition:width 0.6s ease;width:0%;}
+
+/* OS MODEL */
+.os-model{display:flex;gap:0;margin-bottom:1.5rem;flex-wrap:wrap;}
+.os-step{flex:1;min-width:90px;background:rgba(0,200,150,0.04);border:1px solid rgba(0,200,150,0.12);padding:10px 6px;text-align:center;position:relative;}
+.os-step:first-child{border-left-color:rgba(0,200,150,0.5);border-top-color:rgba(0,200,150,0.5);border-bottom-color:rgba(0,200,150,0.5);border-radius:10px 0 0 10px;}
+.os-step:last-child{border-right-color:rgba(184,134,11,0.4);border-radius:0 10px 10px 0;}
+.os-icon{font-size:18px;display:block;margin-bottom:4px;}
+.os-name{font-size:10px;color:rgba(255,255,255,0.5);font-weight:600;}
+.os-desc{font-size:9px;color:rgba(255,255,255,0.3);margin-top:2px;}
+
+/* CONTENT */
+.content{max-width:760px;margin:0 auto;padding:1.5rem 1rem;}
+.phase{display:none;}.phase.active{display:block;}
+.slabel{font-size:10px;font-weight:700;letter-spacing:2px;color:#00C896;margin-bottom:1rem;display:flex;align-items:center;gap:8px;text-transform:uppercase;}
+.slabel::after{content:'';flex:1;height:0.5px;background:rgba(0,200,150,0.2);}
+
+/* SIGNAL GRID */
+.signal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:1.25rem;}
+.sig-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px 12px;cursor:pointer;transition:all 0.2s;text-align:center;position:relative;}
+.sig-card:hover{border-color:rgba(0,200,150,0.4);background:rgba(0,200,150,0.04);}
+.sig-card.picked{border-color:#00C896;background:rgba(0,200,150,0.07);}
+.sig-card.picked::after{content:'✓';position:absolute;top:8px;right:10px;font-size:11px;color:#00C896;font-weight:700;}
+.sig-icon{font-size:26px;margin-bottom:6px;display:block;}
+.sig-name{font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;}
+.sig-role{font-size:11px;color:#00C896;margin-bottom:4px;}
+.sig-q{font-size:10px;color:rgba(255,255,255,0.35);line-height:1.4;}
+
+/* PICK HINT */
+.pick-hint{text-align:center;font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:1rem;}
+.pick-count{display:inline-block;background:rgba(0,200,150,0.1);color:#00C896;font-size:12px;padding:3px 12px;border-radius:100px;margin-left:6px;font-weight:600;}
+
+/* SYSTEM TABS (FILTER) */
+.sys-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem;}
+.sys-tab{padding:6px 14px;border:1px solid rgba(255,255,255,0.1);border-radius:100px;font-size:11px;color:rgba(255,255,255,0.4);cursor:pointer;background:transparent;font-family:inherit;transition:all 0.2s;}
+.sys-tab:hover{border-color:rgba(0,200,150,0.4);color:#00C896;}
+.sys-tab.active{background:rgba(0,200,150,0.1);border-color:#00C896;color:#00C896;font-weight:600;}
+
+/* QUESTION */
+.q-block{margin-bottom:1.5rem;}
+.q-sig-header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(0,200,150,0.06);border:1px solid rgba(0,200,150,0.18);border-radius:12px;margin-bottom:10px;}
+.q-sig-icon{font-size:22px;}
+.q-sig-name{font-size:14px;font-weight:700;color:#fff;flex:1;}
+.q-sig-role{font-size:11px;color:#00C896;}
+.q-list{display:flex;flex-direction:column;gap:8px;}
+.q-item{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:11px;padding:12px 14px;}
+.q-text{font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:9px;line-height:1.6;}
+.q-opts{display:flex;gap:7px;flex-wrap:wrap;}
+.q-opt{padding:6px 12px;border:1px solid rgba(255,255,255,0.12);border-radius:100px;font-size:11px;cursor:pointer;color:rgba(255,255,255,0.5);background:transparent;transition:all 0.15s;font-family:inherit;}
+.q-opt:hover{border-color:#00C896;color:#00C896;}
+.q-opt.sel{background:rgba(0,200,150,0.12);border-color:#00C896;color:#00C896;font-weight:600;}
+
+/* RESULT */
+.result-hero{background:linear-gradient(135deg,#071520,#102030);border:1px solid rgba(0,200,150,0.25);border-radius:18px;padding:2rem;text-align:center;margin-bottom:1.5rem;}
+.rh-ring{width:110px;height:110px;margin:0 auto 1rem;position:relative;}
+.rh-ring svg{width:110px;height:110px;}
+.rh-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:700;color:#00C896;}
+.rh-title{font-size:20px;font-weight:700;color:#fff;margin-bottom:6px;}
+.rh-desc{font-size:13px;color:rgba(255,255,255,0.45);}
+
+/* THREE SYSTEMS SUMMARY */
+.three-sys{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:1.5rem;}
+.ts-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 10px;text-align:center;}
+.ts-title{font-size:11px;font-weight:700;color:#00C896;margin-bottom:6px;letter-spacing:0.5px;}
+.ts-items{font-size:10px;color:rgba(255,255,255,0.45);line-height:1.8;}
+
+/* SIGNAL RESULT CARD */
+.sig-result-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;margin-bottom:14px;}
+.src-header{display:flex;align-items:center;gap:12px;padding:14px 16px;}
+.src-icon{font-size:24px;}
+.src-info{flex:1;}
+.src-name{font-size:15px;font-weight:700;color:#fff;}
+.src-role{font-size:11px;color:#00C896;margin-top:2px;}
+.src-score-area{text-align:right;}
+.src-score-num{font-size:18px;font-weight:700;}
+.src-bar-wrap{width:80px;height:4px;background:rgba(255,255,255,0.08);border-radius:100px;margin-top:5px;overflow:hidden;}
+.src-bar{height:100%;border-radius:100px;transition:width 1s ease;}
+.s-hi{background:#1a7a2a;}.s-md{background:#B8860B;}.s-lo{background:#A32D2D;}
+
+/* TABS */
+.rtabs{display:flex;gap:0;border:1px solid rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;margin:0 16px 12px;}
+.rtab{flex:1;padding:10px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;background:transparent;color:rgba(255,255,255,0.3);border:none;transition:all 0.2s;font-family:inherit;}
+.rtab.active{background:rgba(0,200,150,0.1);color:#00C896;}
+.tab-panel{display:none;padding:0 16px 16px;}.tab-panel.active{display:block;}
+
+/* EDU PANEL */
+.essence-box{background:rgba(0,200,150,0.06);border:1px solid rgba(0,200,150,0.2);border-radius:12px;padding:14px;margin-bottom:10px;}
+.essence-label{font-size:10px;color:#00C896;font-weight:700;letter-spacing:1px;margin-bottom:5px;}
+.essence-text{font-size:14px;color:#fff;font-weight:600;line-height:1.6;}
+.formula-box{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:12px 14px;margin-bottom:10px;}
+.formula-title{font-size:10px;color:rgba(255,255,255,0.35);font-weight:700;letter-spacing:1px;margin-bottom:8px;}
+.formula-steps{display:flex;flex-direction:column;gap:3px;}
+.fs-step{font-size:12px;color:rgba(255,255,255,0.6);display:flex;align-items:center;gap:8px;}
+.fs-step:first-child{color:#00C896;font-weight:600;}
+.fs-arr{font-size:10px;color:rgba(255,255,255,0.2);}
+.spectrum-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.spec-card{border-radius:10px;padding:12px;}
+.spec-low{background:rgba(163,45,45,0.08);border:1px solid rgba(163,45,45,0.2);}
+.spec-high{background:rgba(184,134,11,0.08);border:1px solid rgba(184,134,11,0.2);}
+.spec-title{font-size:10px;font-weight:700;margin-bottom:6px;}
+.spec-low .spec-title{color:#E87070;}
+.spec-high .spec-title{color:#D4A017;}
+.spec-item{font-size:11px;color:rgba(255,255,255,0.55);padding:2px 0;display:flex;gap:6px;}
+.spec-item::before{content:'·';color:rgba(255,255,255,0.25);}
+.optimal-box{background:rgba(0,200,150,0.05);border-left:3px solid #00C896;padding:10px 14px;border-radius:0 10px 10px 0;margin-bottom:10px;}
+.optimal-title{font-size:10px;color:rgba(0,200,150,0.8);font-weight:700;letter-spacing:0.5px;margin-bottom:4px;}
+.optimal-text{font-size:12px;color:rgba(255,255,255,0.7);line-height:1.6;}
+.insight-grid{display:flex;flex-direction:column;gap:8px;}
+.insight-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px 12px;}
+.insight-title{font-size:11px;font-weight:700;color:#00C896;margin-bottom:4px;}
+.insight-text{font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6;}
+
+/* METHOD PANEL */
+.method-steps{display:flex;flex-direction:column;gap:10px;}
+.ms-card{display:flex;gap:12px;background:rgba(0,200,150,0.04);border:1px solid rgba(0,200,150,0.1);border-radius:12px;padding:12px 14px;}
+.ms-num{width:24px;height:24px;border-radius:50%;background:rgba(0,200,150,0.15);border:1px solid rgba(0,200,150,0.3);font-size:11px;font-weight:700;color:#00C896;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ms-body{flex:1;}
+.ms-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.ms-desc{font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;}
+.wisdom-box{background:rgba(184,134,11,0.06);border-left:3px solid #B8860B;padding:10px 14px;border-radius:0 10px 10px 0;margin-top:12px;}
+.wb-title{font-size:10px;color:#8B6508;font-weight:700;letter-spacing:0.5px;margin-bottom:3px;}
+.wb-text{font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;font-style:italic;}
+
+/* NUTRIENT PANEL */
+.nut-list{display:flex;flex-direction:column;gap:9px;}
+.nut-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;}
+.nut-top{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;transition:background 0.15s;}
+.nut-top:hover{background:rgba(0,200,150,0.04);}
+.nut-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.nut-info{flex:1;min-width:0;}
+.nut-name{font-size:13px;font-weight:700;color:#fff;}
+.nut-mech{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;}
+.nut-price{font-size:12px;color:#B8860B;font-weight:700;margin-top:3px;}
+.nut-exp{font-size:11px;color:rgba(255,255,255,0.2);flex-shrink:0;}
+.nut-cta{padding:7px 13px;background:linear-gradient(135deg,#B8860B,#D4A017);color:#071520;border:none;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;text-decoration:none;display:inline-block;font-family:inherit;}
+.nut-detail{display:none;padding:0 14px 14px;border-top:1px solid rgba(255,255,255,0.05);}
+.nut-detail.open{display:block;}
+.nut-mbox{background:rgba(255,255,255,0.03);border-radius:10px;padding:10px 12px;margin:10px 0;}
+.nut-mt{font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.25);font-weight:700;margin-bottom:5px;}
+.nut-mb{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.7;}
+.nut-why{background:rgba(0,200,150,0.05);border-left:2px solid #00C896;padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:10px;}
+.nut-wt{font-size:10px;color:rgba(0,200,150,0.7);font-weight:700;margin-bottom:3px;letter-spacing:0.5px;}
+.nut-wb{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.6;}
+.buy-block{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(184,134,11,0.05);border:1px solid rgba(184,134,11,0.18);border-radius:10px;}
+.bb-info{flex:1;}
+.bb-name{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
+.bb-price{font-size:16px;font-weight:700;color:#D4A017;}
+.bb-spec{font-size:10px;color:rgba(255,255,255,0.3);margin-top:1px;}
+.bb-store{font-size:10px;color:#B8860B;margin-top:2px;font-weight:600;}
+.btn-buy-full{padding:10px 18px;background:linear-gradient(135deg,#B8860B,#D4A017);color:#071520;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;white-space:nowrap;flex-shrink:0;font-family:inherit;}
+
+/* BUTTONS */
+.btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,#007A60,#00C896);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:opacity 0.2s,transform 0.1s;margin-top:1rem;font-family:inherit;}
+.btn-primary:hover{opacity:0.9;transform:translateY(-1px);}
+.btn-primary:disabled{opacity:0.2;cursor:not-allowed;transform:none;}
+.nav-row{display:flex;gap:10px;margin-top:1rem;}
+.btn-back{flex:1;padding:14px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:14px;color:rgba(255,255,255,0.4);cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.btn-back:hover{border-color:rgba(0,200,150,0.4);color:#00C896;}
+.btn-restart{display:block;width:100%;padding:14px;background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:12px;font-size:14px;color:rgba(255,255,255,0.3);cursor:pointer;text-align:center;margin-top:1.5rem;transition:all 0.2s;font-family:inherit;}
+.btn-restart:hover{border-color:rgba(0,200,150,0.3);color:#00C896;}
+.footer{text-align:center;font-size:11px;color:rgba(255,255,255,0.15);padding:1.5rem 1rem;line-height:1.8;}
+
+@media(max-width:480px){
+  .signal-grid{grid-template-columns:1fr 1fr;}
+  .spectrum-grid{grid-template-columns:1fr 1fr;}
+  .three-sys{grid-template-columns:1fr;}
+  .os-model{flex-direction:column;}
+  .os-step:first-child,.os-step:last-child{border-radius:10px;}
+  .buy-block{flex-direction:column;align-items:flex-start;}
+  .btn-buy-full{width:100%;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Life Operating System</div>
+  <div class="hero-title">12個<em>身體訊號</em></div>
+  <div class="hero-divider"></div>
+  <div class="hero-sub">讀懂生命的作業系統 · 診斷 · 教育 · 修復</div>
+  <div class="hero-formula">
+    <span class="hero-tag">穩定</span>
+    <span class="hero-tag">差異</span>
+    <span class="hero-tag">糾錯</span>
+    <span class="hero-tag">更新</span>
+    <span class="hero-tag">進化</span>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+</div>
+
+<div class="content">
+
+<!-- PHASE 1: SELECT -->
+<div class="phase active" id="p1">
+  <div class="slabel">生命的底層作業系統</div>
+  <div class="os-model">
+    <div class="os-step"><span class="os-icon">⚖️</span><span class="os-name">穩定</span><span class="os-desc">維持基準</span></div>
+    <div class="os-step"><span class="os-icon">📡</span><span class="os-name">差異</span><span class="os-desc">偵測偏離</span></div>
+    <div class="os-step"><span class="os-icon">🔧</span><span class="os-name">糾錯</span><span class="os-desc">啟動訊號</span></div>
+    <div class="os-step"><span class="os-icon">🔄</span><span class="os-name">更新</span><span class="os-desc">整合資訊</span></div>
+    <div class="os-step"><span class="os-icon">🚀</span><span class="os-name">進化</span><span class="os-desc">更強適應</span></div>
+  </div>
+
+  <div class="slabel" style="margin-top:1.5rem">選擇最困擾你的身體訊號（可多選）</div>
+  <div class="pick-hint">選你最有共鳴的訊號 <span class="pick-count" id="pcount">0 已選</span></div>
+
+  <div class="sys-tabs" id="sys-tabs"></div>
+  <div class="signal-grid" id="sig-grid"></div>
+  <button class="btn-primary" id="btn-next" disabled>進入訊號診斷 →</button>
+</div>
+
+<!-- PHASE 2: QUESTIONS -->
+<div class="phase" id="p2">
+  <div id="q-body"></div>
+  <div class="nav-row">
+    <button class="btn-back" onclick="go(1)">← 重新選擇</button>
+    <button class="btn-primary" style="flex:2;margin-top:0" onclick="showResult()">查看我的修復方案 →</button>
+  </div>
+</div>
+
+<!-- PHASE 3: RESULT -->
+<div class="phase" id="p3">
+  <div id="result-body"></div>
+  <button class="btn-restart" onclick="restart()">↺ 重新診斷</button>
+</div>
+
+</div>
+
+<div class="footer">
+  資訊僅供參考，不能用來診斷和治療任何形式的身體不適。如有不適請線下及時就醫。<br>
+  購買連結：7-11 賣貨便 · 安全取貨付款
+</div>
+
+<script>
+const SHOP='https://myship.7-11.com.tw/general/detail/GM2407210007294';
+
+const SIGNALS=[
+  {
+    id:'dopa',icon:'🧠',name:'多巴胺',role:'預測系統',sys:'驅動',
+    q:'值不值得追？',
+    essence:'多巴胺不是快樂分子，它是「讓生命願意靠近未來的預測系統」。',
+    formula:['預測未來價值','採取行動','得到結果','發現預測誤差','修正預測模型','下次預測更準'],
+    low_traits:['低動機：不想開始','拖延：一直等明天','無力感：覺得沒希望','被動：等別人推','習得無助：放棄努力'],
+    high_traits:['衝動：先做再說','成癮：一直追刺激','投機：想快速成功','浮躁：無法深耕','分心：不斷換目標'],
+    optimal:'不是最高，而是持續穩定。小目標→小成功→小獎勵→持續前進，比一次大刺激更健康。',
+    methods:[
+      {t:'建立「完成迴路」',d:'每天設定3個小到今天就能完成的目標。完成一件事，多巴胺上升一次。動機不是從天上掉下來的，是從行動中生出來的——先開始，才有動力。'},
+      {t:'戒斷多巴胺劫持行為',d:'短影音、無限刷手機、高糖飲食都在「借未來的多巴胺」——現在爽，之後更空洞。連續7天減少這些，觀察你對真實成就的感受力如何恢復。'},
+      {t:'曬太陽+規律運動',d:'每天早晨曬15分鐘太陽，配合規律有氧運動。這兩個行為是多巴胺前體（酪胺酸）轉換效率最高的天然方式，同時重設多巴胺接受器的敏感度。'},
+      {t:'學習新技能的刻意練習',d:'每天花20分鐘在一個有挑戰性但可達到的技能上。「可達到的挑戰」是多巴胺最健康的來源——不太容易（無聊）、不太難（焦慮），剛剛好的挑戰讓多巴胺持續分泌。'},
+    ],
+    wisdom:'多巴胺不是快樂，而是：相信未來值得努力的能力。生命的成長不是得到獎勵，而是透過一次次的預測、誤差、修正、更新，讓自己越來越接近真實世界。',
+    qs:[
+      {q:'你是否常常「知道要做，卻提不起勁開始」？',opts:['很少','偶爾','常常','幾乎每天']},
+      {q:'你對未來的計劃或目標，有多少執行力？',opts:['行動力強','還好','常常拖延','幾乎無法執行']},
+      {q:'你最近的日常是否有明確讓你期待的事？',opts:['很多','有幾件','很少','幾乎沒有']},
+    ],
+    nutrients:[
+      {n:'神經營養素（B1+B3+B6）',ico:'🔵',bg:'rgba(24,95,165,0.15)',mech:'多巴胺合成輔因子',
+       det:'B6是多巴胺合成路徑的直接輔因子——沒有B6，酪胺酸無法轉換為多巴胺。不潮紅的B3支持NAD+生成（多巴胺代謝的能量基礎），B1提供神經元的能量代謝支持，三者協同讓多巴胺系統高效運作。',
+       why:'多巴胺不足的根源之一是B群缺乏。補足神經營養素，讓你的「想要出發」的系統有原料可以工作。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+      {n:'酶菌醣體（茶胺酸）',ico:'🍵',bg:'rgba(0,150,100,0.15)',mech:'多巴胺受體敏感性',
+       det:'茶胺酸促進α波，讓大腦進入「清醒放鬆」的最佳狀態，這是多巴胺動機系統最高效工作的神經背景。同時腸腦軸修復讓腸道神經傳導物質正常分泌，腸道是多巴胺前體的重要生產地。',
+       why:'多巴胺受體在焦慮的高β波狀態下敏感度下降。茶胺酸把大腦調到多巴胺系統最靈敏的狀態。',
+       price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'前額葉決策支持',
+       det:'多巴胺動機系統需要前額葉配合規劃長期目標。鎂是前額葉NMDA受體的關鍵調節礦物質，充足的鎂讓前額葉更有效評估長期價值，讓多巴胺指向真正重要的目標而非即時刺激。',
+       why:'缺鎂讓前額葉無力管理衝動，多巴胺容易被短期刺激劫持。鎂幫你的動機系統看得更遠。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'adren',icon:'⚡',name:'腎上腺素',role:'緊急行動系統',sys:'驅動',
+    q:'現在危不危險？',
+    essence:'腎上腺素不是壓力分子，它是「生命的緊急行動系統」。',
+    formula:['偵測危險','發出警報','動員全身資源','立即行動','威脅解除','恢復平靜（如果不恢復→慢性壓力）'],
+    low_traits:['遲鈍：反應慢','沒衝勁：不敢行動','容易放棄：缺乏爆發力','被動：等待別人決定','安逸：不願挑戰'],
+    high_traits:['高警報：一直緊張','焦慮：小事變大事','易怒：容易爆炸','控制慾：什麼都想掌控','過度競爭：永遠在戰鬥'],
+    optimal:'需要時啟動，不需要時關閉。健康模式：開→完成任務→關。不健康模式：開→開→開→系統過熱。',
+    methods:[
+      {t:'腹式呼吸關閉警報',d:'4秒吸氣→7秒屏息→8秒呼氣。這直接激活副交感神經，是目前研究最強的快速降低腎上腺素的工具。每天練習3次，2週後焦慮基線明顯下降。'},
+      {t:'識別「假危機」',d:'當感到緊張時問：「這真的是威脅，還是我的杏仁核在過度預測？」把每天的「緊急事件」分類：真正的緊急 vs 感覺緊急。練習減少對假危機的全力動員。'},
+      {t:'規律有氧消耗皮質醇',d:'每天20-30分鐘有氧運動，在安全環境下消耗腎上腺素和皮質醇，讓身體體驗「衝刺→完成→放鬆」的完整循環，重新校準壓力系統的開關。'},
+      {t:'建立「下班儀式」',d:'設計一個明確的「解除警報」儀式：工作結束後散步15分鐘、冥想5分鐘、或做一件與工作無關的事。讓大腦接收到「安全了，可以關閉警報」的信號。'},
+    ],
+    wisdom:'腎上腺素不是讓你一直戰鬥，而是讓你在真正需要的時候，能夠瞬間全力以赴。真正成熟的系統，知道何時衝刺，更知道何時解除警報。',
+    qs:[
+      {q:'你是否常常感到莫名緊張、心跳加快，即使沒有明顯原因？',opts:['很少','偶爾','常常','幾乎每天']},
+      {q:'你放鬆下來有多困難？',opts:['很容易放鬆','還好','不太容易','幾乎無法放鬆']},
+      {q:'你是否對小事也容易過度反應（易怒、焦慮、緊繃）？',opts:['很少','偶爾','常常','幾乎持續']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'HPA軸調節降腎上腺素',
+       det:'鎂通過阻斷NMDA受體直接降低杏仁核的過度激活，甘氨酸是抑制性神經傳導物質，協同降低腎上腺素系統的觸發閾值。研究顯示補鎂能顯著降低慢性壓力狀態下的皮質醇和腎上腺素水平。',
+       why:'你的警報系統長期過載，需要一個重置礦物質。鎂是最直接的神經系統降溫工具。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'GABA',ico:'🌊',bg:'rgba(83,74,183,0.15)',mech:'直接關閉過度警報',
+       det:'GABA是大腦主要的抑制性神經傳導物質，直接抑制杏仁核和下丘腦的過度激活，切斷腎上腺素的持續分泌循環。焦慮型人格幾乎普遍GABA系統低效，這是高警報狀態的生化根源。',
+       why:'腎上腺素的煞車系統就是GABA。當煞車失靈，警報停不下來。GABA幫你重新找到煞車。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+      {n:'酶菌醣體（茶胺酸）',ico:'🍵',bg:'rgba(0,150,100,0.15)',mech:'α波對抗高β波警報狀態',
+       det:'腎上腺素過高讓大腦持續在高β波（緊張）模式。茶胺酸直接提升α波（放鬆清醒），是最有研究支持的天然抗焦慮成分之一。不讓你昏沉，而是進入「清醒的平靜」——這正是解除警報後的理想狀態。',
+       why:'高警報大腦一直在β波，茶胺酸幫你調頻到α波，讓神經系統真正解除緊急狀態。',
+       price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+    ]
+  },
+  {
+    id:'cortisol',icon:'🔋',name:'皮質醇',role:'資源調度系統',sys:'驅動',
+    q:'資源夠不夠撐？',
+    essence:'皮質醇不是壓力分子，它是「生命的資源調度系統」。',
+    formula:['發現危機','能量需求增加','皮質醇上升','資源重新配置','危機解除','皮質醇下降（如果不下降→慢性壓力形成）'],
+    low_traits:['無力：起不來','低動機：做事沒勁','低韌性：一點挫折就放棄','容易疲勞：恢復慢','被動：缺乏驅動力'],
+    high_traits:['高警報：永遠備戰','焦慮：一直擔心','控制狂：害怕失控','完美主義：容錯率極低','工作成癮：停不下來'],
+    optimal:'「壓力是朋友，當它是工具而非主人。」適量皮質醇讓你撐過挑戰，慢性偏高讓你慢性消耗。',
+    methods:[
+      {t:'皮質醇節律重設',d:'皮質醇有自然的晝夜節律：早晨最高（讓你起床），晚上最低（讓你睡覺）。用「固定作息+早晨曬太陽+晚上避免強光」重設這個節律，讓皮質醇在對的時間出現，在對的時間消退。'},
+      {t:'壓力分類：值不值得動員',d:'把本週的壓力分成兩類：① 真正需要全力應對的 ② 習慣性警戒但不值得動員的。第二類是皮質醇的最大浪費。識別它們，練習不動員全身去應對。'},
+      {t:'正念休息（20分鐘降皮質醇）',d:'每天一次20分鐘的靜默休息——不是睡覺，是躺著或坐著、閉眼、不做任何事。研究顯示這能降低皮質醇20-30%，讓腎上腺有時間恢復分泌能力。'},
+      {t:'人際支持網路',d:'社交連結是皮質醇的最強天然抑制劑之一。與你信任的人見面、聊天、擁抱，催產素上升，皮質醇自然下降。孤獨讓皮質醇偏高，這是生物設計。'},
+    ],
+    wisdom:'皮質醇背後最深的智慧：生命有能力在最困難的時候撐下去。問題不是壓力本身，而是壓力從未真正解除。學會結束壓力，和學會面對壓力一樣重要。',
+    qs:[
+      {q:'你是否常常感到疲憊，但即使休息也沒有完全恢復？',opts:['很少','偶爾','常常','幾乎每天']},
+      {q:'你是否容易因為事情沒在掌控中而感到強烈不安？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你的睡眠品質如何？入睡、深睡、醒後的狀態？',opts:['很好','還好','不好','很差']},
+    ],
+    nutrients:[
+      {n:'刺五加',ico:'🌿',bg:'rgba(0,150,100,0.15)',mech:'適應原降皮質醇',
+       det:'刺五加是研究最完整的植物適應原之一，能調節HPA軸（下丘腦-垂體-腎上腺軸），使皮質醇分泌恢復正常節律。不是抑制皮質醇，而是讓它在需要時分泌、不需要時降回。',
+       why:'皮質醇的問題不是有，是停不下來。刺五加幫助HPA軸重新找到開關——需要時給力，不需要時放鬆。',
+       price:'NT$495',spec:'膠囊 一瓶150粒'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'HPA軸調節睡眠修復',
+       det:'鎂是HPA軸調節最關鍵的礦物質，慢性壓力大量消耗鎂，缺鎂又讓皮質醇更難平息，形成惡性循環。甘氨酸在睡眠時降低核心體溫，改善深眠品質，讓腎上腺在睡眠中真正恢復。',
+       why:'皮質醇居高不下的底層原因之一是缺鎂。補鎂打破惡性循環，讓壓力系統重新找到平衡點。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'加強B群',ico:'🔵',bg:'rgba(24,95,165,0.15)',mech:'腎上腺修復核心燃料',
+       det:'B5（泛酸）是腎上腺皮質醇合成路徑的必需輔因子，同時參與腎上腺本身的自我修復。慢性壓力讓腎上腺長期超工作，大量消耗B群；補充B群是修復腎上腺疲勞最直接的方式。',
+       why:'你的腎上腺像一台長期超時運作的機器。加強B群是讓它有機會修復和重新校準的核心燃料。',
+       price:'NT$520',spec:'膠囊 一瓶150粒'},
+    ]
+  },
+  {
+    id:'thyroid',icon:'🎛',name:'甲狀腺素',role:'速度控制器',sys:'調節',
+    q:'該跑多快？',
+    essence:'甲狀腺素不是代謝激素，它是「生命的速度控制器」。',
+    formula:['偵測環境變化','評估所需代謝速率','調整甲狀腺素分泌','全身代謝同步調整','資源消耗與補充平衡','系統維持在最佳節奏'],
+    low_traits:['疲勞：一直累','怕冷：體溫偏低','思考慢：反應遲鈍','代謝慢：容易發胖','情緒低落：像在泥沼裡'],
+    high_traits:['過度亢奮：停不下來','失眠：睡不著','心跳快：心悸','焦慮：過度警覺','消瘦：即使吃了也瘦'],
+    optimal:'快慢得宜。不是永遠全速，也不是永遠緩慢。根據當下需求，在對的時間用對的速度。',
+    methods:[
+      {t:'支持甲狀腺轉換（T4→T3）',d:'甲狀腺分泌的是T4，但活性形式是T3，需要硒作為轉換酶的輔因子。確保飲食中有足夠的硒（巴西堅果、海鮮）和碘（海藻、碘鹽），是維持甲狀腺功能最基礎的方式。'},
+      {t:'穩定節律不過度波動',d:'甲狀腺素對壓力、飢餓、睡眠不足都非常敏感。規律的作息、穩定的血糖、充足的睡眠，是讓甲狀腺保持穩定節律的生活基礎。大起大落的生活方式是甲狀腺最大的壓力源。'},
+      {t:'降低慢性發炎',d:'橋本氏甲狀腺炎（最常見的甲狀腺功能低下）是自體免疫性的。降低全身慢性發炎——減少精製糖、麩質（敏感者）、修復腸道屏障——是從根本減少對甲狀腺的免疫攻擊。'},
+      {t:'覺察你的「速度感」',d:'每天問：「我今天的速度適合當下的任務嗎？」有時候問題不是甲狀腺，而是我們強迫自己用錯誤的速度運作。高要求工作需要高速，休息和修復需要低速。學會調速是甲狀腺的生活智慧。'},
+    ],
+    wisdom:'甲狀腺素背後最深的智慧：不是永遠跑最快，而是在需要衝刺時能衝刺，在需要休息時真正休息。真正的效率，來自於節奏感，而非持續亢奮。',
+    qs:[
+      {q:'你是否常常感到莫名疲勞，即使睡眠充足也提不起勁？',opts:['很少','偶爾','常常','幾乎每天']},
+      {q:'你的體重是否難以維持，容易無緣無故增加或減少？',opts:['穩定','輕微波動','明顯波動','難以控制']},
+      {q:'你的思考和反應速度如何？',opts:['清晰快速','還好','有些遲鈍','明顯遲緩']},
+    ],
+    nutrients:[
+      {n:'蝦紅素+硒複方',ico:'🔬',bg:'rgba(0,150,100,0.15)',mech:'T4→T3轉換關鍵輔因子',
+       det:'硒是甲狀腺脫碘酶（將T4轉換為活性T3）的核心輔因子。缺硒時T4大量積累卻無法轉換為活性形式，造成「檢查甲狀腺素正常但症狀嚴重」的常見困境。蝦紅素提供強效抗氧化保護，減少對甲狀腺的氧化損傷。',
+       why:'很多甲狀腺問題不是分泌不足，而是轉換失敗。硒是讓甲狀腺素真正「活起來」的關鍵礦物質。',
+       price:'NT$530',spec:'錠劑 約320粒'},
+      {n:'D3（5000IU）',ico:'☀️',bg:'rgba(184,134,11,0.15)',mech:'免疫調節甲狀腺保護',
+       det:'橋本氏甲狀腺炎（自體免疫性甲狀腺功能低下）的患者中，高比例存在維生素D缺乏。D3是免疫調節的核心信號，充足的D3幫助免疫系統減少對甲狀腺組織的攻擊，是功能性甲狀腺問題的重要支持。',
+       why:'如果甲狀腺問題和自體免疫有關，維生素D是最被低估的保護盾。',
+       price:'NT$580',spec:'錠劑 約320粒'},
+      {n:'亞麻仁油',ico:'🌿',bg:'rgba(0,150,100,0.15)',mech:'Omega-3抗甲狀腺發炎',
+       det:'慢性發炎是甲狀腺功能受損的核心驅動力。Omega-3（EPA/DHA）是合成消炎素的直接原料，主動降低影響甲狀腺的慢性炎症。同時Omega-3維持細胞膜流動性，讓甲狀腺素受體更敏感。',
+       why:'降低甲狀腺周圍的慢性發炎，是讓甲狀腺功能逐漸恢復的底層基礎。Omega-3是這個過程最溫和有效的工具。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+    ]
+  },
+  {
+    id:'insulin',icon:'💡',name:'胰島素',role:'能量分配系統',sys:'調節',
+    q:'能量給誰用？',
+    essence:'胰島素不是糖尿病激素，它是「生命的能量分配系統」。',
+    formula:['進食→血糖上升','胰島素分泌','打開細胞大門','葡萄糖進入細胞','血糖下降回基準','能量儲存完成'],
+    low_traits:['血糖波動大：情緒不穩','疲勞：能量利用效率差','腦霧：大腦供能不穩','嗜甜：持續渴望糖分','餐後崩潰：吃完就累'],
+    high_traits:['胰島素阻抗：細胞不聽指令','腰腹脂肪增加','疲勞：雖有能量但進不去細胞','發炎升高','代謝症候群風險'],
+    optimal:'穩定而敏感。血糖不大起大落，細胞對胰島素訊號靈敏，能量去到最需要的地方。',
+    methods:[
+      {t:'血糖穩定飲食策略',d:'每餐按順序吃：先蔬菜→再蛋白質→最後澱粉。這個順序能降低餐後血糖峰值40%。避免空腹吃純澱粉或糖，加入蛋白質和纖維讓血糖上升緩慢而穩定。'},
+      {t:'飯後10分鐘散步',d:'飯後10分鐘輕鬆散步，讓肌肉主動消耗剛進入血液的葡萄糖，降低血糖峰值和胰島素分泌需求。這是改善胰島素敏感性最簡單、研究最支持的日常習慣。'},
+      {t:'力量訓練增加肌肉量',d:'肌肉是最大的葡萄糖儲存庫，肌肉量越多，胰島素效率越高。每週2-3次的阻力訓練，是從根本改善胰島素敏感性的最佳策略，效果往往超過飲食控制。'},
+      {t:'降低壓力激素的干擾',d:'皮質醇和腎上腺素都會直接升高血糖、降低胰島素敏感性。管理慢性壓力不只是心理健康問題，更是代謝健康的核心。壓力管理就是血糖管理。'},
+    ],
+    wisdom:'胰島素背後最深的智慧：能量不在多少，而在分配是否精準。讓每一個細胞在需要的時候，得到它需要的能量——這才是真正的代謝健康。',
+    qs:[
+      {q:'你是否常常飯後感到疲憊、昏沉或情緒低落？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'你對甜食或澱粉的渴望程度如何？',opts:['沒有特別','偶爾渴望','強烈渴望','幾乎無法自制']},
+      {q:'你的腰腹脂肪是否有增加趨勢，難以減少？',opts:['沒有','輕微','明顯','持續增加']},
+    ],
+    nutrients:[
+      {n:'苦瓜皂甘複方',ico:'🥬',bg:'rgba(0,150,100,0.15)',mech:'天然胰島素模擬降血糖',
+       det:'苦瓜皂甘的結構類似胰島素，能與胰島素受體結合，模擬胰島素的降糖作用。多項研究顯示能有效改善空腹血糖和餐後血糖峰值，在不刺激胰臟過度分泌的前提下，幫助細胞有效攝取葡萄糖。',
+       why:'天然的胰島素模仿物，讓血糖在吃飽後更平穩，避免餐後崩潰和下午昏睡的惡性循環。',
+       price:'NT$540',spec:'膠囊 一瓶約150粒'},
+      {n:'黃連素（小蘗鹼）',ico:'🟡',bg:'rgba(184,134,11,0.15)',mech:'AMPK活化胰島素敏感',
+       det:'小蘗鹼通過激活AMPK（細胞能量感測器），讓細胞重新對胰島素訊號敏感，機制類似二甲雙胍（糖尿病藥物）。研究顯示同時改善血糖、血脂、體重，被稱為「天然二甲雙胍」。',
+       why:'胰島素阻抗的本質是細胞「聽不到訊號」。小蘗鹼幫細胞重新調頻，讓胰島素的指令真正被執行。',
+       price:'NT$560',spec:'膠囊 一瓶約150粒'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'葡萄糖代謝必需礦物質',
+       det:'鎂是葡萄糖代謝超過300個酶反應的必需輔因子，缺鎂直接降低胰島素敏感性。研究顯示補充鎂能顯著改善胰島素阻抗，甘氨酸同時降低餐後血糖波動。',
+       why:'缺鎂是胰島素阻抗最被忽視的原因之一。補鎂讓代謝系統重新恢復對胰島素的響應能力。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'hgh',icon:'🔧',name:'生長激素',role:'修復升級系統',sys:'調節',
+    q:'如何讓自己變更強？',
+    essence:'生長激素不是長高激素，它是「生命的修復與升級系統」。',
+    formula:['偵測損耗和壓力','修復需求評估','深眠期分泌高峰','啟動細胞修復','升級組織功能','比昨天更強的系統'],
+    low_traits:['恢復慢：運動後需要更多天','易疲勞：修復效率差','肌肉流失：難以維持肌肉量','老化快：皮膚和組織恢復差','睡眠不足：修復時間被剝奪'],
+    high_traits:['（過高主要是病理狀態）','異常過度需考慮醫療評估'],
+    optimal:'睡得好，恢復得好，明天比今天更強。生長激素的最佳狀態是你根本感受不到它——因為修復在睡眠中悄悄完成。',
+    methods:[
+      {t:'深睡眠是生長激素的黃金窗口',d:'生長激素80%在深眠（慢波睡眠）期間分泌。睡前1小時避免手機、強光、劇烈活動；保持臥室黑暗和涼爽（18-20°C是理想睡眠溫度）；固定的就寢時間讓身體準時進入深睡。'},
+      {t:'間歇性禁食策略',d:'空腹狀態會顯著提升生長激素分泌（研究顯示空腹24小時可提升2000%，但16:8輕度禁食也有效果）。早上延後第一餐，讓身體在早晨進入生長激素高峰期，而不是立刻切換到消化模式。'},
+      {t:'高強度間歇訓練（HIIT）',d:'短時間的高強度運動（如10-20分鐘的HIIT）是刺激生長激素分泌最有效的運動形式，效果遠超長時間低強度有氧。完成訓練後給身體充足的休息時間，這是修復和升級的窗口。'},
+      {t:'充足蛋白質提供修復原料',d:'生長激素啟動修復，但需要氨基酸作為材料。每公斤體重1.5-2克蛋白質的攝取，確保修復有足夠原料。睡前少量蛋白質（如一杯牛奶或30克堅果）能在整夜修復期間持續提供原料。'},
+    ],
+    wisdom:'生長激素背後最深的智慧：生命的升級，不在清醒時的努力，而在睡眠中的修復。每一次優質的睡眠，都是你給自己最好的投資。',
+    qs:[
+      {q:'你的睡眠品質如何？是否能進入深層睡眠？',opts:['很好','還好','不太好','很差']},
+      {q:'運動後或高強度工作後，你的恢復速度如何？',opts:['恢復快','正常','偏慢','非常慢']},
+      {q:'你是否感覺身體的自我修復能力（如傷口、疲勞的恢復）比以前慢？',opts:['沒有','輕微','明顯','非常明顯']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'深眠促進生長激素分泌',
+       det:'甘氨酸通過降低核心體溫（深眠的必要條件）和調節NMDA受體，顯著改善深眠品質。研究顯示睡前補充甘氨酸能增加慢波睡眠比例，而慢波睡眠正是生長激素主要分泌的時間窗口。',
+       why:'生長激素的分泌需要深眠。甘氨酸鎂是幫助你真正進入生長激素分泌窗口的睡眠品質升級工具。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'粒線寶（5-HTP）',ico:'🔋',bg:'rgba(163,45,45,0.15)',mech:'血清素→褪黑激素→深眠',
+       det:'5-HTP是色胺酸→血清素→褪黑激素的中間體，同時提升白天血清素（情緒穩定）和夜間褪黑激素（睡眠深度）。深眠品質提升直接增加生長激素的夜間分泌量，讓修復更完整。',
+       why:'如果你的問題是睡不深、夢多、難以進入修復性睡眠，5-HTP是從神經化學源頭解決這個問題的方案。',
+       price:'NT$550',spec:'膠囊 一瓶約150粒'},
+      {n:'Q10（10:1）',ico:'⚡',bg:'rgba(184,134,11,0.15)',mech:'粒線體能量支持細胞修復',
+       det:'細胞修復是高耗能過程，需要大量ATP。Q10是電子傳遞鏈的核心組件，直接提升粒線體ATP生成效率。生長激素啟動修復，Q10確保修復有足夠的能量完成，讓「修復訊號」真正轉化為「修復結果」。',
+       why:'有修復訊號（生長激素）但沒有修復能量（ATP），就像有施工圖紙但沒有工人和材料。Q10是讓修復真正完成的能量基礎。',
+       price:'NT$580',spec:'膠囊 一瓶150粒'},
+    ]
+  },
+  {
+    id:'melatonin',icon:'🌙',name:'褪黑激素',role:'重置系統',sys:'調節',
+    q:'何時該重開機？',
+    essence:'褪黑激素不是睡眠激素，它是「生命的重置與修復系統」。',
+    formula:['光線減少→松果體啟動','褪黑激素上升','全身進入修復模式','記憶整合→廢物清除→組織修復','光線出現→褪黑激素下降','系統重置完成'],
+    low_traits:['失眠：入睡困難','睡眠淺：容易驚醒','修復差：睡了還是累','記憶整合差：學了容易忘','免疫下降：夜間修復不足'],
+    high_traits:['白天過度嗜睡','睡眠時間過長仍疲倦','節律紊亂（如時差、輪班）'],
+    optimal:'在對的時間入睡，睡得深，醒來精神飽滿。不需要感知到它的存在——當系統正常時，你只是自然睡著、自然醒來。',
+    methods:[
+      {t:'光線管理（最關鍵的一步）',d:'褪黑激素被藍光（手機/電腦螢幕）強力抑制。睡前2小時調暗室內燈光，改用暖色燈；早晨起床立刻曬15分鐘太陽，重設晝夜節律。這一個習慣對褪黑激素的影響超過所有補充品。'},
+      {t:'固定的睡眠時間窗口',d:'每天在同一時間上床，同一時間起床（包括週末）。這讓松果體建立穩定的褪黑激素分泌時間表。節律的一致性比睡眠長度更重要——不規律的睡眠即使時間夠也無法讓系統完整重置。'},
+      {t:'臥室環境優化',d:'黑暗（遮光窗簾）、涼爽（18-20°C）、安靜。即使睡著後輕微的光線也會抑制褪黑激素分泌，降低修復品質。這三個環境因素是睡眠品質的物理基礎，補充任何東西都無法取代。'},
+      {t:'睡前放鬆儀式',d:'設計一個20-30分鐘的睡前放鬆序列：溫熱水澡（讓核心體溫下降觸發睡意）→靜默閱讀（紙本書）→輕度伸展→關燈。讓大腦接收到「準備重置了」的信號。'},
+    ],
+    wisdom:'褪黑激素背後最深的智慧：生命需要定期完全關機，才能真正升級。拒絕休息不是強大，而是不讓系統完成修復。每一個高品質的夜晚，都是明天更強大的投資。',
+    qs:[
+      {q:'你通常需要多久才能入睡？',opts:['10分鐘內','30分鐘內','超過30分鐘','很難入睡']},
+      {q:'你睡醒後的狀態如何？',opts:['精神飽滿','還好','疲憊','非常疲憊']},
+      {q:'你的睡眠時間和品質是否受到手機使用影響？',opts:['幾乎不','輕微','明顯','嚴重']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'核心體溫下降深眠觸發',
+       det:'甘氨酸通過降低核心體溫和調節GABA受體，幫助大腦從「清醒模式」切換到「重置模式」。鎂阻斷NMDA受體降低神經興奮，讓大腦真正「安靜下來」進入褪黑激素的工作環境。',
+       why:'褪黑激素需要一個安靜、涼爽的神經環境才能有效工作。甘氨酸鎂是從生理層面創造這個環境的最直接工具。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'酶菌醣體（茶胺酸）',ico:'🍵',bg:'rgba(0,150,100,0.15)',mech:'α波引導入睡過渡',
+       det:'入睡前大腦需要從β波（清醒焦慮）過渡到α波（放鬆），再到θ波（睡眠邊緣），再到δ波（深眠）。茶胺酸提升α波，幫助這個過渡更順暢，讓褪黑激素的「入睡信號」更容易被大腦接收。',
+       why:'睡不著不是沒有褪黑激素，而是大腦頻率沒有切換。茶胺酸是幫大腦從「停不下來」切換到「準備睡覺了」的最自然工具。',
+       price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+      {n:'銀杏複方（色氨酸）',ico:'🍂',bg:'rgba(184,134,11,0.15)',mech:'色胺酸→血清素→褪黑激素',
+       det:'色胺酸是褪黑激素的合成上游原料（色胺酸→5-HTP→血清素→褪黑激素）。補充色胺酸在傍晚，讓身體有足夠原料在夜晚合成褪黑激素。銀杏改善腦部血流，讓神經傳導更順暢。',
+       why:'如果褪黑激素的生產線缺原料，補充外源褪黑激素只是臨時替代。色胺酸讓身體自己生產——這才是讓系統真正自主運作的方式。',
+       price:'NT$510',spec:'膠囊 一瓶150粒'},
+    ]
+  },
+  {
+    id:'testo',icon:'🦁',name:'睪固酮',role:'競爭建構系統',sys:'驅動',
+    q:'敢不敢承擔？',
+    essence:'睪固酮不是雄性激素，它是「生命的競爭與建構系統」。',
+    formula:['面對挑戰','評估是否值得承擔','睪固酮上升','增強信心和動力','採取行動建構','形成結果（成功→睪固酮繼續上升）'],
+    low_traits:['缺乏信心：容易退縮','性慾下降','肌肉流失：難以維持強度','情緒低落：憂鬱傾向','缺乏競爭力：不願承擔'],
+    high_traits:['過度競爭：什麼都要贏','衝動冒險：不計後果','攻擊性：容易衝突','支配欲：控制傾向','過度自信：忽視風險'],
+    optimal:'自信而不傲慢。願意承擔但有判斷力。能競爭也能合作。把睪固酮的能量用在建構而非破壞上。',
+    methods:[
+      {t:'力量訓練（最強天然提升）',d:'阻力訓練是提升睪固酮最有研究支持的方法。複合動作（深蹲、硬舉、臥推）比孤立訓練效果更好。每週3-4次，每次45-60分鐘是最佳範圍——過長的訓練反而讓皮質醇上升壓制睪固酮。'},
+      {t:'主動承擔具體挑戰',d:'睪固酮在「承擔挑戰並成功」時上升。設定一個本週具體的挑戰，完成它。不需要是大事——申請一個你一直猶豫的機會、完成一個一直拖延的項目，都能讓睪固酮系統激活。'},
+      {t:'充足睡眠（睾固酮在睡眠時生產）',d:'睪固酮70-80%在睡眠期間生產，尤其是清晨最後幾個小時的REM睡眠。睡少於6小時，睪固酮水平顯著下降，效果相當於老化10年。睡眠是睪固酮最重要的「生產時間」。'},
+      {t:'降低身體脂肪，尤其是腹部',d:'脂肪組織（尤其是腹部脂肪）含有芳香化酶，會將睪固酮轉換為雌激素。降低體脂率，特別是腰腹，能直接提升睪固酮的有效濃度。這是一個良性循環：更多睪固酮→更多肌肉→更少脂肪。'},
+    ],
+    wisdom:'睪固酮背後最深的智慧：承擔的能力，是人格成熟的標誌。不是不害怕，而是在害怕中仍然採取行動。把競爭的能量用在建構上，而非對抗上。',
+    qs:[
+      {q:'你是否常常對挑戰感到退縮，不敢承擔或嘗試？',opts:['很少','偶爾','常常','幾乎總是']},
+      {q:'你的整體信心和動力水平如何？',opts:['充沛','還好','偏低','非常低']},
+      {q:'你的運動習慣和肌肉力量維持狀況？',opts:['良好','還好','偏差','幾乎沒有']},
+    ],
+    nutrients:[
+      {n:'D3（5000IU）',ico:'☀️',bg:'rgba(184,134,11,0.15)',mech:'睪固酮前體維生素D',
+       det:'維生素D受體廣泛存在於睪丸Leydig細胞（睪固酮的主要生產地），維生素D直接參與睪固酮的合成路徑。研究顯示維生素D充足者的睪固酮水平顯著高於缺乏者。5000IU高劑量適合明顯缺乏者。',
+       why:'睪固酮的生產工廠需要維生素D這個原料。70%現代人缺乏維生素D——補足它，讓睪固酮生產線重新開工。',
+       price:'NT$580',spec:'錠劑 約320粒'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'睪固酮受體敏感性',
+       det:'鎂是睪固酮代謝的必需輔因子，且鎂可與SHBG（性荷爾蒙結合蛋白）競爭結合，讓更多游離睪固酮（有活性的形式）在血液中循環。缺鎂直接降低有效睪固酮濃度，即使總量正常也可能功能不足。',
+       why:'有睪固酮但被SHBG綁住用不了，就像有錢但鎖在保險箱。鎂幫你解開保險箱，讓睪固酮真正發揮作用。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'蝦紅素+硒複方',ico:'🔬',bg:'rgba(0,150,100,0.15)',mech:'抗氧化保護睪固酮',
+       det:'睪固酮的生產細胞（Leydig細胞）對氧化壓力特別敏感，慢性氧化壓力直接損害睪固酮生產能力。蝦紅素是目前已知最強的天然抗氧化劑（效力是維生素C的6000倍），保護Leydig細胞的生產功能。',
+       why:'如果你的睪固酮生產工廠在慢性氧化壓力下受損，補充的作用有限。蝦紅素先修復工廠，讓生產能正常進行。',
+       price:'NT$530',spec:'錠劑 約320粒'},
+    ]
+  },
+  {
+    id:'estrogen',icon:'🌸',name:'雌激素',role:'連結滋養系統',sys:'連結',
+    q:'能不能連結？',
+    essence:'雌激素不是女性荷爾蒙，它是「生命的連結與滋養系統」。',
+    formula:['感知連結需求','建立關係','投入資源照顧','促進成長','形成穩定的滋養系統','群體和個體共同成長'],
+    low_traits:['疏離：不易連結','冷漠：缺乏溫度','焦躁：容易不耐煩','防衛：不願信任','枯竭感：失去熱情'],
+    high_traits:['過度在意：太在乎他人','情緒化：容易波動','討好型：害怕衝突','依附型：難以獨立','過度敏感：易受影響'],
+    optimal:'溫柔且有界線。關心別人，但不失去自己。不是依賴，而是有連結能力，也有界線能力。',
+    methods:[
+      {t:'維持穩定的血糖和睡眠',d:'雌激素的生產和代謝對壓力、睡眠不足、血糖波動高度敏感。規律睡眠+穩定血糖+降低慢性壓力，是維持雌激素平衡最基礎的生活策略，比任何補充品都重要。'},
+      {t:'支持健康腸道菌相',d:'腸道菌相中有一群叫「雌激素組」（estrobolome）的細菌，負責調節雌激素的代謝和再循環。腸道健康直接影響雌激素的有效濃度，修復腸道是最被忽視的荷爾蒙平衡策略。'},
+      {t:'練習溫柔而有界線的連結',d:'雌激素失衡常來自「過度付出→耗竭」或「防衛疏離→孤立」的兩個極端。練習說「我在乎你，同時我也有自己的需求」——這是雌激素最健康的社交表達方式。'},
+      {t:'減少環境荷爾蒙暴露',d:'塑膠容器（BPA）、殺蟲劑、合成香料中含有環境雌激素，干擾真正的雌激素系統。使用玻璃或不鏽鋼容器、減少加工食品、多食用十字花科蔬菜（幫助排除過剩雌激素）。'},
+    ],
+    wisdom:'真正的力量，不只來自競爭，也來自連結。多巴胺決定方向，睪固酮決定承擔，雌激素決定連結。因為文明的進化，不只是靠強者生存，更是靠彼此成就。',
+    qs:[
+      {q:'你是否常常感到情緒波動大，容易被外在事件影響？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你是否難以建立深層的信任關係，或過度依賴他人？',opts:['都不是','偶爾疏離','常常疏離','嚴重孤立']},
+      {q:'你是否有皮膚、骨骼、情緒的問題和月經不規則（女性）？',opts:['沒有','輕微','明顯','嚴重']},
+    ],
+    nutrients:[
+      {n:'酶菌醣體（益生菌）',ico:'🌿',bg:'rgba(0,150,100,0.15)',mech:'腸道菌相雌激素代謝',
+       det:'「雌激素組」腸道細菌直接參與雌激素的代謝循環。酶菌醣體整合多種益生菌+Beta多醣體+波羅酵素，修復腸道菌相平衡，讓雌激素代謝更精準，避免過高或過低的極端。',
+       why:'荷爾蒙平衡從腸道開始。修復你的腸道菌相，是讓雌激素系統重新自主調節的最根本方式。',
+       price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+      {n:'刺五加',ico:'🌿',bg:'rgba(0,150,100,0.15)',mech:'適應原HPA調節荷爾蒙',
+       det:'慢性壓力讓皮質醇偏高，皮質醇和性荷爾蒙競爭同一合成原料（孕烯醇酮），導致雌激素合成受阻。刺五加調節HPA軸，降低慢性壓力對荷爾蒙系統的干擾，讓雌激素合成路徑暢通。',
+       why:'壓力是荷爾蒙失衡最大的劫持者。刺五加從源頭降壓，讓你的荷爾蒙系統重新按自己的節律運作。',
+       price:'NT$495',spec:'膠囊 一瓶150粒'},
+      {n:'D3（5000IU）',ico:'☀️',bg:'rgba(184,134,11,0.15)',mech:'骨骼保護免疫調節',
+       det:'雌激素不足時骨質流失加速，而維生素D3是骨鈣代謝的必需協作者，彌補雌激素對骨骼保護的不足。同時D3調節免疫系統，減少因雌激素波動引發的過度免疫反應（如慢性發炎、過敏惡化）。',
+       why:'雌激素的骨骼和免疫保護需要D3協作。讓這兩個系統一起工作，保護比單獨更強。',
+       price:'NT$580',spec:'錠劑 約320粒'},
+    ]
+  },
+  {
+    id:'endorphin',icon:'💪',name:'內啡肽',role:'韌性系統',sys:'驅動',
+    q:'撐不撐得住？',
+    essence:'內啡肽不是快樂分子，它是「生命穿越痛苦的韌性系統」。',
+    formula:['遭遇挑戰或痛苦','內啡肽釋放','疼痛耐受增加','繼續前進','完成挑戰','韌性提升（比之前更能承受）'],
+    low_traits:['脆弱：容易受挫','抗壓差：一點困難就放棄','抱怨：聚焦痛苦','容易受傷：情緒恢復慢','害怕挑戰：逃避成長'],
+    high_traits:['過度忍耐：忽略真正的警訊','壓抑情緒：假裝沒事','過度拼命：不懂休息','冒險過度：高估承受力'],
+    optimal:'有韌性但不麻木。感受到痛苦，但不被痛苦控制。知道什麼時候該撐，什麼時候該停。',
+    methods:[
+      {t:'規律運動是最強的內啡肽來源',d:'跑步、快走、游泳、重量訓練——任何讓你輕微不舒服的運動都會釋放內啡肽。「跑者高潮」就是內啡肽的效果。每週4-5次的規律有氧，是建立韌性系統最直接的訓練。'},
+      {t:'在安全環境下練習「承受不舒服」',d:'每天刻意做一件不舒服但無害的事：冷水澡、困難的對話、挑戰性的任務。這不是折磨自己，而是有意識地訓練內啡肽系統，讓它在需要的時候更有力量。'},
+      {t:'大笑、音樂、連結',d:'大笑、聽令你感動的音樂、與好友深度連結——這些都能釋放內啡肽，而不需要痛苦。這些是讓內啡肽系統保持「健康待命」的維護方式，讓它在真正需要時有儲備可以動用。'},
+      {t:'重框痛苦的意義',d:'內啡肽的釋放受到「對痛苦的詮釋」影響。把訓練的痠痛詮釋為「我正在變強」，把挑戰的不適詮釋為「這是成長的代價」，這個認知轉換本身就能增加內啡肽的效果。'},
+    ],
+    wisdom:'多巴胺讓你出發，睪固酮讓你承擔，內啡肽讓你堅持。真正的成長，不是沒有痛苦，而是把痛苦，轉化成力量。',
+    qs:[
+      {q:'面對挑戰或困難時，你能夠撐住並繼續前進嗎？',opts:['通常能','有時候','常常放棄','幾乎都放棄']},
+      {q:'你的情緒恢復速度如何？受挫後多快能回到平常狀態？',opts:['很快','正常','偏慢','非常慢']},
+      {q:'你是否規律運動，並能享受完成挑戰後的成就感？',opts:['是的','偶爾','很少','幾乎沒有']},
+    ],
+    nutrients:[
+      {n:'加強B群',ico:'🔵',bg:'rgba(24,95,165,0.15)',mech:'神經能量韌性基礎',
+       det:'內啡肽系統在慢性壓力和高強度挑戰下大量消耗神經能量，B群是所有神經能量代謝路徑的核心輔因子。B群充足時神經系統有足夠的能量資源支持內啡肽系統持續運作，不至於在長期挑戰中提早耗竭。',
+       why:'韌性不只是心態，也是神經能量的儲備。B群是確保你在長期挑戰中神經系統不耗盡的燃料。',
+       price:'NT$520',spec:'膠囊 一瓶150粒'},
+      {n:'NAC複方',ico:'🔄',bg:'rgba(0,150,100,0.15)',mech:'穀胱甘肽降氧化保護神經',
+       det:'激烈挑戰（身體或情緒）會產生大量活性氧自由基，損傷神經細胞。NAC作為穀胱甘肽前體，直接清除這些氧化損傷，保護內啡肽系統的神經基礎，讓你在挑戰後能更快復原。',
+       why:'長期抗壓的能力需要神經系統保持健康。NAC清除每次挑戰留下的氧化損傷，讓韌性系統每次都能完整充電。',
+       price:'NT$530',spec:'膠囊 一瓶約150粒'},
+      {n:'Omega-3（亞麻仁油）',ico:'🌿',bg:'rgba(0,150,100,0.15)',mech:'BDNF神經韌性支持',
+       det:'Omega-3促進BDNF（腦源性神經營養因子）的生成，BDNF是神經韌性的核心分子——它讓神經元在面對壓力和挑戰後更快恢復，甚至比以前更強。這就是內啡肽背後的分子基礎。',
+       why:'真正的韌性需要神經元有「彈回來」的能力。BDNF就是這個彈性的分子基礎，Omega-3是促進BDNF的最重要營養素。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+    ]
+  },
+  {
+    id:'serotonin',icon:'☀️',name:'血清素',role:'穩定安全系統',sys:'連結',
+    q:'現在安全嗎？',
+    essence:'血清素不是快樂分子，它是「生命的穩定與安全系統」。',
+    formula:['建立安全感','血清素上升','情緒穩定','思考清晰','決策品質提升','長期適應能力增加'],
+    low_traits:['焦慮：一直擔心','自卑：覺得自己不夠好','敏感：容易受傷','悲觀：看見風險多於機會','比較心重：常和別人比'],
+    high_traits:['過度安逸：缺乏動力','不願改變：偏向保守','過度滿足：缺少成長驅動'],
+    optimal:'安全感+成長力。不是焦慮推動人生，也不是安逸麻痺人生。在穩定中仍願意成長。',
+    methods:[
+      {t:'曬太陽（最強天然血清素活化）',d:'光線是血清素分泌的最強觸發器之一。每天早晨15-30分鐘戶外陽光，讓視網膜接收光信號，觸發血清素合成。這個習慣在兩週內能明顯改變情緒基線，是所有干預中最容易、效果最快的。'},
+      {t:'建立真實的安全感',d:'血清素系統最需要的不是「感覺安全」而是「真實的安全」：穩定的人際關係、對自己能力的真實評估、財務的基本保障。每一個讓你真正安全感更好的行動，都直接支持血清素系統。'},
+      {t:'修復腸道（90%血清素在腸道）',d:'超過90%的血清素在腸道生產。腸道菌相失衡直接影響血清素合成效率。修復腸道健康——減少精製糖、增加纖維和益生菌、降低腸道發炎——往往比任何精神科補充品更根本。'},
+      {t:'感恩和正向注意力訓練',d:'血清素系統對「注意力的方向」高度敏感。每天寫下三件感謝的事（不需要大事），把注意力訓練成習慣性地看見「已有的」和「安全的」，而不只是「缺乏的」和「危險的」。'},
+    ],
+    wisdom:'多巴胺讓你看見未來，腎上腺素讓你面對危險，內啡肽讓你穿越痛苦，血清素讓你知道：你是安全的。真正的成長，不是一直衝刺，而是在安全感中，保有探索世界的勇氣。',
+    qs:[
+      {q:'你是否常常感到焦慮、自卑，或覺得自己不夠好？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你的情緒穩定性如何？是否容易因小事波動？',opts:['很穩定','還好','容易波動','非常不穩定']},
+      {q:'你的腸胃健康狀況和飲食品質如何？',opts:['很好','還好','不太好','很差']},
+    ],
+    nutrients:[
+      {n:'酶菌醣體（益生菌）',ico:'🌿',bg:'rgba(0,150,100,0.15)',mech:'腸道血清素生產基地修復',
+       det:'超過90%的血清素在腸道合成，腸道菌相直接決定血清素的生產效率。酶菌醣體整合多種益生菌+Beta多醣體+波羅酵素，重建腸道菌相平衡，讓腸道這個血清素最大的生產基地恢復正常運作。',
+       why:'情緒問題很多時候是腸道問題。修復腸道菌相，是讓血清素系統從源頭恢復的最根本方式。',
+       price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+      {n:'銀杏複方（色氨酸）',ico:'🍂',bg:'rgba(184,134,11,0.15)',mech:'血清素直接原料補充',
+       det:'色胺酸是血清素唯一的合成原料，身體無法自行製造，必須從食物或補充品獲取。銀杏250mg改善腦部血流，讓色胺酸合成的血清素能更有效到達目標神經元，提升整體血清素系統效率。',
+       why:'血清素的生產線需要原料。色胺酸是那個原料，缺了它，任何其他努力都是空轉。',
+       price:'NT$510',spec:'膠囊 一瓶150粒'},
+      {n:'D3（5000IU）',ico:'☀️',bg:'rgba(184,134,11,0.15)',mech:'情緒調節血清素受體',
+       det:'維生素D受體廣泛分佈在大腦情緒調節區域，包括血清素神經元密集的中縫核。缺乏D3與情緒低落、焦慮、季節性憂鬱高度相關。補充D3直接支持血清素系統的神經化學環境。',
+       why:'很多情緒問題的底層是維生素D不足，讓血清素受體系統無法正常運作。D3是血清素工作的生理基礎之一。',
+       price:'NT$580',spec:'錠劑 約320粒'},
+    ]
+  },
+  {
+    id:'oxytocin',icon:'🤝',name:'催產素',role:'信任合作系統',sys:'連結',
+    q:'有沒有人同行？',
+    essence:'催產素不是愛的荷爾蒙，它是「生命的信任與合作系統」。',
+    formula:['建立信任','深化連結','促進合作','相互支持','安全感提升','群體比個體更強'],
+    low_traits:['防衛：不容易相信人','孤立：喜歡獨自承擔','猜疑：容易懷疑動機','冷漠：難以表達情感','疏離：缺乏歸屬感'],
+    high_traits:['過度依賴：離不開他人','討好型：害怕衝突','缺乏界線：過度付出','團體依附：容易被群體影響'],
+    optimal:'信任且有界線。能合作，也能獨立。不是依賴，而是信任而不失去自己。',
+    methods:[
+      {t:'建立真實的連結（不是社交媒體）',d:'催產素需要真實的身體接觸和面對面的互動才能有效釋放。每天至少一次的真實連結：與家人的擁抱、與朋友的面對面對話、與同事的真實互動——線上溝通只能部分替代。'},
+      {t:'幫助他人（付出觸發催產素）',d:'催產素在付出和幫助行為中大量分泌。每天做一件小事幫助他人——不需要犧牲，只需要真誠。這不只讓對方感受到連結，更讓你自己的催產素和血清素同時上升。'},
+      {t:'修復創傷（孤立和防衛的根源）',d:'催產素不足常來自過去的連結創傷（被拋棄、被背叛、被忽視）。識別那個舊的創傷，允許自己在安全的關係中重新嘗試信任。這個過程需要時間，但這是最根本的修復。'},
+      {t:'與動物或自然的連結',d:'與寵物互動、在自然中散步、與植物的連結，都能觸發催產素分泌。這些是在難以建立人際連結時的「催產素橋樑」，讓系統保持活性，為建立更深的人際信任做準備。'},
+    ],
+    wisdom:'一個人可以走得快，一群人才能走得遠。多巴胺讓你願意出發，血清素讓你感到安全，催產素讓你願意同行。文明的本質，就是信任所形成的合作網路。',
+    qs:[
+      {q:'你是否常常感到孤獨，難以與他人建立深層連結？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你相信別人的能力如何？是否容易猜疑或防衛？',opts:['容易信任','還好','不太信任','幾乎不信任']},
+      {q:'你是否有穩定、可以真誠相處的社交支持？',opts:['充足','有幾個','很少','幾乎沒有']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'催產素受體敏感性',
+       det:'鎂是催產素受體正常運作的必要輔因子。長期壓力大量消耗鎂，而缺鎂讓催產素受體敏感度下降，即使身處關係中也感受不到連結。補鎂讓催產素的「連結訊號」真正被細胞接收。',
+       why:'有連結的人卻感受不到溫暖，可能是催產素受體系統受損。鎂幫助受體重新敏感，讓連結被真實感受到。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'丁酸鈉複合包',ico:'🧱',bg:'rgba(184,134,11,0.15)',mech:'腸腦軸催產素調節',
+       det:'催產素不只在大腦分泌，腸道也有催產素受體，腸道健康直接影響催產素系統的效率。丁酸鈉修復腸壁完整性，降低腸漏，同時調控Treg免疫細胞，減少影響催產素系統的慢性發炎。',
+       why:'腸道是「第二大腦」，也是催產素系統的重要節點。修復腸道，讓連結訊號的傳遞更清晰有力。',
+       price:'NT$890',spec:'一包6克 / 一袋30包'},
+      {n:'亞麻仁油',ico:'🌿',bg:'rgba(0,150,100,0.15)',mech:'細胞膜流動催產素受體',
+       det:'催產素受體嵌在細胞膜上，需要充足的Omega-3維持細胞膜流動性，讓受體保持靈活和敏感。Omega-3缺乏時細胞膜僵化，催產素的訊號傳遞效率降低，連結感因此難以被感受。',
+       why:'讓催產素訊號真正被細胞接收，需要健康的細胞膜。Omega-3是讓這個接收天線保持靈敏的關鍵。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+    ]
+  },
+];
+
+const SYSTEMS=['全部','驅動系統','調節系統','連結系統'];
+let picked=[],answers={},phase=1;
+
+function initTabs(){
+  const ct=document.getElementById('sys-tabs');
+  SYSTEMS.forEach((s,i)=>{
+    const btn=document.createElement('button');
+    btn.className='sys-tab'+(i===0?' active':'');
+    btn.textContent=s; btn.dataset.sys=s;
+    btn.onclick=()=>{
+      document.querySelectorAll('.sys-tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGrid(s);
+    };
+    ct.appendChild(btn);
+  });
+}
+
+function renderGrid(sys){
+  const g=document.getElementById('sig-grid'); g.innerHTML='';
+  const list=sys==='全部'?SIGNALS:SIGNALS.filter(s=>s.sys===sys.replace('系統',''));
+  list.forEach(s=>{
+    const card=document.createElement('div');
+    card.className='sig-card'+(picked.includes(s.id)?' picked':'');
+    card.dataset.id=s.id;
+    card.innerHTML=`<span class="sig-icon">${s.icon}</span><div class="sig-name">${s.name}</div><div class="sig-role">${s.role}</div><div class="sig-q">「${s.q}」</div>`;
+    card.onclick=()=>toggleSig(s.id,card);
+    g.appendChild(card);
+  });
+}
+
+function toggleSig(id,card){
+  const idx=picked.indexOf(id);
+  if(idx===-1){picked.push(id);card.classList.add('picked');}
+  else{picked.splice(idx,1);card.classList.remove('picked');}
+  document.getElementById('pcount').textContent=picked.length+' 已選';
+  document.getElementById('btn-next').disabled=picked.length===0;
+  updateProg();
+}
+
+function go(n){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p'+n).classList.add('active');
+  phase=n; updateProg();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function updateProg(){
+  const p=phase===1?8:phase===2?48:100;
+  document.getElementById('prog').style.width=p+'%';
+}
+
+document.getElementById('btn-next').onclick=()=>{buildDiag();go(2);};
+
+function buildDiag(){
+  const body=document.getElementById('q-body'); body.innerHTML='';
+  picked.forEach(id=>{
+    const s=SIGNALS.find(x=>x.id===id);
+    const blk=document.createElement('div'); blk.className='q-block';
+    blk.innerHTML=`<div class="q-sig-header"><span class="q-sig-icon">${s.icon}</span><span class="q-sig-name">${s.name}｜${s.role}</span><span class="q-sig-role">「${s.q}」</span></div>`;
+    const ql=document.createElement('div'); ql.className='q-list';
+    s.qs.forEach((q,qi)=>{
+      const key=id+'_'+qi;
+      const item=document.createElement('div'); item.className='q-item';
+      const opts=q.opts.map((o,oi)=>`<button class="q-opt" onclick="pickOpt(this,'${key}',${oi})">${o}</button>`).join('');
+      item.innerHTML=`<div class="q-text">${q.q}</div><div class="q-opts">${opts}</div>`;
+      ql.appendChild(item);
+    });
+    blk.appendChild(ql); body.appendChild(blk);
+  });
+}
+
+function pickOpt(btn,key,val){
+  btn.closest('.q-opts').querySelectorAll('.q-opt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel'); answers[key]=val;
+}
+
+function calcScore(id){
+  const s=SIGNALS.find(x=>x.id===id);
+  let t=0,c=0;
+  s.qs.forEach((_,qi)=>{const k=id+'_'+qi;if(answers[k]!==undefined){t+=answers[k];c++;}});
+  if(!c)return 72;
+  return Math.round(100-(t/c/3)*78);
+}
+
+function showResult(){
+  const body=document.getElementById('result-body'); body.innerHTML='';
+  const scores=picked.map(id=>({id,score:calcScore(id)}));
+  const avg=Math.round(scores.reduce((s,x)=>s+x.score,0)/scores.length);
+  const doff=Math.round(251*(1-avg/100));
+  const sc=avg>=72?'#1a7a2a':avg>=45?'#B8860B':'#A32D2D';
+  const lbl=avg>=72?'生命系統運作良好':avg>=45?'部分訊號需要修復':'多個訊號需要重設';
+  const desc=avg>=72?'你的身體訊號系統有一定穩定性，以下方案幫你持續優化':avg>=45?'部分訊號偏離最佳區間，及早介入效果最好':'多個訊號需要系統性修復，穩定×差異×糾錯×更新×進化';
+
+  body.innerHTML=`
+    <div class="result-hero">
+      <div class="rh-ring">
+        <svg viewBox="0 0 90 90"><circle cx="45" cy="45" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="5"/><circle cx="45" cy="45" r="40" fill="none" stroke="${sc}" stroke-width="5" stroke-dasharray="251" stroke-dashoffset="${doff}" stroke-linecap="round" transform="rotate(-90 45 45)"/></svg>
+        <div class="rh-num">${avg}</div>
+      </div>
+      <div class="rh-title">${lbl}</div>
+      <div class="rh-desc">${desc}</div>
+    </div>
+    <div class="slabel">三大子系統分佈</div>
+    <div class="three-sys">
+      <div class="ts-card"><div class="ts-title">⚡ 驅動系統</div><div class="ts-items">多巴胺・腎上腺素<br>皮質醇・睪固酮・內啡肽<br>讓你出發、行動、撐住</div></div>
+      <div class="ts-card"><div class="ts-title">🎛 調節系統</div><div class="ts-items">甲狀腺素・胰島素<br>生長激素・褪黑激素<br>讓你跑對速度、修復升級</div></div>
+      <div class="ts-card"><div class="ts-title">🤝 連結系統</div><div class="ts-items">血清素・催產素・雌激素<br>讓你安全、信任、合作</div></div>
+    </div>
+    <div class="slabel">你的訊號診斷結果</div>
+    <div id="sig-results"></div>
+  `;
+
+  const container=document.getElementById('sig-results');
+  const sorted=[...scores].sort((a,b)=>a.score-b.score);
+  sorted.forEach(({id,score})=>{
+    const s=SIGNALS.find(x=>x.id===id);
+    const bc=score>=72?'s-hi':score>=45?'s-md':'s-lo';
+    const nc=score>=72?'#1a7a2a':score>=45?'#B8860B':'#A32D2D';
+    const urg=score<45?'需要重設':score<72?'需要修復':'維持優化';
+
+    const card=document.createElement('div'); card.className='sig-result-card';
+    card.innerHTML=`
+      <div class="src-header">
+        <span class="src-icon">${s.icon}</span>
+        <div class="src-info">
+          <div class="src-name">${s.name}</div>
+          <div class="src-role">${s.role} · 「${s.q}」</div>
+        </div>
+        <div class="src-score-area">
+          <div style="font-size:10px;background:rgba(${score<45?'163,45,45':score<72?'184,134,11':'26,122,42'},0.12);padding:2px 8px;border-radius:100px;color:${nc};font-weight:700;margin-bottom:3px;text-align:right">${urg}</div>
+          <div class="src-score-num" style="color:${nc}">${score}<span style="font-size:12px;opacity:0.4">/100</span></div>
+          <div class="src-bar-wrap"><div class="src-bar ${bc}" style="width:0%" data-w="${score}%"></div></div>
+        </div>
+      </div>
+      <div style="padding:0 16px 4px">
+        <div class="rtabs" id="tabs_${id}">
+          <button class="rtab active" onclick="sw('${id}','edu',this)">📖 教育</button>
+          <button class="rtab" onclick="sw('${id}','meth',this)">🛠 方法</button>
+          <button class="rtab" onclick="sw('${id}','nut',this)">⚗️ 修復</button>
+        </div>
+      </div>
+      <div class="tab-panel active" id="edu_${id}">
+        <div class="essence-box"><div class="essence-label">一句話本質</div><div class="essence-text">${s.essence}</div></div>
+        <div class="formula-box">
+          <div class="formula-title">運作公式</div>
+          <div class="formula-steps">
+            ${s.formula.map((f,i)=>`<div class="fs-step">${i>0?'<span class="fs-arr">↓</span>':''}<span>${f}</span></div>`).join('')}
+          </div>
+        </div>
+        <div class="spectrum-grid">
+          <div class="spec-card spec-low">
+            <div class="spec-title">⚠ 訊號缺乏時</div>
+            ${s.low_traits.map(t=>`<div class="spec-item">${t}</div>`).join('')}
+          </div>
+          <div class="spec-card spec-high">
+            <div class="spec-title">🔺 訊號過高時</div>
+            ${s.high_traits.map(t=>`<div class="spec-item">${t}</div>`).join('')}
+          </div>
+        </div>
+        <div class="optimal-box"><div class="optimal-title">最佳區間</div><div class="optimal-text">${s.optimal}</div></div>
+      </div>
+      <div class="tab-panel" id="meth_${id}">
+        <div class="method-steps">
+          ${s.methods.map((m,i)=>`
+            <div class="ms-card">
+              <div class="ms-num">${i+1}</div>
+              <div class="ms-body"><div class="ms-title">${m.t}</div><div class="ms-desc">${m.d}</div></div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="wisdom-box"><div class="wb-title">終極智慧</div><div class="wb-text">${s.wisdom}</div></div>
+      </div>
+      <div class="tab-panel" id="nut_${id}">
+        <div class="nut-list" id="nuts_${id}"></div>
+      </div>
+    `;
+    container.appendChild(card);
+
+    const nutContainer=card.querySelector('#nuts_'+id);
+    s.nutrients.forEach((n,ni)=>{
+      const nid=id+'_n'+ni;
+      const nc2=document.createElement('div'); nc2.className='nut-card';
+      nc2.innerHTML=`
+        <div class="nut-top" onclick="toggleNut('${nid}')">
+          <div class="nut-ico" style="background:${n.bg}">${n.ico}</div>
+          <div class="nut-info">
+            <div class="nut-name">${n.n}</div>
+            <div class="nut-mech">${n.mech}</div>
+            <div class="nut-price">${n.price} · ${n.spec}</div>
+          </div>
+          <span class="nut-exp" id="exp_${nid}">▾</span>
+          <a class="nut-cta" href="${SHOP}" target="_blank" rel="noopener" onclick="event.stopPropagation()">購買</a>
+        </div>
+        <div class="nut-detail" id="${nid}">
+          <div class="nut-mbox"><div class="nut-mt">作用機制</div><div class="nut-mb">${n.det}</div></div>
+          <div class="nut-why"><div class="nut-wt">為什麼你的訊號系統現在需要它</div><div class="nut-wb">${n.why}</div></div>
+          <div class="buy-block">
+            <div class="bb-info">
+              <div class="bb-name">${n.n}</div>
+              <div class="bb-price">${n.price}</div>
+              <div class="bb-spec">${n.spec}</div>
+              <div class="bb-store">📦 7-11 賣貨便取貨付款</div>
+            </div>
+            <a class="btn-buy-full" href="${SHOP}" target="_blank" rel="noopener">立即購買 →</a>
+          </div>
+        </div>
+      `;
+      nutContainer.appendChild(nc2);
+    });
+  });
+
+  go(3);
+  setTimeout(()=>{
+    document.querySelectorAll('.src-bar').forEach(b=>{
+      b.style.transition='width 1s ease';
+      b.style.width=b.dataset.w;
+    });
+  },300);
+}
+
+function sw(id,tab,btn){
+  ['edu','meth','nut'].forEach(t=>document.getElementById(t+'_'+id).classList.toggle('active',t===tab));
+  document.querySelectorAll('#tabs_'+id+' .rtab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function toggleNut(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('open');
+  const exp=document.getElementById('exp_'+id);
+  if(exp)exp.textContent=el.classList.contains('open')?'▴':'▾';
+}
+function restart(){
+  picked=[];answers={};
+  document.querySelectorAll('.sig-card').forEach(c=>c.classList.remove('picked'));
+  document.getElementById('pcount').textContent='0 已選';
+  document.getElementById('btn-next').disabled=true;
+  go(1);
+}
+
+initTabs();
+renderGrid('全部');
+</script>
+</body>
+</html>
