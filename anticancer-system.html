@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>抗癌扶正系統｜功能醫學 × 代謝療法</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0E1218;--warm:#F8F6F2;
+  --forest:#1A4A2E;--forest-lt:#E8F2EC;--forest-mid:#2D6A45;
+  --gold:#8A6000;--gold-lt:#FBF3E0;
+  --slate:#1A2840;--slate-lt:#E8EDF5;
+  --rust:#8A2800;--rust-lt:#FEF0E8;
+  --purple:#3A1A5A;--purple-lt:#F0E8F8;
+  --teal:#1A5050;--teal-lt:#E5F2F2;
+  --border:#DDD5C5;--text2:#4A4035;--text3:#8A7E70;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--warm);color:var(--ink);min-height:100vh;line-height:1.7}
+
+.nav{background:var(--ink);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.nav-logo{font-family:'Noto Serif TC',serif;font-size:14px;font-weight:700;color:#F8F6F2;letter-spacing:.05em;display:flex;align-items:center;gap:7px}
+.nav-cta{background:var(--forest-mid);color:#fff;font-size:13px;font-weight:600;padding:7px 15px;border-radius:3px;text-decoration:none;transition:.15s}
+.nav-cta:hover{background:var(--forest)}
+
+.hero{background:linear-gradient(160deg,#0A1A10 0%,#1A4A2E 50%,#0E1218 100%);padding:3.5rem 1.4rem 3rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-80px;right:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(45,106,69,.3),transparent 70%);pointer-events:none}
+.hero-eyebrow{font-size:11px;font-weight:600;letter-spacing:.14em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:14px}
+.hero-title{font-family:'Noto Serif TC',serif;font-size:clamp(24px,6.5vw,36px);font-weight:900;color:#F8F6F2;line-height:1.3;margin-bottom:12px}
+.hero-title .hi{color:#7AE0A0}
+.hero-sub{font-size:14px;color:rgba(255,255,255,.6);line-height:1.8;margin-bottom:22px;max-width:340px}
+.hero-truth{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:14px 16px;margin-bottom:24px;max-width:360px}
+.ht-row{font-size:13px;color:rgba(255,255,255,.55);padding:4px 0;line-height:1.6}
+.ht-row strong{color:#7AE0A0}
+.hero-btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn-forest{display:inline-flex;align-items:center;gap:7px;padding:12px 22px;border-radius:3px;font-size:14px;font-weight:600;text-decoration:none;transition:.15s;background:var(--forest-mid);color:#fff;box-shadow:0 4px 16px rgba(45,106,69,.4)}
+.btn-forest:hover{background:var(--forest)}
+.btn-outline{display:inline-flex;align-items:center;gap:7px;padding:12px 18px;border-radius:3px;font-size:14px;font-weight:600;text-decoration:none;transition:.15s;background:transparent;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.2)}
+.btn-outline:hover{background:rgba(255,255,255,.08)}
+
+.sec{padding:2.2rem 1.3rem}
+.sec-alt{background:#fff}
+.sec-lbl{font-size:11px;font-weight:600;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.sec-lbl::before{content:'';width:14px;height:1px;background:currentColor;display:block}
+.sec-h{font-family:'Noto Serif TC',serif;font-size:21px;font-weight:700;color:var(--ink);margin-bottom:6px;line-height:1.4}
+.sec-sub{font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.7}
+
+/* TABS */
+.tab-bar{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:18px;overflow-x:auto;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab{background:none;border:none;font-size:13px;font-weight:500;color:var(--text3);padding:9px 14px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.13s}
+.tab.on{color:var(--forest-mid);border-bottom-color:var(--forest-mid);font-weight:600}
+.tpage{display:none}.tpage.on{display:block}
+
+/* PHASE CARDS */
+.phase-list{display:flex;flex-direction:column;gap:12px}
+.phase-card{border-radius:8px;overflow:hidden;border:1px solid var(--border);background:#fff}
+.phase-head{display:flex;align-items:center;gap:11px;padding:14px;cursor:pointer}
+.phase-badge{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif TC',serif;font-size:13px;font-weight:900;flex-shrink:0;color:#fff}
+.phase-info{flex:1}
+.phase-name{font-size:14px;font-weight:600;color:var(--ink)}
+.phase-goal{font-size:12px;color:var(--text3);margin-top:2px}
+.phase-arr{color:var(--text3);font-size:17px;transition:.2s;flex-shrink:0}
+.phase-body{display:none;padding:0 14px 14px;border-top:1px solid var(--border)}
+.phase-body.open{display:block}
+.phase-slogan{font-size:13px;font-weight:600;color:var(--forest-mid);background:var(--forest-lt);border-radius:5px;padding:10px 13px;margin:10px 0;line-height:1.6}
+.sys-item{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #F5F0EA}
+.sys-item:last-child{border-bottom:none}
+.sys-emoji{font-size:16px;flex-shrink:0;margin-top:1px}
+.sys-content{flex:1}
+.sys-name{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.sys-nut{font-size:12px;color:var(--forest-mid);font-weight:500}
+.phase-buy{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--ink);color:#F8F6F2;font-size:13px;font-weight:600;padding:11px;border-radius:4px;text-decoration:none;margin-top:12px;transition:.15s}
+.phase-buy:hover{background:var(--forest-mid)}
+
+/* SYSTEM CARDS (7 systems) */
+.sys7-grid{display:flex;flex-direction:column;gap:10px}
+.sys7-card{background:#fff;border:1px solid var(--border);border-radius:7px;overflow:hidden;cursor:pointer}
+.sys7-head{display:flex;align-items:center;gap:10px;padding:13px 14px}
+.sys7-icon{font-size:22px;flex-shrink:0}
+.sys7-info{flex:1}
+.sys7-name{font-size:14px;font-weight:600;color:var(--ink)}
+.sys7-core{font-size:12px;color:var(--text3);margin-top:2px}
+.sys7-arr{color:var(--text3);font-size:17px;flex-shrink:0;transition:.2s}
+.sys7-body{display:none;padding:0 14px 14px;border-top:1px solid var(--border)}
+.sys7-body.open{display:block}
+.nut-table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+.nut-table th{background:var(--forest);color:#fff;padding:7px 10px;text-align:left;font-weight:600;font-size:11px}
+.nut-table td{padding:7px 10px;border-bottom:1px solid #F0EBE3;vertical-align:top}
+.nut-table tr:last-child td{border-bottom:none}
+.nut-table tr:nth-child(even) td{background:#FAFAF7}
+.nt-name{font-weight:600;color:var(--ink)}
+.nt-fn{color:var(--text2)}
+.sys7-buy{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--forest-mid);color:#fff;font-size:13px;font-weight:600;padding:11px;border-radius:4px;text-decoration:none;margin-top:10px;transition:.15s}
+.sys7-buy:hover{background:var(--forest)}
+
+/* QUIZ */
+.quiz-card{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.qpbar{height:3px;background:#EDE8E0}
+.qpfill{height:100%;background:var(--forest-mid);transition:.4s}
+.qbody{padding:18px}
+.qq{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:14px;line-height:1.55}
+.qopts{display:flex;flex-direction:column;gap:7px}
+.qopt{background:var(--warm);border:1.5px solid var(--border);border-radius:4px;padding:11px 13px;font-size:13px;color:var(--ink);cursor:pointer;text-align:left;transition:.13s;line-height:1.5}
+.qopt:hover,.qopt.sel{border-color:var(--forest-mid);background:var(--forest-lt)}
+.qnav{display:flex;gap:8px;margin-top:14px}
+.btn-green{flex:1;background:var(--forest-mid);color:#fff;border:none;border-radius:4px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s}
+.btn-green:hover{background:var(--forest)}
+.btn-green:disabled{background:#C0BAB0;cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);border-radius:4px;padding:12px 14px;font-size:14px;cursor:pointer}
+
+/* RESULT */
+.res-card{border-radius:8px;padding:20px;margin-bottom:12px;color:#fff}
+.res-type{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;opacity:.6}
+.res-title{font-family:'Noto Serif TC',serif;font-size:20px;font-weight:700;margin-bottom:10px;line-height:1.35}
+.res-desc{font-size:13px;line-height:1.7;opacity:.8}
+.priority-wrap{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
+.priority-lbl{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--text3);text-transform:uppercase;margin-bottom:10px}
+.pri-row{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)}
+.pri-row:last-child{border-bottom:none}
+.pri-dot{color:var(--forest-mid);font-size:14px;flex-shrink:0;margin-top:1px}
+.pri-name{font-size:13px;font-weight:600;color:var(--ink)}
+.pri-fn{font-size:12px;color:var(--text3);margin-top:1px}
+.buy-full{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--forest-mid);color:#fff;font-size:15px;font-weight:700;padding:14px;border-radius:4px;text-decoration:none;transition:.15s;box-shadow:0 4px 16px rgba(45,106,69,.35)}
+.buy-full:hover{background:var(--forest)}
+
+/* TRUTH BOXES */
+.truth-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}
+.truth-card{border-radius:7px;padding:13px;border:1px solid var(--border)}
+.truth-icon{font-size:24px;margin-bottom:7px}
+.truth-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:5px;line-height:1.4}
+.truth-desc{font-size:12px;color:var(--text2);line-height:1.55}
+
+/* INFO BOXES */
+.ibox{border-radius:6px;padding:12px 14px;margin:10px 0;font-size:13px;line-height:1.7}
+.ibox-forest{background:var(--forest-lt);border-left:3px solid var(--forest-mid);color:var(--forest)}
+.ibox-gold{background:var(--gold-lt);border-left:3px solid var(--gold);color:var(--gold)}
+.ibox-warn{background:var(--rust-lt);border-left:3px solid var(--rust);color:var(--rust)}
+
+/* FLOW */
+.flow-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;margin:14px 0}
+.flow-step{background:#fff;border:1px solid var(--border);border-radius:4px;padding:9px 20px;font-size:13px;font-weight:600;color:var(--ink);text-align:center;min-width:200px}
+.flow-step.hi{background:var(--forest-mid);color:#fff;border-color:var(--forest-mid)}
+.flow-arr{color:var(--text3);font-size:18px;line-height:1}
+
+/* STICKY */
+.sticky{position:fixed;bottom:0;left:0;right:0;background:var(--ink);border-top:1px solid rgba(255,255,255,.07);padding:11px 16px;z-index:200;display:flex;gap:10px;align-items:center}
+.sticky-txt{flex:1;font-size:12px;color:rgba(255,255,255,.5);line-height:1.4}
+.sticky-txt b{color:#7AE0A0;display:block;font-size:13px;margin-bottom:1px}
+.sticky-btn{background:var(--forest-mid);color:#fff;font-size:13px;font-weight:700;padding:11px 16px;border-radius:3px;text-decoration:none;white-space:nowrap;flex-shrink:0;transition:.15s}
+.sticky-btn:hover{background:var(--forest)}
+.spacer{height:68px}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">🛡 抗癌扶正系統</div>
+  <a class="nav-cta" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">立即選購</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">功能醫學 × 代謝抗癌 × 扶正療法</div>
+  <h1 class="hero-title">真正殺癌的<br>是你的<span class="hi">免疫力</span><br>不是化療</h1>
+  <p class="hero-sub">任何殺癌療法都需要更大的扶正療法。功能醫學不是取代手術化療，而是讓你的身體有足夠的力量承接、修復、並持續對抗。</p>
+  <div class="hero-truth">
+    <div class="ht-row"><strong>傳統思維：</strong>殺死癌細胞</div>
+    <div class="ht-row"><strong>代謝療法：</strong>切斷癌細胞燃料</div>
+    <div class="ht-row"><strong>功能醫學：</strong>扶正免疫＋優化自癒力</div>
+    <div class="ht-row"><strong>整合策略：</strong>三者協同，才是完整抗癌</div>
+  </div>
+  <div class="hero-btns">
+    <a class="btn-forest" href="#quiz">▶ 找出我的扶正缺口</a>
+    <a class="btn-outline" href="#phases">查看三階段方案</a>
+  </div>
+</div>
+
+<!-- CORE TRUTH -->
+<div class="sec sec-alt">
+  <div class="sec-lbl">抗癌真相</div>
+  <h2 class="sec-h">你不是只要殺蒼蠅<br>你要改變整個環境</h2>
+  <p class="sec-sub">癌症不是單純的基因病，而是能量代謝障礙。改變腫瘤的生長環境，比單純殺癌細胞更根本。</p>
+  <div class="truth-grid">
+    <div class="truth-card" style="background:var(--forest-lt);border-color:rgba(45,106,69,.2)">
+      <div class="truth-icon">⚡</div>
+      <div class="truth-title">癌細胞的弱點</div>
+      <div class="truth-desc">癌細胞高度依賴葡萄糖（Warburg效應），無法有效利用酮體，這是代謝療法的核心切入點</div>
+    </div>
+    <div class="truth-card" style="background:var(--slate-lt);border-color:rgba(26,40,64,.15)">
+      <div class="truth-icon">🛡</div>
+      <div class="truth-title">真正的殺手</div>
+      <div class="truth-desc">NK細胞、T細胞才是消滅癌細胞的主力。免疫力不足，任何療法效果都打折</div>
+    </div>
+    <div class="truth-card" style="background:var(--gold-lt);border-color:rgba(138,96,0,.15)">
+      <div class="truth-icon">🔄</div>
+      <div class="truth-title">扶正優於攻邪</div>
+      <div class="truth-desc">化療放療殺癌的同時也殺好細胞。扶正療法讓身體有能力修復、承接治療、防止復發</div>
+    </div>
+    <div class="truth-card" style="background:var(--purple-lt);border-color:rgba(58,26,90,.15)">
+      <div class="truth-icon">🌱</div>
+      <div class="truth-title">微環境決定一切</div>
+      <div class="truth-desc">腫瘤微環境支持癌細胞生長。改變腸道、免疫、代謝環境，就是在切斷癌細胞的支持系統</div>
+    </div>
+  </div>
+  <div class="ibox ibox-forest">
+    <strong>布維療法創始者也強調：</strong>代謝療法需要更多營養配套與監控。生酮抗癌不是單一答案，而是系統性扶正的一環。
+  </div>
+</div>
+
+<!-- THREE PHASES -->
+<div class="sec" id="phases">
+  <div class="sec-lbl">三階段抗癌方案</div>
+  <h2 class="sec-h">從切斷燃料到長期壓制</h2>
+  <p class="sec-sub">每個階段都有對應的七大系統支持。點開查看精準的營養補充方案。</p>
+
+  <div class="tab-bar">
+    <button class="tab on" onclick="switchTab('phases','ph1',this)">第一階段</button>
+    <button class="tab" onclick="switchTab('phases','ph2',this)">第二階段</button>
+    <button class="tab" onclick="switchTab('phases','ph3',this)">第三階段</button>
+  </div>
+
+  <div class="tpage on" id="tab-ph1">
+    <div class="ibox ibox-gold" style="margin-bottom:14px">
+      <strong>🎯 目標：</strong>降低血糖・提升酮體 → 切斷癌細胞燃料，讓正常細胞進入保護模式
+    </div>
+    <div class="phase-list" id="ph1-list"></div>
+  </div>
+  <div class="tpage" id="tab-ph2">
+    <div class="ibox ibox-gold" style="margin-bottom:14px">
+      <strong>🎯 目標：</strong>減少血管新生・降低腫瘤發炎 → 幫助手術更安全有效
+    </div>
+    <div class="phase-list" id="ph2-list"></div>
+  </div>
+  <div class="tpage" id="tab-ph3">
+    <div class="ibox ibox-gold" style="margin-bottom:14px">
+      <strong>🎯 目標：</strong>持續壓制腫瘤細胞・促進長期存活 → 防止復發，維持高品質生活
+    </div>
+    <div class="phase-list" id="ph3-list"></div>
+  </div>
+</div>
+
+<!-- 7 SYSTEMS -->
+<div class="sec sec-alt">
+  <div class="sec-lbl">功能醫學七大系統</div>
+  <h2 class="sec-h">找出你的失衡系統<br>精準補充才有效</h2>
+  <p class="sec-sub">每個系統都有對應的抗癌營養素。點開查看你最需要的支持。</p>
+  <div class="sys7-grid" id="sys7-grid"></div>
+</div>
+
+<!-- QUIZ -->
+<div class="sec" id="quiz">
+  <div class="sec-lbl">2 分鐘自我評估</div>
+  <h2 class="sec-h">你的抗癌扶正缺口在哪裡？</h2>
+  <p class="sec-sub">找出你最需要優先強化的系統，給你精準的補充建議。</p>
+  <div id="quiz-area"></div>
+</div>
+
+<!-- FINAL CTA -->
+<div class="sec" style="background:var(--forest);padding:2.5rem 1.4rem">
+  <div style="text-align:center;margin-bottom:20px">
+    <div class="sec-lbl" style="color:rgba(255,255,255,.3);justify-content:center">整合抗癌，從今天開始</div>
+    <h2 style="font-family:'Noto Serif TC',serif;font-size:22px;font-weight:700;color:#F8F6F2;margin-bottom:8px;line-height:1.4">扶正療法<br>讓任何抗癌方案都更有效</h2>
+    <p style="font-size:13px;color:rgba(255,255,255,.55);line-height:1.7;max-width:300px;margin:0 auto 20px">不是取代手術化療，而是讓你的身體有足夠的力量去承接、修復、並持續對抗。</p>
+  </div>
+  <a class="buy-full" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank" style="max-width:320px;margin:0 auto;display:flex;background:#fff;color:var(--forest)">
+    ☕ 前往選購扶正方案 →
+  </a>
+  <div class="ibox ibox-warn" style="margin-top:16px;max-width:360px;margin-left:auto;margin-right:auto">
+    <strong>⚠️ 重要提醒：</strong>本系統為輔助參考，不取代正統醫療。代謝療法需要專業監測，請與腫瘤科醫師共同規劃。
+  </div>
+</div>
+
+<div class="spacer"></div>
+<div class="sticky">
+  <div class="sticky-txt"><b>抗癌扶正方案</b>功能醫學 × 代謝療法精準補充</div>
+  <a class="sticky-btn" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">立即選購 →</a>
+</div>
+
+<script>
+const SHOP='https://myship.7-11.com.tw/general/detail/GM2407210007294';
+
+const PH1=[
+  {emoji:'⚡',name:'能量系統',fn:'提升粒線體利用酮體',nuts:'維生素B群、CoQ10、MCT'},
+  {emoji:'🛡',name:'免疫系統',fn:'抑制發炎，活化T細胞',nuts:'薑黃素、白藜蘆醇（美寶）'},
+  {emoji:'♻️',name:'解毒系統',fn:'自噬啟動，清除受損細胞',nuts:'EGCG、α-硫辛酸（大補王）'},
+  {emoji:'🏗',name:'結構系統',fn:'減少糖化，保護關節血管',nuts:'Omega-3 亞麻仁油'},
+  {emoji:'🌱',name:'腸道系統',fn:'腸道菌群轉向益生菌優勢',nuts:'孢子益生菌＋丁酸鈉複方'},
+  {emoji:'🧠',name:'心智情緒系統',fn:'斷食提升BDNF，減少焦慮',nuts:'鎂、紅景天（人參皂甘複方）'},
+  {emoji:'🔔',name:'內分泌系統',fn:'降低胰島素與IGF-1',nuts:'苦瓜提取、鎂、黃連素'},
+];
+
+const PH2=[
+  {emoji:'⚡',name:'能量系統',fn:'高劑量維C增加癌細胞氧化壓力',nuts:'維生素C（高劑量）'},
+  {emoji:'🛡',name:'免疫系統',fn:'手術期免疫支持',nuts:'氣循環、酶菌醣體'},
+  {emoji:'♻️',name:'解毒系統',fn:'保護肝腎，減少藥物副作用',nuts:'水飛薊、NAC、憂遁草'},
+  {emoji:'🏗',name:'結構系統',fn:'抗發炎修復手術組織',nuts:'亞麻仁油、薑黃素'},
+  {emoji:'🌱',name:'腸道系統',fn:'術後調整腸道屏障',nuts:'孢子益生菌、丁酸'},
+  {emoji:'🧠',name:'心智情緒系統',fn:'術前焦慮減少',nuts:'L-茶胺酸（酶菌醣體）、GABA'},
+  {emoji:'🔔',name:'內分泌系統',fn:'降低壓力荷爾蒙',nuts:'加強B群'},
+];
+
+const PH3=[
+  {emoji:'⚡',name:'能量系統',fn:'粒線體保養，長期維護',nuts:'CoQ10、NMN'},
+  {emoji:'🛡',name:'免疫系統',fn:'β-葡聚醣維持免疫監視',nuts:'酶菌醣體、維生素D3'},
+  {emoji:'♻️',name:'解毒系統',fn:'間歇斷食啟動自噬',nuts:'綠茶多酚（EGCG）、大蒜素'},
+  {emoji:'🏗',name:'結構系統',fn:'抑制糖化，延緩老化',nuts:'肌肽、維生素E、亞麻仁油'},
+  {emoji:'🌱',name:'腸道系統',fn:'低升糖飲食保護腸道屏障',nuts:'抗性澱粉、益生元、丁酸'},
+  {emoji:'🧠',name:'心智情緒系統',fn:'冥想＋生酮提升腦能量',nuts:'DHA（亞麻仁油）、人參皂甘複方'},
+  {emoji:'🔔',name:'內分泌系統',fn:'長期改善胰島素敏感度',nuts:'苦瓜、黃連素'},
+];
+
+const SYS7=[
+  {
+    icon:'🌿',name:'消化吸收・腸道系統',core:'腸道是免疫的根基，癌症治療期間腸道保護是首要任務',
+    nuts:[
+      {name:'孢子益生菌',fn:'化療後菌相修復，增強免疫'},
+      {name:'丁酸鈉',fn:'腸壁修復，防止腸漏入血'},
+      {name:'5R腸胃粉',fn:'腸黏膜再生，完整修復程序'},
+      {name:'消化全酶',fn:'提升化療期間的營養吸收率'},
+      {name:'L-麩醯胺酸',fn:'腸細胞首要能量，防止黏膜萎縮'},
+      {name:'鋅',fn:'緊密連結修復，免疫傳導'},
+    ],
+  },
+  {
+    icon:'🛡',name:'免疫・發炎平衡系統',core:'活化NK細胞、T細胞，提升腫瘤監視能力，降低慢性發炎',
+    nuts:[
+      {name:'薑黃素',fn:'NF-κB抑制，核心抗炎、抑制腫瘤訊號'},
+      {name:'亞麻仁油（Omega-3）',fn:'EPA/DHA降低腫瘤促炎因子'},
+      {name:'β-葡聚醣（酶菌醣體）',fn:'NK細胞活化，免疫監控'},
+      {name:'維生素D3',fn:'T細胞調節，免疫辨識腫瘤'},
+      {name:'硒',fn:'麩胱甘肽過氧化酶，抗氧化防線'},
+      {name:'NAC',fn:'穀胱甘肽前驅，修復化療氧化損傷'},
+    ],
+  },
+  {
+    icon:'⚡',name:'細胞能量・粒線體系統',core:'正常細胞能利用酮體，癌細胞不能。強化粒線體是代謝療法的核心',
+    nuts:[
+      {name:'CoQ10',fn:'電子傳遞鏈，ATP生成，化療保護'},
+      {name:'NMN',fn:'NAD+生成，粒線體修復'},
+      {name:'加強B群',fn:'代謝輔酶，能量循環'},
+      {name:'α-硫辛酸（大補王）',fn:'粒線體保護，抗氧化循環'},
+      {name:'鎂',fn:'ATP穩定，粒線體膜電位'},
+      {name:'D-Ribose',fn:'ATP直接原料'},
+    ],
+  },
+  {
+    icon:'♻️',name:'解毒・生物轉化系統',core:'肝腎是代謝療法和化療藥物的清除場所，解毒能力決定治療的安全性',
+    nuts:[
+      {name:'NAC',fn:'穀胱甘肽生成，解毒主力'},
+      {name:'憂遁草',fn:'肝臟解毒支持，降低肝毒性'},
+      {name:'TMG',fn:'甲基化支持，毒素轉化'},
+      {name:'加強B群',fn:'Phase I/II解毒酵素輔因子'},
+      {name:'硒',fn:'解毒酵素核心礦物質'},
+      {name:'維生素C',fn:'化療輔助，抗氧化修復'},
+    ],
+  },
+  {
+    icon:'💪',name:'結構完整性系統',core:'防止癌症惡液質，保留瘦體重是提高化療耐受性和存活率的關鍵',
+    nuts:[
+      {name:'可可胺基酸粉（蛋白質）',fn:'防止肌肉流失，惡液質預防'},
+      {name:'亞麻仁油（EPA/DHA）',fn:'抗炎保肌，維持細胞膜完整'},
+      {name:'維生素D3',fn:'肌肉功能維持，骨骼保護'},
+      {name:'鎂',fn:'肌肉放鬆，電解質平衡'},
+      {name:'膠原蛋白',fn:'結締組織修復，手術後癒合'},
+      {name:'K2（蘆筍提取）',fn:'骨骼代謝，防止化療骨鬆'},
+    ],
+  },
+  {
+    icon:'🔔',name:'激素・神經傳導系統',core:'降低胰島素/IGF-1訊號是抑制癌細胞增殖的關鍵代謝策略',
+    nuts:[
+      {name:'苦瓜皂甘複方',fn:'抑制葡萄糖吸收，降胰島素'},
+      {name:'黃連素',fn:'AMPK活化，類Metformin效果'},
+      {name:'鎂',fn:'胰島素敏感性，壓力調節'},
+      {name:'色胺酸（銀杏複方）',fn:'血清素支持，情緒穩定'},
+      {name:'加強B群',fn:'HPA軸支持，壓力荷爾蒙'},
+      {name:'能量方',fn:'腎上腺修復，抗壓適應'},
+    ],
+  },
+  {
+    icon:'🌊',name:'循環・微環境系統',core:'改善微循環可減少腫瘤缺氧環境，缺氧正是腫瘤轉移的主要驅動力',
+    nuts:[
+      {name:'亞麻仁油（EPA/DHA）',fn:'降低血液黏稠，改善循環'},
+      {name:'銀杏複方',fn:'促進微循環，改善末梢供氧'},
+      {name:'菸鹼酸（B3）',fn:'血脂平衡，血管保護'},
+      {name:'K2（蘆筍提取）',fn:'防止血管鈣化'},
+      {name:'血循環草本包',fn:'改善血流，淋巴暢通'},
+      {name:'氣循環草本包',fn:'黃耆免疫，氣血流通'},
+    ],
+  },
+];
+
+const QS=[
+  {
+    q:'你目前的狀況是？',
+    opts:['正在接受化療/放療中','手術前後調養','維持期預防復發','預防性調理體質'],
+    scores:[1,1,2,0],
+  },
+  {
+    q:'你最困擾的症狀是？',
+    opts:['疲勞、沒有力氣、整個人沒電','腸胃不好、消化差、食慾不振','情緒焦慮、睡眠差、壓力大','免疫低、容易感冒、傷口慢癒合'],
+    scores:[2,0,3,1],
+  },
+  {
+    q:'你對代謝療法的了解是？',
+    opts:['已在執行低醣/生酮飲食','想嘗試但不知道怎麼開始','正常飲食，還沒考慮','聽說過但擔心副作用'],
+    scores:[2,1,0,1],
+  },
+  {
+    q:'你最希望這套方案幫你做到什麼？',
+    opts:['降低化療副作用，讓身體撐住','提升免疫，讓身體更有戰鬥力','修復腸道，讓營養真正被吸收','穩定代謝，長期防止復發'],
+    scores:[1,1,0,2],
+  },
+];
+
+const RESULTS=[
+  {
+    color:'#1A4A2E',
+    type:'腸道修復型',
+    title:'先修腸道，才能真正吸收所有療法的支持',
+    desc:'腸道是免疫系統的根基。化療和壓力都會嚴重破壞腸道屏障，導致營養吸收不良，讓補充的營養素打折扣。先修腸，一切才有基礎。',
+    priority:[
+      {name:'丁酸鈉',fn:'腸壁修復，免疫耐受'},
+      {name:'孢子益生菌',fn:'菌相重建，產丁酸'},
+      {name:'L-麩醯胺酸',fn:'腸細胞能量，黏膜修復'},
+      {name:'憂遁草',fn:'消炎解毒，腸道保護'},
+    ],
+  },
+  {
+    color:'#1A2840',
+    type:'免疫強化型',
+    title:'活化你的免疫大軍，讓身體有能力對抗腫瘤',
+    desc:'NK細胞和T細胞才是真正消滅癌細胞的力量。化療後免疫系統受損，需要積極的免疫重建和監控支持。',
+    priority:[
+      {name:'β-葡聚醣（酶菌醣體）',fn:'NK細胞活化，免疫監控'},
+      {name:'維生素D3',fn:'T細胞調節，免疫辨識'},
+      {name:'薑黃素',fn:'抗炎、抑制腫瘤訊號'},
+      {name:'硒',fn:'抗氧化，免疫酵素'},
+    ],
+  },
+  {
+    color:'#1A5050',
+    type:'能量代謝型',
+    title:'強化粒線體，讓正常細胞有能力對抗癌細胞',
+    desc:'代謝療法的核心在於：正常細胞能利用酮體，癌細胞不能。強化粒線體功能，讓你的細胞在代謝療法中佔有優勢。',
+    priority:[
+      {name:'CoQ10',fn:'粒線體ATP生成'},
+      {name:'NMN',fn:'NAD+修復'},
+      {name:'α-硫辛酸（大補王）',fn:'粒線體保護'},
+      {name:'苦瓜提取',fn:'降低胰島素，切斷癌細胞燃料'},
+    ],
+  },
+  {
+    color:'#3A1A5A',
+    type:'長期維持型',
+    title:'持續壓制腫瘤微環境，降低復發風險',
+    desc:'癌症緩解後的維持期同樣重要。持續的代謝壓力、免疫監控和解毒支持，是長期存活的關鍵。',
+    priority:[
+      {name:'CoQ10＋NMN',fn:'粒線體長期保養'},
+      {name:'亞麻仁油（EPA/DHA）',fn:'抗炎、防止腫瘤轉移'},
+      {name:'黃連素',fn:'AMPK活化，抑制腫瘤代謝'},
+      {name:'NAC',fn:'間歇斷食自噬支持'},
+    ],
+  },
+];
+
+function buildPhases(data, containerId){
+  document.getElementById(containerId).innerHTML=data.map((s,i)=>`
+    <div style="background:#fff;border:1px solid var(--border);border-radius:7px;padding:14px;margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="font-size:18px">${s.emoji}</span>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:var(--ink)">${s.name}</div>
+          <div style="font-size:12px;color:var(--text3)">${s.fn}</div>
+        </div>
+      </div>
+      <div style="background:var(--forest-lt);border-radius:4px;padding:7px 10px;font-size:12px;font-weight:600;color:var(--forest-mid)">💊 ${s.nuts}</div>
+    </div>`).join('')+`
+    <a class="phase-buy" href="${SHOP}" target="_blank">選購這個階段的方案 →</a>`;
+}
+
+function buildSys7(){
+  document.getElementById('sys7-grid').innerHTML=SYS7.map((s,i)=>`
+    <div class="sys7-card" id="sc-${i}">
+      <div class="sys7-head" onclick="toggleSys(${i})">
+        <div class="sys7-icon">${s.icon}</div>
+        <div class="sys7-info">
+          <div class="sys7-name">${s.name}</div>
+          <div class="sys7-core">${s.core.slice(0,30)}…</div>
+        </div>
+        <span class="sys7-arr" id="sa-${i}">›</span>
+      </div>
+      <div class="sys7-body" id="sb-${i}">
+        <div class="ibox ibox-forest" style="margin:8px 0">${s.core}</div>
+        <table class="nut-table">
+          <thead><tr><th>營養素</th><th>抗癌機制</th></tr></thead>
+          <tbody>${s.nuts.map(n=>`<tr><td><span class="nt-name">${n.name}</span></td><td class="nt-fn">${n.fn}</td></tr>`).join('')}</tbody>
+        </table>
+        <a class="sys7-buy" href="${SHOP}" target="_blank">選購「${s.name}」方案 →</a>
+      </div>
+    </div>`).join('');
+}
+
+function toggleSys(i){
+  const b=document.getElementById('sb-'+i);
+  const a=document.getElementById('sa-'+i);
+  const on=b.classList.toggle('open');
+  a.textContent=on?'⌄':'›';
+}
+
+function switchTab(group,id,btn){
+  document.querySelectorAll(`#${group} .tpage`).forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll(`#${group} .tab`).forEach(t=>t.classList.remove('on'));
+  document.getElementById('tab-'+id).classList.add('on');
+  btn.classList.add('on');
+}
+
+// Fix tab switching for phases section
+function switchTab(group,id,btn){
+  const tabs=document.querySelectorAll('.tpage');
+  const btns=document.querySelectorAll('.tab');
+  // only affect tabs in same tab-bar parent
+  const tabBar=btn.closest('.tab-bar');
+  const sec=tabBar.closest('.sec, div');
+  tabBar.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  ['ph1','ph2','ph3'].forEach(id2=>{
+    const el=document.getElementById('tab-'+id2);
+    if(el)el.classList.remove('on');
+  });
+  const target=document.getElementById('tab-'+id);
+  if(target)target.classList.add('on');
+}
+
+let qState={cur:0,ans:[],done:false};
+function renderQuiz(){
+  const area=document.getElementById('quiz-area');
+  if(qState.done){renderResult();return;}
+  const q=QS[qState.cur];
+  const pct=Math.round(qState.cur/QS.length*100);
+  const sel=qState.ans[qState.cur];
+  area.innerHTML=`
+    <div class="quiz-card">
+      <div class="qpbar"><div class="qpfill" style="width:${pct}%"></div></div>
+      <div class="qbody">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px">第 ${qState.cur+1} 題 / 共 ${QS.length} 題</div>
+        <div class="qq">${q.q}</div>
+        <div class="qopts">${q.opts.map((o,i)=>`<button class="qopt ${sel===i?'sel':''}" onclick="pickA(${i})">${o}</button>`).join('')}</div>
+        <div class="qnav">
+          ${qState.cur>0?`<button class="btn-ghost" onclick="qBack()">上一題</button>`:''}
+          <button class="btn-green" onclick="qNext()" ${sel===undefined?'disabled':''}>
+            ${qState.cur<QS.length-1?'下一題 →':'查看我的扶正方案 →'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+function pickA(i){qState.ans[qState.cur]=i;renderQuiz();}
+function qBack(){if(qState.cur>0){qState.cur--;renderQuiz();}}
+function qNext(){
+  if(qState.ans[qState.cur]===undefined)return;
+  qState.cur++;
+  if(qState.cur>=QS.length){qState.done=true;renderResult();}
+  else renderQuiz();
+}
+function renderResult(){
+  const total=qState.ans.reduce((s,a,i)=>s+(QS[i].scores[a]||0),0);
+  const idx=Math.min(Math.floor(total/2),RESULTS.length-1);
+  const res=RESULTS[idx];
+  document.getElementById('quiz-area').innerHTML=`
+    <div class="res-card" style="background:${res.color}">
+      <div class="res-type">${res.type}</div>
+      <div class="res-title">${res.title}</div>
+      <div class="res-desc">${res.desc}</div>
+    </div>
+    <div class="priority-wrap">
+      <div class="priority-lbl">你的優先扶正方案</div>
+      ${res.priority.map(p=>`<div class="pri-row"><span class="pri-dot">✦</span><div><div class="pri-name">${p.name}</div><div class="pri-fn">${p.fn}</div></div></div>`).join('')}
+    </div>
+    <a class="buy-full" href="${SHOP}" target="_blank">☕ 依這個方案選購 →</a>
+    <div class="ibox ibox-warn" style="margin-top:10px">⚠️ 以上為輔助參考，請務必與主治醫師討論後執行。</div>
+    <div style="text-align:center;margin-top:10px"><button style="background:none;border:none;font-size:13px;color:var(--text3);cursor:pointer" onclick="resetQ()">重新評估</button></div>`;
+}
+function resetQ(){qState={cur:0,ans:[],done:false};renderQuiz();}
+
+buildPhases(PH1,'ph1-list');
+buildPhases(PH2,'ph2-list');
+buildPhases(PH3,'ph3-list');
+buildSys7();
+renderQuiz();
+</script>
+</body>
+</html>
