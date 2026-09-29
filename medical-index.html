@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>字根字首字尾學習系統｜醫學英文200核心</title>
+<link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@3.10.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0e1117;color:#e8edf5;font-family:'Microsoft JhengHei','Noto Sans TC',sans-serif;min-height:100vh;padding:1rem}
+.container{max-width:820px;margin:0 auto}
+header{text-align:center;padding:1.5rem 0 1rem;border-bottom:1px solid #2A3A4A;margin-bottom:1.5rem}
+header h1{font-size:22px;color:#D4A017;font-weight:700}
+header p{font-size:13px;color:#7A8A9A;margin-top:4px}
+.tabs{display:flex;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap}
+.tab-btn{padding:8px 16px;border:1px solid #2A3A4A;border-radius:8px;background:transparent;color:#7A8A9A;cursor:pointer;font-size:13px;transition:all .15s}
+.tab-btn.active{background:#534AB7;color:#EEEDFE;border-color:#534AB7}
+.tab-btn:hover:not(.active){border-color:#D4A017;color:#D4A017}
+.filter-row{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
+.filter-chip{padding:5px 12px;border-radius:20px;border:1px solid #2A3A4A;background:transparent;cursor:pointer;font-size:12px;color:#7A8A9A;transition:all .15s}
+.filter-chip.on{background:#D4A017;color:#0e1117;border-color:#D4A017;font-weight:600}
+.search-box{flex:1;min-width:160px;padding:8px 12px;border:1px solid #2A3A4A;border-radius:8px;background:#111827;color:#e8edf5;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.root-card{background:#111827;border:1px solid #2A3A4A;border-radius:12px;padding:14px;cursor:pointer;transition:all .15s;position:relative}
+.root-card:hover{border-color:#D4A017;background:#1E2A3A}
+.root-card.known{border-left:3px solid #1D9E75}
+.root-card.learning{border-left:3px solid #EF9F27}
+.badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;margin-bottom:6px}
+.badge.organ{background:#0D2A3E;color:#60A5FA}
+.badge.immune{background:#1E1040;color:#A78BFA}
+.badge.biochem{background:#0D2A14;color:#6EE7B7}
+.badge.clinical{background:#2A1A00;color:#FCD34D}
+.badge.prefix{background:#2A0A14;color:#F9A8D4}
+.badge.suffix{background:#003A28;color:#6EE7B7}
+.root-title{font-size:18px;font-weight:700;color:#D4A017;letter-spacing:1px}
+.root-meaning{font-size:13px;color:#7A8A9A;margin-top:2px}
+.root-example{font-size:11px;color:#3B82F6;margin-top:6px}
+.stars{font-size:10px;color:#EF9F27;margin-top:4px}
+.status-dot{position:absolute;top:10px;right:10px;width:8px;height:8px;border-radius:50%;background:#2A3A4A}
+.status-dot.known{background:#1D9E75}
+.status-dot.learning{background:#EF9F27}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#111827;border-radius:16px;width:min(580px,95vw);max-height:85vh;overflow-y:auto;padding:1.5rem;border:1px solid #2A3A4A}
+.modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem}
+.modal-root{font-size:30px;font-weight:700;color:#D4A017;letter-spacing:2px}
+.modal-meaning{font-size:16px;color:#7A8A9A}
+.memory-box{background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.25);border-radius:10px;padding:12px 16px;margin:12px 0;font-size:14px;color:#D4B870;line-height:1.7}
+.deriv-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+.deriv-table th{text-align:left;padding:6px 8px;color:#7A8A9A;font-weight:500;border-bottom:1px solid #2A3A4A}
+.deriv-table td{padding:8px;border-bottom:1px solid #1E2A3A;vertical-align:top}
+.deriv-word{font-weight:600;color:#e8edf5}
+.deriv-ipa{color:#3B82F6;font-size:11px}
+.deriv-zh{color:#7A8A9A}
+.deriv-mem{color:#906030;font-size:11px;line-height:1.5}
+.modal-actions{display:flex;gap:8px;margin-top:1.2rem;flex-wrap:wrap}
+.btn-known{padding:8px 18px;background:#0F6E56;color:#E1F5EE;border:none;border-radius:8px;cursor:pointer;font-size:13px}
+.btn-learning{padding:8px 18px;background:#BA7517;color:#FAEEDA;border:none;border-radius:8px;cursor:pointer;font-size:13px}
+.btn-close{padding:8px 18px;background:#1E2A3A;color:#e8edf5;border:1px solid #2A3A4A;border-radius:8px;cursor:pointer;font-size:13px}
+.quiz-area{max-width:560px;margin:0 auto}
+.quiz-card{background:#111827;border:1px solid #2A3A4A;border-radius:16px;padding:2rem;text-align:center;margin-bottom:1rem}
+.quiz-q{font-size:34px;font-weight:700;color:#D4A017;letter-spacing:3px;margin-bottom:.5rem}
+.quiz-sub{font-size:14px;color:#7A8A9A;margin-bottom:1.5rem}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.2rem}
+.quiz-opt{padding:12px;border:1px solid #2A3A4A;border-radius:8px;background:#111827;color:#e8edf5;cursor:pointer;font-size:14px;transition:all .15s}
+.quiz-opt:hover:not(:disabled){background:#1E2A3A}
+.quiz-opt.correct{background:#0F6E56;color:#E1F5EE;border-color:#1D9E75}
+.quiz-opt.wrong{background:#7A1515;color:#FCEBEB;border-color:#E24B4A}
+.quiz-opt:disabled{cursor:default}
+.quiz-stats{display:flex;gap:20px;justify-content:center;margin-bottom:1rem;font-size:13px;color:#7A8A9A}
+.quiz-stat-val{font-size:22px;font-weight:700;color:#e8edf5}
+.progress-bar{height:5px;background:#1E2A3A;border-radius:3px;margin-bottom:1.5rem;overflow:hidden}
+.progress-fill{height:100%;background:#534AB7;border-radius:3px;transition:width .3s}
+.next-btn{padding:10px 28px;background:#534AB7;color:#EEEDFE;border:none;border-radius:8px;cursor:pointer;font-size:14px;display:none}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:1.5rem}
+.stat-card{background:#111827;border-radius:8px;padding:14px;text-align:center}
+.stat-val{font-size:24px;font-weight:700;color:#e8edf5}
+.stat-label{font-size:12px;color:#7A8A9A;margin-top:4px}
+.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px}
+.prog-label{min-width:80px;color:#7A8A9A}
+.prog-track{flex:1;height:8px;background:#1E2A3A;border-radius:4px;overflow:hidden}
+.prog-bar{height:100%;border-radius:4px;transition:width .5s}
+.empty{text-align:center;padding:3rem 1rem;color:#7A8A9A;font-size:14px}
+.ipa-text{color:#3B82F6;font-size:12px;margin-top:4px}
+.sec-hdr{font-size:13px;color:#7A8A9A;margin-bottom:.8rem;border-bottom:1px solid #2A3A4A;padding-bottom:.5rem}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>📚 醫學字根字首字尾學習系統</h1>
+  <p>醫學英文200核心結構大全・第1~6冊｜40+ 字根・25字首・25字尾</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('browse')"><i class="ti ti-cards"></i> 字根瀏覽</button>
+  <button class="tab-btn" onclick="showTab('quiz')"><i class="ti ti-brain"></i> 測驗練習</button>
+  <button class="tab-btn" onclick="showTab('progress')"><i class="ti ti-chart-bar"></i> 學習進度</button>
+</div>
+
+<div id="tab-browse">
+  <div class="filter-row">
+    <input class="search-box" placeholder="搜尋字根..." oninput="filterCards()" id="searchInput">
+    <span class="filter-chip on" onclick="toggleFilter(this,'all')">全部</span>
+    <span class="filter-chip" onclick="toggleFilter(this,'organ')">器官字根</span>
+    <span class="filter-chip" onclick="toggleFilter(this,'immune')">免疫/腫瘤</span>
+    <span class="filter-chip" onclick="toggleFilter(this,'biochem')">生化代謝</span>
+    <span class="filter-chip" onclick="toggleFilter(this,'clinical')">臨床字根</span>
+    <span class="filter-chip" onclick="toggleFilter(this,'prefix')">字首</span>
+    <span class="filter-chip" onclick="toggleFilter(this,'suffix')">字尾</span>
+  </div>
+  <div class="grid" id="cardsGrid"></div>
+</div>
+
+<div id="tab-quiz" style="display:none">
+  <div class="quiz-area">
+    <div class="filter-row" style="justify-content:center;margin-bottom:1.5rem">
+      <span class="filter-chip on" onclick="setQuizMode(this,'all')">全部</span>
+      <span class="filter-chip" onclick="setQuizMode(this,'organ')">器官</span>
+      <span class="filter-chip" onclick="setQuizMode(this,'prefix')">字首</span>
+      <span class="filter-chip" onclick="setQuizMode(this,'suffix')">字尾</span>
+      <span class="filter-chip" onclick="setQuizMode(this,'5star')">★★★★★</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="qProgress" style="width:0%"></div></div>
+    <div class="quiz-stats">
+      <div style="text-align:center"><div class="quiz-stat-val" id="qCorrect">0</div><div>答對</div></div>
+      <div style="text-align:center"><div class="quiz-stat-val" id="qWrong">0</div><div>答錯</div></div>
+      <div style="text-align:center"><div class="quiz-stat-val" id="qTotal">0</div><div>已答</div></div>
+    </div>
+    <div class="quiz-card" id="quizCard">
+      <div class="quiz-q" id="quizQ">-</div>
+      <div class="quiz-sub">這個字根/字首/字尾是什麼意思？</div>
+      <div class="quiz-options" id="quizOpts"></div>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">下一題 →</button>
+    </div>
+    <div style="text-align:center"><button class="btn-close" onclick="startQuiz()">重新開始</button></div>
+  </div>
+</div>
+
+<div id="tab-progress" style="display:none">
+  <div class="sec-hdr">📊 學習統計</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-val" id="statTotal">0</div><div class="stat-label">字根總數</div></div>
+    <div class="stat-card"><div class="stat-val" id="statKnown" style="color:#1D9E75">0</div><div class="stat-label">已掌握</div></div>
+    <div class="stat-card"><div class="stat-val" id="statLearning" style="color:#EF9F27">0</div><div class="stat-label">學習中</div></div>
+    <div class="stat-card"><div class="stat-val" id="statPct">0%</div><div class="stat-label">掌握率</div></div>
+  </div>
+  <div class="sec-hdr">各分類進度</div>
+  <div class="prog-row"><span class="prog-label">器官字根</span><div class="prog-track"><div class="prog-bar" id="pb-organ" style="background:#3B82F6;width:0%"></div></div><span id="pt-organ">0%</span></div>
+  <div class="prog-row"><span class="prog-label">免疫/腫瘤</span><div class="prog-track"><div class="prog-bar" id="pb-immune" style="background:#8B5CF6;width:0%"></div></div><span id="pt-immune">0%</span></div>
+  <div class="prog-row"><span class="prog-label">生化代謝</span><div class="prog-track"><div class="prog-bar" id="pb-biochem" style="background:#22C55E;width:0%"></div></div><span id="pt-biochem">0%</span></div>
+  <div class="prog-row"><span class="prog-label">臨床字根</span><div class="prog-track"><div class="prog-bar" id="pb-clinical" style="background:#F59E0B;width:0%"></div></div><span id="pt-clinical">0%</span></div>
+  <div class="prog-row"><span class="prog-label">字首</span><div class="prog-track"><div class="prog-bar" id="pb-prefix" style="background:#EC4899;width:0%"></div></div><span id="pt-prefix">0%</span></div>
+  <div class="prog-row"><span class="prog-label">字尾</span><div class="prog-track"><div class="prog-bar" id="pb-suffix" style="background:#14B8A6;width:0%"></div></div><span id="pt-suffix">0%</span></div>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+<div class="modal" id="modalBox">
+  <div class="modal-header">
+    <div>
+      <div class="modal-root" id="mRoot">-</div>
+      <div class="modal-meaning" id="mMeaning">-</div>
+      <div class="ipa-text" id="mIpa"></div>
+    </div>
+    <button class="btn-close" onclick="closeModalDirect()">✕</button>
+  </div>
+  <div class="memory-box" id="mMemory"></div>
+  <table class="deriv-table">
+    <thead><tr><th>單字</th><th>音標</th><th>中文</th><th>連鎖記憶</th></tr></thead>
+    <tbody id="mDerivs"></tbody>
+  </table>
+  <div class="modal-actions">
+    <button class="btn-known" onclick="markStatus('known')">✅ 已掌握</button>
+    <button class="btn-learning" onclick="markStatus('learning')">⏳ 學習中</button>
+    <button class="btn-close" onclick="closeModalDirect()">關閉</button>
+  </div>
+</div>
+</div>
+
+<script>
+const DATA=[
+  {id:'CARDI',cat:'organ',root:'CARDI',ipa:'/ˈkɑːrdi/',zh:'心臟',stars:5,memory:'Card→撲克牌放胸口→感覺到心跳→CARDI=心臟',derivs:[['cardiology','心臟科','/ˌkɑːrdiˈɒlədʒi/','cardio心+logy學科→研究心臟的醫學專科'],['cardiomegaly','心臟肥大','/ˌkɑːrdiəˈmɛɡəli/','cardio心+megaly腫大→心臟異常增大'],['cardiomyopathy','心肌病','/ˌkɑːrdiəʊmaɪˈɒpəθi/','cardio心+myo肌+pathy病→心肌疾病'],['pericarditis','心包膜炎','/ˌpɛrɪkɑːˈdaɪtɪs/','peri周圍+cardi心+itis炎→心臟外膜發炎'],['tachycardia','心搏過速','/ˌtækɪˈkɑːdiə/','tachy快+cardia→心跳太快'],['bradycardia','心搏過緩','/ˌbreɪdɪˈkɑːdiə/','brady慢+cardia→心跳太慢']],example:'myocardial infarction'},
+  {id:'ANGI',cat:'organ',root:'ANGI',ipa:'/ˈændʒi/',zh:'血管',stars:5,memory:'Angel天使→翅膀分叉→像血管分支→ANGI=血管',derivs:[['angiography','血管攝影','/ˌændʒiˈɒɡrəfi/','angio血管+graphy記錄'],['angioplasty','血管成形術','/ˈændʒiəʊˌplæsti/','angio血管+plasty整形'],['angioma','血管瘤','/ˌændʒiˈəʊmə/','angio血管+oma腫瘤'],['angiogenesis','血管新生','/ˌændʒiəʊˈdʒɛnɪsɪs/','angio血管+genesis生成'],['hemangioma','血管瘤','/hɪˌmændʒiˈəʊmə/','hem血+angio管+oma瘤']],example:'angiography'},
+  {id:'HEMAT',cat:'organ',root:'HEMAT',ipa:'/ˈhiːmæt/',zh:'血液',stars:5,memory:'Hemoglobin血紅素→HEMAT=血液',derivs:[['hematology','血液學','/ˌhiːməˈtɒlədʒi/','hemat血+ology學'],['hematoma','血腫','/ˌhiːməˈtəʊmə/','hemat血+oma腫塊'],['hematuria','血尿','/ˌhiːməˈtjʊəriə/','hemat血+uria尿'],['hematopoiesis','造血作用','/ˌhiːmətəʊpɔɪˈiːsɪs/','hemato血+poiesis製造'],['hemostasis','止血','/ˌhiːməˈsteɪsɪs/','hemo血+stasis停止']],example:'hematopoiesis'},
+  {id:'NEUR',cat:'organ',root:'NEUR',ipa:'/njʊər/',zh:'神經',stars:5,memory:'Neuron神經元→NEUR=神經',derivs:[['neurology','神經科','/njʊˈrɒlədʒi/','neur神經+ology學'],['neuropathy','神經病變','/njʊˈrɒpəθi/','neuro神經+pathy病'],['neurotransmitter','神經傳遞物質','','neuro神經+transmitter傳遞'],['neurosurgery','神經外科','/ˈnjʊərəˌsɜːdʒərɪ/','neuro神經+surgery手術'],['neuropeptide','神經肽','','neuro神經+peptide胜肽']],example:'neuropathy'},
+  {id:'OSTE',cat:'organ',root:'OSTE',ipa:'/ˈɒsti/',zh:'骨骼',stars:4,memory:'Stone石頭→骨骼硬如石→OSTE=骨骼',derivs:[['osteoporosis','骨質疏鬆','/ˌɒstɪəʊpəˈrəʊsɪs/','osteo骨+porosis孔'],['osteomyelitis','骨髓炎','','osteo骨+myel髓+itis炎'],['osteoarthritis','骨關節炎','','osteo骨+arthr關節+itis炎'],['osteosarcoma','骨肉瘤','','osteo骨+sarcoma肉瘤'],['periosteum','骨膜','/ˌpɛrɪˈɒstɪəm/','peri周圍+oste骨']],example:'osteoporosis'},
+  {id:'ARTHR',cat:'organ',root:'ARTHR',ipa:'/ˈɑːθr/',zh:'關節',stars:4,memory:'Arthritis→ARTHR=關節',derivs:[['arthritis','關節炎','/ɑːˈθraɪtɪs/','arthr關節+itis炎'],['arthroscopy','關節鏡','/ɑːˈθrɒskəpi/','arthr關節+scopy鏡'],['arthropathy','關節病','/ɑːˈθrɒpəθi/','arthr關節+pathy病'],['arthroplasty','關節整形術','','arthr關節+plasty整形'],['arthrocentesis','關節穿刺','','arthr關節+centesis穿刺']],example:'rheumatoid arthritis'},
+  {id:'HEPAT',cat:'organ',root:'HEPAT',ipa:'/ˈhɛpæt/',zh:'肝臟',stars:5,memory:'Hepatitis→HEPAT=肝臟',derivs:[['hepatitis','肝炎','/ˌhɛpəˈtaɪtɪs/','hepat肝+itis炎'],['hepatomegaly','肝腫大','/ˌhɛpətəˈmɛɡəli/','hepato肝+megaly腫大'],['hepatocellular carcinoma','肝細胞癌','','原發性肝癌'],['hepatotoxicity','肝毒性','','hepato肝+toxicity毒性'],['hepatoportal','肝門','','hepato肝+portal門']],example:'hepatocellular carcinoma'},
+  {id:'NEPHR',cat:'organ',root:'NEPHR',ipa:'/ˈnɛfr/',zh:'腎臟',stars:5,memory:'Nephrologist→NEPHR=腎臟',derivs:[['nephropathy','腎病變','/nɪˈfrɒpəθi/','nephr腎+pathy病'],['nephritis','腎炎','/nɪˈfraɪtɪs/','nephr腎+itis炎'],['nephrectomy','腎切除術','/nɪˈfrɛktəmi/','nephr腎+ectomy切除'],['glomerulonephritis','腎小球腎炎','','glomeru腎小球+nephr腎+itis炎'],['nephrolithiasis','腎結石','','nephro腎+lith石+iasis']],example:'nephropathy'},
+  {id:'PNEUM',cat:'organ',root:'PNEUM',ipa:'/njuːm/',zh:'肺臟',stars:5,memory:'Pneumonia→PNEUM=肺',derivs:[['pneumonia','肺炎','/njuːˈməʊnɪə/','pneum肺+ia狀態'],['pneumothorax','氣胸','','pneumo氣+thorax胸腔'],['pneumonectomy','肺切除術','','pneum肺+ectomy切除'],['pneumococcus','肺炎球菌','','pneumo肺+coccus球菌'],['pulmonary','肺的','/ˈpʌlmənərɪ/','pulmon肺+ary']],example:'pneumonia'},
+  {id:'THROMB',cat:'organ',root:'THROMB',ipa:'/θrɒmb/',zh:'血栓',stars:5,memory:'Thrombus血栓→THROMB',derivs:[['thrombosis','血栓症','/θrɒmˈbəʊsɪs/','thromb血栓+osis'],['thromboembolism','血栓栓塞','','thrombo血栓+embolism'],['thrombolysis','溶血栓','','thrombo血栓+lysis溶解'],['thrombocytopenia','血小板減少','','thrombo+cyto+penia'],['thrombophilia','血栓體質','','thrombo+philia']],example:'thromboembolism'},
+  {id:'IMMUN',cat:'immune',root:'IMMUN',ipa:'/ɪˈmjuːn/',zh:'免疫',stars:5,memory:'Immune不受感染→IMMUN=免疫',derivs:[['immunology','免疫學','/ˌɪmjuːˈnɒlədʒɪ/','immun免疫+ology學'],['immunotherapy','免疫療法','','immuno免疫+therapy治療'],['immunodeficiency','免疫缺乏','','immuno免疫+deficiency'],['autoimmune','自體免疫的','','auto自己+immune'],['immunosuppression','免疫抑制','','immuno免疫+suppression']],example:'autoimmune disease'},
+  {id:'LEUK',cat:'immune',root:'LEUK',ipa:'/luːk/',zh:'白血球/白色',stars:5,memory:'Luke穿白衣→LEUK=白色',derivs:[['leukocyte','白血球','/ˈluːkəsaɪt/','leuko白+cyte細胞'],['leukemia','白血病','/luːˈkiːmɪə/','leuk白+emia血'],['leukopenia','白血球減少','','leuko白+penia缺乏'],['leukocytosis','白血球增多','','leuko白+cytosis增多'],['leukoplakia','白斑症','','leuko白+plakia斑塊']],example:'leukemia'},
+  {id:'ONC',cat:'immune',root:'ONC',ipa:'/ɒŋk/',zh:'腫瘤',stars:5,memory:'ONC→腫瘤',derivs:[['oncology','腫瘤學','/ɒŋˈkɒlədʒi/','onc腫瘤+ology學'],['oncogene','致癌基因','/ˈɒŋkəʊdʒiːn/','onco腫瘤+gene基因'],['oncologist','腫瘤科醫師','','onco腫瘤+logist專家'],['oncoprotein','致癌蛋白','','onco腫瘤+protein蛋白'],['neurooncology','神經腫瘤學','','neuro神經+oncology']],example:'oncogene'},
+  {id:'CARCIN',cat:'immune',root:'CARCIN',ipa:'/ˈkɑːsɪn/',zh:'癌',stars:5,memory:'Cancer螃蟹→癌細胞像蟹爪入侵',derivs:[['carcinoma','癌瘤','/ˌkɑːsɪˈnəʊmə/','carcin癌+oma'],['carcinogenesis','致癌過程','','carcin癌+genesis生成'],['carcinogenic','致癌的','','carcin癌+genic產生'],['adenocarcinoma','腺癌','','adeno腺體+carcin癌+oma'],['squamous cell carcinoma','鱗狀細胞癌','','鱗狀上皮惡性腫瘤']],example:'adenocarcinoma'},
+  {id:'METABOL',cat:'biochem',root:'METABOL',ipa:'/məˈtæbəl/',zh:'代謝',stars:5,memory:'Meta轉變+bol投擲→物質轉化→METABOL=代謝',derivs:[['metabolism','代謝','/məˈtæbəlɪzm/','metabol代謝+ism'],['metabolic syndrome','代謝症候群','','代謝+syndrome'],['hypermetabolism','代謝亢進','','hyper過高+metabolism'],['basal metabolic rate','基礎代謝率','','靜息狀態最低能量消耗'],['metabolomics','代謝組學','','metabol代謝+omics組學']],example:'metabolic syndrome'},
+  {id:'GLYC',cat:'biochem',root:'GLYC',ipa:'/ɡlaɪk/',zh:'糖/葡萄糖',stars:5,memory:'Glucose葡萄糖→GLYC=糖',derivs:[['hyperglycemia','高血糖','/ˌhaɪpəɡlaɪˈsiːmɪə/','hyper過高+glycemia血糖'],['hypoglycemia','低血糖','/ˌhaɪpəʊɡlaɪˈsiːmɪə/','hypo過低+glycemia'],['glycogen','肝糖','/ˈɡlaɪkəʤɛn/','glyco糖+gen產生'],['glycolysis','糖解作用','/ɡlaɪˈkɒlɪsɪs/','glyco糖+lysis分解'],['glycoprotein','醣蛋白','','glyco糖+protein蛋白']],example:'hyperglycemia'},
+  {id:'LIP',cat:'biochem',root:'LIP',ipa:'/lɪp/',zh:'脂肪',stars:4,memory:'Lip嘴唇油亮→LIP=脂肪',derivs:[['lipid','脂質','/ˈlɪpɪd/','lip脂+id'],['lipoprotein','脂蛋白','','lipo脂肪+protein蛋白'],['lipoma','脂肪瘤','/lɪˈpəʊmə/','lip脂肪+oma腫瘤'],['lipolysis','脂肪分解','','lipo脂肪+lysis分解'],['dyslipidemia','血脂異常','','dys異常+lip脂+emia血']],example:'dyslipidemia'},
+  {id:'SURG',cat:'clinical',root:'SURG',ipa:'/sɜːdʒ/',zh:'手術',stars:4,memory:'Surge湧現→外科醫師衝進手術室',derivs:[['surgery','外科/手術','/ˈsɜːdʒərɪ/','surg手術+ery'],['surgeon','外科醫師','/ˈsɜːdʒən/','surg手術+eon人'],['neurosurgery','神經外科','','neuro神經+surgery'],['microsurgery','顯微手術','','micro微小+surgery'],['laparoscopic surgery','腹腔鏡手術','','laparo腹+scopic鏡']],example:'neurosurgery'},
+  {id:'THERAP',cat:'clinical',root:'THERAP',ipa:'/ˈθɛrəp/',zh:'治療',stars:5,memory:'The+rap→therap=治療',derivs:[['chemotherapy','化學治療','','chemo化學+therapy'],['immunotherapy','免疫治療','','immuno免疫+therapy'],['radiotherapy','放射治療','','radio放射+therapy'],['physiotherapy','物理治療','','physio物理+therapy'],['targeted therapy','標靶治療','','targeted標靶+therapy']],example:'chemotherapy'},
+  {id:'DIAGNOS',cat:'clinical',root:'DIAGNOS',ipa:'/ˌdaɪəɡˈnəʊs/',zh:'診斷',stars:5,memory:'Dia通過+gnos知道→通過檢查知道病因',derivs:[['diagnosis','診斷','/ˌdaɪəɡˈnəʊsɪs/','diagnos診斷+is'],['differential diagnosis','鑑別診斷','','區分相似疾病'],['misdiagnosis','誤診','','mis錯誤+diagnosis'],['diagnostic','診斷性的','','diagnos診斷+tic'],['pathological diagnosis','病理診斷','','切片最終確認']],example:'differential diagnosis'},
+  {id:'PHARMAC',cat:'clinical',root:'PHARMAC',ipa:'/ˈfɑːməsi/',zh:'藥物',stars:5,memory:'Pharmacy藥房→PHARMAC=藥物',derivs:[['pharmacology','藥理學','','pharmac藥物+ology學'],['pharmacokinetics','藥物動力學','','pharmaco藥+kinetics動力'],['pharmacodynamics','藥效動力學','','pharmaco藥+dynamics'],['pharmacist','藥師','','pharmac藥物+ist人'],['adverse drug reaction','藥物不良反應','','ADR藥物副作用']],example:'pharmacokinetics'},
+  {id:'HYPER',cat:'prefix',root:'HYPER-',ipa:'/ˈhaɪpə/',zh:'過多・過高',stars:5,memory:'Hyper很嗨→興奮過頭→HYPER=過多過高',derivs:[['hypertension','高血壓','/ˌhaɪpəˈtɛnʃən/','hyper過高+tension'],['hyperglycemia','高血糖','','hyper過高+glycemia'],['hyperthyroidism','甲狀腺亢進','','hyper過高+thyroid'],['hypercalcemia','高血鈣','','hyper過高+calc鈣+emia'],['hyperventilation','過度換氣','','hyper過高+ventilation']],example:'hypertension'},
+  {id:'HYPO',cat:'prefix',root:'HYPO-',ipa:'/ˈhaɪpəʊ/',zh:'不足・過低',stars:5,memory:'Hippo河馬沉下去→hypo=不足過低',derivs:[['hypotension','低血壓','','hypo過低+tension'],['hypoglycemia','低血糖','','hypo過低+glycemia'],['hypothyroidism','甲狀腺低下','','hypo不足+thyroid'],['hypokalemia','低血鉀','','hypo過低+kal鉀+emia'],['hypoxia','缺氧','/haɪˈpɒksɪə/','hypo不足+ox氧']],example:'hypoglycemia'},
+  {id:'ANTI',cat:'prefix',root:'ANTI-',ipa:'/ˈænti/',zh:'對抗',stars:5,memory:'反對→抗→ANTI',derivs:[['antibiotic','抗生素','','anti對抗+biotic生命'],['antigen','抗原','','anti對抗+gen產生'],['antibody','抗體','','anti對抗+body'],['anticoagulant','抗凝血劑','','anti對抗+coagulant'],['antihypertensive','降血壓藥','','anti對抗+hypertensive']],example:'antibiotic'},
+  {id:'AUTO',cat:'prefix',root:'AUTO-',ipa:'/ˈɔːtəʊ/',zh:'自己・自身',stars:5,memory:'自動→自身→AUTO',derivs:[['autoimmune','自體免疫','','auto自己+immune免疫'],['autopsy','驗屍','','auto自己+opsy觀察'],['autograft','自體移植','','auto自己+graft移植'],['autologous','自體的','','auto自己+logous'],['autonomic','自律神經的','','auto自動+nomic規律']],example:'autoimmune'},
+  {id:'META',cat:'prefix',root:'META-',ipa:'/ˈmɛtə/',zh:'超越・轉變',stars:5,memory:'Metamorphosis變化→meta=超越轉變',derivs:[['metastasis','轉移','/mɪˈtæstəsɪs/','meta超越+stasis位置'],['metabolism','代謝','','meta轉變+bol+ism'],['metacarpals','掌骨','','meta超越+carpals腕骨'],['metatarsal','蹠骨','','meta超越+tarsal跗骨'],['metaphysis','骨骺板','','meta+physis生長']],example:'metastasis'},
+  {id:'DYS',cat:'prefix',root:'DYS-',ipa:'/dɪs/',zh:'異常・不良',stars:5,memory:'Dysfunction異常→dys=不良',derivs:[['dyspnea','呼吸困難','/dɪspˈniːə/','dys異常+pnea呼吸'],['dysphagia','吞嚥困難','','dys異常+phagia吞嚥'],['dysrhythmia','心律不整','','dys異常+rhythmia節律'],['dyslipidemia','血脂異常','','dys異常+lip脂+emia'],['dysfunction','功能障礙','','dys異常+function']],example:'dyspnea'},
+  {id:'POLY',cat:'prefix',root:'POLY-',ipa:'/ˈpɒlɪ/',zh:'多個',stars:4,memory:'Polygon多邊形→POLY=多個',derivs:[['polycythemia','多血症','','poly多+cythem細胞血'],['polypharmacy','多重用藥','','poly多+pharmacy藥'],['polyuria','多尿','','poly多+uria尿'],['polyneuropathy','多發性神經病變','','poly多+neuro+pathy'],['polydipsia','多喝','','poly多+dipsia渴']],example:'polycythemia'},
+  {id:'INTRA',cat:'prefix',root:'INTRA-',ipa:'/ˈɪntrə/',zh:'之內',stars:5,memory:'Inside→裡面→INTRA=內部',derivs:[['intravenous','靜脈內的','','intra內+venous靜脈'],['intramuscular','肌肉內的','','intra內+muscular肌肉'],['intracranial','顱內的','','intra內+cranial顱骨'],['intracellular','細胞內的','','intra內+cellular細胞'],['intraperitoneal','腹腔內的','','intra內+peritoneal腹膜']],example:'intravenous'},
+  {id:'ITIS',cat:'suffix',root:'-ITIS',ipa:'/aɪtɪs/',zh:'發炎',stars:5,memory:'火一直燒→itis=發炎→紅腫熱痛',derivs:[['appendicitis','闌尾炎','/əˌpɛndɪˈsaɪtɪs/','appendic闌尾+itis'],['meningitis','腦膜炎','/ˌmɛnɪnˈdʒaɪtɪs/','mening腦膜+itis'],['pyelonephritis','腎盂腎炎','','pyelo腎盂+nephr腎+itis'],['cholecystitis','膽囊炎','','cholecyst膽囊+itis'],['pancreatitis','胰臟炎','','pancreat胰臟+itis']],example:'appendicitis'},
+  {id:'OMA',cat:'suffix',root:'-OMA',ipa:'/əʊmə/',zh:'腫瘤',stars:5,memory:'Oh My God→長東西了→oma=腫瘤',derivs:[['carcinoma','癌瘤','/ˌkɑːsɪˈnəʊmə/','carcin癌+oma'],['melanoma','黑色素瘤','','melan黑+oma'],['lymphoma','淋巴瘤','/lɪmˈfəʊmə/','lymph淋巴+oma'],['sarcoma','肉瘤','/sɑːˈkəʊmə/','sarc肉+oma'],['glioma','神經膠質瘤','/ɡlaɪˈəʊmə/','glio膠+oma']],example:'carcinoma'},
+  {id:'LOGY',cat:'suffix',root:'-LOGY',ipa:'/lɒdʒɪ/',zh:'學科',stars:5,memory:'Knowledge知識→logy=學科',derivs:[['cardiology','心臟科','','cardio心+logy'],['oncology','腫瘤科','','onco腫瘤+logy'],['hematology','血液科','','hemat血液+logy'],['neurology','神經科','','neuro神經+logy'],['immunology','免疫學','','immun免疫+ology']],example:'cardiology'},
+  {id:'ECTOMY',cat:'suffix',root:'-ECTOMY',ipa:'/ɛktəmɪ/',zh:'切除術',stars:5,memory:'Exit拿出去→ectomy=切除',derivs:[['appendectomy','闌尾切除術','','appendic闌尾+ectomy'],['gastrectomy','胃切除術','','gastr胃+ectomy'],['nephrectomy','腎切除術','','nephr腎+ectomy'],['mastectomy','乳房切除術','','mast乳房+ectomy'],['thyroidectomy','甲狀腺切除術','','thyroid甲狀腺+ectomy']],example:'appendectomy'},
+  {id:'PATHY',cat:'suffix',root:'-PATHY',ipa:'/pæθɪ/',zh:'疾病・病變',stars:5,memory:'Path走錯路→pathy=疾病',derivs:[['neuropathy','神經病變','','neuro神經+pathy'],['cardiomyopathy','心肌病','','cardio心+myo肌+pathy'],['nephropathy','腎病變','','nephr腎+pathy'],['retinopathy','視網膜病變','','retino視網膜+pathy'],['arthropathy','關節病','','arthr關節+pathy']],example:'neuropathy'},
+  {id:'EMIA',cat:'suffix',root:'-EMIA',ipa:'/iːmɪə/',zh:'血液狀態',stars:5,memory:'血液裡的狀態→emia',derivs:[['anemia','貧血','/əˈniːmɪə/','an無+emia血'],['leukemia','白血病','/luːˈkiːmɪə/','leuk白+emia'],['septicemia','敗血症','','septic腐敗+emia'],['hyperglycemia','高血糖','','hyper過高+glyc糖+emia'],['uremia','尿毒症','','ur尿素+emia血']],example:'anemia'},
+  {id:'OSIS',cat:'suffix',root:'-OSIS',ipa:'/əʊsɪs/',zh:'異常狀態',stars:5,memory:'某種不正常狀態→osis',derivs:[['thrombosis','血栓症','','thromb血栓+osis'],['fibrosis','纖維化','','fibro纖維+osis'],['atherosclerosis','動脈粥狀硬化','','athero粥+sclerosis'],['cirrhosis','肝硬化','','cirrh橙黃+osis'],['nephrosis','腎病','','nephr腎+osis']],example:'thrombosis'},
+  {id:'SCOPY',cat:'suffix',root:'-SCOPY',ipa:'/skəpɪ/',zh:'內視鏡',stars:5,memory:'Scope看→scopy=用儀器觀察',derivs:[['gastroscopy','胃鏡','','gastro胃+scopy'],['colonoscopy','結腸鏡','','colono結腸+scopy'],['bronchoscopy','支氣管鏡','','broncho支氣管+scopy'],['arthroscopy','關節鏡','','arthr關節+scopy'],['laparoscopy','腹腔鏡','','laparo腹+scopy']],example:'gastroscopy'},
+  {id:'LYSIS',cat:'suffix',root:'-LYSIS',ipa:'/lɪsɪs/',zh:'溶解・分解',stars:5,memory:'Lyse溶解→lysis=分解',derivs:[['thrombolysis','溶血栓','','thrombo血栓+lysis'],['hemolysis','溶血','','hemo血+lysis'],['glycolysis','糖解作用','','glyco糖+lysis'],['lipolysis','脂肪分解','','lipo脂肪+lysis'],['fibrinolysis','纖維蛋白溶解','','fibrin纖維蛋白+lysis']],example:'thrombolysis'},
+  {id:'ALGIA',cat:'suffix',root:'-ALGIA',ipa:'/ˈældʒɪə/',zh:'疼痛',stars:4,memory:'啊好痛→algia=疼痛',derivs:[['neuralgia','神經痛','/njʊˈrældʒɪə/','neur神經+algia'],['myalgia','肌肉痛','/maɪˈældʒɪə/','my肌肉+algia'],['arthralgia','關節痛','','arthr關節+algia'],['cephalgia','頭痛','','cephal頭+algia'],['fibromyalgia','纖維肌痛症','','fibro纖維+my肌+algia']],example:'neuralgia'},
+  {id:'MEGALY',cat:'suffix',root:'-MEGALY',ipa:'/mɛɡəlɪ/',zh:'腫大',stars:4,memory:'Mega大→megaly=腫大',derivs:[['hepatomegaly','肝腫大','','hepato肝+megaly'],['splenomegaly','脾腫大','','spleno脾+megaly'],['cardiomegaly','心臟肥大','','cardio心+megaly'],['acromegaly','肢端肥大症','','acro末端+megaly'],['lymphadenomegaly','淋巴腺腫大','','lymphadeno淋巴腺+megaly']],example:'hepatomegaly'},
+  {id:'PENIA',cat:'suffix',root:'-PENIA',ipa:'/piːnɪə/',zh:'缺乏・減少',stars:5,memory:'Poor太少→penia=缺乏',derivs:[['leukopenia','白血球減少','','leuko白+penia'],['thrombocytopenia','血小板減少','','thrombo+cyto+penia'],['neutropenia','嗜中性球減少','','neutro嗜中性+penia'],['pancytopenia','全血球減少','','pan全部+cyto+penia'],['lymphopenia','淋巴球減少','','lympho淋巴+penia']],example:'leukopenia'},
+  {id:'GENESIS',cat:'suffix',root:'-GENESIS',ipa:'/dʒɛnɪsɪs/',zh:'生成・起源',stars:5,memory:'Genesis起源→genesis=生成',derivs:[['carcinogenesis','致癌過程','','carcin癌+genesis'],['hematopoiesis','造血作用','','hemato血+genesis'],['angiogenesis','血管新生','','angio血管+genesis'],['neurogenesis','神經新生','','neuro神經+genesis'],['pathogenesis','病理發生','','patho病+genesis']],example:'carcinogenesis'},
+];
+
+let userStatus={};
+try{const s=localStorage.getItem('med_root_status');if(s)userStatus=JSON.parse(s);}catch(e){}
+function saveStatus(){try{localStorage.setItem('med_root_status',JSON.stringify(userStatus));}catch(e){}}
+
+let currentFilter='all';
+let quizMode='all';
+let quizPool=[];
+let quizIdx=0;
+let qCorrect=0,qWrong=0;
+let currentCard=null;
+
+function getStatus(id){return userStatus[id]||''}
+function renderGrid(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const grid=document.getElementById('cardsGrid');
+  const filtered=DATA.filter(d=>{
+    const catOk=currentFilter==='all'||d.cat===currentFilter;
+    const qOk=!q||d.root.toLowerCase().includes(q)||d.zh.includes(q)||d.example.toLowerCase().includes(q);
+    return catOk&&qOk;
+  });
+  if(!filtered.length){grid.innerHTML='<div class="empty">找不到符合的字根</div>';return;}
+  grid.innerHTML=filtered.map(d=>{
+    const s=getStatus(d.id);
+    const stars='★'.repeat(d.stars)+'☆'.repeat(5-d.stars);
+    return`<div class="root-card${s?' '+s:''}" onclick="openCard('${d.id}')">
+      <div class="status-dot${s?' '+s:''}"></div>
+      <div class="badge ${d.cat}">${catName(d.cat)}</div>
+      <div class="root-title">${d.root}</div>
+      <div class="root-meaning">${d.zh}</div>
+      <div class="root-example">${d.example}</div>
+      <div class="stars">${stars}</div>
+    </div>`;
+  }).join('');
+}
+function catName(c){return{organ:'器官字根',immune:'免疫/腫瘤',biochem:'生化代謝',clinical:'臨床字根',prefix:'字首',suffix:'字尾'}[c]||c}
+function toggleFilter(el,cat){
+  document.querySelectorAll('#tab-browse .filter-chip').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');currentFilter=cat;renderGrid();
+}
+function filterCards(){renderGrid();}
+function openCard(id){
+  const d=DATA.find(x=>x.id===id);if(!d)return;
+  currentCard=id;
+  document.getElementById('mRoot').textContent=d.root;
+  document.getElementById('mMeaning').textContent=d.zh;
+  document.getElementById('mIpa').textContent=d.ipa;
+  document.getElementById('mMemory').innerHTML='💡 '+d.memory;
+  document.getElementById('mDerivs').innerHTML=d.derivs.map(([w,zh,ipa,mem])=>`<tr><td><div class="deriv-word">${w}</div><div class="deriv-ipa">${ipa}</div></td><td class="deriv-zh">${zh}</td><td colspan="2" class="deriv-mem">${mem}</td></tr>`).join('');
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(e){if(e.target===document.getElementById('modal'))closeModalDirect();}
+function closeModalDirect(){document.getElementById('modal').classList.remove('open');currentCard=null;}
+function markStatus(s){
+  if(!currentCard)return;
+  userStatus[currentCard]=s;saveStatus();renderGrid();updateProgress();closeModalDirect();
+}
+function showTab(t){
+  ['browse','quiz','progress'].forEach(x=>document.getElementById('tab-'+x).style.display=x===t?'':'none');
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['browse','quiz','progress'][i]===t));
+  if(t==='quiz')startQuiz();if(t==='progress')updateProgress();
+}
+function setQuizMode(el,mode){
+  document.querySelectorAll('#tab-quiz .filter-chip').forEach(e=>e.classList.remove('on'));
+  el.classList.add('on');quizMode=mode;startQuiz();
+}
+function startQuiz(){
+  quizPool=[...DATA.filter(d=>quizMode==='all'||(quizMode==='5star'&&d.stars===5)||d.cat===quizMode)].sort(()=>Math.random()-.5);
+  quizIdx=0;qCorrect=0;qWrong=0;updateQuizStats();
+  if(!quizPool.length){document.getElementById('quizCard').innerHTML='<div class="empty">此分類沒有資料</div>';return;}
+  showQuestion();
+}
+function showQuestion(){
+  if(quizIdx>=quizPool.length){
+    const pct=Math.round(qCorrect/(qCorrect+qWrong)*100)||0;
+    document.getElementById('quizCard').innerHTML=`<div style="font-size:40px;margin-bottom:.5rem">🎉</div><div style="font-size:20px;font-weight:700;color:#D4A017;margin-bottom:.5rem">本輪結束！</div><div style="font-size:14px;color:#7A8A9A">答對率 ${pct}% (${qCorrect}/${qCorrect+qWrong})</div>`;
+    document.getElementById('qProgress').style.width='100%';return;
+  }
+  const d=quizPool[quizIdx];
+  document.getElementById('quizQ').textContent=d.root;
+  document.getElementById('qProgress').style.width=Math.round(quizIdx/quizPool.length*100)+'%';
+  const wrongs=DATA.filter(x=>x.id!==d.id).sort(()=>Math.random()-.5).slice(0,3);
+  const opts=[d,...wrongs].sort(()=>Math.random()-.5);
+  document.getElementById('quizOpts').innerHTML=opts.map((o,i)=>`<button class="quiz-opt" onclick="checkAnswer('${o.id}','${d.id}',${i})">${o.zh}</button>`).join('');
+  document.getElementById('nextBtn').style.display='none';
+}
+function checkAnswer(chosen,correct,idx){
+  document.querySelectorAll('.quiz-opt').forEach(b=>b.disabled=true);
+  const btns=document.querySelectorAll('.quiz-opt');
+  if(chosen===correct){qCorrect++;btns[idx].classList.add('correct');}
+  else{qWrong++;btns[idx].classList.add('wrong');
+    btns.forEach(b=>{if(b.textContent===DATA.find(x=>x.id===correct).zh)b.classList.add('correct');});
+  }
+  updateQuizStats();document.getElementById('nextBtn').style.display='inline-block';
+}
+function nextQuestion(){quizIdx++;showQuestion();}
+function updateQuizStats(){
+  document.getElementById('qCorrect').textContent=qCorrect;
+  document.getElementById('qWrong').textContent=qWrong;
+  document.getElementById('qTotal').textContent=qCorrect+qWrong;
+}
+function updateProgress(){
+  const total=DATA.length;
+  const known=Object.values(userStatus).filter(v=>v==='known').length;
+  const learning=Object.values(userStatus).filter(v=>v==='learning').length;
+  document.getElementById('statTotal').textContent=total;
+  document.getElementById('statKnown').textContent=known;
+  document.getElementById('statLearning').textContent=learning;
+  document.getElementById('statPct').textContent=Math.round(known/total*100)+'%';
+  const cats=['organ','immune','biochem','clinical','prefix','suffix'];
+  cats.forEach(c=>{
+    const items=DATA.filter(d=>d.cat===c);
+    const k=items.filter(d=>userStatus[d.id]==='known').length;
+    const pct=Math.round(k/items.length*100);
+    document.getElementById('pb-'+c).style.width=pct+'%';
+    document.getElementById('pt-'+c).textContent=pct+'%';
+  });
+}
+renderGrid();
+</script>
+</body>
+</html>
