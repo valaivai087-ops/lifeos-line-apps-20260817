@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大腦更新系統｜七大核心模組診斷</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Microsoft JhengHei','PingFang TC','Noto Sans TC',sans-serif;background:#0A1628;min-height:100vh;color:#fff;}
+
+/* HERO */
+.hero{background:linear-gradient(160deg,#0A1628 0%,#0f2035 55%,#0A1628 100%);border-bottom:1px solid rgba(0,188,212,0.2);padding:2.5rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% -10%,rgba(0,188,212,0.1) 0%,transparent 65%);pointer-events:none;}
+.hero-badge{display:inline-block;font-size:11px;letter-spacing:2px;color:#00BCD4;border:1px solid rgba(0,188,212,0.35);padding:4px 18px;border-radius:100px;margin-bottom:1rem;position:relative;}
+.hero-title{font-size:26px;font-weight:700;color:#fff;letter-spacing:2px;margin-bottom:6px;position:relative;}
+.hero-title em{color:#00BCD4;font-style:normal;}
+.hero-sub{font-size:13px;color:rgba(255,255,255,0.45);letter-spacing:1px;margin-bottom:1.25rem;position:relative;}
+.hero-divider{width:80px;height:1px;background:linear-gradient(90deg,transparent,#00BCD4,transparent);margin:0 auto 1.25rem;}
+.hero-formula{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;position:relative;}
+.hero-tag{font-size:11px;padding:5px 14px;border-radius:100px;background:rgba(0,188,212,0.08);border:1px solid rgba(0,188,212,0.2);color:#00BCD4;}
+.prog-bar{background:rgba(255,255,255,0.05);border-radius:100px;height:3px;margin:1.5rem 1.5rem 0;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,#00BCD4,#B8860B);border-radius:100px;transition:width 0.6s ease;width:0%;}
+
+/* CONTENT */
+.content{max-width:760px;margin:0 auto;padding:1.5rem 1rem;}
+.phase{display:none;}.phase.active{display:block;}
+
+/* SECTION LABEL */
+.slabel{font-size:10px;font-weight:700;letter-spacing:2px;color:#00BCD4;margin-bottom:1rem;display:flex;align-items:center;gap:8px;text-transform:uppercase;}
+.slabel::after{content:'';flex:1;height:0.5px;background:rgba(0,188,212,0.2);}
+
+/* OS FLOW */
+.os-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:1.5rem;}
+.os-step{background:rgba(0,188,212,0.05);border:1px solid rgba(0,188,212,0.15);border-radius:10px;padding:10px 6px;text-align:center;}
+.os-step:first-child{border-color:rgba(0,188,212,0.5);background:rgba(0,188,212,0.1);}
+.os-step:last-child{border-color:rgba(184,134,11,0.4);background:rgba(184,134,11,0.06);}
+.os-icon{font-size:18px;margin-bottom:4px;display:block;}
+.os-name{font-size:10px;color:rgba(255,255,255,0.55);font-weight:500;}
+.os-arrow{display:flex;align-items:center;justify-content:center;font-size:12px;color:rgba(0,188,212,0.3);padding-top:12px;}
+
+/* BRAIN MAP GRID */
+.brain-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:1.25rem;}
+.module-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.module-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;transition:background 0.2s;}
+.module-card:hover{border-color:rgba(0,188,212,0.35);background:rgba(0,188,212,0.03);}
+.module-card:hover::before,.module-card.picked::before{background:#00BCD4;}
+.module-card.picked{border-color:#00BCD4;background:rgba(0,188,212,0.06);}
+.mc-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.mc-check{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;transition:all 0.2s;}
+.module-card.picked .mc-check{background:#00BCD4;border-color:#00BCD4;color:#0A1628;font-weight:700;}
+.mc-icon{font-size:22px;flex-shrink:0;}
+.mc-info{flex:1;}
+.mc-name{font-size:13px;font-weight:700;color:#fff;}
+.mc-role{font-size:11px;color:#00BCD4;margin-top:1px;}
+.mc-desc{font-size:11px;color:rgba(255,255,255,0.4);line-height:1.5;}
+
+/* PICK HINT */
+.pick-hint{text-align:center;font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:1rem;}
+.pick-count{display:inline-block;background:rgba(0,188,212,0.1);color:#00BCD4;font-size:12px;padding:3px 12px;border-radius:100px;margin-left:6px;font-weight:600;}
+
+/* QUESTION */
+.q-block{margin-bottom:1.5rem;}
+.q-mod-header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(0,188,212,0.06);border:1px solid rgba(0,188,212,0.18);border-radius:12px;margin-bottom:10px;}
+.q-mod-icon{font-size:20px;}
+.q-mod-name{font-size:14px;font-weight:700;color:#fff;flex:1;}
+.q-mod-role{font-size:11px;color:#00BCD4;}
+.q-list{display:flex;flex-direction:column;gap:8px;}
+.q-item{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:11px;padding:12px 14px;}
+.q-text{font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:9px;line-height:1.6;}
+.q-opts{display:flex;gap:7px;flex-wrap:wrap;}
+.q-opt{padding:6px 12px;border:1px solid rgba(255,255,255,0.12);border-radius:100px;font-size:11px;cursor:pointer;color:rgba(255,255,255,0.5);background:transparent;transition:all 0.15s;font-family:inherit;}
+.q-opt:hover{border-color:#00BCD4;color:#00BCD4;}
+.q-opt.sel{background:rgba(0,188,212,0.12);border-color:#00BCD4;color:#00BCD4;font-weight:600;}
+
+/* RESULT SUMMARY */
+.result-hero{background:linear-gradient(135deg,#0A1628,#102030);border:1px solid rgba(0,188,212,0.25);border-radius:18px;padding:2rem;text-align:center;margin-bottom:1.5rem;}
+.rh-ring{width:110px;height:110px;margin:0 auto 1rem;position:relative;}
+.rh-ring svg{width:110px;height:110px;}
+.rh-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:700;color:#00BCD4;}
+.rh-title{font-size:20px;font-weight:700;color:#fff;margin-bottom:6px;}
+.rh-desc{font-size:13px;color:rgba(255,255,255,0.45);}
+
+/* UPGRADE CHAIN */
+.upgrade-chain{display:flex;flex-direction:column;gap:3px;margin-bottom:1.5rem;padding:14px;background:rgba(0,188,212,0.04);border:1px solid rgba(0,188,212,0.12);border-radius:14px;}
+.uc-step{display:flex;align-items:center;gap:8px;padding:3px 0;}
+.uc-num{width:18px;height:18px;border-radius:50%;background:rgba(0,188,212,0.15);border:1px solid rgba(0,188,212,0.3);font-size:10px;font-weight:700;color:#00BCD4;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.uc-label{font-size:12px;color:rgba(255,255,255,0.6);}
+.uc-arrow{font-size:10px;color:rgba(0,188,212,0.3);margin-left:26px;}
+
+/* MODULE RESULT */
+.mod-result-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;margin-bottom:14px;}
+.mrc-header{display:flex;align-items:center;gap:12px;padding:14px 16px;}
+.mrc-icon{font-size:22px;}
+.mrc-info{flex:1;}
+.mrc-name{font-size:15px;font-weight:700;color:#fff;}
+.mrc-role{font-size:11px;color:#00BCD4;margin-top:2px;}
+.mrc-score-area{text-align:right;}
+.mrc-score-num{font-size:18px;font-weight:700;}
+.mrc-bar-wrap{width:80px;height:4px;background:rgba(255,255,255,0.08);border-radius:100px;margin-top:5px;overflow:hidden;}
+.mrc-bar{height:100%;border-radius:100px;transition:width 1s ease;}
+.s-hi{background:#1a7a2a;}.s-md{background:#B8860B;}.s-lo{background:#A32D2D;}
+
+/* TABS */
+.rtabs{display:flex;gap:0;border:1px solid rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;margin:0 16px 12px;}
+.rtab{flex:1;padding:10px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;background:transparent;color:rgba(255,255,255,0.3);border:none;transition:all 0.2s;font-family:inherit;}
+.rtab.active{background:rgba(0,188,212,0.1);color:#00BCD4;}
+.tab-panel{display:none;padding:0 16px 16px;}.tab-panel.active{display:block;}
+
+/* EDU */
+.edu-box{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px;margin-bottom:10px;}
+.edu-title{font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.3);font-weight:700;margin-bottom:8px;text-transform:uppercase;}
+.edu-text{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.7;}
+.formula-chain{display:flex;flex-direction:column;gap:3px;margin:8px 0;}
+.fc-step{font-size:12px;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:8px;}
+.fc-step:first-child{color:#00BCD4;font-weight:600;}
+.fc-step:last-child{color:#B8860B;}
+.fc-arr{font-size:10px;color:rgba(255,255,255,0.2);}
+.key-insight{background:rgba(0,188,212,0.06);border-left:3px solid #00BCD4;padding:10px 14px;border-radius:0 10px 10px 0;margin-bottom:10px;}
+.ki-title{font-size:10px;color:rgba(0,188,212,0.7);font-weight:700;letter-spacing:0.5px;margin-bottom:4px;}
+.ki-text{font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;}
+.upgrade-box{background:rgba(184,134,11,0.06);border-left:3px solid #B8860B;padding:10px 14px;border-radius:0 10px 10px 0;margin-bottom:10px;}
+.ub-title{font-size:10px;color:#8B6508;font-weight:700;letter-spacing:0.5px;margin-bottom:4px;}
+.ub-text{font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;}
+
+/* METHOD */
+.method-steps{display:flex;flex-direction:column;gap:10px;}
+.ms-card{display:flex;gap:12px;background:rgba(0,188,212,0.04);border:1px solid rgba(0,188,212,0.1);border-radius:12px;padding:12px 14px;}
+.ms-num{width:24px;height:24px;border-radius:50%;background:rgba(0,188,212,0.15);border:1px solid rgba(0,188,212,0.3);font-size:11px;font-weight:700;color:#00BCD4;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ms-body{flex:1;}
+.ms-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.ms-desc{font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;}
+
+/* NUTRIENTS */
+.nut-list{display:flex;flex-direction:column;gap:9px;}
+.nut-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;}
+.nut-top{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;transition:background 0.15s;}
+.nut-top:hover{background:rgba(0,188,212,0.04);}
+.nut-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.nut-info{flex:1;min-width:0;}
+.nut-name{font-size:13px;font-weight:700;color:#fff;}
+.nut-mech{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;}
+.nut-price{font-size:12px;color:#B8860B;font-weight:700;margin-top:3px;}
+.nut-exp{font-size:11px;color:rgba(255,255,255,0.2);flex-shrink:0;}
+.nut-cta{padding:7px 13px;background:linear-gradient(135deg,#B8860B,#D4A017);color:#0A1628;border:none;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;text-decoration:none;display:inline-block;font-family:inherit;}
+.nut-detail{display:none;padding:0 14px 14px;border-top:1px solid rgba(255,255,255,0.05);}
+.nut-detail.open{display:block;}
+.nut-mbox{background:rgba(255,255,255,0.03);border-radius:10px;padding:10px 12px;margin:10px 0;}
+.nut-mt{font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.25);font-weight:700;margin-bottom:5px;}
+.nut-mb{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.7;}
+.nut-why{background:rgba(184,134,11,0.05);border-left:2px solid #B8860B;padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:10px;}
+.nut-wt{font-size:10px;color:#8B6508;font-weight:700;margin-bottom:3px;letter-spacing:0.5px;}
+.nut-wb{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.6;}
+.buy-block{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(184,134,11,0.05);border:1px solid rgba(184,134,11,0.18);border-radius:10px;}
+.bb-info{flex:1;}
+.bb-name{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
+.bb-price{font-size:16px;font-weight:700;color:#D4A017;}
+.bb-spec{font-size:10px;color:rgba(255,255,255,0.3);margin-top:1px;}
+.bb-store{font-size:10px;color:#B8860B;margin-top:2px;font-weight:600;}
+.btn-buy-full{padding:10px 18px;background:linear-gradient(135deg,#B8860B,#D4A017);color:#0A1628;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;white-space:nowrap;flex-shrink:0;font-family:inherit;}
+
+/* BUTTONS */
+.btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,#007A8F,#00BCD4);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:opacity 0.2s,transform 0.1s;margin-top:1rem;font-family:inherit;}
+.btn-primary:hover{opacity:0.9;transform:translateY(-1px);}
+.btn-primary:disabled{opacity:0.2;cursor:not-allowed;transform:none;}
+.nav-row{display:flex;gap:10px;margin-top:1rem;}
+.btn-back{flex:1;padding:14px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:14px;color:rgba(255,255,255,0.4);cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.btn-back:hover{border-color:rgba(0,188,212,0.4);color:#00BCD4;}
+.btn-restart{display:block;width:100%;padding:14px;background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:12px;font-size:14px;color:rgba(255,255,255,0.3);cursor:pointer;text-align:center;margin-top:1.5rem;transition:all 0.2s;font-family:inherit;}
+.btn-restart:hover{border-color:rgba(0,188,212,0.3);color:#00BCD4;}
+
+.footer{text-align:center;font-size:11px;color:rgba(255,255,255,0.15);padding:1.5rem 1rem;line-height:1.8;}
+
+@media(max-width:480px){
+  .brain-grid{grid-template-columns:1fr 1fr;}
+  .os-flow{grid-template-columns:repeat(3,1fr);}
+  .hero-title{font-size:20px;}
+  .buy-block{flex-direction:column;align-items:flex-start;}
+  .btn-buy-full{width:100%;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">The Brain Update System</div>
+  <div class="hero-title">大腦<em>更新</em>系統</div>
+  <div class="hero-divider"></div>
+  <div class="hero-sub">從習慣到人格，從人格到命運</div>
+  <div class="hero-formula">
+    <span class="hero-tag">診斷</span>
+    <span class="hero-tag">教育</span>
+    <span class="hero-tag">方法</span>
+    <span class="hero-tag">精準修復</span>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+</div>
+
+<div class="content">
+
+<!-- ══ PHASE 1: SELECT ══ -->
+<div class="phase active" id="p1">
+  <div class="slabel">人生作業系統模型</div>
+  <div class="os-flow">
+    <div class="os-step"><span class="os-icon">📥</span><span class="os-name">輸入</span></div>
+    <div class="os-step"><span class="os-icon">⚙️</span><span class="os-name">處理</span></div>
+    <div class="os-step"><span class="os-icon">📤</span><span class="os-name">輸出</span></div>
+    <div class="os-step"><span class="os-icon">🔄</span><span class="os-name">回饋</span></div>
+    <div class="os-step"><span class="os-icon">🆙</span><span class="os-name">更新</span></div>
+  </div>
+
+  <div class="slabel" style="margin-top:1.5rem">選擇最困擾你的大腦模組（可多選）</div>
+  <div class="pick-hint">選你最有共鳴的問題 <span class="pick-count" id="pcount">0 已選</span></div>
+  <div class="brain-grid" id="mod-grid"></div>
+  <button class="btn-primary" id="btn-next" disabled>進入大腦診斷 →</button>
+</div>
+
+<!-- ══ PHASE 2: QUESTIONS ══ -->
+<div class="phase" id="p2">
+  <div id="q-body"></div>
+  <div class="nav-row">
+    <button class="btn-back" onclick="go(1)">← 重新選擇</button>
+    <button class="btn-primary" style="flex:2;margin-top:0" onclick="showResult()">查看我的大腦升級方案 →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 3: RESULT ══ -->
+<div class="phase" id="p3">
+  <div id="result-body"></div>
+  <button class="btn-restart" onclick="restart()">↺ 重新診斷</button>
+</div>
+
+</div>
+
+<div class="footer">
+  資訊僅供參考，不能用來診斷和治療任何形式的身體不適。如有不適請線下及時就醫。<br>
+  購買連結：7-11 賣貨便 · 安全取貨付款
+</div>
+
+<script>
+const SHOP='https://myship.7-11.com.tw/general/detail/GM2407210007294';
+
+const MODULES=[
+  {
+    id:'pfc',icon:'🧠',name:'前額葉',role:'人生CEO',
+    desc:'思考、規劃、決策、長期思維',
+    symptoms:['容易衝動，事後後悔','難以專注，思緒散亂','拖延，無法長期規劃','被情緒帶著走，失去理性'],
+    chain:['前額葉功能不足','衝動決策、無法長期規劃','目標難以實現','習慣停留在低效模式','人生選擇權縮小'],
+    insight:'前額葉是大腦的CEO，負責所有高階思考。當它功能不足，你被杏仁核（警報器）主導，情緒衝動，難以延遲滿足，長期規劃形同空談。學霸和普通人的差距，很多時候不是智商，而是前額葉使用頻率。',
+    upgrade:'提高抽象能力 → 提高建模能力 → 提高預測能力 → 提高決策品質 → 提高人生選擇權',
+    methods:[
+      {t:'大量閱讀（前額葉的健身房）',d:'每天20分鐘閱讀歷史、科學、心理學或傳記。閱讀不只增加知識，而是訓練前額葉進行深度處理和抽象思維，這是短影音完全無法提供的腦力訓練。'},
+      {t:'寫作整理（思考的痕跡）',d:'每天寫300字：心得、反思、觀察。寫作逼你把模糊的思想結構化，是訓練前額葉建模能力最有效的工具。說得清楚才算真正懂。'},
+      {t:'延遲滿足練習',d:'每天刻意選一件讓你不舒服但有長期價值的事去做（代替即時快樂）。這直接訓練前額葉管理杏仁核的能力——這就是意志力的生理基礎。'},
+      {t:'每日三問',d:'今天做的最重要決策是什麼？背後的假設是什麼？如果再來一次，我會怎麼做？這個反思訓練讓大腦從事件層次升到系統層次。'},
+    ],
+    qs:[
+      {q:'你是否常常衝動決定後悔，或難以堅持長期計劃？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'你每天閱讀的時間有多少？',opts:['超過30分','10-30分','偶爾','幾乎不讀']},
+      {q:'面對重要決策，你是否能夠冷靜分析而非被情緒主導？',opts:['通常能','有時難','常常難','幾乎無法']},
+    ],
+    nutrients:[
+      {n:'DHA（亞麻仁油）',ico:'🌿',bg:'rgba(0,150,136,0.15)',mech:'前額葉建構材料',
+       det:'DHA是前額葉神經元細胞膜的最主要結構成分，大腦60%是脂肪，其中DHA佔神經細胞膜最關鍵的部分。前額葉思考越活躍，對DHA需求越高。缺乏DHA讓前額葉「建材不足」，思維靈活性和決策品質直接下降。',
+       why:'你的前額葉每天都在建立新的思維路徑。DHA是讓這個建設工程能夠進行的原材料。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+      {n:'神經營養素（B1+B3+B6）',ico:'🔵',bg:'rgba(24,95,165,0.15)',mech:'神經傳導決策效率',
+       det:'B1提供神經元能量代謝核心燃料，不潮紅的B3支持NAD+生成（神經DNA修復），B6是多巴胺合成輔因子（決策動力）。三者協同讓前額葉的神經傳導效率最大化，直接改善決策品質和專注力。',
+       why:'前額葉思考是高耗能工作。神經營養素是讓這個精密系統高效運轉的必需燃料。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'前額葉 vs 杏仁核平衡',
+       det:'鎂充足時前額葉能有效調節杏仁核的衝動反應，這是延遲滿足和理性決策的生理基礎。缺鎂時杏仁核主導行為，衝動增加、長期思維能力下降。',
+       why:'前額葉管理杏仁核需要鎂作為神經調節的輔助工具。補鎂讓CEO重新掌控警報器。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'銀杏複方（色氨酸）',ico:'🍂',bg:'rgba(184,134,11,0.15)',mech:'腦部血流記憶整合',
+       det:'銀杏250mg直接改善腦部血液循環，讓前額葉和海馬迴的氧氣和養分供應更充足。色氨酸95mg補充血清素，血清素充足時前額葉能更有效整合情緒和理性決策，做出更均衡的判斷。',
+       why:'前額葉需要充足的血流供應才能維持高效運作。銀杏複方是讓大腦CEO辦公室保持最佳狀態的基礎。',
+       price:'NT$510',spec:'膠囊 一瓶150粒'},
+    ]
+  },
+  {
+    id:'amyg',icon:'🚨',name:'杏仁核',role:'生存警報器',
+    desc:'焦慮、恐懼、高警報人格',
+    symptoms:['常常莫名焦慮、擔心壞事','對批評或拒絕極度敏感','睡眠困難，腦子停不下來','身體容易緊繃、肩頸僵硬'],
+    chain:['杏仁核過度敏感','誤判普通情況為威脅','慢性壓力持續激活','皮質醇長期偏高','神經系統超載'],
+    insight:'焦慮本質是「對未來的負面預測」。杏仁核是保護你活命的警報器，但現代人把「被批評」「被拒絕」「考試失敗」都當作等同「被老虎追」的危險，讓警報器全天候開機。長期如此，形成高警報人格：愛擔心、想很多、容易緊張、害怕失敗。',
+    upgrade:'前額葉越強 → 杏仁核越穩 → 焦慮越少 → 決策越理性 → 人生越自由',
+    methods:[
+      {t:'事實 vs 想像分辨練習',d:'當焦慮來臨，問：「現在，這一刻，我真的不安全嗎？」還是只是預測危險？焦慮90%來自想像，10%來自事實。培養這個分辨能力是降低杏仁核活化的認知工具。'},
+      {t:'腹式呼吸4-7-8',d:'吸氣4秒、屏息7秒、呼氣8秒。這直接激活副交感神經，是目前研究最強的快速降低杏仁核活化工具。每天練習3次，2週後焦慮基線明顯下降。'},
+      {t:'規律運動（最強抗焦慮藥）',d:'每天15分鐘有氧運動。運動直接消耗皮質醇、分泌BDNF（腦源性神經營養因子），是目前效果最強的天然抗焦慮和抗憂鬱介入，效果相當於部分抗焦慮藥物。'},
+      {t:'安全感累積練習',d:'每天記錄一件「我以為會很糟，結果還好」的事情。大腦通過具體事實更新預測模型，一個月的記錄能顯著改變杏仁核的威脅感知基線。'},
+    ],
+    qs:[
+      {q:'你是否常常感到莫名焦慮，即使沒有明顯原因？',opts:['很少','偶爾','常常','幾乎每天']},
+      {q:'你的睡眠品質如何？',opts:['很好','尚可','容易驚醒','幾乎無法熟睡']},
+      {q:'你是否常常預測最壞情況，並且身體已經提前進入緊繃狀態？',opts:['很少','偶爾','頻繁','幾乎持續']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'NMDA阻斷降神經興奮',
+       det:'鎂通過阻斷NMDA受體降低杏仁核過度活化，直接啟動副交感神經（休息模式）。高警報人格幾乎100%伴隨缺鎂——壓力消耗鎂，缺鎂加劇焦慮，形成惡性循環。甘胺酸同時作為抑制性神經傳導物質協同放鬆。',
+       why:'你的警報器長期過載。鎂是讓這個警報系統重新校準靈敏度的必要礦物質。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'GABA',ico:'🌊',bg:'rgba(83,74,183,0.15)',mech:'直接關閉杏仁核過載',
+       det:'GABA是大腦主要的抑制性神經傳導物質，直接關閉杏仁核的「威脅偵測器」過度活化。焦慮型人格的GABA系統普遍低效，補充GABA是從生理層面重設安全感基線最直接的方案。',
+       why:'焦慮是GABA煞車失靈的表現。GABA幫你把大腦從緊急模式切換回正常巡航。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+      {n:'酶菌醣體（茶胺酸）',ico:'🍵',bg:'rgba(0,150,136,0.15)',mech:'α波提升清醒放鬆',
+       det:'茶胺酸促進大腦α波增加，進入「清醒的平靜」——這是焦慮（β波）和嗜睡之間的黃金狀態。同時整合全方位益生菌+Beta多醣體，修復腸腦軸，從腸道源頭穩定情緒神經化學，因為70%的血清素在腸道生產。',
+       why:'焦慮的大腦一直在高β波模式。茶胺酸幫你調頻到α波——前額葉能重新掌控時的腦波狀態。',
+       price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+      {n:'銀杏複方（色氨酸）',ico:'🍂',bg:'rgba(184,134,11,0.15)',mech:'血清素原料抗焦慮',
+       det:'色胺酸是血清素的直接原料，血清素不足是焦慮和恐懼感的生化根源。銀杏改善腦部血流讓血清素有效傳遞，含銀杏250mg、色氨酸95mg、巴西蘑菇50mg，多機制協同穩定情緒神經化學。',
+       why:'焦慮不只是思維問題，也是血清素不足的生化現象。從原料補起才能從根本改寫高警報狀態。',
+       price:'NT$510',spec:'膠囊 一瓶150粒'},
+    ]
+  },
+  {
+    id:'hippo',icon:'📚',name:'海馬迴',role:'人生圖書館',
+    desc:'記憶力、學習力、知識整合',
+    symptoms:['記憶力下降，容易遺忘','學過的東西很快忘記','難以從經驗中學習成長','感覺腦袋越來越遲鈍'],
+    chain:['海馬迴功能下降','新記憶無法有效鞏固','知識無法整合連結','學習效果差','經驗無法轉化為智慧'],
+    insight:'記憶不是被動儲存，而是主動整合的過程：看到→理解→重複→連結→記住。只看一次大腦會刪除。睡覺時海馬迴負責把短期記憶搬入長期記憶——睡眠不足直接破壞記憶鞏固。高手不是知道更多，而是能把不同領域知識連結起來。',
+    upgrade:'大量輸入 → 理解整合 → 重複輸出 → 睡眠鞏固 → 知識網路擴展 → 預測更準',
+    methods:[
+      {t:'輸出強化記憶法',d:'學完立刻輸出——寫筆記、講給別人聽、畫心智圖。輸出不只是複習，而是逼大腦重新組織知識，建立更深的神經連結。「說不清楚」代表還沒真正懂。'},
+      {t:'間隔重複系統',d:'第1天、第3天、第7天、第21天各複習一次。這個間隔讓海馬迴判斷資訊「重要，需要長期保存」，把短期記憶轉化為長期記憶的效率提升3-5倍。'},
+      {t:'充足優質睡眠（記憶整合的核心）',d:'睡前1小時避免手機和強光。睡覺時海馬迴進行記憶鞏固，把當天學習的內容從暫存區移入長期記憶庫。睡眠不足讓學習效果減少40%以上。'},
+      {t:'跨領域連結思維',d:'每天問：「今天學到的，和我已知的什麼有關？」連結不同領域知識的人，理解世界的能力呈指數成長。這是高手的真正秘密。'},
+    ],
+    qs:[
+      {q:'你是否常常感到記憶力下降，學過的東西很快忘記？',opts:['很少','偶爾','常常','嚴重']},
+      {q:'你的睡眠品質和時間是否充足？',opts:['充足且好','尚可','不足','嚴重不足']},
+      {q:'你學習後是否有輸出習慣（寫筆記、教別人、總結）？',opts:['幾乎總是','有時','很少','幾乎沒有']},
+    ],
+    nutrients:[
+      {n:'銀杏複方（色氨酸）',ico:'🍂',bg:'rgba(184,134,11,0.15)',mech:'腦部血流記憶支持',
+       det:'銀杏250mg直接改善腦部血液循環，提升海馬迴神經元的氧氣和養分供應，是目前研究最支持認知功能和記憶力維護的天然成分之一。色氨酸補充血清素，血清素對海馬迴記憶形成至關重要。',
+       why:'海馬迴需要充足的血流才能有效進行記憶鞏固。銀杏複方是讓記憶圖書館保持最佳運作狀態的基礎支持。',
+       price:'NT$510',spec:'膠囊 一瓶150粒'},
+      {n:'DHA（亞麻仁油）',ico:'🌿',bg:'rgba(0,150,136,0.15)',mech:'突觸可塑性BDNF',
+       det:'DHA促進BDNF（腦源性神經營養因子）的生成，BDNF是海馬迴突觸可塑性（即學習能力）的核心調控因子。研究顯示DHA充足時，記憶形成速度和鞏固效果都顯著改善。',
+       why:'BDNF是讓海馬迴「願意接受新資訊」的信號分子。DHA是讓這個信號持續激活的建材。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'突觸可塑性LTP',
+       det:'鎂調節NMDA受體活性，而NMDA受體是長期增益（LTP）的核心機制——這是學習和記憶形成的細胞基礎。充足的鎂讓神經突觸保持可塑性，新記憶的形成和鞏固更有效率。',
+       why:'缺鎂讓突觸可塑性下降，記憶形成受阻。鎂補充讓海馬迴的記憶基礎設施重新運作順暢。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'bg',icon:'⚙️',name:'基底核',role:'習慣工廠',
+    desc:'拖延、手機成癮、習慣建立',
+    symptoms:['嚴重拖延，重要事不斷延後','手機成癮，控制不了滑手機時間','明知道要改變卻做不到','好的習慣建立不起來'],
+    chain:['基底核習慣迴路失衡','多巴胺被手機快速刺激劫持','前額葉延遲滿足能力下降','重要行為無法自動化','長期目標難以推進'],
+    insight:'90%的行為來自習慣，不是思考。拖延不是懶惰，而是逃避不舒服的習慣迴路。手機成癮不是自律問題，而是多巴胺被設計劫持的結果——每15秒一個新刺激，大腦習慣了快速獎勵，課本、工作、長期目標就變得「太慢」，注意力被切碎。',
+    upgrade:'識別舊習慣迴路 → 建立小行動 → 即時獎勵強化 → 重複自動化 → 習慣複利效應',
+    methods:[
+      {t:'兩分鐘法則（啟動習慣最難的一步）',d:'任何你想建立的習慣，先把它縮小到只需要2分鐘。「每天閱讀」→「打開書本讀一段」。「每天運動」→「穿上運動鞋」。啟動是最難的，啟動後通常能繼續。'},
+      {t:'提示-行動-獎勵 重新設計',d:'好習慣公式：固定的提示（相同時間、地點）→ 最小化的行動 → 立刻的小獎勵。把書放在枕頭旁邊（提示），睡前讀10頁（行動），記錄在習慣追蹤表上（獎勵）。'},
+      {t:'數位環境設計',d:'把手機放到視線之外（研究顯示手機只是放桌上就能降低認知能力10%）。關閉所有非必要通知。設定特定的手機使用時間，其餘時間手機放另一個房間。你不是在對抗意志力，而是在重新設計環境。'},
+      {t:'習慣追蹤（不要中斷鏈條）',d:'用日曆或筆記本記錄每天完成習慣打一個X。形成視覺化的連續鏈條，「不要中斷鏈條」成為強烈的心理動力。中斷後快速恢復比從未中斷更重要。'},
+    ],
+    qs:[
+      {q:'你是否有嚴重的拖延問題，重要事情不斷被推遲？',opts:['很少','偶爾','常常','非常嚴重']},
+      {q:'你每天花在手機上的時間大約多少？',opts:['少於1小時','1-2小時','2-4小時','超過4小時']},
+      {q:'你是否難以建立和維持好習慣（如閱讀、運動、早起）？',opts:['不難','有些難','很難','幾乎做不到']},
+    ],
+    nutrients:[
+      {n:'神經營養素（B1+B3+B6）',ico:'🔵',bg:'rgba(24,95,165,0.15)',mech:'多巴胺系統平衡',
+       det:'多巴胺是習慣形成和行動動力的核心神經傳導物質。B6是多巴胺合成的直接輔因子，不潮紅的B3支持NAD+確保多巴胺代謝效率，B1提供神經能量。多巴胺系統健康時，真實成就感提升，對即時刺激的依賴降低。',
+       why:'手機成癮是多巴胺被快速劫持的結果。神經營養素幫助多巴胺系統恢復正常節律，讓真實成就帶來更大的滿足感。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'衝動控制前額葉支持',
+       det:'鎂充足時前額葉能有效管理基底核的自動衝動行為，提升延遲滿足能力。拖延和手機成癮都有前額葉無法克制基底核衝動的成分，鎂是這個管理能力的生理基礎。',
+       why:'拖延是大腦在逃避不舒服的自動模式。鎂幫前額葉重新取回對這個自動模式的主導權。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'DHA（亞麻仁油）',ico:'🌿',bg:'rgba(0,150,136,0.15)',mech:'前額葉抑制衝動功能',
+       det:'前額葉抑制基底核衝動的能力（延遲滿足）依賴前額葉的結構完整性，DHA是前額葉細胞膜最主要的成分。充足的DHA讓前額葉對基底核的管理更有效率，是習慣自我調節的分子基礎。',
+       why:'想改變壞習慣需要前額葉能有效「否決」基底核的自動模式。DHA讓這個否決系統保持健康和高效。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+    ]
+  },
+  {
+    id:'insula',icon:'🫀',name:'島葉',role:'內在感測器',
+    desc:'情緒覺察、專注力、身心連結',
+    symptoms:['情緒爆炸或完全感受不到情緒','專注力差，注意力散漫','忽略身體訊號（疲勞、緊繃）','情緒和行動之間斷連'],
+    chain:['島葉覺察功能低下','身體訊號無法有效接收','情緒解讀延遲或扭曲','行為決策缺乏內在羅盤','長期累積身心症狀'],
+    insight:'島葉是大腦的「身體翻譯機」——把心跳、呼吸、肌肉張力等身體訊號翻譯成情緒。很多人以為情緒突然爆發，其實身體早就在說話，只是沒有聽到。覺察就像汽車儀表板：看到油量不足才能加油，看到體溫過高才能修理。',
+    upgrade:'提高身體覺察 → 更早識別情緒 → 更快修正行為 → 減少情緒爆炸 → 提升自我調節能力',
+    methods:[
+      {t:'身體掃描練習（每天5分鐘）',d:'閉眼從腳底到頭頂慢慢掃描身體，注意哪裡緊繃、哪裡沉重、哪裡輕鬆。不需要改變，只是觀察。這直接訓練島葉的接收和翻譯能力，也是減壓最有效的方法之一。'},
+      {t:'情緒命名技術',d:'當情緒來臨，立刻用語言命名它：「我現在感到焦慮」「我有些煩躁」「我感到悲傷」。研究顯示單純命名情緒就能降低杏仁核活化20-30%，前額葉因此能重新接管。'},
+      {t:'呼吸觀察（不改變，只觀察）',d:'每天選3個時刻，花1分鐘只是觀察自己的呼吸：深還是淺？快還是慢？均勻還是不均？不需要刻意改變，觀察本身就在訓練島葉敏感度。'},
+      {t:'數位排毒創造靜默空間',d:'每天至少30分鐘沒有手機、音樂、影片的靜默時間。島葉需要安靜才能接收身體細微訊號。持續的外部刺激讓島葉「被噪音淹沒」，內在感受力因此萎縮。'},
+    ],
+    qs:[
+      {q:'你是否常常不知道自己在生氣或焦慮，直到情緒爆發？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'你的專注力狀況如何？',opts:['良好','尚可','容易分心','嚴重分心']},
+      {q:'你是否常常忽視身體疲勞或緊繃的訊號，直到身體出問題？',opts:['很少','偶爾','常常','幾乎總是']},
+    ],
+    nutrients:[
+      {n:'酶菌醣體（茶胺酸）',ico:'🍵',bg:'rgba(0,150,136,0.15)',mech:'α波覺察力提升',
+       det:'茶胺酸提升α波，這是內在覺察和放鬆專注的腦波狀態，是島葉最適合接收身體訊號的神經背景。同時腸腦軸修復讓身體訊號傳遞更清晰——腸道是「第二大腦」，腸道健康直接影響身體覺察能力。',
+       why:'現代人大腦一直在高β波（緊張）模式，島葉的細微訊號被噪音淹沒。茶胺酸幫大腦退出高速公路，進入適合覺察的α波狀態。',
+       price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'神經系統靜默覺察',
+       det:'鎂降低神經系統的過度活化，讓島葉能夠在較低噪音的神經背景中接收身體細微訊號。缺鎂時神經系統持續「嗡嗡作響」，內在覺察的訊噪比下降，情緒訊號更難被清晰接收。',
+       why:'覺察需要一個相對安靜的神經系統。鎂幫你的內在感測器在一個更清晰的環境中工作。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'GABA',ico:'🌊',bg:'rgba(83,74,183,0.15)',mech:'神經噪音降低覺察清晰',
+       det:'GABA降低神經系統的背景活化噪音，讓島葉的身體訊號接收更清晰。情緒爆炸往往是因為長期積累的訊號沒有被及時接收和處理，GABA幫助系統在更低噪音的狀態下運作。',
+       why:'情緒爆炸是長期沒有接收小訊號的結果。GABA幫你的感測器在更安靜的神經環境中工作，讓小訊號被及時發現。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+    ]
+  },
+  {
+    id:'dmn',icon:'🪞',name:'預設模式網路 DMN',role:'身份系統',
+    desc:'人格、身份認同、受害者 vs 成長型',
+    symptoms:['強烈的「我就是這樣的人」固著感','受害者思維：都是別人的錯','難以改變根深蒂固的自我認同','人格模式重複，即使想改變'],
+    chain:['DMN固著在舊身份模型','身份認同阻礙新行為','舊信念自動過濾新可能性','改變行為卻不更新身份','短暫改變後回到原點'],
+    insight:'人格不是天生固定的，而是一套可更新的程式。DMN（預設模式網路）是「我是誰」這個程式的核心。關鍵洞見：改變人生不能只改行為，要改身份。「我要開始運動」是行為承諾，常失敗。「我是重視健康的人」是身份宣言，行為自然跟上。',
+    upgrade:'看見舊身份 → 懷疑舊身份 → 建立新身份 → 每天小行動證明 → 新身份固化',
+    methods:[
+      {t:'身份考古（看見舊程式）',d:'寫下10個你相信的關於自己的句子（「我不擅長…」「我是會…的人」）。然後問每一條：「這是事實，還是解讀？這個解讀是誰給我的？」識別才能更新。'},
+      {t:'新身份聲明',d:'把「我要努力學習」換成「我是持續成長的人」。把「我要變健康」換成「我是重視健康的人」。用現在式，用名詞（身份），不用動詞（行為）。每天早晨說一次。'},
+      {t:'每天一個身份證明',d:'每天做一件能證明你是「新身份那種人」的小事，不管多微小。閱讀5分鐘→「我是愛學習的人」的證據。運動10分鐘→「我是重視健康的人」的證據。身份靠行動累積，不靠聲明決定。'},
+      {t:'受害者 vs 創造者切換',d:'每當出現「都是別人的錯」「我沒有選擇」，立刻切換問題：「在這個情況中，我能選擇的是什麼？我能改變的是什麼？」這個習慣能重新訓練DMN的身份定向。'},
+    ],
+    qs:[
+      {q:'你是否常常用「我就是這樣的人」來解釋自己的限制？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'當事情不順時，你的第一反應是？',opts:['找我能改善的地方','有些指責他人','常常怪外在因素','幾乎都是別人的錯']},
+      {q:'你是否嘗試改變某些人格模式，但很快就回到原點？',opts:['很少這樣','偶爾','常常','幾乎每次']},
+    ],
+    nutrients:[
+      {n:'DHA（亞麻仁油）',ico:'🌿',bg:'rgba(0,150,136,0.15)',mech:'BDNF神經可塑性身份更新',
+       det:'DHA促進BDNF（腦源性神經營養因子）生成，BDNF是大腦神經可塑性的核心信號。DMN更新身份需要大量的神經重塑——舊的神經迴路需要弱化，新的需要建立。DHA是讓這個重塑工程能夠進行的物質基礎。',
+       why:'「我就是這樣的人」的固著感，部分是神經可塑性不足讓舊迴路無法被更新。DHA幫大腦真正具備更新身份的能力。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+      {n:'NMN複方',ico:'🔋',bg:'rgba(163,45,45,0.15)',mech:'NAD+神經元修復更新',
+       det:'NAD+對神經元的DNA修復和突觸重塑至關重要，缺乏NAD+讓神經元無法有效進行自我更新。NMN補充NAD+前體，讓大腦從分子層面具備持續更新的能力，這是身份更新的最底層生化基礎。',
+       why:'身份更新是大腦最複雜的工程。NMN確保神經元有足夠的NAD+能量和修復能力來完成這個更新。',
+       price:'NT$570',spec:'膠囊 一瓶150粒'},
+      {n:'神經營養素（B1+B3+B6）',ico:'🔵',bg:'rgba(24,95,165,0.15)',mech:'多巴胺身份轉換動力',
+       det:'身份更新需要持續的動力和每天的小行動。B6是多巴胺合成輔因子，多巴胺是行為改變動力的核心。B3的NAD+支持讓神經代謝效率最大化，確保更新過程有足夠的神經能量支撐。',
+       why:'沒有多巴胺動力，新身份的行為無法持續累積。神經營養素讓你的「行動力」有神經化學的基礎。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+    ]
+  },
+  {
+    id:'cis',icon:'🌐',name:'中央整合系統',role:'系統思維中心',
+    desc:'整合能力、系統思維、智慧生成',
+    symptoms:['知道很多道理卻用不出來','看不到事物的整體結構','容易被單一事件情緒化','知識和行動之間有巨大斷層'],
+    chain:['大腦各模組缺乏有效整合','知識片段化，無法形成系統','情緒和理性無法協調運作','短視決策，看不到長期結構','智慧難以生成'],
+    insight:'智慧不是知道更多，而是把很多事情連起來。中央整合系統把前額葉（分析）、杏仁核（情緒）、海馬迴（記憶）、島葉（感受）、DMN（身份）的資訊整合為判斷。普通人看事件，高手看系統。知識的量不決定智慧，整合能力才決定。',
+    upgrade:'輸入知識 → 整合連結 → 形成模型 → 驗證修正 → 更新模型 → 預測更準 → 決策更好',
+    methods:[
+      {t:'四層思考法',d:'遇到任何問題，問四個問題：① 這個事件是什麼？② 這個模式重複嗎？③ 是什麼結構造成這個模式？④ 底層的本質原因是什麼？從事件升到本質，才能找到真正的槓桿點。'},
+      {t:'跨域類比練習',d:'每週選一個你在學的概念，找它在另一個完全不同領域的類比。「神經可塑性」和「肌肉訓練」有什麼相似？「利息複利」和「習慣複利」的結構相同嗎？類比是整合系統的核心工具。'},
+      {t:'痛苦升級練習',d:'當情緒或痛苦出現時，不要只反應，而是問：「這個情緒背後的需求是什麼？這個需求背後的信念是什麼？這個信念準確嗎？需要更新嗎？」把痛苦轉化為系統更新的入口。'},
+      {t:'複盤習慣（每週一次）',d:'每週花20分鐘回顧：這週最重要的學習是什麼？哪裡的預測和現實不符？需要更新哪個模型？這個複盤習慣是中央整合系統最直接的訓練，也是高手和普通人最大的行為差異。'},
+    ],
+    qs:[
+      {q:'你是否常常知道很多道理，但在生活中難以實際應用？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'面對複雜問題，你是否能看到系統性的結構而非只看單一事件？',opts:['通常能','有時能','很難','幾乎不能']},
+      {q:'你是否常常被某個事件的情緒影響，忘記整體大局？',opts:['很少','偶爾','常常','幾乎每次']},
+    ],
+    nutrients:[
+      {n:'NMN複方',ico:'🔋',bg:'rgba(163,45,45,0.15)',mech:'NAD+全腦整合能量',
+       det:'整合系統是大腦最高能耗的功能——同時協調多個腦區、整合不同類型資訊、生成複雜判斷。NAD+是所有這些過程的核心能量輔酶。NMN直接補充NAD+前體，讓整合系統有足夠的能量維持高效運作。',
+       why:'智慧的生成是大腦最耗能的工作。NMN確保整合系統有足夠的能量完成這個複雜工作。',
+       price:'NT$570',spec:'膠囊 一瓶150粒'},
+      {n:'Q10（10:1）',ico:'⚡',bg:'rgba(184,134,11,0.15)',mech:'粒線體大腦能量',
+       det:'大腦是全身能耗最高的器官，佔體重2%但消耗20%的能量。中央整合系統需要所有腦區同時高效運作，Q10通過電子傳遞鏈直接補充粒線體ATP生成，讓大腦有足夠能量進行複雜整合。',
+       why:'大腦整合功能需要能量支持。Q10讓大腦的能量工廠在高需求時不掉速，維持整合系統的高效運作。',
+       price:'NT$580',spec:'膠囊 一瓶150粒'},
+      {n:'DHA（亞麻仁油）',ico:'🌿',bg:'rgba(0,150,136,0.15)',mech:'神經網路連結整合',
+       det:'DHA維持神經細胞膜流動性，讓不同腦區之間的神經訊號傳遞更高效。整合系統的核心功能是「跨腦區連結」，這個連結的物理基礎就是神經細胞膜的流動性，DHA是這個流動性的主要維護者。',
+       why:'大腦整合功能的物理基礎是腦區間的高效連結。DHA確保這個連結的神經通道保持最佳狀態。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+    ]
+  },
+];
+
+let picked=[], answers={}, phase=1;
+
+function initGrid(){
+  const g=document.getElementById('mod-grid');
+  MODULES.forEach(m=>{
+    const card=document.createElement('div');
+    card.className='module-card'; card.dataset.id=m.id;
+    card.innerHTML=`
+      <div class="mc-top">
+        <div class="mc-check" id="chk_${m.id}"></div>
+        <span class="mc-icon">${m.icon}</span>
+        <div class="mc-info">
+          <div class="mc-name">${m.name}</div>
+          <div class="mc-role">${m.role}</div>
+        </div>
+      </div>
+      <div class="mc-desc">${m.desc}</div>
+    `;
+    card.onclick=()=>toggleMod(m.id,card);
+    g.appendChild(card);
+  });
+}
+
+function toggleMod(id,card){
+  const idx=picked.indexOf(id);
+  const chk=document.getElementById('chk_'+id);
+  if(idx===-1){picked.push(id);card.classList.add('picked');chk.textContent='✓';}
+  else{picked.splice(idx,1);card.classList.remove('picked');chk.textContent='';}
+  document.getElementById('pcount').textContent=picked.length+' 已選';
+  document.getElementById('btn-next').disabled=picked.length===0;
+  updateProg();
+}
+
+function go(n){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p'+n).classList.add('active');
+  phase=n; updateProg();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function updateProg(){
+  const p=phase===1?8:phase===2?48:100;
+  document.getElementById('prog').style.width=p+'%';
+}
+
+document.getElementById('btn-next').onclick=()=>{buildDiag();go(2);};
+
+function buildDiag(){
+  const body=document.getElementById('q-body'); body.innerHTML='';
+  picked.forEach(id=>{
+    const m=MODULES.find(x=>x.id===id);
+    const blk=document.createElement('div'); blk.className='q-block';
+    blk.innerHTML=`<div class="q-mod-header"><span class="q-mod-icon">${m.icon}</span><span class="q-mod-name">${m.name}｜${m.role}</span><span class="q-mod-role">${m.desc}</span></div>`;
+    const ql=document.createElement('div'); ql.className='q-list';
+    m.qs.forEach((q,qi)=>{
+      const key=id+'_'+qi;
+      const item=document.createElement('div'); item.className='q-item';
+      const opts=q.opts.map((o,oi)=>`<button class="q-opt" onclick="pickOpt(this,'${key}',${oi})">${o}</button>`).join('');
+      item.innerHTML=`<div class="q-text">${q.q}</div><div class="q-opts">${opts}</div>`;
+      ql.appendChild(item);
+    });
+    blk.appendChild(ql); body.appendChild(blk);
+  });
+}
+
+function pickOpt(btn,key,val){
+  btn.closest('.q-opts').querySelectorAll('.q-opt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel'); answers[key]=val;
+}
+
+function calcScore(id){
+  const m=MODULES.find(x=>x.id===id);
+  let t=0,c=0;
+  m.qs.forEach((_,qi)=>{const k=id+'_'+qi;if(answers[k]!==undefined){t+=answers[k];c++;}});
+  if(!c)return 72;
+  return Math.round(100-(t/c/3)*78);
+}
+
+function showResult(){
+  const body=document.getElementById('result-body'); body.innerHTML='';
+  const scores=picked.map(id=>({id,score:calcScore(id)}));
+  const avg=Math.round(scores.reduce((s,x)=>s+x.score,0)/scores.length);
+  const doff=Math.round(251*(1-avg/100));
+  const sc=avg>=72?'#1a7a2a':avg>=45?'#B8860B':'#A32D2D';
+  const lbl=avg>=72?'大腦系統運作良好':avg>=45?'大腦系統需要升級':'大腦系統需要重建';
+  const desc=avg>=72?'你的大腦作業系統有一定效率，以下方案幫你持續升級。':avg>=45?'部分腦區功能受限，及早支持效果最好。':'多個腦區需要系統性修復，從底層重建是關鍵。';
+
+  body.innerHTML=`
+    <div class="result-hero">
+      <div class="rh-ring">
+        <svg viewBox="0 0 90 90"><circle cx="45" cy="45" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="5"/><circle cx="45" cy="45" r="40" fill="none" stroke="${sc}" stroke-width="5" stroke-dasharray="251" stroke-dashoffset="${doff}" stroke-linecap="round" transform="rotate(-90 45 45)"/></svg>
+        <div class="rh-num">${avg}</div>
+      </div>
+      <div class="rh-title">${lbl}</div>
+      <div class="rh-desc">${desc}</div>
+    </div>
+
+    <div class="slabel">人生終極升級公式</div>
+    <div class="upgrade-chain">
+      ${['提高覺察能力','提高抽象能力','提高建模能力','提高修正能力','提高更新能力','提高預測能力','提高決策品質','提高人生選擇權','提高自由度'].map((s,i)=>`
+        <div class="uc-step"><div class="uc-num">${i+1}</div><div class="uc-label">${s}</div></div>
+        ${i<8?'<div class="uc-arrow">↓</div>':''}
+      `).join('')}
+    </div>
+
+    <div class="slabel">你的大腦模組診斷結果</div>
+    <div id="mod-results"></div>
+  `;
+
+  const container=document.getElementById('mod-results');
+  const sorted=[...scores].sort((a,b)=>a.score-b.score);
+  sorted.forEach(({id,score})=>{
+    const m=MODULES.find(x=>x.id===id);
+    const bc=score>=72?'s-hi':score>=45?'s-md':'s-lo';
+    const nc=score>=72?'#1a7a2a':score>=45?'#B8860B':'#A32D2D';
+    const urg=score<45?'需要重建':score<72?'需要升級':'持續優化';
+
+    const card=document.createElement('div'); card.className='mod-result-card';
+    card.innerHTML=`
+      <div class="mrc-header">
+        <span class="mrc-icon">${m.icon}</span>
+        <div class="mrc-info">
+          <div class="mrc-name">${m.name}</div>
+          <div class="mrc-role">${m.role}</div>
+        </div>
+        <div class="mrc-score-area">
+          <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:3px;text-align:right;background:rgba(${score<45?'163,45,45':score<72?'184,134,11':'26,122,42'},0.12);padding:2px 8px;border-radius:100px;color:${nc};font-weight:700">${urg}</div>
+          <div class="mrc-score-num" style="color:${nc}">${score}<span style="font-size:12px;opacity:0.4">/100</span></div>
+          <div class="mrc-bar-wrap"><div class="mrc-bar ${bc}" style="width:0%" data-w="${score}%"></div></div>
+        </div>
+      </div>
+
+      <div style="padding:0 16px 4px">
+        <div class="rtabs" id="tabs_${id}">
+          <button class="rtab active" onclick="sw('${id}','edu',this)">🧠 教育</button>
+          <button class="rtab" onclick="sw('${id}','meth',this)">🛠 方法</button>
+          <button class="rtab" onclick="sw('${id}','nut',this)">⚗️ 修復</button>
+        </div>
+      </div>
+
+      <div class="tab-panel active" id="edu_${id}">
+        <div class="edu-box">
+          <div class="edu-title">功能失調路徑</div>
+          <div class="formula-chain">
+            ${m.chain.map((s,i)=>`<div class="fc-step">${i>0?'<span class="fc-arr">↓</span>':''}<span>${s}</span></div>`).join('')}
+          </div>
+        </div>
+        <div class="key-insight"><div class="ki-title">核心洞見</div><div class="ki-text">${m.insight}</div></div>
+        <div class="upgrade-box"><div class="ub-title">升級路徑</div><div class="ub-text">${m.upgrade}</div></div>
+        <div class="edu-box">
+          <div class="edu-title">常見症狀</div>
+          ${m.symptoms.map(s=>`<div style="font-size:12px;color:rgba(255,255,255,0.6);padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05);">⚠ ${s}</div>`).join('')}
+        </div>
+      </div>
+
+      <div class="tab-panel" id="meth_${id}">
+        <div class="method-steps">
+          ${m.methods.map((s,i)=>`
+            <div class="ms-card">
+              <div class="ms-num">${i+1}</div>
+              <div class="ms-body">
+                <div class="ms-title">${s.t}</div>
+                <div class="ms-desc">${s.d}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="tab-panel" id="nut_${id}">
+        <div class="nut-list" id="nuts_${id}"></div>
+      </div>
+    `;
+    container.appendChild(card);
+
+    const nutContainer=card.querySelector('#nuts_'+id);
+    m.nutrients.forEach((n,ni)=>{
+      const nid=id+'_n'+ni;
+      const nc2=document.createElement('div'); nc2.className='nut-card';
+      nc2.innerHTML=`
+        <div class="nut-top" onclick="toggleNut('${nid}')">
+          <div class="nut-ico" style="background:${n.bg}">${n.ico}</div>
+          <div class="nut-info">
+            <div class="nut-name">${n.n}</div>
+            <div class="nut-mech">${n.mech}</div>
+            <div class="nut-price">${n.price} · ${n.spec}</div>
+          </div>
+          <span class="nut-exp" id="exp_${nid}">▾</span>
+          <a class="nut-cta" href="${SHOP}" target="_blank" rel="noopener" onclick="event.stopPropagation()">購買</a>
+        </div>
+        <div class="nut-detail" id="${nid}">
+          <div class="nut-mbox"><div class="nut-mt">作用機制</div><div class="nut-mb">${n.det}</div></div>
+          <div class="nut-why"><div class="nut-wt">為什麼你的大腦現在需要它</div><div class="nut-wb">${n.why}</div></div>
+          <div class="buy-block">
+            <div class="bb-info">
+              <div class="bb-name">${n.n}</div>
+              <div class="bb-price">${n.price}</div>
+              <div class="bb-spec">${n.spec}</div>
+              <div class="bb-store">📦 7-11 賣貨便取貨付款</div>
+            </div>
+            <a class="btn-buy-full" href="${SHOP}" target="_blank" rel="noopener">立即購買 →</a>
+          </div>
+        </div>
+      `;
+      nutContainer.appendChild(nc2);
+    });
+  });
+
+  go(3);
+  setTimeout(()=>{
+    document.querySelectorAll('.mrc-bar').forEach(b=>{
+      b.style.transition='width 1s ease';
+      b.style.width=b.dataset.w;
+    });
+  },300);
+}
+
+function sw(id,tab,btn){
+  ['edu','meth','nut'].forEach(t=>document.getElementById(t+'_'+id).classList.toggle('active',t===tab));
+  document.querySelectorAll('#tabs_'+id+' .rtab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function toggleNut(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('open');
+  const exp=document.getElementById('exp_'+id);
+  if(exp)exp.textContent=el.classList.contains('open')?'▴':'▾';
+}
+
+function restart(){
+  picked=[];answers={};
+  document.querySelectorAll('.module-card').forEach(c=>{c.classList.remove('picked');const ch=c.querySelector('.mc-check');if(ch)ch.textContent='';});
+  document.getElementById('pcount').textContent='0 已選';
+  document.getElementById('btn-next').disabled=true;
+  go(1);
+}
+
+initGrid();
+</script>
+</body>
+</html>
