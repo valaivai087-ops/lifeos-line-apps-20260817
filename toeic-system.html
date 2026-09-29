@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多益口說＋寫作滿分模板APP</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0F1E;
+  --surface:#111827;
+  --surface2:#1A2535;
+  --border:#243040;
+  --border2:#344050;
+  --gold:#D4A017;
+  --gold2:#F0C040;
+  --text:#E8EDF5;
+  --muted:#7A8A9A;
+  --blue:#3B82F6;
+  --purple:#8B5CF6;
+  --teal:#14B8A6;
+  --green:#22C55E;
+  --red:#EF4444;
+  --amber:#F59E0B;
+  --pink:#EC4899;
+}
+body{background:var(--bg);color:var(--text);font-family:'Microsoft JhengHei','Noto Sans TC',system-ui,sans-serif;min-height:100vh;line-height:1.6}
+
+/* ── HEADER ── */
+header{background:var(--surface);border-bottom:1px solid var(--gold);padding:.9rem 1.2rem;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50}
+.logo{font-size:18px;font-weight:700;color:var(--gold);white-space:nowrap}
+.logo small{display:block;font-size:11px;font-weight:400;color:var(--muted);line-height:1.2}
+.header-score{margin-left:auto;display:flex;align-items:center;gap:8px}
+.score-pill{font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid var(--border2);color:var(--muted)}
+.score-pill span{color:var(--gold);font-weight:700}
+
+/* ── LAYOUT ── */
+.app{display:flex;min-height:calc(100vh - 52px)}
+.sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);padding:1rem .75rem;flex-shrink:0;overflow-y:auto;max-height:calc(100vh - 52px);position:sticky;top:52px}
+.main{flex:1;padding:1.2rem;overflow-x:hidden;min-width:0}
+
+/* ── SIDEBAR NAV ── */
+.nav-section{font-size:10px;letter-spacing:1.5px;color:var(--muted);padding:.5rem .5rem .3rem;text-transform:uppercase;margin-top:.5rem}
+.nav-section:first-child{margin-top:0}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .15s;border:none;background:transparent;width:100%;text-align:left}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:rgba(212,160,23,.12);color:var(--gold);border-left:2px solid var(--gold);padding-left:8px}
+.nav-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--border2)}
+.nav-dot.done{background:var(--green)}
+.nav-dot.active{background:var(--gold)}
+.nav-badge{margin-left:auto;font-size:10px;padding:1px 6px;border-radius:8px;background:var(--surface2);color:var(--muted)}
+
+/* ── PROGRESS BAR ── */
+.global-progress{height:3px;background:var(--border);overflow:hidden}
+.global-progress-fill{height:100%;background:var(--gold);transition:width .5s}
+
+/* ── SECTION TITLE ── */
+.section-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:.3rem}
+.section-sub{font-size:13px;color:var(--muted);margin-bottom:1.2rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tag{font-size:11px;padding:2px 10px;border-radius:10px;border:1px solid var(--border2);color:var(--muted)}
+.tag.speaking{border-color:var(--purple);color:var(--purple)}
+.tag.writing{border-color:var(--teal);color:var(--teal)}
+.tag.drill{border-color:var(--amber);color:var(--amber)}
+
+/* ── TIMER BADGE ── */
+.timer{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:4px 10px;border-radius:8px;background:var(--surface2);color:var(--amber);border:1px solid rgba(245,158,11,.3)}
+
+/* ── STEP STRUCTURE ── */
+.steps{display:grid;gap:0;margin-bottom:1.2rem}
+.step{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.step:last-child{border-bottom:none}
+.step-num{width:28px;height:28px;border-radius:50%;background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.3);color:var(--gold);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-body{flex:1}
+.step-label{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.step-en{font-size:13px;color:#60A5FA;line-height:1.6;font-style:italic}
+.step-zh{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5}
+
+/* ── TEMPLATE BOX ── */
+.tmpl-header{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:.5rem}
+.tmpl-box{background:var(--surface);border:1px solid rgba(212,160,23,.25);border-radius:10px;padding:1rem 1.2rem;font-size:13px;line-height:2.2;color:var(--text);font-family:'Courier New',monospace;margin-bottom:1rem}
+.tmpl-line{display:block}
+.tmpl-blank{display:inline-block;min-width:80px;border-bottom:1.5px solid var(--purple);color:#A78BFA;font-style:italic;text-align:center;padding:0 4px}
+.tmpl-sep{display:block;height:1px;background:var(--border);margin:.3rem 0}
+
+/* ── TIP BOX ── */
+.tip{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:10px 14px;font-size:12px;color:#93C5FD;line-height:1.7;margin-bottom:1rem}
+.tip strong{color:#60A5FA}
+
+/* ── VOCAB GRID ── */
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:1rem}
+.vocab-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.vocab-en{font-size:13px;color:#60A5FA;font-weight:500}
+.vocab-zh{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ── CHECKLIST ── */
+.checklist{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1rem}
+.check-title{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:.6rem}
+.check-item{display:flex;align-items:flex-start;gap:8px;padding:5px 0;cursor:pointer;border-bottom:1px solid var(--border)}
+.check-item:last-child{border-bottom:none;padding-bottom:0}
+.check-item input{width:16px;height:16px;accent-color:var(--gold);cursor:pointer;flex-shrink:0;margin-top:2px}
+.check-item label{font-size:12px;color:var(--text);cursor:pointer;line-height:1.5}
+.check-item.checked label{color:var(--muted);text-decoration:line-through}
+
+/* ── PRACTICE AREA ── */
+.practice-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1rem}
+.practice-title{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:.6rem}
+textarea{width:100%;min-height:120px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.7;color:var(--text);resize:vertical;font-family:inherit;transition:border-color .15s}
+textarea:focus{outline:none;border-color:var(--gold)}
+.btn-row{display:flex;gap:8px;margin-top:.6rem;flex-wrap:wrap}
+.btn{padding:8px 16px;border-radius:7px;cursor:pointer;font-size:13px;border:1px solid var(--border2);background:transparent;color:var(--text);transition:all .15s}
+.btn:hover{background:var(--surface2)}
+.btn.primary{background:var(--gold);color:#0A0F1E;border-color:var(--gold);font-weight:700}
+.btn.primary:hover{background:var(--gold2)}
+.btn.small{padding:5px 12px;font-size:12px}
+
+/* ── SAMPLE ANSWER ── */
+.sample{background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2);border-radius:10px;padding:1rem 1.2rem;margin-top:.75rem;display:none}
+.sample.open{display:block}
+.sample-label{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--teal);text-transform:uppercase;margin-bottom:.6rem}
+.sample-en{font-size:13px;color:var(--text);line-height:1.9;white-space:pre-line}
+.sample-zh{font-size:11px;color:var(--muted);margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border);line-height:1.7;white-space:pre-line}
+.keyword{background:rgba(139,92,246,.15);color:#C4B5FD;padding:1px 5px;border-radius:4px;font-size:12px}
+
+/* ── DRILL SECTION ── */
+.drill-nav{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:1rem}
+.drill-counter{font-size:13px;color:var(--muted)}
+.drill-prompt{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:1rem;font-size:13px;color:var(--text);line-height:1.7;margin-bottom:.75rem}
+.drill-prompt strong{color:var(--gold)}
+
+/* ── FORMULA BOX ── */
+.formula{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:.8rem 1rem;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:8px;margin-bottom:1rem}
+.formula-part{font-size:14px;font-weight:700;color:#C4B5FD;padding:4px 12px;background:rgba(139,92,246,.15);border-radius:6px}
+.formula-plus{font-size:18px;color:var(--muted)}
+
+/* ── EMAIL TEMPLATE ── */
+.email-box{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:1rem 1.2rem;font-size:13px;line-height:2;color:var(--text);font-family:'Courier New',monospace;margin-bottom:1rem}
+.email-line{display:block}
+.email-highlight{color:var(--teal)}
+
+/* ── MOBILE ── */
+@media(max-width:640px){
+  .sidebar{display:none}
+  .app{flex-direction:column}
+  .mobile-tabs{display:flex!important}
+}
+.mobile-tabs{display:none;gap:4px;padding:.75rem;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto}
+.mobile-tab{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:12px;white-space:nowrap}
+.mobile-tab.active{background:var(--gold);color:#0A0F1E;border-color:var(--gold);font-weight:700}
+
+/* ── SCORE TRACKER ── */
+.score-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:1.2rem}
+.score-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.score-num{font-size:22px;font-weight:700}
+.score-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ── SECTION DIVIDER ── */
+.sdiv{height:1px;background:var(--border);margin:1.5rem 0}
+
+/* ── HIDDEN ── */
+.page{display:none}
+.page.active{display:block}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🎯 多益口說＋寫作<small>滿分模板練習系統 · 背模板 不背答案</small></div>
+  <div class="header-score">
+    <div class="score-pill">已練習 <span id="hdr-done">0</span> / 14 題型</div>
+  </div>
+</header>
+
+<div class="global-progress"><div class="global-progress-fill" id="gProgress" style="width:0%"></div></div>
+
+<div class="mobile-tabs" id="mobileTabs">
+  <button class="mobile-tab active" onclick="goPage('spk-q12')">Q1-2</button>
+  <button class="mobile-tab" onclick="goPage('spk-q3')">Q3</button>
+  <button class="mobile-tab" onclick="goPage('spk-q46')">Q4-6</button>
+  <button class="mobile-tab" onclick="goPage('spk-q79')">Q7-9</button>
+  <button class="mobile-tab" onclick="goPage('spk-q10')">Q10</button>
+  <button class="mobile-tab" onclick="goPage('spk-q11')">Q11</button>
+  <button class="mobile-tab" onclick="goPage('wrt-q15')">W1-5</button>
+  <button class="mobile-tab" onclick="goPage('wrt-q67')">W6-7</button>
+  <button class="mobile-tab" onclick="goPage('wrt-q8')">W8</button>
+  <button class="mobile-tab" onclick="goPage('drill')">練習</button>
+  <button class="mobile-tab" onclick="goPage('overview')">總覽</button>
+</div>
+
+<div class="app">
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidebar">
+  <div class="nav-section">口說 Speaking</div>
+  <button class="nav-item active" id="nav-spk-q12" onclick="goPage('spk-q12')"><div class="nav-dot active" id="dot-spk-q12"></div>Q1–2 朗讀<span class="nav-badge">基礎</span></button>
+  <button class="nav-item" id="nav-spk-q3" onclick="goPage('spk-q3')"><div class="nav-dot" id="dot-spk-q3"></div>Q3 照片描述</button>
+  <button class="nav-item" id="nav-spk-q46" onclick="goPage('spk-q46')"><div class="nav-dot" id="dot-spk-q46"></div>Q4–6 回答問題</button>
+  <button class="nav-item" id="nav-spk-q79" onclick="goPage('spk-q79')"><div class="nav-dot" id="dot-spk-q79"></div>Q7–9 看資料</button>
+  <button class="nav-item" id="nav-spk-q10" onclick="goPage('spk-q10')"><div class="nav-dot" id="dot-spk-q10"></div>Q10 解決方案</button>
+  <button class="nav-item" id="nav-spk-q11" onclick="goPage('spk-q11')"><div class="nav-dot" id="dot-spk-q11"></div>Q11 表達意見</button>
+
+  <div class="nav-section">寫作 Writing</div>
+  <button class="nav-item" id="nav-wrt-q15" onclick="goPage('wrt-q15')"><div class="nav-dot" id="dot-wrt-q15"></div>Q1–5 看圖造句</button>
+  <button class="nav-item" id="nav-wrt-q67" onclick="goPage('wrt-q67')"><div class="nav-dot" id="dot-wrt-q67"></div>Q6–7 回覆 Email</button>
+  <button class="nav-item" id="nav-wrt-q8" onclick="goPage('wrt-q8')"><div class="nav-dot" id="dot-wrt-q8"></div>Q8 意見作文</button>
+
+  <div class="nav-section">練習</div>
+  <button class="nav-item" id="nav-drill" onclick="goPage('drill')"><div class="nav-dot" id="dot-drill"></div>模板填空練習</button>
+  <button class="nav-item" id="nav-overview" onclick="goPage('overview')"><div class="nav-dot" id="dot-overview"></div>進度總覽</button>
+</nav>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<main class="main">
+
+<!-- ══════════════════════════════════════
+     Q1-2 朗讀
+══════════════════════════════════════ -->
+<div class="page active" id="page-spk-q12">
+  <div class="section-title">Q1–2 Read Aloud 朗讀</div>
+  <div class="section-sub">
+    <span class="tag speaking">Speaking</span>
+    <span class="timer">⏱ 45秒準備 → 45秒朗讀</span>
+    <span class="tag">評分重點：發音・語調・流暢度</span>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-label">發音 Pronunciation</div>
+        <div class="step-en">每個音節清楚發出，不吃字、不省略</div>
+        <div class="step-zh">特別注意：-ed /t/ /d/ /ɪd/・-s /s/ /z/ /ɪz/・-ing・-tion /ʃən/</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-label">重音 Stress</div>
+        <div class="step-en">單字重音 + 句子情感重音（強調關鍵字）</div>
+        <div class="step-zh">例：The MEETING starts at NINE. / Please REGISTER by Friday.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-label">停頓 Pause</div>
+        <div class="step-en">逗號 → 短停（1拍）・句號 → 長停（2拍）・換行自然換氣</div>
+        <div class="step-zh">不要一口氣讀完整段，停頓讓評分員聽清楚每個句子</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-label">語調 Intonation</div>
+        <div class="step-en">陳述句 ↘ 下降・Yes/No問句 ↗ 上升・列舉最後一項 ↘ 下降</div>
+        <div class="step-zh">單調平讀扣分，語調起伏顯示理解力</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <strong>⭐ 45秒準備策略：</strong>① 快速瀏覽全段標出難字 ② 在逗號、句號做停頓記號 ③ 圈出長單字確認重音位置 ④ 朗讀速度放慢 20%，評分員重視清晰度 > 速度
+  </div>
+
+  <div class="vocab-grid">
+    <div class="vocab-card"><div class="vocab-en">-ed 結尾發音</div><div class="vocab-zh">voiced→/d/・unvoiced→/t/・t,d結尾→/ɪd/</div></div>
+    <div class="vocab-card"><div class="vocab-en">-tion / -sion</div><div class="vocab-zh">→ /ʃən/・conference, presentation</div></div>
+    <div class="vocab-card"><div class="vocab-en">-ture</div><div class="vocab-zh">→ /tʃər/・feature, future, lecture</div></div>
+    <div class="vocab-card"><div class="vocab-en">連音 Linking</div><div class="vocab-zh">pick_it_up / turn_it_on / look_at_it</div></div>
+  </div>
+
+  <div class="practice-wrap">
+    <div class="practice-title">✏ 練習文本：朗讀以下段落（計時45秒）</div>
+    <div class="tmpl-box" style="font-family:inherit;font-size:14px;line-height:2.2;color:#93C5FD">
+      The annual sales conference will be held on November 15th,<br>
+      at the Grand Hotel in downtown Chicago.<br>
+      All regional managers are expected to attend<br>
+      and should register online by October 31st.<br>
+      The registration fee is fifty dollars per person,<br>
+      which includes lunch and all conference materials.
+    </div>
+    <div class="btn-row">
+      <button class="btn primary" onclick="toggleSample('sa-q12')">看朗讀重點提示</button>
+    </div>
+    <div class="sample" id="sa-q12">
+      <div class="sample-label">朗讀重點</div>
+      <div class="sample-en">• <span class="keyword">November 15th</span> → NOvember / fif-TEENTH（重音在後）
+• <span class="keyword">downtown Chicago</span> → DOWN-town Chi-CA-go
+• <span class="keyword">expected to attend</span> → ex-PEC-ted / at-TEND
+• 逗號後停頓：...Chicago, ↓ [停] All regional...
+• <span class="keyword">fifty dollars</span> → FIF-ty DOL-lars（兩個重音）
+• 最後一句語調 ↘ 下降，表示結束</div>
+    </div>
+  </div>
+
+  <div class="checklist" id="cl-spk-q12">
+    <div class="check-title">✔ 自我檢核</div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q12',0)"><input type="checkbox">  <label>我標出了所有逗號和句號的停頓點</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q12',1)"><input type="checkbox">  <label>我確認了長單字的重音位置</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q12',2)"><input type="checkbox">  <label>我練習了語調起伏（不單調）</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q12',3)"><input type="checkbox">  <label>我計時錄音並回聽過一次</label></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     Q3 照片描述
+══════════════════════════════════════ -->
+<div class="page" id="page-spk-q3">
+  <div class="section-title">Q3 Describe a Picture 照片描述</div>
+  <div class="section-sub">
+    <span class="tag speaking">Speaking</span>
+    <span class="timer">⏱ 30秒準備 → 45秒描述</span>
+    <span class="tag">6段結構 · 絕對不能只說1-2句</span>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-label">開頭 Setting</div><div class="step-en">This picture was taken in / at <span style="color:var(--amber)">[地點]</span>.</div><div class="step-zh">先說地點，建立整體場景 → 1句</div></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-label">前景 Foreground</div><div class="step-en">In the foreground, I can see <span style="color:var(--amber)">[主體 + 動作]</span>.</div><div class="step-zh">最近、最明顯的人或物 → 2句</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-label">動作 Action</div><div class="step-en">The person is <span style="color:var(--amber)">[V-ing]</span>. / They appear to be <span style="color:var(--amber)">[V-ing]</span>.</div><div class="step-zh">現在進行式，用 appear to be 表示推測 → 1-2句</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-label">中景 Middle</div><div class="step-en">In the middle of the picture, there is/are <span style="color:var(--amber)">[物品/人群]</span>.</div><div class="step-zh">中間區域的人或物 → 1-2句</div></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-label">背景 Background</div><div class="step-en">In the background, I can see <span style="color:var(--amber)">[環境細節]</span>.</div><div class="step-zh">遠處、場景環境 → 1句</div></div></div>
+    <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-label">結尾 Overall</div><div class="step-en">Overall, it looks like <span style="color:var(--amber)">[情境推測]</span> is taking place.</div><div class="step-zh">總結氣氛或推測場景，給人完整感 → 1句</div></div></div>
+  </div>
+
+  <div class="tmpl-header">萬用模板</div>
+  <div class="tmpl-box">
+    <span class="tmpl-line">This picture was taken in <span class="tmpl-blank">a/an [地點]</span>.</span>
+    <span class="tmpl-sep"></span>
+    <span class="tmpl-line">In the foreground, I can see <span class="tmpl-blank">[主詞]</span>.</span>
+    <span class="tmpl-line">The <span class="tmpl-blank">[person]</span> appears to be <span class="tmpl-blank">[V-ing]</span>.</span>
+    <span class="tmpl-sep"></span>
+    <span class="tmpl-line">In the middle of the picture, there is/are <span class="tmpl-blank">[物/人]</span>.</span>
+    <span class="tmpl-sep"></span>
+    <span class="tmpl-line">In the background, I can see <span class="tmpl-blank">[背景細節]</span>.</span>
+    <span class="tmpl-sep"></span>
+    <span class="tmpl-line">Overall, it looks like <span class="tmpl-blank">[情境]</span> is taking place.</span>
+  </div>
+
+  <div class="tip">
+    <strong>⭐ 必備動詞庫（現在進行式）：</strong><br>
+    sitting, standing, walking, talking, working, wearing, holding, looking at, pointing at, carrying, using, writing, reading, smiling, discussing, presenting, typing
+  </div>
+
+  <div class="vocab-grid">
+    <div class="vocab-card"><div class="vocab-en">辦公室場景</div><div class="vocab-zh">at a desk / in an office / in a conference room / at a computer</div></div>
+    <div class="vocab-card"><div class="vocab-en">戶外場景</div><div class="vocab-zh">in a park / on a street / near a building / at a station</div></div>
+    <div class="vocab-card"><div class="vocab-en">餐廳/商店</div><div class="vocab-zh">at a counter / in a restaurant / at a cash register / in a store</div></div>
+    <div class="vocab-card"><div class="vocab-en">推測句型</div><div class="vocab-zh">appear to be / seem to be / look like they are / might be</div></div>
+  </div>
+
+  <div class="practice-wrap">
+    <div class="practice-title">✏ 練習：用6段結構描述（辦公室：2人開會，桌上有筆電和文件）</div>
+    <textarea id="ta-spk-q3" placeholder="This picture was taken in...&#10;In the foreground...&#10;The person appears to be...&#10;In the middle...&#10;In the background...&#10;Overall..."></textarea>
+    <div class="btn-row">
+      <button class="btn primary" onclick="toggleSample('sa-q3')">看範例答案</button>
+      <button class="btn small" onclick="clearTa('ta-spk-q3')">清除</button>
+    </div>
+    <div class="sample" id="sa-q3">
+      <div class="sample-label">範例答案</div>
+      <div class="sample-en">This picture was taken in a conference room.
+
+In the foreground, I can see two people sitting across from each other at a large table. They appear to be having a business meeting.
+
+In the middle of the picture, there are a laptop, some documents, and two cups of coffee on the table.
+
+In the background, I can see a whiteboard with some writing on it and large windows with natural light coming in.
+
+Overall, it looks like an important business discussion is taking place.</div>
+      <div class="sample-zh">這張照片拍攝於會議室。前景是兩人坐在大桌子兩側，似乎正在進行商務會議。桌子中間有筆記型電腦、一些文件和兩杯咖啡。背景是一面有字跡的白板，以及透著自然光的大窗戶。整體看來像是一場重要的商務討論正在進行。</div>
+    </div>
+  </div>
+
+  <div class="checklist" id="cl-spk-q3">
+    <div class="check-title">✔ 自我檢核</div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q3',0)"><input type="checkbox"><label>我用了所有 6 個結構區段</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q3',1)"><input type="checkbox"><label>我使用現在進行式（is/are V-ing）描述動作</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q3',2)"><input type="checkbox"><label>我用了 appear to be 表示推測（不說 I think）</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q3',3)"><input type="checkbox"><label>我描述了前景、中景、背景三個層次</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q3',4)"><input type="checkbox"><label>我用 Overall 做結尾總結</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q3',5)"><input type="checkbox"><label>我的描述超過 40 秒</label></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     Q4-6 回答問題
+══════════════════════════════════════ -->
+<div class="page" id="page-spk-q46">
+  <div class="section-title">Q4–6 Respond to Questions 回答問題</div>
+  <div class="section-sub">
+    <span class="tag speaking">Speaking</span>
+    <span class="timer">⏱ Q4-5 各15秒 · Q6 30秒</span>
+    <span class="tag">直接回答 · 不要猶豫</span>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-num">A</div><div class="step-body"><div class="step-label">Answer 直接回答</div><div class="step-en">Yes, I do. / No, I don't. / I think... / I prefer...</div><div class="step-zh">第一句就給答案，不要說 "Hmm, well, I think..."</div></div></div>
+    <div class="step"><div class="step-num">R</div><div class="step-body"><div class="step-label">Reason 原因</div><div class="step-en">Because... / The reason is that... / This is because...</div><div class="step-zh">給一個具體理由（Q4-5 到這裡就足夠）</div></div></div>
+    <div class="step"><div class="step-num">E</div><div class="step-body"><div class="step-label">Example 例子</div><div class="step-en">For example, ... / For instance, ... / Specifically, ...</div><div class="step-zh">舉具體例子，讓答案有說服力（Q6必用）</div></div></div>
+    <div class="step"><div class="step-num">C</div><div class="step-body"><div class="step-label">Conclusion 結論</div><div class="step-en">That's why... / So... / This is why I prefer...</div><div class="step-zh">Q6專用收尾，呼應開頭答案</div></div></div>
+  </div>
+
+  <div class="tmpl-header">Q4–5 模板（15秒）</div>
+  <div class="tmpl-box">
+    <span class="tmpl-line"><span class="keyword">A</span>  Yes, I think <span class="tmpl-blank">[answer]</span>. / I prefer <span class="tmpl-blank">[answer]</span>.</span>
+    <span class="tmpl-line"><span class="keyword">R</span>  Because <span class="tmpl-blank">[reason]</span>.</span>
+  </div>
+
+  <div class="tmpl-header">Q6 模板（30秒 · 完整四段）</div>
+  <div class="tmpl-box">
+    <span class="tmpl-line"><span class="keyword">A</span>  I prefer <span class="tmpl-blank">[answer]</span>.</span>
+    <span class="tmpl-line"><span class="keyword">R</span>  Because <span class="tmpl-blank">[reason]</span>.</span>
+    <span class="tmpl-line"><span class="keyword">E</span>  For example, <span class="tmpl-blank">[specific example]</span>.</span>
+    <span class="tmpl-line"><span class="keyword">C</span>  That's why I <span class="tmpl-blank">[restate answer]</span>.</span>
+  </div>
+
+  <div class="tip">
+    <strong>⭐ 時間控制：</strong>Q4-5 只有15秒 → Answer + Reason 兩段即可，不要硬擠例子。Q6 有30秒 → 四段都要有，每段約7-8秒。
+  </div>
+
+  <div class="practice-wrap">
+    <div class="practice-title">✏ Q6 練習題：Do you prefer working from home or in an office? Give reasons.</div>
+    <textarea id="ta-spk-q46" placeholder="I prefer...&#10;Because...&#10;For example...&#10;That's why..."></textarea>
+    <div class="btn-row">
+      <button class="btn primary" onclick="toggleSample('sa-q46')">看範例答案</button>
+      <button class="btn small" onclick="clearTa('ta-spk-q46')">清除</button>
+    </div>
+    <div class="sample" id="sa-q46">
+      <div class="sample-label">範例答案（Q6 · 30秒）</div>
+      <div class="sample-en">I prefer working in the office.
+
+Because I can communicate with my colleagues more easily.
+
+For example, when I have a question, I can ask someone right away instead of waiting for an email reply.
+
+That's why I prefer going to the office every day.</div>
+      <div class="sample-zh">我偏好在辦公室工作。因為可以更容易與同事溝通。例如有問題時可以立刻詢問，不需要等待郵件回覆。這就是為什麼我每天都偏好去辦公室。</div>
+    </div>
+  </div>
+
+  <div class="checklist" id="cl-spk-q46">
+    <div class="check-title">✔ 自我檢核</div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q46',0)"><input type="checkbox"><label>Q4/5：我第一句就給了直接答案</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q46',1)"><input type="checkbox"><label>Q4/5：我說了 Because + 理由</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q46',2)"><input type="checkbox"><label>Q6：我完整說了 A-R-E-C 四段</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q46',3)"><input type="checkbox"><label>Q6：我用了 For example 舉例</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q46',4)"><input type="checkbox"><label>Q6：我用了 That's why 收尾</label></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     Q7-9 看資料回答
+══════════════════════════════════════ -->
+<div class="page" id="page-spk-q79">
+  <div class="section-title">Q7–9 Respond Using Information 看資料回答</div>
+  <div class="section-sub">
+    <span class="tag speaking">Speaking</span>
+    <span class="timer">⏱ 30秒閱讀 · Q7-8 各15秒 · Q9 30秒</span>
+    <span class="tag">直接讀資料 · 不需個人意見</span>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-label">引用資料開頭</div><div class="step-en">According to the schedule / information / announcement, ...</div><div class="step-zh">第一句一定要引用來源，不能直接說答案</div></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-label">說明資料內容</div><div class="step-en">The schedule shows that... / It says that... / According to the email, ...</div><div class="step-zh">忠實轉述資料，不加個人判斷</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-label">時間格式</div><div class="step-en">It starts at 9 a.m. and ends at 5 p.m. / from 9 to 5</div><div class="step-zh">時間一定用 at・數字用英文念出</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-label">地點格式</div><div class="step-en">It will be held at / in [地點名稱].</div><div class="step-zh">地點用 at 接機構名，in 接城市/國家</div></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-label">費用格式</div><div class="step-en">The fee / cost / price is [金額]. / It costs [金額].</div><div class="step-zh">直接讀出數字，$50 → fifty dollars</div></div></div>
+    <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-label">資料沒有時</div><div class="step-en">I'm sorry, but that information is not given / provided.</div><div class="step-zh">資料中沒有的資訊，不能猜，說這句就好</div></div></div>
+  </div>
+
+  <div class="tmpl-header">萬用模板</div>
+  <div class="tmpl-box">
+    <span class="tmpl-line">According to the <span class="tmpl-blank">[schedule/email/flyer]</span>,</span>
+    <span class="tmpl-line">the <span class="tmpl-blank">[event]</span> will be held on <span class="tmpl-blank">[date]</span>.</span>
+    <span class="tmpl-line">It starts at <span class="tmpl-blank">[time]</span> and ends at <span class="tmpl-blank">[time]</span>.</span>
+    <span class="tmpl-line">It will take place at <span class="tmpl-blank">[location]</span>.</span>
+    <span class="tmpl-line">The registration fee is <span class="tmpl-blank">[amount]</span>.</span>
+    <span class="tmpl-sep"></span>
+    <span class="tmpl-line" style="color:var(--red)">I'm sorry, but that information is not given.</span>
+  </div>
+
+  <div class="tip">
+    <strong>⭐ Q9 通常是最難的：</strong>常考「多個項目比較」或「日程中不存在的資訊」。看到問題後，先找關鍵字在資料中的位置，再用模板轉述。不確定時直接說 "I'm sorry, that information is not given."
+  </div>
+
+  <div class="practice-wrap">
+    <div class="practice-title">✏ 練習資料：Workshop on Digital Marketing<br>Date: March 20 | Time: 9:00 AM – 4:00 PM | Venue: Grand Hotel | Fee: $80</div>
+    <div style="margin-bottom:.75rem;padding:.75rem;background:var(--surface2);border-radius:8px;font-size:13px;color:var(--muted)">
+      Q7: When is the workshop?<br>Q8: Where will it be held?<br>Q9: Is lunch included in the fee?（資料中未提及）
+    </div>
+    <textarea id="ta-spk-q79" placeholder="Q7: According to the schedule...&#10;Q8: According to the information...&#10;Q9: I'm sorry..."></textarea>
+    <div class="btn-row">
+      <button class="btn primary" onclick="toggleSample('sa-q79')">看範例答案</button>
+      <button class="btn small" onclick="clearTa('ta-spk-q79')">清除</button>
+    </div>
+    <div class="sample" id="sa-q79">
+      <div class="sample-label">範例答案</div>
+      <div class="sample-en">Q7: According to the schedule, the workshop will be held on March 20th. It starts at nine a.m. and ends at four p.m.
+
+Q8: According to the information, it will take place at the Grand Hotel.
+
+Q9: I'm sorry, but that information is not given in the schedule.</div>
+    </div>
+  </div>
+
+  <div class="checklist" id="cl-spk-q79">
+    <div class="check-title">✔ 自我檢核</div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q79',0)"><input type="checkbox"><label>我每題都用了 According to 開頭</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q79',1)"><input type="checkbox"><label>我用 starts at / ends at 說明時間</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q79',2)"><input type="checkbox"><label>我用 at [地點] 說明場地</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q79',3)"><input type="checkbox"><label>資料沒有的資訊我說了標準句</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q79',4)"><input type="checkbox"><label>數字我用英文念出（$80 = eighty dollars）</label></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     Q10 解決方案
+══════════════════════════════════════ -->
+<div class="page" id="page-spk-q10">
+  <div class="section-title">Q10 Propose a Solution 提供解決方案</div>
+  <div class="section-sub">
+    <span class="tag speaking">Speaking</span>
+    <span class="timer">⏱ 30秒準備 → 60秒回答</span>
+    <span class="tag">5段結構 · 電話留言語氣</span>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-label">Problem 確認問題</div><div class="step-en">I understand that you have a concern about [問題].</div><div class="step-zh">先說明自己理解對方的困境，表示同理</div></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-label">Apology 道歉</div><div class="step-en">I sincerely apologize for the inconvenience (caused).</div><div class="step-zh">真誠道歉，不找藉口，不說理由</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-label">Solution 1 第一方案</div><div class="step-en">I suggest that we [具體方案].</div><div class="step-zh">說清楚，加上對方的好處</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-label">Solution 2 備選方案</div><div class="step-en">Another option is to [備選方案].</div><div class="step-zh">必須給兩個選項，讓對方有選擇空間</div></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-label">Closing 收尾</div><div class="step-en">I hope this helps. Please feel free to contact us if you need anything else.</div><div class="step-zh">表示願意進一步協助，禮貌結束</div></div></div>
+  </div>
+
+  <div class="tmpl-header">萬用電話腳本模板</div>
+  <div class="tmpl-box">
+    <span class="tmpl-line">Hello, this is <span class="tmpl-blank">[name]</span> calling from <span class="tmpl-blank">[company]</span>.</span>
+    <span class="tmpl-sep"></span>
+    <span class="tmpl-line">I understand that you have a concern about <span class="tmpl-blank">[problem]</span>.</span>
+    <span class="tmpl-line">I sincerely apologize for the inconvenience.</span>
+    <span class="tmpl-sep"></span>
+    <span class="tmpl-line">I suggest that we <span class="tmpl-blank">[Solution 1]</span>.</span>
+    <span class="tmpl-sep"></span>
+    <span class="tmpl-line">Another option is to <span class="tmpl-blank">[Solution 2]</span>.</span>
+    <span class="tmpl-sep"></span>
+    <span class="tmpl-line">I hope this helps.</span>
+    <span class="tmpl-line">Please feel free to contact us if you need anything else.</span>
+    <span class="tmpl-line">Thank you and have a great day.</span>
+  </div>
+
+  <div class="tip">
+    <strong>⭐ 必備萬用句：</strong><br>
+    道歉：I sincerely apologize for any inconvenience this may have caused.<br>
+    方案1：I would like to offer you a complimentary upgrade / full refund / rescheduled appointment.<br>
+    方案2：Alternatively, we can arrange / provide / send you...<br>
+    收尾：I assure you that we will do our best to resolve this issue.
+  </div>
+
+  <div class="practice-wrap">
+    <div class="practice-title">✏ 練習情境：客戶訂的飯店房間已滿，無法入住，請致電道歉並提供兩個解決方案。</div>
+    <textarea id="ta-spk-q10" placeholder="Hello, this is...&#10;I understand that...&#10;I sincerely apologize...&#10;I suggest that we...&#10;Another option is to...&#10;I hope this helps..."></textarea>
+    <div class="btn-row">
+      <button class="btn primary" onclick="toggleSample('sa-q10')">看範例答案</button>
+      <button class="btn small" onclick="clearTa('ta-spk-q10')">清除</button>
+    </div>
+    <div class="sample" id="sa-q10">
+      <div class="sample-label">範例答案（60秒）</div>
+      <div class="sample-en">Hello, this is Sarah calling from Grand View Hotel.
+
+I understand that you have a concern about your room reservation for this weekend. I sincerely apologize for the inconvenience this has caused.
+
+I suggest that we upgrade your room to our deluxe suite at absolutely no extra charge.
+
+Another option is to arrange accommodation for you at our partner hotel nearby, and we will cover the transportation cost.
+
+I hope this helps resolve the issue. Please feel free to call us anytime, and we will do our best to make sure your stay is comfortable. Thank you and have a great day.</div>
+      <div class="sample-zh">您好，我是Grand View Hotel的Sarah。我了解您對本週末房間訂位有疑慮，對於造成的不便我深感抱歉。建議我們免費為您升級到豪華套房，另一個選擇是安排您入住附近的合作飯店，我們將承擔交通費用。希望這能解決問題，請隨時聯絡我們。</div>
+    </div>
+  </div>
+
+  <div class="checklist" id="cl-spk-q10">
+    <div class="check-title">✔ 自我檢核</div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q10',0)"><input type="checkbox"><label>我用 Hello, this is [name] 開頭</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q10',1)"><input type="checkbox"><label>我確認了對方的問題（I understand that...）</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q10',2)"><input type="checkbox"><label>我道歉了（I sincerely apologize）</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q10',3)"><input type="checkbox"><label>我給了 Solution 1（I suggest that we）</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q10',4)"><input type="checkbox"><label>我給了 Solution 2（Another option is to）</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q10',5)"><input type="checkbox"><label>我用了 I hope this helps 收尾</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q10',6)"><input type="checkbox"><label>我的回答接近 60 秒</label></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     Q11 表達意見
+══════════════════════════════════════ -->
+<div class="page" id="page-spk-q11">
+  <div class="section-title">Q11 Express an Opinion 表達意見</div>
+  <div class="section-sub">
+    <span class="tag speaking">Speaking</span>
+    <span class="timer">⏱ 15秒準備 → 60秒回答</span>
+    <span class="tag">6段結構 · 兩個理由必須有</span>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-label">Opinion 立場</div><div class="step-en">I think / I believe / In my opinion, [立場]. There are two main reasons.</div><div class="step-zh">開門見山，不猶豫。預告「兩個理由」讓結構清晰</div></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-label">Reason 1 理由一</div><div class="step-en">First, / To begin with, [理由1].</div><div class="step-zh">具體且直接的原因，不要太抽象</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-label">Example 1 例子一</div><div class="step-en">For example, / For instance, [具體例子].</div><div class="step-zh">用「具體數字、人、情境」支撐理由</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-label">Reason 2 理由二</div><div class="step-en">Second, / In addition, / Furthermore, [理由2].</div><div class="step-zh">不同角度的第二個理由</div></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-label">Example 2 例子二</div><div class="step-en">For instance, / This means that [例子2].</div><div class="step-zh">第二個具體例子，不能和第一個重複</div></div></div>
+    <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-label">Conclusion 結論</div><div class="step-en">Therefore, / For these reasons, I believe [重申立場].</div><div class="step-zh">呼應開頭，重申立場，給人完整感</div></div></div>
+  </div>
+
+  <div class="tmpl-header">萬用模板（60秒 = 每段約10秒）</div>
+  <div class="tmpl-box">
+    <span class="tmpl-line">I think <span class="tmpl-blank">[立場/意見]</span>.</span>
+    <span class="tmpl-line">There are two main reasons.</span>
+    <span class="tmpl-sep"></span>
+    <span class="tmpl-line">First, <span class="tmpl-blank">[Reason 1]</span>.</span>
+    <span class="tmpl-line">For example, <span class="tmpl-blank">[Example 1]</span>.</span>
+    <span class="tmpl-sep"></span>
+    <span class="tmpl-line">Second, <span class="tmpl-blank">[Reason 2]</span>.</span>
+    <span class="tmpl-line">For instance, <span class="tmpl-blank">[Example 2]</span>.</span>
+    <span class="tmpl-sep"></span>
+    <span class="tmpl-line">Therefore, I believe <span class="tmpl-blank">[重申立場]</span>.</span>
+  </div>
+
+  <div class="tip">
+    <strong>⭐ 萬用立場句（任何題目都能用）：</strong><br>
+    同意：I strongly believe that... / I think the advantages outweigh the disadvantages.<br>
+    不同意：I don't think... / In my opinion, this is not a good idea because...<br>
+    <strong>萬用理由庫：</strong>saves time / saves money / improves productivity / reduces stress / helps communication / is more efficient / is more convenient / is better for health
+  </div>
+
+  <div class="practice-wrap">
+    <div class="practice-title">✏ 練習題：Do you think companies should allow employees to work from home?</div>
+    <textarea id="ta-spk-q11" placeholder="I think...&#10;There are two main reasons.&#10;&#10;First,...&#10;For example,...&#10;&#10;Second,...&#10;For instance,...&#10;&#10;Therefore, I believe..."></textarea>
+    <div class="btn-row">
+      <button class="btn primary" onclick="toggleSample('sa-q11')">看範例答案</button>
+      <button class="btn small" onclick="clearTa('ta-spk-q11')">清除</button>
+    </div>
+    <div class="sample" id="sa-q11">
+      <div class="sample-label">範例答案（60秒）</div>
+      <div class="sample-en">I think companies should allow employees to work from home. There are two main reasons.
+
+First, working from home improves productivity. For example, employees can avoid long commutes and use that extra time to focus on their work. Studies show that remote workers are often more productive than office workers.
+
+Second, it reduces costs for both companies and employees. For instance, businesses can save on office space and utilities, while workers spend less on transportation and meals.
+
+Therefore, I believe that allowing remote work is beneficial for everyone involved.</div>
+      <div class="sample-zh">我認為公司應允許員工在家工作，主要有兩個理由。首先，在家工作提升生產力，員工可以省去通勤時間並專注工作。其次，可以降低公司和員工的成本，企業節省辦公空間，員工節省交通和餐飲費用。因此，我相信允許遠距工作對所有人都有益。</div>
+    </div>
+  </div>
+
+  <div class="checklist" id="cl-spk-q11">
+    <div class="check-title">✔ 自我檢核</div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q11',0)"><input type="checkbox"><label>我第一句就說了立場（I think...）</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q11',1)"><input type="checkbox"><label>我預告了「two main reasons」</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q11',2)"><input type="checkbox"><label>我用了 First / Second 兩個理由</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q11',3)"><input type="checkbox"><label>兩個理由各有 For example 例子</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q11',4)"><input type="checkbox"><label>我用 Therefore 做結論，重申立場</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'spk-q11',5)"><input type="checkbox"><label>我的回答接近或超過 50 秒</label></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     W Q1-5 看圖造句
+══════════════════════════════════════ -->
+<div class="page" id="page-wrt-q15">
+  <div class="section-title">W Q1–5 Sentence Building 看圖造句</div>
+  <div class="section-sub">
+    <span class="tag writing">Writing</span>
+    <span class="tag">每題8分鐘 · 一句話包含兩個關鍵字</span>
+  </div>
+
+  <div class="formula">
+    <div class="formula-part">主詞 Subject</div>
+    <div class="formula-plus">+</div>
+    <div class="formula-part">動詞 is/are V-ing</div>
+    <div class="formula-plus">+</div>
+    <div class="formula-part">地點 Location</div>
+    <div class="formula-plus">+</div>
+    <div class="formula-part">（細節 Detail）</div>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-label">主詞 Subject</div><div class="step-en">The man / The woman / A group of people / Two workers / Several customers</div><div class="step-zh">根據圖中人物選擇，注意單複數</div></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-label">動詞 Verb（現在進行式）</div><div class="step-en">is sitting / is working / is talking / are walking / are wearing / are carrying</div><div class="step-zh">一律用 is/are + V-ing，不用其他時態</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-label">地點 Location</div><div class="step-en">in the office / at the station / near the building / on the street / at a desk</div><div class="step-zh">in = 封閉空間内・at = 地點旁邊・on = 表面上</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-label">細節 Detail（加分）</div><div class="step-en">while holding a pen / with a colleague / and smiling / wearing a uniform</div><div class="step-zh">加 while / with / and 連接細節，句子更豐富</div></div></div>
+  </div>
+
+  <div class="tmpl-header">句型模板</div>
+  <div class="tmpl-box">
+    <span class="tmpl-line">The <span class="tmpl-blank">[man/woman]</span> is <span class="tmpl-blank">[V-ing]</span> in/at <span class="tmpl-blank">[location]</span>.</span>
+    <span class="tmpl-line">The <span class="tmpl-blank">[person]</span> is <span class="tmpl-blank">[V-ing]</span> <span class="tmpl-blank">[object]</span> while <span class="tmpl-blank">[V-ing]</span>.</span>
+    <span class="tmpl-line">Several people are <span class="tmpl-blank">[V-ing]</span> near <span class="tmpl-blank">[location]</span>.</span>
+    <span class="tmpl-line">A woman appears to be <span class="tmpl-blank">[V-ing]</span> at <span class="tmpl-blank">[location]</span>.</span>
+  </div>
+
+  <div class="vocab-grid">
+    <div class="vocab-card"><div class="vocab-en">辦公室動作</div><div class="vocab-zh">typing, presenting, filing, photocopying, answering a call, reviewing documents</div></div>
+    <div class="vocab-card"><div class="vocab-en">公共場所動作</div><div class="vocab-zh">waiting, checking in, paying, browsing, lining up, crossing the street</div></div>
+    <div class="vocab-card"><div class="vocab-en">工地/商店動作</div><div class="vocab-zh">stacking, loading, arranging, inspecting, demonstrating, installing</div></div>
+    <div class="vocab-card"><div class="vocab-en">地點介系詞</div><div class="vocab-zh">in the office / at a desk / on the floor / near the entrance / beside the shelf</div></div>
+  </div>
+
+  <div class="tip">
+    <strong>⭐ 題目給兩個關鍵字：</strong>兩個字都必須出現在句子中，且文法正確。例如：關鍵字 woman / laptop → The woman is using a laptop in the office while talking on the phone.
+  </div>
+
+  <div class="practice-wrap">
+    <div class="practice-title">✏ 練習：用以下關鍵字各造一句（woman・laptop）（man・phone）（people・meeting）</div>
+    <textarea id="ta-wrt-q15" placeholder="1. The woman...&#10;2. The man...&#10;3. Several people..."></textarea>
+    <div class="btn-row">
+      <button class="btn primary" onclick="toggleSample('sa-wq15')">看範例</button>
+      <button class="btn small" onclick="clearTa('ta-wrt-q15')">清除</button>
+    </div>
+    <div class="sample" id="sa-wq15">
+      <div class="sample-label">範例答案</div>
+      <div class="sample-en">1. The woman is using a laptop at her desk while taking notes in a notebook.
+
+2. The man is talking on the phone near the entrance of the office building.
+
+3. Several people are having a meeting in the conference room and looking at a presentation on the screen.</div>
+    </div>
+  </div>
+
+  <div class="checklist" id="cl-wrt-q15">
+    <div class="check-title">✔ 自我檢核</div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q15',0)"><input type="checkbox"><label>兩個關鍵字都包含在句子中</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q15',1)"><input type="checkbox"><label>動詞使用現在進行式（is/are V-ing）</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q15',2)"><input type="checkbox"><label>有包含地點（in/at/near/on...）</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q15',3)"><input type="checkbox"><label>主詞和動詞單複數一致</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q15',4)"><input type="checkbox"><label>句子文法完整，有主詞＋動詞</label></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     W Q6-7 回覆Email
+══════════════════════════════════════ -->
+<div class="page" id="page-wrt-q67">
+  <div class="section-title">W Q6–7 Respond to an Email 回覆 Email</div>
+  <div class="section-sub">
+    <span class="tag writing">Writing</span>
+    <span class="timer">⏱ Q6 各10分鐘 · Q7 各10分鐘</span>
+    <span class="tag">Q6 約75字 · Q7 約100字</span>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-label">Greeting 稱呼</div><div class="step-en">Dear [Name], / Dear Sir or Madam,</div><div class="step-zh">用 Dear，不要用 Hello 或 Hi</div></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-label">Purpose 目的</div><div class="step-en">Thank you for your email. I am writing in response to your questions.</div><div class="step-zh">開頭感謝 + 說明回信目的，2句話</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-label">Answer 回答</div><div class="step-en">In answer to your first question, ... / Regarding your question about [topic], ...</div><div class="step-zh">每個問題都要回答，不能漏掉</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-label">Details 細節</div><div class="step-en">First, ... / Second, ... / Please note that ... / Additionally, ...</div><div class="step-zh">用 First/Second 分段，清楚有條理</div></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-label">Closing 結尾</div><div class="step-en">If you need any further information, please do not hesitate to contact me.</div><div class="step-zh">表示願意進一步協助</div></div></div>
+    <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-label">Sign-off 署名</div><div class="step-en">Best regards, / Sincerely, / Kind regards,</div><div class="step-zh">空行後署名，必須有（否則扣分）</div></div></div>
+  </div>
+
+  <div class="tmpl-header">萬用 Email 模板</div>
+  <div class="email-box">
+    <span class="email-line">Dear <span class="tmpl-blank">[Name]</span>,</span>
+    <span class="email-line">&nbsp;</span>
+    <span class="email-line">Thank you for your email regarding <span class="tmpl-blank">[topic]</span>.</span>
+    <span class="email-line">I am writing to answer your questions.</span>
+    <span class="email-line">&nbsp;</span>
+    <span class="email-line">First, <span class="tmpl-blank">[answer to Q1]</span>.</span>
+    <span class="email-line">&nbsp;</span>
+    <span class="email-line">Second, <span class="tmpl-blank">[answer to Q2]</span>.</span>
+    <span class="email-line">&nbsp;</span>
+    <span class="email-line email-highlight">If you need any further information,</span>
+    <span class="email-line email-highlight">please do not hesitate to contact me.</span>
+    <span class="email-line">&nbsp;</span>
+    <span class="email-line">Best regards,</span>
+    <span class="email-line"><span class="tmpl-blank">[Your name]</span></span>
+  </div>
+
+  <div class="tip">
+    <strong>⭐ 高分關鍵：</strong>① 每個問題都回答（Q6至少回答1題，Q7至少2題）② 不要複製題目的原句，用自己的話改寫 ③ 加入細節：日期、時間、金額、條件 ④ 結尾 If you need... 是固定句，一定要有
+  </div>
+
+  <div class="practice-wrap">
+    <div class="practice-title">✏ 練習：對方問了 (1)研討會日期 (2)費用包含什麼。請回覆（日期：3月15日・費用$80含午餐）</div>
+    <textarea id="ta-wrt-q67" placeholder="Dear ___,&#10;&#10;Thank you for your email...&#10;&#10;First,...&#10;&#10;Second,...&#10;&#10;If you need...&#10;&#10;Best regards,&#10;[Name]"></textarea>
+    <div class="btn-row">
+      <button class="btn primary" onclick="toggleSample('sa-wq67')">看範例</button>
+      <button class="btn small" onclick="clearTa('ta-wrt-q67')">清除</button>
+    </div>
+    <div class="sample" id="sa-wq67">
+      <div class="sample-label">範例答案</div>
+      <div class="sample-en">Dear Ms. Johnson,
+
+Thank you for your email regarding our upcoming seminar.
+I am writing to answer your questions.
+
+First, the seminar will be held on March 15th at the Business Center on Fifth Avenue.
+
+Second, the registration fee is $80 per person, which includes a buffet lunch and all seminar materials.
+
+If you need any further information, please do not hesitate to contact me.
+
+Best regards,
+David Chen</div>
+      <div class="sample-zh">親愛的Johnson女士，感謝您詢問即將舉行的研討會。首先，研討會將於3月15日在第五大道商業中心舉行。其次，報名費為每人80美元，包含自助午餐及所有研討會資料。如需更多資訊，請隨時聯繫。</div>
+    </div>
+  </div>
+
+  <div class="checklist" id="cl-wrt-q67">
+    <div class="check-title">✔ 自我檢核</div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q67',0)"><input type="checkbox"><label>我用了 Dear [Name], 開頭</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q67',1)"><input type="checkbox"><label>我用了 Thank you for your email 開場</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q67',2)"><input type="checkbox"><label>每個問題都有回答，沒有漏掉</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q67',3)"><input type="checkbox"><label>我用了 First / Second 分段</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q67',4)"><input type="checkbox"><label>我用了 If you need... please contact me</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q67',5)"><input type="checkbox"><label>我用了 Best regards / Sincerely 署名</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q67',6)"><input type="checkbox"><label>字數達到 Q6 約75字 / Q7 約100字</label></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     W Q8 意見作文
+══════════════════════════════════════ -->
+<div class="page" id="page-wrt-q8">
+  <div class="section-title">W Q8 Opinion Essay 意見作文</div>
+  <div class="section-sub">
+    <span class="tag writing">Writing</span>
+    <span class="timer">⏱ 30分鐘 · 目標 200字</span>
+    <span class="tag">結構比創意重要 · 評分員看段落</span>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-label">Introduction 引言</div><div class="step-en">I agree/disagree that [topic]. There are several reasons.</div><div class="step-zh">立場清楚 + 預告理由，2句即可</div></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-label">Reason 1 理由一</div><div class="step-en">First, [reason 1].</div><div class="step-zh">第一段：一個清楚的理由</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-label">Example 1 例子一</div><div class="step-en">For example, [specific example].</div><div class="step-zh">具體例子 2-3句，越具體越好</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-label">Reason 2 理由二</div><div class="step-en">Second, [reason 2].</div><div class="step-zh">第二段：不同角度的理由</div></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-label">Example 2 例子二</div><div class="step-en">For instance, [example 2].</div><div class="step-zh">第二個具體例子 2-3句</div></div></div>
+    <div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-label">Conclusion 結論</div><div class="step-en">Therefore, I believe [restate position].</div><div class="step-zh">呼應開頭，重申立場，1-2句</div></div></div>
+  </div>
+
+  <div class="tmpl-header">萬用作文模板</div>
+  <div class="tmpl-box">
+    <span class="tmpl-line">I agree that <span class="tmpl-blank">[topic/statement]</span>.</span>
+    <span class="tmpl-line">There are several reasons.</span>
+    <span class="tmpl-sep"></span>
+    <span class="tmpl-line">First, <span class="tmpl-blank">[Reason 1]</span>.</span>
+    <span class="tmpl-line">For example, <span class="tmpl-blank">[Example 1]</span>.</span>
+    <span class="tmpl-line"><span class="tmpl-blank">[Add 1-2 more sentences to expand]</span>.</span>
+    <span class="tmpl-sep"></span>
+    <span class="tmpl-line">Second, <span class="tmpl-blank">[Reason 2]</span>.</span>
+    <span class="tmpl-line">For instance, <span class="tmpl-blank">[Example 2]</span>.</span>
+    <span class="tmpl-line"><span class="tmpl-blank">[Add 1-2 more sentences to expand]</span>.</span>
+    <span class="tmpl-sep"></span>
+    <span class="tmpl-line">Therefore, I believe <span class="tmpl-blank">[restate opinion]</span>.</span>
+  </div>
+
+  <div class="tip">
+    <strong>⭐ 萬用理由庫（任何題目都能套用）：</strong><br>
+    saves time and money・improves productivity・reduces stress・promotes teamwork・is more convenient・helps people develop skills・is better for the environment・increases job satisfaction・leads to better results・allows more flexibility
+  </div>
+
+  <div class="vocab-grid">
+    <div class="vocab-card"><div class="vocab-en">連接詞（前進）</div><div class="vocab-zh">Furthermore, / In addition, / Moreover, / Also,</div></div>
+    <div class="vocab-card"><div class="vocab-en">連接詞（結論）</div><div class="vocab-zh">Therefore, / As a result, / For these reasons, / In conclusion,</div></div>
+    <div class="vocab-card"><div class="vocab-en">例子引導</div><div class="vocab-zh">For example, / For instance, / Such as / A good example is</div></div>
+    <div class="vocab-card"><div class="vocab-en">立場句型</div><div class="vocab-zh">I agree that / I believe / In my opinion / I strongly feel that</div></div>
+  </div>
+
+  <div class="practice-wrap">
+    <div class="practice-title">✏ 練習題：Do you agree that companies should provide free meals for employees?</div>
+    <textarea id="ta-wrt-q8" style="min-height:200px" placeholder="I agree that...&#10;There are several reasons.&#10;&#10;First,...&#10;For example,...&#10;&#10;Second,...&#10;For instance,...&#10;&#10;Therefore, I believe..."></textarea>
+    <div class="btn-row">
+      <button class="btn primary" onclick="toggleSample('sa-wq8')">看範例答案（200字）</button>
+      <button class="btn small" onclick="clearTa('ta-wrt-q8')">清除</button>
+    </div>
+    <div class="sample" id="sa-wq8">
+      <div class="sample-label">範例答案（約200字）</div>
+      <div class="sample-en">I agree that companies should provide free meals for employees. There are several reasons.
+
+First, free meals save employees time and money. For example, workers do not need to spend time looking for lunch options or waiting in long restaurant queues. This extra time can be used to rest or prepare for afternoon meetings, which leads to higher productivity after lunch.
+
+Second, sharing meals in the workplace encourages teamwork and better communication. For instance, when employees eat together in a company cafeteria, they have the opportunity to interact with colleagues from different departments. This informal communication can lead to new ideas and stronger working relationships.
+
+Therefore, I believe that providing free meals is a worthwhile investment for any company that wants to improve employee satisfaction and overall performance.</div>
+      <div class="sample-zh">我同意公司應提供員工免費餐點。首先，免費餐點節省員工時間和金錢，員工不需要花時間尋找午餐或排隊，省下的時間可以休息或準備下午的會議，提升下午生產力。其次，共用餐廳促進團隊合作和溝通，員工可以與不同部門同事互動，激發新想法並建立更好的工作關係。因此，我相信提供免費餐點是提升員工滿意度和整體績效的值得投資。</div>
+    </div>
+  </div>
+
+  <div class="checklist" id="cl-wrt-q8">
+    <div class="check-title">✔ 自我檢核</div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q8',0)"><input type="checkbox"><label>Introduction：清楚說明立場（I agree/disagree）</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q8',1)"><input type="checkbox"><label>Reason 1：有 For example 具體例子</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q8',2)"><input type="checkbox"><label>Reason 2：有 For instance 具體例子</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q8',3)"><input type="checkbox"><label>Conclusion：用 Therefore 呼應開頭</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q8',4)"><input type="checkbox"><label>段落之間有空行，結構清楚</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q8',5)"><input type="checkbox"><label>字數達到約 200 字</label></div>
+    <div class="check-item" onclick="toggleCheck(this,'wrt-q8',6)"><input type="checkbox"><label>沒有拼字或文法錯誤</label></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     DRILL 模板填空練習
+══════════════════════════════════════ -->
+<div class="page" id="page-drill">
+  <div class="section-title">模板填空練習</div>
+  <div class="section-sub">
+    <span class="tag drill">練習</span>
+    <span class="tag">6 道綜合練習 · 看完再對答案</span>
+  </div>
+  <div id="drill-area"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     OVERVIEW 進度總覽
+══════════════════════════════════════ -->
+<div class="page" id="page-overview">
+  <div class="section-title">學習進度總覽</div>
+  <div class="section-sub"><span class="tag">勾選自我檢核後進度自動更新</span></div>
+
+  <div class="score-row" id="overview-scores"></div>
+
+  <div id="overview-bars"></div>
+
+  <div class="sdiv"></div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem">
+    <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:.75rem">快速跳轉複習</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px" id="quick-links"></div>
+  </div>
+</div>
+
+</main>
+</div><!-- end .app -->
+
+<script>
+const PAGES=['spk-q12','spk-q3','spk-q46','spk-q79','spk-q10','spk-q11','wrt-q15','wrt-q67','wrt-q8','drill','overview'];
+const PAGE_LABELS={'spk-q12':'Q1-2 朗讀','spk-q3':'Q3 照片描述','spk-q46':'Q4-6 回答','spk-q79':'Q7-9 看資料','spk-q10':'Q10 解決方案','spk-q11':'Q11 意見','wrt-q15':'W1-5 造句','wrt-q67':'W6-7 Email','wrt-q8':'W8 作文','drill':'填空練習','overview':'進度總覽'};
+const PAGE_COLORS={'spk-q12':VAR('--purple'),'spk-q3':'#8B5CF6','spk-q46':'#7C3AED','spk-q79':'#6D28D9','spk-q10':'#5B21B6','spk-q11':'#4C1D95','wrt-q15':VAR('--teal'),'wrt-q67':'#0D9488','wrt-q8':'#0F766E','drill':VAR('--amber'),'overview':VAR('--muted')};
+function VAR(v){return v}
+
+const CHECKS_DEF={
+  'spk-q12':4,'spk-q3':6,'spk-q46':5,'spk-q79':5,'spk-q10':7,'spk-q11':6,
+  'wrt-q15':5,'wrt-q67':7,'wrt-q8':7
+};
+
+let checkState={};
+let curPage='spk-q12';
+let drillIdx=0;
+
+const DRILLS=[
+  {label:'Q3 照片描述',tag:'Speaking',prompt:'<strong>場景：</strong>機場大廳，一名男士站在登機口前，手持行李箱，看著出發資訊看板。<br>用完整的 6 段結構描述這張照片。',
+   template:['This picture was taken ___.',
+             'In the foreground, I can see ___.',
+             'The man appears to be ___.',
+             'In the middle of the picture, there is/are ___.',
+             'In the background, I can see ___.',
+             'Overall, it looks like ___.'],
+   answer:'This picture was taken in an airport terminal.\n\nIn the foreground, I can see a man standing near a boarding gate. He appears to be checking the departure information board while holding a suitcase.\n\nIn the middle of the picture, there are several rows of seats and other travelers waiting.\n\nIn the background, I can see large windows showing the runways outside.\n\nOverall, it looks like the man is preparing to board his flight.'},
+  {label:'Q10 解決方案',tag:'Speaking',prompt:'<strong>情境：</strong>一位顧客訂了餐廳的包廂，但餐廳臨時停電，無法提供服務。你是餐廳經理，打電話道歉並給出兩個解決方案。',
+   template:['Hello, this is ___ calling from ___.',
+             'I understand that ___.',
+             'I sincerely apologize for ___.',
+             'I suggest that we ___.',
+             'Another option is to ___.',
+             'I hope this helps. Please feel free to ___.'],
+   answer:'Hello, this is Manager Chen calling from La Belle Restaurant.\n\nI understand that you have a reservation with us this evening and we are experiencing an unexpected power outage.\n\nI sincerely apologize for the inconvenience this has caused.\n\nI suggest that we move your reservation to tomorrow evening at the same time, and we will offer you a complimentary appetizer as an apology.\n\nAnother option is to arrange a private dining experience for you at our partner restaurant nearby at no additional charge.\n\nI hope this helps resolve the situation. Please feel free to call me directly at any time.'},
+  {label:'Q11 表達意見',tag:'Speaking',prompt:'<strong>題目：</strong>Do you think all employees should be required to wear a uniform at work? Give specific reasons and examples.',
+   template:['I think ___ . There are two main reasons.',
+             'First, ___.',
+             'For example, ___.',
+             'Second, ___.',
+             'For instance, ___.',
+             'Therefore, I believe ___.'],
+   answer:'I think all employees should be required to wear a uniform at work. There are two main reasons.\n\nFirst, uniforms create a sense of professionalism and equality in the workplace. For example, when all employees dress the same way, it reduces visible differences in social status and helps customers identify staff members easily.\n\nSecond, wearing a uniform saves employees time and money. For instance, workers do not need to spend time every morning deciding what to wear, and they do not need to buy separate work clothes.\n\nTherefore, I believe that requiring uniforms at work has significant benefits for both companies and employees.'},
+  {label:'W Q1-5 看圖造句',tag:'Writing',prompt:'<strong>關鍵字：</strong>(1) woman / report (2) workers / equipment (3) man / customer<br>用關鍵字各造一個完整英文句子。',
+   template:['1. The woman is ___ the report ___ .',
+             '2. The workers are ___ the equipment ___ .',
+             '3. The man is ___ the customer ___ .'],
+   answer:'1. The woman is reviewing the report at her desk while taking notes on a notepad.\n\n2. The workers are inspecting the equipment at the construction site and wearing safety helmets.\n\n3. The man is assisting the customer at the service counter and pointing at a product catalog.'},
+  {label:'W Q6-7 回覆Email',tag:'Writing',prompt:'<strong>對方詢問：</strong>(1) 培訓課程何時開始 (2) 是否提供住宿<br><strong>資料：</strong>課程：8月10日上午9點開始・不提供住宿，但可推薦附近飯店。',
+   template:['Dear ___,',
+             'Thank you for your email regarding ___.',
+             'I am writing to answer your questions.',
+             'First, ___.',
+             'Second, ___ . However, we can recommend ___ .',
+             'If you need ___ , please do not hesitate to ___.',
+             'Best regards, ___'],
+   answer:'Dear Mr. Williams,\n\nThank you for your email regarding our upcoming training program.\nI am writing to answer your questions.\n\nFirst, the training course will begin on August 10th at 9:00 a.m. at our main office on Park Street.\n\nSecond, we do not provide accommodation for participants. However, we can recommend several hotels nearby at a discounted rate for our attendees.\n\nIf you need any further information, please do not hesitate to contact me.\n\nBest regards,\nJennifer Lee'},
+  {label:'W Q8 意見作文',tag:'Writing',prompt:'<strong>題目：</strong>Do you agree that people should limit their use of social media? Write an opinion essay of about 200 words.',
+   template:['I agree/disagree that ___ . There are several reasons.',
+             'First, ___ .',
+             'For example, ___ .',
+             '[Expand with 1-2 more sentences]',
+             'Second, ___ .',
+             'For instance, ___ .',
+             '[Expand with 1-2 more sentences]',
+             'Therefore, I believe ___ .'],
+   answer:'I agree that people should limit their use of social media. There are several reasons.\n\nFirst, excessive social media use can negatively affect mental health. For example, many studies have shown that spending too much time on social media leads to feelings of anxiety, depression, and low self-esteem, especially among young people who compare their lives to the highlight reels of others.\n\nSecond, limiting social media use can improve productivity. For instance, many people check their social media feeds dozens of times a day, which interrupts their focus and reduces the quality of their work. By setting time limits, people can concentrate better on their tasks and accomplish more in less time.\n\nTherefore, I believe that reducing social media usage is essential for maintaining good mental health and achieving personal and professional goals.'},
+];
+
+function goPage(id){
+  curPage=id;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  if(pg)pg.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const nav=document.getElementById('nav-'+id);
+  if(nav){nav.classList.add('active');const dot=document.getElementById('dot-'+id);if(dot){dot.classList.remove('active');dot.classList.add('active');}}
+  document.querySelectorAll('.mobile-tab').forEach((t,i)=>{
+    const ids=['spk-q12','spk-q3','spk-q46','spk-q79','spk-q10','spk-q11','wrt-q15','wrt-q67','wrt-q8','drill','overview'];
+    t.classList.toggle('active',ids[i]===id);
+  });
+  if(id==='drill')renderDrill();
+  if(id==='overview')renderOverview();
+  window.scrollTo(0,0);
+}
+
+function toggleSample(id){
+  const el=document.getElementById(id);
+  if(el)el.classList.toggle('open');
+}
+
+function clearTa(id){
+  const el=document.getElementById(id);
+  if(el)el.value='';
+}
+
+function toggleCheck(rowEl,pageId,idx){
+  const cb=rowEl.querySelector('input');
+  cb.checked=!cb.checked;
+  rowEl.classList.toggle('checked',cb.checked);
+  if(!checkState[pageId])checkState[pageId]={};
+  checkState[pageId][idx]=cb.checked;
+  updateGlobalProgress();
+  updateNavDots();
+}
+
+function updateGlobalProgress(){
+  let total=0,done=0;
+  Object.keys(CHECKS_DEF).forEach(pg=>{
+    total+=CHECKS_DEF[pg];
+    if(checkState[pg])done+=Object.values(checkState[pg]).filter(Boolean).length;
+  });
+  const pct=Math.round(done/total*100);
+  document.getElementById('gProgress').style.width=pct+'%';
+  const pagesDone=Object.keys(CHECKS_DEF).filter(pg=>{
+    if(!checkState[pg])return false;
+    return Object.values(checkState[pg]).filter(Boolean).length>=CHECKS_DEF[pg];
+  }).length;
+  document.getElementById('hdr-done').textContent=pagesDone;
+}
+
+function updateNavDots(){
+  Object.keys(CHECKS_DEF).forEach(pg=>{
+    const dot=document.getElementById('dot-'+pg);
+    if(!dot)return;
+    const done=checkState[pg]?Object.values(checkState[pg]).filter(Boolean).length:0;
+    const total=CHECKS_DEF[pg];
+    dot.className='nav-dot'+(done>=total?' done':pg===curPage?' active':'');
+  });
+}
+
+function renderDrill(){
+  const d=DRILLS[drillIdx];
+  const tmpl=d.template.map((l,i)=>`<div style="display:flex;gap:8px;margin-bottom:6px"><span style="color:var(--muted);font-size:12px;min-width:20px;padding-top:1px">${i+1}.</span><span style="font-size:13px;color:#93C5FD;line-height:1.7">${l}</span></div>`).join('');
+  document.getElementById('drill-area').innerHTML=`
+    <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap">
+      <span style="font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid var(--border2);color:var(--muted)">第 ${drillIdx+1} 題 / ${DRILLS.length}</span>
+      <span class="tag ${d.tag==='Speaking'?'speaking':'writing'}">${d.tag}</span>
+      <span style="font-size:13px;font-weight:500;color:var(--text)">${d.label}</span>
+    </div>
+    <div class="drill-prompt">${d.prompt}</div>
+    <div style="margin-bottom:.75rem">
+      <div class="tmpl-header">填入模板框架</div>
+      <div class="tmpl-box" style="line-height:1.8">${tmpl}</div>
+    </div>
+    <div class="practice-wrap">
+      <div class="practice-title">✏ 按照模板，寫出完整答案</div>
+      <textarea id="ta-drill" style="min-height:160px" placeholder="按照上方框架填入內容，寫出完整的英文回答..."></textarea>
+      <div class="btn-row">
+        <button class="btn primary" onclick="toggleSample('sa-drill')">對答案</button>
+        <button class="btn small" onclick="clearTa('ta-drill')">清除</button>
+      </div>
+      <div class="sample" id="sa-drill">
+        <div class="sample-label">參考答案</div>
+        <div style="white-space:pre-line;font-size:13px;line-height:1.9;color:var(--text)">${d.answer}</div>
+      </div>
+    </div>
+    <div class="drill-nav">
+      <button class="btn" onclick="drillNav(-1)" ${drillIdx===0?'disabled style="opacity:.4"':''}>← 上一題</button>
+      <span class="drill-counter">${drillIdx+1} / ${DRILLS.length}</span>
+      <button class="btn" onclick="drillNav(1)" ${drillIdx===DRILLS.length-1?'disabled style="opacity:.4"':''}>下一題 →</button>
+    </div>`;
+}
+
+function drillNav(dir){
+  drillIdx=Math.max(0,Math.min(DRILLS.length-1,drillIdx+dir));
+  renderDrill();
+}
+
+function renderOverview(){
+  const pageSections=[
+    {label:'口說 Speaking',pages:['spk-q12','spk-q3','spk-q46','spk-q79','spk-q10','spk-q11'],color:'#8B5CF6'},
+    {label:'寫作 Writing',pages:['wrt-q15','wrt-q67','wrt-q8'],color:'#14B8A6'},
+  ];
+  let totalAll=0,doneAll=0;
+  Object.keys(CHECKS_DEF).forEach(pg=>{
+    totalAll+=CHECKS_DEF[pg];
+    if(checkState[pg])doneAll+=Object.values(checkState[pg]).filter(Boolean).length;
+  });
+
+  document.getElementById('overview-scores').innerHTML=`
+    <div class="score-card"><div class="score-num" style="color:var(--gold)">${Math.round(doneAll/totalAll*100)}%</div><div class="score-lbl">整體完成率</div></div>
+    <div class="score-card"><div class="score-num" style="color:var(--green)">${Object.keys(CHECKS_DEF).filter(pg=>{const d=checkState[pg]?Object.values(checkState[pg]).filter(Boolean).length:0;return d>=CHECKS_DEF[pg];}).length}</div><div class="score-lbl">題型完成</div></div>
+    <div class="score-card"><div class="score-num" style="color:var(--blue)">${doneAll}</div><div class="score-lbl">檢核項目</div></div>
+    <div class="score-card"><div class="score-num" style="color:var(--amber)">${totalAll-doneAll}</div><div class="score-lbl">待完成</div></div>`;
+
+  document.getElementById('overview-bars').innerHTML=pageSections.map(sec=>`
+    <div style="margin-bottom:1.2rem">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:.5rem;text-transform:uppercase">${sec.label}</div>
+      ${sec.pages.map(pg=>{
+        const done=checkState[pg]?Object.values(checkState[pg]).filter(Boolean).length:0;
+        const total=CHECKS_DEF[pg]||1;
+        const pct=Math.round(done/total*100);
+        return`<div style="display:flex;align-items:center;gap:10px;margin-bottom:7px">
+          <span style="font-size:12px;color:var(--text);min-width:110px;cursor:pointer" onclick="goPage('${pg}')">${PAGE_LABELS[pg]}</span>
+          <div style="flex:1;height:7px;background:var(--border);border-radius:4px;overflow:hidden">
+            <div style="width:${pct}%;height:100%;background:${sec.color};border-radius:4px;transition:width .5s"></div>
+          </div>
+          <span style="font-size:11px;color:var(--muted);min-width:50px;text-align:right">${done}/${total}</span>
+        </div>`;}).join('')}
+    </div>`).join('');
+
+  document.getElementById('quick-links').innerHTML=Object.keys(PAGE_LABELS).filter(k=>k!=='overview').map(k=>`
+    <button class="btn small" onclick="goPage('${k}')" style="text-align:left">${PAGE_LABELS[k]}</button>`).join('');
+}
+
+goPage('spk-q12');
+</script>
+</body>
+</html>
