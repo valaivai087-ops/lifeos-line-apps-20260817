@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英文單字字族高密度學習站</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0A0F1E;
+  --surface: #111827;
+  --card: #1A2235;
+  --border: #1E2D45;
+  --text: #E8EDF5;
+  --muted: #7A8FA8;
+  --gold: #F4C842;
+  --gold2: #E8A020;
+  --white: #FFFFFF;
+  --correct: #34D399;
+  --wrong: #F87171;
+  --glow: rgba(244,200,66,0.15);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk','Noto Sans TC',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#0A0F1E 0%,#111827 100%);border-bottom:1px solid var(--border);padding:18px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+.logo{font-size:22px;font-weight:700;color:var(--gold);letter-spacing:-0.5px;}
+.logo span{color:var(--text);font-weight:400;}
+.header-stats{margin-left:auto;display:flex;gap:20px;align-items:center;}
+.stat-pill{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:13px;color:var(--muted);}
+.stat-pill strong{color:var(--gold);}
+
+/* NAV TABS */
+.nav{display:flex;gap:0;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{flex:none;padding:14px 22px;font-size:14px;font-weight:600;border:none;background:none;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;}
+.nav-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+.nav-btn:hover:not(.active){color:var(--text);}
+
+/* PAGES */
+.page{display:none;padding:24px;max-width:960px;margin:0 auto;}
+.page.active{display:block;}
+
+/* FAMILY GRID */
+.family-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:28px;}
+.family-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.family-card::before{content:'';position:absolute;inset:0;background:var(--glow);opacity:0;transition:.25s;}
+.family-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.family-card:hover::before{opacity:1;}
+.family-card.selected{border-color:var(--gold);box-shadow:0 0 20px rgba(244,200,66,0.2);}
+.fc-dot{width:10px;height:10px;border-radius:50%;margin-bottom:10px;}
+.fc-prefix{font-size:18px;font-weight:700;margin-bottom:4px;}
+.fc-desc{font-size:11px;color:var(--muted);margin-bottom:8px;}
+.fc-count{font-size:11px;color:var(--gold);}
+.fc-progress{height:3px;background:var(--border);border-radius:2px;margin-top:10px;}
+.fc-bar{height:100%;border-radius:2px;transition:.4s;}
+
+/* FLASHCARD */
+.flashcard-area{perspective:1200px;margin:0 auto;max-width:500px;}
+.flashcard{width:100%;min-height:300px;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1);cursor:pointer;}
+.flashcard.flipped{transform:rotateY(180deg);}
+.card-face{position:absolute;inset:0;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;display:flex;flex-direction:column;align-items:center;justify-content:center;backface-visibility:hidden;text-align:center;}
+.card-face.back{transform:rotateY(180deg);background:linear-gradient(135deg,var(--card) 0%,#1F2E45 100%);}
+.card-word{font-size:42px;font-weight:700;margin-bottom:8px;letter-spacing:-1px;}
+.card-ipa{font-size:15px;color:var(--muted);margin-bottom:12px;font-style:italic;}
+.card-hint{font-size:13px;color:var(--muted);margin-top:12px;}
+.card-zh{font-size:22px;font-weight:600;margin-bottom:16px;color:var(--gold);}
+.card-collocations{display:flex;flex-direction:column;gap:6px;width:100%;}
+.colloc-item{background:var(--bg);border-radius:8px;padding:10px 14px;font-size:14px;color:var(--text);border:1px solid var(--border);text-align:left;}
+.colloc-item strong{color:var(--gold);}
+.card-tag{font-size:11px;background:rgba(244,200,66,0.1);color:var(--gold);border-radius:6px;padding:3px 10px;margin-bottom:14px;font-weight:600;}
+
+.fc-controls{display:flex;gap:12px;margin-top:20px;justify-content:center;}
+.btn{padding:11px 24px;border-radius:10px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all .2s;font-family:inherit;}
+.btn-primary{background:var(--gold);color:#0A0F1E;}
+.btn-primary:hover{background:var(--gold2);}
+.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border);}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold);}
+.btn-correct{background:rgba(52,211,153,0.15);color:var(--correct);border:1px solid var(--correct);}
+.btn-wrong{background:rgba(248,113,113,0.15);color:var(--wrong);border:1px solid var(--wrong);}
+.btn-correct:hover{background:rgba(52,211,153,0.3);}
+.btn-wrong:hover{background:rgba(248,113,113,0.3);}
+.btn-icon{font-size:18px;}
+
+.fc-progress-bar{background:var(--border);border-radius:4px;height:6px;margin-bottom:20px;}
+.fc-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:4px;transition:.4s;}
+.fc-counter{font-size:13px;color:var(--muted);text-align:center;margin-bottom:16px;}
+.flip-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:10px;}
+
+/* QUIZ */
+.quiz-q{font-size:22px;font-weight:700;text-align:center;margin-bottom:8px;}
+.quiz-ipa{font-size:14px;color:var(--muted);text-align:center;margin-bottom:28px;font-style:italic;}
+.quiz-options{display:grid;gap:10px;}
+.quiz-opt{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:16px 20px;font-size:15px;cursor:pointer;transition:all .2s;text-align:left;color:var(--text);font-family:inherit;}
+.quiz-opt:hover:not(:disabled){border-color:var(--gold);background:rgba(244,200,66,0.05);}
+.quiz-opt.correct{border-color:var(--correct);background:rgba(52,211,153,0.1);color:var(--correct);}
+.quiz-opt.wrong{border-color:var(--wrong);background:rgba(248,113,113,0.1);color:var(--wrong);}
+.quiz-opt:disabled{cursor:default;}
+.quiz-explanation{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-top:16px;font-size:14px;line-height:1.6;display:none;}
+.quiz-explanation.show{display:block;}
+.quiz-explanation strong{color:var(--gold);}
+.quiz-type-badge{display:inline-block;background:rgba(244,200,66,0.1);color:var(--gold);font-size:11px;font-weight:700;border-radius:6px;padding:3px 10px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;}
+
+/* COLLOCATION DRILL */
+.drill-sentence{font-size:20px;font-weight:600;text-align:center;line-height:1.6;margin-bottom:24px;}
+.blank{display:inline-block;min-width:120px;border-bottom:2px solid var(--gold);text-align:center;color:var(--gold);padding:0 4px;cursor:pointer;}
+.drill-options{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:20px;}
+.drill-opt{background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:10px 18px;font-size:14px;cursor:pointer;color:var(--text);font-family:inherit;transition:.2s;}
+.drill-opt:hover{border-color:var(--gold);color:var(--gold);}
+.drill-opt.correct{border-color:var(--correct);background:rgba(52,211,153,0.1);color:var(--correct);}
+.drill-opt.wrong{border-color:var(--wrong);background:rgba(248,113,113,0.1);color:var(--wrong);}
+
+/* PROGRESS PAGE */
+.progress-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+.prog-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;}
+.prog-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.prog-prefix{font-size:16px;font-weight:700;}
+.prog-stat{font-size:12px;color:var(--muted);margin-bottom:6px;}
+.prog-bar-bg{height:4px;background:var(--border);border-radius:2px;}
+.prog-bar-fill{height:100%;border-radius:2px;transition:.4s;}
+.prog-nums{display:flex;justify-content:space-between;font-size:11px;margin-top:5px;color:var(--muted);}
+
+/* CHANT / TIPS */
+.chant-box{background:var(--card);border-left:3px solid var(--gold);border-radius:0 14px 14px 0;padding:20px 24px;margin-bottom:16px;}
+.chant-title{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;}
+.chant-body{font-size:15px;line-height:1.8;color:var(--text);}
+
+/* WORD LIST */
+.word-list{display:flex;flex-direction:column;gap:8px;}
+.word-row{display:grid;grid-template-columns:160px 160px 1fr;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;align-items:center;}
+.word-row:hover{border-color:var(--border);background:rgba(244,200,66,0.03);}
+.wr-word{font-size:16px;font-weight:600;}
+.wr-ipa{font-size:12px;color:var(--muted);font-style:italic;}
+.wr-zh{font-size:14px;color:var(--gold);}
+.wr-colloc{font-size:12px;color:var(--muted);}
+.colloc-tag{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:2px 8px;font-size:11px;margin-right:4px;margin-bottom:2px;}
+
+.section-title{font-size:20px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-title .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);}
+
+/* RESULT */
+.result-box{text-align:center;padding:40px;background:var(--card);border-radius:20px;border:1px solid var(--border);}
+.result-score{font-size:64px;font-weight:700;color:var(--gold);margin-bottom:8px;}
+.result-msg{font-size:18px;color:var(--text);margin-bottom:24px;}
+.stars{font-size:36px;margin-bottom:20px;letter-spacing:4px;}
+
+/* FAMILY SELECT OVERLAY */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
+.overlay.open{display:flex;}
+.overlay-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;max-width:600px;width:100%;max-height:80vh;overflow-y:auto;}
+.overlay-title{font-size:18px;font-weight:700;margin-bottom:20px;}
+
+/* SETTINGS */
+.settings-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.toggle{width:44px;height:24px;background:var(--border);border-radius:12px;cursor:pointer;position:relative;transition:.2s;}
+.toggle.on{background:var(--gold);}
+.toggle::after{content:'';position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:9px;background:white;transition:.2s;}
+.toggle.on::after{left:23px;}
+
+@media(max-width:600px){
+  .word-row{grid-template-columns:1fr;gap:4px;}
+  .family-grid{grid-template-columns:repeat(2,1fr);}
+  .fc-controls{flex-wrap:wrap;}
+}
+
+.session-bar{display:flex;gap:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:22px;align-items:center;}
+.sbar-label{font-size:13px;color:var(--muted);}
+.sbar-val{font-size:22px;font-weight:700;color:var(--gold);}
+.sbar-item{display:flex;flex-direction:column;align-items:center;gap:2px;}
+
+.combo-badge{display:none;position:fixed;top:80px;right:20px;background:var(--gold);color:#0A0F1E;font-weight:700;font-size:16px;border-radius:12px;padding:8px 16px;z-index:300;animation:comboPop .6s ease forwards;}
+@keyframes comboPop{0%{transform:scale(.5);opacity:0}50%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">字族<span>學習站</span></div>
+  <div class="header-stats">
+    <div class="stat-pill">學過 <strong id="totalStudied">0</strong> 個</div>
+    <div class="stat-pill">連線 <strong id="streakDisplay">0</strong> 天</div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPage('browse')">📚 字族瀏覽</button>
+  <button class="nav-btn" onclick="showPage('flashcard')">🃏 閃卡練習</button>
+  <button class="nav-btn" onclick="showPage('quiz')">🧠 測驗模式</button>
+  <button class="nav-btn" onclick="showPage('drill')">✍️ 搭配詞填空</button>
+  <button class="nav-btn" onclick="showPage('progress')">📊 學習進度</button>
+  <button class="nav-btn" onclick="showPage('chant')">💬 口訣速背</button>
+</div>
+
+<div id="comboBadge" class="combo-badge"></div>
+
+<!-- ==================== BROWSE PAGE ==================== -->
+<div class="page active" id="page-browse">
+  <div class="section-title"><span class="dot"></span>選擇字族</div>
+  <div class="family-grid" id="familyGrid"></div>
+  <div id="browseWordList"></div>
+</div>
+
+<!-- ==================== FLASHCARD PAGE ==================== -->
+<div class="page" id="page-flashcard">
+  <div class="session-bar">
+    <div class="sbar-item"><div class="sbar-label">已看</div><div class="sbar-val" id="fcSeen">0</div></div>
+    <div class="sbar-item"><div class="sbar-label">✅ 會了</div><div class="sbar-val" id="fcKnow">0</div></div>
+    <div class="sbar-item"><div class="sbar-label">❌ 再看</div><div class="sbar-val" id="fcReview">0</div></div>
+    <div style="margin-left:auto;display:flex;gap:8px;">
+      <button class="btn btn-secondary" onclick="openFamilySelect('fc')" style="padding:8px 14px;font-size:13px;">選字族</button>
+      <button class="btn btn-secondary" onclick="shuffleFC()" style="padding:8px 14px;font-size:13px;">🔀 洗牌</button>
+    </div>
+  </div>
+  <div class="fc-progress-bar"><div class="fc-progress-fill" id="fcProgressFill"></div></div>
+  <div class="fc-counter" id="fcCounter">點擊卡片翻面看答案</div>
+  <div class="flashcard-area">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="card-face front" id="cardFront">
+        <div class="card-tag" id="cardFamily"></div>
+        <div class="card-word" id="cardWord">—</div>
+        <div class="card-ipa" id="cardIpa"></div>
+        <div class="card-hint">點擊翻面 → 看中文 + 搭配詞</div>
+      </div>
+      <div class="card-face back" id="cardBack">
+        <div class="card-tag" id="cardFamilyBack"></div>
+        <div class="card-word" id="cardWordBack" style="font-size:28px;margin-bottom:4px;"></div>
+        <div class="card-zh" id="cardZh"></div>
+        <div class="card-collocations" id="cardColloc"></div>
+      </div>
+    </div>
+  </div>
+  <div class="flip-hint">翻面後點選 → 記得 or 再看</div>
+  <div class="fc-controls" id="fcButtons" style="display:none;">
+    <button class="btn btn-wrong btn-icon" onclick="markCard(false)">❌ 再看</button>
+    <button class="btn btn-secondary btn-icon" onclick="skipCard()">⏭ 跳過</button>
+    <button class="btn btn-correct btn-icon" onclick="markCard(true)">✅ 記得</button>
+  </div>
+  <div id="fcResult" style="display:none;margin-top:30px;">
+    <div class="result-box">
+      <div class="stars" id="fcStars"></div>
+      <div class="result-score" id="fcScore"></div>
+      <div class="result-msg" id="fcMsg"></div>
+      <button class="btn btn-primary" onclick="restartFC()" style="margin-top:16px;">再來一輪</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== QUIZ PAGE ==================== -->
+<div class="page" id="page-quiz">
+  <div class="session-bar">
+    <div class="sbar-item"><div class="sbar-label">第</div><div class="sbar-val" id="qzNum">1</div></div>
+    <div class="sbar-item"><div class="sbar-label">✅ 答對</div><div class="sbar-val" id="qzCorrect">0</div></div>
+    <div class="sbar-item"><div class="sbar-label">❌ 答錯</div><div class="sbar-val" id="qzWrong">0</div></div>
+    <div style="margin-left:auto;display:flex;gap:8px;">
+      <button class="btn btn-secondary" onclick="openFamilySelect('qz')" style="padding:8px 14px;font-size:13px;">選字族</button>
+      <button class="btn btn-primary" onclick="startQuiz()" style="padding:8px 14px;font-size:13px;">重新開始</button>
+    </div>
+  </div>
+  <div class="fc-progress-bar"><div class="fc-progress-fill" id="qzProgressFill"></div></div>
+  <div id="quizArea">
+    <div class="quiz-type-badge" id="qzTypeBadge">中翻英</div>
+    <div class="quiz-q" id="quizQ"></div>
+    <div class="quiz-ipa" id="quizIpa"></div>
+    <div class="quiz-options" id="quizOptions"></div>
+    <div class="quiz-explanation" id="quizExplain"></div>
+    <div style="text-align:center;margin-top:20px;display:none;" id="qzNextBtn">
+      <button class="btn btn-primary" onclick="nextQuiz()">下一題 →</button>
+    </div>
+  </div>
+  <div id="quizResult" style="display:none;margin-top:30px;">
+    <div class="result-box">
+      <div class="stars" id="qzStars"></div>
+      <div class="result-score" id="qzScore"></div>
+      <div class="result-msg" id="qzMsg"></div>
+      <button class="btn btn-primary" onclick="startQuiz()" style="margin-top:16px;">再測一次</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DRILL PAGE ==================== -->
+<div class="page" id="page-drill">
+  <div class="session-bar">
+    <div class="sbar-item"><div class="sbar-label">第</div><div class="sbar-val" id="drNum">1</div></div>
+    <div class="sbar-item"><div class="sbar-label">✅ 對</div><div class="sbar-val" id="drCorrect">0</div></div>
+    <div class="sbar-item"><div class="sbar-label">❌ 錯</div><div class="sbar-val" id="drWrong">0</div></div>
+    <div style="margin-left:auto;">
+      <button class="btn btn-primary" onclick="startDrill()" style="padding:8px 14px;font-size:13px;">重新開始</button>
+    </div>
+  </div>
+  <div class="fc-progress-bar"><div class="fc-progress-fill" id="drProgressFill"></div></div>
+  <div id="drillArea">
+    <div class="quiz-type-badge">搭配詞填空</div>
+    <div class="drill-sentence" id="drillSentence"></div>
+    <div class="drill-options" id="drillOptions"></div>
+    <div class="quiz-explanation" id="drillExplain"></div>
+    <div style="text-align:center;margin-top:16px;display:none;" id="drNextBtn">
+      <button class="btn btn-primary" onclick="nextDrill()">下一題 →</button>
+    </div>
+  </div>
+  <div id="drillResult" style="display:none;margin-top:30px;">
+    <div class="result-box">
+      <div class="stars" id="drStars"></div>
+      <div class="result-score" id="drScore"></div>
+      <div class="result-msg" id="drMsg"></div>
+      <button class="btn btn-primary" onclick="startDrill()" style="margin-top:16px;">再練一次</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PROGRESS PAGE ==================== -->
+<div class="page" id="page-progress">
+  <div class="section-title"><span class="dot"></span>各字族學習進度</div>
+  <div class="progress-grid" id="progressGrid"></div>
+</div>
+
+<!-- ==================== CHANT PAGE ==================== -->
+<div class="page" id="page-chant">
+  <div class="section-title"><span class="dot"></span>口訣速背 — 背法規則</div>
+  <div class="chant-box">
+    <div class="chant-title">背單字口訣 #1</div>
+    <div class="chant-body">背單字不要一個一個背<br>要<strong style="color:var(--gold)">一串一串背</strong> — 字族記憶效率 3倍</div>
+  </div>
+  <div class="chant-box">
+    <div class="chant-title">字首方向感</div>
+    <div class="chant-body">
+      <strong style="color:var(--gold)">over-</strong> 常是過度、超過、在上面<br>
+      <strong style="color:var(--gold)">inter-</strong> 常是互相、之間<br>
+      <strong style="color:var(--gold)">out-</strong> 常是向外、超越<br>
+      <strong style="color:var(--gold)">en-</strong> 常是使成為<br>
+      <strong style="color:var(--gold)">bene-</strong> 常是好的、有益<br>
+      <strong style="color:var(--gold)">para-</strong> 常是旁邊、類似
+    </div>
+  </div>
+  <div class="chant-box">
+    <div class="chant-title">字尾詞性感</div>
+    <div class="chant-body">
+      <strong style="color:var(--gold)">-logy</strong> → 學科（biology, psychology）<br>
+      <strong style="color:var(--gold)">-ment</strong> → 名詞化（development, management）<br>
+      <strong style="color:var(--gold)">-ive / -tive</strong> → 形容詞（active, productive）<br>
+      <strong style="color:var(--gold)">-mate</strong> → 同伴（classmate, teammate）<br>
+      <strong style="color:var(--gold)">-tain</strong> → 保留取得（contain, maintain, sustain）<br>
+      <strong style="color:var(--gold)">-fer</strong> → 傳遞攜帶（transfer, prefer, suffer）
+    </div>
+  </div>
+  <div class="chant-box">
+    <div class="chant-title">超緊湊口訣記憶串</div>
+    <div class="chant-body">
+      <strong style="color:var(--gold)">「提高串」：</strong>improve → enhance → boost → increase → raise<br><br>
+      <strong style="color:var(--gold)">「拿住串」：</strong>contain → retain → maintain → sustain → obtain<br><br>
+      <strong style="color:var(--gold)">「方位串」：</strong>inside → outside → upside → downside<br><br>
+      <strong style="color:var(--gold)">「形容詞串」：</strong>active → passive → productive → attractive
+    </div>
+  </div>
+  <div class="chant-box">
+    <div class="chant-title">學測高頻黃金字</div>
+    <div class="chant-body">
+      overwhelm / overcome / outstanding / obtain<br>
+      maintain / sustain / entertain / attain<br>
+      enhance / initiative / productive / constructive<br>
+      paradigm / paradox / parallel / paramount<br>
+      intervene / intermittent / interpreter<br>
+      benefit / beneficial / benevolent / benign
+    </div>
+  </div>
+</div>
+
+<!-- FAMILY SELECT OVERLAY -->
+<div class="overlay" id="familyOverlay" onclick="closeOverlay(event)">
+  <div class="overlay-box">
+    <div class="overlay-title">選擇要練習的字族</div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="selectAllFamilies()" style="padding:7px 14px;font-size:12px;">全選</button>
+      <button class="btn btn-secondary" onclick="clearAllFamilies()" style="padding:7px 14px;font-size:12px;">清空</button>
+    </div>
+    <div id="overlayGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;"></div>
+    <div style="text-align:center;margin-top:20px;">
+      <button class="btn btn-primary" onclick="applyFamilySelect()">確認開始</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ======== DATA ========
+const VOCAB = [
+  {id:1,prefix:"over-",color:"#4A90D9",desc:"過度、超過、在上面",words:[
+    {w:"overhead",ipa:"/ˈoʊvərhed/",zh:"在頭頂上；架空的",c:["overhead lights","overhead cost"]},
+    {w:"overreact",ipa:"/ˌoʊvəriˈækt/",zh:"反應過度",c:["overreact to criticism"]},
+    {w:"overdo",ipa:"/ˌoʊvərˈduː/",zh:"做過頭",c:["overdo it","overdo exercise"]},
+    {w:"overthink",ipa:"/ˌoʊvərˈθɪŋk/",zh:"想太多",c:["overthink the problem"]},
+    {w:"overwhelm",ipa:"/ˌoʊvərˈwelm/",zh:"壓倒；使不知所措",c:["feel overwhelmed","overwhelm the enemy"]},
+    {w:"oversee",ipa:"/ˌoʊvərˈsiː/",zh:"監督",c:["oversee a project"]},
+    {w:"overtime",ipa:"/ˈoʊvərtaɪm/",zh:"加班；延長時間",c:["work overtime"]},
+    {w:"overcome",ipa:"/ˌoʊvərˈkʌm/",zh:"克服",c:["overcome difficulties"]},
+    {w:"overlook",ipa:"/ˌoʊvərˈlʊk/",zh:"忽略；俯瞰",c:["overlook mistakes","overlook the sea"]},
+    {w:"overestimate",ipa:"/ˌoʊvərˈestɪmeɪt/",zh:"高估",c:["overestimate the cost"]},
+    {w:"overcast",ipa:"/ˈoʊvərkæst/",zh:"陰天的",c:["overcast sky"]},
+    {w:"overturn",ipa:"/ˌoʊvərˈtɜːrn/",zh:"推翻",c:["overturn a decision"]},
+  ]},
+  {id:2,prefix:"-logy",color:"#7B68EE",desc:"學科、研究領域",words:[
+    {w:"biology",ipa:"/baɪˈɑːlədʒi/",zh:"生物學",c:["study biology"]},
+    {w:"psychology",ipa:"/saɪˈkɑːlədʒi/",zh:"心理學",c:["child psychology"]},
+    {w:"sociology",ipa:"/ˌsoʊsiˈɑːlədʒi/",zh:"社會學",c:["sociology professor"]},
+    {w:"ecology",ipa:"/iˈkɑːlədʒi/",zh:"生態學",c:["marine ecology"]},
+    {w:"ideology",ipa:"/ˌaɪdiˈɑːlədʒi/",zh:"意識形態",c:["political ideology"]},
+    {w:"mythology",ipa:"/mɪˈθɑːlədʒi/",zh:"神話學",c:["Greek mythology"]},
+    {w:"technology",ipa:"/tekˈnɑːlədʒi/",zh:"科技",c:["information technology"]},
+    {w:"pathology",ipa:"/pəˈθɑːlədʒi/",zh:"病理學",c:["pathology report"]},
+    {w:"etymology",ipa:"/ˌetɪˈmɑːlədʒi/",zh:"詞源學",c:["word etymology"]},
+    {w:"anthropology",ipa:"/ˌænθrəˈpɑːlədʒi/",zh:"人類學",c:["cultural anthropology"]},
+    {w:"chronology",ipa:"/krəˈnɑːlədʒi/",zh:"年代順序",c:["in chronological order"]},
+    {w:"zoology",ipa:"/zoʊˈɑːlədʒi/",zh:"動物學",c:["zoology class"]},
+  ]},
+  {id:3,prefix:"-tain",color:"#20B2AA",desc:"保持、取得、維持",words:[
+    {w:"contain",ipa:"/kənˈteɪn/",zh:"包含；容納",c:["contain information"]},
+    {w:"retain",ipa:"/rɪˈteɪn/",zh:"保留",c:["retain memory"]},
+    {w:"maintain",ipa:"/meɪnˈteɪn/",zh:"維持",c:["maintain balance"]},
+    {w:"sustain",ipa:"/səˈsteɪn/",zh:"維持；支撐",c:["sustain growth"]},
+    {w:"attain",ipa:"/əˈteɪn/",zh:"達到",c:["attain success"]},
+    {w:"obtain",ipa:"/əbˈteɪn/",zh:"獲得",c:["obtain permission"]},
+    {w:"detain",ipa:"/dɪˈteɪn/",zh:"扣留",c:["detain a suspect"]},
+    {w:"abstain",ipa:"/əbˈsteɪn/",zh:"戒絕",c:["abstain from alcohol"]},
+    {w:"entertain",ipa:"/ˌentərˈteɪn/",zh:"娛樂；招待",c:["entertain guests"]},
+    {w:"ascertain",ipa:"/ˌæsərˈteɪn/",zh:"查明",c:["ascertain the facts"]},
+    {w:"pertain",ipa:"/pərˈteɪn/",zh:"關於",c:["pertain to the issue"]},
+  ]},
+  {id:4,prefix:"inter-",color:"#FF7F50",desc:"之間、互相",words:[
+    {w:"international",ipa:"/ˌɪntərˈnæʃənl/",zh:"國際的",c:["international trade"]},
+    {w:"interpersonal",ipa:"/ˌɪntərˈpɜːrsənl/",zh:"人際的",c:["interpersonal skills"]},
+    {w:"interact",ipa:"/ˌɪntərˈækt/",zh:"互動",c:["interact with others"]},
+    {w:"intervene",ipa:"/ˌɪntərˈviːn/",zh:"介入",c:["intervene in a dispute"]},
+    {w:"intermittent",ipa:"/ˌɪntərˈmɪtənt/",zh:"間歇的",c:["intermittent rain"]},
+    {w:"interpreter",ipa:"/ɪnˈtɜːrprətər/",zh:"口譯員",c:["conference interpreter"]},
+    {w:"interior",ipa:"/ɪnˈtɪriər/",zh:"內部",c:["interior design"]},
+    {w:"interchange",ipa:"/ˈɪntərtʃeɪndʒ/",zh:"交換",c:["cultural interchange"]},
+    {w:"interconnect",ipa:"/ˌɪntərkəˈnekt/",zh:"互相連結",c:["interconnected systems"]},
+    {w:"interweave",ipa:"/ˌɪntərˈwiːv/",zh:"交織",c:["interweave stories"]},
+  ]},
+  {id:5,prefix:"-ment",color:"#DA70D6",desc:"名詞化、結果、狀態",words:[
+    {w:"development",ipa:"/dɪˈveləpmənt/",zh:"發展",c:["economic development"]},
+    {w:"movement",ipa:"/ˈmuːvmənt/",zh:"運動；移動",c:["social movement"]},
+    {w:"management",ipa:"/ˈmænɪdʒmənt/",zh:"管理",c:["time management"]},
+    {w:"achievement",ipa:"/əˈtʃiːvmənt/",zh:"成就",c:["academic achievement"]},
+    {w:"treatment",ipa:"/ˈtriːtmənt/",zh:"治療；對待",c:["medical treatment"]},
+    {w:"equipment",ipa:"/ɪˈkwɪpmənt/",zh:"設備",c:["sports equipment"]},
+    {w:"government",ipa:"/ˈɡʌvərnmənt/",zh:"政府",c:["local government"]},
+    {w:"department",ipa:"/dɪˈpɑːrtmənt/",zh:"部門；系",c:["sales department"]},
+    {w:"adjustment",ipa:"/əˈdʒʌstmənt/",zh:"調整",c:["make an adjustment"]},
+    {w:"agreement",ipa:"/əˈɡriːmənt/",zh:"協議",c:["sign an agreement"]},
+    {w:"argument",ipa:"/ˈɑːrɡjəmənt/",zh:"爭論",c:["have an argument"]},
+    {w:"establishment",ipa:"/ɪˈstæblɪʃmənt/",zh:"建立；機構",c:["school establishment"]},
+  ]},
+  {id:6,prefix:"out-",color:"#3CB371",desc:"向外、超越",words:[
+    {w:"outdo",ipa:"/aʊtˈduː/",zh:"勝過",c:["outdo your rivals"]},
+    {w:"outperform",ipa:"/ˌaʊtpərˈfɔːrm/",zh:"表現優於",c:["outperform the market"]},
+    {w:"outshine",ipa:"/ˌaʊtˈʃaɪn/",zh:"比…更出色",c:["outshine the others"]},
+    {w:"outcome",ipa:"/ˈaʊtkʌm/",zh:"結果",c:["final outcome"]},
+    {w:"outdoor",ipa:"/ˈaʊtdɔːr/",zh:"戶外的",c:["outdoor activity"]},
+    {w:"outcast",ipa:"/ˈaʊtkæst/",zh:"被排斥者",c:["social outcast"]},
+    {w:"outdated",ipa:"/ˌaʊtˈdeɪtɪd/",zh:"過時的",c:["outdated idea"]},
+    {w:"output",ipa:"/ˈaʊtpʊt/",zh:"輸出；產量",c:["factory output"]},
+    {w:"outburst",ipa:"/ˈaʊtbɜːrst/",zh:"爆發",c:["angry outburst"]},
+    {w:"outcry",ipa:"/ˈaʊtkraɪ/",zh:"強烈抗議",c:["public outcry"]},
+  ]},
+  {id:7,prefix:"en-",color:"#FF6347",desc:"使進入某狀態",words:[
+    {w:"enable",ipa:"/ɪˈneɪbl/",zh:"使能夠",c:["enable students to learn"]},
+    {w:"enrich",ipa:"/ɪnˈrɪtʃ/",zh:"豐富；使富足",c:["enrich your life"]},
+    {w:"enlighten",ipa:"/ɪnˈlaɪtn/",zh:"啟發；開導",c:["enlighten the audience"]},
+    {w:"endanger",ipa:"/ɪnˈdeɪndʒər/",zh:"危及",c:["endanger lives"]},
+    {w:"enrage",ipa:"/ɪnˈreɪdʒ/",zh:"激怒",c:["enrage the public"]},
+    {w:"entitle",ipa:"/ɪnˈtaɪtl/",zh:"給予權利；命名",c:["entitle someone to"]},
+    {w:"enslave",ipa:"/ɪnˈsleɪv/",zh:"奴役",c:["enslave people"]},
+    {w:"encircle",ipa:"/ɪnˈsɜːrkl/",zh:"包圍",c:["encircle the enemy"]},
+    {w:"envelop",ipa:"/ɪnˈveləp/",zh:"包住；圍繞",c:["envelop the city in fog"]},
+    {w:"enormous",ipa:"/ɪˈnɔːrməs/",zh:"巨大的",c:["enormous pressure"]},
+  ]},
+  {id:8,prefix:"bene-",color:"#FFD700",desc:"好、善、有益",words:[
+    {w:"benefit",ipa:"/ˈbenɪfɪt/",zh:"好處；受益",c:["benefit from exercise"]},
+    {w:"beneficial",ipa:"/ˌbenɪˈfɪʃl/",zh:"有益的",c:["beneficial effect"]},
+    {w:"benevolent",ipa:"/bəˈnevələnt/",zh:"仁慈的",c:["benevolent smile"]},
+    {w:"benign",ipa:"/bɪˈnaɪn/",zh:"良性的；溫和的",c:["benign tumor"]},
+    {w:"benevolence",ipa:"/bəˈnevələns/",zh:"善意",c:["human benevolence"]},
+    {w:"benediction",ipa:"/ˌbenɪˈdɪkʃn/",zh:"祝福",c:["closing benediction"]},
+    {w:"beneficiary",ipa:"/ˌbenɪˈfɪʃieri/",zh:"受益人",c:["named beneficiary"]},
+    {w:"beneficent",ipa:"/bəˈnefɪsənt/",zh:"施恩的；有益的",c:["beneficent influence"]},
+  ]},
+  {id:9,prefix:"para-",color:"#9370DB",desc:"旁邊、超越、類似",words:[
+    {w:"paradigm",ipa:"/ˈpærədaɪm/",zh:"典範；範式",c:["paradigm shift"]},
+    {w:"paraphrase",ipa:"/ˈpærəfreɪz/",zh:"改述",c:["paraphrase the sentence"]},
+    {w:"parasite",ipa:"/ˈpærəsaɪt/",zh:"寄生蟲",c:["intestinal parasite"]},
+    {w:"parallel",ipa:"/ˈpærəlel/",zh:"平行的",c:["parallel lines"]},
+    {w:"paramount",ipa:"/ˈpærəmaʊnt/",zh:"最重要的",c:["of paramount importance"]},
+    {w:"paradox",ipa:"/ˈpærədɑːks/",zh:"悖論",c:["face a paradox"]},
+    {w:"parachute",ipa:"/ˈpærəʃuːt/",zh:"降落傘",c:["open the parachute"]},
+    {w:"paramedic",ipa:"/ˌpærəˈmedɪk/",zh:"醫護救援人員",c:["trained paramedic"]},
+    {w:"paragon",ipa:"/ˈpærəɡɑːn/",zh:"典範",c:["a paragon of virtue"]},
+  ]},
+  {id:10,prefix:"-ive/-tive",color:"#FF8C00",desc:"形容詞化，有…性的",words:[
+    {w:"active",ipa:"/ˈæktɪv/",zh:"主動的；活躍的",c:["active role"]},
+    {w:"passive",ipa:"/ˈpæsɪv/",zh:"被動的",c:["passive income"]},
+    {w:"productive",ipa:"/prəˈdʌktɪv/",zh:"有效率的",c:["productive meeting"]},
+    {w:"attractive",ipa:"/əˈtræktɪv/",zh:"有吸引力的",c:["attractive offer"]},
+    {w:"persuasive",ipa:"/pərˈsweɪsɪv/",zh:"有說服力的",c:["persuasive argument"]},
+    {w:"competitive",ipa:"/kəmˈpetətɪv/",zh:"有競爭力的",c:["competitive market"]},
+    {w:"constructive",ipa:"/kənˈstrʌktɪv/",zh:"建設性的",c:["constructive criticism"]},
+    {w:"initiative",ipa:"/ɪˈnɪʃətɪv/",zh:"主動性；倡議",c:["show initiative"]},
+    {w:"sensitive",ipa:"/ˈsensətɪv/",zh:"敏感的",c:["sensitive issue"]},
+    {w:"aggressive",ipa:"/əˈɡresɪv/",zh:"侵略性的",c:["aggressive behavior"]},
+    {w:"intensive",ipa:"/ɪnˈtensɪv/",zh:"密集的",c:["intensive training"]},
+    {w:"extensive",ipa:"/ɪkˈstensɪv/",zh:"廣泛的",c:["extensive damage"]},
+  ]},
+  {id:11,prefix:"-fer",color:"#00CED1",desc:"攜帶、傳遞",words:[
+    {w:"confer",ipa:"/kənˈfɜːr/",zh:"授予；商議",c:["confer a degree","confer with sb"]},
+    {w:"defer",ipa:"/dɪˈfɜːr/",zh:"延後；聽從",c:["defer the decision"]},
+    {w:"offer",ipa:"/ˈɔːfər/",zh:"提供",c:["offer help"]},
+    {w:"refer",ipa:"/rɪˈfɜːr/",zh:"提到；查閱",c:["refer to the book"]},
+    {w:"transfer",ipa:"/trænsˈfɜːr/",zh:"轉移",c:["transfer money"]},
+    {w:"suffer",ipa:"/ˈsʌfər/",zh:"遭受",c:["suffer from stress"]},
+    {w:"infer",ipa:"/ɪnˈfɜːr/",zh:"推論",c:["infer from the text"]},
+    {w:"prefer",ipa:"/prɪˈfɜːr/",zh:"比較喜歡",c:["prefer tea to coffee"]},
+  ]},
+  {id:12,prefix:"提高同義群",color:"#E55C5C",desc:"improve/enhance/boost…",words:[
+    {w:"improve",ipa:"/ɪmˈpruːv/",zh:"改善",c:["improve performance"]},
+    {w:"enhance",ipa:"/ɪnˈhæns/",zh:"提升",c:["enhance ability"]},
+    {w:"boost",ipa:"/buːst/",zh:"提高；促進",c:["boost sales"]},
+    {w:"increase",ipa:"/ɪnˈkriːs/",zh:"增加",c:["increase production"]},
+    {w:"raise",ipa:"/reɪz/",zh:"提高",c:["raise standards"]},
+    {w:"strengthen",ipa:"/ˈstreŋθən/",zh:"加強",c:["strengthen the bond"]},
+    {w:"reinforce",ipa:"/ˌriːɪnˈfɔːrs/",zh:"強化",c:["reinforce the message"]},
+  ]},
+  {id:13,prefix:"-mate",color:"#6495ED",desc:"夥伴、同伴",words:[
+    {w:"classmate",ipa:"/ˈklæsmeɪt/",zh:"同學",c:["high school classmate"]},
+    {w:"roommate",ipa:"/ˈruːmmeɪt/",zh:"室友",c:["college roommate"]},
+    {w:"teammate",ipa:"/ˈtiːmmeɪt/",zh:"隊友",c:["support your teammates"]},
+    {w:"workmate",ipa:"/ˈwɜːrkmeɪt/",zh:"同事",c:["office workmate"]},
+    {w:"soulmate",ipa:"/ˈsoʊlmeɪt/",zh:"靈魂伴侶",c:["find a soulmate"]},
+    {w:"playmate",ipa:"/ˈpleɪmeɪt/",zh:"玩伴",c:["childhood playmate"]},
+    {w:"stalemate",ipa:"/ˈsteɪlmeɪt/",zh:"僵局",c:["reach a stalemate"]},
+    {w:"checkmate",ipa:"/ˈtʃekmeɪt/",zh:"將死",c:["win by checkmate"]},
+    {w:"automate",ipa:"/ˈɔːtəmeɪt/",zh:"自動化",c:["automate the process"]},
+    {w:"decimate",ipa:"/ˈdesɪmeɪt/",zh:"大量摧毀",c:["decimate the population"]},
+  ]},
+  {id:14,prefix:"medi-",color:"#BDB76B",desc:"中間、醫療",words:[
+    {w:"medical",ipa:"/ˈmedɪkl/",zh:"醫療的",c:["medical school"]},
+    {w:"medicine",ipa:"/ˈmedɪsn/",zh:"醫學；藥",c:["take medicine"]},
+    {w:"medication",ipa:"/ˌmedɪˈkeɪʃn/",zh:"藥物治療",c:["prescription medication"]},
+    {w:"mediate",ipa:"/ˈmiːdieɪt/",zh:"調解",c:["mediate a dispute"]},
+    {w:"mediocre",ipa:"/ˌmiːdiˈoʊkər/",zh:"平庸的",c:["mediocre performance"]},
+    {w:"medieval",ipa:"/ˌmediˈiːvl/",zh:"中世紀的",c:["medieval castle"]},
+    {w:"medium",ipa:"/ˈmiːdiəm/",zh:"中等；媒介",c:["medium size"]},
+    {w:"meditate",ipa:"/ˈmedɪteɪt/",zh:"冥想",c:["meditate daily"]},
+    {w:"median",ipa:"/ˈmiːdiən/",zh:"中位數；中央的",c:["median income"]},
+  ]},
+];
+
+// ======== STATE ========
+let state = {
+  selectedFamilies: VOCAB.map(f=>f.id),
+  fcMode: 'fc',
+  fcWords: [], fcIdx: 0, fcKnow: 0, fcReview: 0, fcFlipped: false,
+  qzWords: [], qzIdx: 0, qzCorrect: 0, qzWrong: 0,
+  drWords: [], drIdx: 0, drCorrect: 0, drWrong: 0,
+  progress: {}, // {wordId: {known, seen}}
+  totalStudied: 0,
+  streak: 0,
+};
+function getStorage(){try{return JSON.parse(localStorage.getItem('vocabState'))||{};}catch{return {};}}
+function saveStorage(){localStorage.setItem('vocabState', JSON.stringify({progress:state.progress, totalStudied:state.totalStudied, streak:state.streak}));}
+function loadStorage(){const s=getStorage();state.progress=s.progress||{};state.totalStudied=s.totalStudied||0;state.streak=s.streak||0;}
+
+function getSelectedWords(){
+  return VOCAB.filter(f=>state.selectedFamilies.includes(f.id)).flatMap(f=>f.words.map(w=>({...w,family:f.prefix,fcolor:f.color,fid:f.id})));
+}
+function shuffle(arr){return [...arr].sort(()=>Math.random()-.5);}
+
+// ======== INIT ========
+window.onload=()=>{
+  loadStorage();
+  renderFamilyGrid();
+  renderProgress();
+  updateHeader();
+  startFC();
+  startQuiz();
+  startDrill();
+  // default browse: show first family
+  selectBrowseFamily(1);
+};
+
+function updateHeader(){
+  document.getElementById('totalStudied').textContent=state.totalStudied;
+  document.getElementById('streakDisplay').textContent=state.streak;
+}
+
+// ======== NAV ========
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  event.target.classList.add('active');
+  if(id==='progress') renderProgress();
+}
+
+// ======== BROWSE ========
+let selectedBrowse = 1;
+function renderFamilyGrid(){
+  const g = document.getElementById('familyGrid');
+  g.innerHTML = VOCAB.map(f=>{
+    const knownCount = f.words.filter(w=>(state.progress[f.id+'_'+w.w]||{}).known).length;
+    const pct = Math.round(knownCount/f.words.length*100);
+    return `<div class="family-card${selectedBrowse===f.id?' selected':''}" onclick="selectBrowseFamily(${f.id})" id="fcard-${f.id}">
+      <div class="fc-dot" style="background:${f.color}"></div>
+      <div class="fc-prefix" style="color:${f.color}">${f.prefix}</div>
+      <div class="fc-desc">${f.desc}</div>
+      <div class="fc-count">${f.words.length} 個單字 · 已掌握 ${knownCount}</div>
+      <div class="fc-progress"><div class="fc-bar" style="background:${f.color};width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function selectBrowseFamily(id){
+  selectedBrowse=id;
+  document.querySelectorAll('.family-card').forEach(c=>c.classList.remove('selected'));
+  const el=document.getElementById('fcard-'+id);
+  if(el)el.classList.add('selected');
+  const fam = VOCAB.find(f=>f.id===id);
+  const div = document.getElementById('browseWordList');
+  div.innerHTML=`<div class="section-title"><span class="dot" style="background:${fam.color}"></span><span style="color:${fam.color}">${fam.prefix}</span>&nbsp;— ${fam.desc}</div>
+  <div class="word-list">${fam.words.map(w=>`
+    <div class="word-row">
+      <div><div class="wr-word" style="color:${fam.color}">${w.w}</div><div class="wr-ipa">${w.ipa}</div></div>
+      <div class="wr-zh">${w.zh}</div>
+      <div class="wr-colloc">${w.c.map(cc=>`<span class="colloc-tag">${cc}</span>`).join('')}</div>
+    </div>`).join('')}</div>`;
+}
+
+// ======== FLASHCARD ========
+function startFC(){
+  state.fcWords = shuffle(getSelectedWords());
+  state.fcIdx=0; state.fcKnow=0; state.fcReview=0; state.fcFlipped=false;
+  document.getElementById('fcResult').style.display='none';
+  document.getElementById('flashcard').style.display='';
+  document.getElementById('fcButtons').style.display='none';
+  document.getElementById('fcProgressFill').style.display='';
+  updateFCDisplay();
+}
+function shuffleFC(){startFC();}
+function updateFCDisplay(){
+  if(state.fcIdx>=state.fcWords.length){showFCResult();return;}
+  const w=state.fcWords[state.fcIdx];
+  const total=state.fcWords.length;
+  document.getElementById('fcCounter').textContent=`第 ${state.fcIdx+1} / ${total} 張`;
+  document.getElementById('fcProgressFill').style.width=(state.fcIdx/total*100)+'%';
+  document.getElementById('cardFamily').textContent=w.family;
+  document.getElementById('cardFamilyBack').textContent=w.family;
+  document.getElementById('cardWord').textContent=w.w;
+  document.getElementById('cardWordBack').textContent=w.w;
+  document.getElementById('cardIpa').textContent=w.ipa;
+  document.getElementById('cardZh').textContent=w.zh;
+  document.getElementById('cardColloc').innerHTML=w.c.map(cc=>`<div class="colloc-item"><strong>${cc.split(' ')[0]}</strong> ${cc.split(' ').slice(1).join(' ')}</div>`).join('');
+  const fc=document.getElementById('flashcard');
+  fc.classList.remove('flipped');
+  state.fcFlipped=false;
+  document.getElementById('fcButtons').style.display='none';
+  document.getElementById('fcSeen').textContent=state.fcIdx;
+  document.getElementById('fcKnow').textContent=state.fcKnow;
+  document.getElementById('fcReview').textContent=state.fcReview;
+}
+function flipCard(){
+  const fc=document.getElementById('flashcard');
+  fc.classList.toggle('flipped');
+  state.fcFlipped=!state.fcFlipped;
+  if(state.fcFlipped) document.getElementById('fcButtons').style.display='flex';
+  else document.getElementById('fcButtons').style.display='none';
+}
+function markCard(known){
+  const w=state.fcWords[state.fcIdx];
+  const key=w.fid+'_'+w.w;
+  if(!state.progress[key]) state.progress[key]={known:0,seen:0};
+  state.progress[key].seen++;
+  if(known){state.progress[key].known++;state.fcKnow++;}
+  else{state.fcReview++;state.fcWords.push(w);} // re-add to end
+  state.fcIdx++;
+  state.totalStudied++;
+  saveStorage();
+  updateHeader();
+  updateFCDisplay();
+}
+function skipCard(){state.fcIdx++;updateFCDisplay();}
+function showFCResult(){
+  document.getElementById('fcResult').style.display='block';
+  document.getElementById('flashcard').style.display='none';
+  document.getElementById('fcProgressFill').style.width='100%';
+  const total=state.fcWords.length;
+  const pct=Math.round(state.fcKnow/(state.fcKnow+state.fcReview)*100)||0;
+  document.getElementById('fcStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('fcScore').textContent=`記住 ${state.fcKnow} 個`;
+  document.getElementById('fcMsg').textContent=pct>=90?'太強了！準備好測驗了！':pct>=70?'不錯！再鞏固一下。':'繼續加油，重複是學習之母！';
+}
+function restartFC(){startFC();}
+
+// ======== QUIZ ========
+let qzData=[]; let qzCurrent=null; let qzAnswered=false; let qzTypes=['zh2en','en2zh','colloc'];
+function startQuiz(){
+  const words=getSelectedWords();
+  if(words.length<4){document.getElementById('quizArea').innerHTML='<p style="color:var(--muted);text-align:center;padding:40px;">請至少選擇一個字族（需4個以上單字）</p>';return;}
+  qzData=shuffle(words).slice(0,Math.min(20,words.length));
+  state.qzIdx=0; state.qzCorrect=0; state.qzWrong=0; qzAnswered=false;
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('quizArea').style.display='';
+  document.getElementById('qzNextBtn').style.display='none';
+  document.getElementById('quizExplain').classList.remove('show');
+  renderQuiz();
+}
+function renderQuiz(){
+  if(state.qzIdx>=qzData.length){showQuizResult();return;}
+  qzAnswered=false;
+  const all=getSelectedWords();
+  const w=qzData[state.qzIdx];
+  const type=qzTypes[state.qzIdx%qzTypes.length];
+  document.getElementById('qzNum').textContent=state.qzIdx+1;
+  document.getElementById('qzCorrect').textContent=state.qzCorrect;
+  document.getElementById('qzWrong').textContent=state.qzWrong;
+  document.getElementById('qzProgressFill').style.width=(state.qzIdx/qzData.length*100)+'%';
+  document.getElementById('quizExplain').classList.remove('show');
+  document.getElementById('qzNextBtn').style.display='none';
+
+  let q,correctAns,options,badge;
+  if(type==='zh2en'){
+    badge='中翻英'; q=`「${w.zh.split('；')[0]}」的英文是？`;
+    correctAns=w.w;
+    options=shuffle([w,...shuffle(all.filter(x=>x.w!==w.w)).slice(0,3)]).map(x=>x.w);
+  } else if(type==='en2zh'){
+    badge='英翻中'; q=w.w;
+    document.getElementById('quizIpa').textContent=w.ipa;
+    correctAns=w.zh;
+    options=shuffle([w,...shuffle(all.filter(x=>x.w!==w.w)).slice(0,3)]).map(x=>x.zh);
+  } else {
+    badge='搭配詞'; 
+    const colloc=w.c[0];
+    const blankWord=colloc.split(' ')[0]===w.w?colloc.split(' ').slice(1).join(' '):colloc.split(' ')[0];
+    q=`<strong style="color:var(--gold)">${w.w}</strong> 最常搭配哪個詞？`;
+    const otherCollocs=shuffle(all.filter(x=>x.w!==w.w)).slice(0,3).map(x=>x.c[0].split(' ')[0]);
+    const firstWord=colloc.split(' ').filter(p=>p!==w.w)[0]||colloc.split(' ')[1]||colloc;
+    correctAns=firstWord;
+    options=shuffle([firstWord,...otherCollocs]);
+  }
+  document.getElementById('qzTypeBadge').textContent=badge;
+  document.getElementById('quizQ').innerHTML=q;
+  if(type!=='en2zh') document.getElementById('quizIpa').textContent=type==='zh2en'?w.ipa:'';
+  const opts=document.getElementById('quizOptions');
+  opts.innerHTML=options.map((o,i)=>`<button class="quiz-opt" onclick="answerQuiz(this,'${o}','${correctAns.replace(/'/g,"\\'")}','${w.w.replace(/'/g,"\\'")}','${w.zh.replace(/'/g,"\\'")}','${w.c[0].replace(/'/g,"\\'")}',${i})">${o}</button>`).join('');
+}
+function answerQuiz(btn,chosen,correct,word,zh,colloc,idx){
+  if(qzAnswered) return;
+  qzAnswered=true;
+  const isCorrect=chosen===correct;
+  const all=document.querySelectorAll('.quiz-opt');
+  all.forEach(b=>{b.disabled=true; if(b===btn){b.classList.add(isCorrect?'correct':'wrong');}else if(b.textContent===correct){b.classList.add('correct');}});
+  if(isCorrect){state.qzCorrect++;showCombo();}else{state.qzWrong++;}
+  const expl=document.getElementById('quizExplain');
+  expl.innerHTML=`<strong>${word}</strong> ${zh}<br>搭配詞：${colloc}`;
+  expl.classList.add('show');
+  document.getElementById('qzNextBtn').style.display='block';
+  state.totalStudied++;
+  saveStorage();
+  updateHeader();
+}
+let comboCount=0;
+function showCombo(){
+  comboCount++;
+  if(comboCount>=3){
+    const b=document.getElementById('comboBadge');
+    b.textContent=`🔥 ${comboCount} 連答！`;
+    b.style.display='block';
+    setTimeout(()=>{b.style.display='none';},1500);
+  }
+}
+function nextQuiz(){state.qzIdx++;comboCount=0;renderQuiz();}
+function showQuizResult(){
+  document.getElementById('quizResult').style.display='block';
+  document.getElementById('quizArea').style.display='none';
+  const pct=Math.round(state.qzCorrect/(state.qzCorrect+state.qzWrong)*100)||0;
+  document.getElementById('qzStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('qzScore').textContent=`${state.qzCorrect}/${state.qzCorrect+state.qzWrong} 正確`;
+  document.getElementById('qzMsg').textContent=pct>=90?'學測高分穩了！🎉':pct>=70?'繼續保持！離滿分不遠了。':'再背一輪，你可以的！';
+}
+
+// ======== DRILL ========
+let drData=[]; let drCurrent=null; let drAnswered=false;
+function startDrill(){
+  const words=getSelectedWords();
+  drData=shuffle(words).slice(0,Math.min(15,words.length));
+  state.drIdx=0; state.drCorrect=0; state.drWrong=0; drAnswered=false;
+  document.getElementById('drillResult').style.display='none';
+  document.getElementById('drillArea').style.display='';
+  document.getElementById('drNextBtn').style.display='none';
+  document.getElementById('drillExplain').classList.remove('show');
+  renderDrill();
+}
+function renderDrill(){
+  if(state.drIdx>=drData.length){showDrillResult();return;}
+  drAnswered=false;
+  const w=drData[state.drIdx];
+  const colloc=w.c[0];
+  const parts=colloc.split(' ');
+  const targetIdx=Math.floor(Math.random()*parts.length);
+  const target=parts[targetIdx];
+  const display=parts.map((p,i)=>i===targetIdx?`<span class="blank">____</span>`:p).join(' ');
+  document.getElementById('drNum').textContent=state.drIdx+1;
+  document.getElementById('drCorrect').textContent=state.drCorrect;
+  document.getElementById('drWrong').textContent=state.drWrong;
+  document.getElementById('drProgressFill').style.width=(state.drIdx/drData.length*100)+'%';
+  document.getElementById('drillExplain').classList.remove('show');
+  document.getElementById('drNextBtn').style.display='none';
+  document.getElementById('drillSentence').innerHTML=`<span style="color:var(--muted);font-size:14px;display:block;margin-bottom:8px;">${w.w} ${w.ipa}</span>${display}`;
+  const allWords=getSelectedWords();
+  const distractors=shuffle(allWords.filter(x=>x.w!==w.w)).slice(0,3).map(x=>{
+    const xparts=x.c[0].split(' ');
+    return xparts[targetIdx%xparts.length]||xparts[0];
+  });
+  const options=shuffle([target,...distractors]);
+  document.getElementById('drillOptions').innerHTML=options.map(o=>`<button class="drill-opt" onclick="answerDrill(this,'${o}','${target.replace(/'/g,"\\'")}','${colloc.replace(/'/g,"\\'")}','${w.w.replace(/'/g,"\\'")}','${w.zh.replace(/'/g,"\\'")}')">
+    ${o}</button>`).join('');
+}
+function answerDrill(btn,chosen,correct,colloc,word,zh){
+  if(drAnswered) return;
+  drAnswered=true;
+  const isC=chosen===correct;
+  document.querySelectorAll('.drill-opt').forEach(b=>{b.disabled=true;if(b===btn){b.classList.add(isC?'correct':'wrong');}else if(b.textContent.trim()===correct){b.classList.add('correct');}});
+  if(isC)state.drCorrect++;else state.drWrong++;
+  const expl=document.getElementById('drillExplain');
+  expl.innerHTML=`完整搭配詞：<strong>${colloc}</strong><br>${word} = ${zh}`;
+  expl.classList.add('show');
+  document.getElementById('drNextBtn').style.display='block';
+  state.totalStudied++;saveStorage();updateHeader();
+}
+function nextDrill(){state.drIdx++;renderDrill();}
+function showDrillResult(){
+  document.getElementById('drillResult').style.display='block';
+  document.getElementById('drillArea').style.display='none';
+  const pct=Math.round(state.drCorrect/(state.drCorrect+state.drWrong)*100)||0;
+  document.getElementById('drStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('drScore').textContent=`${state.drCorrect}/${state.drCorrect+state.drWrong} 正確`;
+  document.getElementById('drMsg').textContent=pct>=90?'搭配詞超強！寫作加分必備！':pct>=70?'掌握得不錯，繼續！':'搭配詞要多背，閱讀遇到就記！';
+}
+
+// ======== PROGRESS ========
+function renderProgress(){
+  const g=document.getElementById('progressGrid');
+  g.innerHTML=VOCAB.map(f=>{
+    const known=f.words.filter(w=>(state.progress[f.id+'_'+w.w]||{}).known).length;
+    const seen=f.words.filter(w=>(state.progress[f.id+'_'+w.w]||{}).seen).length;
+    const pct=Math.round(known/f.words.length*100);
+    return `<div class="prog-card">
+      <div class="prog-header"><div class="fc-dot" style="background:${f.color}"></div><div class="prog-prefix" style="color:${f.color}">${f.prefix}</div></div>
+      <div class="prog-stat">總共 ${f.words.length} 個 | 練習過 ${seen} 個</div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" style="background:${f.color};width:${pct}%"></div></div>
+      <div class="prog-nums"><span>掌握 ${known} 個</span><span>${pct}%</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ======== FAMILY SELECT ========
+let _overlayFor='';
+function openFamilySelect(mode){
+  _overlayFor=mode;
+  const g=document.getElementById('overlayGrid');
+  g.innerHTML=VOCAB.map(f=>`<div class="family-card${state.selectedFamilies.includes(f.id)?' selected':''}" onclick="toggleFamily(${f.id},this)" id="ofc-${f.id}" style="cursor:pointer;">
+    <div class="fc-dot" style="background:${f.color}"></div>
+    <div class="fc-prefix" style="color:${f.color}">${f.prefix}</div>
+    <div class="fc-desc" style="font-size:10px;">${f.desc}</div>
+    <div class="fc-count">${f.words.length} 字</div>
+  </div>`).join('');
+  document.getElementById('familyOverlay').classList.add('open');
+}
+function toggleFamily(id,el){
+  if(state.selectedFamilies.includes(id)) state.selectedFamilies=state.selectedFamilies.filter(x=>x!==id);
+  else state.selectedFamilies.push(id);
+  el.classList.toggle('selected');
+}
+function selectAllFamilies(){
+  state.selectedFamilies=VOCAB.map(f=>f.id);
+  document.querySelectorAll('[id^="ofc-"]').forEach(el=>el.classList.add('selected'));
+}
+function clearAllFamilies(){
+  state.selectedFamilies=[];
+  document.querySelectorAll('[id^="ofc-"]').forEach(el=>el.classList.remove('selected'));
+}
+function applyFamilySelect(){
+  if(state.selectedFamilies.length===0) state.selectedFamilies=[VOCAB[0].id];
+  document.getElementById('familyOverlay').classList.remove('open');
+  if(_overlayFor==='fc') startFC();
+  else if(_overlayFor==='qz') startQuiz();
+}
+function closeOverlay(e){if(e.target===document.getElementById('familyOverlay')) document.getElementById('familyOverlay').classList.remove('open');}
+</script>
+</body>
+</html>
