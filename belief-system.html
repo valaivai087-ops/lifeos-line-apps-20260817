@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>身心重塑藍圖｜限制性信念診斷系統</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Microsoft JhengHei','PingFang TC','Noto Sans TC',sans-serif;background:#0B1520;min-height:100vh;color:#fff;}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(160deg,#0D1B2A 0%,#0f2035 60%,#0D1B2A 100%);border-bottom:1px solid rgba(184,134,11,0.2);padding:2.5rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% -20%,rgba(184,134,11,0.14) 0%,transparent 65%);pointer-events:none;}
+.hero-badge{display:inline-block;font-size:11px;letter-spacing:2px;color:#B8860B;border:1px solid rgba(184,134,11,0.35);padding:4px 18px;border-radius:100px;margin-bottom:1rem;}
+.hero-title{font-size:26px;font-weight:700;color:#fff;letter-spacing:2px;margin-bottom:6px;position:relative;}
+.hero-title em{color:#D4A017;font-style:normal;}
+.hero-sub{font-size:13px;color:rgba(255,255,255,0.45);letter-spacing:1px;margin-bottom:1.25rem;position:relative;}
+.hero-divider{width:80px;height:1px;background:linear-gradient(90deg,transparent,#B8860B,transparent);margin:0 auto 1.25rem;}
+.hero-tags{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;position:relative;}
+.hero-tag{font-size:11px;padding:5px 14px;border-radius:100px;background:rgba(184,134,11,0.1);border:1px solid rgba(184,134,11,0.25);color:#D4A017;}
+.prog-bar{background:rgba(255,255,255,0.06);border-radius:100px;height:3px;margin:1.5rem 1.5rem 0;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,#B8860B,#D4A017);border-radius:100px;transition:width 0.6s ease;width:0%;}
+
+/* ── CONTENT ── */
+.content{max-width:760px;margin:0 auto;padding:1.5rem 1rem;}
+.phase{display:none;}.phase.active{display:block;}
+
+/* ── SECTION LABEL ── */
+.slabel{font-size:10px;font-weight:700;letter-spacing:2px;color:#B8860B;margin-bottom:1rem;display:flex;align-items:center;gap:8px;text-transform:uppercase;}
+.slabel::after{content:'';flex:1;height:0.5px;background:rgba(184,134,11,0.2);}
+
+/* ── DISEASE MODEL ── */
+.model-flow{display:flex;align-items:stretch;gap:0;margin-bottom:1.5rem;flex-wrap:wrap;}
+.mf-step{flex:1;min-width:80px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);padding:10px 6px;text-align:center;font-size:11px;color:rgba(255,255,255,0.6);position:relative;}
+.mf-step:first-child{border-radius:10px 0 0 10px;border-left-color:rgba(184,134,11,0.4);border-top-color:rgba(184,134,11,0.4);border-bottom-color:rgba(184,134,11,0.4);color:#D4A017;}
+.mf-step:last-child{border-radius:0 10px 10px 0;border-right-color:rgba(163,45,45,0.5);border-top-color:rgba(163,45,45,0.5);border-bottom-color:rgba(163,45,45,0.5);color:#E87070;}
+.mf-step .mf-arrow{position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-size:14px;color:rgba(255,255,255,0.2);z-index:1;}
+.mf-icon{font-size:16px;margin-bottom:3px;display:block;}
+
+/* ── BELIEF CATEGORY TABS ── */
+.cat-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem;}
+.cat-tab{padding:7px 14px;border:1px solid rgba(255,255,255,0.1);border-radius:100px;font-size:12px;color:rgba(255,255,255,0.45);cursor:pointer;transition:all 0.2s;background:transparent;font-family:inherit;}
+.cat-tab:hover{border-color:rgba(184,134,11,0.4);color:#D4A017;}
+.cat-tab.active{background:rgba(184,134,11,0.12);border-color:#B8860B;color:#D4A017;font-weight:600;}
+
+/* ── BELIEF CARDS ── */
+.beliefs-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:1.25rem;}
+.belief-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.belief-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;transition:background 0.2s;}
+.belief-card:hover{border-color:rgba(184,134,11,0.3);background:rgba(184,134,11,0.03);}
+.belief-card:hover::before{background:rgba(184,134,11,0.5);}
+.belief-card.picked{border-color:#B8860B;background:rgba(184,134,11,0.06);}
+.belief-card.picked::before{background:#D4A017;}
+.bc-top{display:flex;align-items:center;gap:12px;}
+.bc-check{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;transition:all 0.2s;}
+.belief-card.picked .bc-check{background:#B8860B;border-color:#B8860B;color:#0D1B2A;font-weight:700;}
+.bc-content{flex:1;}
+.bc-belief{font-size:14px;font-weight:700;color:#fff;margin-bottom:3px;}
+.bc-emotion{font-size:11px;color:#B8860B;}
+.bc-tags{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.bc-tag{font-size:10px;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);}
+
+/* ── QUESTION PHASE ── */
+.q-block{margin-bottom:1.5rem;}
+.q-belief-header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(184,134,11,0.06);border:1px solid rgba(184,134,11,0.18);border-radius:12px;margin-bottom:10px;}
+.q-bh-icon{font-size:20px;}
+.q-bh-name{font-size:14px;font-weight:700;color:#fff;flex:1;}
+.q-bh-emo{font-size:11px;color:#B8860B;}
+.q-list{display:flex;flex-direction:column;gap:8px;}
+.q-item{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:11px;padding:12px 14px;}
+.q-text{font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:9px;line-height:1.6;}
+.q-opts{display:flex;gap:7px;flex-wrap:wrap;}
+.q-opt{padding:6px 12px;border:1px solid rgba(255,255,255,0.12);border-radius:100px;font-size:11px;cursor:pointer;color:rgba(255,255,255,0.5);background:transparent;transition:all 0.15s;font-family:inherit;}
+.q-opt:hover{border-color:#B8860B;color:#D4A017;}
+.q-opt.sel{background:rgba(184,134,11,0.15);border-color:#B8860B;color:#D4A017;font-weight:600;}
+
+/* ── RESULT ── */
+.result-summary{background:linear-gradient(135deg,#0D1B2A,#12243a);border:1px solid rgba(184,134,11,0.25);border-radius:18px;padding:2rem;text-align:center;margin-bottom:1.5rem;}
+.rs-ring-wrap{width:110px;height:110px;margin:0 auto 1rem;position:relative;}
+.rs-ring-wrap svg{width:110px;height:110px;}
+.rs-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:700;color:#D4A017;}
+.rs-title{font-size:20px;font-weight:700;color:#fff;margin-bottom:6px;}
+.rs-desc{font-size:13px;color:rgba(255,255,255,0.45);}
+
+/* ── RESULT BELIEF CARD ── */
+.rb-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;margin-bottom:14px;}
+.rb-header{display:flex;align-items:center;gap:12px;padding:14px 16px;}
+.rb-icon{font-size:24px;}
+.rb-info{flex:1;}
+.rb-belief{font-size:15px;font-weight:700;color:#fff;}
+.rb-update{font-size:12px;color:#B8860B;margin-top:2px;}
+.rb-score-area{text-align:right;}
+.rb-score-num{font-size:18px;font-weight:700;}
+.rb-score-bar-wrap{width:80px;height:4px;background:rgba(255,255,255,0.08);border-radius:100px;margin-top:5px;overflow:hidden;}
+.rb-score-bar{height:100%;border-radius:100px;transition:width 1s ease;}
+.s-high{background:#3B6D11;}.s-mid{background:#B8860B;}.s-low{background:#A32D2D;}
+
+/* ── TABS (RESULT) ── */
+.rtabs{display:flex;gap:0;margin-bottom:1rem;border:1px solid rgba(255,255,255,0.1);border-radius:10px;overflow:hidden;}
+.rtab{flex:1;padding:10px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;background:transparent;color:rgba(255,255,255,0.35);border:none;transition:all 0.2s;font-family:inherit;}
+.rtab.active{background:rgba(184,134,11,0.12);color:#D4A017;}
+.tab-panel{display:none;}.tab-panel.active{display:block;}
+
+/* ── EDUCATION PANEL ── */
+.edu-section{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px;margin-bottom:10px;}
+.edu-title{font-size:12px;font-weight:700;letter-spacing:0.5px;color:rgba(255,255,255,0.35);margin-bottom:8px;text-transform:uppercase;}
+.disease-chain{display:flex;flex-direction:column;gap:4px;margin-bottom:8px;}
+.dc-step{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,0.6);padding:4px 0;}
+.dc-step:first-child .dc-label{color:#D4A017;font-weight:700;}
+.dc-step:last-child .dc-label{color:#E87070;}
+.dc-arrow{color:rgba(255,255,255,0.2);font-size:10px;}
+.dc-label{flex:1;}
+.method-box{background:rgba(56,189,248,0.05);border:1px solid rgba(56,189,248,0.15);border-radius:10px;padding:12px;margin-bottom:10px;}
+.method-title{font-size:11px;color:#7DD3FC;font-weight:700;margin-bottom:6px;letter-spacing:0.5px;}
+.method-steps{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.method-steps li{font-size:12px;color:rgba(255,255,255,0.65);padding-left:16px;position:relative;line-height:1.5;}
+.method-steps li::before{content:'→';position:absolute;left:0;color:#7DD3FC;font-size:10px;}
+.update-box{background:rgba(184,134,11,0.06);border-left:3px solid #B8860B;padding:10px 14px;border-radius:0 10px 10px 0;margin-bottom:10px;font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;}
+.update-label{font-size:10px;color:#8B6508;font-weight:700;letter-spacing:0.5px;margin-bottom:4px;}
+
+/* ── NUTRIENT PANEL ── */
+.nut-list{display:flex;flex-direction:column;gap:9px;}
+.nut-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;}
+.nut-top{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;transition:background 0.15s;}
+.nut-top:hover{background:rgba(184,134,11,0.04);}
+.nut-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.nut-info{flex:1;min-width:0;}
+.nut-name{font-size:13px;font-weight:700;color:#fff;}
+.nut-mech{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;}
+.nut-price{font-size:12px;color:#B8860B;font-weight:700;margin-top:3px;}
+.nut-expand{font-size:11px;color:rgba(255,255,255,0.25);flex-shrink:0;}
+.nut-cta{padding:7px 13px;background:linear-gradient(135deg,#B8860B,#D4A017);color:#0D1B2A;border:none;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;text-decoration:none;display:inline-block;font-family:inherit;}
+.nut-detail{display:none;padding:0 14px 14px;border-top:1px solid rgba(255,255,255,0.05);}
+.nut-detail.open{display:block;}
+.nut-mbox{background:rgba(255,255,255,0.03);border-radius:10px;padding:10px 12px;margin:10px 0;}
+.nut-mtitle{font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.3);font-weight:700;margin-bottom:5px;}
+.nut-mtext{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.7;}
+.nut-why{background:rgba(184,134,11,0.05);border-left:2px solid #B8860B;padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:10px;}
+.nut-why-t{font-size:10px;color:#8B6508;font-weight:700;margin-bottom:3px;letter-spacing:0.5px;}
+.nut-why-b{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.6;}
+.nut-buy-block{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;background:rgba(184,134,11,0.05);border:1px solid rgba(184,134,11,0.18);border-radius:10px;}
+.nbb-info{flex:1;}
+.nbb-name{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
+.nbb-price{font-size:16px;font-weight:700;color:#D4A017;}
+.nbb-spec{font-size:10px;color:rgba(255,255,255,0.3);margin-top:1px;}
+.nbb-store{font-size:10px;color:#B8860B;margin-top:2px;font-weight:600;}
+.btn-buy-full{padding:10px 18px;background:linear-gradient(135deg,#B8860B,#D4A017);color:#0D1B2A;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;white-space:nowrap;flex-shrink:0;font-family:inherit;}
+
+/* ── MIND PANEL ── */
+.mind-steps{display:flex;flex-direction:column;gap:10px;}
+.mind-step{display:flex;gap:12px;align-items:flex-start;background:rgba(56,189,248,0.04);border:1px solid rgba(56,189,248,0.1);border-radius:12px;padding:12px 14px;}
+.ms-num{width:24px;height:24px;border-radius:50%;background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#7DD3FC;flex-shrink:0;}
+.ms-content{flex:1;}
+.ms-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.ms-desc{font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;}
+
+/* ── BUTTONS ── */
+.btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,#B8860B,#D4A017);color:#0D1B2A;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:opacity 0.2s,transform 0.1s;margin-top:1rem;font-family:inherit;}
+.btn-primary:hover{opacity:0.9;transform:translateY(-1px);}
+.btn-primary:active{transform:scale(0.99);}
+.btn-primary:disabled{opacity:0.2;cursor:not-allowed;transform:none;}
+.nav-row{display:flex;gap:10px;margin-top:1rem;}
+.btn-back{flex:1;padding:14px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:14px;color:rgba(255,255,255,0.4);cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.btn-back:hover{border-color:rgba(184,134,11,0.4);color:#D4A017;}
+.btn-restart{display:block;width:100%;padding:14px;background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:12px;font-size:14px;color:rgba(255,255,255,0.3);cursor:pointer;text-align:center;margin-top:1.5rem;transition:all 0.2s;font-family:inherit;}
+.btn-restart:hover{border-color:rgba(184,134,11,0.3);color:#B8860B;}
+
+/* ── PICK COUNT ── */
+.pick-hint{text-align:center;font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:1rem;}
+.pick-count{display:inline-block;background:rgba(184,134,11,0.12);color:#B8860B;font-size:12px;padding:3px 12px;border-radius:100px;margin-left:6px;font-weight:600;}
+
+/* ── FOOTER ── */
+.footer{text-align:center;font-size:11px;color:rgba(255,255,255,0.15);padding:1.5rem 1rem;line-height:1.8;}
+
+@media(max-width:480px){
+  .hero-title{font-size:20px;}
+  .model-flow{flex-direction:column;}
+  .mf-step{border-radius:8px!important;border-color:rgba(255,255,255,0.08)!important;}
+  .mf-arrow{display:none;}
+  .nut-buy-block{flex-direction:column;align-items:flex-start;}
+  .btn-buy-full{width:100%;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">The Biological Systems Blueprint</div>
+  <div class="hero-title">身心重塑<em>藍圖</em></div>
+  <div class="hero-divider"></div>
+  <div class="hero-sub">從底層信念到生理修復的系統工程</div>
+  <div class="hero-tags">
+    <span class="hero-tag">診斷</span>
+    <span class="hero-tag">教育</span>
+    <span class="hero-tag">方法</span>
+    <span class="hero-tag">精準修復</span>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+</div>
+
+<div class="content">
+
+<!-- ══ PHASE 1: SELECT ══ -->
+<div class="phase active" id="p1">
+
+  <div class="slabel">疾病的系統模型</div>
+  <div class="model-flow">
+    <div class="mf-step"><span class="mf-icon">💭</span>限制性信念<div class="mf-arrow">›</div></div>
+    <div class="mf-step"><span class="mf-icon">😔</span>負面情緒<div class="mf-arrow">›</div></div>
+    <div class="mf-step"><span class="mf-icon">⚡</span>神經失衡<div class="mf-arrow">›</div></div>
+    <div class="mf-step"><span class="mf-icon">🔄</span>內分泌失衡<div class="mf-arrow">›</div></div>
+    <div class="mf-step"><span class="mf-icon">🛡️</span>免疫失衡<div class="mf-arrow">›</div></div>
+    <div class="mf-step"><span class="mf-icon">⚠️</span>疾病風險</div>
+  </div>
+
+  <div class="slabel" style="margin-top:1.5rem">選擇最符合你的限制性信念（可多選）</div>
+  <div class="pick-hint">選擇讓你最有共鳴的信念 <span class="pick-count" id="pcount">0 已選</span></div>
+
+  <div class="cat-tabs" id="cat-tabs"></div>
+  <div class="beliefs-grid" id="belief-grid"></div>
+
+  <button class="btn-primary" id="btn-next" disabled>進入深度診斷 →</button>
+</div>
+
+<!-- ══ PHASE 2: QUESTIONS ══ -->
+<div class="phase" id="p2">
+  <div id="q-body"></div>
+  <div class="nav-row">
+    <button class="btn-back" onclick="go(1)">← 重新選擇</button>
+    <button class="btn-primary" style="flex:2;margin-top:0" onclick="showResult()">查看我的修復藍圖 →</button>
+  </div>
+</div>
+
+<!-- ══ PHASE 3: RESULT ══ -->
+<div class="phase" id="p3">
+  <div id="result-body"></div>
+  <button class="btn-restart" onclick="restart()">↺ 重新診斷</button>
+</div>
+
+</div><!-- /content -->
+
+<div class="footer">
+  資訊僅供參考，不能用來診斷和治療任何形式的身體不適。<br>
+  如有不適請線下及時就醫。購買連結：7-11 賣貨便 · 安全取貨付款。
+</div>
+
+<script>
+const SHOP='https://myship.7-11.com.tw/general/detail/GM2407210007294';
+
+/* ════════════════════════════════
+   DATA: 24 限制性信念
+════════════════════════════════ */
+const BELIEFS=[
+  {
+    id:'b01',cat:'安全系',icon:'🚨',
+    belief:'我不安全',emotion:'恐懼、焦慮',behavior:'高警報、失眠',
+    update:'我有能力應對變化',
+    physio:'穩定血糖、修復腸道、降低壓力負荷',
+    disease_chain:['限制性信念：我不安全','長期恐懼激活交感神經','皮質醇持續偏高','腸道屏障受損','免疫系統慢性活化','代謝失衡、睡眠破壞'],
+    mind_dir:'建立安全感、身體掃描、呼吸訓練',
+    mind_steps:[
+      {t:'覺察過度預測危險',d:'每當焦慮出現，問自己：「這個威脅是真實的還是預測的？現在這一刻，我真的不安全嗎？」'},
+      {t:'身體掃描練習',d:'每天早晚各5分鐘，從腳底到頭頂掃描身體感受，培養與身體的連結感，訓練安全感的身體基礎。'},
+      {t:'腹式呼吸4-7-8',d:'吸氣4秒、屏息7秒、呼氣8秒。直接激活副交感神經，是最快速的安全感生理重設工具。'},
+      {t:'更新程式碼練習',d:'每天對自己說：「我有能力應對變化。過去的我生存下來了。現在的我更有資源。」'},
+    ],
+    qs:[
+      {q:'你是否常常感到莫名的不安，擔心壞事會發生？',opts:['很少','偶爾','常常','幾乎每天']},
+      {q:'你的睡眠品質如何？',opts:['很好','尚可','容易驚醒','幾乎無法熟睡']},
+      {q:'你是否常常在腦中預演最壞的情況？',opts:['很少','偶爾','頻繁','幾乎持續']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',icon:'🔩',bg:'rgba(24,95,165,0.18)',mech:'穩定神經元 放鬆HPA軸',
+       detail:'鎂通過阻斷NMDA受體降低神經過度興奮，直接啟動副交感神經。高警報系統幾乎100%伴隨缺鎂——壓力消耗鎂、缺鎂加劇壓力，甘氨酸同時作為抑制性神經傳導物質協同放鬆。',
+       why:'你的神經系統一直踩著油門。鎂是那個被移走的煞車踏板。補回去，才能真正放鬆。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'GABA',icon:'🌊',bg:'rgba(83,74,183,0.18)',mech:'關閉杏仁核警報器',
+       detail:'GABA是大腦主要的抑制性神經傳導物質，直接關閉杏仁核的「威脅偵測器」。長期焦慮的人GABA普遍不足，導致大腦無法切換到安全模式。',
+       why:'「我不安全」的信念讓GABA系統長期低效。補充GABA是從生理層面重設安全感基線。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+      {n:'酶菌醣體（茶胺酸）',icon:'🍵',bg:'rgba(59,109,17,0.18)',mech:'提升α波 清醒放鬆',
+       detail:'茶胺酸促進大腦α波增加，進入「清醒的平靜」狀態，同時整合全方位益生菌+Beta多醣體+波羅酵素，修復腸腦軸，從腸道源頭穩定情緒神經化學。',
+       why:'焦慮的大腦一直在β波高警覺模式。茶胺酸幫你調頻到α波——這才是安全感的神經基礎。',
+       price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+      {n:'銀杏複方（色氨酸）',icon:'🍂',bg:'rgba(184,134,11,0.18)',mech:'血清素原料+腦循環',
+       detail:'色胺酸是血清素的直接原料，銀杏改善腦部血流讓血清素有效傳遞。含銀杏250mg、色氨酸95mg、巴西蘑菇50mg。血清素不足是焦慮和恐懼感的生化根源。',
+       why:'「我不安全」不只是信念，也是血清素不足的生化現象。從原料補起才能從根本改寫。',
+       price:'NT$510',spec:'膠囊 一瓶150粒'},
+      {n:'丁酸鈉複合包',icon:'🧱',bg:'rgba(184,134,11,0.18)',mech:'腸腦軸修復',
+       detail:'70%血清素在腸道生產，丁酸鈉修復腸壁+亞麻仁籽渣+孢子益生菌，從腸道源頭穩定情緒神經化學，降低因腸漏引發的全身性慢性炎症。',
+       why:'焦慮和腸道不好往往是同一個問題的兩面。修好腸道，神經系統才有穩定的基礎。',
+       price:'NT$890',spec:'一包6克 / 一袋30包'},
+    ]
+  },
+  {
+    id:'b02',cat:'安全系',icon:'🌪️',
+    belief:'世界很危險',emotion:'擔心、緊張',behavior:'過度防衛',
+    update:'世界充滿挑戰，也充滿資源',
+    physio:'自律神經平衡',
+    disease_chain:['限制性信念：世界很危險','持續的過度警覺狀態','交感神經長期主導','心率變異性下降','腸胃道功能異常','慢性壓力性疾病'],
+    mind_dir:'覺察過度預測危險，重建資源視角',
+    mind_steps:[
+      {t:'危險評估練習',d:'當感到危險時，用0-10評分真實風險。90%的擔心屬於「想像的危險」，覺察這個差距。'},
+      {t:'資源盤點',d:'每天列出3件今天幫助過你的事物（人、環境、自己的能力），訓練大腦發現資源的神經迴路。'},
+      {t:'漸進暴露',d:'從小的「不確定情境」開始，逐步體驗到「不確定不等於危險」，重新校準威脅感知系統。'},
+    ],
+    qs:[
+      {q:'你是否常常感到周圍的環境不安全，需要時刻保持警惕？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你是否難以放鬆，即使在應該安全的環境中？',opts:['能放鬆','有點難','很難','幾乎不可能']},
+      {q:'你對新情境或變化的反應通常是？',opts:['好奇','謹慎','抗拒','強烈抗拒']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',icon:'🔩',bg:'rgba(24,95,165,0.18)',mech:'自律神經平衡',
+       detail:'鎂是調節自律神經平衡最關鍵的礦物質，提升心率變異性（HRV），HRV是衡量自律神經彈性的黃金指標。鎂充足時身體能更靈活地在交感/副交感之間切換。',
+       why:'「世界很危險」讓自律神經卡在交感模式。鎂是重設這個開關的關鍵礦物質。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'加強B群',icon:'🔵',bg:'rgba(24,95,165,0.18)',mech:'神經系統支持',
+       detail:'B群是神經系統所有能量代謝路徑的必需輔因子，過度防衛的神經系統大量消耗B群。補足B群能提升神經傳導效率，減少過度反應的神經化學基礎。',
+       why:'過度防衛消耗大量神經資源，B群是補充這些消耗最直接的方式。',
+       price:'NT$520',spec:'膠囊 一瓶150粒'},
+      {n:'亞麻仁油',icon:'🌿',bg:'rgba(59,109,17,0.18)',mech:'Omega-3抗炎神經支持',
+       detail:'Omega-3是合成消炎素的原料，同時維持神經細胞膜流動性，讓神經傳導更靈活。長期壓力和過度防衛產生的慢性炎症需要Omega-3平衡。',
+       why:'神經系統的靈活性依賴細胞膜品質。亞麻仁油提供Omega-3讓神經反應更精準、更彈性。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+    ]
+  },
+  {
+    id:'b03',cat:'價值系',icon:'🔬',
+    belief:'我不夠好',emotion:'羞愧、自卑',behavior:'自我批判',
+    update:'我可以持續成長',
+    physio:'粒線體支持、提升能量代謝',
+    disease_chain:['限制性信念：我不夠好','持續的羞愧感激活壓力反應','粒線體功能受損','慢性疲勞','免疫功能下降','慢性發炎'],
+    mind_dir:'從評價思維轉向成長思維',
+    mind_steps:[
+      {t:'成長型思維練習',d:'把所有「我不夠好」轉換為「我還在學習中」。錯誤不是證明不夠好，是學習數據。'},
+      {t:'自我慈悲冥想',d:'當自我批判出現時，問自己：「如果是我最好的朋友遇到這個情況，我會怎麼對他說？」然後把同樣的話說給自己聽。'},
+      {t:'成就日記',d:'每天記錄3件今天做得好的事，不管多小。訓練大腦的正向確認偏誤，對抗自我批判的神經迴路。'},
+    ],
+    qs:[
+      {q:'你是否常常感到自己不夠好，即使已經做得很好？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你的能量狀態通常如何？',opts:['充沛','尚可','容易疲憊','長期疲憊']},
+      {q:'當你犯錯時，你通常如何反應？',opts:['從中學習','有些自責','強烈自責','長期無法原諒自己']},
+    ],
+    nutrients:[
+      {n:'超級B群',icon:'🔵',bg:'rgba(24,95,165,0.18)',mech:'能量代謝核心輔酶',
+       detail:'B群是所有細胞能量代謝路徑的必需輔因子。完美主義和自我批判的高耗能模式大量消耗B群，導致神經傳導效率下降、情緒不穩、慢性疲勞——形成越努力越累的惡性循環。',
+       why:'「我不夠好」讓你的大腦永遠在高速運轉。補足B群是打破這個能量漩渦的基礎。',
+       price:'NT$520',spec:'膠囊 一瓶約150粒'},
+      {n:'Q10（10:1）',icon:'⚡',bg:'rgba(184,134,11,0.18)',mech:'粒線體電子傳遞鏈',
+       detail:'羞愧感和慢性壓力直接損傷粒線體功能。Q10是電子傳遞鏈的核心組件，直接補充粒線體的燃料轉換器。10:1高濃縮萃取，效能遠超一般Q10產品。',
+       why:'「我不夠好」讓粒線體長期超負荷。Q10是讓這台過載引擎恢復效率的關鍵零件。',
+       price:'NT$580',spec:'膠囊 一瓶150粒'},
+      {n:'甘氨酸鎂複方',icon:'🔩',bg:'rgba(24,95,165,0.18)',mech:'放鬆壓力神經迴路',
+       detail:'自我批判是一種持續的壓力狀態，持續消耗鎂。鎂充足時前額葉功能更好，能更有效地調節杏仁核的自我批判迴路，讓理性評估取代情緒性自責。',
+       why:'缺鎂讓大腦更容易陷入自我批判迴路。補鎂是讓前額葉重新掌控的生理基礎。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'D3（5000IU）',icon:'☀️',bg:'rgba(184,134,11,0.18)',mech:'情緒調節免疫平衡',
+       detail:'維生素D受體在大腦情緒調節區域廣泛分佈，缺乏D3與羞愧感、自我批判的神經化學直接相關。5000IU高劑量快速補充至有效血清濃度。',
+       why:'羞愧感有生理根源。D3是讓大腦情緒中樞正常運作的基礎條件之一。',
+       price:'NT$580',spec:'錠劑 約320粒'},
+    ]
+  },
+  {
+    id:'b04',cat:'價值系',icon:'🪞',
+    belief:'我有缺陷',emotion:'自責',behavior:'逃避挑戰',
+    update:'缺點是進化入口',
+    physio:'修復發炎與慢性疲勞',
+    disease_chain:['限制性信念：我有缺陷','持續自責激活壓力軸','皮質醇升高','慢性發炎','免疫失調','身心耗竭'],
+    mind_dir:'接納陰影、自我整合',
+    mind_steps:[
+      {t:'陰影整合練習',d:'列出你認為自己的「缺陷」，問：「這個特質在什麼情況下其實是優勢？」缺點是尚未整合的力量。'},
+      {t:'自我接納聲明',d:'每天對鏡子說：「我接受我現在的樣子，包括所有我還在學習的地方。」這不是放棄進步，而是從愛出發的成長。'},
+      {t:'進化視角重框',d:'把「缺陷」換成「進化入口」。每個你認為的弱點，都是一個告訴你下一步可以往哪裡成長的地圖。'},
+    ],
+    qs:[
+      {q:'你是否常常感到自己有根本性的缺陷，覺得如果別人真的了解你就不會喜歡你？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你是否避免嘗試新事物，因為害怕暴露自己的不足？',opts:['不會','偶爾','常常','幾乎總是']},
+      {q:'你身體是否常有疲憊感、低度發炎症狀（關節痛、皮膚問題等）？',opts:['沒有','偶爾','常常','幾乎持續']},
+    ],
+    nutrients:[
+      {n:'NAC複方',icon:'🔄',bg:'rgba(59,109,17,0.18)',mech:'穀胱甘肽前體降氧化壓力',
+       detail:'自責和羞愧產生大量氧化壓力，NAC作為穀胱甘肽前體直接清除這些氧化損傷。穀胱甘肽是細胞層面最強的抗氧化防禦，同時有輕微情緒調節效果。',
+       why:'「我有缺陷」在生理上等同於持續的氧化壓力。NAC是細胞層面的解毒劑和修復基礎。',
+       price:'NT$530',spec:'膠囊 一瓶約150粒'},
+      {n:'亞麻仁油',icon:'🌿',bg:'rgba(59,109,17,0.18)',mech:'Omega-3降慢性發炎',
+       detail:'自責相關的慢性壓力直接升高促炎因子。Omega-3（EPA/DHA）是合成消炎素的原料，同時調節免疫反應，降低全身性慢性炎症負擔。',
+       why:'長期自責在身體裡以慢性發炎的形式表現。亞麻仁油提供抗炎原料，從根源降低炎症負擔。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+      {n:'薑黃素+胡椒鹼',icon:'🟠',bg:'rgba(184,134,11,0.18)',mech:'NF-kB抑制抗炎',
+       detail:'薑黃素是目前研究最深入的天然NF-kB抑制劑，NF-kB是「發炎總開關」。搭配胡椒鹼提升吸收率20倍，讓薑黃素真正到達有效濃度發揮作用。',
+       why:'逃避挑戰的慢性壓力持續激活炎症路徑。薑黃素從信號源頭關掉這個發炎開關。',
+       price:'NT$620',spec:'膠囊 一瓶'},
+    ]
+  },
+  {
+    id:'b05',cat:'愛與連結系',icon:'💫',
+    belief:'我不值得',emotion:'低價值感',behavior:'自我限制',
+    update:'我的存在本身有價值',
+    physio:'腸腦軸支持、催產素系統修復',
+    disease_chain:['限制性信念：我不值得','低價值感抑制動力神經迴路','多巴胺系統低效','自我設限行為','機會減少','價值感更低'],
+    mind_dir:'重建自我認同、內在價值感',
+    mind_steps:[
+      {t:'存在本身就有價值',d:'價值不是靠「做到」才有的。今天你活著、你呼吸、你嘗試——這本身就是價值的表達。每天寫一件「我今天的存在帶來了什麼」。'},
+      {t:'身體感恩練習',d:'感謝你的心臟每天跳動，你的腸道消化食物，你的免疫系統保護你。身體正在努力為你服務，它認為你值得被照顧。'},
+      {t:'價值感清單',d:'列出20件你曾經為別人做過的事、帶給別人的影響。你對世界的貢獻比你想的多得多。'},
+    ],
+    qs:[
+      {q:'你是否常常感到自己不值得擁有好的事情？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'當好事發生時，你的第一反應是？',opts:['欣然接受','有點意外','懷疑會消失','覺得不應該屬於我']},
+      {q:'你是否常常阻止自己追求想要的事物？',opts:['很少','偶爾','常常','幾乎總是']},
+    ],
+    nutrients:[
+      {n:'孢子益生菌',icon:'🌱',bg:'rgba(59,109,17,0.18)',mech:'腸腦軸支持情緒',
+       detail:'腸道菌叢直接影響血清素和多巴胺的生產，而這兩者是自我價值感的神經化學基礎。孢子型益生菌耐受胃酸，真正到達腸道定殖，搭配亞麻仁渣養菌效果更完整。',
+       why:'自我價值感不只是信念問題，也是神經化學問題。修復腸道菌相是重建內在價值感的生理基礎。',
+       price:'NT$650',spec:'一袋30包 一包6克'},
+      {n:'丁酸鈉複合包',icon:'🧱',bg:'rgba(184,134,11,0.18)',mech:'腸壁修復穩定情緒',
+       detail:'丁酸鈉修復腸壁完整性，降低腸漏引發的全身性慢性炎症，同時直接調控腸道免疫細胞。腸道健康穩定後，情緒基線自然提升，自我價值感的生理基礎更穩固。',
+       why:'低價值感常與腸道問題同步出現，不是巧合。丁酸鈉是修復這個底層連結的關鍵。',
+       price:'NT$890',spec:'一包6克 / 一袋30包'},
+      {n:'甘氨酸鎂複方',icon:'🔩',bg:'rgba(24,95,165,0.18)',mech:'多巴胺系統支持',
+       detail:'鎂是多巴胺受體正常運作的必要輔因子。多巴胺不足直接導致「看不到自己的價值和努力的意義」。補足鎂讓多巴胺系統更敏感，動力和自我肯定感隨之提升。',
+       why:'缺鎂讓多巴胺無法有效工作——這是低價值感的生化基礎之一。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'b06',cat:'愛與連結系',icon:'💔',
+    belief:'我不值得被愛',emotion:'孤獨',behavior:'討好、依附',
+    update:'愛不是交換條件',
+    physio:'催產素系統支持、腸腦軸修復',
+    disease_chain:['限制性信念：我不值得被愛','孤獨感激活社交疼痛迴路','皮質醇升高抑制催產素','討好行為耗竭自我','免疫功能下降','慢性身心疲憊'],
+    mind_dir:'練習自我接納，從交換愛轉向無條件自愛',
+    mind_steps:[
+      {t:'自愛冥想',d:'每天5分鐘，把手放在心口，對自己說：「我值得被愛，包括現在這個還在成長中的我。」感受溫暖從手傳到心。'},
+      {t:'愛的重新定義',d:'寫下你「交換愛」的行為清單（做X才能得到愛）。然後問：「這些條件是誰設的？孩子需要交換條件才值得被愛嗎？」'},
+      {t:'接受練習',d:'今天允許別人為你做一件事，並且不要立刻回報。練習接受而不是立刻還債——這是學習「愛不是交換」的行動版。'},
+    ],
+    qs:[
+      {q:'你是否常常覺得必須做到某些條件才值得被愛？',opts:['很少','偶爾','常常','幾乎總是']},
+      {q:'你是否難以接受別人的幫助或關愛？',opts:['能接受','有點難','很難','幾乎拒絕']},
+      {q:'你是否常常感到孤獨，即使在人群中也是？',opts:['很少','偶爾','常常','幾乎持續']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',icon:'🔩',bg:'rgba(24,95,165,0.18)',mech:'催產素系統支持',
+       detail:'鎂是催產素（連結感荷爾蒙）合成和受體敏感性的關鍵輔因子。長期討好行為升高皮質醇，皮質醇直接抑制催產素分泌，造成即使有連結也感受不到溫暖。',
+       why:'當你一直付出卻感受不到愛，可能是催產素系統被皮質醇壓制了。鎂幫你重新找回感受連結的能力。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'亞麻仁油',icon:'🌿',bg:'rgba(59,109,17,0.18)',mech:'神經膜流動性受體敏感性',
+       detail:'Omega-3維持神經細胞膜流動性，讓催產素和血清素受體更敏感。缺乏Omega-3時即使荷爾蒙充足，細胞也「感受不到」——就像有訊號卻接收不到。',
+       why:'感受不到愛不只是心理問題。Omega-3讓你的細胞真正能夠接收到愛的訊號。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+      {n:'D3（5000IU）',icon:'☀️',bg:'rgba(184,134,11,0.18)',mech:'情緒調節孤獨感降低',
+       detail:'研究顯示缺乏維生素D與孤獨感、社交焦慮高度相關，維生素D受體存在於大腦社交情緒調節區域。5000IU高劑量快速補充，重建情緒調節的生理基礎。',
+       why:'孤獨感有生理根源。維生素D是讓大腦社交情緒中樞正常運作的基礎條件。',
+       price:'NT$580',spec:'錠劑 約320粒'},
+    ]
+  },
+  {
+    id:'b07',cat:'愛與連結系',icon:'🫂',
+    belief:'我會被拋棄',emotion:'焦慮',behavior:'黏人控制',
+    update:'關係可以流動',
+    physio:'神經系統穩定、依附系統修復',
+    disease_chain:['限制性信念：我會被拋棄','分離焦慮激活杏仁核','黏附行為加速關係張力','關係破裂確認信念','依附創傷加深','焦慮惡化'],
+    mind_dir:'修復依附創傷，建立內在安全感',
+    mind_steps:[
+      {t:'內在安全感建立',d:'「我會被拋棄」的恐懼源於早期依附創傷。練習：每當焦慮出現，告訴自己「我有能力一個人照顧好自己。我不需要用控制來防止失去。」'},
+      {t:'流動關係練習',d:'今天允許一個重要的人有自己的空間，不要查看他們在哪裡或發什麼訊息。練習體驗「距離不等於拋棄」。'},
+      {t:'悲傷整合',d:'被拋棄的恐懼背後通常有真實的失去經歷。允許自己為那個舊傷悲傷，而不是用控制來防止它再次發生。'},
+    ],
+    qs:[
+      {q:'你是否對親密關係中的距離或冷漠特別敏感，容易感到被拋棄？',opts:['不太','有些','很敏感','極度敏感']},
+      {q:'你是否有監控或控制伴侶/重要他人動態的傾向？',opts:['沒有','偶爾','常常','幾乎總是']},
+      {q:'你的神經系統狀態通常如何？',opts:['穩定平靜','有些緊繃','常常緊繃','幾乎持續緊繃']},
+    ],
+    nutrients:[
+      {n:'GABA',icon:'🌊',bg:'rgba(83,74,183,0.18)',mech:'杏仁核穩定分離焦慮',
+       detail:'分離焦慮的核心是杏仁核的過度反應。GABA直接抑制杏仁核活化，降低分離焦慮的強度，讓前額葉有空間做出理性判斷而不是恐慌性控制。',
+       why:'被拋棄的恐懼觸發時，是杏仁核劫持了你的大腦。GABA幫你把控制權還給前額葉。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+      {n:'酶菌醣體（茶胺酸）',icon:'🍵',bg:'rgba(59,109,17,0.18)',mech:'α波放鬆依附焦慮',
+       detail:'茶胺酸提升α波，降低依附焦慮的神經基礎，同時整合益生菌修復腸腦軸，從腸道源頭穩定情緒調節系統，讓焦慮的依附模式有生理基礎的支撐。',
+       why:'依附焦慮的背後是神經系統缺乏安全感。茶胺酸幫你的神經系統找到內在平靜點。',
+       price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+      {n:'甘氨酸鎂複方',icon:'🔩',bg:'rgba(24,95,165,0.18)',mech:'HPA軸穩定降焦慮',
+       detail:'慢性依附焦慮持續激活HPA軸，大量消耗鎂。鎂充足時HPA軸恢復正常節律，皮質醇波動減小，分離焦慮的生理強度隨之降低。',
+       why:'依附焦慮的生理基礎是HPA軸失調。鎂幫你的壓力調節系統回到正常節律。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'b08',cat:'愛與連結系',icon:'😶',
+    belief:'我必須討好',emotion:'委屈',behavior:'壓抑需求',
+    update:'我的需求也重要',
+    physio:'降低皮質醇負荷、腎上腺支持',
+    disease_chain:['限制性信念：我必須討好','長期壓抑自我需求','皮質醇持續偏高','腎上腺疲勞','免疫下降','身心耗竭'],
+    mind_dir:'練習界限感，表達真實需求',
+    mind_steps:[
+      {t:'需求清單',d:'今天寫下5個你真正的需求（休息、被聽見、空間…），承認它們是合法的，不需要靠「付出」換取被滿足的資格。'},
+      {t:'說不練習',d:'本週練習一次對一個小請求說「不，我現在沒辦法」。觀察什麼都沒有崩潰，世界繼續運轉。'},
+      {t:'界限宣言',d:'「我可以說不而不失去愛。我的需求和別人的需求同樣重要。照顧自己不是自私，是讓我有能力真正幫助別人。」'},
+    ],
+    qs:[
+      {q:'你是否常常把別人的需求放在自己之前，即使委屈自己？',opts:['很少','偶爾','常常','幾乎總是']},
+      {q:'你是否難以拒絕別人的請求，即使你很累或不想做？',opts:['能拒絕','有點難','很難','幾乎無法']},
+      {q:'你是否常常感到疲憊耗竭，但還是繼續付出？',opts:['很少','偶爾','常常','幾乎總是']},
+    ],
+    nutrients:[
+      {n:'加強B群（B5）',icon:'🔵',bg:'rgba(24,95,165,0.18)',mech:'腎上腺支持降皮質醇',
+       detail:'B5（泛酸）是腎上腺皮質醇合成路徑的關鍵輔因子，同時參與腎上腺的自我修復。長期討好行為讓腎上腺持續超工作，B群是修復腎上腺疲勞最直接的營養支持。',
+       why:'長期壓抑需求和討好是一種慢性腎上腺負荷。B5幫你修復這個被過度消耗的腎上腺系統。',
+       price:'NT$520',spec:'膠囊 一瓶150粒'},
+      {n:'甘氨酸鎂複方',icon:'🔩',bg:'rgba(24,95,165,0.18)',mech:'皮質醇調節界限感支持',
+       detail:'討好行為維持皮質醇長期偏高，直接抑制催產素分泌（連結感）和多巴胺（自我動力）。鎂調節HPA軸，讓皮質醇恢復正常節律，身體才能從「必須付出」的警報模式退出。',
+       why:'你的身體需要學習「停下來也是安全的」。鎂幫助神經系統退出討好模式的警報狀態。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'b09',cat:'愛與連結系',icon:'🔇',
+    belief:'我不能生氣',emotion:'壓抑',behavior:'情緒堵塞',
+    update:'情緒是訊號不是敵人',
+    physio:'肝臟解毒、發炎管理',
+    disease_chain:['限制性信念：我不能生氣','情緒壓抑增加皮質醇','肝臟解毒負擔加重','全身性發炎升高','消化功能異常','身心疾病累積'],
+    mind_dir:'情緒釋放練習、憤怒整合',
+    mind_steps:[
+      {t:'情緒是訊號',d:'憤怒告訴你有界限被侵犯、有需求未被滿足、有不公正需要回應。它是訊號，不是敵人。問自己：「這個憤怒在告訴我什麼？」'},
+      {t:'安全釋放練習',d:'用枕頭打墊子、大聲唱歌、劇烈運動——找一個安全的方式讓積累的情緒能量流動出去，而不是繼續壓抑在身體裡。'},
+      {t:'言語表達練習',d:'練習用「我感到憤怒，因為…」取代「沒事」。從小事開始，學習讓情緒用語言而非身體病症來表達。'},
+    ],
+    qs:[
+      {q:'你是否常常壓抑憤怒，告訴自己「不該生氣」？',opts:['很少','偶爾','常常','幾乎總是']},
+      {q:'你的消化系統狀況如何？',opts:['良好','偶有不適','常有問題','持續有問題']},
+      {q:'你是否有慢性發炎相關症狀（關節痛、皮膚問題、頭痛）？',opts:['沒有','偶爾','常有','幾乎持續']},
+    ],
+    nutrients:[
+      {n:'NAC複方',icon:'🔄',bg:'rgba(59,109,17,0.18)',mech:'穀胱甘肽肝臟解毒',
+       detail:'壓抑情緒增加氧化壓力和肝臟解毒負擔，NAC作為穀胱甘肽前體直接支持肝臟解毒能力。穀胱甘肽是肝臟最重要的解毒武器，缺乏時毒素積累加重情緒堵塞。',
+       why:'長期壓抑的憤怒積累在肝臟。NAC幫助肝臟清除這些積累，讓情緒能量重新流動。',
+       price:'NT$530',spec:'膠囊 一瓶約150粒'},
+      {n:'薑黃素+胡椒鹼',icon:'🟠',bg:'rgba(184,134,11,0.18)',mech:'NF-kB抑制情緒發炎',
+       detail:'情緒壓抑產生的慢性壓力直接升高促炎因子。薑黃素通過抑制NF-kB發炎路徑，降低壓抑情緒帶來的全身性炎症負擔，改善因發炎導致的情緒遲鈍。',
+       why:'壓抑的情緒以發炎的形式存在身體裡。薑黃素從生化層面清除這些積累的炎症反應。',
+       price:'NT$620',spec:'膠囊 一瓶'},
+      {n:'消化全酶（牛磺酸）',icon:'💧',bg:'rgba(24,95,165,0.18)',mech:'膽汁流動肝臟支持',
+       detail:'牛磺酸促進膽汁分泌和流動，膽汁是脂溶性毒素的排出通道。情緒壓抑相關的肝臟負擔需要順暢的膽汁流動來排出毒素，同時全酶幫助消化系統恢復正常功能。',
+       why:'中醫說肝主情志。現代科學確認肝臟健康與情緒調節直接相關。消化全酶從膽汁通道幫助清除積累。',
+       price:'NT$870',spec:'粉包 一包6克 / 一袋30包'},
+    ]
+  },
+  {
+    id:'b10',cat:'價值系',icon:'🎯',
+    belief:'我不能失敗',emotion:'焦慮',behavior:'完美主義',
+    update:'錯誤是回饋',
+    physio:'穩定腎上腺功能',
+    disease_chain:['限制性信念：我不能失敗','失敗恐懼持續激活壓力軸','腎上腺功能過載','睡眠品質下降','前額葉功能受損','決策能力下降'],
+    mind_dir:'更新成功定義、建立成長型思維',
+    mind_steps:[
+      {t:'重新定義失敗',d:'把「失敗」換成「第一次嘗試的結果」。愛迪生不是失敗了1000次，是找到了1000種不可行的方法。錯誤是學習數據，不是身份的判斷。'},
+      {t:'最壞情況練習',d:'寫下你最害怕的失敗場景，然後問：「就算這個發生了，6個月後我的生活會怎樣？1年後？5年後？」大多數「失敗」的影響遠比想像的小。'},
+      {t:'實驗思維',d:'把每個行動設計成「實驗」而非「考試」。實驗沒有失敗，只有數據。我在測試A方案，看看結果如何，然後調整。'},
+    ],
+    qs:[
+      {q:'你是否因為害怕失敗而拖延開始？',opts:['很少','偶爾','常常','幾乎總是']},
+      {q:'你的睡眠是否受到「明天可能搞砸」的焦慮影響？',opts:['很少','偶爾','常常','幾乎每晚']},
+      {q:'你是否對自己設置高標準，並且當未達到時嚴厲批評自己？',opts:['不太','有些','明顯','非常明顯']},
+    ],
+    nutrients:[
+      {n:'加強B群',icon:'🔵',bg:'rgba(24,95,165,0.18)',mech:'腎上腺支持神經穩定',
+       detail:'「不能失敗」的持續焦慮讓腎上腺長期處於警戒狀態，大量消耗B群。補足B群特別是B5，直接支持腎上腺功能恢復，降低失敗焦慮的生理強度。',
+       why:'「不能失敗」讓腎上腺每天都在備戰。B群是修復這個持續超工作系統的核心燃料。',
+       price:'NT$520',spec:'膠囊 一瓶150粒'},
+      {n:'神經營養素（B1+B3+B6）',icon:'🔵',bg:'rgba(24,95,165,0.18)',mech:'前額葉功能支持',
+       detail:'完美主義焦慮損害前額葉功能（決策和理性評估），B1提供神經能量，不潮紅的B3支持NAD+生成，B6是神經傳導物質合成輔因子，三者協同恢復前額葉的理性判斷能力。',
+       why:'前額葉功能好，才能真正評估失敗的真實風險而非誇大恐懼。神經營養素是這個功能的物質基礎。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+      {n:'甘氨酸鎂複方',icon:'🔩',bg:'rgba(24,95,165,0.18)',mech:'GABA系統放鬆完美焦慮',
+       detail:'鎂是GABA受體功能的必需輔因子，GABA是讓大腦從「必須完美」的警報模式退出的主要抑制系統。鎂+GABA協同，降低完美主義焦慮的神經化學強度。',
+       why:'完美主義是一種神經系統的過度活化狀態。鎂幫助GABA系統有效運作，讓大腦學會「夠好就好」。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'GABA',icon:'🌊',bg:'rgba(83,74,183,0.18)',mech:'直接降低失敗焦慮',
+       detail:'失敗焦慮觸發時，杏仁核過度激活。GABA直接抑制這個過度反應，讓前額葉重新接管，能夠理性評估情況而不是被恐懼主導行動。',
+       why:'當失敗恐懼來襲，是杏仁核在主導。GABA幫你把大腦的駕駛座還給理性的你。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+    ]
+  },
+  {
+    id:'b11',cat:'安全系',icon:'🎮',
+    belief:'我必須控制',emotion:'緊張',behavior:'強迫傾向',
+    update:'我可以適應變化',
+    physio:'自律神經平衡',
+    disease_chain:['限制性信念：我必須控制','控制行為消耗大量神經資源','自律神經失衡','消化功能異常','睡眠障礙','慢性疲勞'],
+    mind_dir:'提高容錯率、練習放手',
+    mind_steps:[
+      {t:'控制圈分析',d:'把你擔心的事分為「我能控制的」和「我不能控制的」。把90%的精力放在能控制的部分，對不能控制的，練習說：「我接受我無法控制這個。」'},
+      {t:'漸進放手練習',d:'每天選一件小事「故意」不去控制，觀察結果。多數情況下，世界不會崩潰。每次「安全著陸」都在更新你的神經系統。'},
+      {t:'不確定耐受訓練',d:'「不確定」不等於「危險」。練習在不確定中等待，不立刻採取控制行動，感受那個不適，然後讓它自然消退。'},
+    ],
+    qs:[
+      {q:'你是否對環境或他人的行為有強烈的控制需求？',opts:['不太','有些','明顯','非常強烈']},
+      {q:'當計劃改變時，你的反應通常是？',opts:['靈活調整','有些不適','強烈不適','幾乎無法接受']},
+      {q:'你是否有反覆確認或強迫性的習慣？',opts:['沒有','偶爾','常常','幾乎持續']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',icon:'🔩',bg:'rgba(24,95,165,0.18)',mech:'自律神經平衡強迫性放鬆',
+       detail:'控制傾向源於自律神經失衡，交感神經過度主導。鎂通過調節NMDA受體和GABA系統，直接平衡自律神經，降低強迫控制行為的神經化學驅動力。',
+       why:'控制是大腦在不確定中尋找安全感的方式。鎂幫神經系統找到內在安全感，減少對外部控制的需求。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'酶菌醣體（茶胺酸）',icon:'🍵',bg:'rgba(59,109,17,0.18)',mech:'α波降低強迫思維',
+       detail:'強迫控制傾向伴隨高度的β波活動（緊張、過度思考）。茶胺酸提升α波，降低強迫思維的神經基礎，同時腸腦軸修復讓情緒調節更穩定，減少焦慮驅動的控制行為。',
+       why:'強迫控制是大腦在焦慮β波模式下的反應。茶胺酸調頻到α波，讓大腦找到放鬆而不失控的狀態。',
+       price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+      {n:'亞麻仁油',icon:'🌿',bg:'rgba(59,109,17,0.18)',mech:'Omega-3降焦慮神經支持',
+       detail:'Omega-3對前額葉功能和情緒調節至關重要，研究顯示Omega-3補充能顯著降低強迫和焦慮相關症狀。維持神經細胞膜流動性，讓神經傳導更靈活、更精準。',
+       why:'神經系統的靈活性是適應能力的基礎。亞麻仁油提供讓神經更彈性的物質基礎。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+    ]
+  },
+  {
+    id:'b12',cat:'價值系',icon:'✔️',
+    belief:'我不能犯錯',emotion:'害怕',behavior:'反覆確認',
+    update:'錯誤是學習資料',
+    physio:'支持前額葉功能',
+    disease_chain:['限制性信念：我不能犯錯','反覆確認消耗前額葉資源','決策疲勞','執行功能下降','工作效率惡化','焦慮加深'],
+    mind_dir:'建立實驗思維、接受不完美',
+    mind_steps:[
+      {t:'錯誤學習日誌',d:'每當犯錯時，不是懲罰自己，而是寫下：「這次我學到的是…下次我會…」把錯誤轉化為學習數據，而非身份的否定。'},
+      {t:'足夠好原則',d:'設定「足夠好」的標準，然後停止。80分完成的事情比100分永遠準備中的事情創造更多價值。'},
+      {t:'確認行為停止規則',d:'設定規則：每件事只確認一次。每次你想再確認，告訴自己：「我已經做了我能做的最好的部分。結果已經可以了。」'},
+    ],
+    qs:[
+      {q:'你是否常常反覆確認已經做過的事（鎖門、發出的訊息等）？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'你在做決定時是否非常困難，害怕做錯？',opts:['不難','有些難','很難','幾乎無法決定']},
+      {q:'你的專注力和記憶力狀況？',opts:['良好','尚可','有些下降','明顯下降']},
+    ],
+    nutrients:[
+      {n:'DHA（亞麻仁油）',icon:'🌿',bg:'rgba(59,109,17,0.18)',mech:'前額葉DHA支持決策功能',
+       detail:'前額葉是決策、評估和執行功能的核心，DHA是前額葉神經元細胞膜最主要的成分。缺乏DHA時前額葉功能下降，反覆確認和決策困難因此加重。',
+       why:'反覆確認的根源是前額葉缺乏信心。DHA是讓前額葉真正有效運作的建材。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+      {n:'神經營養素（B1+B3+B6）',icon:'🔵',bg:'rgba(24,95,165,0.18)',mech:'神經傳導執行功能',
+       detail:'前額葉執行功能依賴高效的神經傳導，B1提供神經能量，不潮紅的B3支持NAD+，B6是多巴胺（決策動力）合成輔因子。三者協同修復反覆確認背後的神經功能問題。',
+       why:'決策疲勞的背後是神經傳導效率問題。神經營養素是讓大腦決策系統重新清晰的物質支持。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+    ]
+  },
+  {
+    id:'b13',cat:'主體系',icon:'🪫',
+    belief:'我沒有選擇',emotion:'無力',behavior:'放棄',
+    update:'我永遠有下一步',
+    physio:'提升能量系統',
+    disease_chain:['限制性信念：我沒有選擇','無力感抑制動力神經迴路','多巴胺系統低迷','行動力喪失','機會錯失','無力感加深'],
+    mind_dir:'找回主體性、從受害者到創造者',
+    mind_steps:[
+      {t:'選擇清單',d:'在任何感到「沒有選擇」的情況，強制列出至少3個可能的選項，即使看起來不完美。練習：「我現在可以…」×3。'},
+      {t:'主體性聲明',d:'每天早晨說：「今天我可以選擇如何回應任何情況。我不能控制所有事件，但我可以選擇我的回應。」'},
+      {t:'下一步行動',d:'每當感到卡住，問一個問題：「如果我真的有選擇，我會做的第一個最小行動是什麼？」然後做那一步。只做那一步。'},
+    ],
+    qs:[
+      {q:'你是否常常感到命運掌握在別人手中，自己無能為力？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你的整體能量和動力水平如何？',opts:['充沛','尚可','低迷','極度低迷']},
+      {q:'面對困境，你的第一反應通常是？',opts:['尋找解決方案','感到困難','感到無力','放棄/抱怨']},
+    ],
+    nutrients:[
+      {n:'超級B群',icon:'🔵',bg:'rgba(24,95,165,0.18)',mech:'神經能量代謝動力系統',
+       detail:'無力感和低動力幾乎必然伴隨B群缺乏。B群是神經系統所有能量代謝路徑的核心輔因子，補足B群能直接提升神經傳導效率，讓大腦從「低功耗模式」恢復正常運作。',
+       why:'大腦在缺乏B群時無法有效處理問題解決和未來規劃——這直接強化了無力感。',
+       price:'NT$520',spec:'膠囊 一瓶約150粒'},
+      {n:'Q10（10:1）',icon:'⚡',bg:'rgba(184,134,11,0.18)',mech:'粒線體能量重啟',
+       detail:'「沒有選擇」的生理基礎往往是全局能量低迷。Q10直接補充粒線體的電子傳遞鏈，重啟細胞能量生產。當身體有了能量，「我可以嘗試」才有生理基礎。',
+       why:'先修復生理能量，才有力氣看見選擇。Q10是重啟能量系統最直接的方案。',
+       price:'NT$580',spec:'膠囊 一瓶150粒'},
+      {n:'D3（5000IU）',icon:'☀️',bg:'rgba(184,134,11,0.18)',mech:'免疫調節降慢性發炎',
+       detail:'無力感與低度慢性炎症高度相關——炎症細胞因子直接抑制動力和行動力（sickness behavior）。維生素D是最有力的天然免疫調節劑，降低炎症的同時恢復行動動機。',
+       why:'無力感不只是心態問題。炎症讓大腦直接抑制你的行動力。維生素D釋放這個生理抑制。',
+       price:'NT$580',spec:'錠劑 約320粒'},
+    ]
+  },
+  {
+    id:'b14',cat:'演化系',icon:'🧱',
+    belief:'我改變不了',emotion:'絕望',behavior:'停滯',
+    update:'大腦具有可塑性',
+    physio:'粒線體與神經修復',
+    disease_chain:['限制性信念：我改變不了','絕望感抑制BDNF生成','神經可塑性下降','學習能力受損','改變能力喪失','固著加深'],
+    mind_dir:'神經可塑性訓練、建立小勝循環',
+    mind_steps:[
+      {t:'神經可塑性事實',d:'科學確認：大腦具有神經可塑性，可以在任何年齡形成新的神經迴路。「我改變不了」是一個信念，不是生物事實。'},
+      {t:'小勝循環',d:'每天設定一個非常小的目標（小到幾乎不可能失敗），完成它，記錄下來。連續7天後，你有7個「我改變了」的具體證據。'},
+      {t:'身份更新',d:'把「我就是這樣的人」換成「到目前為止，我通常會這樣」。過去的模式不代表未來的限制。'},
+    ],
+    qs:[
+      {q:'你是否常常覺得自己的性格或行為模式是固定的，改變不了？',opts:['不覺得','有些','常常','幾乎確定']},
+      {q:'你是否對未來感到絕望或看不到可能性？',opts:['沒有','偶爾','常常','幾乎持續']},
+      {q:'你是否嘗試過改變某些習慣或模式，但很快就放棄？',opts:['很少','偶爾','常常','幾乎每次']},
+    ],
+    nutrients:[
+      {n:'亞麻仁油（Omega-3）',icon:'🌿',bg:'rgba(59,109,17,0.18)',mech:'BDNF支持神經可塑性',
+       detail:'Omega-3（EPA/DHA）促進BDNF（腦源性神經營養因子）的生成，BDNF是大腦可塑性的「生長激素」，直接促進新神經迴路的形成。這是從分子層面打開「改變的可能性」。',
+       why:'「我改變不了」可能是BDNF不足讓大腦真的難以形成新迴路。Omega-3是開啟這個可能性的分子鑰匙。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+      {n:'超級B群',icon:'🔵',bg:'rgba(24,95,165,0.18)',mech:'神經修復能量代謝',
+       detail:'神經可塑性需要大量能量，B群是這個過程的核心輔因子。同時B6是多巴胺（改變動力）合成的關鍵，B3支持NAD+生成，NAD+是神經元DNA修復的核心輔酶。',
+       why:'改變需要大腦真的有足夠的神經資源。B群是讓神經可塑性能夠發生的物質基礎。',
+       price:'NT$520',spec:'膠囊 一瓶約150粒'},
+      {n:'甘氨酸鎂複方',icon:'🔩',bg:'rgba(24,95,165,0.18)',mech:'突觸可塑性重啟',
+       detail:'鎂調節NMDA受體的活性，NMDA受體是突觸可塑性（長期增益，LTP）的核心機制——即「學習和改變」的細胞基礎。缺鎂讓突觸「卡住」，補鎂讓大腦重新流動。',
+       why:'「我就是這樣」的固著感，部分是突觸可塑性受阻的生理表現。鎂幫你鬆開大腦的關節。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'b15',cat:'主體系',icon:'👈',
+    belief:'都是別人的錯',emotion:'憤怒',behavior:'指責抱怨',
+    update:'我能改變自己的選擇',
+    physio:'降低慢性發炎',
+    disease_chain:['限制性信念：都是別人的錯','長期憤怒激活炎症反應','皮質醇和腎上腺素升高','心血管系統負擔加重','免疫失衡','慢性發炎疾病'],
+    mind_dir:'回收投射、找回主體性',
+    mind_steps:[
+      {t:'投射回收練習',d:'當你指責別人時，問：「這個讓我憤怒的特質，我自己有沒有？在哪些情況下我也會這樣？」投射回收不是自責，是擴大自我覺察。'},
+      {t:'影響力圈回歸',d:'把能量從「別人為什麼不改變」轉回「我能選擇做什麼」。影響圈之外的事，放下。影響圈之內的事，行動。'},
+      {t:'憤怒轉化',d:'憤怒的能量是真實的，問題是方向。把指責的能量轉向：「這個情況我能做什麼來改善？」從受害者轉向創造者。'},
+    ],
+    qs:[
+      {q:'當事情出錯時，你是否常常首先想到是誰的錯？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'你是否常常感到憤怒或長期積累的怨恨？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你是否有慢性發炎相關症狀（心血管、關節、消化）？',opts:['沒有','偶爾','常有','持續']},
+    ],
+    nutrients:[
+      {n:'亞麻仁油',icon:'🌿',bg:'rgba(59,109,17,0.18)',mech:'Omega-3抗慢性發炎',
+       detail:'長期憤怒和怨恨是強力的促炎狀態，持續激活NF-kB炎症路徑。Omega-3是合成消炎素的原料，主動「關閉」炎症反應，對抗憤怒相關的慢性炎症。',
+       why:'長期指責和憤怒在身體裡以慢性發炎的形式存在。Omega-3幫身體退出這個持續的炎症狀態。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+      {n:'薑黃素+胡椒鹼',icon:'🟠',bg:'rgba(184,134,11,0.18)',mech:'NF-kB抑制憤怒發炎',
+       detail:'薑黃素是最強效的天然NF-kB抑制劑，直接關閉憤怒相關的發炎開關。搭配胡椒鹼提升吸收20倍，讓薑黃素真正達到有效濃度。',
+       why:'憤怒產生的炎症比你想的更傷身。薑黃素從信號源頭關掉這個開關，讓身體退出戰鬥模式。',
+       price:'NT$620',spec:'膠囊 一瓶'},
+      {n:'消化全酶',icon:'💧',bg:'rgba(24,95,165,0.18)',mech:'消化系統修復壓力解毒',
+       detail:'長期憤怒和壓力嚴重影響消化功能，消化全酶包含多種消化酶和牛磺酸，修復因慢性壓力損傷的消化系統，同時支持膽汁流動排出積累的代謝廢物。',
+       why:'憤怒積累在消化系統。消化全酶幫助釋放身體層面積累的「消化不了的情緒」。',
+       price:'NT$870',spec:'粉包 一包6克 / 一袋30包'},
+    ]
+  },
+  {
+    id:'b16',cat:'主體系',icon:'🌍',
+    belief:'世界欠我',emotion:'怨恨',behavior:'對抗',
+    update:'我能創造價值',
+    physio:'發炎與壓力管理',
+    disease_chain:['限制性信念：世界欠我','持續怨恨激活慢性壓力','皮質醇長期偏高','腎上腺疲勞','能量系統崩潰','身心耗竭'],
+    mind_dir:'從受害者到創造者',
+    mind_steps:[
+      {t:'感恩與怨恨的神經學',d:'感恩和怨恨使用不同的神經迴路，無法同時存在。每天寫3件感謝的事，不是因為世界欠你，而是訓練你的大腦看見已有的。'},
+      {t:'創造者問題',d:'把「為什麼這樣對我？」換成「我能創造什麼？」受害者問題讓你停留在過去，創造者問題讓你看向未來。'},
+      {t:'價值創造實驗',d:'今天做一件為別人創造價值的小事，不求回報。感受「我能給予」和「世界欠我」是完全不同的存在體驗。'},
+    ],
+    qs:[
+      {q:'你是否常常感到自己的付出沒有得到應有的回報？',opts:['很少','偶爾','常常','幾乎總是']},
+      {q:'你是否容易與人產生對立或衝突？',opts:['很少','偶爾','常常','頻繁']},
+      {q:'你的整體身心能量狀態如何？',opts:['良好','尚可','低迷','耗竭']},
+    ],
+    nutrients:[
+      {n:'NAC複方',icon:'🔄',bg:'rgba(59,109,17,0.18)',mech:'氧化壓力清除重置',
+       detail:'怨恨和對抗是持續的氧化壓力狀態，NAC作為穀胱甘肽前體直接清除積累的氧化損傷。醫院用NAC治療嚴重中毒——它的修復威力是臨床級別的。',
+       why:'長期的怨恨讓細胞在氧化壓力中燃燒。NAC幫你清空積累的「毒素」，重獲清明和力量。',
+       price:'NT$530',spec:'膠囊 一瓶約150粒'},
+      {n:'亞麻仁油',icon:'🌿',bg:'rgba(59,109,17,0.18)',mech:'抗炎修復能量系統',
+       detail:'對抗行為和怨恨持續升高炎症指數。Omega-3主動合成消炎素，同時修復因慢性炎症受損的粒線體功能，幫助能量系統從怨恨的慢性消耗中恢復。',
+       why:'怨恨的代價是慢性發炎和能量耗竭。Omega-3幫你退出這個消耗模式，找回創造的力量。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+      {n:'消化全酶',icon:'💧',bg:'rgba(24,95,165,0.18)',mech:'消化修復壓力釋放',
+       detail:'慢性怨恨嚴重影響消化功能，消化全酶修復消化系統，包含B3、牛磺酸等成分，同時支持整體代謝健康，幫助身體從長期壓力造成的功能損傷中恢復。',
+       why:'「世界欠我」的怨恨存在消化系統裡。修復消化是讓身體從受害者模式退出的生理基礎。',
+       price:'NT$870',spec:'粉包 一包6克 / 一袋30包'},
+    ]
+  },
+  {
+    id:'b17',cat:'安全系',icon:'🏆',
+    belief:'我一定要贏',emotion:'壓力',behavior:'過度競爭',
+    update:'合作比競爭更強大',
+    physio:'降低交感神經活化',
+    disease_chain:['限制性信念：我一定要贏','過度競爭持續激活交感神經','皮質醇和腎上腺素慢性偏高','心血管負擔','免疫下降','職業耗竭'],
+    mind_dir:'信任與合作、豐盛思維',
+    mind_steps:[
+      {t:'競爭的代價評估',d:'計算一下：你花在「贏」上的能量，和它帶來的真實滿足感，是否成比例？很多「贏」的背後是一個從未被滿足的「我不夠好」。'},
+      {t:'合作實驗',d:'今天找一個情境，主動選擇合作而非競爭。分享一個資源或幫助一個人。感受合作帶來的能量是不同的——更豐盛，更持久。'},
+      {t:'非零和視角',d:'練習把「我贏你輸」的思維換成「我們如何都能更好」。世界不是零和遊戲，真正的強大是讓整個系統更好。'},
+    ],
+    qs:[
+      {q:'你是否對輸贏有強烈的執著，很難接受第二名？',opts:['不太','有些','明顯','非常強烈']},
+      {q:'你的身體是否常有緊繃感、肌肉張力高？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你是否難以真心為別人的成功感到高興？',opts:['很自然','有點難','很難','幾乎做不到']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',icon:'🔩',bg:'rgba(24,95,165,0.18)',mech:'交感神經降調',
+       detail:'「一定要贏」讓交感神經持續主導，身體一直在戰鬥模式。鎂是調節交感/副交感平衡最關鍵的礦物質，甘氨酸同時降低神經過度興奮，幫助身體退出競爭的緊繃狀態。',
+       why:'過度競爭讓你的身體一直在打仗。鎂幫你的神經系統找到「不需要戰鬥也是安全的」的生理體驗。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'酶菌醣體（茶胺酸）',icon:'🍵',bg:'rgba(59,109,17,0.18)',mech:'α波競爭焦慮降低',
+       detail:'過度競爭的壓力讓大腦持續在高β波狀態。茶胺酸提升α波，降低競爭焦慮的神經強度，讓大腦進入「清醒的平靜」——這才是真正高效能的狀態，不是緊繃。',
+       why:'真正的頂峰表現不是緊繃，而是放鬆的專注。茶胺酸幫你找到那個狀態。',
+       price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+    ]
+  },
+  {
+    id:'b18',cat:'主體系',icon:'👀',
+    belief:'別人好我就不好',emotion:'嫉妒',behavior:'比較',
+    update:'世界不是零和遊戲',
+    physio:'多巴胺平衡',
+    disease_chain:['限制性信念：別人好我就不好','嫉妒激活威脅感知','皮質醇升高壓制多巴胺','成就感降低','更需要比較確認','嫉妒加深'],
+    mind_dir:'豐盛思維、多巴胺重新校準',
+    mind_steps:[
+      {t:'豐盛視角練習',d:'當嫉妒出現時，問：「他們的成功是從我這裡拿走的嗎？還是世界上就是有更多的成功可以發生？」世界不是固定的蛋糕。'},
+      {t:'靈感轉化',d:'把嫉妒轉化為靈感：「他做到了，這說明這件事是可能的。我也可以研究他是怎麼做到的。」從威脅轉向學習資源。'},
+      {t:'自我比較',d:'只和昨天的自己比較。問：「今天的我比昨天的我有什麼進步？」這是唯一真正有意義的比較。'},
+    ],
+    qs:[
+      {q:'看到別人成功時，你的第一反應是？',opts:['為他們高興','有點酸','嫉妒','強烈嫉妒']},
+      {q:'你是否常常與他人比較，以此判斷自己的價值？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你的動力是否常常來自「不能輸給別人」而非真正的熱情？',opts:['很少','偶爾','常常','幾乎總是']},
+    ],
+    nutrients:[
+      {n:'胺基酸可可粉',icon:'🍫',bg:'rgba(83,74,183,0.18)',mech:'多巴胺前體情緒平衡',
+       detail:'胺基酸可可粉提供多巴胺合成的前體物質，同時可可含有PEA（苯乙胺），天然提升情緒和愉悅感。多巴胺系統健康時，自我肯定感提升，對比較的需求自然降低。',
+       why:'嫉妒是多巴胺系統失衡的信號。補充多巴胺前體讓你從內在獲得滿足感，而非靠比較確認。',
+       price:'NT$780',spec:'一袋30包'},
+      {n:'神經營養素（B1+B3+B6）',icon:'🔵',bg:'rgba(24,95,165,0.18)',mech:'多巴胺合成支持',
+       detail:'B6是多巴胺合成路徑的關鍵輔因子，不潮紅的B3支持NAD+確保神經代謝效率。多巴胺充足時，內在動力增強，對外部比較的依賴自然減少。',
+       why:'嫉妒的背後是內在多巴胺不足。補足神經傳導素，讓你的滿足感從內在來而非比較中來。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+    ]
+  },
+  {
+    id:'b19',cat:'演化系',icon:'😔',
+    belief:'我不應該快樂',emotion:'罪惡感',behavior:'自我懲罰',
+    update:'快樂不需要批准',
+    physio:'腸腦軸修復',
+    disease_chain:['限制性信念：我不應該快樂','抑制正向情緒的神經模式','血清素系統低效','情緒基線下降','自我懲罰行為','憂鬱傾向'],
+    mind_dir:'允許自己幸福',
+    mind_steps:[
+      {t:'快樂的合法性',d:'快樂是你的天賦人權，不是需要靠「值得」或「付出」換來的獎勵。問：「是誰說我不應該快樂的？那個規則是真的嗎？」'},
+      {t:'允許小快樂',d:'每天做一件純粹讓自己快樂的小事（5分鐘就好），不帶任何生產力目的。練習接受快樂不需要理由。'},
+      {t:'快樂宣言',d:'「我允許自己快樂。我的快樂不傷害任何人。享受生命是人類的天賦能力，我也有。」'},
+    ],
+    qs:[
+      {q:'當好事發生時，你是否常常感到不安或罪惡感？',opts:['很少','偶爾','常常','幾乎總是']},
+      {q:'你是否在享受某些事物後立刻覺得不應該？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'你是否常常覺得自己不值得快樂或幸福？',opts:['很少','偶爾','常常','幾乎持續']},
+    ],
+    nutrients:[
+      {n:'孢子益生菌',icon:'🌱',bg:'rgba(59,109,17,0.18)',mech:'腸道血清素合成',
+       detail:'90%的血清素在腸道生產，血清素是幸福感和情緒穩定的基礎神經傳導物質。孢子益生菌耐受胃酸真正定殖腸道，搭配亞麻仁渣養菌，從腸道源頭提升血清素生產能力。',
+       why:'「我不應該快樂」抑制了血清素系統。修復腸道菌相是讓幸福感有生理基礎重新出現的根本方案。',
+       price:'NT$650',spec:'一袋30包 一包6克'},
+      {n:'丁酸鈉複合包',icon:'🧱',bg:'rgba(184,134,11,0.18)',mech:'腸壁修復情緒基線',
+       detail:'腸壁完整性直接影響神經傳導物質的生產效率。丁酸鈉修復腸壁，降低腸漏帶來的慢性炎症，炎症降低後情緒基線自然提升，讓快樂更容易被感受到。',
+       why:'情緒基線低是快樂難以被感受的生理原因之一。丁酸鈉修復這個底層，讓幸福感有地方落腳。',
+       price:'NT$890',spec:'一包6克 / 一袋30包'},
+      {n:'消化全酶',icon:'💧',bg:'rgba(24,95,165,0.18)',mech:'腸腦軸全面支持',
+       detail:'消化全酶包含多種消化酶、B3、牛磺酸等，全面支持消化系統效率，改善腸腦軸訊號傳遞，讓腸道與大腦的溝通更順暢，幸福感的訊號更容易被大腦接收。',
+       why:'快樂是腸腦軸的雙向訊號。消化全酶優化這個通道，讓幸福感真正能夠被感受和表達。',
+       price:'NT$870',spec:'粉包 一包6克 / 一袋30包'},
+    ]
+  },
+  {
+    id:'b20',cat:'愛與連結系',icon:'🪤',
+    belief:'都是我的錯',emotion:'自責',behavior:'過度負責',
+    update:'我只需負責自己的部分',
+    physio:'壓力與睡眠管理',
+    disease_chain:['限制性信念：都是我的錯','過度負責消耗認知和情緒資源','睡眠品質下降（反芻思考）','皮質醇夜間升高','免疫功能受損','身心耗竭'],
+    mind_dir:'責任邊界、停止過度負責',
+    mind_steps:[
+      {t:'責任半徑練習',d:'每個事件有多個因素，你最多負責你這部分。練習：「在這個情況中，我的責任是___。其他部分屬於___。」'},
+      {t:'反芻打斷',d:'當睡前開始「都是我的錯」的迴圈，立刻用感官練習打斷：說出5個你看到的東西、4個你觸摸到的、3個你聽到的…讓大腦從反芻轉到當下。'},
+      {t:'自責 vs 自我成長',d:'自責重複消耗，自我成長向前行動。問：「繼續自責對改善這個情況有幫助嗎？如果沒有，我可以做的第一步是什麼？」'},
+    ],
+    qs:[
+      {q:'當事情出錯時，你是否常常首先認為是自己的錯？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'你是否常常在睡前反覆思考今天哪裡做錯了？',opts:['很少','偶爾','常常','幾乎每晚']},
+      {q:'你的睡眠品質如何？',opts:['良好','尚可','不好','很差']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',icon:'🔩',bg:'rgba(24,95,165,0.18)',mech:'夜間皮質醇降低睡眠修復',
+       detail:'反芻思考和過度自責讓夜間皮質醇升高，直接破壞睡眠品質。甘氨酸鎂降低核心體溫（入睡信號）+阻斷NMDA受體減少反芻思考的神經活化，是睡眠修復最直接的方案。',
+       why:'睡前「都是我的錯」的迴圈是皮質醇過高的表現。甘氨酸鎂從生理層面打斷這個迴圈。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'GABA',icon:'🌊',bg:'rgba(83,74,183,0.18)',mech:'夜間神經活化抑制',
+       detail:'反芻思考是夜間神經過度活化的表現，GABA直接抑制這個過度活化，讓大腦在睡前真正「關機」。降低自責迴圈的神經化學強度，讓身心從過度負責中放鬆。',
+       why:'大腦的自責迴路在夜間最活躍。GABA是關閉這個不必要的夜間會議的最直接方式。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+    ]
+  },
+  {
+    id:'b21',cat:'演化系',icon:'😪',
+    belief:'努力沒用',emotion:'絕望',behavior:'放棄',
+    update:'微小進步也有價值',
+    physio:'提升能量代謝',
+    disease_chain:['限制性信念：努力沒用','習得性無力感','多巴胺獎勵系統失效','行動力消失','成就感喪失','絕望加深'],
+    mind_dir:'建立小勝循環',
+    mind_steps:[
+      {t:'小勝策略',d:'設計一個今天就能完成的最小任務，完成它，慶祝它。大腦的獎勵系統需要小的、真實的勝利來重新校準。'},
+      {t:'進步追蹤',d:'把關注點從「我還差多遠」換成「我今天比昨天進步了什麼？」每天記錄一個微小進步，一個月後你有30個「努力有用」的證據。'},
+      {t:'努力重新框架',d:'「努力沒用」通常是「我用錯了方法」或「我還沒到那個時間點」。問：「如果我調整方向，有沒有不同的可能？」'},
+    ],
+    qs:[
+      {q:'你是否常常在嘗試後感到「做了也沒用」，從而放棄？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'你的整體能量和動力水平如何？',opts:['充沛','尚可','低迷','極度低迷']},
+      {q:'你是否對未來的行動感到冷漠或無所謂？',opts:['沒有','偶爾','常常','幾乎持續']},
+    ],
+    nutrients:[
+      {n:'Q10（10:1）',icon:'⚡',bg:'rgba(184,134,11,0.18)',mech:'粒線體能量重啟動力',
+       detail:'「努力沒用」往往是真實的能量耗竭——大腦和身體都沒有足夠能量去感知努力的回報。Q10直接重啟粒線體電子傳遞鏈，補充細胞能量，讓身體有能量去嘗試和感受進步。',
+       why:'當能量不足時，大腦無法感知努力的回報。Q10先解決能量問題，才能讓小勝的喜悅真正被感受到。',
+       price:'NT$580',spec:'膠囊 一瓶150粒'},
+      {n:'超級B群',icon:'🔵',bg:'rgba(24,95,165,0.18)',mech:'神經能量多巴胺支持',
+       detail:'B群缺乏讓大腦無法有效處理「努力→進步→滿足」的神經化學回路。補足B群，特別是B6（多巴胺合成）和B3（NAD+能量），讓獎勵系統重新正常運作。',
+       why:'「努力沒用」可能是大腦的獎勵系統缺乏神經化學原料。B群是讓這個系統重新運轉的燃料。',
+       price:'NT$520',spec:'膠囊 一瓶約150粒'},
+      {n:'消化全酶',icon:'💧',bg:'rgba(24,95,165,0.18)',mech:'B3能量代謝全面支持',
+       detail:'消化全酶含360mg B3（飯後食用避免潮紅），B3是NAD+生成的直接前體，NAD+是細胞能量代謝和粒線體功能的核心。全面提升代謝效率，讓努力有能量支撐。',
+       why:'代謝效率低讓努力產生的成果打折。消化全酶提升整體代謝，讓你的努力真正轉化為結果。',
+       price:'NT$870',spec:'粉包 一包6克 / 一袋30包（飯後食用）'},
+    ]
+  },
+  {
+    id:'b22',cat:'演化系',icon:'🌑',
+    belief:'人生沒意義',emotion:'空虛',behavior:'倦怠',
+    update:'成長本身就是意義',
+    physio:'神經傳導支持',
+    disease_chain:['限制性信念：人生沒意義','存在空虛感抑制多巴胺','動力系統關閉','社交退縮','孤獨感加深','存在危機'],
+    mind_dir:'連結使命感',
+    mind_steps:[
+      {t:'意義的來源',d:'意義不是被發現的，是被創造的。問：「什麼是我在意的？就算沒有人看見，什麼對我來說是重要的？」從這裡開始。'},
+      {t:'貢獻感練習',d:'意義常常在服務他人中出現。今天做一件對別人有用的小事，感受那個「我的存在對某人有所不同」的感覺。'},
+      {t:'成長即意義',d:'「成長本身就是意義。」你今天學到了什麼？你今天有沒有比昨天更理解自己或世界一點點？這就是意義在發生。'},
+    ],
+    qs:[
+      {q:'你是否常常感到生命沒有方向或意義？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你是否對曾經喜歡的事物失去興趣？',opts:['沒有','一些','明顯','幾乎全部']},
+      {q:'你的社交活動和對生活的參與感如何？',opts:['積極','尚可','退縮','幾乎封閉']},
+    ],
+    nutrients:[
+      {n:'亞麻仁油（Omega-3）',icon:'🌿',bg:'rgba(59,109,17,0.18)',mech:'神經傳導情緒基線支持',
+       detail:'Omega-3（EPA/DHA）對前額葉功能、情緒調節和意義感知至關重要。研究顯示Omega-3補充對存在性抑鬱和倦怠有顯著改善效果，同時支持BDNF生成，讓大腦重新對生活感興趣。',
+       why:'「人生沒意義」的感受有神經化學基礎。Omega-3修復這個基礎，讓大腦重新有能力感受意義。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+      {n:'D3（5000IU）',icon:'☀️',bg:'rgba(184,134,11,0.18)',mech:'情緒基線動力恢復',
+       detail:'缺乏維生素D與存在性空虛感、社交退縮高度相關。5000IU高劑量快速補充，D3受體在大腦動力和情緒調節區域廣泛分佈，修復空虛感的生理基礎。',
+       why:'「人生沒意義」常伴隨嚴重的維生素D缺乏。補充D3是讓大腦重新對生活產生動力的生理基礎。',
+       price:'NT$580',spec:'錠劑 約320粒'},
+      {n:'消化全酶',icon:'💧',bg:'rgba(24,95,165,0.18)',mech:'腸腦軸神經傳導',
+       detail:'腸道是神經傳導物質的主要生產地，包括多巴胺前體和血清素。消化全酶全面優化消化系統效率，改善腸腦軸訊號，讓意義感和動力的神經化學物質能夠被有效生產和傳遞。',
+       why:'意義感需要神經傳導物質支持。修復消化系統效率是讓這些物質能夠被生產的基礎。',
+       price:'NT$870',spec:'粉包 一包6克 / 一袋30包'},
+    ]
+  },
+  {
+    id:'b23',cat:'演化系',icon:'🔒',
+    belief:'我就是這樣',emotion:'固著',behavior:'拒絕改變',
+    update:'身份可以更新',
+    physio:'神經可塑性支持',
+    disease_chain:['限制性信念：我就是這樣','固著型身份認同抑制神經可塑性','學習能力下降','適應力下降','面對新挑戰失敗','固著加深'],
+    mind_dir:'重寫身份認同',
+    mind_steps:[
+      {t:'身份≠行為',d:'「我就是這樣的人」是一個身份標籤，不是事實。你的行為是一個習慣，習慣可以改變。「到目前為止，我通常會___，但我可以選擇___。」'},
+      {t:'過去不等於未來',d:'大腦神經可塑性是科學事實：新的重複行為會建立新的神經迴路。你只需要開始重複新的行為，大腦會跟上。'},
+      {t:'新身份宣言',d:'今天選擇一個你想成為的身份（「一個照顧自己的人」），然後問：「這樣的人今天會做什麼小事？」做那件事，就是在更新你的身份。'},
+    ],
+    qs:[
+      {q:'你是否常常用「我就是這樣的人」來解釋自己的行為？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'你是否抗拒嘗試新事物，因為擔心改變了就不是自己了？',opts:['不抗拒','有些','明顯','強烈抗拒']},
+      {q:'你的記憶力、學習力和腦力靈活度如何？',opts:['良好','尚可','有些下降','明顯下降']},
+    ],
+    nutrients:[
+      {n:'DHA（亞麻仁油）',icon:'🌿',bg:'rgba(59,109,17,0.18)',mech:'前額葉DHA神經可塑性',
+       detail:'DHA是前額葉神經元細胞膜最主要的結構成分，前額葉是執行新行為、更新身份認同的核心大腦區域。充足的DHA讓前額葉真正有能力規劃和執行新的行為模式。',
+       why:'「我就是這樣」的固著部分是前額葉缺乏DHA無法有效支持新行為。亞麻仁油是修復這個能力的建材。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+      {n:'超級B群',icon:'🔵',bg:'rgba(24,95,165,0.18)',mech:'神經可塑性能量代謝',
+       detail:'身份更新需要大腦持續學習和形成新習慣，這是高耗能的神經工作，需要充足的B群支持。同時B6促進多巴胺合成，多巴胺是行為改變的核心動力。',
+       why:'更新身份需要能量。B群是讓大腦有足夠資源支持新神經迴路形成的物質基礎。',
+       price:'NT$520',spec:'膠囊 一瓶約150粒'},
+    ]
+  },
+  {
+    id:'b24',cat:'演化系',icon:'🌱',
+    belief:'我命不好',emotion:'認命',behavior:'被動等待',
+    update:'命運是選擇的複利',
+    physio:'全系統優化',
+    disease_chain:['限制性信念：我命不好','宿命論抑制主動行為','習得性無力感','全身系統低效運作','慢性疾病累積','命運越來越不好'],
+    mind_dir:'從宿命到創造',
+    mind_steps:[
+      {t:'選擇的複利',d:'你現在的「命運」是過去所有選擇複利累積的結果。這意味著今天的每一個小選擇，都是在塑造未來的命運。你掌握的比你以為的多。'},
+      {t:'創造者角色',d:'今天選擇一個小事情主動去做，而不是等待。「我沒有等好事發生，我讓好事發生。」這就是從宿命論到創造者的第一步。'},
+      {t:'命運重新框架',d:'「我命不好」是解釋過去的故事。「我選擇創造什麼樣的未來」是你現在握有的能力。把注意力從解釋過去轉向創造未來。'},
+    ],
+    qs:[
+      {q:'你是否常常感到命運掌控你，而不是你掌控命運？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你是否常常被動等待好事發生，而不是主動創造？',opts:['很少','偶爾','常常','幾乎總是']},
+      {q:'你的整體身心健康狀態如何？',opts:['良好','尚可','差','很差']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',icon:'🔩',bg:'rgba(24,95,165,0.18)',mech:'神經系統基礎重建',
+       detail:'「命不好」的宿命論往往伴隨全系統的低效運作，鎂充足是神經系統、內分泌系統、能量代謝全面正常運作的基礎。甘氨酸鎂從最底層重建生理運作效率。',
+       why:'命運的改變從身體健康開始。鎂是讓全身系統重新正常運作的最基礎礦物質。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'Q10（10:1）',icon:'⚡',bg:'rgba(184,134,11,0.18)',mech:'能量系統全面提升',
+       detail:'主動創造命運需要能量。Q10直接重啟粒線體能量系統，讓身體有足夠的能量去採取行動、嘗試新的可能性。能量充沛時，「我能改變」才有生理基礎。',
+       why:'你沒有辦法用耗竭的身體去創造新的命運。Q10先補充創造命運所需的能量。',
+       price:'NT$580',spec:'膠囊 一瓶150粒'},
+      {n:'孢子益生菌',icon:'🌱',bg:'rgba(59,109,17,0.18)',mech:'腸腦軸全系統優化',
+       detail:'健康的腸道菌相是整個身心系統最重要的基礎之一，影響從免疫到情緒到能量的所有層面。孢子益生菌真正到達腸道定殖，是全系統優化的起點。',
+       why:'全系統優化從腸道開始。健康的菌相是讓「命運」向好的方向流動的最深層基礎。',
+       price:'NT$650',spec:'一袋30包 一包6克'},
+    ]
+  },
+];
+
+/* ── CATEGORY CONFIG ── */
+const CATS=['全部','安全系','價值系','愛與連結系','主體系','演化系'];
+
+let picked=[], diagAnswers={}, phase=1;
+
+function init(){
+  // Cat tabs
+  const ct=document.getElementById('cat-tabs');
+  CATS.forEach((c,i)=>{
+    const btn=document.createElement('button');
+    btn.className='cat-tab'+(i===0?' active':'');
+    btn.textContent=c; btn.dataset.cat=c;
+    btn.onclick=()=>filterCat(c,btn);
+    ct.appendChild(btn);
+  });
+  renderBeliefs('全部');
+}
+
+function filterCat(cat,btn){
+  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBeliefs(cat);
+}
+
+function renderBeliefs(cat){
+  const grid=document.getElementById('belief-grid'); grid.innerHTML='';
+  const list=cat==='全部'?BELIEFS:BELIEFS.filter(b=>b.cat===cat);
+  list.forEach(b=>{
+    const card=document.createElement('div');
+    card.className='belief-card'+(picked.includes(b.id)?' picked':'');
+    card.dataset.id=b.id;
+    card.innerHTML=`
+      <div class="bc-top">
+        <div class="bc-check">${picked.includes(b.id)?'✓':''}</div>
+        <div class="bc-content">
+          <div class="bc-belief">${b.icon} ${b.belief}</div>
+          <div class="bc-emotion">核心情緒：${b.emotion}</div>
+        </div>
+      </div>
+      <div class="bc-tags">
+        <span class="bc-tag">常見行為：${b.behavior}</span>
+        <span class="bc-tag">${b.cat}</span>
+      </div>
+    `;
+    card.onclick=()=>toggleBelief(b.id,card);
+    grid.appendChild(card);
+  });
+}
+
+function toggleBelief(id,card){
+  const idx=picked.indexOf(id);
+  if(idx===-1){picked.push(id);card.classList.add('picked');card.querySelector('.bc-check').textContent='✓';}
+  else{picked.splice(idx,1);card.classList.remove('picked');card.querySelector('.bc-check').textContent='';}
+  document.getElementById('pcount').textContent=picked.length+' 已選';
+  document.getElementById('btn-next').disabled=picked.length===0;
+  updateProg();
+}
+
+function go(n){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p'+n).classList.add('active');
+  phase=n; updateProg();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateProg(){
+  const p=phase===1?8:phase===2?48:100;
+  document.getElementById('prog').style.width=p+'%';
+}
+
+document.getElementById('btn-next').onclick=()=>{buildDiag();go(2);};
+
+function buildDiag(){
+  const body=document.getElementById('q-body'); body.innerHTML='';
+  picked.forEach(id=>{
+    const b=BELIEFS.find(x=>x.id===id);
+    const blk=document.createElement('div'); blk.className='q-block';
+    blk.innerHTML=`<div class="q-belief-header"><span class="q-bh-icon">${b.icon}</span><span class="q-bh-name">${b.belief}</span><span class="q-bh-emo">${b.emotion}</span></div>`;
+    const ql=document.createElement('div'); ql.className='q-list';
+    b.qs.forEach((q,qi)=>{
+      const key=id+'_'+qi;
+      const item=document.createElement('div'); item.className='q-item';
+      const opts=q.opts.map((o,oi)=>`<button class="q-opt" onclick="pickOpt(this,'${key}',${oi})">${o}</button>`).join('');
+      item.innerHTML=`<div class="q-text">${q.q}</div><div class="q-opts">${opts}</div>`;
+      ql.appendChild(item);
+    });
+    blk.appendChild(ql); body.appendChild(blk);
+  });
+}
+
+function pickOpt(btn,key,val){
+  btn.closest('.q-opts').querySelectorAll('.q-opt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel'); diagAnswers[key]=val;
+}
+
+function calcScore(id){
+  const b=BELIEFS.find(x=>x.id===id);
+  let t=0,c=0;
+  b.qs.forEach((_,qi)=>{const k=id+'_'+qi;if(diagAnswers[k]!==undefined){t+=diagAnswers[k];c++;}});
+  if(!c)return 70;
+  return Math.round(100-(t/c/3)*80);
+}
+
+function showResult(){
+  const body=document.getElementById('result-body'); body.innerHTML='';
+  const scores=picked.map(id=>({id,score:calcScore(id)}));
+  const avg=Math.round(scores.reduce((s,x)=>s+x.score,0)/scores.length);
+  const doff=Math.round(251*(1-avg/100));
+  const sc=avg>=70?'#3B6D11':avg>=45?'#B8860B':'#A32D2D';
+  const lbl=avg>=70?'系統韌性良好':avg>=45?'系統需要調整':'系統需要重建';
+  const desc=avg>=70?'你的信念系統有一定韌性。以下方案幫你進一步優化。':avg>=45?'部分限制性信念正在消耗你的生理資源。及早介入效果最好。':'多個底層信念在同步拉低你的生理系統。系統性修復是現在最重要的事。';
+
+  body.innerHTML=`
+    <div class="result-summary">
+      <div class="rs-ring-wrap">
+        <svg viewBox="0 0 90 90"><circle cx="45" cy="45" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="5"/><circle cx="45" cy="45" r="40" fill="none" stroke="${sc}" stroke-width="5" stroke-dasharray="251" stroke-dashoffset="${doff}" stroke-linecap="round" transform="rotate(-90 45 45)"/></svg>
+        <div class="rs-num">${avg}</div>
+      </div>
+      <div class="rs-title">${lbl}</div>
+      <div class="rs-desc">${desc}</div>
+    </div>
+    <div id="rb-list"></div>
+  `;
+
+  const list=document.getElementById('rb-list');
+  const sorted=[...scores].sort((a,b)=>a.score-b.score);
+  sorted.forEach(({id,score})=>{
+    const b=BELIEFS.find(x=>x.id===id);
+    const bc=score>=70?'s-high':score>=45?'s-mid':'s-low';
+    const nc=score>=70?'#3B6D11':score>=45?'#B8860B':'#A32D2D';
+    const urg=score<45?'需要重建':score<70?'需要調整':'維持優化';
+
+    const card=document.createElement('div'); card.className='rb-card';
+    const cardId='rc_'+id;
+    card.innerHTML=`
+      <div class="rb-header">
+        <span class="rb-icon">${b.icon}</span>
+        <div class="rb-info">
+          <div class="rb-belief">${b.belief}</div>
+          <div class="rb-update">→ ${b.update}</div>
+        </div>
+        <div class="rb-score-area">
+          <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:3px;text-align:right">${urg}</div>
+          <div class="rb-score-num" style="color:${nc}">${score}<span style="font-size:12px;opacity:0.5">/100</span></div>
+          <div class="rb-score-bar-wrap">
+            <div class="rb-score-bar ${bc}" style="width:0%" data-w="${score}%"></div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:0 16px">
+        <div class="rtabs" id="tabs_${id}">
+          <button class="rtab active" onclick="switchTab('${id}','edu',this)">📚 教育 & 機制</button>
+          <button class="rtab" onclick="switchTab('${id}','func',this)">⚗️ 功能醫學</button>
+          <button class="rtab" onclick="switchTab('${id}','mind',this)">🧠 意識醫學</button>
+        </div>
+      </div>
+      <div style="padding:0 16px 16px">
+        <div class="tab-panel active" id="edu_${id}"></div>
+        <div class="tab-panel" id="func_${id}"></div>
+        <div class="tab-panel" id="mind_${id}"></div>
+      </div>
+    `;
+    list.appendChild(card);
+
+    // EDU TAB
+    const eduPanel=card.querySelector('#edu_'+id);
+    eduPanel.innerHTML=`
+      <div class="edu-section">
+        <div class="edu-title">疾病形成路徑</div>
+        <div class="disease-chain">
+          ${b.disease_chain.map((s,i)=>`<div class="dc-step">${i>0?'<span class="dc-arrow">↓</span>':''}<span class="dc-label">${s}</span></div>`).join('')}
+        </div>
+      </div>
+      <div class="update-box">
+        <div class="update-label">信念更新程式碼</div>
+        「${b.belief}」→「${b.update}」<br>
+        <small style="color:rgba(255,255,255,0.45);font-size:11px">功能醫學方向：${b.physio}</small>
+      </div>
+    `;
+
+    // FUNC TAB
+    const funcPanel=card.querySelector('#func_'+id);
+    const nutList=document.createElement('div'); nutList.className='nut-list';
+    b.nutrients.forEach((n,ni)=>{
+      const nid=id+'_n'+ni;
+      const nc2=document.createElement('div'); nc2.className='nut-card';
+      nc2.innerHTML=`
+        <div class="nut-top" onclick="toggleNut('${nid}')">
+          <div class="nut-ico" style="background:${n.bg}">${n.icon}</div>
+          <div class="nut-info">
+            <div class="nut-name">${n.n}</div>
+            <div class="nut-mech">${n.mech}</div>
+            <div class="nut-price">${n.price} · ${n.spec}</div>
+          </div>
+          <span class="nut-expand" id="exp_${nid}">▾</span>
+          <a class="nut-cta" href="${SHOP}" target="_blank" rel="noopener" onclick="event.stopPropagation()">購買</a>
+        </div>
+        <div class="nut-detail" id="${nid}">
+          <div class="nut-mbox">
+            <div class="nut-mtitle">作用機制</div>
+            <div class="nut-mtext">${n.detail}</div>
+          </div>
+          <div class="nut-why">
+            <div class="nut-why-t">為什麼你的系統現在需要它</div>
+            <div class="nut-why-b">${n.why}</div>
+          </div>
+          <div class="nut-buy-block">
+            <div class="nbb-info">
+              <div class="nbb-name">${n.n}</div>
+              <div class="nbb-price">${n.price}</div>
+              <div class="nbb-spec">${n.spec}</div>
+              <div class="nbb-store">📦 7-11 賣貨便取貨付款</div>
+            </div>
+            <a class="btn-buy-full" href="${SHOP}" target="_blank" rel="noopener">立即購買 →</a>
+          </div>
+        </div>
+      `;
+      nutList.appendChild(nc2);
+    });
+    funcPanel.appendChild(nutList);
+
+    // MIND TAB
+    const mindPanel=card.querySelector('#mind_'+id);
+    mindPanel.innerHTML=`
+      <div class="method-box" style="margin-bottom:10px">
+        <div class="method-title">意識醫學方向</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.6)">${b.mind_dir}</div>
+      </div>
+      <div class="mind-steps">
+        ${b.mind_steps.map((s,i)=>`
+          <div class="mind-step">
+            <div class="ms-num">${i+1}</div>
+            <div class="ms-content">
+              <div class="ms-title">${s.t}</div>
+              <div class="ms-desc">${s.d}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  });
+
+  go(3);
+  setTimeout(()=>{
+    document.querySelectorAll('.rb-score-bar').forEach(b=>{
+      b.style.transition='width 1s ease';
+      b.style.width=b.dataset.w;
+    });
+  },300);
+}
+
+function switchTab(id,tab,btn){
+  ['edu','func','mind'].forEach(t=>{
+    document.getElementById(t+'_'+id).classList.toggle('active',t===tab);
+  });
+  document.querySelectorAll('#tabs_'+id+' .rtab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function toggleNut(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('open');
+  const exp=document.getElementById('exp_'+id);
+  if(exp)exp.textContent=el.classList.contains('open')?'▴':'▾';
+}
+
+function restart(){
+  picked=[];diagAnswers={};
+  document.querySelectorAll('.belief-card').forEach(c=>{c.classList.remove('picked');const ch=c.querySelector('.bc-check');if(ch)ch.textContent='';});
+  document.getElementById('pcount').textContent='0 已選';
+  document.getElementById('btn-next').disabled=true;
+  go(1);
+}
+
+init();
+</script>
+</body>
+</html>
