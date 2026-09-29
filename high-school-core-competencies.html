@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>High Agency Student OS｜高中生核心能力系統</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FFFFFF;
+  --bg2: #F7F8FF;
+  --bg3: #EEF1FF;
+  --card: #FFFFFF;
+  --border: #E2E8F0;
+  --border2: #C7D2FE;
+  --navy: #1E1B4B;
+  --navy2: #312E81;
+  --indigo: #4338CA;
+  --text: #1E1B4B;
+  --text2: #374151;
+  --soft: #6B7280;
+  --gold: #B45309;
+  --gold2: #D97706;
+  --coral: #DC2626;
+  --green: #059669;
+  --blue: #2563EB;
+  --violet: #7C3AED;
+  --teal: #0D9488;
+  --orange: #EA580C;
+  --pink: #DB2777;
+  --shadow: 0 2px 16px rgba(30,27,75,.08);
+  --shadow2: 0 6px 28px rgba(30,27,75,.13);
+  --r: 16px;
+  --r2: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans TC', 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-bottom: 64px;
+}
+
+/* ── TOP NAV ── */
+.topnav {
+  position: sticky; top: 0; z-index: 300;
+  background: rgba(255,255,255,.97); backdrop-filter: blur(16px);
+  border-bottom: 2px solid var(--border);
+  padding: 0 16px;
+  display: flex; align-items: center; gap: 0;
+  height: 56px;
+  box-shadow: 0 2px 8px rgba(30,27,75,.06);
+}
+.brand {
+  font-size: 15px; font-weight: 900; letter-spacing: -.3px;
+  background: linear-gradient(135deg, var(--indigo), var(--violet), var(--gold2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; flex-shrink: 0; margin-right: 10px; white-space: nowrap;
+}
+.nav { display: flex; flex: 1; overflow-x: auto; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nb {
+  flex: none; padding: 0 12px; height: 56px;
+  font-size: 13px; font-weight: 700;
+  border: none; background: none; color: var(--soft);
+  cursor: pointer; border-bottom: 2px solid transparent;
+  transition: .2s; white-space: nowrap; font-family: inherit;
+}
+.nb.on { color: var(--indigo); border-bottom-color: var(--indigo); }
+.nb:hover:not(.on) { color: var(--navy); }
+.buy-btn {
+  flex-shrink: 0; margin-left: 8px;
+  padding: 7px 14px;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: #fff; font-size: 12px; font-weight: 700;
+  border: none; border-radius: 8px; cursor: pointer;
+  font-family: inherit; text-decoration: none;
+  display: flex; align-items: center; gap: 4px;
+  white-space: nowrap; transition: .15s;
+}
+.buy-btn:hover { opacity: .88; transform: translateY(-1px); }
+
+/* ── PAGES ── */
+.pg { display: none; }
+.pg.on { display: block; }
+.wrap { max-width: 960px; margin: 0 auto; padding: 22px 16px; }
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(160deg, #F0F4FF 0%, #FFFFFF 55%, #FFF7ED 100%);
+  padding: 56px 20px 40px;
+  text-align: center;
+}
+.hero-tag {
+  font-size: 12px; font-weight: 700; letter-spacing: 3px;
+  color: var(--indigo); text-transform: uppercase; margin-bottom: 12px;
+}
+.hero-h1 {
+  font-size: clamp(36px, 8vw, 72px); font-weight: 900;
+  line-height: .95; letter-spacing: -2px; margin-bottom: 8px;
+  background: linear-gradient(140deg, var(--navy) 20%, var(--indigo) 55%, var(--violet) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-h1-en {
+  font-size: clamp(14px, 2.5vw, 20px); font-weight: 700;
+  color: var(--indigo); letter-spacing: 1px; margin-bottom: 16px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.hero-quote {
+  font-size: clamp(14px, 2vw, 18px); color: var(--text2);
+  max-width: 600px; margin: 0 auto 28px; line-height: 1.8;
+}
+.hero-quote em { color: var(--indigo); font-style: normal; font-weight: 700; }
+.hero-formula {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  justify-content: center; margin-bottom: 28px;
+}
+.hf {
+  padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 700;
+  border: 1.5px solid;
+}
+.hf-i { background: #EEF2FF; border-color: #818CF8; color: var(--indigo); }
+.hf-v { background: #F5F3FF; border-color: #A78BFA; color: var(--violet); }
+.hf-g { background: #ECFDF5; border-color: #34D399; color: var(--green); }
+.hf-x { background: none; border-color: transparent; color: var(--soft); font-size: 16px; }
+.hero-btns {
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+}
+.btn-primary {
+  padding: 13px 28px;
+  background: linear-gradient(135deg, var(--indigo), var(--violet));
+  color: #fff; font-size: 15px; font-weight: 700;
+  border: none; border-radius: var(--r2); cursor: pointer;
+  font-family: inherit; text-decoration: none;
+  display: inline-block; transition: .2s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(67,56,202,.3); }
+.btn-ghost {
+  padding: 13px 28px;
+  background: transparent; color: var(--indigo);
+  font-size: 15px; font-weight: 700;
+  border: 2px solid var(--border2); border-radius: var(--r2);
+  cursor: pointer; font-family: inherit; text-decoration: none;
+  display: inline-block; transition: .2s;
+}
+.btn-ghost:hover { border-color: var(--indigo); background: #EEF2FF; }
+
+/* ── DASHBOARD GRID ── */
+.dash-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px; margin-bottom: 24px;
+}
+.dash-card {
+  background: var(--card); border-radius: var(--r);
+  padding: 14px 12px; text-align: center;
+  border: 1.5px solid var(--border); box-shadow: var(--shadow);
+  transition: .2s; cursor: pointer;
+}
+.dash-card:hover { transform: translateY(-2px); box-shadow: var(--shadow2); border-color: var(--border2); }
+.dc-icon { font-size: 24px; margin-bottom: 6px; }
+.dc-name { font-size: 13px; font-weight: 800; color: var(--navy); margin-bottom: 2px; }
+.dc-en { font-size: 11px; color: var(--soft); margin-bottom: 8px; font-family: 'Space Grotesk'; }
+.dc-score { font-size: 28px; font-weight: 900; margin-bottom: 4px; }
+.dc-bar-bg { height: 4px; background: var(--bg3); border-radius: 4px; overflow: hidden; }
+.dc-bar { height: 100%; border-radius: 4px; transition: .8s; }
+
+/* ── SECTION HEADERS ── */
+.sec-h {
+  font-size: clamp(20px, 4vw, 28px); font-weight: 900;
+  letter-spacing: -1px; margin-bottom: 6px; color: var(--navy);
+}
+.sec-s { font-size: 15px; color: var(--soft); margin-bottom: 20px; }
+.sec-h span { color: var(--indigo); }
+
+/* ── ABILITY GRID ── */
+.ability-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px; margin-bottom: 24px;
+}
+.ab-card {
+  background: var(--card); border-radius: var(--r);
+  padding: 16px 14px; cursor: pointer;
+  box-shadow: var(--shadow); border: 1.5px solid var(--border);
+  transition: .2s; position: relative; overflow: hidden;
+}
+.ab-card:hover { transform: translateY(-2px); box-shadow: var(--shadow2); }
+.ab-card .ab-num {
+  position: absolute; top: 10px; right: 12px;
+  font-size: 11px; font-weight: 700; color: var(--soft);
+  background: var(--bg3); padding: 2px 7px; border-radius: 20px;
+}
+.ab-icon { font-size: 30px; margin-bottom: 8px; }
+.ab-name { font-size: 15px; font-weight: 900; color: var(--navy); }
+.ab-en { font-size: 12px; color: var(--soft); font-family: 'Space Grotesk'; margin-top: 2px; }
+.ab-essence { font-size: 12px; color: var(--soft); margin-top: 6px; line-height: 1.4; }
+
+/* ── ABILITY DETAIL ── */
+.ab-detail {
+  background: var(--card); border-radius: var(--r);
+  padding: 22px; box-shadow: var(--shadow); margin-bottom: 18px;
+  border: 1.5px solid var(--border2);
+}
+.ab-detail-head {
+  display: flex; align-items: flex-start; gap: 14px;
+  margin-bottom: 18px; padding-bottom: 16px;
+  border-bottom: 2px solid var(--border);
+}
+.ab-detail-icon { font-size: 48px; flex-shrink: 0; }
+.ab-detail-title { font-size: 24px; font-weight: 900; color: var(--navy); }
+.ab-detail-en { font-size: 15px; font-weight: 700; color: var(--indigo); font-family: 'Space Grotesk'; }
+.ab-detail-essence { font-size: 15px; color: var(--text2); margin-top: 4px; }
+
+.levers-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px; margin: 14px 0;
+}
+.lever-card {
+  background: var(--bg2); border-radius: var(--r2);
+  padding: 12px 14px; border: 1.5px solid var(--border);
+}
+.lever-num { font-size: 11px; font-weight: 700; color: var(--soft); margin-bottom: 3px; }
+.lever-zh { font-size: 15px; font-weight: 800; color: var(--navy); }
+.lever-en { font-size: 12px; color: var(--indigo); font-family: 'Space Grotesk'; font-weight: 600; margin-top: 2px; }
+
+/* ── FORMULA CHAIN ── */
+.formula-chain {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 0; background: var(--bg2); border-radius: var(--r);
+  padding: 18px; margin: 16px 0;
+}
+.fc-node {
+  background: var(--card); border: 1.5px solid var(--border2);
+  border-radius: 8px; padding: 8px 22px;
+  font-weight: 800; font-size: 16px; color: var(--navy);
+  min-width: 140px; text-align: center;
+}
+.fc-node.accent {
+  background: var(--navy); color: #FFD700; border-color: var(--navy);
+}
+.fc-node-en {
+  font-size: 12px; font-weight: 600; color: var(--soft);
+  font-family: 'Space Grotesk'; display: block; margin-top: 2px;
+}
+.fc-arrow { font-size: 18px; color: var(--indigo); padding: 2px 0; font-weight: 900; }
+
+/* ── QUOTES PAGE ── */
+.quotes-filter {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+}
+.qf-btn {
+  padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 700;
+  border: 1.5px solid var(--border); background: var(--card);
+  cursor: pointer; color: var(--soft); transition: .15s; font-family: inherit;
+}
+.qf-btn.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+.quotes-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+.q-card {
+  background: var(--card); border-radius: var(--r2);
+  padding: 18px; box-shadow: var(--shadow);
+  border-left: 4px solid; cursor: copy; transition: .15s;
+}
+.q-card:hover { transform: translateY(-2px); box-shadow: var(--shadow2); }
+.q-num { font-size: 11px; color: var(--soft); margin-bottom: 6px; }
+.q-zh { font-size: 16px; font-weight: 700; color: var(--navy); line-height: 1.6; margin-bottom: 6px; }
+.q-en { font-size: 14px; color: var(--indigo); font-family: 'Space Grotesk'; font-weight: 600; line-height: 1.5; }
+
+/* ── QUIZ / DIAGNOSIS ── */
+.diag-intro {
+  background: linear-gradient(135deg, #EEF2FF, #F5F3FF);
+  border-radius: var(--r); padding: 22px; margin-bottom: 20px;
+  border: 1.5px solid var(--border2); text-align: center;
+}
+.diag-intro h2 { font-size: 20px; font-weight: 900; color: var(--indigo); margin-bottom: 6px; }
+.diag-intro p { font-size: 15px; color: var(--text2); line-height: 1.7; }
+.quiz-card {
+  background: var(--card); border-radius: var(--r);
+  padding: 22px; box-shadow: var(--shadow); margin-bottom: 16px;
+  border: 1.5px solid var(--border);
+}
+.prog-bg { background: var(--bg3); border-radius: 20px; height: 8px; overflow: hidden; margin-bottom: 6px; }
+.prog-fill { background: linear-gradient(90deg, var(--indigo), var(--violet)); height: 100%; border-radius: 20px; transition: width .4s; }
+.prog-label { font-size: 13px; color: var(--soft); margin-bottom: 18px; }
+.q-text { font-size: 19px; font-weight: 800; color: var(--navy); margin-bottom: 6px; line-height: 1.5; }
+.q-text-en { font-size: 14px; color: var(--soft); margin-bottom: 18px; font-family: 'Space Grotesk'; }
+.q-opts { display: flex; flex-direction: column; gap: 8px; }
+.q-opt {
+  padding: 14px 18px; border-radius: var(--r2);
+  border: 2px solid var(--border); background: var(--card);
+  font-size: 16px; color: var(--text); cursor: pointer;
+  transition: .18s; font-weight: 600; text-align: left;
+  font-family: inherit; line-height: 1.5;
+}
+.q-opt:hover { border-color: var(--indigo); background: #EEF2FF; }
+.q-opt.sel { border-color: var(--navy); background: var(--navy); color: #fff; }
+.q-nav { display: flex; gap: 10px; margin-top: 18px; }
+.q-nav-btn {
+  flex: 1; padding: 13px; border-radius: var(--r2);
+  font-size: 15px; font-weight: 700; cursor: pointer; border: none; font-family: inherit;
+}
+.q-nav-prev { background: var(--border); color: var(--text2); }
+.q-nav-next { background: var(--indigo); color: #fff; }
+.q-nav-btn:disabled { opacity: .4; cursor: default; }
+
+/* ── RESULT ── */
+.result-hero {
+  background: linear-gradient(135deg, var(--navy), var(--navy2));
+  border-radius: var(--r); padding: 26px 22px; color: #fff;
+  margin-bottom: 18px; text-align: center;
+}
+.result-stage { font-size: 12px; letter-spacing: 2px; opacity: .7; margin-bottom: 6px; text-transform: uppercase; }
+.result-name { font-size: 28px; font-weight: 900; color: #FFD700; margin-bottom: 8px; }
+.result-desc { font-size: 16px; opacity: .9; line-height: 1.7; max-width: 500px; margin: 0 auto; }
+.result-scores {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 18px 0;
+}
+.rs-box { background: rgba(255,255,255,.1); border-radius: 10px; padding: 12px 6px; text-align: center; }
+.rs-val { font-size: 26px; font-weight: 900; color: #FFD700; }
+.rs-lbl { font-size: 12px; opacity: .8; margin-top: 3px; }
+
+/* ── AI BOX ── */
+.ai-box {
+  background: linear-gradient(135deg, var(--navy), var(--navy2));
+  border-radius: var(--r); padding: 22px; margin-bottom: 18px; color: #fff;
+}
+.ai-box-title { font-size: 16px; font-weight: 900; color: #FFD700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.ai-chat-area {
+  background: rgba(255,255,255,.07); border-radius: var(--r2);
+  padding: 16px; min-height: 80px; max-height: 380px; overflow-y: auto;
+  margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px;
+}
+.ai-msg { display: flex; gap: 8px; }
+.ai-msg.user { justify-content: flex-end; }
+.ai-bubble {
+  padding: 11px 14px; font-size: 15px; line-height: 1.75;
+  max-width: 88%; border-radius: 12px;
+}
+.ai-msg.bot .ai-bubble { background: rgba(255,255,255,.12); border-radius: 12px 12px 12px 4px; }
+.ai-msg.user .ai-bubble { background: linear-gradient(135deg, var(--indigo), var(--violet)); border-radius: 12px 12px 4px 12px; }
+.ai-ico { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,.15); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; align-self: flex-end; }
+.ai-input-row { display: flex; gap: 8px; }
+.ai-inp {
+  flex: 1; padding: 11px 14px; background: rgba(255,255,255,.12);
+  border: 1.5px solid rgba(255,255,255,.2); border-radius: var(--r2);
+  color: #fff; font-size: 16px; font-family: inherit; outline: none; transition: .2s;
+}
+.ai-inp::placeholder { color: rgba(255,255,255,.4); }
+.ai-inp:focus { border-color: #FFD700; }
+.ai-send {
+  padding: 11px 20px; background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: #fff; font-size: 15px; font-weight: 700;
+  border: none; border-radius: var(--r2); cursor: pointer; font-family: inherit;
+  flex-shrink: 0; transition: .18s;
+}
+.ai-send:disabled { opacity: .5; cursor: not-allowed; }
+.quick-prompts { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+.qp-btn {
+  padding: 7px 13px; background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.2); border-radius: 18px;
+  font-size: 13px; color: rgba(255,255,255,.8); cursor: pointer; font-family: inherit; transition: .14s;
+}
+.qp-btn:hover { background: rgba(255,255,255,.2); color: #fff; }
+.ai-thinking { display: flex; gap: 4px; align-items: center; padding: 6px 0; }
+.ai-dot { width: 7px; height: 7px; border-radius: 50%; background: #FFD700; opacity: .4; animation: abounce .9s infinite; }
+.ai-dot:nth-child(2) { animation-delay: .2s; }
+.ai-dot:nth-child(3) { animation-delay: .4s; }
+@keyframes abounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px);opacity:1} }
+
+/* ── MODULES ── */
+.mod-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.mod-tab {
+  padding: 8px 15px; border-radius: 20px;
+  border: 1.5px solid var(--border); background: var(--card);
+  cursor: pointer; font-size: 13px; font-weight: 700; color: var(--soft);
+  transition: .17s; font-family: inherit; white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04);
+}
+.mod-tab.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+.mod-content { display: none; }
+.mod-content.on { display: block; }
+.mod-head {
+  background: var(--bg2); border-radius: var(--r); padding: 18px;
+  margin-bottom: 14px; border: 1.5px solid var(--border);
+}
+.mod-num { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--soft); margin-bottom: 3px; }
+.mod-title { font-size: 24px; font-weight: 900; color: var(--navy); margin-bottom: 2px; }
+.mod-en { font-size: 15px; font-weight: 700; color: var(--indigo); font-family: 'Space Grotesk'; margin-bottom: 8px; }
+.mod-essence { font-size: 16px; color: var(--text2); }
+.training-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin: 12px 0; }
+.train-card {
+  background: var(--card); border-radius: var(--r2); padding: 12px 14px;
+  border: 1.5px solid var(--border); box-shadow: 0 1px 6px rgba(0,0,0,.04);
+  text-align: center;
+}
+.train-icon { font-size: 22px; margin-bottom: 5px; }
+.train-name { font-size: 14px; font-weight: 800; color: var(--navy); }
+.train-en { font-size: 11px; color: var(--soft); font-family: 'Space Grotesk'; margin-top: 2px; }
+
+/* ── HI-LO COMPARE ── */
+.hilo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+.hilo-box { border-radius: var(--r2); padding: 14px; }
+.hilo-low { background: #FEF2F2; border: 1.5px solid #FECACA; }
+.hilo-high { background: #F0FFF4; border: 1.5px solid #86EFAC; }
+.hilo-label { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; margin-bottom: 8px; }
+.hilo-label.low { color: var(--coral); }
+.hilo-label.high { color: var(--green); }
+.hilo-item { font-size: 15px; color: var(--text2); padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,.06); }
+.hilo-item:last-child { border-bottom: none; }
+
+/* ── DAILY TASKS ── */
+.daily-hero {
+  background: linear-gradient(135deg, #EEF2FF, #F5F3FF);
+  border-radius: var(--r); padding: 22px; margin-bottom: 18px;
+  border: 1.5px solid var(--border2); text-align: center;
+}
+.daily-score { font-size: 56px; font-weight: 900; color: var(--indigo); line-height: 1; }
+.daily-score-lbl { font-size: 13px; color: var(--soft); margin-top: 4px; }
+.task-box {
+  background: var(--card); border-radius: var(--r); padding: 18px;
+  box-shadow: var(--shadow); margin-bottom: 14px; border: 1.5px solid var(--border);
+}
+.task-box-title {
+  font-size: 13px; font-weight: 700; color: var(--indigo);
+  letter-spacing: .8px; text-transform: uppercase; margin-bottom: 14px;
+}
+.task-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.task-item:last-child { border-bottom: none; }
+.t-check {
+  width: 24px; height: 24px; border-radius: 6px;
+  border: 2px solid var(--border2); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: .2s; font-size: 13px; font-weight: 700; margin-top: 2px;
+}
+.t-check.done { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+.t-body { flex: 1; }
+.t-zh { font-size: 16px; font-weight: 700; color: var(--navy); line-height: 1.4; }
+.t-en { font-size: 13px; color: var(--soft); font-family: 'Space Grotesk'; margin-top: 2px; }
+.t-done .t-zh { text-decoration: line-through; color: var(--soft); }
+.t-xp { font-size: 12px; font-weight: 800; color: var(--gold2); flex-shrink: 0; }
+
+/* ── XP BAR ── */
+.xp-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(255,255,255,.97); backdrop-filter: blur(10px);
+  border-top: 1.5px solid var(--border);
+  padding: 8px 16px; display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 -2px 8px rgba(30,27,75,.05);
+}
+.xp-lbl { font-size: 12px; font-weight: 700; color: var(--navy); white-space: nowrap; }
+.xp-bg { flex: 1; height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; }
+.xp-fill { height: 100%; background: linear-gradient(90deg, var(--indigo), var(--violet)); border-radius: 4px; transition: .5s; }
+.xp-pts { font-size: 13px; font-weight: 800; color: var(--gold2); white-space: nowrap; }
+
+/* ── UPGRADE CARDS ── */
+.upgrade-card {
+  background: var(--card); border-radius: var(--r);
+  overflow: hidden; margin-bottom: 14px; box-shadow: var(--shadow);
+  border: 1.5px solid var(--border);
+}
+.upg-old { background: #FEF2F2; padding: 14px 18px; border-bottom: 2px solid #FECACA; }
+.upg-new { background: #F0FFF4; padding: 14px 18px; }
+.upg-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+.upg-label.old { color: var(--coral); }
+.upg-label.new { color: var(--green); }
+.upg-text { font-size: 16px; font-weight: 700; color: var(--navy); line-height: 1.5; }
+.upg-en { font-size: 13px; color: var(--soft); font-family: 'Space Grotesk'; margin-top: 3px; }
+.upg-arrow { text-align: center; padding: 4px; background: var(--border); font-size: 18px; color: var(--indigo); font-weight: 900; }
+
+/* ── BUY BANNER ── */
+.buy-banner {
+  background: linear-gradient(135deg, #FFFBEB, #FFF7ED);
+  border-radius: var(--r); padding: 24px; text-align: center;
+  border: 1.5px solid #FDE68A; margin: 20px 0;
+}
+.bb-title { font-size: 20px; font-weight: 900; color: var(--gold); margin-bottom: 6px; }
+.bb-sub { font-size: 15px; color: var(--text2); line-height: 1.7; margin-bottom: 18px; }
+.bb-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 13px 28px; background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: #fff; font-size: 15px; font-weight: 700;
+  border-radius: var(--r2); text-decoration: none; transition: .2s;
+}
+.bb-link:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(180,83,9,.3); }
+
+/* ── COPY TOAST ── */
+.copy-toast {
+  display: none; position: fixed; bottom: 80px; left: 50%;
+  transform: translateX(-50%); background: var(--indigo); color: #fff;
+  font-size: 13px; font-weight: 700; padding: 8px 18px;
+  border-radius: 8px; z-index: 600; animation: cpop .3s ease;
+}
+@keyframes cpop { 0%{transform:translateX(-50%) scale(.5);opacity:0} 60%{transform:translateX(-50%) scale(1.1)} 100%{transform:translateX(-50%) scale(1);opacity:1} }
+
+@media(max-width:600px) {
+  .hilo-grid { grid-template-columns: 1fr; }
+  .result-scores { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="brand">High Agency Student OS</div>
+  <nav class="nav">
+    <button class="nb on" onclick="go('home',this)">🏠 首頁</button>
+    <button class="nb" onclick="go('abilities',this)">⚡ 16大能力</button>
+    <button class="nb" onclick="go('modules',this)">🏗️ 模組</button>
+    <button class="nb" onclick="go('diag',this)">🩺 診斷</button>
+    <button class="nb" onclick="go('quotes',this)">✨ 金句</button>
+    <button class="nb" onclick="go('daily',this)">📅 每日任務</button>
+    <button class="nb" onclick="go('ai',this)">🤖 AI教練</button>
+    <button class="nb" onclick="go('upgrade',this)">🔼 升級對比</button>
+  </nav>
+  <a class="buy-btn" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 訂購</a>
+</nav>
+
+<div id="copyToast" class="copy-toast">✅ 已複製！</div>
+
+<!-- ══════════════ HOME ══════════════ -->
+<div class="pg on" id="pg-home">
+<div class="hero">
+  <div class="hero-tag">High Agency Student Operating System</div>
+  <h1 class="hero-h1">高中生<br>核心能力</h1>
+  <div class="hero-h1-en">High Agency Student OS</div>
+  <p class="hero-quote">
+    不是培養會考試的人，<br>而是培養<em>會思考、會學習、會修正、會更新</em>的人。<br>
+    <span style="font-size:14px;font-family:'Space Grotesk';color:var(--indigo);">Not just exam-ready. Life-ready.</span>
+  </p>
+  <div class="hero-formula">
+    <span class="hf hf-i">看見規律<br><small>See Patterns</small></span>
+    <span class="hf hf-x">→</span>
+    <span class="hf hf-i">理解世界<br><small>Understand</small></span>
+    <span class="hf hf-x">→</span>
+    <span class="hf hf-v">修正錯誤<br><small>Correct</small></span>
+    <span class="hf hf-x">→</span>
+    <span class="hf hf-g">持續更新<br><small>Upgrade</small></span>
+  </div>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="go('diag',document.querySelectorAll('.nb')[3])">🩺 診斷我的能力</button>
+    <button class="btn-ghost" onclick="go('abilities',document.querySelectorAll('.nb')[1])">⚡ 探索16大能力</button>
+  </div>
+</div>
+<div class="wrap">
+  <div class="sec-h">今日能力<span>儀表板</span></div>
+  <div class="sec-s">Today's Ability Dashboard</div>
+  <div class="dash-grid" id="dashGrid"></div>
+
+  <div class="sec-h" style="margin-top:8px;">成長閉環<span>系統</span></div>
+  <div class="sec-s">Growth Loop System</div>
+  <div class="formula-chain" id="homeChain"></div>
+
+  <div class="buy-banner">
+    <div class="bb-title">🔬 大腦黑科技 × 能力升級</div>
+    <div class="bb-sub">前額葉、記憶力、專注力、情緒調節——都需要神經科學支持<br>冠貞生技精選補充品 × 讓大腦為學習最佳化</div>
+    <a class="bb-link" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 7-ELEVEN 賣貨便 立即訂購 →</a>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ ABILITIES ══════════════ -->
+<div class="pg" id="pg-abilities">
+<div class="wrap">
+  <div class="sec-h">16大核心<span>能力</span></div>
+  <div class="sec-s">16 Core Abilities · 點擊任一能力查看詳情與槓桿策略</div>
+  <div class="ability-grid" id="abilityGrid"></div>
+  <div id="abilityDetail"></div>
+</div>
+</div>
+
+<!-- ══════════════ MODULES ══════════════ -->
+<div class="pg" id="pg-modules">
+<div class="wrap">
+  <div class="sec-h">12大學習<span>模組</span></div>
+  <div class="sec-s">12 Learning Modules · 診斷→教育→策略→行動→追蹤→更新</div>
+  <div class="mod-tabs" id="modTabs"></div>
+  <div id="modContents"></div>
+</div>
+</div>
+
+<!-- ══════════════ DIAGNOSIS ══════════════ -->
+<div class="pg" id="pg-diag">
+<div class="wrap">
+  <div class="sec-h">能力<span>診斷系統</span></div>
+  <div class="sec-s">Ability Diagnostic System</div>
+  <div class="diag-intro">
+    <h2>🩺 診斷你的能力邊界</h2>
+    <p>每一次卡關，都在揭露一個隱藏的邊界<br>Every obstacle reveals a hidden limit.</p>
+  </div>
+  <div id="diagArea">
+    <div class="quiz-card">
+      <div class="prog-bg"><div class="prog-fill" id="progBar" style="width:8%"></div></div>
+      <div class="prog-label" id="progLabel">第 1 題 / 共 12 題</div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-text-en" id="qTextEn"></div>
+      <div class="q-opts" id="qOpts"></div>
+      <div class="q-nav">
+        <button class="q-nav-btn q-nav-prev" id="btnPrev" onclick="qPrev()" disabled>上一題</button>
+        <button class="q-nav-btn q-nav-next" id="btnNext" onclick="qNext()" disabled>下一題</button>
+      </div>
+    </div>
+  </div>
+  <div id="diagResult" style="display:none;"></div>
+</div>
+</div>
+
+<!-- ══════════════ QUOTES ══════════════ -->
+<div class="pg" id="pg-quotes">
+<div class="wrap">
+  <div class="sec-h">金句<span>庫</span></div>
+  <div class="sec-s">50 Bilingual Quotes · 點擊複製分享</div>
+  <div class="quotes-filter" id="quotesFilter"></div>
+  <div class="quotes-grid" id="quotesGrid"></div>
+</div>
+</div>
+
+<!-- ══════════════ DAILY ══════════════ -->
+<div class="pg" id="pg-daily">
+<div class="wrap">
+  <div class="daily-hero">
+    <div style="font-size:13px;font-weight:700;letter-spacing:2px;color:var(--indigo);text-transform:uppercase;margin-bottom:8px;">今日成長積分 Today's Score</div>
+    <div class="daily-score" id="dailyScore">30</div>
+    <div class="daily-score-lbl">已完成 <span id="doneCount">0</span> / 10 項任務</div>
+    <div style="margin-top:12px;font-size:14px;color:var(--soft);" id="dailyLevelText">Explorer Lv1</div>
+  </div>
+  <div class="task-box">
+    <div class="task-box-title">📅 今日10大成長任務</div>
+    <div id="taskList"></div>
+  </div>
+  <div class="sec-h" style="font-size:18px;margin-bottom:10px;">🏆 成長等級系統</div>
+  <div id="levelList"></div>
+  <div class="buy-banner">
+    <div class="bb-title">⚡ 大腦燃料 × 每日執行力</div>
+    <div class="bb-sub">CoQ10 + NMN + Omega-3 × 提供神經元能量，讓每日任務更容易完成</div>
+    <a class="bb-link" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 訂購大腦黑科技</a>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ AI COACH ══════════════ -->
+<div class="pg" id="pg-ai">
+<div class="wrap">
+  <div class="sec-h">AI <span>學習教練</span></div>
+  <div class="sec-s">AI Learning Coach · 輸入你的學習困境，AI分析能力邊界並給出精準升級策略</div>
+  <div class="ai-box">
+    <div class="ai-box-title">🤖 High Agency AI Coach</div>
+    <div class="quick-prompts">
+      <button class="qp-btn" onclick="sendAI(this.textContent)">英文讀不懂怎麼辦</button>
+      <button class="qp-btn" onclick="sendAI(this.textContent)">記憶力很差怎麼提升</button>
+      <button class="qp-btn" onclick="sendAI(this.textContent)">考試容易緊張失常</button>
+      <button class="qp-btn" onclick="sendAI(this.textContent)">數學學了就忘</button>
+      <button class="qp-btn" onclick="sendAI(this.textContent)">如何提升專注力</button>
+      <button class="qp-btn" onclick="sendAI(this.textContent)">作文寫不出來怎麼辦</button>
+    </div>
+    <div class="ai-chat-area" id="aiChat">
+      <div class="ai-msg bot">
+        <div class="ai-ico">🎯</div>
+        <div class="ai-bubble">你好！我是你的 <strong>High Agency AI 學習教練</strong>。<br><br>我會從「能力邊界」的角度分析你的困境，找出根因，給你精準的升級策略。<br><br>告訴我你遇到的學習困境，或點擊上方快速問題！</div>
+      </div>
+    </div>
+    <div class="ai-input-row">
+      <input class="ai-inp" id="aiInput" placeholder="輸入你的學習困境..." onkeydown="if(event.key==='Enter')sendAI()">
+      <button class="ai-send" id="aiSend" onclick="sendAI()">送出</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════ UPGRADE ══════════════ -->
+<div class="pg" id="pg-upgrade">
+<div class="wrap">
+  <div class="sec-h">能力<span>升級對比</span></div>
+  <div class="sec-s">Ability Upgrade Comparison · 舊模式 vs 高手模式</div>
+  <div id="upgradeCards"></div>
+</div>
+</div>
+
+<div class="xp-bar">
+  <div class="xp-lbl" id="xpLabel">Explorer Lv1</div>
+  <div class="xp-bg"><div class="xp-fill" id="xpFill" style="width:30%"></div></div>
+  <div class="xp-pts" id="xpPts">30 / 100 XP</div>
+</div>
+
+<script>
+const BUY = 'https://myship.7-11.com.tw/general/detail/GM2407210007294';
+
+// ═══ ABILITIES DATA ═══
+const ABILITIES = [
+  { id:'a1',  icon:'🎯', name:'專注力',     en:'Focus',          essence:'控制注意力 Control Your Attention',
+    levers: [['手機放遠','Put Your Phone Away'],['一次一件事','Do One Thing at a Time'],['睡飽','Get Enough Sleep'],['固定讀書時間','Study Same Time Daily'],['桌面乾淨','Keep Desk Clean'],['運動','Exercise Daily']],
+    low:['開手機就停不下來','邊讀書邊滑IG','一點聲音就分心','讀30分鐘就累'],
+    high:['番茄鐘25分鐘','手機放另一個房間','深度工作2小時','固定環境固定時間'],
+    ai_task:'分析你今天的專注力漏洞在哪裡' },
+  { id:'a2',  icon:'🔍', name:'抽象能力',   en:'Pattern Finding', essence:'看見規律 See Patterns',
+    levers: [['找相同點','Find Similarities'],['找不同點','Find Differences'],['分類整理','Sort & Organize'],['畫圖','Draw Pictures'],['說重點','Explain Key Points'],['找規律','Find Patterns']],
+    low:['只背答案','死記公式','看不出規律','每次都要重學'],
+    high:['歸納規律','建分類框架','看見共同結構','一個原理解多題'],
+    ai_task:'從這組知識中找出共同規律' },
+  { id:'a3',  icon:'🏗️', name:'建模能力',   en:'Modeling',        essence:'理解事情如何運作 How Things Work',
+    levers: [['問為什麼','Ask Why'],['畫流程圖','Draw Flowcharts'],['畫因果圖','Cause-Effect Maps'],['自己的話說','Your Own Words'],['教同學','Teach Others'],['舉例子','Give Examples']],
+    low:['背課本步驟','看不懂題意','不知道為什麼','做完不知道對不對'],
+    high:['畫因果圖','建自己的公式','理解機制不背步驟','一個模型解多種情況'],
+    ai_task:'把這個概念的機制畫成因果圖' },
+  { id:'a4',  icon:'🧠', name:'記憶能力',   en:'Memory',          essence:'記得並用得出來 Remember & Retrieve',
+    levers: [['每天複習','Review Every Day'],['大聲說出來','Say It Out Loud'],['畫圖記憶','Visual Memory'],['聯想故事','Create Stories'],['睡前複習','Review Before Sleep'],['教別人','Teach Someone']],
+    low:['考前一次背完','看了馬上忘','沒有複習系統','背了不會用'],
+    high:['間隔複習Anki','主動回憶不看書','圖像記憶法','睡前10分鐘複習'],
+    ai_task:'幫我生成5張記憶卡片' },
+  { id:'a5',  icon:'💡', name:'理解能力',   en:'Understanding',   essence:'真正看懂 Deep Understanding',
+    levers: [['多問問題','Ask Questions'],['舉例子','Give Examples'],['找生活例子','Connect to Life'],['畫圖說明','Explain with Pictures'],['教別人','Teach Others'],['換角度','See Perspectives']],
+    low:['看完還是不懂','死背不理解','遇到變化題就不會','說不出自己的理解'],
+    high:['能舉3個例子','能教別人講清楚','能找生活中的對應','能預測延伸題型'],
+    ai_task:'把這個概念講給國小生聽' },
+  { id:'a6',  icon:'⚡', name:'自律能力',   en:'Self-Control',    essence:'控制自己 Control Yourself',
+    levers: [['先做重要事','Important Things First'],['固定時間','Keep Schedule'],['少滑手機','Reduce Phone'],['設小目標','Set Small Goals'],['完成打勾','Check It Off'],['說到做到','Keep Your Word']],
+    low:['先玩再讀書','計畫一直失敗','感覺有心理準備就行','等有心情再做'],
+    high:['先做最難的事','固定時間固定地點','設小可達成的目標','完成就立即打勾'],
+    ai_task:'幫我分析我的自律漏洞' },
+  { id:'a7',  icon:'🚀', name:'執行力',     en:'Action',          essence:'把想法變成果 Ideas into Results',
+    levers: [['馬上開始','Start Now'],['拆小步驟','Break It Down'],['每天做一點','Daily Progress'],['先完成再完美','Done Before Perfect'],['記錄進度','Track Progress'],['不找藉口','No Excuses']],
+    low:['想太多不開始','完美主義卡住','三分鐘熱度','計畫比執行多'],
+    high:['兩分鐘法則','番茄鐘+任務清單','先完成70分再優化','每天記錄進度'],
+    ai_task:'幫我把這個目標拆成7天計畫' },
+  { id:'a8',  icon:'🔧', name:'修正能力',   en:'Improve',         essence:'利用錯誤成長 Grow Through Mistakes',
+    levers: [['找錯誤','Find Mistakes'],['改錯誤','Fix Mistakes'],['問老師','Ask Teachers'],['接受建議','Accept Feedback'],['寫檢討','Reflect & Review'],['再試一次','Try Again']],
+    low:['做錯跳過繼續','不喜歡被糾正','覺得錯誤很丟臉','同樣錯誤犯很多次'],
+    high:['錯題本系統','分析錯誤原因','主動尋求回饋','每週誤差分析'],
+    ai_task:'分析我這次考試失敗的根因' },
+  { id:'a9',  icon:'🔄', name:'更新能力',   en:'Upgrade',         essence:'升級自己 Upgrade Yourself',
+    levers: [['看書','Read Books'],['學新東西','Learn New Things'],['試新方法','Try New Methods'],['向高手學','Learn from Experts'],['反思自己','Reflect'],['勇敢改變','Be Brave']],
+    low:['一直用同一個方法','不願意改變習慣','覺得自己的方法最好','停止學習新的做法'],
+    high:['每月挑戰新學習方法','主動尋找更高效的策略','定期反思什麼方法有效','向高手學習並複製'],
+    ai_task:'找出我現在的限制信念' },
+  { id:'a10', icon:'🔮', name:'預測能力',   en:'Prediction',      essence:'看見未來結果 See Future Outcomes',
+    levers: [['想後果','Think Consequences'],['看未來','Think Long-Term'],['學別人經驗','Learn from Others'],['先想再做','Think Before Acting'],['值得嗎','Is It Worth It?'],['長遠思考','Long Range']],
+    low:['只看當下不看未來','衝動做決定後悔','不會從失敗預測風險','看不到選擇的長期影響'],
+    high:['預演未來3種情境','機率思維分析風險','從歷史案例學預測','問：這個選擇5年後怎樣？'],
+    ai_task:'預測我現在選擇的3種未來' },
+  { id:'a11', icon:'⚖️', name:'決策能力',   en:'Decision Making', essence:'做對選擇 Make Good Choices',
+    levers: [['先想目標','Know Your Goal'],['選重要的','Choose What Matters'],['不衝動','Avoid Impulse'],['比較選項','Compare Options'],['看長期','Long-Term Results'],['為選擇負責','Take Responsibility']],
+    low:['靠感覺做決定','短期爽長期後悔','沒有比較選項','不考慮機會成本'],
+    high:['用目標過濾選項','列出機會成本','問：哪個選擇複利最大？','為每個決定負責並學習'],
+    ai_task:'幫我分析這個決定的機會成本' },
+  { id:'a12', icon:'💬', name:'表達能力',   en:'Communication',   essence:'讓別人懂你 Help Others Understand',
+    levers: [['多閱讀','Read More'],['多說話','Speak More'],['多寫作','Write More'],['說重點','Get to the Point'],['有條理','Be Organized'],['多分享','Share Ideas']],
+    low:['說了對方還是不懂','表達沒有條理','不敢說出自己的想法','怕說錯所以不說'],
+    high:['結論先說再解釋','用例子具體化','一分鐘說清楚一個概念','積極分享讓別人理解你'],
+    ai_task:'幫我把這個想法表達得更清楚' },
+  { id:'a13', icon:'🤝', name:'社交能力',   en:'Friendship',      essence:'建立好關係 Build Good Relationships',
+    levers: [['微笑','Smile'],['傾聽','Listen'],['幫助別人','Help Others'],['真誠','Be Sincere'],['感謝別人','Show Gratitude'],['守信用','Keep Promises']],
+    low:['只關心自己','不會傾聽','很少感謝別人','說話不守信用'],
+    high:['先問再說','主動傾聽記住細節','表達感謝具體化','說到做到建立信任'],
+    ai_task:'分析我的人際關係模型' },
+  { id:'a14', icon:'💪', name:'自信能力',   en:'Confidence',      essence:'相信自己可以 Believe You Can',
+    levers: [['每天進步一點','Improve Daily'],['完成承諾','Keep Commitments'],['記錄成功','Record Successes'],['多練習','Practice More'],['接受挑戰','Accept Challenges'],['相信自己','Believe in Yourself']],
+    low:['覺得自己不行','害怕嘗試新事物','只記得失敗不記成功','遇到高手就退縮'],
+    high:['記錄每天小成功','完成承諾建立信任感','接受挑戰後回頭看成長','以行動建立自信不靠感覺'],
+    ai_task:'幫我建立自信複利計畫' },
+  { id:'a15', icon:'🛡️', name:'韌性能力',   en:'Resilience',      essence:'跌倒再站起來 Bounce Back',
+    levers: [['跌倒再站起來','Get Back Up'],['不怕失敗','Don\'t Fear Failure'],['保持希望','Stay Hopeful'],['運動','Exercise'],['睡眠','Sleep Well'],['尋求幫助','Ask for Help']],
+    low:['一次失敗就放棄','沉浸在挫折裡太久','不願意求助','把失敗當終點'],
+    high:['把失敗當數據點','分析原因快速修正','主動尋求支持','把挫折變成學習素材'],
+    ai_task:'分析我的韌性邊界在哪裡' },
+  { id:'a16', icon:'✨', name:'創造力',     en:'Creativity',      essence:'創造新可能 Create New Possibilities',
+    levers: [['多閱讀','Read More'],['多觀察','Observe More'],['多提問','Ask Questions'],['多想像','Imagine More'],['多嘗試','Experiment'],['不怕犯錯','Don\'t Fear Mistakes']],
+    low:['只複製別人的方法','覺得自己不夠創意','害怕提出奇怪想法','等靈感才行動'],
+    high:['每天問「這個還可以怎麼做？」','用跨領域的眼光看問題','快速原型不等完美','把錯誤當創意素材'],
+    ai_task:'幫我激發對這個問題的創意解法' },
+];
+
+const MODULES = [
+  { id:'m1',  icon:'🎯', name:'專注力工程',     en:'Focus System',          essence:'控制注意力，打開學習入口',
+    trainings:[['番茄鐘','Pomodoro','⏱️'],['手機隔離','Phone Detox','📵'],['深度工作','Deep Work','🧘'],['固定時間','Fixed Schedule','🕐']],
+    diag:['你每天滑手機多久？How long do you scroll daily?','你能一次專心多久？How long can you focus at once?','你最常被什麼打斷？What disrupts you most?'],
+    ai_task:'分析你的專注力漏洞，給出3個本週可執行的改善方案' },
+  { id:'m2',  icon:'🔍', name:'抽象能力工程',   en:'Pattern System',        essence:'從知識表面看見底層規律',
+    trainings:[['分類練習','Classification','📂'],['比較練習','Comparison','⚖️'],['歸納練習','Induction','🔗'],['心智圖','Mind Map','🗺️'],['九宮格','9-Grid','📊'],['知識樹','Knowledge Tree','🌳']],
+    diag:['你背的是答案還是規律？','你能看出不同科目的共同規律嗎？','遇到新題型你會自己找規律嗎？'],
+    ai_task:'從這組知識點中找出底層規律，幫我建立抽象框架' },
+  { id:'m3',  icon:'🏗️', name:'建模工程',       en:'Model System',          essence:'理解機制，不背步驟',
+    trainings:[['因果圖','Cause-Effect Map','↔️'],['流程圖','Flowchart','📋'],['框架圖','Framework Map','🗂️'],['費曼法','Feynman Method','🗣️'],['系統圖','System Map','🔄']],
+    diag:['你學新概念時是背步驟還是理解機制？','你能用自己的話解釋任何概念嗎？','你會畫因果圖嗎？'],
+    ai_task:'把我給你的概念畫成因果圖，讓我理解它的運作機制' },
+  { id:'m4',  icon:'🧠', name:'記憶工程',       en:'Memory System',         essence:'穩定提取，不只是記住',
+    trainings:[['間隔複習','Spaced Repetition','📅'],['主動回憶','Active Recall','💭'],['Anki卡片','Anki Cards','🃏'],['圖像記憶','Visual Memory','🖼️'],['連鎖記憶','Chain Memory','🔗']],
+    diag:['你是考前一次背還是每天複習？','你複習時看答案還是主動回憶？','你有記憶系統還是隨機亂背？'],
+    ai_task:'幫我把這些知識點生成10張Anki記憶卡片' },
+  { id:'m5',  icon:'💡', name:'理解工程',       en:'Understanding System',  essence:'建立意義，不是填塞資訊',
+    trainings:[['費曼法','Feynman','🗣️'],['舉例法','Examples','💡'],['類比法','Analogy','🔀'],['反例法','Counter-Examples','❌'],['生活化','Real-World Links','🌍']],
+    diag:['你能把概念用自己的話說清楚嗎？','你能舉3個生活中的例子嗎？','能把概念教給完全不懂的人嗎？'],
+    ai_task:'把這個概念用費曼法教給一個10歲的孩子' },
+  { id:'m6',  icon:'💬', name:'表達工程',       en:'Communication System',  essence:'輸出價值，讓別人真正理解',
+    trainings:[['口說訓練','Speaking','🎤'],['寫作訓練','Writing','✍️'],['簡報訓練','Presentation','📊'],['辯論訓練','Debate','⚔️'],['教學練習','Teaching','👨‍🏫']],
+    diag:['你說話時別人常常聽不懂嗎？','你能一分鐘說清楚一個概念嗎？','你的表達有結構還是散亂的？'],
+    ai_task:'幫我優化這段表達，讓它更清楚有條理' },
+  { id:'m7',  icon:'🔧', name:'修正工程',       en:'Feedback System',       essence:'錯誤是升級的素材，不是失敗',
+    trainings:[['錯題本','Error Log','📒'],['反思日記','Reflection Journal','📔'],['誤差分析','Error Analysis','📊'],['每週檢討','Weekly Review','📅'],['迭代更新','Iteration','🔄']],
+    diag:['你做錯題後的反應是什麼？','你有系統性地分析錯誤原因嗎？','你能接受批評並從中學習嗎？'],
+    ai_task:'分析我的錯誤模式，找出根因並給升級策略' },
+  { id:'m8',  icon:'🔄', name:'更新工程',       en:'Update System',         essence:'升級舊模型，保持成長複利',
+    trainings:[['每日閱讀','Daily Reading','📚'],['跨界學習','Cross-Domain','🌐'],['AI對話','AI Dialogue','🤖'],['反思日記','Reflection','🪞'],['新體驗','New Experiences','🧭']],
+    diag:['你最近一次主動改變學習方法是什麼時候？','你有沒有問過自己：「我的方法還有更好的嗎？」','你願意放棄舊方法試試新的嗎？'],
+    ai_task:'找出我現在的3個限制信念，並給出升級版本' },
+  { id:'m9',  icon:'🔮', name:'預測工程',       en:'Prediction System',     essence:'看見未來，才能做對選擇',
+    trainings:[['情境推演','Scenario Planning','🗺️'],['機率思維','Probability','🎲'],['風險分析','Risk Analysis','⚠️'],['決策模擬','Decision Sim','🎮'],['歷史案例','Case Studies','📖']],
+    diag:['做決定前你會預想後果嗎？','你能想到3種以上的未來情境嗎？','你如何評估一個選擇的長期影響？'],
+    ai_task:'幫我預測這個選擇的3種未來情境，分析利弊' },
+  { id:'m10', icon:'⚖️', name:'決策工程',       en:'Decision System',       essence:'不衝動，做複利最大的選擇',
+    trainings:[['目標排序','Goal Priority','🎯'],['機會成本','Opportunity Cost','💰'],['長期思維','Long-Term','⏳'],['複利思維','Compound','📈'],['優先矩陣','Priority Matrix','📊']],
+    diag:['你最近一個重要決定是怎麼做的？','你考慮了機會成本嗎？','這個選擇5年後對你有什麼影響？'],
+    ai_task:'幫我分析這個決定的機會成本和長期複利效果' },
+  { id:'m11', icon:'📚', name:'學測高分工程',   en:'Exam System',           essence:'模型化每一科，不靠蠻記',
+    trainings:[['英文模型','English Model','🇬🇧'],['數學模型','Math Model','📐'],['國文模型','Chinese Model','📖'],['自然建模','Science Model','🔬'],['社會知識樹','Social Tree','🗺️']],
+    diag:['你每一科都有解題模型嗎？','你知道每科考的是哪種能力嗎？','你能預測考題類型嗎？'],
+    ai_task:'幫我建立英文學測的完整解題模型' },
+  { id:'m12', icon:'🌟', name:'人生操作系統',   en:'Life OS',               essence:'身份×目標×價值×複利×預測×更新',
+    trainings:[['身份模型','Identity','👤'],['目標模型','Goals','🎯'],['價值模型','Values','💎'],['複利模型','Compound','📈'],['預測模型','Prediction','🔮'],['更新模型','Update','🔄']],
+    diag:['你知道自己是誰嗎？Who are you?','你知道自己真正想要什麼嗎？','你的每天行動和你的目標一致嗎？'],
+    ai_task:'幫我建立我的人生操作系統：身份×目標×價值×行動' },
+];
+
+const QUOTES = [
+  { zh:'每次背單字背不起來，都藏著記憶方法的邊界。', en:'Every time you struggle to memorize vocabulary, you find the limit of your memory strategy.', cat:'學習' },
+  { zh:'每次英文看不懂，都藏著字彙量的邊界。', en:'Every time you cannot understand English, you find the limit of your vocabulary.', cat:'英文' },
+  { zh:'每次閱讀測驗錯很多，都藏著理解能力的邊界。', en:'Every time you miss many reading questions, you find the limit of your comprehension.', cat:'學習' },
+  { zh:'每次文法搞混，都藏著概念模型的邊界。', en:'Every time grammar confuses you, you find the limit of your mental model.', cat:'英文' },
+  { zh:'每次作文寫不出來，都藏著輸出能力的邊界。', en:'Every time you cannot write an essay, you find the limit of your output ability.', cat:'英文' },
+  { zh:'每次口說卡住，都藏著表達能力的邊界。', en:'Every time you get stuck speaking, you find the limit of your communication skills.', cat:'英文' },
+  { zh:'每次上台緊張，都藏著心理韌性的邊界。', en:'Every time you feel nervous on stage, you find the limit of your resilience.', cat:'心理' },
+  { zh:'每次考試失常，都藏著抗壓能力的邊界。', en:'Every time you underperform in exams, you find the limit of your stress tolerance.', cat:'心理' },
+  { zh:'每次數學不會算，都藏著抽象能力的邊界。', en:'Every time you cannot solve a math problem, you find the limit of your abstract thinking.', cat:'學習' },
+  { zh:'每次公式背了就忘，都藏著理解深度的邊界。', en:'Every time you forget a formula, you find the limit of your understanding.', cat:'學習' },
+  { zh:'每次物理看不懂，都藏著建模能力的邊界。', en:'Every time physics seems difficult, you find the limit of your modeling ability.', cat:'學習' },
+  { zh:'每次段考退步，都藏著學習策略的邊界。', en:'Every time your grades drop, you find the limit of your study strategy.', cat:'學習' },
+  { zh:'每次熬夜讀書，都藏著時間管理的邊界。', en:'Every time you stay up late studying, you find the limit of your time management.', cat:'執行' },
+  { zh:'每次拖延症發作，都藏著自律能力的邊界。', en:'Every time you procrastinate, you find the limit of your self-discipline.', cat:'執行' },
+  { zh:'每次滑手機停不下來，都藏著注意力的邊界。', en:'Every time you cannot stop scrolling, you find the limit of your attention control.', cat:'執行' },
+  { zh:'每次無法專心，都藏著專注力的邊界。', en:'Every time you lose focus, you find the limit of your concentration.', cat:'執行' },
+  { zh:'每次計畫失敗，都藏著執行力的邊界。', en:'Every time a plan fails, you find the limit of your execution ability.', cat:'執行' },
+  { zh:'每次放棄目標，都藏著堅持力的邊界。', en:'Every time you give up, you find the limit of your perseverance.', cat:'心理' },
+  { zh:'每次害怕失敗，都藏著勇氣的邊界。', en:'Every time you fear failure, you find the limit of your courage.', cat:'心理' },
+  { zh:'每次不敢發問，都藏著主動性的邊界。', en:'Every time you hesitate to ask questions, you find the limit of your initiative.', cat:'心理' },
+  { zh:'每次遇到挫折就抱怨，都藏著修正能力的邊界。', en:'Every time you complain about setbacks, you find the limit of your ability to improve.', cat:'成長' },
+  { zh:'每次被批評就受傷，都藏著自我認知的邊界。', en:'Every time criticism hurts you, you find the limit of your self-awareness.', cat:'成長' },
+  { zh:'每次與同學衝突，都藏著溝通能力的邊界。', en:'Every time you argue with classmates, you find the limit of your communication skills.', cat:'人際' },
+  { zh:'每次交不到朋友，都藏著社交能力的邊界。', en:'Every time you struggle to make friends, you find the limit of your social skills.', cat:'人際' },
+  { zh:'每次羨慕別人，都藏著自我價值感的邊界。', en:'Every time you envy others, you find the limit of your self-worth.', cat:'心理' },
+  { zh:'每次遇到高手就退縮，都藏著自信的邊界。', en:'Every time you shrink back from experts, you find the limit of your confidence.', cat:'心理' },
+  { zh:'每次不敢追夢，都藏著想像力的邊界。', en:'Every time you stop dreaming, you find the limit of your imagination.', cat:'成長' },
+  { zh:'每次做錯選擇，都藏著預測能力的邊界。', en:'Every time you make a poor choice, you find the limit of your prediction ability.', cat:'決策' },
+  { zh:'每次後悔決定，都藏著決策能力的邊界。', en:'Every time you regret a decision, you find the limit of your decision-making ability.', cat:'決策' },
+  { zh:'每次學了卻不會用，都藏著遷移能力的邊界。', en:'Every time you cannot apply what you learned, you find the limit of your transfer ability.', cat:'學習' },
+  { zh:'每次知道很多卻做不到，都藏著行動力的邊界。', en:'Every time you know but do not act, you find the limit of your action-taking ability.', cat:'執行' },
+  { zh:'每次重複犯錯，都藏著反思能力的邊界。', en:'Every time you repeat mistakes, you find the limit of your reflection ability.', cat:'成長' },
+  { zh:'每次進步很慢，都藏著刻意練習的邊界。', en:'Every time progress is slow, you find the limit of your deliberate practice.', cat:'成長' },
+  { zh:'每次半途而廢，都藏著目標感的邊界。', en:'Every time you quit halfway, you find the limit of your sense of purpose.', cat:'執行' },
+  { zh:'每次遇到困難就逃避，都藏著責任感的邊界。', en:'Every time you avoid difficulties, you find the limit of your responsibility.', cat:'心理' },
+  { zh:'每次覺得人生無聊，都藏著創造力的邊界。', en:'Every time life feels boring, you find the limit of your creativity.', cat:'成長' },
+  { zh:'每次覺得自己不夠好，都藏著身份認同的邊界。', en:'Every time you feel not good enough, you find the limit of your identity.', cat:'心理' },
+  { zh:'每次卡關不前，都藏著舊模型的邊界。', en:'Every time you get stuck, you find the limit of your old model.', cat:'成長' },
+  { zh:'每次突破卡關，都代表你正在擴大人生的邊界。', en:'Every time you break through, you expand the boundary of your life.', cat:'成長' },
+  { zh:'每一次卡關，都在揭露一個隱藏的邊界。', en:'Every obstacle reveals a hidden limit.', cat:'核心' },
+  { zh:'每一次修正，都在擴大你的能力。', en:'Every correction expands your capacity.', cat:'核心' },
+  { zh:'成長不是避開邊界，成長是發現邊界並持續擴大它。', en:'Growth is not avoiding limits. Growth is discovering and expanding them.', cat:'核心' },
+  { zh:'不是培養會考試的人，而是培養會思考的人。', en:'Not just exam-ready. Thinking-ready.', cat:'核心' },
+  { zh:'知識是別人的，能力是自己的。', en:'Knowledge is borrowed, ability is owned.', cat:'核心' },
+  { zh:'背答案是輸入，建模型是輸出。輸出才能真正升級。', en:'Memorizing is input. Modeling is output. Output is how you truly upgrade.', cat:'核心' },
+  { zh:'錯誤不是失敗，錯誤是升級的素材。', en:'Mistakes are not failures. They are upgrade materials.', cat:'核心' },
+  { zh:'專注力是學習的入口，沒有專注力，其他能力都是空談。', en:'Focus is the gateway to learning. Without it, all other abilities are talk.', cat:'核心' },
+  { zh:'高手不是更聰明，高手是更會修正。', en:'Experts are not smarter. They are better at correcting.', cat:'核心' },
+  { zh:'每天進步1%，365天後你是37倍的自己。', en:'1% better every day. After 365 days, you\'re 37x yourself.', cat:'核心' },
+  { zh:'High Agency不是等機會，是創造條件。', en:'High Agency is not waiting for opportunities. It\'s creating conditions.', cat:'核心' },
+];
+
+const UPGRADES = [
+  { old:'❌ 考試前一天才開始背', oLen:'Cramming the night before', new:'✅ 每天間隔複習，睡前主動回憶', nEn:'Daily spaced repetition + active recall before sleep' },
+  { old:'❌ 看不懂就放著，明天再說', oLen:'Avoiding what I don\'t understand', new:'✅ 看不懂就拆分，找到卡點在哪', nEn:'Break it down, locate exactly where you\'re stuck' },
+  { old:'❌ 做錯題跳過繼續往前', oLen:'Skipping mistakes to move forward', new:'✅ 每個錯題都是升級素材，分析根因', nEn:'Every mistake is upgrade material — analyze the root cause' },
+  { old:'❌ 滑手機等到有心情再讀書', oLen:'Waiting for motivation to study', new:'✅ 先開始兩分鐘，動了就有心情', nEn:'Start for 2 minutes — action creates motivation' },
+  { old:'❌ 背公式、背答案、背步驟', oLen:'Memorizing formulas, not mechanisms', new:'✅ 理解機制，建一個模型解所有題', nEn:'Understand the mechanism, build one model for all problems' },
+  { old:'❌ 覺得失敗很丟臉，不敢嘗試', oLen:'Fear of failure stops me from trying', new:'✅ 失敗是數據，數據讓我升級模型', nEn:'Failure is data — data upgrades my model' },
+  { old:'❌ 計畫很完美，執行就消失', oLen:'Perfect plans, zero execution', new:'✅ 先完成60分，邊做邊修正到90分', nEn:'Done at 60%, then iterate to 90%' },
+  { old:'❌ 遇到難題馬上問答案', oLen:'Asking for answers when stuck', new:'✅ 先掙扎10分鐘，掙扎才會留下印記', nEn:'Struggle for 10 minutes first — struggle makes it stick' },
+];
+
+const TASKS = [
+  { zh:'番茄鐘讀書25分鐘（手機放另一個房間）', en:'Pomodoro: 25 min study, phone in another room', xp:15 },
+  { zh:'做一張昨天錯題的根因分析', en:'Root cause analysis for one yesterday mistake', xp:20 },
+  { zh:'把今天學的概念用自己的話說出來', en:'Explain today\'s concept in your own words', xp:15 },
+  { zh:'傾聽一個同學或家人，不打斷', en:'Listen to a classmate or family member without interrupting', xp:10 },
+  { zh:'完成今天最難的那件事（不拖延）', en:'Complete the hardest task today — no procrastination', xp:20 },
+  { zh:'11點前入睡（記憶在睡眠中固化）', en:'Sleep before 11pm — memory consolidates during sleep', xp:15 },
+  { zh:'閱讀15分鐘（書、文章、英文）', en:'Read for 15 minutes: book, article, or English', xp:10 },
+  { zh:'寫一句今天的反思日記', en:'Write one sentence of reflection for today', xp:10 },
+  { zh:'運動20分鐘（跑步/走路/伸展）', en:'Exercise 20 min: run / walk / stretch', xp:15 },
+  { zh:'補充今日大腦黑科技營養素', en:'Take today\'s brain supplement (CoQ10 / Omega-3 / NMN)', xp:10 },
+];
+
+const LEVELS = [
+  { lv:'Lv1', name:'Explorer 探索者',   en:'Starting the journey', c:'#6B7280', xp:0 },
+  { lv:'Lv2', name:'Learner 學習者',    en:'Building foundations',  c:'#2563EB', xp:30 },
+  { lv:'Lv3', name:'Builder 建造者',    en:'Creating systems',      c:'#7C3AED', xp:60 },
+  { lv:'Lv4', name:'Optimizer 優化者',  en:'Refining models',       c:'#D97706', xp:80 },
+  { lv:'Lv5', name:'High Agency 高手',  en:'Creating your destiny', c:'#059669', xp:100 },
+];
+
+const QUIZ_QS = [
+  { zh:'你學新概念的方式是？', en:'How do you learn new concepts?', opts:[
+    { zh:'直接背答案和步驟', en:'Memorize answers and steps directly', score:{ a2:0, a3:0, a5:0 } },
+    { zh:'試著理解原理再記', en:'Try to understand the principle first', score:{ a3:2, a5:2 } },
+    { zh:'畫圖或找類比幫助理解', en:'Draw diagrams or find analogies', score:{ a2:2, a3:3, a5:3 } },
+    { zh:'把概念教給別人測試理解', en:'Teach it to someone else to test understanding', score:{ a5:3, a12:2, a3:2 } },
+  ]},
+  { zh:'遇到錯題你的反應是？', en:'How do you react to wrong answers?', opts:[
+    { zh:'看答案後繼續下一題', en:'Check the answer and move on', score:{ a8:0 } },
+    { zh:'把錯題抄下來', en:'Copy down the wrong question', score:{ a8:1 } },
+    { zh:'分析哪個步驟錯了', en:'Analyze which step went wrong', score:{ a8:2, a3:2 } },
+    { zh:'找出根本原因並更新自己的模型', en:'Find the root cause and update my model', score:{ a8:3, a9:3, a3:3 } },
+  ]},
+  { zh:'你的專注時間大約是？', en:'How long can you typically focus?', opts:[
+    { zh:'不到10分鐘就分心', en:'Less than 10 minutes before distraction', score:{ a1:0 } },
+    { zh:'10-25分鐘', en:'10-25 minutes', score:{ a1:1 } },
+    { zh:'25-50分鐘', en:'25-50 minutes', score:{ a1:2 } },
+    { zh:'50分鐘以上', en:'Over 50 minutes', score:{ a1:3 } },
+  ]},
+  { zh:'面對一個大任務，你會怎麼做？', en:'Faced with a large task, what do you do?', opts:[
+    { zh:'感覺很難先拖著', en:'It feels overwhelming — I delay it', score:{ a7:0, a6:0 } },
+    { zh:'等有心情再開始', en:'Wait until I feel motivated', score:{ a7:0, a6:1 } },
+    { zh:'拆成小步驟逐一完成', en:'Break it into small steps and tackle each one', score:{ a7:2, a6:2 } },
+    { zh:'排優先順序，馬上開始最重要的', en:'Prioritize and start the most important part immediately', score:{ a7:3, a6:3, a11:2 } },
+  ]},
+  { zh:'你如何看待自己的失敗？', en:'How do you see your failures?', opts:[
+    { zh:'很丟臉，不想再嘗試', en:'Embarrassing — I don\'t want to try again', score:{ a15:0, a14:0 } },
+    { zh:'難受，但會慢慢好起來', en:'It hurts, but I recover slowly', score:{ a15:1 } },
+    { zh:'分析原因，找到下次改善點', en:'Analyze why and find ways to improve', score:{ a8:2, a15:2 } },
+    { zh:'把失敗當升級的數據來用', en:'Use failures as upgrade data', score:{ a8:3, a15:3, a9:2 } },
+  ]},
+  { zh:'你的學習複習方式是？', en:'How do you review what you\'ve learned?', opts:[
+    { zh:'考前臨時抱佛腳', en:'Cram right before exams', score:{ a4:0 } },
+    { zh:'偶爾複習一下', en:'Review occasionally', score:{ a4:1 } },
+    { zh:'每天固定複習舊知識', en:'Review old knowledge every day', score:{ a4:2 } },
+    { zh:'間隔複習+主動回憶系統', en:'Spaced repetition + active recall system', score:{ a4:3, a3:2 } },
+  ]},
+  { zh:'遇到決策時你怎麼做？', en:'How do you make decisions?', opts:[
+    { zh:'靠感覺，做了再說', en:'Go with my gut', score:{ a11:0, a10:0 } },
+    { zh:'問別人意見', en:'Ask others for opinions', score:{ a11:1 } },
+    { zh:'比較選項，選最重要的', en:'Compare options and choose the most important', score:{ a11:2, a10:2 } },
+    { zh:'考慮長期影響和機會成本', en:'Consider long-term effects and opportunity cost', score:{ a11:3, a10:3 } },
+  ]},
+  { zh:'你表達想法時通常是？', en:'How do you typically express your ideas?', opts:[
+    { zh:'說了但別人常常聽不懂', en:'I say it but others often don\'t understand', score:{ a12:0 } },
+    { zh:'說得出來但沒有條理', en:'I can say it but without structure', score:{ a12:1 } },
+    { zh:'有條理地表達，用例子說明', en:'Express clearly with structure and examples', score:{ a12:2 } },
+    { zh:'能簡單有力地傳達核心', en:'Deliver the core message simply and powerfully', score:{ a12:3 } },
+  ]},
+  { zh:'你對自己有多少信心？', en:'How much confidence do you have in yourself?', opts:[
+    { zh:'常覺得自己不行', en:'I often feel I can\'t do it', score:{ a14:0 } },
+    { zh:'有時候有信心有時候沒有', en:'Sometimes confident, sometimes not', score:{ a14:1 } },
+    { zh:'大部分時候相信自己', en:'Mostly believe in myself', score:{ a14:2 } },
+    { zh:'用行動建立信心，不靠感覺', en:'Build confidence through action, not feelings', score:{ a14:3 } },
+  ]},
+  { zh:'你多久更新一次自己的學習方法？', en:'How often do you update your study methods?', opts:[
+    { zh:'從來不換，習慣了就這樣', en:'Never — I stick to what I\'m used to', score:{ a9:0 } },
+    { zh:'偶爾試試新方法', en:'Try new methods occasionally', score:{ a9:1 } },
+    { zh:'定期反思哪種方法最有效', en:'Regularly reflect on which methods work best', score:{ a9:2 } },
+    { zh:'持續實驗，主動升級自己的系統', en:'Continuously experiment and actively upgrade my system', score:{ a9:3 } },
+  ]},
+  { zh:'你的時間管理狀態是？', en:'How is your time management?', opts:[
+    { zh:'總是感覺時間不夠用', en:'Always feel like I don\'t have enough time', score:{ a6:0 } },
+    { zh:'有時計畫有時隨性', en:'Sometimes planned, sometimes random', score:{ a6:1 } },
+    { zh:'有基本的固定時間表', en:'Have a basic fixed schedule', score:{ a6:2 } },
+    { zh:'有系統地安排每日任務，先做重要的', en:'Systematically schedule daily tasks, prioritize important ones', score:{ a6:3, a7:2 } },
+  ]},
+  { zh:'當你遇到很難的問題，你怎麼做？', en:'When you face a very difficult problem, what do you do?', opts:[
+    { zh:'放棄，等老師解答', en:'Give up and wait for the teacher\'s answer', score:{ a15:0 } },
+    { zh:'掙扎一下然後看答案', en:'Struggle a little then look at the answer', score:{ a15:1 } },
+    { zh:'嘗試多種方法，問對的人', en:'Try multiple methods and ask the right people', score:{ a15:2, a8:2 } },
+    { zh:'把掙扎過程視為升級時間，享受它', en:'See the struggle as upgrade time and enjoy it', score:{ a15:3, a9:2, a14:2 } },
+  ]},
+];
+
+// ═══ STATE ═══
+let qIdx=0, qAns={}, taskDone=new Array(10).fill(false), xp=30;
+let chatHist=[], curQFilter='全部';
+
+// ═══ INIT ═══
+window.onload = () => {
+  renderDash(); renderHomeChain();
+  renderAbilityGrid(); renderModTabs(); renderModContents();
+  renderQuestion(); renderQuotes(); renderUpgrades();
+  renderTaskList(); renderLevelList();
+};
+
+function go(id, btn) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  if(btn) btn.classList.add('on');
+}
+
+// ── COLORS per ability ──
+const AB_COLORS = ['#4338CA','#2563EB','#7C3AED','#0D9488','#059669','#D97706','#DC2626','#EA580C','#DB2777','#6D28D9','#0891B2','#B45309','#16A34A','#1D4ED8','#7C3AED','#D97706'];
+
+function renderDash() {
+  const items = [
+    { icon:'🎯',name:'專注力',en:'Focus',s:78,c:AB_COLORS[0] },
+    { icon:'🔍',name:'抽象力',en:'Pattern',s:72,c:AB_COLORS[1] },
+    { icon:'🏗️',name:'建模力',en:'Modeling',s:68,c:AB_COLORS[2] },
+    { icon:'🧠',name:'記憶力',en:'Memory',s:80,c:AB_COLORS[3] },
+    { icon:'🔄',name:'修正力',en:'Improve',s:75,c:AB_COLORS[7] },
+    { icon:'🔮',name:'預測力',en:'Prediction',s:65,c:AB_COLORS[9] },
+  ];
+  document.getElementById('dashGrid').innerHTML = items.map(it=>`
+    <div class="dash-card" style="border-top:3px solid ${it.c}">
+      <div class="dc-icon">${it.icon}</div>
+      <div class="dc-name">${it.name}</div>
+      <div class="dc-en">${it.en}</div>
+      <div class="dc-score" style="color:${it.c}">${it.s}</div>
+      <div class="dc-bar-bg"><div class="dc-bar" style="background:${it.c};width:${it.s}%"></div></div>
+    </div>`).join('');
+}
+
+function renderHomeChain() {
+  const steps = [
+    ['診斷','Assess'],['教育','Learn'],['策略','Strategy'],['行動','Act'],
+    ['追蹤','Track'],['回饋','Feedback'],['修正','Correct'],['更新','Upgrade'],['能力提升','Level Up'],
+  ];
+  document.getElementById('homeChain').innerHTML = steps.map((s,i)=>`
+    <div class="fc-node${i===steps.length-1?' accent':''}">${s[0]}<span class="fc-node-en">${s[1]}</span></div>
+    ${i<steps.length-1?'<div class="fc-arrow">↓</div>':''}`).join('');
+}
+
+function renderAbilityGrid() {
+  document.getElementById('abilityGrid').innerHTML = ABILITIES.map((a,i)=>`
+    <div class="ab-card" onclick="showAbilityDetail('${a.id}')" style="border-top:3px solid ${AB_COLORS[i]}">
+      <div class="ab-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="ab-icon">${a.icon}</div>
+      <div class="ab-name">${a.name}</div>
+      <div class="ab-en">${a.en}</div>
+      <div class="ab-essence">${a.essence.split(' ').slice(0,3).join(' ')}</div>
+    </div>`).join('');
+}
+
+function showAbilityDetail(id) {
+  const a = ABILITIES.find(x=>x.id===id);
+  const ci = ABILITIES.indexOf(a);
+  const c = AB_COLORS[ci];
+  document.getElementById('abilityDetail').innerHTML = `
+    <div class="ab-detail">
+      <div class="ab-detail-head">
+        <div class="ab-detail-icon">${a.icon}</div>
+        <div>
+          <div class="ab-detail-title" style="color:${c}">${a.name}</div>
+          <div class="ab-detail-en">${a.en}</div>
+          <div class="ab-detail-essence">${a.essence}</div>
+        </div>
+      </div>
+      <div style="font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${c};margin-bottom:10px;">⚡ 六大槓桿策略 6 Key Levers</div>
+      <div class="levers-grid">
+        ${a.levers.map((l,i)=>`<div class="lever-card" style="border-top:2px solid ${c}30">
+          <div class="lever-num">槓桿 ${i+1}</div>
+          <div class="lever-zh">${l[0]}</div>
+          <div class="lever-en">${l[1]}</div>
+        </div>`).join('')}
+      </div>
+      <div class="hilo-grid">
+        <div class="hilo-box hilo-low"><div class="hilo-label low">❌ 低效模式</div>${a.low.map(s=>`<div class="hilo-item">${s}</div>`).join('')}</div>
+        <div class="hilo-box hilo-high"><div class="hilo-label high">✅ 高手模式</div>${a.high.map(s=>`<div class="hilo-item">${s}</div>`).join('')}</div>
+      </div>
+      <div style="margin-top:14px;background:var(--bg2);border-radius:var(--r2);padding:14px;border:1.5px solid ${c}30;">
+        <div style="font-size:13px;font-weight:700;color:${c};margin-bottom:6px;">🤖 AI任務提示</div>
+        <div style="font-size:15px;color:var(--text2);">${a.ai_task}</div>
+      </div>
+    </div>`;
+  document.getElementById('abilityDetail').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function renderModTabs() {
+  document.getElementById('modTabs').innerHTML = MODULES.map((m,i)=>`
+    <button class="mod-tab${i===0?' on':''}" id="mt-${m.id}" onclick="switchMod('${m.id}')">${m.icon} ${m.name}</button>`).join('');
+}
+
+function switchMod(id) {
+  document.querySelectorAll('.mod-tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.mod-content').forEach(c=>c.classList.remove('on'));
+  document.getElementById('mt-'+id).classList.add('on');
+  document.getElementById('mc-'+id).classList.add('on');
+}
+
+function renderModContents() {
+  document.getElementById('modContents').innerHTML = MODULES.map((m,i)=>`
+    <div class="mod-content${i===0?' on':''}" id="mc-${m.id}">
+      <div class="mod-head">
+        <div class="mod-num">模組 ${String(i+1).padStart(2,'0')} / ${m.en}</div>
+        <div class="mod-title">${m.name}</div>
+        <div class="mod-en">${m.en}</div>
+        <div class="mod-essence">${m.essence}</div>
+      </div>
+      <div style="font-size:13px;font-weight:700;letter-spacing:1px;color:var(--indigo);text-transform:uppercase;margin-bottom:10px;">🛠️ 訓練方法 Training Methods</div>
+      <div class="training-grid">
+        ${m.trainings.map(t=>`<div class="train-card"><div class="train-icon">${t[2]}</div><div class="train-name">${t[0]}</div><div class="train-en">${t[1]}</div></div>`).join('')}
+      </div>
+      <div style="font-size:13px;font-weight:700;letter-spacing:1px;color:var(--indigo);text-transform:uppercase;margin:14px 0 8px;">🩺 診斷問題 Diagnostic Questions</div>
+      ${m.diag.map(d=>`<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 14px;margin-bottom:6px;font-size:16px;color:var(--text2);border-left:3px solid var(--indigo);">${d}</div>`).join('')}
+      <div style="margin-top:14px;background:linear-gradient(135deg,#EEF2FF,#F5F3FF);border-radius:var(--r2);padding:14px;border:1.5px solid var(--border2);">
+        <div style="font-size:13px;font-weight:700;color:var(--indigo);margin-bottom:6px;">🤖 AI核心任務</div>
+        <div style="font-size:15px;color:var(--text2);">${m.ai_task}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── QUIZ ──
+function renderQuestion() {
+  const q = QUIZ_QS[qIdx];
+  const pct = Math.round(((qIdx+1)/QUIZ_QS.length)*100);
+  document.getElementById('progBar').style.width = pct+'%';
+  document.getElementById('progLabel').textContent = `第 ${qIdx+1} 題 / 共 ${QUIZ_QS.length} 題`;
+  document.getElementById('qText').textContent = q.zh;
+  document.getElementById('qTextEn').textContent = q.en;
+  document.getElementById('qOpts').innerHTML = q.opts.map((o,i)=>`
+    <button class="q-opt${qAns[qIdx]===i?' sel':''}" onclick="selectOpt(${i})">${o.zh}<br><span style="font-size:13px;font-family:'Space Grotesk';color:inherit;opacity:.8;">${o.en}</span></button>`).join('');
+  document.getElementById('btnPrev').disabled = qIdx===0;
+  document.getElementById('btnNext').textContent = qIdx===QUIZ_QS.length-1 ? '查看結果 →' : '下一題';
+  document.getElementById('btnNext').disabled = qAns[qIdx]===undefined;
+}
+function selectOpt(i) {
+  qAns[qIdx]=i;
+  document.querySelectorAll('.q-opt').forEach((b,j)=>b.classList.toggle('sel',j===i));
+  document.getElementById('btnNext').disabled=false;
+}
+function qPrev(){if(qIdx>0){qIdx--;renderQuestion();}}
+function qNext(){
+  if(qAns[qIdx]===undefined)return;
+  if(qIdx<QUIZ_QS.length-1){qIdx++;renderQuestion();}
+  else showDiagResult();
+}
+function showDiagResult() {
+  const scores={};
+  Object.keys(qAns).forEach(qi=>{
+    const q=QUIZ_QS[qi]; const o=q.opts[qAns[qi]];
+    Object.entries(o.score).forEach(([k,v])=>scores[k]=(scores[k]||0)+v);
+  });
+  const sorted = ABILITIES.map((a,i)=>({...a,s:scores[a.id]||0,c:AB_COLORS[i]})).sort((a,b)=>b.s-a.s);
+  const total = Object.values(scores).reduce((a,b)=>a+b,0);
+  const stage = total>=30?'High Agency高手 🚀':total>=20?'Builder建造者 🏗️':total>=12?'Learner學習者 📚':'Explorer探索者 🌱';
+  const stageEn = total>=30?'You\'re operating at the High Agency level':total>=20?'You\'re building solid learning systems':total>=12?'You\'re developing your core abilities':'Your journey of ability expansion begins here';
+  const topAbilities = sorted.slice(0,3).filter(a=>a.s>0);
+  const growthAbilities = sorted.slice(-3).filter(a=>a.s<6);
+
+  document.getElementById('diagArea').style.display='none';
+  document.getElementById('diagResult').style.display='block';
+  document.getElementById('diagResult').innerHTML = `
+    <div class="result-hero">
+      <div class="result-stage">你的能力發展階段 Your Stage</div>
+      <div class="result-name">${stage}</div>
+      <div class="result-desc">${stageEn}</div>
+      <div class="result-scores">
+        ${topAbilities.map(a=>`<div class="rs-box"><div class="rs-val">${a.icon}</div><div class="rs-lbl">${a.name}<br>${a.en}</div></div>`).join('')}
+      </div>
+    </div>
+    ${topAbilities.length?`
+    <div style="margin-bottom:16px;">
+      <div class="sec-h" style="font-size:18px;margin-bottom:8px;">💪 你的強項能力 Strength Abilities</div>
+      ${topAbilities.map(a=>`
+        <div style="background:var(--card);border-radius:var(--r2);padding:14px 16px;margin-bottom:8px;border-left:4px solid ${a.c};box-shadow:var(--shadow);">
+          <div style="font-size:16px;font-weight:800;color:var(--navy);">${a.icon} ${a.name} <span style="font-size:13px;color:${a.c};font-family:'Space Grotesk';">${a.en}</span></div>
+          <div style="font-size:14px;color:var(--soft);margin-top:4px;">${a.essence}</div>
+        </div>`).join('')}
+    </div>`:''}
+    ${growthAbilities.length?`
+    <div style="margin-bottom:16px;">
+      <div class="sec-h" style="font-size:18px;margin-bottom:8px;">🎯 成長機會 Growth Opportunities</div>
+      ${growthAbilities.map(a=>`
+        <div style="background:#FEF2F2;border-radius:var(--r2);padding:14px 16px;margin-bottom:8px;border-left:4px solid #FECACA;box-shadow:var(--shadow);">
+          <div style="font-size:16px;font-weight:800;color:var(--navy);">${a.icon} ${a.name} — ${a.ai_task}</div>
+          <div style="font-size:13px;color:var(--soft);margin-top:4px;font-family:'Space Grotesk';">${a.en}: ${a.levers[0][1]}, ${a.levers[1][1]}, ${a.levers[2][1]}</div>
+        </div>`).join('')}
+    </div>`:''}
+    <button class="btn-primary" style="width:100%;margin-bottom:8px;" onclick="restartDiag()">🔄 重新診斷 Restart</button>
+    <div class="buy-banner">
+      <div class="bb-title">🧠 升級大腦硬體，加速能力提升</div>
+      <div class="bb-sub">CoQ10 × 前額葉能量 | Omega-3 × 神經可塑性 | NMN × 認知彈性<br>冠貞生技精選 × 讓神經系統支持你的能力升級</div>
+      <a class="bb-link" href="${BUY}" target="_blank">🛒 7-ELEVEN 賣貨便 立即訂購</a>
+    </div>`;
+}
+function restartDiag(){
+  qIdx=0;qAns={};
+  document.getElementById('diagArea').style.display='block';
+  document.getElementById('diagResult').style.display='none';
+  renderQuestion();
+}
+
+// ── QUOTES ──
+const Q_CATS=['全部','核心','學習','英文','執行','心理','成長','人際','決策'];
+const Q_COLORS={'核心':'#4338CA','學習':'#2563EB','英文':'#7C3AED','執行':'#D97706','心理':'#DB2777','成長':'#059669','人際':'#0891B2','決策':'#EA580C'};
+function renderQuotes() {
+  document.getElementById('quotesFilter').innerHTML = Q_CATS.map(c=>`
+    <button class="qf-btn${c===curQFilter?' on':''}" onclick="setQFilter('${c}')">${c}</button>`).join('');
+  const filtered = curQFilter==='全部' ? QUOTES : QUOTES.filter(q=>q.cat===curQFilter);
+  document.getElementById('quotesGrid').innerHTML = filtered.map((q,i)=>`
+    <div class="q-card" style="border-left-color:${Q_COLORS[q.cat]||'#4338CA'}" onclick="copyQ(this,'${q.zh} / '+q.en)">
+      <div class="q-num" style="color:${Q_COLORS[q.cat]||'#4338CA'}">#${String(i+1).padStart(2,'0')} · ${q.cat}</div>
+      <div class="q-zh">${q.zh}</div>
+      <div class="q-en">${q.en}</div>
+    </div>`).join('');
+}
+function setQFilter(c){curQFilter=c;renderQuotes();}
+function copyQ(el,text){
+  navigator.clipboard&&navigator.clipboard.writeText(text).then(()=>{
+    const t=document.getElementById('copyToast');t.style.display='block';
+    setTimeout(()=>t.style.display='none',1400);
+  });
+}
+
+// ── UPGRADES ──
+function renderUpgrades() {
+  document.getElementById('upgradeCards').innerHTML = UPGRADES.map(u=>`
+    <div class="upgrade-card">
+      <div class="upg-old"><div class="upg-label old">❌ 舊模式 Old Pattern</div><div class="upg-text">${u.old.replace('❌ ','')}</div><div class="upg-en">${u.oLen}</div></div>
+      <div class="upg-arrow">↓ 升級 Upgrade</div>
+      <div class="upg-new"><div class="upg-label new">✅ 高手模式 High Agency Pattern</div><div class="upg-text">${u.new.replace('✅ ','')}</div><div class="upg-en">${u.nEn}</div></div>
+    </div>`).join('');
+}
+
+// ── DAILY TASKS ──
+function renderTaskList() {
+  document.getElementById('taskList').innerHTML = TASKS.map((t,i)=>`
+    <div class="task-item">
+      <div class="t-check${taskDone[i]?' done':''}" onclick="toggleTask(${i})">${taskDone[i]?'✓':''}</div>
+      <div class="t-body ${taskDone[i]?'t-done':''}">
+        <div class="t-zh">${t.zh}</div>
+        <div class="t-en">${t.en}</div>
+      </div>
+      <div class="t-xp">+${t.xp}</div>
+    </div>`).join('');
+  const pts=30+taskDone.reduce((s,d,i)=>d?s+TASKS[i].xp:s,0);
+  document.getElementById('dailyScore').textContent=pts;
+  document.getElementById('doneCount').textContent=taskDone.filter(Boolean).length;
+  updateXP(pts);
+}
+function toggleTask(i){
+  taskDone[i]=!taskDone[i];
+  xp = 30+taskDone.reduce((s,d,i)=>d?s+TASKS[i].xp:s,0);
+  renderTaskList();
+}
+function renderLevelList(){
+  document.getElementById('levelList').innerHTML=LEVELS.map((l,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--card);border-radius:10px;margin-bottom:6px;border:1.5px solid ${i===1?l.c+'44':'var(--border)'};">
+      <div style="width:28px;height:28px;border-radius:50%;background:${l.c}18;color:${l.c};font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${l.lv}</div>
+      <div>
+        <div style="font-size:15px;font-weight:800;color:${i===1?l.c:'var(--navy)'};">${l.name}${i===1?' ← 你現在在這裡':''}</div>
+        <div style="font-size:13px;color:var(--soft);font-family:'Space Grotesk';">${l.en} · ${l.xp}+ XP</div>
+      </div>
+    </div>`).join('');
+}
+function updateXP(pts){
+  const v=Math.min(pts,120);
+  document.getElementById('xpFill').style.width=(v/120*100)+'%';
+  document.getElementById('xpPts').textContent=v+' / 120 XP';
+  const lv=v>=100?'High Agency Lv5':v>=80?'Optimizer Lv4':v>=60?'Builder Lv3':v>=40?'Learner Lv2':'Explorer Lv1';
+  document.getElementById('xpLabel').textContent=lv;
+  document.getElementById('dailyLevelText').textContent=lv;
+}
+
+// ── AI COACH ──
+const AI_SYS=`你是「High Agency Student OS」的AI學習教練。
+你的任務：用「能力邊界」框架分析高中生的學習困境。
+
+16大核心能力：專注力(Focus)、抽象能力(Pattern Finding)、建模能力(Modeling)、記憶能力(Memory)、理解能力(Understanding)、自律能力(Self-Control)、執行力(Action)、修正能力(Improve)、更新能力(Upgrade)、預測能力(Prediction)、決策能力(Decision Making)、表達能力(Communication)、社交能力(Friendship)、自信能力(Confidence)、韌性能力(Resilience)、創造力(Creativity)
+
+回應格式：
+1. 📍 定位困境 — 找出卡關的核心能力邊界（中英對照）
+2. 🔍 根因分析 — 為什麼會這樣（一個機制說明）
+3. ⚡ 3個今週可行的槓桿策略 — 具體、可立即執行（中英對照）
+4. 🔮 升級後的樣子 — 能力提升後會有什麼不同
+5. 💡 一句升級金句 — 中英雙語
+
+語氣：精準、有力、像高手教練，不囉嗦。繁體中文為主，英文術語用括號標注。250字以內。`;
+
+async function sendAI(msg) {
+  const inp = document.getElementById('aiInput');
+  const text = msg || inp.value.trim();
+  if(!text || document.getElementById('aiSend').disabled) return;
+  inp.value='';
+  addMsg('user', text);
+  chatHist.push({role:'user',content:text});
+  document.getElementById('aiSend').disabled=true;
+  const tid='t'+Date.now();
+  addMsg('bot',`<div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>`,tid);
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:AI_SYS,messages:chatHist})});
+    const d=await r.json();
+    const reply=d.content?.[0]?.text||'請再試一次。';
+    document.getElementById(tid)?.remove();
+    addMsg('bot',reply.replace(/\n/g,'<br>'));
+    chatHist.push({role:'assistant',content:reply});
+  }catch(e){document.getElementById(tid)?.remove();addMsg('bot','連線問題，請稍後再試。');}
+  document.getElementById('aiSend').disabled=false;
+}
+function addMsg(role,html,id){
+  const chat=document.getElementById('aiChat');
+  const div=document.createElement('div');div.className='ai-msg '+role;if(id)div.id=id;
+  div.innerHTML=role==='user'?`<div class="ai-bubble">${html}</div>`:`<div class="ai-ico">🎯</div><div class="ai-bubble">${html}</div>`;
+  chat.appendChild(div);chat.scrollTop=chat.scrollHeight;
+}
+</script>
+</body>
+</html>
