@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>學測字根字綴 — 高密度學習站</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080C14;--surface:#0F1623;--card:#161F30;--border:#1E2D45;
+  --text:#E8EDF5;--muted:#6B80A0;--gold:#F0C040;--gold2:#D4A020;
+  --correct:#34D399;--wrong:#F87171;--accent:#5B9BD5;
+  --root-color:#FF7F50;--pre-color:#7B68EE;--suf-color:#3CB371;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk','Noto Sans TC',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,var(--bg),var(--surface));border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+.logo-mark{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#080C14;flex-shrink:0;}
+.logo-text{font-size:17px;font-weight:700;color:var(--text);}
+.logo-sub{font-size:11px;color:var(--muted);}
+.hstats{margin-left:auto;display:flex;gap:12px;}
+.hpill{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--muted);}
+.hpill b{color:var(--gold);}
+
+/* NAV */
+.nav{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nb{flex:none;padding:12px 18px;font-size:13px;font-weight:600;border:none;background:none;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap;font-family:inherit;}
+.nb.on{color:var(--gold);border-bottom-color:var(--gold);}
+.nb:hover:not(.on){color:var(--text);}
+
+/* PAGES */
+.page{display:none;padding:20px;max-width:1000px;margin:0 auto;}
+.page.on{display:block;}
+
+/* SECTION TITLE */
+.stitle{font-size:18px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.dot{width:8px;height:8px;border-radius:50%;}
+
+/* CATEGORY TABS */
+.catbar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.catbtn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;border:1.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;transition:.2s;font-family:inherit;}
+.catbtn.on{color:#080C14;border-color:transparent;}
+.catbtn.root.on{background:var(--root-color);}
+.catbtn.pre.on{background:var(--pre-color);}
+.catbtn.suf.on{background:var(--suf-color);}
+
+/* BROWSE */
+.unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:24px;}
+.ucard{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:.2s;position:relative;}
+.ucard:hover,.ucard.sel{border-color:var(--gold);}
+.ucard.sel{box-shadow:0 0 14px rgba(240,192,64,.18);}
+.uc-label{font-size:16px;font-weight:700;margin-bottom:3px;}
+.uc-mean{font-size:11px;color:var(--muted);}
+.uc-ex{font-size:10px;margin-top:6px;color:var(--text);opacity:.7;}
+.uc-bar{height:3px;background:var(--border);border-radius:2px;margin-top:8px;}
+.uc-fill{height:100%;border-radius:2px;transition:.4s;}
+.uc-n{font-size:10px;color:var(--muted);margin-top:4px;}
+
+.word-table{width:100%;border-collapse:collapse;}
+.word-table th{background:var(--surface);color:var(--muted);font-size:11px;font-weight:600;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.5px;}
+.word-table td{padding:11px 12px;border-bottom:1px solid rgba(30,45,69,.5);font-size:14px;vertical-align:middle;}
+.word-table tr:hover td{background:rgba(240,192,64,.03);}
+.td-word{font-weight:600;}
+.td-ipa{font-size:11px;color:var(--muted);font-style:italic;}
+.td-zh{color:var(--gold);font-size:13px;}
+
+/* FLASHCARD */
+.fc-wrap{perspective:1100px;max-width:480px;margin:0 auto;}
+.fc{width:100%;height:280px;position:relative;transform-style:preserve-3d;transition:.5s cubic-bezier(.4,0,.2,1);cursor:pointer;}
+.fc.flip{transform:rotateY(180deg);}
+.fc-face{position:absolute;inset:0;border-radius:18px;padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;backface-visibility:hidden;text-align:center;border:1px solid var(--border);}
+.fc-front{background:var(--card);}
+.fc-back{background:linear-gradient(135deg,var(--card),#1A2A40);transform:rotateY(180deg);}
+.fc-badge{font-size:11px;font-weight:700;border-radius:6px;padding:3px 10px;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px;}
+.fc-word{font-size:44px;font-weight:700;letter-spacing:-1.5px;margin-bottom:6px;}
+.fc-ipa{font-size:14px;color:var(--muted);font-style:italic;margin-bottom:10px;}
+.fc-hint{font-size:12px;color:var(--muted);}
+.fc-zh{font-size:22px;font-weight:600;color:var(--gold);margin-bottom:14px;}
+.fc-examples{display:flex;flex-direction:column;gap:6px;width:100%;}
+.fc-ex{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:8px 12px;font-size:13px;text-align:left;}
+.fc-ex b{color:var(--accent);}
+.pbar{height:5px;background:var(--border);border-radius:3px;margin-bottom:14px;}
+.pbar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:3px;transition:.4s;}
+.fc-counter{font-size:12px;color:var(--muted);text-align:center;margin-bottom:14px;}
+.fc-btns{display:flex;gap:10px;justify-content:center;margin-top:16px;display:none;}
+.btn{padding:10px 22px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:inherit;transition:.2s;}
+.btn-gold{background:var(--gold);color:#080C14;}
+.btn-gold:hover{background:var(--gold2);}
+.btn-ghost{background:var(--card);color:var(--text);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+.btn-ok{background:rgba(52,211,153,.15);color:var(--correct);border:1px solid var(--correct);}
+.btn-bad{background:rgba(248,113,113,.15);color:var(--wrong);border:1px solid var(--wrong);}
+.btn-ok:hover{background:rgba(52,211,153,.28);}
+.btn-bad:hover{background:rgba(248,113,113,.28);}
+.fc-hint-tap{font-size:11px;color:var(--muted);text-align:center;margin-top:8px;}
+.sbar{display:flex;gap:16px;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px 16px;margin-bottom:18px;align-items:center;flex-wrap:wrap;}
+.sb-item{display:flex;flex-direction:column;align-items:center;gap:1px;}
+.sb-lbl{font-size:11px;color:var(--muted);}
+.sb-val{font-size:20px;font-weight:700;color:var(--gold);}
+.ml-auto{margin-left:auto;}
+
+/* QUIZ */
+.qz-type{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:3px 10px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;background:rgba(91,155,213,.15);color:var(--accent);}
+.qz-q{font-size:21px;font-weight:700;text-align:center;margin-bottom:6px;line-height:1.4;}
+.qz-ipa{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px;font-style:italic;}
+.qz-opts{display:grid;gap:9px;}
+.qz-opt{background:var(--card);border:1.5px solid var(--border);border-radius:11px;padding:14px 18px;font-size:14px;cursor:pointer;text-align:left;color:var(--text);font-family:inherit;transition:.2s;}
+.qz-opt:hover:not(:disabled){border-color:var(--gold);background:rgba(240,192,64,.05);}
+.qz-opt.ok{border-color:var(--correct);background:rgba(52,211,153,.1);color:var(--correct);}
+.qz-opt.bad{border-color:var(--wrong);background:rgba(248,113,113,.1);color:var(--wrong);}
+.qz-explain{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px 16px;margin-top:14px;font-size:14px;line-height:1.6;display:none;}
+.qz-explain.show{display:block;}
+.qz-explain b{color:var(--gold);}
+.qz-next{text-align:center;margin-top:14px;display:none;}
+
+/* DRILL */
+.drill-q{font-size:20px;font-weight:600;text-align:center;line-height:1.7;margin-bottom:20px;}
+.blank-word{display:inline-block;min-width:100px;border-bottom:2px solid var(--gold);text-align:center;padding:0 4px;color:var(--gold);cursor:default;}
+.drill-opts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px;}
+.drill-opt{background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:9px 16px;font-size:13px;cursor:pointer;color:var(--text);font-family:inherit;transition:.2s;}
+.drill-opt:hover{border-color:var(--gold);}
+.drill-opt.ok{border-color:var(--correct);background:rgba(52,211,153,.1);color:var(--correct);}
+.drill-opt.bad{border-color:var(--wrong);background:rgba(248,113,113,.1);color:var(--wrong);}
+
+/* RESULT */
+.result{text-align:center;padding:36px;background:var(--card);border-radius:18px;border:1px solid var(--border);}
+.result-score{font-size:60px;font-weight:700;color:var(--gold);}
+.result-stars{font-size:34px;letter-spacing:4px;margin-bottom:8px;}
+.result-msg{font-size:16px;color:var(--muted);margin-bottom:20px;}
+
+/* MAP */
+.map-section{margin-bottom:28px;}
+.map-title{font-size:14px;font-weight:700;margin-bottom:10px;padding:8px 14px;border-radius:8px;display:inline-block;}
+.map-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.map-chip{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 13px;font-size:13px;cursor:pointer;transition:.2s;color:var(--text);}
+.map-chip:hover{border-color:var(--gold);transform:translateY(-1px);}
+.map-chip b{font-size:14px;}
+.map-chip span{font-size:10px;color:var(--muted);display:block;margin-top:2px;}
+
+/* OVERLAY */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:center;justify-content:center;padding:16px;}
+.overlay.on{display:flex;}
+.overlay-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;max-width:580px;width:100%;max-height:80vh;overflow-y:auto;}
+.ob-title{font-size:16px;font-weight:700;margin-bottom:16px;}
+.sel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;}
+.sel-card{background:var(--card);border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;cursor:pointer;transition:.2s;}
+.sel-card.on{border-color:var(--gold);}
+.sel-card:hover{border-color:var(--gold);}
+.sc-label{font-size:13px;font-weight:700;}
+.sc-sub{font-size:10px;color:var(--muted);}
+
+/* COMBO */
+.combo{display:none;position:fixed;top:74px;right:16px;background:var(--gold);color:#080C14;font-weight:700;font-size:14px;border-radius:10px;padding:7px 14px;z-index:300;animation:pop .5s ease;}
+@keyframes pop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+
+@media(max-width:560px){
+  .unit-grid{grid-template-columns:repeat(2,1fr);}
+  .fc-word{font-size:32px;}
+  .fc{height:250px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-mark">字</div>
+  <div><div class="logo-text">學測字根字綴站</div><div class="logo-sub">100字根 · 51前綴 · 49後綴 · 600+單字</div></div>
+  <div class="hstats">
+    <div class="hpill">練習 <b id="hdStudied">0</b></div>
+    <div class="hpill">連線 <b id="hdStreak">0</b>天</div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nb on" onclick="gotoPage('map',this)">🗺 總覽地圖</button>
+  <button class="nb" onclick="gotoPage('browse',this)">📖 單元瀏覽</button>
+  <button class="nb" onclick="gotoPage('flash',this)">🃏 閃卡練習</button>
+  <button class="nb" onclick="gotoPage('quiz',this)">🧠 四選一測驗</button>
+  <button class="nb" onclick="gotoPage('drill',this)">✍️ 填空練習</button>
+  <button class="nb" onclick="gotoPage('prog',this)">📊 學習進度</button>
+</div>
+
+<div id="comboBadge" class="combo"></div>
+
+<!-- ===== MAP ===== -->
+<div class="page on" id="page-map">
+  <div class="stitle"><span class="dot" style="background:var(--root-color)"></span>字根總覽（100個）</div>
+  <div id="mapRoot"></div>
+  <div class="stitle" style="margin-top:24px;"><span class="dot" style="background:var(--pre-color)"></span>前綴總覽（51個）</div>
+  <div id="mapPre"></div>
+  <div class="stitle" style="margin-top:24px;"><span class="dot" style="background:var(--suf-color)"></span>後綴總覽（49個）</div>
+  <div id="mapSuf"></div>
+</div>
+
+<!-- ===== BROWSE ===== -->
+<div class="page" id="page-browse">
+  <div class="catbar">
+    <button class="catbtn root on" onclick="setBrowseCat('root',this)">🟥 字根</button>
+    <button class="catbtn pre" onclick="setBrowseCat('pre',this)">🟦 前綴</button>
+    <button class="catbtn suf" onclick="setBrowseCat('suf',this)">🟩 後綴</button>
+  </div>
+  <div class="unit-grid" id="browseGrid"></div>
+  <div id="browseDetail"></div>
+</div>
+
+<!-- ===== FLASH ===== -->
+<div class="page" id="page-flash">
+  <div class="sbar">
+    <div class="sb-item"><div class="sb-lbl">已看</div><div class="sb-val" id="fcSeen">0</div></div>
+    <div class="sb-item"><div class="sb-lbl">✅ 會了</div><div class="sb-val" id="fcOK">0</div></div>
+    <div class="sb-item"><div class="sb-lbl">❌ 再看</div><div class="sb-val" id="fcNG">0</div></div>
+    <div class="ml-auto" style="display:flex;gap:7px;">
+      <button class="btn btn-ghost" style="padding:7px 12px;font-size:12px;" onclick="openSel('fc')">選單元</button>
+      <button class="btn btn-ghost" style="padding:7px 12px;font-size:12px;" onclick="startFC()">🔀 洗牌</button>
+    </div>
+  </div>
+  <div class="pbar"><div class="pbar-fill" id="fcBar"></div></div>
+  <div class="fc-counter" id="fcCtr">點擊卡片翻面</div>
+  <div class="fc-wrap">
+    <div class="fc" id="fcCard" onclick="flipFC()">
+      <div class="fc-face fc-front">
+        <div class="fc-badge" id="fcBadge" style="background:rgba(240,192,64,.12);color:var(--gold)"></div>
+        <div class="fc-word" id="fcWord">—</div>
+        <div class="fc-ipa" id="fcIpa"></div>
+        <div class="fc-hint">點擊翻面 → 看中文 + 例字</div>
+      </div>
+      <div class="fc-face fc-back">
+        <div class="fc-badge" id="fcBadge2" style="background:rgba(240,192,64,.12);color:var(--gold)"></div>
+        <div style="font-size:22px;font-weight:700;margin-bottom:2px;" id="fcWord2"></div>
+        <div class="fc-zh" id="fcZh"></div>
+        <div class="fc-examples" id="fcExamples"></div>
+      </div>
+    </div>
+  </div>
+  <div class="fc-hint-tap">翻面後選擇 ✅ 記得 / ❌ 再看</div>
+  <div class="fc-btns" id="fcBtns">
+    <button class="btn btn-bad" onclick="markFC(false)">❌ 再看</button>
+    <button class="btn btn-ghost" onclick="skipFC()">⏭ 跳</button>
+    <button class="btn btn-ok" onclick="markFC(true)">✅ 記得</button>
+  </div>
+  <div id="fcResult" style="display:none;margin-top:28px;">
+    <div class="result">
+      <div class="result-stars" id="fcStars"></div>
+      <div class="result-score" id="fcScore"></div>
+      <div class="result-msg" id="fcMsg"></div>
+      <button class="btn btn-gold" onclick="startFC()" style="margin-top:14px;">再來一輪</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div class="page" id="page-quiz">
+  <div class="sbar">
+    <div class="sb-item"><div class="sb-lbl">第</div><div class="sb-val" id="qzN">1</div></div>
+    <div class="sb-item"><div class="sb-lbl">✅</div><div class="sb-val" id="qzOK">0</div></div>
+    <div class="sb-item"><div class="sb-lbl">❌</div><div class="sb-val" id="qzNG">0</div></div>
+    <div class="ml-auto" style="display:flex;gap:7px;">
+      <button class="btn btn-ghost" style="padding:7px 12px;font-size:12px;" onclick="openSel('qz')">選單元</button>
+      <button class="btn btn-gold" style="padding:7px 12px;font-size:12px;" onclick="startQuiz()">重開</button>
+    </div>
+  </div>
+  <div class="pbar"><div class="pbar-fill" id="qzBar"></div></div>
+  <div id="quizArea">
+    <div class="qz-type" id="qzType">中翻英</div>
+    <div class="qz-q" id="qzQ"></div>
+    <div class="qz-ipa" id="qzIpa"></div>
+    <div class="qz-opts" id="qzOpts"></div>
+    <div class="qz-explain" id="qzExplain"></div>
+    <div class="qz-next" id="qzNext"><button class="btn btn-gold" onclick="nextQuiz()">下一題 →</button></div>
+  </div>
+  <div id="quizResult" style="display:none;margin-top:28px;">
+    <div class="result">
+      <div class="result-stars" id="qzStars"></div>
+      <div class="result-score" id="qzScore"></div>
+      <div class="result-msg" id="qzMsg"></div>
+      <button class="btn btn-gold" onclick="startQuiz()" style="margin-top:14px;">再測一次</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DRILL ===== -->
+<div class="page" id="page-drill">
+  <div class="sbar">
+    <div class="sb-item"><div class="sb-lbl">第</div><div class="sb-val" id="drN">1</div></div>
+    <div class="sb-item"><div class="sb-lbl">✅</div><div class="sb-val" id="drOK">0</div></div>
+    <div class="sb-item"><div class="sb-lbl">❌</div><div class="sb-val" id="drNG">0</div></div>
+    <div class="ml-auto"><button class="btn btn-gold" style="padding:7px 12px;font-size:12px;" onclick="startDrill()">重開</button></div>
+  </div>
+  <div class="pbar"><div class="pbar-fill" id="drBar"></div></div>
+  <div id="drillArea">
+    <div class="qz-type">字根填空</div>
+    <div class="drill-q" id="drQ"></div>
+    <div class="drill-opts" id="drOpts"></div>
+    <div class="qz-explain" id="drExplain"></div>
+    <div class="qz-next" id="drNext"><button class="btn btn-gold" onclick="nextDrill()">下一題 →</button></div>
+  </div>
+  <div id="drillResult" style="display:none;margin-top:28px;">
+    <div class="result">
+      <div class="result-stars" id="drStars"></div>
+      <div class="result-score" id="drScore"></div>
+      <div class="result-msg" id="drMsg"></div>
+      <button class="btn btn-gold" onclick="startDrill()" style="margin-top:14px;">再練一次</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROGRESS ===== -->
+<div class="page" id="page-prog">
+  <div class="stitle"><span class="dot" style="background:var(--gold)"></span>學習進度</div>
+  <div id="progContent"></div>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="selOverlay" onclick="closeOverlay(event)">
+  <div class="overlay-box">
+    <div class="ob-title">選擇要練習的單元</div>
+    <div style="display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap;">
+      <button class="btn btn-gold" style="padding:6px 12px;font-size:12px;" onclick="selAll()">全選</button>
+      <button class="btn btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="selNone()">清空</button>
+      <button class="btn btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="selCat('root')" id="selRootBtn">僅字根</button>
+      <button class="btn btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="selCat('pre')" id="selPreBtn">僅前綴</button>
+      <button class="btn btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="selCat('suf')" id="selSufBtn">僅後綴</button>
+    </div>
+    <div class="sel-grid" id="selGrid"></div>
+    <div style="text-align:center;margin-top:16px;"><button class="btn btn-gold" onclick="applySelection()">確認</button></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const UNITS = [
+// --- ROOTS ---
+{id:"act",type:"root",label:"act",ipa:"/ækt/",mean:"行動",color:"#FF7F50",words:[
+  {w:"act",ipa:"/ækt/",zh:"行動",ex:["act of kindness"]},
+  {w:"action",ipa:"/ˈæk.ʃən/",zh:"行為",ex:["take action"]},
+  {w:"active",ipa:"/ˈæk.tɪv/",zh:"主動的",ex:["active role"]},
+  {w:"activate",ipa:"/ˈæk.tə.veɪt/",zh:"啟動",ex:["activate the alarm"]},
+  {w:"activity",ipa:"/ækˈtɪv.ə.ti/",zh:"活動",ex:["outdoor activity"]},
+  {w:"actor",ipa:"/ˈæk.tɚ/",zh:"演員",ex:["lead actor"]},
+]},
+{id:"aer",type:"root",label:"aer",ipa:"/er/",mean:"空氣",color:"#87CEEB",words:[
+  {w:"aerial",ipa:"/ˈer.i.əl/",zh:"空中的",ex:["aerial view"]},
+  {w:"aerobic",ipa:"/eˈroʊ.bɪk/",zh:"有氧的",ex:["aerobic exercise"]},
+  {w:"aerospace",ipa:"/ˈer.oʊ.speɪs/",zh:"航太",ex:["aerospace industry"]},
+  {w:"aerosol",ipa:"/ˈer.oʊ.sɔːl/",zh:"噴霧",ex:["aerosol can"]},
+  {w:"aerodynamic",ipa:"/ˌer.oʊ.daɪˈnæm.ɪk/",zh:"空氣動力的",ex:["aerodynamic design"]},
+  {w:"aeration",ipa:"/erˈeɪ.ʃən/",zh:"通氣",ex:["soil aeration"]},
+]},
+{id:"bio",type:"root",label:"bio",ipa:"/ˈbaɪ.oʊ/",mean:"生命",color:"#3CB371",words:[
+  {w:"biology",ipa:"/baɪˈɑː.lə.dʒi/",zh:"生物學",ex:["study biology"]},
+  {w:"biography",ipa:"/baɪˈɑː.ɡrə.fi/",zh:"傳記",ex:["write a biography"]},
+  {w:"biodegradable",ipa:"/ˌbaɪ.oʊ.dɪˈɡreɪ.də.bəl/",zh:"可生物分解",ex:["biodegradable packaging"]},
+  {w:"biosphere",ipa:"/ˈbaɪ.oʊ.sfɪr/",zh:"生物圈",ex:["protect the biosphere"]},
+  {w:"biotechnology",ipa:"/ˌbaɪ.oʊ.tekˈnɑː.lə.dʒi/",zh:"生技",ex:["biotech company"]},
+  {w:"antibiotic",ipa:"/ˌæn.t̬i.baɪˈɑː.tɪk/",zh:"抗生素",ex:["take antibiotics"]},
+]},
+{id:"chron",type:"root",label:"chron",ipa:"/krɑːn/",mean:"時間",color:"#9370DB",words:[
+  {w:"chronic",ipa:"/ˈkrɑː.nɪk/",zh:"慢性的",ex:["chronic disease"]},
+  {w:"chronology",ipa:"/krəˈnɑː.lə.dʒi/",zh:"年代順序",ex:["in chronology"]},
+  {w:"synchronize",ipa:"/ˈsɪŋ.krə.naɪz/",zh:"同步",ex:["synchronize watches"]},
+  {w:"anachronism",ipa:"/əˈnæk.rə.nɪ.zəm/",zh:"時代錯置",ex:["a historical anachronism"]},
+  {w:"chronometer",ipa:"/krəˈnɑː.mə.tɚ/",zh:"精密計時器",ex:["naval chronometer"]},
+  {w:"chronicle",ipa:"/ˈkrɑː.nɪ.kəl/",zh:"編年史",ex:["chronicle of events"]},
+]},
+{id:"dict",type:"root",label:"dict",ipa:"/dɪkt/",mean:"說",color:"#FFD700",words:[
+  {w:"dictate",ipa:"/ˈdɪk.teɪt/",zh:"命令；口述",ex:["dictate terms"]},
+  {w:"dictionary",ipa:"/ˈdɪk.ʃəˌner.i/",zh:"字典",ex:["look it up in the dictionary"]},
+  {w:"predict",ipa:"/prɪˈdɪkt/",zh:"預測",ex:["predict the outcome"]},
+  {w:"contradict",ipa:"/ˌkɑːn.trəˈdɪkt/",zh:"反駁",ex:["contradict yourself"]},
+  {w:"verdict",ipa:"/ˈvɝː.dɪkt/",zh:"裁決",ex:["return a verdict"]},
+  {w:"indict",ipa:"/ɪnˈdaɪt/",zh:"起訴",ex:["indict for fraud"]},
+]},
+{id:"duc",type:"root",label:"duc",ipa:"/dʌk/",mean:"引導",color:"#FF6347",words:[
+  {w:"educate",ipa:"/ˈedʒ.ə.keɪt/",zh:"教育",ex:["educate the public"]},
+  {w:"conduct",ipa:"/ˈkɑːn.dʌkt/",zh:"行為；指揮",ex:["conduct research"]},
+  {w:"reduce",ipa:"/rɪˈduːs/",zh:"減少",ex:["reduce emissions"]},
+  {w:"produce",ipa:"/prəˈduːs/",zh:"生產",ex:["produce results"]},
+  {w:"introduce",ipa:"/ˌɪn.trəˈduːs/",zh:"介紹",ex:["introduce yourself"]},
+  {w:"deduce",ipa:"/dɪˈduːs/",zh:"推論",ex:["deduce the answer"]},
+]},
+{id:"fac",type:"root",label:"fac",ipa:"/fæk/",mean:"做",color:"#DAA520",words:[
+  {w:"fact",ipa:"/fækt/",zh:"事實",ex:["state the facts"]},
+  {w:"factory",ipa:"/ˈfæk.tɚ.i/",zh:"工廠",ex:["car factory"]},
+  {w:"manufacture",ipa:"/ˌmæn.jəˈfæk.tʃɚ/",zh:"製造",ex:["manufacture goods"]},
+  {w:"facilitate",ipa:"/fəˈsɪl.ə.teɪt/",zh:"促進",ex:["facilitate learning"]},
+  {w:"faculty",ipa:"/ˈfæk.əl.ti/",zh:"能力；院系",ex:["faculty of science"]},
+  {w:"artifact",ipa:"/ˈɑːr.t̬ə.fækt/",zh:"人工製品",ex:["ancient artifact"]},
+]},
+{id:"fer",type:"root",label:"fer",ipa:"/fɝː/",mean:"帶/傳",color:"#00CED1",words:[
+  {w:"transfer",ipa:"/trænsˈfɝː/",zh:"轉移",ex:["transfer money"]},
+  {w:"refer",ipa:"/rɪˈfɝː/",zh:"提及；查閱",ex:["refer to the manual"]},
+  {w:"offer",ipa:"/ˈɔː.fɚ/",zh:"提供",ex:["offer help"]},
+  {w:"prefer",ipa:"/prɪˈfɝː/",zh:"偏好",ex:["prefer tea to coffee"]},
+  {w:"suffer",ipa:"/ˈsʌf.ɚ/",zh:"受苦",ex:["suffer from stress"]},
+  {w:"confer",ipa:"/kənˈfɝː/",zh:"授予；商議",ex:["confer a degree"]},
+]},
+{id:"fin",type:"root",label:"fin",ipa:"/fɪn/",mean:"結束/界限",color:"#6495ED",words:[
+  {w:"final",ipa:"/ˈfaɪ.nəl/",zh:"最後的",ex:["final exam"]},
+  {w:"finish",ipa:"/ˈfɪn.ɪʃ/",zh:"完成",ex:["finish the task"]},
+  {w:"define",ipa:"/dɪˈfaɪn/",zh:"定義",ex:["define the term"]},
+  {w:"infinite",ipa:"/ˈɪn.fə.nət/",zh:"無限的",ex:["infinite possibilities"]},
+  {w:"refine",ipa:"/rɪˈfaɪn/",zh:"精煉",ex:["refine the idea"]},
+  {w:"confine",ipa:"/kənˈfaɪn/",zh:"限制",ex:["confine to a room"]},
+]},
+{id:"form",type:"root",label:"form",ipa:"/fɔːrm/",mean:"形狀",color:"#DA70D6",words:[
+  {w:"form",ipa:"/fɔːrm/",zh:"形式；表格",ex:["fill out a form"]},
+  {w:"formal",ipa:"/ˈfɔːr.məl/",zh:"正式的",ex:["formal attire"]},
+  {w:"transform",ipa:"/trænsˈfɔːrm/",zh:"轉變",ex:["transform society"]},
+  {w:"inform",ipa:"/ɪnˈfɔːrm/",zh:"通知",ex:["inform the public"]},
+  {w:"reform",ipa:"/rɪˈfɔːrm/",zh:"改革",ex:["education reform"]},
+  {w:"uniform",ipa:"/ˈjuː.nə.fɔːrm/",zh:"制服；一致的",ex:["school uniform"]},
+]},
+{id:"gen",type:"root",label:"gen",ipa:"/dʒen/",mean:"產生",color:"#32CD32",words:[
+  {w:"generate",ipa:"/ˈdʒen.ə.reɪt/",zh:"產生",ex:["generate energy"]},
+  {w:"general",ipa:"/ˈdʒen.ər.əl/",zh:"一般的",ex:["general knowledge"]},
+  {w:"genetic",ipa:"/dʒəˈnet̬.ɪk/",zh:"基因的",ex:["genetic mutation"]},
+  {w:"generation",ipa:"/ˌdʒen.əˈreɪ.ʃən/",zh:"世代",ex:["next generation"]},
+  {w:"genius",ipa:"/ˈdʒiː.ni.əs/",zh:"天才",ex:["absolute genius"]},
+  {w:"degenerate",ipa:"/dɪˈdʒen.ə.reɪt/",zh:"退化",ex:["degenerate into chaos"]},
+]},
+{id:"geo",type:"root",label:"geo",ipa:"/dʒiː.oʊ/",mean:"地球",color:"#4682B4",words:[
+  {w:"geography",ipa:"/dʒiˈɑː.ɡrə.fi/",zh:"地理學",ex:["study geography"]},
+  {w:"geology",ipa:"/dʒiˈɑː.lə.dʒi/",zh:"地質學",ex:["geology professor"]},
+  {w:"geothermal",ipa:"/ˌdʒiː.oʊˈθɝː.məl/",zh:"地熱的",ex:["geothermal energy"]},
+  {w:"geopolitics",ipa:"/ˌdʒiː.oʊˈpɑː.lə.tɪks/",zh:"地緣政治",ex:["global geopolitics"]},
+  {w:"geometry",ipa:"/dʒiˈɑː.mə.tri/",zh:"幾何學",ex:["plane geometry"]},
+  {w:"geocentric",ipa:"/ˌdʒiː.oʊˈsen.trɪk/",zh:"地心的",ex:["geocentric model"]},
+]},
+{id:"graph",type:"root",label:"graph",ipa:"/ɡræf/",mean:"寫/圖",color:"#9932CC",words:[
+  {w:"graphic",ipa:"/ˈɡræf.ɪk/",zh:"圖形的",ex:["graphic design"]},
+  {w:"autograph",ipa:"/ˈɔː.t̬ə.ɡræf/",zh:"親筆簽名",ex:["get an autograph"]},
+  {w:"photograph",ipa:"/ˈfoʊ.t̬ə.ɡræf/",zh:"照片",ex:["take a photograph"]},
+  {w:"biography",ipa:"/baɪˈɑː.ɡrə.fi/",zh:"傳記",ex:["read a biography"]},
+  {w:"paragraph",ipa:"/ˈper.ə.ɡræf/",zh:"段落",ex:["opening paragraph"]},
+  {w:"seismograph",ipa:"/ˈsaɪz.mə.ɡræf/",zh:"地震儀",ex:["seismograph reading"]},
+]},
+{id:"ject",type:"root",label:"ject",ipa:"/dʒekt/",mean:"丟/投",color:"#FF4500",words:[
+  {w:"reject",ipa:"/rɪˈdʒekt/",zh:"拒絕",ex:["reject the offer"]},
+  {w:"inject",ipa:"/ɪnˈdʒekt/",zh:"注入",ex:["inject the vaccine"]},
+  {w:"project",ipa:"/ˈprɑː.dʒekt/",zh:"計畫；投影",ex:["science project"]},
+  {w:"object",ipa:"/ˈɑːb.dʒekt/",zh:"物體；反對",ex:["object to the plan"]},
+  {w:"eject",ipa:"/ɪˈdʒekt/",zh:"彈出",ex:["eject the disc"]},
+  {w:"subject",ipa:"/ˈsʌb.dʒekt/",zh:"主題；學科",ex:["change the subject"]},
+]},
+{id:"loc",type:"root",label:"loc",ipa:"/loʊk/",mean:"地方",color:"#BDB76B",words:[
+  {w:"local",ipa:"/ˈloʊ.kəl/",zh:"當地的",ex:["local community"]},
+  {w:"location",ipa:"/loʊˈkeɪ.ʃən/",zh:"地點",ex:["prime location"]},
+  {w:"locate",ipa:"/ˈloʊ.keɪt/",zh:"定位",ex:["locate the source"]},
+  {w:"relocate",ipa:"/ˌriːˈloʊ.keɪt/",zh:"搬遷",ex:["relocate to Tokyo"]},
+  {w:"allocation",ipa:"/ˌæl.əˈkeɪ.ʃən/",zh:"分配",ex:["resource allocation"]},
+  {w:"dislocate",ipa:"/ˈdɪs.loʊ.keɪt/",zh:"脫臼",ex:["dislocate a shoulder"]},
+]},
+{id:"log",type:"root",label:"log",ipa:"/lɔːɡ/",mean:"說/學問",color:"#20B2AA",words:[
+  {w:"logic",ipa:"/ˈlɑː.dʒɪk/",zh:"邏輯",ex:["logical thinking"]},
+  {w:"dialogue",ipa:"/ˈdaɪ.ə.lɔːɡ/",zh:"對話",ex:["open dialogue"]},
+  {w:"biology",ipa:"/baɪˈɑː.lə.dʒi/",zh:"生物學",ex:["biology class"]},
+  {w:"technology",ipa:"/tekˈnɑː.lə.dʒi/",zh:"科技",ex:["modern technology"]},
+  {w:"psychology",ipa:"/saɪˈkɑː.lə.dʒi/",zh:"心理學",ex:["social psychology"]},
+  {w:"geology",ipa:"/dʒiˈɑː.lə.dʒi/",zh:"地質學",ex:["study geology"]},
+]},
+{id:"mem",type:"root",label:"mem",ipa:"/mem/",mean:"記憶",color:"#FF69B4",words:[
+  {w:"memory",ipa:"/ˈmem.ɚ.i/",zh:"記憶",ex:["short-term memory"]},
+  {w:"memorize",ipa:"/ˈmem.ə.raɪz/",zh:"記住",ex:["memorize vocabulary"]},
+  {w:"memorial",ipa:"/məˈmɔːr.i.əl/",zh:"紀念的",ex:["memorial service"]},
+  {w:"remember",ipa:"/rɪˈmem.bɚ/",zh:"記得",ex:["remember the date"]},
+  {w:"memo",ipa:"/ˈmem.oʊ/",zh:"備忘錄",ex:["office memo"]},
+  {w:"commemorate",ipa:"/kəˈmem.ə.reɪt/",zh:"紀念",ex:["commemorate the event"]},
+]},
+{id:"mit",type:"root",label:"mit",ipa:"/mɪt/",mean:"送/傳",color:"#FF8C00",words:[
+  {w:"submit",ipa:"/səbˈmɪt/",zh:"提交",ex:["submit the essay"]},
+  {w:"permit",ipa:"/pɚˈmɪt/",zh:"允許",ex:["permit access"]},
+  {w:"transmit",ipa:"/trænzˈmɪt/",zh:"傳送",ex:["transmit data"]},
+  {w:"admit",ipa:"/ədˈmɪt/",zh:"承認",ex:["admit the mistake"]},
+  {w:"commit",ipa:"/kəˈmɪt/",zh:"承諾；犯罪",ex:["commit to the plan"]},
+  {w:"omit",ipa:"/oʊˈmɪt/",zh:"省略",ex:["omit the details"]},
+]},
+{id:"mob",type:"root",label:"mob",ipa:"/moʊb/",mean:"動",color:"#4169E1",words:[
+  {w:"mobile",ipa:"/ˈmoʊ.bəl/",zh:"可動的",ex:["mobile phone"]},
+  {w:"motion",ipa:"/ˈmoʊ.ʃən/",zh:"動作",ex:["slow motion"]},
+  {w:"motivate",ipa:"/ˈmoʊ.tə.veɪt/",zh:"激勵",ex:["motivate students"]},
+  {w:"movement",ipa:"/ˈmuːv.mənt/",zh:"移動",ex:["social movement"]},
+  {w:"remove",ipa:"/rɪˈmuːv/",zh:"移除",ex:["remove the obstacle"]},
+  {w:"emotion",ipa:"/ɪˈmoʊ.ʃən/",zh:"情感",ex:["strong emotion"]},
+]},
+{id:"mort",type:"root",label:"mort",ipa:"/mɔːrt/",mean:"死",color:"#808080",words:[
+  {w:"mortal",ipa:"/ˈmɔːr.t̬əl/",zh:"會死的",ex:["mortal wound"]},
+  {w:"immortal",ipa:"/ɪˈmɔːr.t̬əl/",zh:"不朽的",ex:["immortal legend"]},
+  {w:"mortality",ipa:"/mɔːrˈtæl.ə.ti/",zh:"死亡率",ex:["infant mortality"]},
+  {w:"mortgage",ipa:"/ˈmɔːr.ɡɪdʒ/",zh:"房貸",ex:["pay the mortgage"]},
+  {w:"postmortem",ipa:"/ˌpoʊstˈmɔːr.təm/",zh:"事後分析",ex:["project postmortem"]},
+  {w:"morbid",ipa:"/ˈmɔːr.bɪd/",zh:"病態的",ex:["morbid curiosity"]},
+]},
+{id:"path",type:"root",label:"path",ipa:"/pæθ/",mean:"感受/病",color:"#DC143C",words:[
+  {w:"empathy",ipa:"/ˈem.pə.θi/",zh:"同理心",ex:["show empathy"]},
+  {w:"sympathy",ipa:"/ˈsɪm.pə.θi/",zh:"同情",ex:["express sympathy"]},
+  {w:"antipathy",ipa:"/ænˈtɪp.ə.θi/",zh:"反感",ex:["feel antipathy toward"]},
+  {w:"pathology",ipa:"/pəˈθɑː.lə.dʒi/",zh:"病理學",ex:["clinical pathology"]},
+  {w:"pathetic",ipa:"/pəˈθet̬.ɪk/",zh:"可憐的",ex:["pathetic excuse"]},
+  {w:"telepathy",ipa:"/təˈlep.ə.θi/",zh:"心電感應",ex:["telepathy experiment"]},
+]},
+{id:"phon",type:"root",label:"phon",ipa:"/foʊn/",mean:"聲音",color:"#FF7F50",words:[
+  {w:"phone",ipa:"/foʊn/",zh:"電話",ex:["answer the phone"]},
+  {w:"phonics",ipa:"/ˈfɑː.nɪks/",zh:"自然發音法",ex:["learn phonics"]},
+  {w:"symphony",ipa:"/ˈsɪm.fə.ni/",zh:"交響樂",ex:["Beethoven symphony"]},
+  {w:"microphone",ipa:"/ˈmaɪ.krə.foʊn/",zh:"麥克風",ex:["speak into the microphone"]},
+  {w:"phonetic",ipa:"/fəˈnet̬.ɪk/",zh:"語音的",ex:["phonetic alphabet"]},
+  {w:"homophone",ipa:"/ˈhɑː.moʊ.foʊn/",zh:"同音異義字",ex:["'their' and 'there' are homophones"]},
+]},
+{id:"photo",type:"root",label:"photo",ipa:"/ˈfoʊ.toʊ/",mean:"光",color:"#FFD700",words:[
+  {w:"photograph",ipa:"/ˈfoʊ.t̬ə.ɡræf/",zh:"照片",ex:["take a photograph"]},
+  {w:"photography",ipa:"/fəˈtɑː.ɡrə.fi/",zh:"攝影",ex:["wildlife photography"]},
+  {w:"photosynthesis",ipa:"/ˌfoʊ.toʊˈsɪn.θə.sɪs/",zh:"光合作用",ex:["photosynthesis in plants"]},
+  {w:"photocopy",ipa:"/ˈfoʊ.toʊˌkɑː.pi/",zh:"影印",ex:["make a photocopy"]},
+  {w:"photovoltaic",ipa:"/ˌfoʊ.toʊ.voʊˈteɪ.ɪk/",zh:"光電的",ex:["photovoltaic panel"]},
+  {w:"photogenic",ipa:"/ˌfoʊ.t̬əˈdʒen.ɪk/",zh:"上相的",ex:["very photogenic"]},
+]},
+{id:"port",type:"root",label:"port",ipa:"/pɔːrt/",mean:"搬運",color:"#5F9EA0",words:[
+  {w:"transport",ipa:"/ˈtræn.spɔːrt/",zh:"運輸",ex:["public transport"]},
+  {w:"import",ipa:"/ˈɪm.pɔːrt/",zh:"進口",ex:["import goods"]},
+  {w:"export",ipa:"/ˈek.spɔːrt/",zh:"出口",ex:["export data"]},
+  {w:"portable",ipa:"/ˈpɔːr.t̬ə.bəl/",zh:"可攜帶的",ex:["portable device"]},
+  {w:"report",ipa:"/rɪˈpɔːrt/",zh:"報告",ex:["submit a report"]},
+  {w:"support",ipa:"/səˈpɔːrt/",zh:"支持",ex:["support the team"]},
+]},
+{id:"pos",type:"root",label:"pos",ipa:"/poʊz/",mean:"放置",color:"#9ACD32",words:[
+  {w:"position",ipa:"/pəˈzɪʃ.ən/",zh:"位置",ex:["leadership position"]},
+  {w:"compose",ipa:"/kəmˈpoʊz/",zh:"組成；創作",ex:["compose music"]},
+  {w:"deposit",ipa:"/dɪˈpɑː.zɪt/",zh:"存款；押金",ex:["pay a deposit"]},
+  {w:"oppose",ipa:"/əˈpoʊz/",zh:"反對",ex:["oppose the plan"]},
+  {w:"expose",ipa:"/ɪkˈspoʊz/",zh:"暴露",ex:["expose corruption"]},
+  {w:"impose",ipa:"/ɪmˈpoʊz/",zh:"強加",ex:["impose restrictions"]},
+]},
+{id:"press",type:"root",label:"press",ipa:"/pres/",mean:"壓",color:"#FF6B6B",words:[
+  {w:"pressure",ipa:"/ˈpreʃ.ɚ/",zh:"壓力",ex:["under pressure"]},
+  {w:"express",ipa:"/ɪkˈspres/",zh:"表達",ex:["express an opinion"]},
+  {w:"compress",ipa:"/kəmˈpres/",zh:"壓縮",ex:["compress the file"]},
+  {w:"suppress",ipa:"/səˈpres/",zh:"壓制",ex:["suppress laughter"]},
+  {w:"depress",ipa:"/dɪˈpres/",zh:"使沮喪",ex:["feel depressed"]},
+  {w:"impress",ipa:"/ɪmˈpres/",zh:"印象深刻",ex:["impress the judges"]},
+]},
+{id:"rupt",type:"root",label:"rupt",ipa:"/rʌpt/",mean:"破裂",color:"#FF4500",words:[
+  {w:"rupture",ipa:"/ˈrʌp.tʃɚ/",zh:"破裂",ex:["pipe rupture"]},
+  {w:"interrupt",ipa:"/ˌɪn.təˈrʌpt/",zh:"打斷",ex:["interrupt a meeting"]},
+  {w:"corrupt",ipa:"/kəˈrʌpt/",zh:"腐敗",ex:["corrupt official"]},
+  {w:"bankrupt",ipa:"/ˈbæŋ.krʌpt/",zh:"破產",ex:["go bankrupt"]},
+  {w:"disrupt",ipa:"/dɪsˈrʌpt/",zh:"干擾",ex:["disrupt the market"]},
+  {w:"erupt",ipa:"/ɪˈrʌpt/",zh:"爆發",ex:["volcano erupts"]},
+]},
+{id:"scrib",type:"root",label:"scrib",ipa:"/skrɪb/",mean:"寫",color:"#8B4513",words:[
+  {w:"describe",ipa:"/dɪˈskraɪb/",zh:"描述",ex:["describe the scene"]},
+  {w:"script",ipa:"/skrɪpt/",zh:"劇本",ex:["movie script"]},
+  {w:"prescribe",ipa:"/prɪˈskraɪb/",zh:"開藥",ex:["prescribe medicine"]},
+  {w:"inscribe",ipa:"/ɪnˈskraɪb/",zh:"刻寫",ex:["inscribe on stone"]},
+  {w:"transcribe",ipa:"/trænˈskraɪb/",zh:"抄寫",ex:["transcribe the audio"]},
+  {w:"subscribe",ipa:"/səbˈskraɪb/",zh:"訂閱",ex:["subscribe to the channel"]},
+]},
+{id:"sens",type:"root",label:"sens",ipa:"/sens/",mean:"感覺",color:"#DB7093",words:[
+  {w:"sense",ipa:"/sens/",zh:"感覺；意義",ex:["sense of humor"]},
+  {w:"sensitive",ipa:"/ˈsen.sə.tɪv/",zh:"敏感的",ex:["sensitive issue"]},
+  {w:"sensor",ipa:"/ˈsen.sɚ/",zh:"感測器",ex:["motion sensor"]},
+  {w:"consent",ipa:"/kənˈsent/",zh:"同意",ex:["give consent"]},
+  {w:"nonsense",ipa:"/ˈnɑːn.sens/",zh:"胡說",ex:["stop talking nonsense"]},
+  {w:"sensation",ipa:"/senˈseɪ.ʃən/",zh:"感覺；轟動",ex:["cause a sensation"]},
+]},
+{id:"spect",type:"root",label:"spect",ipa:"/spekt/",mean:"看",color:"#7B68EE",words:[
+  {w:"inspect",ipa:"/ɪnˈspekt/",zh:"檢查",ex:["inspect the building"]},
+  {w:"respect",ipa:"/rɪˈspekt/",zh:"尊重",ex:["show respect"]},
+  {w:"suspect",ipa:"/səˈspekt/",zh:"懷疑",ex:["suspect foul play"]},
+  {w:"spectator",ipa:"/ˈspek.teɪ.t̬ɚ/",zh:"觀眾",ex:["sports spectator"]},
+  {w:"aspect",ipa:"/ˈæs.pekt/",zh:"方面",ex:["positive aspect"]},
+  {w:"prospect",ipa:"/ˈprɑː.spekt/",zh:"前景",ex:["bright prospects"]},
+]},
+{id:"struct",type:"root",label:"struct",ipa:"/strʌkt/",mean:"建造",color:"#FF7F50",words:[
+  {w:"structure",ipa:"/ˈstrʌk.tʃɚ/",zh:"結構",ex:["sentence structure"]},
+  {w:"construct",ipa:"/kənˈstrʌkt/",zh:"建造",ex:["construct a bridge"]},
+  {w:"destruction",ipa:"/dɪˈstrʌk.ʃən/",zh:"破壞",ex:["mass destruction"]},
+  {w:"instruct",ipa:"/ɪnˈstrʌkt/",zh:"指導",ex:["instruct the team"]},
+  {w:"infrastructure",ipa:"/ˈɪn.frəˌstrʌk.tʃɚ/",zh:"基礎建設",ex:["improve infrastructure"]},
+  {w:"restructure",ipa:"/ˌriːˈstrʌk.tʃɚ/",zh:"重組",ex:["restructure the company"]},
+]},
+{id:"tract",type:"root",label:"tract",ipa:"/trækt/",mean:"拉",color:"#FF8C00",words:[
+  {w:"attract",ipa:"/əˈtrækt/",zh:"吸引",ex:["attract attention"]},
+  {w:"contract",ipa:"/ˈkɑːn.trækt/",zh:"合約",ex:["sign a contract"]},
+  {w:"extract",ipa:"/ɪkˈstrækt/",zh:"提取",ex:["extract data"]},
+  {w:"distract",ipa:"/dɪˈstrækt/",zh:"分心",ex:["distract from work"]},
+  {w:"subtract",ipa:"/səbˈtrækt/",zh:"減去",ex:["subtract the cost"]},
+  {w:"protract",ipa:"/prəˈtrækt/",zh:"延長",ex:["protract the meeting"]},
+]},
+{id:"vent",type:"root",label:"vent",ipa:"/vent/",mean:"來",color:"#00CED1",words:[
+  {w:"event",ipa:"/ɪˈvent/",zh:"事件",ex:["major event"]},
+  {w:"prevent",ipa:"/prɪˈvent/",zh:"預防",ex:["prevent disease"]},
+  {w:"invent",ipa:"/ɪnˈvent/",zh:"發明",ex:["invent a solution"]},
+  {w:"adventure",ipa:"/ədˈven.tʃɚ/",zh:"冒險",ex:["spirit of adventure"]},
+  {w:"intervene",ipa:"/ˌɪn.t̬ɚˈviːn/",zh:"介入",ex:["intervene in the conflict"]},
+  {w:"convention",ipa:"/kənˈven.ʃən/",zh:"習俗；大會",ex:["annual convention"]},
+]},
+{id:"vid",type:"root",label:"vid",ipa:"/vɪd/",mean:"看",color:"#9370DB",words:[
+  {w:"video",ipa:"/ˈvɪd.i.oʊ/",zh:"影片",ex:["stream a video"]},
+  {w:"evidence",ipa:"/ˈev.ə.dəns/",zh:"證據",ex:["present evidence"]},
+  {w:"provide",ipa:"/prəˈvaɪd/",zh:"提供",ex:["provide support"]},
+  {w:"divide",ipa:"/dɪˈvaɪd/",zh:"分開",ex:["divide equally"]},
+  {w:"vision",ipa:"/ˈvɪʒ.ən/",zh:"視覺；願景",ex:["clear vision"]},
+  {w:"visible",ipa:"/ˈvɪz.ə.bəl/",zh:"可見的",ex:["visible effect"]},
+]},
+{id:"vol",type:"root",label:"vol",ipa:"/vɑːl/",mean:"意志",color:"#32CD32",words:[
+  {w:"volunteer",ipa:"/ˌvɑː.lənˈtɪr/",zh:"志願者",ex:["volunteer work"]},
+  {w:"evolve",ipa:"/ɪˈvɑːlv/",zh:"演變",ex:["evolve over time"]},
+  {w:"involve",ipa:"/ɪnˈvɑːlv/",zh:"涉及",ex:["involve everyone"]},
+  {w:"revolution",ipa:"/ˌev.əˈluː.ʃən/",zh:"革命；演化",ex:["industrial revolution"]},
+  {w:"revolve",ipa:"/rɪˈvɑːlv/",zh:"旋轉",ex:["revolve around"]},
+  {w:"voluntary",ipa:"/ˈvɑː.lən.ter.i/",zh:"自願的",ex:["voluntary service"]},
+]},
+{id:"astro",type:"root",label:"astro",ipa:"/ˈæs.troʊ/",mean:"星",color:"#191970",words:[
+  {w:"astronomy",ipa:"/əˈstrɑː.nə.mi/",zh:"天文學",ex:["study astronomy"]},
+  {w:"astronaut",ipa:"/ˈæs.trə.nɔːt/",zh:"太空人",ex:["NASA astronaut"]},
+  {w:"astrology",ipa:"/əˈstrɑː.lə.dʒi/",zh:"占星學",ex:["read astrology"]},
+  {w:"asteroid",ipa:"/ˈæs.tə.rɔɪd/",zh:"小行星",ex:["asteroid belt"]},
+  {w:"astrophysics",ipa:"/ˌæs.troʊˈfɪz.ɪks/",zh:"天體物理",ex:["astrophysics research"]},
+  {w:"astral",ipa:"/ˈæs.trəl/",zh:"星的",ex:["astral projection"]},
+]},
+{id:"hydro",type:"root",label:"hydro",ipa:"/ˈhaɪ.droʊ/",mean:"水",color:"#00BFFF",words:[
+  {w:"hydrogen",ipa:"/ˈhaɪ.drə.dʒən/",zh:"氫",ex:["hydrogen fuel cell"]},
+  {w:"hydraulic",ipa:"/haɪˈdrɔː.lɪk/",zh:"液壓的",ex:["hydraulic system"]},
+  {w:"hydrate",ipa:"/ˈhaɪ.dreɪt/",zh:"補水",ex:["stay hydrated"]},
+  {w:"dehydrate",ipa:"/ˌdiːˈhaɪ.dreɪt/",zh:"脫水",ex:["dehydrate in the heat"]},
+  {w:"hydroelectric",ipa:"/ˌhaɪ.droʊ.ɪˈlek.trɪk/",zh:"水力發電",ex:["hydroelectric dam"]},
+  {w:"hydrology",ipa:"/haɪˈdrɑː.lə.dʒi/",zh:"水文學",ex:["hydrology study"]},
+]},
+{id:"psych",type:"root",label:"psych",ipa:"/ˈsaɪ.koʊ/",mean:"心理",color:"#7B2FBE",words:[
+  {w:"psychology",ipa:"/saɪˈkɑː.lə.dʒi/",zh:"心理學",ex:["study psychology"]},
+  {w:"psychiatry",ipa:"/saɪˈkaɪ.ə.tri/",zh:"精神醫學",ex:["child psychiatry"]},
+  {w:"psychological",ipa:"/ˌsaɪ.kəˈlɑː.dʒɪ.kəl/",zh:"心理的",ex:["psychological impact"]},
+  {w:"psychotherapy",ipa:"/ˌsaɪ.koʊˈθer.ə.pi/",zh:"心理治療",ex:["undergo psychotherapy"]},
+  {w:"psyche",ipa:"/ˈsaɪ.ki/",zh:"心靈",ex:["human psyche"]},
+  {w:"psychopath",ipa:"/ˈsaɪ.koʊ.pæθ/",zh:"精神病態者",ex:["diagnosed as a psychopath"]},
+]},
+{id:"therm",type:"root",label:"therm",ipa:"/θɝːm/",mean:"熱",color:"#FF4500",words:[
+  {w:"thermal",ipa:"/ˈθɝː.məl/",zh:"熱的",ex:["thermal energy"]},
+  {w:"thermometer",ipa:"/θɚˈmɑː.mə.tɚ/",zh:"溫度計",ex:["read the thermometer"]},
+  {w:"thermostat",ipa:"/ˈθɝː.mə.stæt/",zh:"恆溫器",ex:["adjust the thermostat"]},
+  {w:"geothermal",ipa:"/ˌdʒiː.oʊˈθɝː.məl/",zh:"地熱的",ex:["geothermal power"]},
+  {w:"hypothermia",ipa:"/ˌhaɪ.poʊˈθɝː.mi.ə/",zh:"失溫",ex:["suffer from hypothermia"]},
+  {w:"thermodynamics",ipa:"/ˌθɝː.moʊ.daɪˈnæm.ɪks/",zh:"熱力學",ex:["laws of thermodynamics"]},
+]},
+{id:"eco",type:"root",label:"eco",ipa:"/ˈiː.koʊ/",mean:"環境/家",color:"#228B22",words:[
+  {w:"ecology",ipa:"/iːˈkɑː.lə.dʒi/",zh:"生態學",ex:["study ecology"]},
+  {w:"ecosystem",ipa:"/ˈiː.koʊˌsɪs.təm/",zh:"生態系統",ex:["fragile ecosystem"]},
+  {w:"economy",ipa:"/ɪˈkɑː.nə.mi/",zh:"經濟",ex:["global economy"]},
+  {w:"economic",ipa:"/ˌiː.kəˈnɑː.mɪk/",zh:"經濟的",ex:["economic growth"]},
+  {w:"eco-friendly",ipa:"/ˈiː.koʊˌfrend.li/",zh:"環保的",ex:["eco-friendly product"]},
+  {w:"ecotourism",ipa:"/ˈiː.koʊˌtʊr.ɪ.zəm/",zh:"生態旅遊",ex:["promote ecotourism"]},
+]},
+{id:"meta",type:"root",label:"meta",ipa:"/ˈmet̬.ə/",mean:"超越/之後",color:"#6A0DAD",words:[
+  {w:"metaphor",ipa:"/ˈmet̬.ə.fɔːr/",zh:"隱喻",ex:["vivid metaphor"]},
+  {w:"metabolism",ipa:"/məˈtæb.ə.lɪ.zəm/",zh:"新陳代謝",ex:["boost metabolism"]},
+  {w:"metadata",ipa:"/ˈmet̬.əˌdeɪ.t̬ə/",zh:"元數據",ex:["file metadata"]},
+  {w:"metaphysics",ipa:"/ˌmet̬.əˈfɪz.ɪks/",zh:"形上學",ex:["study metaphysics"]},
+  {w:"metacognition",ipa:"/ˌmet̬.ə.kɑːɡˈnɪʃ.ən/",zh:"後設認知",ex:["metacognition skills"]},
+  {w:"metaverse",ipa:"/ˈmet̬.əˌvɝːs/",zh:"元宇宙",ex:["enter the metaverse"]},
+]},
+{id:"crypto",type:"root",label:"crypto",ipa:"/ˈkrɪp.toʊ/",mean:"隱藏",color:"#2E8B57",words:[
+  {w:"cryptic",ipa:"/ˈkrɪp.tɪk/",zh:"隱晦的",ex:["cryptic message"]},
+  {w:"cryptography",ipa:"/krɪpˈtɑː.ɡrə.fi/",zh:"密碼學",ex:["learn cryptography"]},
+  {w:"cryptocurrency",ipa:"/ˈkrɪp.toʊˌkɝː.ən.si/",zh:"加密貨幣",ex:["invest in cryptocurrency"]},
+  {w:"encrypt",ipa:"/ɪnˈkrɪpt/",zh:"加密",ex:["encrypt the file"]},
+  {w:"decrypt",ipa:"/diːˈkrɪpt/",zh:"解密",ex:["decrypt the code"]},
+  {w:"crypt",ipa:"/krɪpt/",zh:"地窖",ex:["church crypt"]},
+]},
+// --- PREFIXES ---
+{id:"pre-",type:"pre",label:"pre-",ipa:"/priː/",mean:"前/預先",color:"#7B68EE",words:[
+  {w:"predict",ipa:"/prɪˈdɪkt/",zh:"預測",ex:["predict the future"]},
+  {w:"prepare",ipa:"/prɪˈper/",zh:"準備",ex:["prepare for the exam"]},
+  {w:"prevent",ipa:"/prɪˈvent/",zh:"預防",ex:["prevent accidents"]},
+  {w:"preview",ipa:"/ˈpriː.vjuː/",zh:"預覽",ex:["movie preview"]},
+  {w:"preheat",ipa:"/priːˈhiːt/",zh:"預熱",ex:["preheat the oven"]},
+  {w:"prehistoric",ipa:"/ˌpriː.hɪˈstɔːr.ɪk/",zh:"史前的",ex:["prehistoric creature"]},
+]},
+{id:"post-",type:"pre",label:"post-",ipa:"/poʊst/",mean:"後",color:"#9370DB",words:[
+  {w:"postpone",ipa:"/poʊstˈpoʊn/",zh:"延後",ex:["postpone the meeting"]},
+  {w:"postgraduate",ipa:"/ˌpoʊstˈɡrædʒ.u.ət/",zh:"研究生",ex:["postgraduate degree"]},
+  {w:"postwar",ipa:"/ˈpoʊst.wɔːr/",zh:"戰後",ex:["postwar recovery"]},
+  {w:"postmodern",ipa:"/ˌpoʊstˈmɑː.dɚn/",zh:"後現代",ex:["postmodern art"]},
+  {w:"postmortem",ipa:"/ˌpoʊstˈmɔːr.təm/",zh:"事後分析",ex:["project postmortem"]},
+  {w:"postscript",ipa:"/ˈpoʊst.skrɪpt/",zh:"附筆",ex:["add a postscript"]},
+]},
+{id:"trans-",type:"pre",label:"trans-",ipa:"/træns/",mean:"橫跨/穿越",color:"#20B2AA",words:[
+  {w:"transport",ipa:"/ˈtræn.spɔːrt/",zh:"運輸",ex:["public transport"]},
+  {w:"transfer",ipa:"/trænsˈfɝː/",zh:"轉移",ex:["transfer data"]},
+  {w:"translate",ipa:"/trænsˈleɪt/",zh:"翻譯",ex:["translate the text"]},
+  {w:"transmit",ipa:"/trænzˈmɪt/",zh:"傳送",ex:["transmit a signal"]},
+  {w:"transform",ipa:"/trænsˈfɔːrm/",zh:"轉變",ex:["transform the industry"]},
+  {w:"transition",ipa:"/trænˈzɪʃ.ən/",zh:"過渡",ex:["smooth transition"]},
+]},
+{id:"inter-",type:"pre",label:"inter-",ipa:"/ˈɪn.t̬ɚ/",mean:"之間/互相",color:"#FF7F50",words:[
+  {w:"international",ipa:"/ˌɪn.t̬ɚˈnæʃ.ən.əl/",zh:"國際的",ex:["international trade"]},
+  {w:"interact",ipa:"/ˌɪn.t̬ɚˈækt/",zh:"互動",ex:["interact with others"]},
+  {w:"interview",ipa:"/ˈɪn.t̬ɚ.vjuː/",zh:"面試",ex:["job interview"]},
+  {w:"interrupt",ipa:"/ˌɪn.t̬ɚˈrʌpt/",zh:"打斷",ex:["interrupt the speaker"]},
+  {w:"interconnect",ipa:"/ˌɪn.t̬ɚ.kəˈnekt/",zh:"互相連接",ex:["interconnected systems"]},
+  {w:"intervene",ipa:"/ˌɪn.t̬ɚˈviːn/",zh:"介入",ex:["intervene in the conflict"]},
+]},
+{id:"sub-",type:"pre",label:"sub-",ipa:"/sʌb/",mean:"下/次",color:"#5F9EA0",words:[
+  {w:"submarine",ipa:"/ˌsʌb.məˈriːn/",zh:"潛水艇",ex:["nuclear submarine"]},
+  {w:"subway",ipa:"/ˈsʌb.weɪ/",zh:"地鐵",ex:["take the subway"]},
+  {w:"subconscious",ipa:"/ˌsʌbˈkɑːn.ʃəs/",zh:"潛意識的",ex:["subconscious desire"]},
+  {w:"submerge",ipa:"/səbˈmɝːdʒ/",zh:"淹沒",ex:["submerge underwater"]},
+  {w:"subdivide",ipa:"/ˌsʌb.dɪˈvaɪd/",zh:"再分",ex:["subdivide the land"]},
+  {w:"substandard",ipa:"/ˌsʌbˈstæn.dɚd/",zh:"低於標準",ex:["substandard quality"]},
+]},
+{id:"super-",type:"pre",label:"super-",ipa:"/ˈsuː.pɚ/",mean:"上/超",color:"#FF6347",words:[
+  {w:"superior",ipa:"/suːˈpɪr.i.ɚ/",zh:"較高的；上司",ex:["superior quality"]},
+  {w:"supermarket",ipa:"/ˈsuː.pɚˌmɑːr.kɪt/",zh:"超市",ex:["go to the supermarket"]},
+  {w:"supernatural",ipa:"/ˌsuː.pɚˈnætʃ.ɚ.əl/",zh:"超自然的",ex:["supernatural power"]},
+  {w:"supervise",ipa:"/ˈsuː.pɚ.vaɪz/",zh:"監督",ex:["supervise staff"]},
+  {w:"superpower",ipa:"/ˈsuː.pɚˌpaʊ.ɚ/",zh:"超能力",ex:["global superpower"]},
+  {w:"supercharge",ipa:"/ˈsuː.pɚ.tʃɑːrdʒ/",zh:"強化",ex:["supercharge performance"]},
+]},
+{id:"anti-",type:"pre",label:"anti-",ipa:"/ˈæn.taɪ/",mean:"反對/抗",color:"#DC143C",words:[
+  {w:"antibiotic",ipa:"/ˌæn.t̬i.baɪˈɑː.tɪk/",zh:"抗生素",ex:["prescribed antibiotics"]},
+  {w:"antisocial",ipa:"/ˌæn.t̬iˈsoʊ.ʃəl/",zh:"反社會的",ex:["antisocial behavior"]},
+  {w:"antidote",ipa:"/ˈæn.t̬i.doʊt/",zh:"解毒劑",ex:["antidote to poison"]},
+  {w:"antivirus",ipa:"/ˌæn.t̬iˈvaɪ.rəs/",zh:"防毒",ex:["antivirus software"]},
+  {w:"antibody",ipa:"/ˈæn.t̬iˌbɑː.di/",zh:"抗體",ex:["produce antibodies"]},
+  {w:"antagonist",ipa:"/ænˈtæɡ.ə.nɪst/",zh:"對手",ex:["story antagonist"]},
+]},
+{id:"re-",type:"pre",label:"re-",ipa:"/riː/",mean:"再/回",color:"#3CB371",words:[
+  {w:"redo",ipa:"/ˌriːˈduː/",zh:"重做",ex:["redo the task"]},
+  {w:"rewrite",ipa:"/ˌriːˈraɪt/",zh:"重寫",ex:["rewrite the essay"]},
+  {w:"review",ipa:"/rɪˈvjuː/",zh:"複習；評論",ex:["review the notes"]},
+  {w:"rebuild",ipa:"/ˌriːˈbɪld/",zh:"重建",ex:["rebuild the city"]},
+  {w:"react",ipa:"/riˈækt/",zh:"反應",ex:["react quickly"]},
+  {w:"reevaluate",ipa:"/ˌriː.ɪˈvæl.ju.eɪt/",zh:"重新評估",ex:["reevaluate the strategy"]},
+]},
+{id:"dis-",type:"pre",label:"dis-",ipa:"/dɪs/",mean:"否/分開",color:"#B22222",words:[
+  {w:"disagree",ipa:"/ˌdɪs.əˈɡriː/",zh:"不同意",ex:["respectfully disagree"]},
+  {w:"disconnect",ipa:"/ˌdɪs.kəˈnekt/",zh:"斷開",ex:["disconnect from wifi"]},
+  {w:"disappear",ipa:"/ˌdɪs.əˈpɪr/",zh:"消失",ex:["disappear overnight"]},
+  {w:"disable",ipa:"/dɪsˈeɪ.bəl/",zh:"使失能",ex:["disable the feature"]},
+  {w:"disorder",ipa:"/dɪsˈɔːr.dɚ/",zh:"混亂",ex:["eating disorder"]},
+  {w:"disrupt",ipa:"/dɪsˈrʌpt/",zh:"干擾",ex:["disrupt the process"]},
+]},
+{id:"un-",type:"pre",label:"un-",ipa:"/ʌn/",mean:"否定",color:"#708090",words:[
+  {w:"unable",ipa:"/ʌnˈeɪ.bəl/",zh:"不能的",ex:["unable to attend"]},
+  {w:"unfair",ipa:"/ʌnˈfer/",zh:"不公平的",ex:["unfair treatment"]},
+  {w:"unknown",ipa:"/ʌnˈnoʊn/",zh:"未知的",ex:["unknown territory"]},
+  {w:"unlock",ipa:"/ʌnˈlɑːk/",zh:"解鎖",ex:["unlock the phone"]},
+  {w:"unusual",ipa:"/ʌnˈjuː.ʒu.əl/",zh:"不尋常的",ex:["unusual behavior"]},
+  {w:"unhappy",ipa:"/ʌnˈhæp.i/",zh:"不快樂的",ex:["feel unhappy"]},
+]},
+{id:"mis-",type:"pre",label:"mis-",ipa:"/mɪs/",mean:"錯誤",color:"#CD853F",words:[
+  {w:"mistake",ipa:"/mɪˈsteɪk/",zh:"錯誤",ex:["make a mistake"]},
+  {w:"mislead",ipa:"/ˌmɪsˈliːd/",zh:"誤導",ex:["mislead the public"]},
+  {w:"misunderstand",ipa:"/ˌmɪsˌʌn.dɚˈstænd/",zh:"誤解",ex:["easily misunderstood"]},
+  {w:"misspell",ipa:"/ˌmɪsˈspel/",zh:"拼錯",ex:["misspell a word"]},
+  {w:"misplace",ipa:"/ˌmɪsˈpleɪs/",zh:"放錯地方",ex:["misplace the keys"]},
+  {w:"misjudge",ipa:"/ˌmɪsˈdʒʌdʒ/",zh:"誤判",ex:["misjudge the distance"]},
+]},
+{id:"over-",type:"pre",label:"over-",ipa:"/ˈoʊ.vɚ/",mean:"過度/超過",color:"#4A90D9",words:[
+  {w:"overcome",ipa:"/ˌoʊ.vɚˈkʌm/",zh:"克服",ex:["overcome obstacles"]},
+  {w:"overload",ipa:"/ˌoʊ.vɚˈloʊd/",zh:"超載",ex:["system overload"]},
+  {w:"overreact",ipa:"/ˌoʊ.vɚ.riˈækt/",zh:"過度反應",ex:["don't overreact"]},
+  {w:"overwhelm",ipa:"/ˌoʊ.vɚˈwelm/",zh:"壓倒",ex:["feel overwhelmed"]},
+  {w:"overlook",ipa:"/ˌoʊ.vɚˈlʊk/",zh:"忽略；俯瞰",ex:["overlook the details"]},
+  {w:"overestimate",ipa:"/ˌoʊ.vɚˈes.tə.meɪt/",zh:"高估",ex:["overestimate the risk"]},
+]},
+{id:"under-",type:"pre",label:"under-",ipa:"/ˈʌn.dɚ/",mean:"不足/在下",color:"#8B6914",words:[
+  {w:"understand",ipa:"/ˌʌn.dɚˈstænd/",zh:"理解",ex:["understand the concept"]},
+  {w:"underestimate",ipa:"/ˌʌn.dɚˈes.tə.meɪt/",zh:"低估",ex:["underestimate the problem"]},
+  {w:"underground",ipa:"/ˈʌn.dɚ.ɡraʊnd/",zh:"地下的",ex:["underground market"]},
+  {w:"underpaid",ipa:"/ˌʌn.dɚˈpeɪd/",zh:"薪資過低",ex:["workers are underpaid"]},
+  {w:"undergo",ipa:"/ˌʌn.dɚˈɡoʊ/",zh:"經歷",ex:["undergo surgery"]},
+  {w:"underdeveloped",ipa:"/ˌʌn.dɚ.dɪˈvel.əpt/",zh:"未開發的",ex:["underdeveloped region"]},
+]},
+{id:"out-",type:"pre",label:"out-",ipa:"/aʊt/",mean:"外/超越",color:"#3CB371",words:[
+  {w:"output",ipa:"/ˈaʊt.pʊt/",zh:"輸出",ex:["increase output"]},
+  {w:"outcome",ipa:"/ˈaʊt.kʌm/",zh:"結果",ex:["positive outcome"]},
+  {w:"outbreak",ipa:"/ˈaʊt.breɪk/",zh:"爆發",ex:["disease outbreak"]},
+  {w:"outlook",ipa:"/ˈaʊt.lʊk/",zh:"展望",ex:["positive outlook"]},
+  {w:"outperform",ipa:"/ˌaʊt.pɚˈfɔːrm/",zh:"表現更好",ex:["outperform competitors"]},
+  {w:"outnumber",ipa:"/ˌaʊtˈnʌm.bɚ/",zh:"數量超過",ex:["outnumber the enemy"]},
+]},
+{id:"co-",type:"pre",label:"co-",ipa:"/koʊ/",mean:"共同",color:"#FF69B4",words:[
+  {w:"cooperate",ipa:"/koʊˈɑː.pə.reɪt/",zh:"合作",ex:["cooperate with others"]},
+  {w:"coexist",ipa:"/ˌkoʊ.ɪɡˈzɪst/",zh:"共存",ex:["coexist peacefully"]},
+  {w:"coordinate",ipa:"/koʊˈɔːr.də.neɪt/",zh:"協調",ex:["coordinate the effort"]},
+  {w:"cofounder",ipa:"/koʊˈfaʊn.dɚ/",zh:"共同創辦人",ex:["company cofounder"]},
+  {w:"coauthor",ipa:"/koʊˈɑː.θɚ/",zh:"合著者",ex:["book coauthor"]},
+  {w:"coworker",ipa:"/ˈkoʊˌwɝː.kɚ/",zh:"同事",ex:["helpful coworker"]},
+]},
+{id:"pro-",type:"pre",label:"pro-",ipa:"/proʊ/",mean:"向前/支持",color:"#DAA520",words:[
+  {w:"progress",ipa:"/ˈprɑː.ɡres/",zh:"進步",ex:["make progress"]},
+  {w:"promote",ipa:"/prəˈmoʊt/",zh:"促進；晉升",ex:["promote health"]},
+  {w:"protect",ipa:"/prəˈtekt/",zh:"保護",ex:["protect the environment"]},
+  {w:"produce",ipa:"/prəˈduːs/",zh:"生產",ex:["produce results"]},
+  {w:"proactive",ipa:"/ˌproʊˈæk.tɪv/",zh:"主動的",ex:["proactive approach"]},
+  {w:"provide",ipa:"/prəˈvaɪd/",zh:"提供",ex:["provide feedback"]},
+]},
+{id:"multi-",type:"pre",label:"multi-",ipa:"/ˈmʌl.ti/",mean:"多",color:"#FF7F50",words:[
+  {w:"multiple",ipa:"/ˈmʌl.tə.pəl/",zh:"多重的",ex:["multiple choice"]},
+  {w:"multimedia",ipa:"/ˌmʌl.tiˈmiː.di.ə/",zh:"多媒體",ex:["multimedia project"]},
+  {w:"multinational",ipa:"/ˌmʌl.tiˈnæʃ.ən.əl/",zh:"跨國的",ex:["multinational corporation"]},
+  {w:"multitask",ipa:"/ˈmʌl.ti.tæsk/",zh:"多工",ex:["multitask efficiently"]},
+  {w:"multilingual",ipa:"/ˌmʌl.tiˈlɪŋ.ɡwəl/",zh:"多語的",ex:["multilingual student"]},
+  {w:"multicultural",ipa:"/ˌmʌl.tiˈkʌl.tʃɚ.əl/",zh:"多元文化的",ex:["multicultural society"]},
+]},
+// --- SUFFIXES ---
+{id:"-able",type:"suf",label:"-able",ipa:"/ə.bəl/",mean:"能夠/可以",color:"#3CB371",words:[
+  {w:"adjustable",ipa:"/əˈdʒʌs.tə.bəl/",zh:"可調整的",ex:["adjustable height"]},
+  {w:"comfortable",ipa:"/ˈkʌm.fɚ.tə.bəl/",zh:"舒適的",ex:["comfortable chair"]},
+  {w:"remarkable",ipa:"/rɪˈmɑːr.kə.bəl/",zh:"顯著的",ex:["remarkable achievement"]},
+  {w:"reliable",ipa:"/rɪˈlaɪ.ə.bəl/",zh:"可靠的",ex:["reliable source"]},
+  {w:"available",ipa:"/əˈveɪ.lə.bəl/",zh:"可得的",ex:["available now"]},
+  {w:"acceptable",ipa:"/əkˈsep.tə.bəl/",zh:"可接受的",ex:["acceptable standard"]},
+]},
+{id:"-ment",type:"suf",label:"-ment",ipa:"/mənt/",mean:"名詞化結果",color:"#DA70D6",words:[
+  {w:"development",ipa:"/dɪˈvel.əp.mənt/",zh:"發展",ex:["economic development"]},
+  {w:"achievement",ipa:"/əˈtʃiːv.mənt/",zh:"成就",ex:["academic achievement"]},
+  {w:"movement",ipa:"/ˈmuːv.mənt/",zh:"運動",ex:["social movement"]},
+  {w:"management",ipa:"/ˈmæn.ɪ.dʒmənt/",zh:"管理",ex:["time management"]},
+  {w:"agreement",ipa:"/əˈɡriː.mənt/",zh:"協議",ex:["sign an agreement"]},
+  {w:"government",ipa:"/ˈɡʌv.ɚn.mənt/",zh:"政府",ex:["local government"]},
+]},
+{id:"-ion",type:"suf",label:"-ion",ipa:"/ʃən/",mean:"動作/狀態",color:"#9370DB",words:[
+  {w:"education",ipa:"/ˌedʒ.əˈkeɪ.ʃən/",zh:"教育",ex:["higher education"]},
+  {w:"communication",ipa:"/kəˌmjuː.nəˈkeɪ.ʃən/",zh:"溝通",ex:["effective communication"]},
+  {w:"imagination",ipa:"/ɪˌmædʒ.ɪˈneɪ.ʃən/",zh:"想象力",ex:["creative imagination"]},
+  {w:"motivation",ipa:"/ˌmoʊ.t̬əˈveɪ.ʃən/",zh:"動機",ex:["lose motivation"]},
+  {w:"production",ipa:"/prəˈdʌk.ʃən/",zh:"生產",ex:["mass production"]},
+  {w:"information",ipa:"/ˌɪn.fɚˈmeɪ.ʃən/",zh:"資訊",ex:["accurate information"]},
+]},
+{id:"-ness",type:"suf",label:"-ness",ipa:"/nəs/",mean:"性質/狀態",color:"#FF69B4",words:[
+  {w:"happiness",ipa:"/ˈhæp.i.nəs/",zh:"快樂",ex:["pursue happiness"]},
+  {w:"kindness",ipa:"/ˈkaɪnd.nəs/",zh:"善良",ex:["act of kindness"]},
+  {w:"darkness",ipa:"/ˈdɑːrk.nəs/",zh:"黑暗",ex:["fear the darkness"]},
+  {w:"weakness",ipa:"/ˈwiːk.nəs/",zh:"弱點",ex:["identify a weakness"]},
+  {w:"awareness",ipa:"/əˈwer.nəs/",zh:"意識",ex:["raise awareness"]},
+  {w:"effectiveness",ipa:"/ɪˈfek.tɪv.nəs/",zh:"效果",ex:["test effectiveness"]},
+]},
+{id:"-ity",type:"suf",label:"-ity",ipa:"/ə.ti/",mean:"性質(名詞化)",color:"#FF8C00",words:[
+  {w:"quality",ipa:"/ˈkwɑː.lə.t̬i/",zh:"品質",ex:["high quality"]},
+  {w:"diversity",ipa:"/daɪˈvɝː.sə.t̬i/",zh:"多樣性",ex:["celebrate diversity"]},
+  {w:"equality",ipa:"/iˈkwɑː.lə.t̬i/",zh:"平等",ex:["strive for equality"]},
+  {w:"ability",ipa:"/əˈbɪl.ə.t̬i/",zh:"能力",ex:["natural ability"]},
+  {w:"creativity",ipa:"/ˌkriː.eɪˈtɪv.ə.t̬i/",zh:"創造力",ex:["show creativity"]},
+  {w:"security",ipa:"/sɪˈkjʊr.ə.t̬i/",zh:"安全",ex:["national security"]},
+]},
+{id:"-ive",type:"suf",label:"-ive",ipa:"/ɪv/",mean:"形容詞:傾向",color:"#4A90D9",words:[
+  {w:"active",ipa:"/ˈæk.tɪv/",zh:"主動的",ex:["active participant"]},
+  {w:"creative",ipa:"/kriˈeɪ.tɪv/",zh:"創意的",ex:["creative thinking"]},
+  {w:"effective",ipa:"/ɪˈfek.tɪv/",zh:"有效的",ex:["effective strategy"]},
+  {w:"productive",ipa:"/prəˈdʌk.tɪv/",zh:"有效率的",ex:["productive meeting"]},
+  {w:"persuasive",ipa:"/pɚˈsweɪ.sɪv/",zh:"有說服力的",ex:["persuasive speech"]},
+  {w:"competitive",ipa:"/kəmˈpet.ə.tɪv/",zh:"有競爭力的",ex:["competitive market"]},
+]},
+{id:"-ous",type:"suf",label:"-ous",ipa:"/əs/",mean:"充滿...的",color:"#CD853F",words:[
+  {w:"dangerous",ipa:"/ˈdeɪn.dʒɚ.əs/",zh:"危險的",ex:["dangerous situation"]},
+  {w:"famous",ipa:"/ˈfeɪ.məs/",zh:"著名的",ex:["world famous"]},
+  {w:"curious",ipa:"/ˈkjʊr.i.əs/",zh:"好奇的",ex:["curious child"]},
+  {w:"generous",ipa:"/ˈdʒen.ɚ.əs/",zh:"慷慨的",ex:["generous donation"]},
+  {w:"enormous",ipa:"/ɪˈnɔːr.məs/",zh:"巨大的",ex:["enormous pressure"]},
+  {w:"serious",ipa:"/ˈsɪr.i.əs/",zh:"嚴重的",ex:["serious problem"]},
+]},
+{id:"-ist",type:"suf",label:"-ist",ipa:"/ɪst/",mean:"從事者/信仰者",color:"#20B2AA",words:[
+  {w:"scientist",ipa:"/ˈsaɪ.ən.tɪst/",zh:"科學家",ex:["research scientist"]},
+  {w:"journalist",ipa:"/ˈdʒɝː.nə.lɪst/",zh:"記者",ex:["investigative journalist"]},
+  {w:"activist",ipa:"/ˈæk.tɪ.vɪst/",zh:"行動者",ex:["climate activist"]},
+  {w:"tourist",ipa:"/ˈtʊr.ɪst/",zh:"旅客",ex:["tourist attraction"]},
+  {w:"specialist",ipa:"/ˈspeʃ.ə.lɪst/",zh:"專家",ex:["medical specialist"]},
+  {w:"novelist",ipa:"/ˈnɑː.və.lɪst/",zh:"小說家",ex:["bestselling novelist"]},
+]},
+{id:"-ship",type:"suf",label:"-ship",ipa:"/ʃɪp/",mean:"關係/資格",color:"#6495ED",words:[
+  {w:"friendship",ipa:"/ˈfrend.ʃɪp/",zh:"友誼",ex:["lasting friendship"]},
+  {w:"leadership",ipa:"/ˈliː.dɚ.ʃɪp/",zh:"領導力",ex:["strong leadership"]},
+  {w:"membership",ipa:"/ˈmem.bɚ.ʃɪp/",zh:"會員資格",ex:["annual membership"]},
+  {w:"partnership",ipa:"/ˈpɑːrt.nɚ.ʃɪp/",zh:"合夥",ex:["business partnership"]},
+  {w:"scholarship",ipa:"/ˈskɑː.lɚ.ʃɪp/",zh:"獎學金",ex:["merit scholarship"]},
+  {w:"relationship",ipa:"/rɪˈleɪ.ʃən.ʃɪp/",zh:"關係",ex:["healthy relationship"]},
+]},
+{id:"-logy",type:"suf",label:"-logy",ipa:"/ˈlɑː.dʒi/",mean:"學科",color:"#7B68EE",words:[
+  {w:"biology",ipa:"/baɪˈɑː.lə.dʒi/",zh:"生物學",ex:["marine biology"]},
+  {w:"psychology",ipa:"/saɪˈkɑː.lə.dʒi/",zh:"心理學",ex:["social psychology"]},
+  {w:"technology",ipa:"/tekˈnɑː.lə.dʒi/",zh:"科技",ex:["information technology"]},
+  {w:"sociology",ipa:"/ˌsoʊ.siˈɑː.lə.dʒi/",zh:"社會學",ex:["study sociology"]},
+  {w:"anthropology",ipa:"/ˌæn.θrəˈpɑː.lə.dʒi/",zh:"人類學",ex:["cultural anthropology"]},
+  {w:"ecology",ipa:"/iːˈkɑː.lə.dʒi/",zh:"生態學",ex:["study ecology"]},
+]},
+{id:"-scope",type:"suf",label:"-scope",ipa:"/skoʊp/",mean:"觀察工具",color:"#00CED1",words:[
+  {w:"microscope",ipa:"/ˈmaɪ.krəˌskoʊp/",zh:"顯微鏡",ex:["under a microscope"]},
+  {w:"telescope",ipa:"/ˈtel.əˌskoʊp/",zh:"望遠鏡",ex:["look through a telescope"]},
+  {w:"periscope",ipa:"/ˈper.ə.skoʊp/",zh:"潛望鏡",ex:["submarine periscope"]},
+  {w:"stethoscope",ipa:"/ˈsteθ.əˌskoʊp/",zh:"聽診器",ex:["doctor's stethoscope"]},
+  {w:"endoscope",ipa:"/ˈen.dəˌskoʊp/",zh:"內視鏡",ex:["endoscope procedure"]},
+  {w:"oscilloscope",ipa:"/əˈsɪl.əˌskoʊp/",zh:"示波器",ex:["use an oscilloscope"]},
+]},
+{id:"-meter",type:"suf",label:"-meter",ipa:"/ˈmiː.tɚ/",mean:"測量工具",color:"#FF7F50",words:[
+  {w:"thermometer",ipa:"/θɚˈmɑː.mə.tɚ/",zh:"溫度計",ex:["read the thermometer"]},
+  {w:"speedometer",ipa:"/spiːˈdɑː.mə.tɚ/",zh:"速度計",ex:["check the speedometer"]},
+  {w:"barometer",ipa:"/bəˈrɑː.mə.tɚ/",zh:"氣壓計",ex:["barometer reading"]},
+  {w:"altimeter",ipa:"/ælˈtɪm.ə.tɚ/",zh:"高度計",ex:["aircraft altimeter"]},
+  {w:"odometer",ipa:"/oʊˈdɑː.mə.tɚ/",zh:"里程計",ex:["car odometer"]},
+  {w:"perimeter",ipa:"/pəˈrɪm.ə.tɚ/",zh:"周長",ex:["perimeter of the square"]},
+]},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let S = {
+  sel: UNITS.map(u=>u.id),
+  browseCat:'root', browseUnit: null,
+  fcWords:[], fcIdx:0, fcOK:0, fcNG:0, fcFlipped:false,
+  qzWords:[], qzIdx:0, qzOK:0, qzNG:0, qzAns:false,
+  drWords:[], drIdx:0, drOK:0, drNG:0, drAns:false,
+  prog:{}, studied:0, streak:0,
+  _selFor:'fc',
+};
+function loadS(){try{const d=JSON.parse(localStorage.getItem('roots_s')||'{}');S.prog=d.prog||{};S.studied=d.studied||0;S.streak=d.streak||0;}catch{}}
+function saveS(){localStorage.setItem('roots_s',JSON.stringify({prog:S.prog,studied:S.studied,streak:S.streak}));}
+
+window.onload=()=>{
+  loadS();
+  buildMap();
+  setBrowseCat('root',document.querySelector('.catbtn.root'));
+  startFC(); startQuiz(); startDrill();
+  updateHdr();
+};
+
+function updateHdr(){
+  document.getElementById('hdStudied').textContent=S.studied;
+  document.getElementById('hdStreak').textContent=S.streak;
+}
+
+// ============================================================
+// NAV
+// ============================================================
+function gotoPage(id, btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('page-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='prog') renderProg();
+}
+
+// ============================================================
+// MAP
+// ============================================================
+function buildMap(){
+  const cats = {root:'mapRoot', pre:'mapPre', suf:'mapSuf'};
+  Object.entries(cats).forEach(([cat,divId])=>{
+    const d = document.getElementById(divId);
+    d.innerHTML = `<div class="map-grid">${UNITS.filter(u=>u.type===cat).map(u=>
+      `<div class="map-chip" onclick="gotoUnit('${u.id}')" style="border-color:${u.color}33;">
+        <b style="color:${u.color}">${u.label}</b>
+        <span>${u.mean}</span>
+      </div>`).join('')}</div>`;
+  });
+}
+function gotoUnit(id){
+  const u = UNITS.find(x=>x.id===id);
+  if(!u) return;
+  document.querySelectorAll('.nb')[1].click();
+  setBrowseCat(u.type, document.querySelector(`.catbtn.${u.type}`));
+  setTimeout(()=>selectUnit(id), 50);
+}
+
+// ============================================================
+// BROWSE
+// ============================================================
+function setBrowseCat(cat, btn){
+  S.browseCat=cat;
+  document.querySelectorAll('.catbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderBrowseGrid();
+}
+function renderBrowseGrid(){
+  const units = UNITS.filter(u=>u.type===S.browseCat);
+  document.getElementById('browseGrid').innerHTML = units.map(u=>{
+    const kn = u.words.filter(w=>(S.prog[u.id+'_'+w.w]||{}).known).length;
+    const pct = Math.round(kn/u.words.length*100);
+    return `<div class="ucard${S.browseUnit===u.id?' sel':''}" onclick="selectUnit('${u.id}')" id="uc-${u.id}">
+      <div class="uc-label" style="color:${u.color}">${u.label}</div>
+      <div class="uc-mean">${u.mean}</div>
+      <div class="uc-ex">${u.words.slice(0,2).map(w=>w.w).join(' · ')}</div>
+      <div class="uc-bar"><div class="uc-fill" style="background:${u.color};width:${pct}%"></div></div>
+      <div class="uc-n">${u.words.length}字 · 掌握${kn}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('browseDetail').innerHTML='';
+}
+function selectUnit(id){
+  S.browseUnit=id;
+  document.querySelectorAll('.ucard').forEach(c=>c.classList.remove('sel'));
+  const el=document.getElementById('uc-'+id); if(el)el.classList.add('sel');
+  const u=UNITS.find(x=>x.id===id);
+  document.getElementById('browseDetail').innerHTML=`
+    <div class="stitle"><span class="dot" style="background:${u.color}"></span>
+      <span style="color:${u.color}">${u.label}</span> — ${u.mean}
+    </div>
+    <table class="word-table">
+      <thead><tr><th>單字</th><th>發音</th><th>中文</th><th>例詞</th></tr></thead>
+      <tbody>${u.words.map(w=>`<tr>
+        <td class="td-word" style="color:${u.color}">${w.w}</td>
+        <td class="td-ipa">${w.ipa}</td>
+        <td class="td-zh">${w.zh}</td>
+        <td style="font-size:12px;color:var(--muted)">${w.ex.join('<br>')}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  document.getElementById('browseDetail').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ============================================================
+// FLASHCARD
+// ============================================================
+function getSelWords(){
+  return UNITS.filter(u=>S.sel.includes(u.id)).flatMap(u=>u.words.map(w=>({...w,uid:u.id,ulabel:u.label,ucolor:u.color})));
+}
+function shuffle(a){return [...a].sort(()=>Math.random()-.5);}
+
+function startFC(){
+  S.fcWords=shuffle(getSelWords()); S.fcIdx=0; S.fcOK=0; S.fcNG=0; S.fcFlipped=false;
+  document.getElementById('fcResult').style.display='none';
+  document.getElementById('fcCard').style.display='';
+  document.getElementById('fcBtns').style.display='none';
+  document.querySelector('.fc-hint-tap').style.display='block';
+  document.getElementById('fcCard').classList.remove('flip');
+  renderFC();
+}
+function renderFC(){
+  if(S.fcIdx>=S.fcWords.length){showFCResult();return;}
+  const w=S.fcWords[S.fcIdx];
+  document.getElementById('fcSeen').textContent=S.fcIdx;
+  document.getElementById('fcOK').textContent=S.fcOK;
+  document.getElementById('fcNG').textContent=S.fcNG;
+  const pct=S.fcIdx/S.fcWords.length*100;
+  document.getElementById('fcBar').style.width=pct+'%';
+  document.getElementById('fcCtr').textContent=`第 ${S.fcIdx+1} / ${S.fcWords.length} 張`;
+  document.getElementById('fcBadge').textContent=w.ulabel;
+  document.getElementById('fcBadge2').textContent=w.ulabel;
+  document.getElementById('fcWord').textContent=w.w;
+  document.getElementById('fcWord2').textContent=w.w;
+  document.getElementById('fcIpa').textContent=w.ipa;
+  document.getElementById('fcZh').textContent=w.zh;
+  document.getElementById('fcExamples').innerHTML=w.ex.map(e=>`<div class="fc-ex"><b>${e.split(' ')[0]}</b> ${e.split(' ').slice(1).join(' ')}</div>`).join('');
+  document.getElementById('fcCard').classList.remove('flip');
+  S.fcFlipped=false;
+  document.getElementById('fcBtns').style.display='none';
+}
+function flipFC(){
+  document.getElementById('fcCard').classList.toggle('flip');
+  S.fcFlipped=!S.fcFlipped;
+  document.getElementById('fcBtns').style.display=S.fcFlipped?'flex':'none';
+}
+function markFC(ok){
+  const w=S.fcWords[S.fcIdx]; const key=w.uid+'_'+w.w;
+  if(!S.prog[key])S.prog[key]={known:0,seen:0};
+  S.prog[key].seen++;
+  if(ok){S.prog[key].known++;S.fcOK++;}
+  else{S.fcNG++;S.fcWords.push(w);}
+  S.fcIdx++;S.studied++;saveS();updateHdr();renderFC();
+}
+function skipFC(){S.fcIdx++;renderFC();}
+function showFCResult(){
+  document.getElementById('fcResult').style.display='block';
+  document.getElementById('fcCard').style.display='none';
+  const pct=S.fcOK/(S.fcOK+S.fcNG)*100||0;
+  document.getElementById('fcStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('fcScore').textContent=`記住 ${S.fcOK} 個`;
+  document.getElementById('fcMsg').textContent=pct>=90?'字根全掌握！學測必勝！':pct>=70?'很好！繼續鞏固。':'字根要多複習，慢慢累積就會強！';
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+let qzData=[], qzAnsed=false, comboN=0;
+const qzTypes=['zh2en','en2zh','example'];
+function startQuiz(){
+  const ws=getSelWords();
+  if(ws.length<4){document.getElementById('quizArea').innerHTML='<p style="text-align:center;color:var(--muted);padding:40px">請選擇至少一個單元（需4個以上單字）</p>';return;}
+  qzData=shuffle(ws).slice(0,Math.min(20,ws.length));
+  S.qzIdx=0;S.qzOK=0;S.qzNG=0;qzAnsed=false;comboN=0;
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('quizArea').style.display='';
+  renderQz();
+}
+function renderQz(){
+  if(S.qzIdx>=qzData.length){showQzResult();return;}
+  qzAnsed=false;
+  const all=getSelWords(); const w=qzData[S.qzIdx];
+  const type=qzTypes[S.qzIdx%qzTypes.length];
+  document.getElementById('qzN').textContent=S.qzIdx+1;
+  document.getElementById('qzOK').textContent=S.qzOK;
+  document.getElementById('qzNG').textContent=S.qzNG;
+  document.getElementById('qzBar').style.width=(S.qzIdx/qzData.length*100)+'%';
+  document.getElementById('qzExplain').classList.remove('show');
+  document.getElementById('qzNext').style.display='none';
+  let q,correct,opts,badge;
+  if(type==='zh2en'){
+    badge='中翻英'; q=`「${w.zh}」英文是？`;
+    correct=w.w;
+    opts=shuffle([w,...shuffle(all.filter(x=>x.w!==w.w)).slice(0,3)]).map(x=>x.w);
+  } else if(type==='en2zh'){
+    badge='英翻中'; q=w.w;
+    document.getElementById('qzIpa').textContent=w.ipa;
+    correct=w.zh;
+    opts=shuffle([w,...shuffle(all.filter(x=>x.w!==w.w)).slice(0,3)]).map(x=>x.zh);
+  } else {
+    badge='字根判斷';
+    const units=UNITS.filter(u=>S.sel.includes(u.id));
+    const wu=units.find(u=>u.id===w.uid)||units[0];
+    q=`<span style="font-size:16px;color:var(--muted);display:block;margin-bottom:8px">"${w.w}"  包含字根</span><span style="font-size:28px;color:var(--gold)">${wu.label}</span> 的意思是？`;
+    correct=wu.mean;
+    const others=shuffle(units.filter(u=>u.id!==wu.id)).slice(0,3).map(u=>u.mean);
+    opts=shuffle([correct,...others]);
+  }
+  document.getElementById('qzType').textContent=badge;
+  document.getElementById('qzQ').innerHTML=q;
+  if(type!=='en2zh') document.getElementById('qzIpa').textContent='';
+  document.getElementById('qzOpts').innerHTML=opts.map(o=>
+    `<button class="qz-opt" onclick="ansQz(this,'${o.replace(/'/g,"\\'")}','${correct.replace(/'/g,"\\'")}','${w.w.replace(/'/g,"\\'")}','${w.zh.replace(/'/g,"\\'")}','${w.ex[0].replace(/'/g,"\\'")}')">
+      ${o}
+    </button>`).join('');
+}
+function ansQz(btn,chosen,correct,word,zh,ex){
+  if(qzAnsed)return;
+  qzAnsed=true;
+  const ok=chosen===correct;
+  document.querySelectorAll('.qz-opt').forEach(b=>{b.disabled=true;if(b===btn)b.classList.add(ok?'ok':'bad');else if(b.textContent.trim()===correct)b.classList.add('ok');});
+  if(ok){S.qzOK++;comboN++;showCombo();}else{S.qzNG++;comboN=0;}
+  const e=document.getElementById('qzExplain');
+  e.innerHTML=`<b>${word}</b>（${zh}）<br>例：${ex}`;
+  e.classList.add('show');
+  document.getElementById('qzNext').style.display='block';
+  S.studied++;saveS();updateHdr();
+}
+function showCombo(){
+  if(comboN<3)return;
+  const b=document.getElementById('comboBadge');
+  b.textContent=`🔥 ${comboN} 連對！`;
+  b.style.display='block';
+  setTimeout(()=>b.style.display='none',1400);
+}
+function nextQuiz(){S.qzIdx++;renderQz();}
+function showQzResult(){
+  document.getElementById('quizResult').style.display='block';
+  document.getElementById('quizArea').style.display='none';
+  const pct=S.qzOK/(S.qzOK+S.qzNG)*100||0;
+  document.getElementById('qzStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('qzScore').textContent=`${S.qzOK}/${S.qzOK+S.qzNG} 正確`;
+  document.getElementById('qzMsg').textContent=pct>=90?'學測字根全搞定！🎉':pct>=70?'不錯！繼續衝！':'多看幾遍字根，閱讀理解會大提升！';
+}
+
+// ============================================================
+// DRILL
+// ============================================================
+let drData=[], drAnsed=false;
+function startDrill(){
+  const ws=getSelWords();
+  drData=shuffle(ws).slice(0,Math.min(15,ws.length));
+  S.drIdx=0;S.drOK=0;S.drNG=0;drAnsed=false;
+  document.getElementById('drillResult').style.display='none';
+  document.getElementById('drillArea').style.display='';
+  renderDr();
+}
+function renderDr(){
+  if(S.drIdx>=drData.length){showDrResult();return;}
+  drAnsed=false;
+  const w=drData[S.drIdx];
+  const u=UNITS.find(x=>x.id===w.uid)||UNITS[0];
+  const ex=w.ex[0];
+  // fill blank: replace the word in example
+  let sentence, correct;
+  if(ex.includes(w.w)){
+    sentence=ex.replace(w.w,`<span class="blank-word">____</span>`);
+    correct=w.w;
+  } else {
+    sentence=`<span style="color:var(--muted);font-size:14px">${u.label} 字根 → </span> ____`;
+    correct=w.w;
+  }
+  document.getElementById('drN').textContent=S.drIdx+1;
+  document.getElementById('drOK').textContent=S.drOK;
+  document.getElementById('drNG').textContent=S.drNG;
+  document.getElementById('drBar').style.width=(S.drIdx/drData.length*100)+'%';
+  document.getElementById('drExplain').classList.remove('show');
+  document.getElementById('drNext').style.display='none';
+  document.getElementById('drQ').innerHTML=`<span style="font-size:12px;color:var(--muted);display:block;margin-bottom:8px">字根: ${u.label} (${u.mean}) · 中文: ${w.zh}</span>${sentence}`;
+  const all=getSelWords();
+  const distractors=shuffle(all.filter(x=>x.w!==w.w)).slice(0,3).map(x=>x.w);
+  document.getElementById('drOpts').innerHTML=shuffle([correct,...distractors]).map(o=>
+    `<button class="drill-opt" onclick="ansDr(this,'${o.replace(/'/g,"\\'")}','${correct.replace(/'/g,"\\'")}','${w.w.replace(/'/g,"\\'")}','${w.zh.replace(/'/g,"\\'")}','${ex.replace(/'/g,"\\'")}')">
+      ${o}
+    </button>`).join('');
+}
+function ansDr(btn,chosen,correct,word,zh,ex){
+  if(drAnsed)return;
+  drAnsed=true;
+  const ok=chosen===correct;
+  document.querySelectorAll('.drill-opt').forEach(b=>{b.disabled=true;if(b===btn)b.classList.add(ok?'ok':'bad');else if(b.textContent.trim()===correct)b.classList.add('ok');});
+  if(ok)S.drOK++;else S.drNG++;
+  const e=document.getElementById('drExplain');
+  e.innerHTML=`答案：<b>${word}</b> = ${zh}<br>例：${ex}`;
+  e.classList.add('show');
+  document.getElementById('drNext').style.display='block';
+  S.studied++;saveS();updateHdr();
+}
+function nextDrill(){S.drIdx++;renderDr();}
+function showDrResult(){
+  document.getElementById('drillResult').style.display='block';
+  document.getElementById('drillArea').style.display='none';
+  const pct=S.drOK/(S.drOK+S.drNG)*100||0;
+  document.getElementById('drStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('drScore').textContent=`${S.drOK}/${S.drOK+S.drNG} 正確`;
+  document.getElementById('drMsg').textContent=pct>=90?'字根應用超強！':pct>=70?'還不錯！繼續練！':'多練幾次，字根就能靈活運用！';
+}
+
+// ============================================================
+// PROGRESS
+// ============================================================
+function renderProg(){
+  const byType={root:'🟥 字根', pre:'🟦 前綴', suf:'🟩 後綴'};
+  let html='';
+  Object.entries(byType).forEach(([type,label])=>{
+    const units=UNITS.filter(u=>u.type===type);
+    html+=`<div class="stitle" style="margin-top:20px"><span class="dot" style="background:${type==='root'?'var(--root-color)':type==='pre'?'var(--pre-color)':'var(--suf-color)'}"></span>${label}</div>
+    <div class="unit-grid">${units.map(u=>{
+      const kn=u.words.filter(w=>(S.prog[u.id+'_'+w.w]||{}).known).length;
+      const pct=Math.round(kn/u.words.length*100);
+      return `<div class="ucard">
+        <div class="uc-label" style="color:${u.color}">${u.label}</div>
+        <div class="uc-mean">${u.mean}</div>
+        <div class="uc-bar"><div class="uc-fill" style="background:${u.color};width:${pct}%"></div></div>
+        <div class="uc-n">掌握 ${kn}/${u.words.length} · ${pct}%</div>
+      </div>`;
+    }).join('')}</div>`;
+  });
+  document.getElementById('progContent').innerHTML=html;
+}
+
+// ============================================================
+// SELECTION OVERLAY
+// ============================================================
+function openSel(mode){
+  S._selFor=mode;
+  const g=document.getElementById('selGrid');
+  g.innerHTML=UNITS.map(u=>`<div class="sel-card${S.sel.includes(u.id)?' on':''}" id="sc-${u.id}" onclick="toggleSel('${u.id}',this)">
+    <div class="sc-label" style="color:${u.color}">${u.label}</div>
+    <div class="sc-sub">${u.mean} · ${u.type}</div>
+  </div>`).join('');
+  document.getElementById('selOverlay').classList.add('on');
+}
+function toggleSel(id,el){
+  if(S.sel.includes(id))S.sel=S.sel.filter(x=>x!==id);
+  else S.sel.push(id);
+  el.classList.toggle('on');
+}
+function selAll(){S.sel=UNITS.map(u=>u.id);document.querySelectorAll('[id^="sc-"]').forEach(el=>el.classList.add('on'));}
+function selNone(){S.sel=[];document.querySelectorAll('[id^="sc-"]').forEach(el=>el.classList.remove('on'));}
+function selCat(cat){
+  selNone();S.sel=UNITS.filter(u=>u.type===cat).map(u=>u.id);
+  S.sel.forEach(id=>{const el=document.getElementById('sc-'+id);if(el)el.classList.add('on');});
+}
+function applySelection(){
+  if(S.sel.length===0)S.sel=[UNITS[0].id];
+  document.getElementById('selOverlay').classList.remove('on');
+  if(S._selFor==='fc')startFC();else if(S._selFor==='qz')startQuiz();
+}
+function closeOverlay(e){if(e.target===document.getElementById('selOverlay'))document.getElementById('selOverlay').classList.remove('on');}
+</script>
+</body>
+</html>
