@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台東大武山憂遁草 — 健康需求診斷</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang TC','Noto Sans TC',sans-serif;background:#F5F7F5;color:#1a1a1a;min-height:100vh}
+.container{max-width:480px;margin:0 auto;padding:16px 16px 40px}
+.hero{text-align:center;padding:2rem 1rem 1.2rem}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:#E1F5EE;color:#0F6E56;font-size:12px;padding:5px 14px;border-radius:999px;margin-bottom:14px;font-weight:500}
+.hero-title{font-size:22px;font-weight:600;color:#1a1a1a;margin-bottom:8px;line-height:1.4}
+.hero-sub{font-size:15px;color:#555;line-height:1.7}
+.step-indicator{display:flex;justify-content:center;gap:8px;margin:4px 0 16px}
+.step-dot{width:8px;height:8px;border-radius:50%;background:#ddd;transition:background 0.3s}
+.step-dot.active{background:#1D9E75}
+.step-dot.done{background:#9FE1CB}
+.card{background:#fff;border:1px solid #e8ede8;border-radius:16px;padding:20px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.progress-bar{height:3px;background:#eee;border-radius:2px;margin-bottom:18px}
+.progress-fill{height:100%;background:#1D9E75;border-radius:2px;transition:width 0.4s}
+.question-title{font-size:17px;font-weight:600;color:#1a1a1a;margin-bottom:4px}
+.question-sub{font-size:13px;color:#888;margin-bottom:18px}
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.option-btn{background:#fff;border:1.5px solid #e0e0e0;border-radius:12px;padding:12px 10px;cursor:pointer;text-align:left;transition:all 0.15s;width:100%}
+.option-btn:hover{border-color:#1D9E75;background:#F5FCF9}
+.option-btn.selected{background:#E1F5EE;border:2px solid #1D9E75}
+.opt-icon{font-size:20px;color:#1D9E75;margin-bottom:6px;display:block}
+.opt-label{font-size:14px;font-weight:600;color:#1a1a1a;display:block;margin-bottom:2px}
+.opt-desc{font-size:11px;color:#888;display:block;line-height:1.4}
+.nav-row{display:flex;gap:8px;margin-top:16px}
+.btn-primary{flex:1;background:#1D9E75;color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.btn-primary:hover{background:#0F6E56}
+.btn-primary:disabled{background:#ccc;cursor:not-allowed}
+.btn-back{background:#f5f5f5;color:#666;border:1px solid #ddd;border-radius:10px;padding:13px 16px;font-size:14px;cursor:pointer}
+.result-hero{text-align:center;padding:1.5rem 0.5rem 1rem}
+.result-icon{width:60px;height:60px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px;color:#0F6E56}
+.result-title{font-size:19px;font-weight:600;color:#1a1a1a;margin-bottom:8px}
+.result-sub{font-size:14px;color:#555;line-height:1.7}
+.proof-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px 0}
+.proof-card{background:#F5FCF9;border-radius:10px;padding:10px 8px;text-align:center}
+.proof-num{font-size:18px;font-weight:700;color:#0F6E56}
+.proof-label{font-size:11px;color:#666;margin-top:3px}
+.benefit-list{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.benefit-item{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;background:#F8F8F8;border-radius:10px}
+.b-icon{color:#1D9E75;font-size:17px;flex-shrink:0;margin-top:1px}
+.b-text{font-size:13px;color:#333;line-height:1.6}
+.feature-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.chip{font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid #ddd;color:#666;background:#fafafa}
+.urgency-box{background:#FFF8EE;border:1px solid #F5C842;border-radius:10px;padding:11px 14px;margin:12px 0;display:flex;gap:10px;align-items:flex-start}
+.u-icon{color:#C07800;font-size:17px;flex-shrink:0;margin-top:1px}
+.u-text{font-size:12px;color:#7A5000;line-height:1.6}
+.warn-box{background:#FFF8EE;border:1px solid #F5C842;border-radius:10px;padding:11px 14px;margin:8px 0;display:flex;gap:10px;align-items:flex-start}
+.cta-btn{width:100%;background:#0F6E56;color:#fff;border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;transition:background 0.15s;text-decoration:none}
+.cta-btn:hover{background:#085041}
+.share-btn{width:100%;background:#fff;color:#333;border:1.5px solid #ccc;border-radius:12px;padding:12px;font-size:14px;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:6px}
+.share-btn:hover{background:#f5f5f5}
+.divider{border:none;border-top:1px solid #eee;margin:14px 0}
+.product-badge{display:inline-block;font-size:11px;background:#E1F5EE;color:#0F6E56;padding:3px 9px;border-radius:999px;margin-left:6px;font-weight:500}
+.restart-btn{background:none;border:none;font-size:13px;color:#aaa;cursor:pointer;padding:8px;display:block;margin:12px auto 0}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:999}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <div class="hero-badge"><i class="ti ti-leaf"></i> 台東大武山 嚴選</div>
+    <div class="hero-title">你的身體，需要什麼？</div>
+    <div class="hero-sub">3分鐘了解憂遁草如何幫助你的健康<br>找到最適合你的保健方案</div>
+  </div>
+  <div class="step-indicator" id="stepDots"></div>
+  <div id="quizArea"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const questions=[
+  {id:'concern',title:'你目前最在意哪個健康問題？',sub:'選一個最符合你現況的選項',options:[
+    {icon:'ti-ripple',label:'腎臟保養',desc:'腎炎、腎結石、夜尿頻繁'},
+    {icon:'ti-activity',label:'癌症調理',desc:'預防或輔助治療'},
+    {icon:'ti-heart-rate-monitor',label:'三高問題',desc:'高血壓、血糖、血脂'},
+    {icon:'ti-mood-smile',label:'日常保健',desc:'排毒、養顏、提升免疫'},
+  ]},
+  {id:'history',title:'你有沒有正在服用藥物或進行治療？',sub:'幫助我們給你最適合的使用建議',options:[
+    {icon:'ti-pill',label:'有，西醫用藥',desc:'需注意服用間隔1小時'},
+    {icon:'ti-herb',label:'有，中藥調理',desc:'建議間隔服用'},
+    {icon:'ti-check',label:'沒有',desc:'可依標準用量使用'},
+    {icon:'ti-question-mark',label:'不確定',desc:'建議先諮詢醫師'},
+  ]},
+  {id:'goal',title:'你希望幾個月後感受到改變？',sub:'設定合理期待，才能持續堅持',options:[
+    {icon:'ti-bolt',label:'1個月內',desc:'積極保健，快速改善'},
+    {icon:'ti-calendar',label:'3個月',desc:'穩健調理，長期養成'},
+    {icon:'ti-trending-up',label:'半年以上',desc:'慢性調理，從根本改善'},
+    {icon:'ti-infinity',label:'長期保養',desc:'預防重於治療'},
+  ]},
+  {id:'worry',title:'你最擔心什麼？',sub:'誠實選擇，讓我們更好地幫助你',options:[
+    {icon:'ti-search',label:'產品真假',desc:'怕買到品質差的'},
+    {icon:'ti-currency-dollar',label:'價格合理',desc:'想知道CP值'},
+    {icon:'ti-shield-check',label:'使用安全',desc:'有沒有副作用'},
+    {icon:'ti-star',label:'功效真實',desc:'想看真實見證'},
+  ]},
+];
+
+const profiles={
+  '腎臟保養':{
+    icon:'ti-ripple',
+    title:'腎臟保養重點方案',
+    desc:'腎臟是最沉默的臟器。憂遁草傳統上就是腎病患者的第一選擇，有助於緩解腎炎、腎結石、夜尿頻繁，被稱為「腎臟病人的救星」。',
+    benefits:[
+      {icon:'ti-check',text:'<strong>利尿通暢</strong> — 幫助小便不暢的患者改善排尿狀況'},
+      {icon:'ti-check',text:'<strong>清熱解毒</strong> — 幫助腎臟排除積累毒素，減輕負擔'},
+      {icon:'ti-check',text:'<strong>消炎散瘀</strong> — 緩解腎炎引起的發炎與不適'},
+      {icon:'ti-check',text:'<strong>礦物質補充</strong> — 鈣、鎂、硒等腎功能所需的微量元素'},
+    ]
+  },
+  '癌症調理':{
+    icon:'ti-activity',
+    title:'癌症輔助調理方案',
+    desc:'研究指出憂遁草含有白樺脂醇、類黃酮，有助免疫調節，是癌友社群口耳相傳的天然輔助品。台東深綠色草粉，活性成分更濃縮。',
+    benefits:[
+      {icon:'ti-check',text:'<strong>深綠高活性</strong> — 葉綠素、多酚高度濃縮，抗氧化力強'},
+      {icon:'ti-check',text:'<strong>免疫調節</strong> — 含類黃酮、白樺脂醇，有助提升自然免疫力'},
+      {icon:'ti-check',text:'<strong>腸道守護</strong> — 膳食纖維幫助益菌繁殖，降低毒素回流'},
+      {icon:'ti-check',text:'<strong>45%粗蛋白</strong> — 術後、療後補充蛋白質與17種胺基酸'},
+    ]
+  },
+  '三高問題':{
+    icon:'ti-heart-rate-monitor',
+    title:'三高調理保健方案',
+    desc:'憂遁草傳統被用於調理高血壓、高血糖、高血脂。豐富的膳食纖維有助緩衝血糖上升，幫助帶走多餘膽固醇。',
+    benefits:[
+      {icon:'ti-check',text:'<strong>調節血糖</strong> — 高粗纖維刺激腸道蠕動，緩衝血糖上升'},
+      {icon:'ti-check',text:'<strong>降低血脂</strong> — 可溶性纖維幫助帶走多餘膽固醇'},
+      {icon:'ti-check',text:'<strong>清血排毒</strong> — 清熱解毒，改善血液循環品質'},
+      {icon:'ti-check',text:'<strong>防治動脈硬化</strong> — 研究指出有助減少心血管風險'},
+    ]
+  },
+  '日常保健':{
+    icon:'ti-mood-smile',
+    title:'日常保健養顏方案',
+    desc:'17種胺基酸＋豐富維生素C＋高濃度葉綠素，每天一匙就是全面性的天然綠色補給，養顏排毒、精神充沛。',
+    benefits:[
+      {icon:'ti-check',text:'<strong>養顏美容</strong> — 葉綠素＋維生素C，幫助肌膚紅潤有光澤'},
+      {icon:'ti-check',text:'<strong>排毒清腸</strong> — 每天舒暢排毒，輕盈不脹氣'},
+      {icon:'ti-check',text:'<strong>補充能量</strong> — 17種胺基酸提供完整蛋白質補給'},
+      {icon:'ti-check',text:'<strong>肝腎日常保養</strong> — 幫助肝腎解毒、養血養氣'},
+    ]
+  },
+};
+
+const PURCHASE_URL = 'https://myship.7-11.com.tw/general/detail/GM2407210007294';
+
+let answers={}, currentStep=0;
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+function renderDots(){
+  document.getElementById('stepDots').innerHTML=questions.map((_,i)=>{
+    const c=i<currentStep?'done':i===currentStep?'active':'';
+    return `<div class="step-dot ${c}"></div>`;
+  }).join('');
+}
+
+function renderQuestion(){
+  const q=questions[currentStep];
+  const pct=Math.round(currentStep/questions.length*100);
+  const sel=answers[q.id];
+  document.getElementById('quizArea').innerHTML=`
+    <div class="card">
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="question-title">${q.title}</div>
+      <div class="question-sub">${q.sub}</div>
+      <div class="options-grid">
+        ${q.options.map(o=>`
+          <button class="option-btn ${sel===o.label?'selected':''}" onclick="pick('${q.id}','${o.label}')">
+            <i class="ti ${o.icon} opt-icon"></i>
+            <span class="opt-label">${o.label}</span>
+            <span class="opt-desc">${o.desc}</span>
+          </button>`).join('')}
+      </div>
+      <div class="nav-row">
+        ${currentStep>0?'<button class="btn-back" onclick="prev()">上一題</button>':''}
+        <button class="btn-primary" onclick="next()" ${sel?'':'disabled'}>
+          ${currentStep<questions.length-1?'下一題 →':'查看我的方案 →'}
+        </button>
+      </div>
+    </div>`;
+}
+
+function pick(id,val){answers[id]=val;renderQuestion();}
+function prev(){if(currentStep>0){currentStep--;renderDots();renderQuestion();}}
+function next(){
+  if(!answers[questions[currentStep].id])return;
+  currentStep++;
+  if(currentStep>=questions.length)renderResult();
+  else{renderDots();renderQuestion();}
+}
+
+function copyText(txt){
+  navigator.clipboard.writeText(txt).then(()=>showToast('已複製！貼到LINE就能分享')).catch(()=>showToast('請長按複製上方文字'));
+}
+
+function renderResult(){
+  const concern=answers['concern']||'日常保健';
+  const p=profiles[concern]||profiles['日常保健'];
+  const hasMeds=answers['history']==='有，西醫用藥'||answers['history']==='有，中藥調理';
+  const goal=answers['goal']||'3個月';
+  const isCancer=concern==='癌症調理';
+  document.getElementById('stepDots').innerHTML=questions.map(()=>'<div class="step-dot done"></div>').join('');
+
+  const shareText=`【台東大武山憂遁草粉推薦】\n\n我正在使用冠貞生技的台東憂遁草粉，主要針對${concern}保健。\n\n✅ 有機土地栽培，好山好水\n✅ 深綠色高活性，比市售濃縮\n✅ 全台最新鮮、最親民價格\n\n現在是產季，冬天就沒有了！\n想了解的朋友可以問我 🌿`;
+
+  document.getElementById('quizArea').innerHTML=`
+    <div class="card">
+      <div class="result-hero">
+        <div class="result-icon"><i class="ti ${p.icon}"></i></div>
+        <div class="result-title">${p.title}</div>
+        <div class="result-sub">${p.desc}</div>
+      </div>
+      <div class="proof-row">
+        <div class="proof-card"><div class="proof-num">45%</div><div class="proof-label">粗蛋白含量</div></div>
+        <div class="proof-card"><div class="proof-num">17種</div><div class="proof-label">胺基酸</div></div>
+        <div class="proof-card"><div class="proof-num">深綠</div><div class="proof-label">高活性濃縮</div></div>
+      </div>
+      <div class="benefit-list">
+        ${p.benefits.map(b=>`<div class="benefit-item"><i class="ti ${b.icon} b-icon"></i><div class="b-text">${b.text}</div></div>`).join('')}
+        ${hasMeds?`<div class="benefit-item warn-box"><i class="ti ti-alert-triangle b-icon" style="color:#C07800"></i><div class="b-text" style="color:#7A5000"><strong>服藥提醒</strong> — 服用憂遁草與其他藥物建議相隔至少1小時，以確保藥效不相互影響。</div></div>`:''}
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;margin-bottom:6px">
+        <span style="font-size:16px;font-weight:600">台東大武山憂遁草粉</span>
+        <span class="product-badge">全台最新鮮</span>
+      </div>
+      <div style="font-size:13px;color:#888;margin-bottom:12px">冠貞生技嚴選 · 有機土地栽培 · 低溫乾燥</div>
+      <div class="feature-chips">
+        <span class="chip"><i class="ti ti-map-pin" style="font-size:12px"></i> 台東大武山下</span>
+        <span class="chip"><i class="ti ti-leaf" style="font-size:12px"></i> 有機栽培</span>
+        <span class="chip"><i class="ti ti-droplet" style="font-size:12px"></i> 山泉水灌溉</span>
+        <span class="chip"><i class="ti ti-sun" style="font-size:12px"></i> 充足日照</span>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:13px;color:#555;line-height:1.8">
+        建議目標：<strong style="color:#1a1a1a">${goal}</strong> 感受改變<br>
+        建議方式：每日一匙加入豆漿、果汁或溫水飲用
+      </div>
+      <div class="urgency-box">
+        <i class="ti ti-clock u-icon"></i>
+        <div class="u-text">${isCancer?'現在是憂遁草產季，冬天沒有產出，癌友建議先行備貨，避免斷貨。':'台東小農手工製作，每批數量有限，建議儘早訂購。產季期間最新鮮。'}</div>
+      </div>
+      <a class="cta-btn" href="${PURCHASE_URL}" target="_blank">
+        <i class="ti ti-shopping-cart"></i> 立即前往訂購
+      </a>
+      <button class="share-btn" onclick="copyShareText()">
+        <i class="ti ti-share"></i> 複製推薦文字，分享給朋友
+      </button>
+      <button class="restart-btn" onclick="restart()">重新診斷</button>
+    </div>
+    <div id="shareBlock" style="display:none;background:#f5f5f5;border-radius:12px;padding:14px;margin-top:4px;font-size:13px;color:#333;line-height:1.7;white-space:pre-wrap">${shareText}</div>
+  `;
+  window._shareText=shareText;
+}
+
+function copyShareText(){
+  const block=document.getElementById('shareBlock');
+  block.style.display='block';
+  copyText(window._shareText||'');
+}
+
+function restart(){answers={};currentStep=0;renderDots();renderQuestion();}
+
+renderDots();
+renderQuestion();
+</script>
+</body>
+</html>
