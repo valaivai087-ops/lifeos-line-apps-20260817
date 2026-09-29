@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>預測力診斷系統｜看懂世界、降低焦慮、做出更好選擇</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Microsoft JhengHei','PingFang TC','Noto Sans TC',sans-serif;background:#060E1A;min-height:100vh;color:#fff;}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(160deg,#060E1A 0%,#0D1F35 55%,#060E1A 100%);border-bottom:1px solid rgba(212,160,23,0.2);padding:2.5rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% -10%,rgba(212,160,23,0.1) 0%,transparent 65%);pointer-events:none;}
+.hero-eyebrow{display:inline-block;font-size:11px;letter-spacing:2px;color:#D4A017;border:1px solid rgba(212,160,23,0.35);padding:4px 18px;border-radius:100px;margin-bottom:1rem;position:relative;}
+.hero-title{font-size:26px;font-weight:700;color:#fff;letter-spacing:2px;margin-bottom:6px;position:relative;}
+.hero-title em{color:#D4A017;font-style:normal;}
+.hero-sub{font-size:13px;color:rgba(255,255,255,0.45);letter-spacing:1px;margin-bottom:1.25rem;position:relative;}
+.hero-divider{width:80px;height:1px;background:linear-gradient(90deg,transparent,#D4A017,transparent);margin:0 auto 1.25rem;}
+.hero-tags{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;position:relative;}
+.hero-tag{font-size:11px;padding:5px 14px;border-radius:100px;background:rgba(212,160,23,0.08);border:1px solid rgba(212,160,23,0.2);color:#D4A017;}
+.prog-bar{background:rgba(255,255,255,0.05);border-radius:100px;height:3px;margin:1.5rem 1.5rem 0;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,#D4A017,#B8860B);border-radius:100px;transition:width 0.6s ease;width:0%;}
+
+/* ── LAYOUT ── */
+.content{max-width:760px;margin:0 auto;padding:1.5rem 1rem;}
+.phase{display:none;}.phase.active{display:block;}
+.slabel{font-size:10px;font-weight:700;letter-spacing:2px;color:#D4A017;margin-bottom:1rem;display:flex;align-items:center;gap:8px;text-transform:uppercase;}
+.slabel::after{content:'';flex:1;height:0.5px;background:rgba(212,160,23,0.2);}
+
+/* ── CYCLE MODEL ── */
+.cycle-row{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem;padding:1rem;background:rgba(212,160,23,0.04);border:1px solid rgba(212,160,23,0.15);border-radius:14px;}
+.cycle-step{font-size:12px;font-weight:700;color:#D4A017;padding:6px 12px;background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.25);border-radius:8px;}
+.cycle-arrow{font-size:14px;color:rgba(212,160,23,0.4);}
+
+/* ── MODULE GRID ── */
+.mod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;margin-bottom:1.25rem;}
+.mod-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px 12px;cursor:pointer;transition:all 0.2s;text-align:center;position:relative;}
+.mod-card:hover{border-color:rgba(212,160,23,0.4);background:rgba(212,160,23,0.04);}
+.mod-card.picked{border:1.5px solid #D4A017;background:rgba(212,160,23,0.06);}
+.mod-card.picked::after{content:'✓';position:absolute;top:8px;right:10px;font-size:11px;color:#D4A017;font-weight:700;}
+.mod-icon{font-size:26px;margin-bottom:6px;display:block;}
+.mod-name{font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;}
+.mod-tagline{font-size:11px;color:#D4A017;margin-bottom:4px;}
+.mod-desc{font-size:10px;color:rgba(255,255,255,0.35);line-height:1.4;}
+
+/* ── PICK HINT ── */
+.pick-hint{text-align:center;font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:1rem;}
+.pick-count{display:inline-block;background:rgba(212,160,23,0.1);color:#D4A017;font-size:12px;padding:3px 12px;border-radius:100px;margin-left:6px;font-weight:600;}
+
+/* ── FILTER TABS ── */
+.filter-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem;}
+.filter-tab{padding:6px 14px;border:1px solid rgba(255,255,255,0.1);border-radius:100px;font-size:11px;color:rgba(255,255,255,0.4);cursor:pointer;background:transparent;font-family:inherit;transition:all 0.2s;}
+.filter-tab:hover{border-color:rgba(212,160,23,0.4);color:#D4A017;}
+.filter-tab.active{background:rgba(212,160,23,0.1);border-color:#D4A017;color:#D4A017;font-weight:600;}
+
+/* ── QUESTION ── */
+.q-block{margin-bottom:1.5rem;}
+.q-mod-header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(212,160,23,0.06);border:1px solid rgba(212,160,23,0.18);border-radius:12px;margin-bottom:10px;}
+.q-mod-icon{font-size:22px;}
+.q-mod-name{font-size:14px;font-weight:700;color:#fff;flex:1;}
+.q-mod-tag{font-size:11px;color:#D4A017;}
+.q-list{display:flex;flex-direction:column;gap:8px;}
+.q-item{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:11px;padding:12px 14px;}
+.q-text{font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:9px;line-height:1.6;}
+.q-opts{display:flex;gap:7px;flex-wrap:wrap;}
+.q-opt{padding:6px 12px;border:1px solid rgba(255,255,255,0.12);border-radius:100px;font-size:11px;cursor:pointer;color:rgba(255,255,255,0.5);background:transparent;transition:all 0.15s;font-family:inherit;}
+.q-opt:hover{border-color:#D4A017;color:#D4A017;}
+.q-opt.sel{background:rgba(212,160,23,0.12);border-color:#D4A017;color:#D4A017;font-weight:600;}
+
+/* ── RESULT HERO ── */
+.result-hero{background:linear-gradient(135deg,#060E1A,#0D1F35);border:1px solid rgba(212,160,23,0.25);border-radius:18px;padding:2rem;text-align:center;margin-bottom:1.5rem;}
+.rh-ring{width:110px;height:110px;margin:0 auto 1rem;position:relative;}
+.rh-ring svg{width:110px;height:110px;}
+.rh-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:700;color:#D4A017;}
+.rh-title{font-size:20px;font-weight:700;color:#fff;margin-bottom:6px;}
+.rh-desc{font-size:13px;color:rgba(255,255,255,0.45);}
+
+/* ── FORMULA CHAIN ── */
+.formula-chain{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:1rem 0;padding:1.25rem;background:rgba(212,160,23,0.04);border:1px solid rgba(212,160,23,0.15);border-radius:14px;}
+.fc-step{font-size:12px;font-weight:700;padding:5px 12px;border-radius:8px;}
+.fc-step.first{color:#D4A017;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.3);}
+.fc-step.mid{color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);}
+.fc-step.last{color:#B8860B;background:rgba(184,134,11,0.1);border:1px solid rgba(184,134,11,0.3);}
+.fc-arr{font-size:14px;color:rgba(212,160,23,0.35);display:flex;align-items:center;}
+
+/* ── MODULE RESULT CARD ── */
+.mrc{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;margin-bottom:14px;}
+.mrc-header{display:flex;align-items:center;gap:12px;padding:14px 16px;}
+.mrc-icon{font-size:24px;}
+.mrc-info{flex:1;}
+.mrc-name{font-size:15px;font-weight:700;color:#fff;}
+.mrc-tagline{font-size:11px;color:#D4A017;margin-top:2px;}
+.mrc-score-area{text-align:right;}
+.mrc-score-num{font-size:18px;font-weight:700;}
+.mrc-bar-wrap{width:80px;height:4px;background:rgba(255,255,255,0.08);border-radius:100px;margin-top:5px;overflow:hidden;}
+.mrc-bar{height:100%;border-radius:100px;transition:width 1s ease;}
+.s-hi{background:#1a7a2a;}.s-md{background:#B8860B;}.s-lo{background:#A32D2D;}
+
+/* ── TABS ── */
+.rtabs{display:flex;gap:0;border:1px solid rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;margin:0 16px 12px;}
+.rtab{flex:1;padding:10px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;background:transparent;color:rgba(255,255,255,0.3);border:none;transition:all 0.2s;font-family:inherit;}
+.rtab.active{background:rgba(212,160,23,0.1);color:#D4A017;}
+.tab-panel{display:none;padding:0 16px 16px;}.tab-panel.active{display:block;}
+
+/* ── EDU PANEL ── */
+.core-box{background:rgba(212,160,23,0.06);border:1px solid rgba(212,160,23,0.2);border-radius:12px;padding:14px;margin-bottom:10px;}
+.core-label{font-size:10px;color:#D4A017;font-weight:700;letter-spacing:1px;margin-bottom:5px;}
+.core-text{font-size:14px;color:#fff;font-weight:600;line-height:1.6;}
+.edu-box{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px;margin-bottom:10px;}
+.edu-title{font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.3);font-weight:700;margin-bottom:8px;}
+.edu-text{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.7;}
+.sci-box{background:rgba(46,95,138,0.1);border:1px solid rgba(46,95,138,0.25);border-left:4px solid rgba(46,95,138,0.6);border-radius:0 10px 10px 0;padding:12px 14px;margin-bottom:10px;}
+.sci-title{font-size:10px;color:rgba(125,174,220,0.8);font-weight:700;margin-bottom:5px;letter-spacing:0.5px;}
+.sci-text{font-size:12px;color:rgba(125,174,220,0.7);line-height:1.7;}
+.update-box{background:rgba(212,160,23,0.05);border-left:3px solid #B8860B;padding:10px 14px;border-radius:0 10px 10px 0;margin-bottom:10px;}
+.ub-title{font-size:10px;color:#8B6508;font-weight:700;margin-bottom:3px;letter-spacing:0.5px;}
+.ub-text{font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6;}
+
+/* ── METHOD PANEL ── */
+.method-steps{display:flex;flex-direction:column;gap:10px;}
+.ms-card{display:flex;gap:12px;background:rgba(212,160,23,0.04);border:1px solid rgba(212,160,23,0.1);border-radius:12px;padding:12px 14px;}
+.ms-num{width:24px;height:24px;border-radius:50%;background:rgba(212,160,23,0.15);border:1px solid rgba(212,160,23,0.3);font-size:11px;font-weight:700;color:#D4A017;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ms-body{flex:1;}
+.ms-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.ms-desc{font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;}
+.daily-box{background:rgba(26,122,42,0.06);border:1px solid rgba(26,122,42,0.2);border-left:3px solid rgba(26,122,42,0.6);border-radius:0 12px 12px 0;padding:12px 14px;margin-top:10px;}
+.daily-title{font-size:11px;color:rgba(100,200,100,0.8);font-weight:700;margin-bottom:6px;}
+.daily-item{font-size:12px;color:rgba(100,200,100,0.65);padding:3px 0;border-bottom:1px solid rgba(26,122,42,0.15);}
+.daily-item:last-child{border-bottom:none;}
+
+/* ── NUTRIENT PANEL ── */
+.nut-list{display:flex;flex-direction:column;gap:9px;}
+.nut-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;}
+.nut-top{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;transition:background 0.15s;}
+.nut-top:hover{background:rgba(212,160,23,0.04);}
+.nut-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.nut-info{flex:1;min-width:0;}
+.nut-name{font-size:13px;font-weight:700;color:#fff;}
+.nut-mech{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;}
+.nut-price{font-size:12px;color:#B8860B;font-weight:700;margin-top:3px;}
+.nut-exp{font-size:11px;color:rgba(255,255,255,0.2);flex-shrink:0;}
+.nut-cta{padding:7px 13px;background:linear-gradient(135deg,#B8860B,#D4A017);color:#060E1A;border:none;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;text-decoration:none;display:inline-block;font-family:inherit;}
+.nut-detail{display:none;padding:0 14px 14px;border-top:1px solid rgba(255,255,255,0.05);}
+.nut-detail.open{display:block;}
+.nut-mbox{background:rgba(255,255,255,0.03);border-radius:10px;padding:10px 12px;margin:10px 0;}
+.nut-mt{font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.25);font-weight:700;margin-bottom:5px;}
+.nut-mb{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.7;}
+.nut-why{background:rgba(212,160,23,0.05);border-left:2px solid #B8860B;padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:10px;}
+.nut-wt{font-size:10px;color:#8B6508;font-weight:700;margin-bottom:3px;letter-spacing:0.5px;}
+.nut-wb{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.6;}
+.buy-block{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(184,134,11,0.05);border:1px solid rgba(184,134,11,0.18);border-radius:10px;}
+.bb-info{flex:1;}
+.bb-name{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
+.bb-price{font-size:16px;font-weight:700;color:#D4A017;}
+.bb-spec{font-size:10px;color:rgba(255,255,255,0.3);}
+.bb-store{font-size:10px;color:#B8860B;margin-top:2px;font-weight:600;}
+.btn-buy-full{padding:10px 18px;background:linear-gradient(135deg,#B8860B,#D4A017);color:#060E1A;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;white-space:nowrap;flex-shrink:0;font-family:inherit;}
+
+/* ── BUTTONS ── */
+.btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,#8B6508,#D4A017);color:#060E1A;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:opacity 0.2s,transform 0.1s;margin-top:1rem;font-family:inherit;}
+.btn-primary:hover{opacity:0.9;transform:translateY(-1px);}
+.btn-primary:disabled{opacity:0.2;cursor:not-allowed;transform:none;}
+.nav-row{display:flex;gap:10px;margin-top:1rem;}
+.btn-back{flex:1;padding:14px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:14px;color:rgba(255,255,255,0.4);cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.btn-back:hover{border-color:rgba(212,160,23,0.4);color:#D4A017;}
+.btn-restart{display:block;width:100%;padding:14px;background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:12px;font-size:14px;color:rgba(255,255,255,0.3);cursor:pointer;text-align:center;margin-top:1.5rem;transition:all 0.2s;font-family:inherit;}
+.btn-restart:hover{border-color:rgba(212,160,23,0.3);color:#D4A017;}
+.footer{text-align:center;font-size:11px;color:rgba(255,255,255,0.15);padding:1.5rem 1rem;line-height:1.8;}
+
+@media(max-width:480px){
+  .mod-grid{grid-template-columns:1fr 1fr;}
+  .hero-title{font-size:20px;}
+  .buy-block{flex-direction:column;align-items:flex-start;}
+  .btn-buy-full{width:100%;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-eyebrow">The Power of Prediction</div>
+  <div class="hero-title"><em>預測力</em>診斷系統</div>
+  <div class="hero-divider"></div>
+  <div class="hero-sub">看懂世界 · 降低焦慮 · 做出更好選擇</div>
+  <div class="hero-tags">
+    <span class="hero-tag">診斷</span>
+    <span class="hero-tag">教育</span>
+    <span class="hero-tag">方法</span>
+    <span class="hero-tag">修復</span>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+</div>
+
+<div class="content">
+
+<!-- PHASE 1 -->
+<div class="phase active" id="p1">
+  <div class="slabel">人生終極公式</div>
+  <div class="cycle-row">
+    <span class="cycle-step">觀察</span><span class="cycle-arrow">→</span>
+    <span class="cycle-step">建模</span><span class="cycle-arrow">→</span>
+    <span class="cycle-step">預測</span><span class="cycle-arrow">→</span>
+    <span class="cycle-step">行動</span><span class="cycle-arrow">→</span>
+    <span class="cycle-step">誤差</span><span class="cycle-arrow">→</span>
+    <span class="cycle-step">修正</span><span class="cycle-arrow">→</span>
+    <span class="cycle-step">更新</span><span class="cycle-arrow">→</span>
+    <span class="cycle-step">智慧</span>
+  </div>
+
+  <div class="slabel" style="margin-top:1.5rem">選擇最困擾你的預測力模組（可多選）</div>
+  <div class="pick-hint">選你最有共鳴的問題 <span class="pick-count" id="pcount">0 已選</span></div>
+  <div class="filter-tabs" id="filter-tabs"></div>
+  <div class="mod-grid" id="mod-grid"></div>
+  <button class="btn-primary" id="btn-next" disabled>開始深度診斷 →</button>
+</div>
+
+<!-- PHASE 2 -->
+<div class="phase" id="p2">
+  <div id="q-body"></div>
+  <div class="nav-row">
+    <button class="btn-back" onclick="go(1)">← 重新選擇</button>
+    <button class="btn-primary" style="flex:2;margin-top:0" onclick="showResult()">查看我的預測力報告 →</button>
+  </div>
+</div>
+
+<!-- PHASE 3 -->
+<div class="phase" id="p3">
+  <div id="result-body"></div>
+  <button class="btn-restart" onclick="restart()">↺ 重新診斷</button>
+</div>
+
+</div>
+
+<div class="footer">
+  資訊僅供參考，不能用來診斷和治療任何形式的身體不適。如有不適請線下及時就醫。<br>
+  購買連結：7-11 賣貨便 · 安全取貨付款
+</div>
+
+<script>
+const SHOP='https://myship.7-11.com.tw/general/detail/GM2407210007294';
+
+const MODULES=[
+  {
+    id:'brain',icon:'🧠',name:'大腦預測機制',tagline:'預測是大腦的真正工作',cat:'基礎',
+    desc:'不了解大腦如何預測，就無法升級預測力',
+    core:'大腦不是思考機器，而是預測機器。它每分每秒在做：預測→修正→更新。',
+    science:'神經科學家弗里斯頓的「預測編碼理論」確認：大腦的核心工作是持續最小化「預測誤差」。感官數據的功能不是建構感知，而是用來修正大腦預先做出的預測。',
+    disease_chain:['大腦預測機制低效','前額葉功能不足','衝動決策蓋過理性','預測框架狹窄','人生選擇空間縮小'],
+    update:'從「思考機器」框架，更新為「預測機器」框架——問的問題從「我怎麼想」變成「我的預測準不準」',
+    formula:['大腦預測未來','現實出現（結果）','比較預測和結果','發現誤差','修正模型','下次預測更準'],
+    methods:[
+      {t:'每天的「預測確認練習」',d:'每天早上明確陳述2個今天的預測（工作進展、某個對話結果）。晚上驗證。不是為了猜對，而是訓練「事先明確說出預測」的習慣——這是提升大腦預測機制最直接的訓練。'},
+      {t:'閱讀升級預測模型',d:'每讀一本好書，大腦就獲得一個新的預測框架。心理學→理解人的模型、投資學→財富的模型、醫學→身體的模型。目標不是「記得更多」，而是「讓下一次的預測有更多工具可用」。'},
+      {t:'冥想訓練前額葉',d:'每天10分鐘冥想，直接訓練前額葉的「預測調節能力」。前額葉越強，杏仁核的情緒化預測越能被理性調節，整體預測品質提升。多個研究顯示冥想者的前額葉皮質厚度顯著高於對照組。'},
+      {t:'四層思考法練習',d:'遇到任何問題，不停在「事件層」，問四層：①這個事件是什麼？②這種情況重複出現嗎（模式）？③什麼在維持這個模式（結構）？④更底層的原因是什麼（本質）？看得越深，預測越準。'},
+    ],
+    daily:['早晨：今天我的2個預測是什麼？','晚上：預測準確嗎？誤差從哪裡來？','閱讀20分鐘（建立新的預測框架）','問一個「為什麼」到第四層（本質）'],
+    qs:[
+      {q:'你在做決定前，是否習慣明確思考「這個選擇五年後的結果是什麼」？',opts:['幾乎總是','有時候','很少','幾乎不']},
+      {q:'當事情出了問題，你的第一反應是？',opts:['分析哪個預測錯了','反思一下','有點情緒','直接怪外在因素']},
+      {q:'你最近一個月有固定閱讀習慣嗎？',opts:['每天閱讀','偶爾閱讀','很少閱讀','幾乎沒有']},
+    ],
+    nutrients:[
+      {n:'DHA（亞麻仁油）',ico:'🌿',bg:'rgba(0,120,80,0.15)',mech:'前額葉預測中樞建材',
+       det:'前額葉是大腦預測機制的核心區域，DHA是前額葉神經元細胞膜最主要的結構成分。充足的DHA讓前額葉「建材完整」，預測和決策品質直接提升。缺乏DHA讓神經元細胞膜僵化，思維靈活性下降，預測框架難以更新。',
+       why:'你的預測機器需要好的建材。DHA是讓前額葉保持高效運作最重要的物質基礎——沒有它，硬體就會限制軟體。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+      {n:'神經營養素（B1+B3+B6）',ico:'🔵',bg:'rgba(24,95,165,0.15)',mech:'神經傳導效率 × 預測能量',
+       det:'大腦預測機制是高耗能的神經工作。B1提供神經元能量代謝核心燃料，不潮紅的B3支持NAD+生成（神經DNA修復），B6是多巴胺（預測動力）合成的必需輔因子。三者協同讓大腦預測系統有充足的能量和原料運作。',
+       why:'預測需要能量。缺乏B群讓大腦在「省電模式」下運作，預測品質大幅下降。補足B群，讓預測機器全速運轉。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'突觸可塑性 × 模型更新能力',
+       det:'鎂調節NMDA受體——這個受體是「突觸可塑性（LTP）」的核心，即大腦更新預測模型的細胞基礎。缺鎂讓突觸「卡住」，新預測框架難以形成。充足的鎂讓大腦的更新機制保持流動。',
+       why:'大腦更新預測模型需要突觸可塑性，突觸可塑性需要鎂。補鎂是讓「預測更新迴路」真正能運作的底層基礎。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'emotion',icon:'🌊',name:'情緒預測誤差',tagline:'情緒是誤差通知，不是敵人',cat:'基礎',
+    desc:'讀懂情緒就是讀懂大腦的更新請求',
+    core:'情緒不是干擾，而是大腦發出的預測誤差通知。每種情緒都在告訴你哪個模型需要更新。',
+    science:'麗莎·費爾德曼·巴雷特的「情緒建構理論」：情緒不是對外界刺激的固定反應，而是大腦主動建構的預測。同樣的身體感覺，可以被解讀為「興奮」或「焦慮」——取決於大腦的預測框架。',
+    disease_chain:['情緒被視為敵人（壓制或逃避）','誤差訊號被忽略','預測模型無法更新','同樣錯誤重複出現','人生陷入循環'],
+    update:'從「情緒是干擾」更新為「情緒是更新訊號」——每次情緒出現，問：這個情緒告訴我哪個預測出了問題？',
+    formula:['情緒出現','辨識：這是什麼誤差訊號？','找到被違反的預測或期望','決定：要更新模型，還是行動？','修正預測或處理外部情況'],
+    methods:[
+      {t:'情緒命名 × 誤差解讀',d:'每當情緒出現，立刻做兩步：①命名情緒（「我感到焦慮/失望/憤怒」）——研究顯示命名本身就能降低杏仁核活化20-30%。②解讀訊號（「這個情緒告訴我，哪個預測出了問題？」）。從反應模式切換到觀察模式。'},
+      {t:'情緒地圖建立',d:'製作你個人的情緒觸發地圖：什麼情境→什麼情緒→背後是什麼預測被違反。建立這個地圖，讓你從「被情緒淹沒」升級為「能讀懂情緒地圖」的觀察者。這是情緒智商最實用的操作工具。'},
+      {t:'腹式呼吸4-7-8（快速降噪）',d:'情緒強烈時，腹式呼吸：吸氣4秒→屏息7秒→呼氣8秒。這直接激活副交感神經，降低杏仁核的活化強度，讓前額葉重新接管。不是壓制情緒，而是先降低訊號強度，再正常解讀。'},
+      {t:'情緒反思日記',d:'每晚花5分鐘記錄：「今天最強烈的情緒是什麼？它告訴我哪個預測出了問題？我需要更新什麼？」這個練習讓情緒從「被動承受」變成「主動學習的素材」。'},
+    ],
+    daily:['當情緒出現：先命名，再問「哪個預測被違反了？」','腹式呼吸4-7-8（強烈情緒時）','晚上情緒反思（5分鐘）','記錄今天情緒→背後的預測模式'],
+    qs:[
+      {q:'當你感到焦慮或失望時，你通常怎麼處理？',opts:['分析它在告訴我什麼','讓它慢慢過去','試圖壓制','被它帶著走']},
+      {q:'你是否常常在情緒爆發後才意識到自己的狀態？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'你的情緒穩定性如何？',opts:['很穩定','還好','容易波動','非常不穩定']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'NMDA阻斷 × 情緒神經穩定',
+       det:'情緒調節的核心神經機制依賴鎂。鎂通過阻斷NMDA受體降低情緒過度激活，讓前額葉更有效調節杏仁核的情緒反應。缺鎂時杏仁核閾值降低，情緒誤差訊號被過度放大，「情緒接管理性」的情況頻繁發生。',
+       why:'你的情緒訊號被放得太大，讓你很難冷靜解讀它。鎂幫助把信號調到合理強度，讓你能夠觀察情緒而不是被它淹沒。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'GABA',ico:'🌊',bg:'rgba(83,74,183,0.15)',mech:'抑制系統 × 情緒降噪',
+       det:'GABA是大腦主要的抑制性神經傳導物質，直接降低情緒系統的「背景噪音」。情緒管理困難的人，GABA系統往往低效——情緒誤差訊號未被適當調節，前額葉無法清晰接收和解讀。',
+       why:'情緒是重要的訊號，但訊號太強你就無法讀懂它。GABA幫助把情緒噪音降到合理水平，讓你能真正「聽懂」情緒在說什麼。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+      {n:'酶菌醣體（茶胺酸）',ico:'🍵',bg:'rgba(0,120,80,0.15)',mech:'α波 × 觀察者狀態',
+       det:'茶胺酸促進大腦α波增加，產生「清醒的平靜」——這是最適合觀察和解讀情緒誤差訊號的神經狀態。不讓你昏沉，而是進入「能觀察而不被情緒控制」的最佳狀態。同時腸腦軸修復讓情緒調節更穩定。',
+       why:'讀懂情緒需要你既不完全壓制，也不被淹沒。茶胺酸幫你找到那個「清醒觀察者」的最佳狀態。',
+       price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+    ]
+  },
+  {
+    id:'bias',icon:'🔍',name:'認知偏誤清除',tagline:'看錯不是因為笨，是模型有偏差',cat:'模型',
+    desc:'四種讓你系統性看錯的大腦機制',
+    core:'認知偏誤是大腦「省電模式」的副作用。它不是性格問題，而是需要被識別和修正的預測扭曲。',
+    science:'行為心理學研究（卡尼曼等人）確認：確認偏誤、可得性捷思、過度自信偏誤、錨定效應，是人類預測系統最常見的系統性錯誤。這些偏誤在壓力下會被強化。',
+    disease_chain:['認知偏誤持續扭曲輸入資料','建立在錯誤資料上的預測模型','持續性的判斷失準','同樣錯誤在不同情境重複出現','人生選擇品質系統性偏低'],
+    update:'從「我的判斷是客觀的」更新為「我的判斷一定有某種偏誤，我的工作是找到並修正它」',
+    formula:['識別當前的判斷','問：哪種偏誤可能正在影響我？','主動尋找反面證據','在多個角度驗證','形成更平衡的預測'],
+    methods:[
+      {t:'確認偏誤對抗：主動找反例',d:'每當形成一個強烈的判斷，刻意問：「有沒有不支持這個判斷的證據？」這一個問題對抗人類最普遍的偏誤——只找支持自己已有觀點的資訊。每週練習3次，顯著改善判斷品質。'},
+      {t:'情緒眼鏡識別',d:'情緒是認知偏誤的放大器。在生氣時不做重要決策，在焦慮時暫緩對風險的評估，在難過時不對未來做出長期判斷。問：「我現在帶著什麼顏色的眼鏡在看這個問題？」'},
+      {t:'多源驗證習慣',d:'任何重要判斷，收集至少三個獨立來源的資訊後再下結論。從不同立場的人那裡收集觀點——不是為了找到「正確答案」，而是看清楚你目前的模型有多少盲點。'},
+      {t:'冷靜期決策規則',d:'重要決策在強烈情緒下，強制等待24小時。研究顯示情緒消退後重新評估，通常會發現最初判斷中的偏誤。這個「冷靜期」讓前額葉有時間從杏仁核手中取回決策主導權。'},
+    ],
+    daily:['每個強烈判斷後問：「我有沒有主動找反例？」','識別今天的情緒眼鏡顏色','記錄今天的偏誤：哪種偏誤影響了我的判斷？','重要決策：是否等24小時再確認？'],
+    qs:[
+      {q:'你是否常常只接受支持自己已有觀點的資訊？',opts:['很少這樣','偶爾','常常','幾乎每次']},
+      {q:'在情緒激動時，你是否能暫停重要決策？',opts:['通常能','有時候','很少','幾乎不能']},
+      {q:'你在形成判斷時，是否會主動尋找反面證據？',opts:['習慣如此','偶爾會','很少','從不']},
+    ],
+    nutrients:[
+      {n:'神經營養素（B1+B3+B6）',ico:'🔵',bg:'rgba(24,95,165,0.15)',mech:'前額葉偏誤修正能力',
+       det:'認知偏誤的神經基礎是前額葉對杏仁核的調節不足。B群缺乏讓前額葉功能下降，杏仁核的情緒化預測更容易主導判斷，確認偏誤等認知扭曲更嚴重。補足B群讓前額葉保持高效，理性修正偏誤的能力提升。',
+       why:'偏誤是前額葉無力對抗杏仁核的結果。B群幫前額葉保持戰鬥力，讓你的理性有力量修正那些自動的偏誤反應。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+      {n:'DHA（亞麻仁油）',ico:'🌿',bg:'rgba(0,120,80,0.15)',mech:'前額葉結構完整性',
+       det:'前額葉清除認知偏誤的能力，依賴其結構完整性。DHA是前額葉細胞膜最重要的組成成分，充足的DHA讓前額葉神經元保持靈活性，能更有效識別和修正偏誤。',
+       why:'前額葉是你對抗認知偏誤的主要武器。DHA讓這個武器保持鋒利——用在正確的硬體上，軟體的訓練效果才能最大化。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+    ]
+  },
+  {
+    id:'observe',icon:'👁️',name:'觀察力',tagline:'看見事實，而不是看見想象',cat:'模型',
+    desc:'垃圾進，垃圾出——輸入品質決定預測品質',
+    core:'觀察力是所有預測的起點。你看到的，決定了你能預測的。很多人的預測不準，是因為輸入的就是腦補，不是事實。',
+    science:'卡爾·弗里斯頓的「自由能原理」指出，大腦輸入資料的品質直接決定了預測誤差的大小。資料越接近現實，預測越準確。事實觀察能力是整個預測系統的第一個環節。',
+    disease_chain:['觀察被解讀污染（腦補）','輸入錯誤資料','在錯誤基礎上建立模型','系統性預測偏差','重複性判斷失準'],
+    update:'從「我看到的就是事實」更新為「我看到的是事實+解讀的混合物，我需要持續分離它們」',
+    formula:['看到某個現象','暫停：這是事實還是解讀？','找出純粹的事實（可錄影的）','列出可能的解讀（多個）','收集更多證據後再下結論'],
+    methods:[
+      {t:'事實vs解讀分離練習',d:'每天選三件事，嚴格區分「事實」（可以被攝影機錄到的客觀發生）和「解讀」（你的大腦對事實的加工）。朋友沒回訊息是事實，「他討厭我」是解讀。練習問：「這是事實，還是解讀？」'},
+      {t:'數字化你的感覺',d:'把主觀感覺換成客觀數字：「感覺很累」→睡了幾小時、深睡佔比、運動了嗎？「感覺沒進步」→這週練習了幾小時、完成了幾個任務？數字比感覺更接近事實，讓預測更準確。'},
+      {t:'腦補對抗問句',d:'形成任何強烈判斷時，問三個問題：①「我有具體證據嗎？」②「還有哪些可能的解釋？」③「如果完全相反的解讀也成立，我需要什麼樣的資料？」這三個問題系統性對抗腦補。'},
+      {t:'行為觀察優先',d:'理解一個人，先看他重複做什麼，而不是他說什麼。行為比語言更難偽裝。建立習慣：在重要判斷中，問「他的行為模式（不是這一次，而是重複的模式）告訴我什麼？」'},
+    ],
+    daily:['分離3件事的事實vs解讀','把今天的感覺換成數字','遇到判斷：問「我有證據嗎？」','晚上：今天哪裡可能有腦補？'],
+    qs:[
+      {q:'你是否常常把「解讀」當成「事實」？（例如把「朋友沒回訊息」直接等於「他討厭我」）',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'面對不確定情況，你通常先找證據，還是先有「感覺」就下結論？',opts:['先找證據','有時找證據','通常靠感覺','幾乎靠感覺']},
+      {q:'你是否有記錄和追蹤數據的習慣（如睡眠、飲食、進度）？',opts:['習慣追蹤','偶爾','很少','幾乎不']},
+    ],
+    nutrients:[
+      {n:'銀杏複方（色氨酸）',ico:'🍂',bg:'rgba(184,134,11,0.15)',mech:'腦部血流 × 觀察清晰度',
+       det:'銀杏250mg直接改善腦部血液循環，讓大腦（尤其是前額葉和頂葉皮質）獲得更充足的氧氣和葡萄糖。觀察力的神經基礎是頂葉皮質的注意力分配系統——腦血流充足時，觀察更清晰，細節捕捉更完整。',
+       why:'觀察力需要清醒的大腦。銀杏複方讓你的觀察神經系統獲得充足的供應，讓你看到更多真實的細節，而不是大腦自動填補的想象。',
+       price:'NT$510',spec:'膠囊 一瓶150粒'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'前額葉靜默 × 清晰觀察',
+       det:'觀察力的最大敵人是焦慮噪音——當神經系統持續過度激活，注意力被焦慮的「預測」佔用，無法清晰觀察當下的事實。鎂降低神經系統的背景噪音，讓大腦在更清晰的狀態下接收真實信息。',
+       why:'你無法在充滿噪音的環境中清晰聽到訊號。鎂降低神經背景噪音，讓你的觀察系統能在更安靜的環境中工作。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'model',icon:'🗺️',name:'建模能力',tagline:'地圖越好，找到方向的機率越高',cat:'模型',
+    desc:'模型是理解世界的方式，模型品質決定預測品質',
+    core:'每個人都有模型，差別只是好壞。模型不是世界，但能幫你預測世界。模型越完整，預測越準確。',
+    science:'認知科學研究顯示，專家和初學者最大的差距不在「知道更多」，而在「知識組織的方式不同」。專家的知識形成相互連結的預測網路；初學者的知識是孤立的事實，難以形成預測。',
+    disease_chain:['模型品質低（片段、矛盾、過時）','建立在低品質模型上的預測','持續性決策失準','努力方向錯誤','即使努力也難以達到目標'],
+    update:'從「我只需要更多知識」更新為「我需要更好的預測框架——把知識組織成能預測結果的模型」',
+    formula:['大量觀察特定領域','找出重複出現的規律','建立因果關係模型','用模型進行預測','根據結果更新模型'],
+    methods:[
+      {t:'三個核心模型建立',d:'建立屬於自己的三個核心模型：①健康模型（什麼行為→什麼結果？）②學習模型（什麼方法→什麼成效？）③決策模型（我在什麼情境下容易判斷錯？）。把觀察記錄成系統，而不只是碎片感受。'},
+      {t:'跨域連結訓練',d:'每學一個新概念，問：「這個在其他領域有沒有類似的現象？」複利效應在投資裡成立，在學習裡也成立，在人際關係裡也成立。找到跨域的共同原理，讓一個模型解釋多個領域。'},
+      {t:'模型可視化',d:'把你的預測模型畫出來：「如果A發生，通常B會跟著，因為C機制。」可視化讓隱性假設變成顯性，才能被審視和改善。手繪因果關係圖是最有效的建模工具。'},
+      {t:'閱讀建立樣本庫',d:'閱讀本質是在你的預測模型中增加「案例」。每個好案例都讓你的模型更準確——不只是「這個人成功了」，而是「他在什麼條件下、做了什麼、得到了什麼結果，這和我的模型是否一致？」'},
+    ],
+    daily:['閱讀時問：這個案例如何更新我的模型？','找一個新的跨域連結','記錄今天的一個模型假設：如果A→則B','晚上驗證：今天的模型預測準確嗎？'],
+    qs:[
+      {q:'你是否有清晰的「健康模型」（知道什麼行為帶來什麼健康結果）？',opts:['很清晰','大概知道','模糊','幾乎沒有']},
+      {q:'你在學習時，是否習慣問「這和我知道的什麼有關聯」？',opts:['習慣如此','偶爾','很少','從不']},
+      {q:'你是否常常「知道很多道理，但在生活中用不出來」？',opts:['很少這樣','偶爾','常常','幾乎持續']},
+    ],
+    nutrients:[
+      {n:'NMN複方',ico:'🔋',bg:'rgba(163,45,45,0.15)',mech:'NAD+ × 神經元建模能力',
+       det:'建立和更新預測模型是大腦最高耗能的認知工作，需要大量NAD+維持神經元的DNA修復和突觸重塑。NMN補充NAD+前體，讓大腦在分子層面具備持續建立和更新複雜模型的能力。NAD+隨年齡快速遞減，這是建模能力下降的重要原因之一。',
+       why:'建立高品質預測模型需要神經元的高效工作。NMN確保你的神經元有足夠的NAD+能量完成這個複雜的建模工程。',
+       price:'NT$570',spec:'膠囊 一瓶150粒'},
+      {n:'Q10（10:1）',ico:'⚡',bg:'rgba(184,134,11,0.15)',mech:'粒線體能量 × 建模效率',
+       det:'大腦建立複雜預測模型的過程，需要大量的細胞能量（ATP）。Q10是電子傳遞鏈的核心組件，直接提升粒線體ATP生成效率。腦力工作者和長期腦力高度使用者，Q10消耗特別快，補充後建模效率明顯提升。',
+       why:'模型建立需要能量。Q10讓你大腦的「建模工廠」有充足的電力持續高效運作，不會在最需要深度思考時「掉速」。',
+       price:'NT$580',spec:'膠囊 一瓶150粒'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'突觸可塑性 × 模型更新',
+       det:'鎂調節NMDA受體——這是突觸長期增益（學習和建模的細胞基礎）的核心機制。缺鎂讓突觸可塑性下降，新模型難以形成，舊模型難以更新。充足的鎂讓神經連結保持流動性，模型更新更迅速。',
+       why:'每次更新預測模型，都需要大腦神經連結重新配置。鎂是讓這個重新配置能夠發生的關鍵礦物質。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'correct',icon:'🔄',name:'修正能力',tagline:'成熟不是年紀，而是修正速度',cat:'更新',
+    desc:'發現錯誤後修正得越快，成長越快',
+    core:'修正能力是所有成長的核心機制。高手不是不犯錯，而是犯錯後修正得更快。成熟的標誌是修正速度，不是年紀。',
+    science:'神經科學確認，大腦最小化「自由能（預測誤差）」的核心機制，就是修正。修正速度越快，預測誤差越小，大腦越趨向最優狀態。拒絕修正在神經層面等同於阻止大腦執行其核心功能。',
+    disease_chain:['修正被視為承認失敗（心理障礙）','拒絕修正以保護自我形象','誤差持續累積','同樣錯誤重複出現','人生原地踏步'],
+    update:'從「修正=承認失敗=丟臉」更新為「修正=更接近真實=最高形式的力量」',
+    formula:['發現誤差（預測和結果不符）','不防禦：這是學習機會','分析：哪個假設是錯的？','更新那個具體的假設','下次預測包含這個更新'],
+    methods:[
+      {t:'誤差分析習慣（每日5分鐘）',d:'每晚問三個問題：①今天哪裡的結果和我的預測不一樣？②這個差距，來自哪個假設的錯誤？③我要更新什麼？不需要改變全部，只更新那個具體出錯的假設。小而精確的修正，比大而模糊的反省更有效。'},
+      {t:'修正心態重框',d:'把「我犯了一個錯誤」重框為「我發現了一個更接近真實的更新機會」。每次修正後，對自己說：「我比昨天更接近真實了。」這不是自我安慰，這是對修正過程真正意義的準確描述。'},
+      {t:'錯誤vs原因分離',d:'在分析誤差時，嚴格區分「錯誤的行為」和「造成錯誤的假設」。不要停在「我做錯了」，而是找到「我做錯了，因為我以為X會導致Y，但實際上X導致Z。下次我要更新：___」'},
+      {t:'快速小修正策略',d:'不要等到積累了大量問題才修正。建立「每日一修正」習慣：每天找到一個需要更新的具體假設，更新它。小的頻繁修正，比偶爾的大反省，對預測準確率的提升效果更持久。'},
+    ],
+    daily:['誤差分析：今天哪裡不符預期？','找到一個需要更新的具體假設','更新它（寫下來）','確認：我比昨天更接近真實了'],
+    qs:[
+      {q:'當你判斷錯誤時，你通常的反應是？',opts:['快速分析並更新','反思一下','有點防禦','找外部原因']},
+      {q:'你是否常常重複同樣類型的錯誤？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你是否有每日反思或復盤的習慣？',opts:['每天做','偶爾做','很少','沒有']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'突觸重塑 × 修正機制',
+       det:'修正預測模型在細胞層面需要「突觸重塑」——舊的神經連結弱化，新的更準確的連結強化。鎂是這個重塑機制（透過NMDA受體）的核心輔因子。缺鎂讓突觸「卡住」，修正機制受阻，同樣的預測錯誤在神經層面難以被更新。',
+       why:'你想修正，但神經系統的更新機制卡住了。鎂讓這個更新機制重新流動，讓你的「想要修正」能夠真正在神經層面完成。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'加強B群',ico:'🔵',bg:'rgba(24,95,165,0.15)',mech:'神經能量 × 修正效率',
+       det:'修正和學習是高耗能的神經過程。B群（特別是B5、B6、B12）是所有神經能量代謝和神經傳導物質合成的核心輔因子。B群充足時，大腦每次「發現誤差→修正模型」的循環效率更高，修正的效果更持久。',
+       why:'修正需要神經能量。每次你嘗試更新一個預測模型，大腦都在做繁重的神經工作。B群是讓這個工作效率最高的燃料。',
+       price:'NT$520',spec:'膠囊 一瓶150粒'},
+    ]
+  },
+  {
+    id:'update',icon:'🔁',name:'更新能力',tagline:'自由是不被舊模型綁架的能力',cat:'更新',
+    desc:'世界一直在變，模型不更新就會過時',
+    core:'更新能力是預測力最高層次的表現。真正的自由不是想做什麼就做什麼，而是有能力更新舊模型，不被舊程式綁架。',
+    science:'神經可塑性（Neuroplasticity）研究確認，大腦在任何年齡都具備形成新神經迴路的能力。「我就是這樣的人」不是事實，而是舊迴路的慣性。有意識地更新，能物理性地改變大腦結構。',
+    disease_chain:['更新被視為威脅（舊身份受到挑戰）','拒絕更新以維持自我一致性','模型持續過時','對變化的適應能力下降','人生自由度縮小'],
+    update:'從「我就是這樣的人（固定身份）」更新為「我目前的程式是這樣的，而所有程式都可以更新」',
+    formula:['識別一個需要更新的舊信念或習慣','理解它的形成原因（它曾經有用過）','設計新的替代模型','每天小行動証明新模型','新模型固化成新習慣和新身份'],
+    methods:[
+      {t:'四個層次的更新',d:'更新不只是改變行為，而是同時在四個層次進行：①信念更新（「我不夠好」→「我目前在成長中」）②習慣更新（替換具體行為迴路）③身份更新（「我是重視健康的人」而非「我要開始運動」）④世界觀更新（受害者→創造者思維）'},
+      {t:'微更新策略',d:'大的更新往往失敗，因為杏仁核把它感知為威脅。每天做一個微小但真實的更新：更新一個具體的假設，替換一個5分鐘的習慣，說一次新的「我是___的人」並做一個對應的小行動。複利會讓微更新產生巨大效果。'},
+      {t:'舊程式考古',d:'識別你的舊程式：你常說「我就是這樣」「我沒有辦法」的話，背後是什麼信念？那個信念是什麼時候、在什麼情況下形成的？它現在還準確嗎？識別是更新的第一步。'},
+      {t:'環境設計',d:'你的更新能力很大程度上被你的環境決定。設計你的物理和社交環境，讓它支持你的新模型：移除舊習慣的觸發器，增加新習慣的提示，接觸比你更擅長更新的人。'},
+    ],
+    daily:['識別今天的一個舊程式','做一個微更新（行為+信念）','說一次新的身份宣言並做對應小行動','晚上問：今天我在哪裡比昨天更新了一點？'],
+    qs:[
+      {q:'你是否常常說「我就是這樣的人」或「我改不了這個」？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'面對需要改變舊習慣的時候，你通常能持續多久？',opts:['通常能堅持','偶爾成功','常常失敗','幾乎無法改變']},
+      {q:'你是否能為自己的結果負責，而不是歸咎於外在因素？',opts:['通常能','有時候','不太能','幾乎不能']},
+    ],
+    nutrients:[
+      {n:'DHA（亞麻仁油）',ico:'🌿',bg:'rgba(0,120,80,0.15)',mech:'BDNF × 神經可塑性',
+       det:'DHA促進BDNF（腦源性神經營養因子）的生成，BDNF是神經可塑性的核心信號分子——直接促進新神經迴路的形成，是「更新能力」的分子基礎。充足的DHA讓大腦真正具備「重寫舊程式」的神經條件。',
+       why:'「我就是這樣的人」的固著感，部分是神經可塑性不足的生理表現。DHA讓大腦真正具備更新自己的能力，而不只是想更新卻被舊迴路卡住。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+      {n:'美寶（SIRT活化）',ico:'✨',bg:'rgba(83,74,183,0.15)',mech:'SIRT1 × 神經元更新能力',
+       det:'白藜蘆醇通過SIRT1活化BDNF生成，同時啟動神經元的自我修復和更新程序。SIRT1還參與表觀遺傳調控——從更深的層面支持神經系統的「更新模式」。是目前研究最充分的促神經可塑性天然成分。',
+       why:'你想要更新，但神經系統的更新能力需要信號支持。美寶的SIRT1路徑直接提升神經元自我更新的動力和能力。',
+       price:'NT$550',spec:'膠囊 一瓶約150粒'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'突觸流動性 × 更新速度',
+       det:'更新舊模型需要舊突觸弱化、新突觸強化——這個過程稱為「突觸重塑」，鎂是核心調節者。鎂調節NMDA受體讓突觸保持可塑性，直接支持更新能力。缺鎂讓突觸僵化，更新速度顯著降低。',
+       why:'更新能力在生理上是突觸的可塑性。鎂讓你的神經連結保持「可重新配置」的狀態，讓更新真正能在神經層面發生。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'health',icon:'🏥',name:'健康預測',tagline:'疾病可以提早預測和預防',cat:'實戰',
+    desc:'身體是一個系統，訊號在疾病之前很久就出現了',
+    core:'健康不是看有沒有病，而是看系統是否開始失衡。疾病通常在明顯症狀出現前，已有長期的訊號在訴說。',
+    science:'功能醫學的核心觀點：疾病是長期的系統失衡積累的結果，而非突發事件。身體系統（腸道、粒線體、神經、荷爾蒙、免疫、解毒）的早期失衡訊號，遠比症狀出現早數年。',
+    disease_chain:['忽視早期身體訊號','系統失衡持續累積','功能性問題出現（疲勞、情緒、消化）','長期功能低下','明顯症狀出現'],
+    update:'從「沒有症狀就是健康」更新為「系統訊號是比症狀更重要的健康指標，提早介入效果最好」',
+    formula:['觀察身體早期訊號（能量、消化、睡眠、情緒）','識別哪個系統開始失衡','找到可能的底層原因','介入修復失衡系統','監測系統是否恢復平衡'],
+    methods:[
+      {t:'每日健康儀表板',d:'每天早晨花3分鐘觀察四個指標：①能量（起床後的精力狀態）②消化（昨天腸胃是否正常）③睡眠（睡眠品質0-10分）④情緒穩定性（昨天情緒的基線）。任何一個持續下降，就是系統在發出更新請求。'},
+      {t:'系統思維看健康',d:'把健康看成系統，不是看單一症狀。腸道失衡會影響免疫、情緒、能量；睡眠不足會影響代謝、認知、發炎；慢性壓力會影響荷爾蒙、腸道、神經。修復系統，而不是壓制症狀。'},
+      {t:'提前介入策略',d:'不要等到「已經很嚴重了」才開始修復。每個身體訊號都是一個「提早介入」的機會：一直疲勞→粒線體和睡眠系統需要修復；一直消化不好→腸道系統需要關注；一直焦慮→神經系統和腎上腺需要支持。'},
+      {t:'追蹤和調整週期',d:'設計四週健康修復週期：第一週建立觀察習慣，第二週識別主要失衡系統，第三週系統性介入，第四週評估和調整。不是追求完美，而是持續縮小系統和最佳狀態的誤差。'},
+    ],
+    daily:['早晨健康儀表板：能量/消化/睡眠/情緒各幾分？','識別今天最需要關注的系統','晚上問：今天的行為在修復還是消耗？','記錄任何持續出現的身體訊號'],
+    qs:[
+      {q:'你是否常常感到不明原因的疲勞，即使睡眠充足？',opts:['很少','偶爾','常常','幾乎每天']},
+      {q:'你的消化系統（腸胃）狀況如何？',opts:['良好','偶有不適','常有問題','持續問題']},
+      {q:'你是否主動追蹤和記錄自己的健康指標？',opts:['習慣追蹤','偶爾','很少','從不']},
+    ],
+    nutrients:[
+      {n:'酶菌醣體',ico:'🌿',bg:'rgba(0,120,80,0.15)',mech:'腸道菌相 × 全身系統基礎',
+       det:'腸道是全身健康最重要的基礎系統——70%的免疫細胞在腸道，90%的血清素在腸道生產，腸道菌相失衡直接影響免疫、情緒、能量和認知。酶菌醣體整合多種益生菌+Beta多醣體+波羅酵素+茶胺酸，系統性修復腸道菌相平衡。',
+       why:'健康預測系統的第一個節點是腸道。腸道健康，其他系統才有穩定基礎。酶菌醣體是修復這個基礎最全面的方案。',
+       price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+      {n:'Q10（10:1）',ico:'⚡',bg:'rgba(184,134,11,0.15)',mech:'粒線體能量 × 全身修復力',
+       det:'粒線體是細胞的能量工廠，也是全身修復能力的能量基礎。Q10是粒線體電子傳遞鏈的核心組件，30歲後體內Q10大幅下降。持續疲勞、修復慢、運動後恢復差，很多時候根源在粒線體能量不足。10:1高濃縮萃取效能顯著。',
+       why:'你的身體想要修復，但能量工廠效率太低。Q10直接重啟粒線體電子傳遞鏈，讓修復所需的能量真正充足。',
+       price:'NT$580',spec:'膠囊 一瓶150粒'},
+      {n:'D3（5000IU）',ico:'☀️',bg:'rgba(184,134,11,0.15)',mech:'免疫調節 × 系統平衡',
+       det:'維生素D是免疫系統的核心調節信號，缺乏時免疫系統容易「失衡」——要麼反應不足（容易生病）要麼反應過度（慢性發炎）。同時D3影響超過2000個基因的表達，對全身系統的平衡有廣泛影響。70%現代人缺乏。',
+       why:'免疫系統的平衡依賴維生素D。補足D3是讓健康系統恢復自我調節能力最重要的基礎條件之一。',
+       price:'NT$580',spec:'錠劑 約320粒'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'神經系統 × 睡眠修復',
+       det:'鎂是超過300個酶反應的輔因子，影響從睡眠到消化到神經功能的全身系統。缺鎂是現代人最普遍的礦物質缺乏之一，與疲勞、睡眠問題、焦慮、肌肉緊繃直接相關。甘氨酸降低核心體溫，改善深眠品質。',
+       why:'鎂是健康系統正常運作最廣泛需要的礦物質。補足鎂常常讓疲勞、睡眠、情緒同時得到改善——因為它影響整個系統。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'freedom',icon:'🦅',name:'自由度提升',tagline:'預測越準，自由越大',cat:'實戰',
+    desc:'自由不是任性，而是有能力做出更好選擇',
+    core:'真正的自由是：有能力脫離舊程式的自動反應，做出更好的選擇。預測越準，選擇越好，資源越多，自由越大。',
+    science:'自我決定理論（SDT）研究確認：真正的自主性（自由）來自於能力感、自主感、連結感的整合。而能力感的核心，正是對自己行動結果的準確預測能力。',
+    disease_chain:['預測不準→選擇品質低','多次選擇失誤累積','資源減少、選項縮小','感覺被困住（「我沒有選擇」）','放棄主動性→更少自由'],
+    update:'從「自由來自外部條件（金錢/機會）」更新為「自由來自預測能力——更準確的預測帶來更好的選擇，更好的選擇帶來更大的自由」',
+    formula:['提升預測準確率（透過觀察、建模、修正）','做出更好的選擇','得到更好的結果','資源和選項增加','自由度擴大'],
+    methods:[
+      {t:'長期決策框架',d:'每個重要決策，問三個問題：①五年後，這個選擇會讓我在哪裡？②這個選擇是在擴大還是縮小我未來的選項空間？③這個選擇符合「我是誰」的身份，還是在削弱它？用這三個問題過濾決策，長期自由度持續提升。'},
+      {t:'習慣複利計算',d:'計算你當前習慣的複利效應：每天滑手機3小時×365天＝1095小時/年，十年10950小時——用在技能積累上，你可以成為幾個領域的頂尖高手。每天閱讀30分鐘，十年後是什麼樣的人？讓複利意識驅動每天的選擇。'},
+      {t:'選項拓展策略',d:'「感覺沒有選擇」常常是因為只看到了顯而易見的選項。系統性拓展選項：問「如果我有更多資源，我還可以做什麼？」「如果我知識更豐富，有什麼選項現在看不見？」把限制條件放鬆，找到更多可能性。'},
+      {t:'身份升級',d:'自由度最大的槓桿是身份更新。「我是被迫的人」→「我是選擇者」。不是聲明，而是每天小行動積累：每次在小事上主動選擇而非被動接受，都在強化「我是有選擇的人」的神經迴路。'},
+    ],
+    daily:['問：今天我做了幾個「主動選擇」？','計算一個當前習慣的複利效應','想一個可以拓展未來選項的小行動','晚上問：今天的選擇，在擴大還是縮小我的自由？'],
+    qs:[
+      {q:'你是否常常感到「沒有選擇」、被困住？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你在做重要決定時，是否習慣考慮「五年後的影響」？',opts:['習慣如此','有時候','很少','幾乎不']},
+      {q:'你的整體能量和動力水平如何？',opts:['充沛','還好','偏低','非常低']},
+    ],
+    nutrients:[
+      {n:'NMN複方',ico:'🔋',bg:'rgba(163,45,45,0.15)',mech:'NAD+ × 長期決策能量',
+       det:'長期高品質的預測和決策是高度耗能的認知工作，需要持續充足的NAD+。NAD+隨年齡下降是認知能力（尤其是長期思維和決策品質）下降的重要因素。NMN補充NAD+前體，讓大腦在時間長河中保持高品質的決策能力。',
+       why:'自由需要長期思維的能力，長期思維需要能量。NMN確保你的大腦有足夠的NAD+，在做重要的長期決策時保持清晰。',
+       price:'NT$570',spec:'膠囊 一瓶150粒'},
+      {n:'加強B群',ico:'🔵',bg:'rgba(24,95,165,0.15)',mech:'神經動力 × 選擇能力',
+       det:'「感覺沒有選擇」常常和能量低迷直接相關。B群是所有神經能量代謝的核心輔因子。B群充足時前額葉有足夠能量進行高品質的選擇評估，而不是只能接受第一個顯而易見的選項。',
+       why:'選擇需要能量。低能量狀態讓大腦選擇「最省力的選項」而非「最好的選項」。B群幫助你的大腦有足夠能量真正選擇，而不是被動接受。',
+       price:'NT$520',spec:'膠囊 一瓶150粒'},
+      {n:'美寶（白藜蘆醇）',ico:'✨',bg:'rgba(83,74,183,0.15)',mech:'SIRT1 × 細胞自由度',
+       det:'白藜蘆醇通過SIRT1路徑活化粒線體新生和細胞修復程序，在細胞層面提升自我更新和適應能力。這與「自由度」的深層意義一致：不被舊狀態綁架，有能力自我更新和升級。',
+       why:'自由最終是細胞的自由度——細胞有沒有能力更新和適應。白藜蘆醇在分子層面支持這個更新能力。',
+       price:'NT$550',spec:'膠囊 一瓶約150粒'},
+    ]
+  },
+];
+
+const FILTERS=['全部','基礎','模型','更新','實戰'];
+let picked=[],answers={},phase=1;
+
+function initFilters(){
+  const ct=document.getElementById('filter-tabs');
+  FILTERS.forEach((f,i)=>{
+    const btn=document.createElement('button');
+    btn.className='filter-tab'+(i===0?' active':'');
+    btn.textContent=f; btn.dataset.f=f;
+    btn.onclick=()=>{
+      document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGrid(f);
+    };
+    ct.appendChild(btn);
+  });
+}
+
+function renderGrid(filter){
+  const g=document.getElementById('mod-grid'); g.innerHTML='';
+  const list=filter==='全部'?MODULES:MODULES.filter(m=>m.cat===filter);
+  list.forEach(m=>{
+    const card=document.createElement('div');
+    card.className='mod-card'+(picked.includes(m.id)?' picked':'');
+    card.dataset.id=m.id;
+    card.innerHTML=`<span class="mod-icon">${m.icon}</span><div class="mod-name">${m.name}</div><div class="mod-tagline">${m.tagline}</div><div class="mod-desc">${m.desc}</div>`;
+    card.onclick=()=>toggleMod(m.id,card);
+    g.appendChild(card);
+  });
+}
+
+function toggleMod(id,card){
+  const idx=picked.indexOf(id);
+  if(idx===-1){picked.push(id);card.classList.add('picked');}
+  else{picked.splice(idx,1);card.classList.remove('picked');}
+  document.getElementById('pcount').textContent=picked.length+' 已選';
+  document.getElementById('btn-next').disabled=picked.length===0;
+  updateProg();
+}
+
+function go(n){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p'+n).classList.add('active');
+  phase=n; updateProg();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function updateProg(){
+  const p=phase===1?8:phase===2?48:100;
+  document.getElementById('prog').style.width=p+'%';
+}
+
+document.getElementById('btn-next').onclick=()=>{buildDiag();go(2);};
+
+function buildDiag(){
+  const body=document.getElementById('q-body'); body.innerHTML='';
+  picked.forEach(id=>{
+    const m=MODULES.find(x=>x.id===id);
+    const blk=document.createElement('div'); blk.className='q-block';
+    blk.innerHTML=`<div class="q-mod-header"><span class="q-mod-icon">${m.icon}</span><span class="q-mod-name">${m.name}</span><span class="q-mod-tag">${m.tagline}</span></div>`;
+    const ql=document.createElement('div'); ql.className='q-list';
+    m.qs.forEach((q,qi)=>{
+      const key=id+'_'+qi;
+      const item=document.createElement('div'); item.className='q-item';
+      const opts=q.opts.map((o,oi)=>`<button class="q-opt" onclick="pickOpt(this,'${key}',${oi})">${o}</button>`).join('');
+      item.innerHTML=`<div class="q-text">${q.q}</div><div class="q-opts">${opts}</div>`;
+      ql.appendChild(item);
+    });
+    blk.appendChild(ql); body.appendChild(blk);
+  });
+}
+
+function pickOpt(btn,key,val){
+  btn.closest('.q-opts').querySelectorAll('.q-opt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel'); answers[key]=val;
+}
+
+function calcScore(id){
+  const m=MODULES.find(x=>x.id===id);
+  let t=0,c=0;
+  m.qs.forEach((_,qi)=>{const k=id+'_'+qi;if(answers[k]!==undefined){t+=answers[k];c++;}});
+  if(!c)return 70;
+  return Math.round(100-(t/c/3)*78);
+}
+
+function showResult(){
+  const body=document.getElementById('result-body'); body.innerHTML='';
+  const scores=picked.map(id=>({id,score:calcScore(id)}));
+  const avg=Math.round(scores.reduce((s,x)=>s+x.score,0)/scores.length);
+  const doff=Math.round(251*(1-avg/100));
+  const sc=avg>=72?'#1a7a2a':avg>=45?'#B8860B':'#A32D2D';
+  const lbl=avg>=72?'預測力基礎良好':avg>=45?'預測力需要升級':'預測力需要重建';
+  const desc=avg>=72?'你的預測系統有一定基礎，以下方案幫你持續升級':avg>=45?'部分預測模組需要修正，及早介入效果最好':'多個預測模組需要系統性重建，從底層開始';
+
+  body.innerHTML=`
+    <div class="result-hero">
+      <div class="rh-ring">
+        <svg viewBox="0 0 90 90"><circle cx="45" cy="45" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="5"/><circle cx="45" cy="45" r="40" fill="none" stroke="${sc}" stroke-width="5" stroke-dasharray="251" stroke-dashoffset="${doff}" stroke-linecap="round" transform="rotate(-90 45 45)"/></svg>
+        <div class="rh-num">${avg}</div>
+      </div>
+      <div class="rh-title">${lbl}</div>
+      <div class="rh-desc">${desc}</div>
+    </div>
+    <div class="slabel">人生終極公式</div>
+    <div class="formula-chain" id="formula-chain"></div>
+    <div class="slabel">你的預測力診斷結果</div>
+    <div id="mod-results"></div>
+  `;
+
+  const fc=document.getElementById('formula-chain');
+  ['觀察','建模','預測','行動','誤差','修正','更新','智慧'].forEach((s,i,a)=>{
+    const span=document.createElement('span');
+    span.className='fc-step '+(i===0?'first':i===a.length-1?'last':'mid');
+    span.textContent=s; fc.appendChild(span);
+    if(i<a.length-1){const arr=document.createElement('span');arr.className='fc-arr';arr.textContent='→';fc.appendChild(arr);}
+  });
+
+  const container=document.getElementById('mod-results');
+  const sorted=[...scores].sort((a,b)=>a.score-b.score);
+  sorted.forEach(({id,score})=>{
+    const m=MODULES.find(x=>x.id===id);
+    const bc=score>=72?'s-hi':score>=45?'s-md':'s-lo';
+    const nc=score>=72?'#1a7a2a':score>=45?'#B8860B':'#A32D2D';
+    const urg=score<45?'需要重建':score<72?'需要升級':'持續優化';
+
+    const card=document.createElement('div'); card.className='mrc';
+    card.innerHTML=`
+      <div class="mrc-header">
+        <span class="mrc-icon">${m.icon}</span>
+        <div class="mrc-info">
+          <div class="mrc-name">${m.name}</div>
+          <div class="mrc-tagline">${m.tagline}</div>
+        </div>
+        <div class="mrc-score-area">
+          <div style="font-size:10px;background:rgba(${score<45?'163,45,45':score<72?'184,134,11':'26,122,42'},0.12);padding:2px 8px;border-radius:100px;color:${nc};font-weight:700;margin-bottom:3px;text-align:right">${urg}</div>
+          <div class="mrc-score-num" style="color:${nc}">${score}<span style="font-size:12px;opacity:0.4">/100</span></div>
+          <div class="mrc-bar-wrap"><div class="mrc-bar ${bc}" style="width:0%" data-w="${score}%"></div></div>
+        </div>
+      </div>
+      <div style="padding:0 16px 4px">
+        <div class="rtabs" id="tabs_${id}">
+          <button class="rtab active" onclick="sw('${id}','edu',this)">📖 教育</button>
+          <button class="rtab" onclick="sw('${id}','meth',this)">🛠 方法</button>
+          <button class="rtab" onclick="sw('${id}','nut',this)">⚗️ 修復</button>
+        </div>
+      </div>
+      <div class="tab-panel active" id="edu_${id}"></div>
+      <div class="tab-panel" id="meth_${id}"></div>
+      <div class="tab-panel" id="nut_${id}"></div>
+    `;
+    container.appendChild(card);
+
+    // EDU
+    const edu=card.querySelector('#edu_'+id);
+    const fcHtml=m.formula.map((s,i)=>`<div style="font-size:12px;color:${i===0?'#D4A017':i===m.formula.length-1?'#B8860B':'rgba(255,255,255,0.6)'};display:flex;align-items:center;gap:8px;padding:3px 0">${i>0?'<span style="font-size:10px;color:rgba(212,160,23,0.3)">↓</span>':''}<span>${s}</span></div>`).join('');
+    edu.innerHTML=`
+      <div class="core-box"><div class="core-label">核心洞見</div><div class="core-text">${m.core}</div></div>
+      <div class="sci-box"><div class="sci-title">🔬 神經科學基礎</div><div class="sci-text">${m.science}</div></div>
+      <div class="edu-box"><div class="edu-title">功能失調路徑</div>${m.disease_chain.map((s,i)=>`<div style="font-size:12px;color:${i===0?'#D4A017':i===m.disease_chain.length-1?'#E87070':'rgba(255,255,255,0.6)'};display:flex;align-items:center;gap:8px;padding:3px 0">${i>0?'<span style="font-size:10px;color:rgba(255,255,255,0.2)">↓</span>':''}<span>${s}</span></div>`).join('')}</div>
+      <div class="update-box"><div class="ub-title">信念更新程式碼</div><div class="ub-text">${m.update}</div></div>
+      <div class="edu-box"><div class="edu-title">運作公式</div>${fcHtml}</div>
+    `;
+
+    // METHOD
+    const meth=card.querySelector('#meth_'+id);
+    const stepsHtml=m.methods.map((s,i)=>`<div class="ms-card"><div class="ms-num">${i+1}</div><div class="ms-body"><div class="ms-title">${s.t}</div><div class="ms-desc">${s.d}</div></div></div>`).join('');
+    const dailyHtml=m.daily.map(d=>`<div class="daily-item">✓ ${d}</div>`).join('');
+    meth.innerHTML=`<div class="method-steps">${stepsHtml}</div><div class="daily-box"><div class="daily-title">每日練習清單</div>${dailyHtml}</div>`;
+
+    // NUT
+    const nutContainer=card.querySelector('#nut_'+id);
+    nutContainer.innerHTML='<div class="nut-list" id="nuts_'+id+'"></div>';
+    const nl=nutContainer.querySelector('#nuts_'+id);
+    m.nutrients.forEach((n,ni)=>{
+      const nid=id+'_n'+ni;
+      const nc2=document.createElement('div'); nc2.className='nut-card';
+      nc2.innerHTML=`
+        <div class="nut-top" onclick="toggleNut('${nid}')">
+          <div class="nut-ico" style="background:${n.bg}">${n.ico}</div>
+          <div class="nut-info">
+            <div class="nut-name">${n.n}</div>
+            <div class="nut-mech">${n.mech}</div>
+            <div class="nut-price">${n.price} · ${n.spec}</div>
+          </div>
+          <span class="nut-exp" id="exp_${nid}">▾</span>
+          <a class="nut-cta" href="${SHOP}" target="_blank" rel="noopener" onclick="event.stopPropagation()">購買</a>
+        </div>
+        <div class="nut-detail" id="${nid}">
+          <div class="nut-mbox"><div class="nut-mt">作用機制</div><div class="nut-mb">${n.det}</div></div>
+          <div class="nut-why"><div class="nut-wt">為什麼你的預測力系統現在需要它</div><div class="nut-wb">${n.why}</div></div>
+          <div class="buy-block">
+            <div class="bb-info">
+              <div class="bb-name">${n.n}</div>
+              <div class="bb-price">${n.price}</div>
+              <div class="bb-spec">${n.spec}</div>
+              <div class="bb-store">📦 7-11 賣貨便取貨付款</div>
+            </div>
+            <a class="btn-buy-full" href="${SHOP}" target="_blank" rel="noopener">立即購買 →</a>
+          </div>
+        </div>
+      `;
+      nl.appendChild(nc2);
+    });
+  });
+
+  go(3);
+  setTimeout(()=>{
+    document.querySelectorAll('.mrc-bar').forEach(b=>{
+      b.style.transition='width 1s ease';
+      b.style.width=b.dataset.w;
+    });
+  },300);
+}
+
+function sw(id,tab,btn){
+  ['edu','meth','nut'].forEach(t=>document.getElementById(t+'_'+id).classList.toggle('active',t===tab));
+  document.querySelectorAll('#tabs_'+id+' .rtab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function toggleNut(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('open');
+  const exp=document.getElementById('exp_'+id);
+  if(exp)exp.textContent=el.classList.contains('open')?'▴':'▾';
+}
+function restart(){
+  picked=[];answers={};
+  document.querySelectorAll('.mod-card').forEach(c=>c.classList.remove('picked'));
+  document.getElementById('pcount').textContent='0 已選';
+  document.getElementById('btn-next').disabled=true;
+  go(1);
+}
+
+initFilters();
+renderGrid('全部');
+</script>
+</body>
+</html>
