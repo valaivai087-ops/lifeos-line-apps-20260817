@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>語言升維系統｜從低維到高維</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D1B3E;--teal:#1B5E7B;--gold:#8A6200;--lgold:#F5E6C0;
+  --red:#8B1A1A;--lred:#FDE8E8;--green:#0F6E56;--lgreen:#E6F5F0;
+  --purple:#4A1A7A;--lpurple:#F0E8FA;
+  --bg:#F2F4F8;--card:#fff;--border:#DDE2EA;--text:#1a1a1a;--text2:#555;--text3:#999;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang TC','Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* NAV */
+.topnav{background:var(--navy);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-logo{color:var(--lgold);font-size:15px;font-weight:700;display:flex;align-items:center;gap:7px}
+.nav-tabs{display:flex;gap:3px}
+.nav-tab{background:transparent;border:none;color:rgba(255,255,255,.6);font-size:12px;padding:6px 10px;border-radius:8px;cursor:pointer;transition:.15s;white-space:nowrap}
+.nav-tab.active,.nav-tab:hover{background:rgba(255,255,255,.12);color:#fff}
+.page{display:none;padding:1rem}
+.page.active{display:block}
+
+/* HERO */
+.hero{background:linear-gradient(150deg,#0D1B3E 0%,#1B5E7B 60%,#4A1A7A 100%);color:#fff;padding:2.2rem 1.2rem 1.8rem;text-align:center;margin:-1rem -1rem 1rem}
+.hero-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(245,230,192,.15);color:var(--lgold);font-size:11px;padding:4px 12px;border-radius:999px;margin-bottom:12px;font-weight:600}
+.hero-title{font-size:24px;font-weight:700;line-height:1.4;margin-bottom:8px}
+.hero-sub{font-size:13px;opacity:.78;line-height:1.7;margin-bottom:18px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:360px;margin:0 auto}
+.hstat{background:rgba(255,255,255,.1);border-radius:12px;padding:10px 6px;text-align:center}
+.hstat-n{font-size:20px;font-weight:700;color:var(--lgold)}
+.hstat-l{font-size:11px;opacity:.7;margin-top:2px}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.sec-title{font-size:17px;font-weight:600;color:var(--navy);display:flex;align-items:center;gap:7px;margin-bottom:14px}
+
+/* CONVERTER */
+.conv-wrap{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:12px}
+.conv-header{padding:14px 16px 10px;background:linear-gradient(135deg,#0D1B3E,#1B5E7B)}
+.conv-title{font-size:15px;font-weight:600;color:#fff;margin-bottom:3px}
+.conv-sub{font-size:12px;color:rgba(255,255,255,.65)}
+.conv-body{padding:14px}
+.conv-label{font-size:11px;font-weight:700;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.conv-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:14px;background:#F8F9FC;resize:none;font-family:inherit;min-height:80px;color:var(--text);transition:.15s}
+.conv-input:focus{outline:none;border-color:var(--teal);background:#fff}
+.conv-arrow{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 0;font-size:12px;color:var(--text3)}
+.conv-output{background:#F0F7F4;border:1.5px solid var(--green);border-radius:10px;padding:12px 13px;min-height:60px;font-size:14px;color:var(--navy);line-height:1.7}
+.conv-output.loading{color:var(--text3);font-style:italic}
+.conv-btn{width:100%;background:var(--navy);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:7px;transition:.15s}
+.conv-btn:hover{background:var(--teal)}
+.conv-btn:disabled{background:#ccc;cursor:not-allowed}
+
+/* TYPE SELECTOR */
+.type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.type-btn{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:10px 11px;cursor:pointer;text-align:left;transition:.15s}
+.type-btn:hover,.type-btn.active{border-color:var(--teal);background:#E8F4FB}
+.type-btn.active{border-color:var(--navy);background:#EEF2FA}
+.type-icon{font-size:18px;color:var(--teal);margin-bottom:4px}
+.type-name{font-size:13px;font-weight:600;color:var(--navy)}
+.type-desc{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4}
+
+/* EXAMPLES */
+.ex-item{margin-bottom:12px}
+.ex-low{background:var(--lred);border:1px solid #F5BDBD;border-radius:10px;padding:10px 12px;margin-bottom:6px}
+.ex-low-label{font-size:10px;font-weight:700;color:var(--red);margin-bottom:3px}
+.ex-low-text{font-size:13px;color:var(--red);font-weight:500}
+.ex-arr{text-align:center;font-size:18px;color:var(--gold);margin:4px 0}
+.ex-high{background:var(--lgreen);border:1px solid #9FE0CE;border-radius:10px;padding:10px 12px}
+.ex-high-label{font-size:10px;font-weight:700;color:var(--green);margin-bottom:3px}
+.ex-high-text{font-size:13px;color:var(--green);font-weight:500;line-height:1.6}
+.ex-explain{font-size:12px;color:var(--text2);margin-top:6px;padding:6px 10px;background:#F5F7FB;border-radius:8px;line-height:1.55}
+
+/* LEARN */
+.learn-type{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;cursor:pointer}
+.learn-header{padding:14px 16px;display:flex;align-items:center;gap:12px}
+.learn-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.learn-title{font-size:15px;font-weight:600;color:var(--navy)}
+.learn-core{font-size:12px;color:var(--text2);margin-top:2px}
+.learn-expand{margin-left:auto;color:var(--text3);font-size:18px;transition:.2s}
+.learn-body{display:none;padding:0 14px 14px}
+.learn-body.open{display:block}
+.learn-quote{background:#FFF8E7;border:1px solid #F5C842;border-radius:10px;padding:11px 13px;margin-bottom:10px;font-size:13px;color:var(--gold);font-weight:600;text-align:center;line-height:1.6}
+.tag-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.tag{font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);color:var(--text2)}
+.tag.good{background:var(--lgreen);border-color:#9FE0CE;color:var(--green)}
+.tag.bad{background:var(--lred);border-color:#F5BDBD;color:var(--red)}
+.mother-box{background:#EEF2FA;border-radius:10px;padding:11px 13px;font-size:13px;color:var(--navy);line-height:1.7}
+
+/* QUIZ */
+.qprog{background:#EAEEF5;border-radius:4px;height:4px;margin-bottom:14px}
+.qfill{height:100%;border-radius:4px;background:var(--teal);transition:.4s}
+.qtext{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:14px;line-height:1.5}
+.qopts{display:flex;flex-direction:column;gap:8px}
+.qopt{background:#F8F9FC;border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:13px;cursor:pointer;text-align:left;transition:.13s;color:var(--text);line-height:1.5}
+.qopt:hover{border-color:var(--teal);background:#E8F4FB}
+.qopt.correct{background:var(--lgreen);border-color:var(--green);color:var(--green);font-weight:600}
+.qopt.wrong{background:var(--lred);border-color:var(--red);color:var(--red)}
+.qexplain{background:#F5F7FB;border-radius:10px;padding:11px;font-size:13px;color:var(--text2);line-height:1.65;margin-top:8px;display:none}
+.score-card{background:linear-gradient(135deg,var(--navy),var(--purple));color:#fff;border-radius:16px;padding:22px;text-align:center;margin-bottom:14px}
+.score-big{font-size:52px;font-weight:700;color:var(--lgold)}
+.btn-main{display:block;width:100%;background:var(--navy);color:#fff;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;margin-top:10px}
+.btn-main:hover{background:var(--teal)}
+.btn-sec{display:block;width:100%;background:#F0F2F7;color:var(--navy);border:none;border-radius:12px;padding:12px;font-size:14px;cursor:pointer;margin-top:8px}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:9px 20px;border-radius:999px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="nav-logo"><i class="ti ti-message-language"></i> 語言升維</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="G('home')">首頁</button>
+    <button class="nav-tab" onclick="G('convert')">轉換</button>
+    <button class="nav-tab" onclick="G('examples')">例句</button>
+    <button class="nav-tab" onclick="G('learn')">學習</button>
+    <button class="nav-tab" onclick="G('quiz')">測驗</button>
+  </div>
+</div>
+
+<!-- ══════════════════ HOME ══════════════════ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-badge"><i class="ti ti-arrows-exchange"></i> 語言升維系統</div>
+    <div class="hero-title">語言是神經系統的<br>直接輸入</div>
+    <div class="hero-sub">低維語言讓人格高熵化<br>高維語言讓神經系統低熵化</div>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-n">9</div><div class="hstat-l">高維語言類型</div></div>
+      <div class="hstat"><div class="hstat-n">8</div><div class="hstat-l">低維語言陷阱</div></div>
+      <div class="hstat"><div class="hstat-n">AI</div><div class="hstat-l">即時轉換</div></div>
+    </div>
+  </div>
+
+  <!-- 核心對比 -->
+  <div class="sec-title"><i class="ti ti-scale" style="color:var(--gold)"></i> 語言的兩條路</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+    <div style="background:var(--lred);border:1.5px solid #F5BDBD;border-radius:14px;padding:13px">
+      <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:8px">❌ 低維語言</div>
+      <div id="low-examples" style="display:flex;flex-direction:column;gap:5px"></div>
+      <div style="font-size:11px;color:var(--red);margin-top:8px;opacity:.8">→ 讓人格高熵化</div>
+    </div>
+    <div style="background:var(--lgreen);border:1.5px solid #9FE0CE;border-radius:14px;padding:13px">
+      <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px">✅ 高維語言</div>
+      <div id="high-examples" style="display:flex;flex-direction:column;gap:5px"></div>
+      <div style="font-size:11px;color:var(--green);margin-top:8px;opacity:.8">→ 讓神經系統低熵化</div>
+    </div>
+  </div>
+
+  <!-- 核心洞見 -->
+  <div style="background:linear-gradient(135deg,#0D1B3E,#1B5E7B);border-radius:16px;padding:16px;color:#fff;margin-bottom:14px">
+    <div style="font-size:13px;opacity:.7;margin-bottom:8px;text-align:center">核心母句</div>
+    <div id="core-quote" style="font-size:16px;font-weight:600;color:var(--lgold);line-height:1.7;text-align:center"></div>
+    <div style="text-align:center;margin-top:10px">
+      <button onclick="nextQuote()" style="background:rgba(255,255,255,.15);border:none;color:#fff;font-size:12px;padding:5px 14px;border-radius:999px;cursor:pointer">換一句 <i class="ti ti-refresh"></i></button>
+    </div>
+  </div>
+
+  <!-- 公式 -->
+  <div class="sec-title"><i class="ti ti-arrow-down" style="color:var(--teal)"></i> 語言升維路徑</div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:16px">
+    <div style="background:#FFF8E7;border:1.5px solid var(--gold);border-radius:10px;padding:9px 20px;font-size:13px;font-weight:600;color:var(--navy)">偵測低維語言</div>
+    <div style="font-size:20px;color:var(--gold)">↓</div>
+    <div style="background:#FFF8E7;border:1.5px solid var(--gold);border-radius:10px;padding:9px 20px;font-size:13px;font-weight:600;color:var(--navy)">理解背後的熵增機制</div>
+    <div style="font-size:20px;color:var(--gold)">↓</div>
+    <div style="background:#FFF8E7;border:1.5px solid var(--gold);border-radius:10px;padding:9px 20px;font-size:13px;font-weight:600;color:var(--navy)">選擇對應的高維語言類型</div>
+    <div style="font-size:20px;color:var(--gold)">↓</div>
+    <div style="background:var(--lgreen);border:1.5px solid var(--green);border-radius:10px;padding:9px 20px;font-size:13px;font-weight:600;color:var(--green)">輸出低熵語言 → 降低熵增</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <button class="btn-main" onclick="G('convert')" style="margin:0">🔄 AI即時轉換</button>
+    <button class="btn-main" onclick="G('examples')" style="margin:0;background:var(--purple)">📝 查看例句</button>
+  </div>
+</div>
+
+<!-- ══════════════════ CONVERT ══════════════════ -->
+<div id="page-convert" class="page">
+  <div class="sec-title"><i class="ti ti-wand" style="color:var(--purple)"></i> AI 語言轉換器</div>
+
+  <div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6">輸入你平常說的低維語言，選擇想轉換的類型，AI 幫你生成高維版本。</div>
+
+  <!-- 類型選擇 -->
+  <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:8px">選擇轉換類型（可不選，系統自動判斷）</div>
+  <div class="type-grid" id="type-selector"></div>
+
+  <!-- 輸入框 -->
+  <div class="conv-wrap">
+    <div class="conv-header">
+      <div class="conv-title">語言升維轉換</div>
+      <div class="conv-sub">輸入低維語言，輸出高維版本</div>
+    </div>
+    <div class="conv-body">
+      <div class="conv-label">輸入低維語言</div>
+      <textarea class="conv-input" id="input-text" placeholder="例如：你怎麼這麼爛、你永遠做不好、你讓我很丟臉…&#10;&#10;或任何你覺得說出口傷人（或傷自己）的語言"></textarea>
+      <button class="conv-btn" id="conv-btn" onclick="convertLanguage()">
+        <i class="ti ti-sparkles"></i> 升維轉換
+      </button>
+      <div class="conv-arrow"><i class="ti ti-arrow-down"></i> 高維語言輸出</div>
+      <div class="conv-label">高維語言</div>
+      <div class="conv-output" id="output-text">點擊「升維轉換」後，這裡會出現高維語言版本…</div>
+    </div>
+  </div>
+
+  <div style="background:#FFF8E7;border:1px solid #F5C842;border-radius:12px;padding:12px;font-size:13px;color:var(--gold);line-height:1.65">
+    <strong>使用說明：</strong>輸入你常說的話、家長對孩子的語言、或讓自己感到受傷的話，系統會分析它的高熵機制，並提供多種高維轉換方式。
+  </div>
+</div>
+
+<!-- ══════════════════ EXAMPLES ══════════════════ -->
+<div id="page-examples" class="page">
+  <div class="sec-title"><i class="ti ti-list" style="color:var(--teal)"></i> 低維 → 高維例句對照</div>
+
+  <div class="type-grid" style="margin-bottom:14px" id="ex-filter"></div>
+
+  <div id="ex-list"></div>
+</div>
+
+<!-- ══════════════════ LEARN ══════════════════ -->
+<div id="page-learn" class="page">
+  <div class="sec-title"><i class="ti ti-book-2" style="color:var(--navy)"></i> 9大高維語言類型</div>
+  <div style="font-size:13px;color:var(--text2);margin-bottom:14px">點擊展開，深入了解每種高維語言的核心機制</div>
+  <div id="learn-list"></div>
+</div>
+
+<!-- ══════════════════ QUIZ ══════════════════ -->
+<div id="page-quiz" class="page">
+  <div id="quiz-area"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════
+
+const LOW_TYPES = [
+  {name:'羞辱', result:'形成羞恥人格', color:'#8B1A1A'},
+  {name:'否定', result:'形成低價值模型', color:'#8B1A1A'},
+  {name:'比較', result:'形成焦慮人格', color:'#8B1A1A'},
+  {name:'控制', result:'形成壓抑人格', color:'#8B1A1A'},
+  {name:'情緒輸出', result:'形成高警報神經系統', color:'#8B1A1A'},
+  {name:'人格攻擊', result:'形成自我懷疑', color:'#8B1A1A'},
+  {name:'災難化', result:'形成恐懼預測模型', color:'#8B1A1A'},
+  {name:'貼標籤', result:'形成固定人格', color:'#8B1A1A'},
+];
+
+const HIGH_TYPES = [
+  {
+    id:'understand', name:'理解型語言', icon:'ti-eye', color:'#1B5E7B', bg:'#E8F4FB',
+    core:'先理解原因、結構、脈絡，讓人恢復安全感',
+    quote:'真正成熟，是不急著羞辱人格，而是先理解系統',
+    notWhat:'不是急著評價、急著糾正、急著輸贏',
+    isWhat:'提高感知解析度，讓系統恢復穩定',
+    goodTags:['先理解原因','先理解結構','先理解情緒來源','不急著否定','不急著定罪','讓人恢復安全感'],
+    badTags:['立刻批評','馬上糾正','表面判斷','先下結論'],
+    motherSentence:'行為背後有原因，情緒背後有壓力，失控背後有耗竭。很多問題不是故意的，而是長期累積的結果。',
+  },
+  {
+    id:'structure', name:'結構化語言', icon:'ti-layout-grid', color:'#0F6E56', bg:'#E6F5F0',
+    core:'區分問題層級、情緒與事實，讓大腦恢復秩序',
+    quote:'結構化語言不是冷漠理性，而是讓混亂恢復秩序',
+    notWhat:'不是情緒化輸出、不是把所有事混在一起',
+    isWhat:'建立清晰結構，讓大腦恢復秩序',
+    goodTags:['區分情緒與事實','區分人格與事件','區分原因與結果','區分短期與長期','降低混亂感'],
+    badTags:['全部混在一起','情緒當事實','小事災難化','局部當全部'],
+    motherSentence:'情緒是真實感受，但不一定是真相。失敗不等於失敗者。短期壓力不等於人生崩潰。分層能恢復理性思考。',
+  },
+  {
+    id:'generative', name:'生成式語言', icon:'ti-plant', color:'#4A1A7A', bg:'#F0E8FA',
+    core:'保留更新空間，不把錯誤人格化、不把失敗永恆化',
+    quote:'真正高維，是能讓生命恢復流動，讓人重新看見未來',
+    notWhat:'不是把人固定、不是把錯誤永恆化',
+    isWhat:'保留更新可能，讓生命恢復流動',
+    goodTags:['保留更新空間','允許修正','允許重新開始','不把錯誤人格化','恢復未來感'],
+    badTags:['你永遠這樣','你就是這種人','沒有希望了','從來都不會改'],
+    motherSentence:'人是動態系統，不要把現在當永遠。錯誤是模型誤差，不是身份宣判。生命永遠存在新的可能。',
+  },
+  {
+    id:'highres', name:'高解析語言', icon:'ti-zoom-in', color:'#6B4500', bg:'#FFF0E0',
+    core:'辨識細節差異、隱藏變量、真實需求，避免粗暴定義',
+    quote:'真正高維，是能看見隱藏變量，不粗暴定義他人',
+    notWhat:'不是情緒化定義、不是表面判斷',
+    isWhat:'提高感知解析度，看見隱藏結構',
+    goodTags:['辨識細節差異','辨識情緒來源','辨識真實需求','辨識關係模式','避免粗暴定義'],
+    badTags:['你都這樣','你就是有問題','你從來不會改','一句話定義'],
+    motherSentence:'很多憤怒其實想被理解，很多控制其實缺乏安全感，很多冷漠其實不敢受傷。表面行為不是真正需求。',
+  },
+  {
+    id:'lowentropy', name:'低熵語言', icon:'ti-wave-sine', color:'#1B5E7B', bg:'#E8F4FB',
+    core:'降低神經高警報、情緒擴散，穩定神經系統',
+    quote:'真正高維，是能穩定神經系統，讓世界恢復秩序',
+    notWhat:'不是壓制情緒、不是假裝正向',
+    isWhat:'降低系統混亂，讓神經系統恢復穩定',
+    goodTags:['降低神經高警報','降低情緒擴散','穩定神經系統','恢復前額葉','恢復穩定節律'],
+    badTags:['怒吼','長期批判','羞辱式回應','高壓控制'],
+    motherSentence:'語言直接進入神經系統。低熵語言能降低防衛、恢復安全感、讓系統恢復低耗能狀態。',
+  },
+  {
+    id:'containment', name:'承載型語言', icon:'ti-heart', color:'#8B1A5A', bg:'#FDE8F5',
+    core:'允許情緒存在、提供心理空間，讓關係可以呼吸',
+    quote:'真正成熟，是不急著壓制情緒，而是能提供安全空間',
+    notWhat:'不是急著處理情緒、不是急著改造對方',
+    isWhat:'提供安全承載空間，讓人格恢復穩定',
+    goodTags:['允許情緒存在','允許脆弱存在','不急著壓制','提供心理空間','恢復存在感'],
+    badTags:['不要哭','不要想太多','不要生氣','立刻糾正'],
+    motherSentence:'很多人從小不被允許有情緒。被允許脆弱會恢復信任感。承載先於修正，理解比說服更重要。',
+  },
+  {
+    id:'boundary', name:'邊界型語言', icon:'ti-shield', color:'#0F6E56', bg:'#E6F5F0',
+    core:'清楚表達界線，不情緒化控制，讓關係恢復低耗能流動',
+    quote:'真正邊界，是清楚而溫柔；真正成熟，是不靠控制維持關係',
+    notWhat:'不是冷漠切斷、不是情緒對抗',
+    isWhat:'清楚表達界線，讓關係恢復低耗能流動',
+    goodTags:['清楚表達界線','不情緒化控制','不討好式壓抑','能說不','恢復健康距離'],
+    badTags:['情緒爆炸','威脅控制','長期壓抑','模糊責任'],
+    motherSentence:'界線不是攻擊，而是自我保護。說不不是自私，而是保護生命能量。沒有界線就沒有真正的關係。',
+  },
+  {
+    id:'update', name:'更新型語言', icon:'ti-refresh', color:'#0D1B3E', bg:'#EEF2FA',
+    core:'把問題視為模型誤差、更新訊號，持續修正而非固定命運',
+    quote:'真正成熟，是不害怕承認誤差；真正高維，是能持續進化人格',
+    notWhat:'不是人格羞辱、不是固定命運',
+    isWhat:'持續模型更新，讓生命恢復進化能力',
+    goodTags:['這是模型誤差','這是更新訊號','問題可以拆解','錯誤可以修正','人生可以重構'],
+    badTags:['你永遠不會成功','就是你的問題','沒救了','這就是你的命'],
+    motherSentence:'問題是系統訊號，不是人格宣判。更新模型才能更新命運。很多限制只是舊認知，不是永遠的事實。',
+  },
+  {
+    id:'deperson', name:'非人格化修正', icon:'ti-tools', color:'#4A1A7A', bg:'#F0E8FA',
+    core:'問題不等於人格，修正行為而非摧毀存在感',
+    quote:'真正修正，是保護人格穩定；真正智慧，是能讓人不失去存在感',
+    notWhat:'不是否定人格、不是羞辱存在',
+    isWhat:'修正系統與模型，保留人格穩定與更新能力',
+    goodTags:['問題不等於人格','錯誤不等於失敗者','狀態不等於本體','保留自我價值','保留更新能力'],
+    badTags:['你就是爛人','你沒有價值','你這輩子完了','你天生就這樣'],
+    motherSentence:'很多人不是被問題打倒，而是被羞辱語言擊碎。問題是系統訊號，人格是不需要被摧毀的。',
+  },
+];
+
+const EXAMPLES = [
+  {
+    type:'understand', low:'你拖延就是懶惰！', high:'我注意到你最近很難開始工作，有什麼讓你覺得很難動起來的原因嗎？',
+    explain:'拖延背後可能有焦慮、害怕失敗或不確定感。理解原因比貼標籤更能真正解決問題。'
+  },
+  {
+    type:'understand', low:'你冷淡，你不愛我了。', high:'你最近看起來很疲憊，有什麼事情在消耗你嗎？我想了解你現在的狀態。',
+    explain:'冷漠背後可能是長期耗竭或需要空間。先理解，再建立連結。'
+  },
+  {
+    type:'structure', low:'你這個人就是有問題！', high:'這次的方法沒有達到我們希望的結果，我們可以來看看哪個環節需要調整。',
+    explain:'區分人格與事件：問題是這件事，不是這個人。結構化讓修正成為可能。'
+  },
+  {
+    type:'structure', low:'我很崩潰，我什麼都做不好，人生完蛋了！', high:'我現在很難受，有些事情的結果不如我預期。讓我先整理一下：到底哪件事是真正的問題？',
+    explain:'情緒是真實的，但情緒不等於事實。分層處理能讓大腦恢復秩序。'
+  },
+  {
+    type:'generative', low:'你永遠都學不會！', high:'這件事現在還不太順，我們可以試試不同的方法，慢慢來。',
+    explain:'不把失敗永恆化。「現在」不等於「永遠」，保留成長的可能性。'
+  },
+  {
+    type:'generative', low:'我這輩子就這樣了，沒希望了。', high:'我現在卡住了，但人生是動態的。這個困境告訴我什麼是需要更新的？',
+    explain:'生成式語言保留未來感。絕望的本質是未來感消失，恢復流動就是恢復希望。'
+  },
+  {
+    type:'highres', low:'他一定是討厭我，他對我這麼冷淡。', high:'他最近反應比較平淡，我不確定原因。有可能他在壓力下，或者需要一些空間。',
+    explain:'高解析語言辨識細節差異。不同的沉默代表不同的狀態，避免粗暴定義。'
+  },
+  {
+    type:'lowentropy', low:'你讓我很崩潰！你到底在幹嘛！（怒吼）', high:'我現在有些情緒，需要一點時間。我們可以等一下再繼續談這件事嗎？',
+    explain:'低熵語言降低神經高警報。怒吼讓前額葉下線；先穩定自己，對話才能有效。'
+  },
+  {
+    type:'containment', low:'不要哭了！這有什麼好哭的！', high:'你現在很難受，我在這裡。不用急，慢慢說。',
+    explain:'承載型語言允許情緒存在。壓制情緒讓情緒轉地下化；被承載的情緒才能流動。'
+  },
+  {
+    type:'boundary', low:'（不敢說，一直忍，然後突然爆炸）', high:'我有一件事需要跟你說清楚：這樣做讓我感到不舒服，我需要你…',
+    explain:'邊界型語言清楚表達而不爆炸。長期壓抑再突然爆炸，比直接溝通更傷關係。'
+  },
+  {
+    type:'update', low:'我又失敗了，我真的很廢。', high:'這次的方法不管用，這給了我一個信號：我需要更新我的策略。下一步我要試試…',
+    explain:'更新型語言把失敗視為模型誤差，而非人格評判。修正能力比完美更重要。'
+  },
+  {
+    type:'deperson', low:'你做錯了，你就是一個失敗的人。', high:'這件事的做法需要調整。這是一個可以修正的地方，和你這個人的價值無關。',
+    explain:'非人格化修正：問題是問題，人是人。保護人格穩定，修正才能真正發生。'
+  },
+];
+
+const QUIZ = [
+  {
+    q:'「你怎麼這麼爛」這句話屬於哪種低維語言？',
+    opts:['控制型語言','羞辱語言','比較語言','災難化語言'],
+    correct:1, explain:'羞辱語言直接攻擊人格尊嚴，形成羞恥人格，讓人在同樣處境下更難恢復更新能力。'
+  },
+  {
+    q:'「你拖延是因為你懶惰」和「你拖延，可能背後有什麼壓力嗎」，後者是哪種高維語言？',
+    opts:['邊界型語言','生成式語言','理解型語言','低熵語言'],
+    correct:2, explain:'理解型語言先理解原因，而不是急著貼標籤。拖延背後可能有焦慮、害怕失敗等深層原因。'
+  },
+  {
+    q:'「你永遠做不好」→ 升維後應該用哪種語言？',
+    opts:['非人格化修正','低熵語言','承載型語言','邊界型語言'],
+    correct:0, explain:'「永遠做不好」把失敗永恆化並人格化。非人格化修正語言會說：「這件事的方法需要調整，和你的價值無關。」'
+  },
+  {
+    q:'「我有些情緒，先讓我穩定一下，我們等等繼續談」是哪種高維語言？',
+    opts:['生成式語言','更新型語言','低熵語言','高解析語言'],
+    correct:2, explain:'低熵語言能降低情緒擴散，穩定神經系統。在高情緒時先暫停，比繼續對話效率更高。'
+  },
+  {
+    q:'高維語言的核心目的是？',
+    opts:['讓對方覺得你很好','說漂亮的話討好對方','降低系統混亂，讓神經系統低熵化','避免一切衝突'],
+    correct:2, explain:'高維語言不是漂亮話，也不是討好。真正的高維語言能降低系統熵增，讓大腦恢復秩序，讓關係恢復流動。'
+  },
+  {
+    q:'「你這個人就是控制欲太強」→ 結構化語言如何說？',
+    opts:['「你控制欲太強是因為不安全感」（更深層理解）','「在這段關係裡，有些互動模式讓我感到限制，我們可以聊聊嗎？」','「你應該改掉你的控制欲」','「算了，我忍你了」'],
+    correct:1, explain:'結構化語言區分人格與事件：不攻擊「你這個人」，而是描述「這個互動模式」，讓對話有解決空間。'
+  },
+  {
+    q:'承載型語言最重要的核心是？',
+    opts:['立刻解決問題','提供心理空間，允許情緒存在','告訴對方如何改變','說很多鼓勵的話'],
+    correct:1, explain:'承載型語言的核心是「先接住情緒」，而不是急著解決、糾正或鼓勵。被承載的情緒才能流動，理解先於修正。'
+  },
+  {
+    q:'「真正成熟，是能穩定自己的語言」意思是？',
+    opts:['說話要非常正式','不要表達情緒','不被高情緒帶走，能持續輸出低熵語言','永遠不生氣'],
+    correct:2, explain:'穩定語言不是壓抑情緒，而是不讓情緒劫持輸出。真正成熟的人能在有情緒的情況下，仍然選擇高維的語言回應。'
+  },
+];
+
+const QUOTES = [
+  '低維語言讓人格高熵化\n高維語言讓神經系統低熵化',
+  '真正成熟的人\n能穩定自己的語言\n\n真正高維的人\n能用語言降低世界熵增',
+  '高維語言不是漂亮話\n而是能降低混亂的語言',
+  '真正智慧\n是能讓人恢復更新能力',
+  '語言會直接進入神經系統\n語言會改變人格結構',
+  '理解不是合理化問題\n理解是提高感知解析度',
+  '很多人不是被事件擊倒\n而是被語言摧毀',
+];
+
+const LOW_SHOWN = ['你怎麼這麼爛','你永遠做不好','你讓我很丟臉','你就是這種人'];
+const HIGH_SHOWN = ['這是更新訊號','先理解原因','問題可以拆解','行為可以修正'];
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let quoteIdx = 0;
+let selectedType = null;
+let currentExFilter = 'all';
+let quizState = {cur:0, score:0, done:false, answered:[]};
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+function init(){
+  // Home
+  const lel = document.getElementById('low-examples');
+  const hel = document.getElementById('high-examples');
+  LOW_SHOWN.forEach(t=>{lel.innerHTML+=`<div style="font-size:12px;color:var(--red);font-weight:500">「${t}」</div>`;});
+  HIGH_SHOWN.forEach(t=>{hel.innerHTML+=`<div style="font-size:12px;color:var(--green);font-weight:500">「${t}」</div>`;});
+  document.getElementById('core-quote').textContent = QUOTES[0];
+
+  // Convert type selector
+  const ts = document.getElementById('type-selector');
+  ts.innerHTML = HIGH_TYPES.map(t=>`
+    <button class="type-btn" onclick="selectType('${t.id}',this)">
+      <div class="type-icon"><i class="ti ${t.icon}" style="color:${t.color}"></i></div>
+      <div class="type-name">${t.name}</div>
+      <div class="type-desc">${t.core.slice(0,22)}…</div>
+    </button>`).join('');
+
+  // Examples filter
+  const ef = document.getElementById('ex-filter');
+  ef.innerHTML = `<button class="type-btn active" onclick="setExFilter('all',this)" style="grid-column:span 2">全部例句</button>` +
+    HIGH_TYPES.map(t=>`<button class="type-btn" onclick="setExFilter('${t.id}',this)">${t.name}</button>`).join('');
+  renderExamples();
+
+  // Learn list
+  const ll = document.getElementById('learn-list');
+  ll.innerHTML = HIGH_TYPES.map((t,i)=>`
+    <div class="learn-type" onclick="toggleLearn(${i})">
+      <div class="learn-header">
+        <div class="learn-icon" style="background:${t.bg}"><i class="ti ${t.icon}" style="color:${t.color};font-size:22px"></i></div>
+        <div>
+          <div class="learn-title">${t.name}</div>
+          <div class="learn-core">${t.core}</div>
+        </div>
+        <i class="ti ti-chevron-down learn-expand" id="lchev-${i}"></i>
+      </div>
+      <div class="learn-body" id="lbody-${i}">
+        <div class="learn-quote">「${t.quote}」</div>
+        <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:6px">不是什麼</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:10px">${t.notWhat}</div>
+        <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:6px">真正是什麼</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:10px">${t.isWhat}</div>
+        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:6px">✅ 高維特徵</div>
+        <div class="tag-list">${t.goodTags.map(g=>`<span class="tag good">${g}</span>`).join('')}</div>
+        <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:6px;margin-top:4px">❌ 低維陷阱</div>
+        <div class="tag-list">${t.badTags.map(b=>`<span class="tag bad">${b}</span>`).join('')}</div>
+        <div class="mother-box">${t.motherSentence}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// FUNCTIONS
+// ═══════════════════════════════════════════════════
+function G(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const map={home:'首頁',convert:'轉換',examples:'例句',learn:'學習',quiz:'測驗'};
+  document.querySelectorAll('.nav-tab').forEach(t=>{if(t.textContent.trim()===map[id])t.classList.add('active');});
+  if(id==='quiz')renderQuiz();
+}
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+function nextQuote(){
+  quoteIdx=(quoteIdx+1)%QUOTES.length;
+  document.getElementById('core-quote').textContent=QUOTES[quoteIdx];
+}
+
+function selectType(id, btn){
+  selectedType = selectedType===id ? null : id;
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
+  if(selectedType) btn.classList.add('active');
+}
+
+function setExFilter(id, btn){
+  currentExFilter=id;
+  document.querySelectorAll('#ex-filter .type-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderExamples();
+}
+
+function renderExamples(){
+  const list=document.getElementById('ex-list');
+  const filtered=currentExFilter==='all'?EXAMPLES:EXAMPLES.filter(e=>e.type===currentExFilter);
+  list.innerHTML=filtered.map(e=>{
+    const ht=HIGH_TYPES.find(t=>t.id===e.type);
+    return `<div class="ex-item">
+      <div style="font-size:11px;font-weight:700;color:${ht.color};margin-bottom:5px;display:flex;align-items:center;gap:5px">
+        <i class="ti ${ht.icon}"></i> ${ht.name}
+      </div>
+      <div class="ex-low"><div class="ex-low-label">❌ 低維語言</div><div class="ex-low-text">${e.low}</div></div>
+      <div class="ex-arr">↓</div>
+      <div class="ex-high"><div class="ex-high-label">✅ 高維語言</div><div class="ex-high-text">${e.high}</div></div>
+      <div class="ex-explain">${e.explain}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleLearn(i){
+  const body=document.getElementById('lbody-'+i);
+  const chev=document.getElementById('lchev-'+i);
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(180deg)':'rotate(0)';
+}
+
+// ─── CONVERT with AI ──────────────────────────────
+async function convertLanguage(){
+  const input=document.getElementById('input-text').value.trim();
+  if(!input){toast('請輸入要轉換的語言');return;}
+  const btn=document.getElementById('conv-btn');
+  const output=document.getElementById('output-text');
+  btn.disabled=true;
+  btn.innerHTML='<i class="ti ti-loader-2 ti-spin"></i> 升維中…';
+  output.className='conv-output loading';
+  output.textContent='正在分析語言模式，生成高維版本…';
+
+  const typeHint = selectedType
+    ? HIGH_TYPES.find(t=>t.id===selectedType)?.name
+    : '（自動判斷最適合的類型）';
+
+  const systemPrompt = `你是一位「語言升維」專家，專門把低維語言轉換成高維語言。
+
+高維語言有9種類型：
+1. 理解型語言：先理解原因、結構、脈絡，讓人恢復安全感
+2. 結構化語言：區分問題層級、情緒與事實，讓大腦恢復秩序
+3. 生成式語言：保留更新空間，不把錯誤人格化、不把失敗永恆化
+4. 高解析語言：辨識細節差異、隱藏變量、真實需求
+5. 低熵語言：降低神經高警報，穩定神經系統
+6. 承載型語言：允許情緒存在、提供心理空間
+7. 邊界型語言：清楚表達界線，不情緒化控制
+8. 更新型語言：把問題視為模型誤差、更新訊號
+9. 非人格化修正：問題不等於人格，修正行為而非摧毀存在感
+
+核心原則：
+- 低維語言：讓人格高熵化（羞辱、否定、比較、控制、人格攻擊、災難化、貼標籤）
+- 高維語言：讓神經系統低熵化，降低混亂，讓人恢復安全感與更新能力
+
+回應格式（繁體中文）：
+【語言分析】
+指出這句話屬於哪種低維語言，以及對神經系統的影響（1-2句）
+
+【高維轉換】
+提供2-3個不同語境下的高維語言版本，每個版本前標明使用的高維類型
+
+【核心提醒】
+一句話說明這個轉換的核心精神
+
+請務必簡潔、實用、接地氣，不要說教。`;
+
+  const userPrompt = `請幫我把這段低維語言轉換成高維語言。
+目標轉換類型：${typeHint}
+語言內容：「${input}」`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:systemPrompt,
+        messages:[{role:'user',content:userPrompt}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || '轉換失敗，請重試';
+    output.className='conv-output';
+    output.innerHTML = text.replace(/\n/g,'<br>').replace(/【([^】]+)】/g,'<strong style="color:var(--teal)">【$1】</strong>');
+  } catch(e) {
+    output.className='conv-output';
+    output.textContent='連線失敗，請確認網路後重試。';
+  }
+  btn.disabled=false;
+  btn.innerHTML='<i class="ti ti-sparkles"></i> 升維轉換';
+}
+
+// ─── QUIZ ─────────────────────────────────────────
+function renderQuiz(){
+  const area=document.getElementById('quiz-area');
+  if(quizState.done){renderQuizScore();return;}
+  const q=QUIZ[quizState.cur];
+  const pct=Math.round(quizState.cur/QUIZ.length*100);
+  area.innerHTML=`
+    <div style="margin-bottom:4px;font-size:12px;color:var(--text3)">題目 ${quizState.cur+1} / ${QUIZ.length}</div>
+    <div class="qprog"><div class="qfill" style="width:${pct}%"></div></div>
+    <div class="card">
+      <div class="qtext">${q.q}</div>
+      <div class="qopts">${q.opts.map((o,i)=>`<button class="qopt" onclick="answerQuiz(${i})">${o}</button>`).join('')}</div>
+      <div class="qexplain" id="qexp">${q.explain}</div>
+    </div>
+    <div style="text-align:center;font-size:12px;color:var(--text3);margin-top:4px">已答對 ${quizState.score} 題</div>`;
+}
+
+function answerQuiz(idx){
+  if(quizState.answered[quizState.cur])return;
+  quizState.answered[quizState.cur]=true;
+  const q=QUIZ[quizState.cur];
+  document.querySelectorAll('.qopt').forEach((b,i)=>{
+    b.style.pointerEvents='none';
+    if(i===q.correct)b.classList.add('correct');
+    else if(i===idx&&idx!==q.correct)b.classList.add('wrong');
+  });
+  document.getElementById('qexp').style.display='block';
+  if(idx===q.correct)quizState.score++;
+  setTimeout(()=>{
+    quizState.cur++;
+    if(quizState.cur>=QUIZ.length){quizState.done=true;renderQuizScore();}
+    else renderQuiz();
+  },2200);
+}
+
+function renderQuizScore(){
+  const pct=Math.round(quizState.score/QUIZ.length*100);
+  const msg=pct>=80?'🔥語言升維高手！你真正理解了高維語言的本質':pct>=60?'👍理解不錯，繼續深化！':'📚多學習幾個類型，再來挑戰！';
+  document.getElementById('quiz-area').innerHTML=`
+    <div class="score-card">
+      <div style="font-size:13px;opacity:.7;margin-bottom:8px">測驗完成！</div>
+      <div class="score-big">${quizState.score}/${QUIZ.length}</div>
+      <div style="font-size:14px;opacity:.8;margin-top:8px">正確率 ${pct}%</div>
+      <div style="font-size:13px;margin-top:10px;line-height:1.5">${msg}</div>
+    </div>
+    <div style="background:#FFF8E7;border:1px solid #F5C842;border-radius:12px;padding:12px;font-size:13px;color:var(--gold);line-height:1.7;margin-bottom:10px">
+      <strong>核心記憶：</strong>真正成熟的人，能穩定自己的語言。真正高維的人，能用語言降低世界熵增。
+    </div>
+    <button class="btn-main" onclick="resetQuiz()">再測一次</button>
+    <button class="btn-sec" onclick="G('convert')">去試試 AI 轉換</button>`;
+}
+
+function resetQuiz(){quizState={cur:0,score:0,done:false,answered:[]};renderQuiz();}
+
+init();
+</script>
+</body>
+</html>
