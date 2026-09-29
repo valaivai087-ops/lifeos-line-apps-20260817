@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生命系統健康診斷｜十大系統精準修復</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Microsoft JhengHei','PingFang TC','Noto Sans TC',sans-serif;background:#F5F0E8;min-height:100vh;padding:1rem;}
+.wrapper{max-width:780px;margin:0 auto;}
+.hero{background:linear-gradient(135deg,#0D1B2A 0%,#1B2D44 50%,#0D1B2A 100%);padding:2rem 2rem 1.5rem;text-align:center;border-radius:16px;margin-bottom:1.5rem;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at center,rgba(184,134,11,0.10) 0%,transparent 60%);pointer-events:none;}
+.hero-title{font-size:24px;font-weight:700;color:#D4A017;letter-spacing:3px;margin-bottom:6px;position:relative;}
+.hero-sub{font-size:13px;color:rgba(212,160,23,0.65);letter-spacing:2px;position:relative;}
+.hero-divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,#B8860B,transparent);margin:12px auto;position:relative;}
+.progress-bar{background:rgba(255,255,255,0.08);border-radius:100px;height:4px;margin:1rem 2rem 0;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#B8860B,#D4A017);border-radius:100px;transition:width 0.5s ease;width:0%;}
+.phase{display:none;padding:0;}
+.phase.active{display:block;}
+.phase-title{font-size:12px;font-weight:600;color:#888;letter-spacing:1px;margin-bottom:1.25rem;display:flex;align-items:center;gap:8px;text-transform:uppercase;}
+.phase-title::after{content:'';flex:1;height:0.5px;background:#ddd;}
+.systems-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:1.25rem;}
+.sys-card{background:#fff;border:1px solid #e8e4da;border-radius:14px;padding:14px 10px;cursor:pointer;transition:all 0.2s;text-align:center;position:relative;}
+.sys-card:hover{border-color:#B8860B;background:#FFFBF2;transform:translateY(-1px);box-shadow:0 4px 12px rgba(184,134,11,0.12);}
+.sys-card.selected{border:2px solid #B8860B;background:#FFFBF2;}
+.sys-card.selected::after{content:'✓';position:absolute;top:6px;right:8px;width:18px;height:18px;background:#B8860B;border-radius:50%;font-size:11px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.sys-icon{font-size:24px;margin-bottom:6px;display:block;}
+.sys-name{font-size:12px;font-weight:600;color:#1B2D44;}
+.sys-tagline{font-size:11px;color:#888;margin-top:3px;}
+.selection-hint{text-align:center;font-size:12px;color:#aaa;margin-bottom:1rem;}
+.selected-count{display:inline-block;background:rgba(184,134,11,0.12);color:#B8860B;font-size:12px;padding:3px 10px;border-radius:100px;margin-left:6px;font-weight:600;}
+.btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,#B8860B,#D4A017);color:#0D1B2A;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:opacity 0.2s,transform 0.1s;margin-top:0.75rem;}
+.btn-primary:hover{opacity:0.9;transform:translateY(-1px);}
+.btn-primary:active{transform:scale(0.99);}
+.btn-primary:disabled{opacity:0.3;cursor:not-allowed;transform:none;}
+.diag-section{margin-bottom:1.5rem;}
+.diag-sys-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 14px;background:linear-gradient(90deg,rgba(184,134,11,0.08),transparent);border-left:3px solid #B8860B;border-radius:0 10px 10px 0;}
+.diag-sys-name{font-size:15px;font-weight:700;color:#1B2D44;}
+.diag-sys-formula{font-size:11px;color:#888;margin-left:auto;}
+.questions-list{display:flex;flex-direction:column;gap:10px;}
+.q-item{background:#fff;border:1px solid #e8e4da;border-radius:12px;padding:14px;}
+.q-text{font-size:14px;color:#333;margin-bottom:10px;line-height:1.6;font-weight:500;}
+.q-options{display:flex;gap:8px;flex-wrap:wrap;}
+.q-opt{padding:7px 14px;border:1px solid #ddd;border-radius:100px;font-size:12px;cursor:pointer;color:#666;background:#fff;transition:all 0.15s;font-family:inherit;}
+.q-opt:hover{border-color:#B8860B;color:#B8860B;}
+.q-opt.selected-opt{background:rgba(184,134,11,0.1);border-color:#B8860B;color:#B8860B;font-weight:600;}
+.result-header{text-align:center;padding:1.75rem;background:linear-gradient(135deg,#0D1B2A,#1B2D44);border-radius:16px;margin-bottom:1.5rem;}
+.result-score-ring{width:100px;height:100px;margin:0 auto 1rem;position:relative;}
+.result-score-ring svg{width:100px;height:100px;}
+.result-score-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:700;color:#D4A017;}
+.result-title{font-size:18px;font-weight:700;color:#D4A017;margin-bottom:6px;}
+.result-desc{font-size:13px;color:rgba(212,160,23,0.7);}
+.system-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem;}
+.sys-result-card{background:#fff;border:1px solid #e8e4da;border-radius:14px;padding:14px;}
+.sys-result-label{font-size:11px;color:#888;margin-bottom:4px;display:flex;align-items:center;gap:5px;font-weight:500;}
+.sys-result-bar-wrap{height:5px;background:#f0ece4;border-radius:100px;margin:6px 0;overflow:hidden;}
+.sys-result-bar{height:100%;border-radius:100px;transition:width 1s ease;width:0%;}
+.bar-good{background:#3B6D11;}
+.bar-warn{background:#B8860B;}
+.bar-danger{background:#A32D2D;}
+.sys-result-score{font-size:20px;font-weight:700;color:#1B2D44;}
+.sys-result-status{font-size:11px;margin-top:2px;font-weight:600;}
+.reco-section{margin-bottom:2rem;}
+.reco-sys-header{font-size:14px;font-weight:700;color:#1B2D44;padding:10px 0 8px;border-bottom:1px solid #e8e4da;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.urgency-badge{font-size:10px;padding:3px 10px;border-radius:100px;font-weight:700;}
+.urg-critical{background:rgba(163,45,45,0.1);color:#A32D2D;}
+.urg-important{background:rgba(184,134,11,0.1);color:#B8860B;}
+.urg-support{background:rgba(59,109,17,0.1);color:#3B6D11;}
+.nutrient-cards{display:flex;flex-direction:column;gap:10px;}
+.nutrient-card{background:#fff;border:1px solid #e8e4da;border-radius:14px;overflow:hidden;}
+.nutrient-card-top{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;transition:background 0.15s;}
+.nutrient-card-top:hover{background:#FFFBF2;}
+.nut-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.nut-info{flex:1;min-width:0;}
+.nut-name{font-size:14px;font-weight:700;color:#1B2D44;}
+.nut-mechanism{font-size:12px;color:#888;margin-top:2px;}
+.nut-price-tag{font-size:11px;color:#B8860B;font-weight:700;margin-top:3px;}
+.nut-cta{padding:7px 14px;background:linear-gradient(135deg,#B8860B,#D4A017);color:#0D1B2A;border:none;border-radius:100px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;text-decoration:none;display:inline-block;}
+.expand-hint{font-size:11px;color:#aaa;flex-shrink:0;margin-left:4px;}
+.nutrient-detail{padding:0 14px 14px;display:none;border-top:1px solid #f0ece4;padding-top:12px;}
+.nutrient-detail.open{display:block;}
+.mech-box{background:#F8F4EC;border-radius:10px;padding:12px;margin-bottom:10px;}
+.mech-title{font-size:11px;color:#888;margin-bottom:4px;font-weight:700;letter-spacing:0.5px;}
+.mech-text{font-size:13px;color:#333;line-height:1.7;}
+.why-need{background:rgba(184,134,11,0.06);border-left:3px solid #B8860B;padding:10px 12px;border-radius:0 10px 10px 0;margin-bottom:12px;}
+.why-title{font-size:11px;color:#8B6508;font-weight:700;margin-bottom:3px;}
+.why-text{font-size:13px;color:#333;line-height:1.6;}
+.buy-block{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;background:linear-gradient(135deg,rgba(13,27,42,0.03),rgba(184,134,11,0.06));border-radius:10px;border:1px solid rgba(184,134,11,0.2);}
+.buy-info{flex:1;}
+.buy-product-name{font-size:13px;font-weight:700;color:#1B2D44;margin-bottom:2px;}
+.buy-price{font-size:18px;font-weight:700;color:#B8860B;}
+.buy-spec{font-size:11px;color:#888;margin-top:2px;}
+.buy-store{font-size:11px;color:#B8860B;margin-top:2px;font-weight:600;}
+.btn-buy{padding:12px 20px;background:linear-gradient(135deg,#B8860B,#D4A017);color:#0D1B2A;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;transition:opacity 0.2s;text-decoration:none;display:inline-block;white-space:nowrap;flex-shrink:0;font-family:inherit;}
+.btn-buy:hover{opacity:0.85;}
+.restart-btn{display:block;width:100%;padding:14px;background:#fff;border:1px solid #ddd;border-radius:12px;font-size:14px;color:#888;cursor:pointer;text-align:center;margin-top:1.5rem;transition:all 0.2s;font-family:inherit;}
+.restart-btn:hover{border-color:#B8860B;color:#B8860B;}
+.nav-btns{display:flex;gap:10px;margin-top:1.25rem;}
+.btn-back{flex:1;padding:14px;background:#fff;border:1px solid #ddd;border-radius:12px;font-size:14px;color:#888;cursor:pointer;transition:all 0.2s;font-family:inherit;}
+.btn-back:hover{border-color:#B8860B;color:#B8860B;}
+.footer-note{text-align:center;font-size:11px;color:#bbb;margin-top:2rem;padding:1rem;line-height:1.8;}
+@media(max-width:480px){
+  .systems-grid{grid-template-columns:repeat(2,1fr);}
+  .system-result-grid{grid-template-columns:1fr 1fr;}
+  .hero-title{font-size:19px;}
+  .buy-block{flex-direction:column;align-items:flex-start;}
+  .btn-buy{width:100%;text-align:center;}
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="hero">
+    <div class="hero-title">生命系統健康診斷</div>
+    <div class="hero-divider"></div>
+    <div class="hero-sub">十大系統 · 精準評估 · 靶向修復</div>
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+  </div>
+
+  <div class="phase active" id="phase-select">
+    <div class="phase-title">選擇你想評估的系統 <span class="selected-count" id="sel-count">0 / 10</span></div>
+    <div class="selection-hint">可多選，建議選 2–4 個最困擾的系統</div>
+    <div class="systems-grid" id="sys-grid"></div>
+    <button class="btn-primary" id="btn-to-diag" disabled>開始精準診斷 →</button>
+  </div>
+
+  <div class="phase" id="phase-diag">
+    <div id="diag-content"></div>
+    <div class="nav-btns">
+      <button class="btn-back" onclick="goPhase('select')">← 重新選擇</button>
+      <button class="btn-primary" style="flex:2" onclick="showResult()">查看我的修復方案 →</button>
+    </div>
+  </div>
+
+  <div class="phase" id="phase-result">
+    <div id="result-content"></div>
+    <button class="restart-btn" onclick="restart()">↺ 重新評估</button>
+  </div>
+
+  <div class="footer-note">
+    資訊僅供參考，不能用來診斷和治療任何形式的身體不適。<br>
+    如有不適，請線下及時就醫。<br>
+    購買連結：7-11 賣貨便 · 安全取貨付款
+  </div>
+</div>
+
+<script>
+const SHOP_URL='https://myship.7-11.com.tw/general/detail/GM2407210007294';
+
+const SYSTEMS=[
+  {id:'gut',icon:'🫁',name:'腸道系統',tagline:'吸收資訊',formula:'菌叢 × 腸壁 × 黏膜'},
+  {id:'mito',icon:'⚡',name:'粒線體系統',tagline:'產生能量',formula:'ATP × 電子傳遞鏈'},
+  {id:'hormone',icon:'🌀',name:'荷爾蒙系統',tagline:'資源調度',formula:'平衡 × 轉換 × 敏感性'},
+  {id:'neuro',icon:'🧠',name:'神經系統',tagline:'預測控制',formula:'傳導 × 保護 × 修復'},
+  {id:'immune',icon:'🛡️',name:'免疫系統',tagline:'邊界管理',formula:'調節 × 活化 × 平衡'},
+  {id:'detox',icon:'♻️',name:'解毒系統',tagline:'清除垃圾',formula:'肝臟 × 膽汁 × 排出'},
+  {id:'sugar',icon:'🍀',name:'血糖系統',tagline:'能量分配',formula:'穩定 × 敏感 × 利用'},
+  {id:'sleep',icon:'🌙',name:'睡眠系統',tagline:'系統重開機',formula:'訊號 × 放鬆 × 週期'},
+  {id:'inflam',icon:'🔥',name:'發炎系統',tagline:'危機警報',formula:'抑制 × 平衡 × 修復'},
+  {id:'repair',icon:'🔧',name:'修復系統',tagline:'重建升級',formula:'材料 × 生成 × 再生'},
+];
+
+const QUESTIONS={
+  gut:[
+    {q:'飯後是否常感到腹脹、消化不適？',opts:['從不','偶爾','經常','幾乎每次']},
+    {q:'大便型態如何？',opts:['成形正常','偶爾稀軟','常常稀軟或便秘','腹瀉便秘交替']},
+    {q:'是否有食物不耐受或過敏反應？',opts:['沒有','輕微','中等','嚴重影響生活']},
+    {q:'是否感覺「漏腸」症狀（皮膚問題、關節炎、情緒波動）？',opts:['沒有感覺','偶有聯繫','懷疑有關','幾乎確定']},
+  ],
+  mito:[
+    {q:'早上起床後的精力狀態？',opts:['充沛','尚可','疲憊','非常疲憊']},
+    {q:'下午是否有明顯的精力低谷？',opts:['少見','偶爾','常常','每天都有']},
+    {q:'運動後的恢復速度？',opts:['很快','正常','需2-3天','恢復很慢']},
+    {q:'是否有長期疲勞、怎麼睡都睡不飽？',opts:['沒有','輕微','中等','非常明顯']},
+  ],
+  hormone:[
+    {q:'月經週期（女性）/ 性功能（男性）狀況？',opts:['正常','輕微異常','明顯異常','嚴重紊亂']},
+    {q:'是否常感到情緒波動、焦躁？',opts:['少見','偶爾','頻繁','幾乎每天']},
+    {q:'體重是否容易莫名增加（尤其腰腹）？',opts:['不會','偶爾','容易','很容易']},
+    {q:'皮膚、頭髮狀況？',opts:['良好','略乾燥','乾燥脫髮','明顯問題']},
+  ],
+  neuro:[
+    {q:'記憶力和專注力如何？',opts:['清晰','偶有遺忘','明顯下降','很差']},
+    {q:'是否常感到焦慮或腦子停不下來？',opts:['很少','偶爾','頻繁','幾乎持續']},
+    {q:'情緒穩定性？',opts:['穩定','有波動','容易崩潰','非常不穩定']},
+    {q:'是否有頭痛、偏頭痛的困擾？',opts:['沒有','偶爾','每週一次','幾乎每天']},
+  ],
+  immune:[
+    {q:'每年感冒的頻率？',opts:['1次以下','2-3次','4-5次','5次以上']},
+    {q:'是否有過敏問題（皮膚、鼻子、眼睛）？',opts:['沒有','輕微季節性','中等','嚴重影響']},
+    {q:'傷口癒合的速度？',opts:['很快','正常','偏慢','很慢']},
+    {q:'是否常感覺「低度發炎」（關節痛、長期小病）？',opts:['沒有','偶爾','常常','幾乎持續']},
+  ],
+  detox:[
+    {q:'是否有口臭、體味偏重的問題？',opts:['沒有','輕微','中等','明顯']},
+    {q:'皮膚狀況（痘痘、濕疹、斑點）？',opts:['清爽','偶有','常有','持續有問題']},
+    {q:'飲酒後特別難受或需要很長時間恢復？',opts:['恢復快','正常','恢復慢','非常難受']},
+    {q:'是否長期暴露於化學物質、重金屬環境？',opts:['幾乎沒有','偶爾','定期暴露','長期暴露']},
+  ],
+  sugar:[
+    {q:'飯後或下午是否有明顯嗜睡、昏沉？',opts:['很少','偶爾','常常','幾乎每次']},
+    {q:'饑餓時是否出現手抖、情緒暴躁？',opts:['不會','偶爾','常常','非常明顯']},
+    {q:'對甜食的渴望程度？',opts:['沒有特別','偶爾渴望','強烈渴望','幾乎無法自制']},
+    {q:'腰圍是否有增加趨勢？',opts:['沒有','輕微','明顯','持續增加']},
+  ],
+  sleep:[
+    {q:'入睡需要多久？',opts:['10分鐘內','30分鐘內','超過30分鐘','很難入睡']},
+    {q:'睡眠中是否容易驚醒？',opts:['幾乎不','偶爾','常常','幾乎每晚']},
+    {q:'早晨醒來的感覺？',opts:['精神飽滿','尚可','疲憊','非常疲憊']},
+    {q:'是否有夢多、睡眠淺的問題？',opts:['少有','偶爾','頻繁','嚴重影響']},
+  ],
+  inflam:[
+    {q:'是否有關節疼痛或僵硬？',opts:['沒有','早晨偶有','常有','持續疼痛']},
+    {q:'是否有長期皮膚發紅、紅疹問題？',opts:['沒有','偶爾','常有','持續有']},
+    {q:'身體是否常感到「說不清的不舒服」？',opts:['很少','偶爾','常常','幾乎持續']},
+    {q:'消化道是否有灼熱感或慢性不適？',opts:['沒有','偶爾','頻繁','每天都有']},
+  ],
+  repair:[
+    {q:'傷口或手術後的恢復速度？',opts:['很快','正常','偏慢','非常慢']},
+    {q:'皮膚彈性和老化速度？',opts:['良好','正常','輕微老化','明顯老化']},
+    {q:'肌肉恢復能力（運動後疼痛）？',opts:['恢復快','正常','偏慢','非常慢']},
+    {q:'是否有骨質、關節方面的隱憂？',opts:['沒有','輕微擔心','有問題','嚴重問題']},
+  ],
+};
+
+const NUTRIENTS={
+  gut:[
+    {name:'酶菌醣體',icon:'🌿',iconBg:'rgba(59,109,17,0.12)',mechanism:'菌叢平衡',detail:'整合全方位益生菌+Beta多醣體+波羅酵素+茶胺酸，直接重建腸道菌相平衡。腸道菌叢失衡時，免疫反應紊亂、毒素滲漏，整個系統陷入慢性發炎惡性循環。同時覆蓋神經、免疫、睡眠三個系統。',why:'你的症狀顯示腸道菌叢可能已嚴重失衡，這是一切修復的根基。一罐搞定腸道+神經+睡眠+免疫四個系統的基礎修復。',price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+    {name:'丁酸鈉複合包',icon:'🧱',iconBg:'rgba(184,134,11,0.12)',mechanism:'腸壁修復',detail:'丁酸鈉+亞麻仁籽渣+孢子益生菌三合一複合包。丁酸是腸道細胞的直接燃料，腸壁細胞每3-5天完全更新一次，缺乏丁酸就像蓋房子沒有水泥——牆壁天天在崩塌。',why:'腸壁持續受損是腸漏的根本原因，丁酸鈉是最直接的修復材料，搭配孢子益生菌讓修復更完整。',price:'NT$890',spec:'一包6克 / 一袋30包'},
+    {name:'5R腸胃營養素',icon:'⚙️',iconBg:'rgba(24,95,165,0.12)',mechanism:'腸黏膜再生',detail:'完整的五步驟腸道修復協議：Remove、Replace、Reinoculate、Repair、Rebalance。系統性重建腸道完整性，從根本解決滲漏問題。',why:'零散補充遠不如系統修復。5R方案讓每一步都精準到位，是腸道修復最完整的方案。',price:'NT$750',spec:'一包6g / 30包一袋'},
+    {name:'孢子益生菌',icon:'🌱',iconBg:'rgba(59,109,17,0.12)',mechanism:'養菌產丁酸',detail:'孢子型益生菌能耐受胃酸，完整到達腸道定殖。加亞麻仁渣作為益菌生，在腸道中產生丁酸，同時餵養有益菌，形成良性循環。',why:'普通益生菌90%被胃酸消滅，孢子型是真正到達腸道的關鍵。',price:'NT$650',spec:'一袋30包 一包6克'},
+  ],
+  mito:[
+    {name:'Q10（10:1）',icon:'⚡',iconBg:'rgba(184,134,11,0.12)',mechanism:'電子傳遞鏈',detail:'輔酶Q10是電子傳遞鏈的核心組件，在粒線體內膜傳遞電子，驅動ATP合成。30歲後體內Q10大幅下降，這正是中年後精力直線下滑的生化原因。採用10:1高濃縮萃取。',why:'沒有Q10，粒線體就像沒有火花塞的引擎——空轉、耗油、沒力。',price:'NT$580',spec:'膠囊 一瓶150粒'},
+    {name:'NMN複方',icon:'🔋',iconBg:'rgba(163,45,45,0.12)',mechanism:'NAD+生成',detail:'NMN是NAD+的直接前體。NAD+是細胞能量代謝的核心輔酶，也是長壽基因SIRT的啟動開關。研究顯示NMN補充能讓粒線體功能年輕化。',why:'NAD+隨年齡遞減是老化的核心機制，NMN是目前最直接的逆轉方案。',price:'NT$570',spec:'膠囊 一瓶150粒'},
+    {name:'甘氨酸鎂複方粉包',icon:'🔩',iconBg:'rgba(24,95,165,0.12)',mechanism:'ATP生成',detail:'ATP必須與鎂結合才能作為細胞的能量貨幣使用。沒有鎂，ATP形同廢紙。甘氨酸鎂是吸收率最高的形式，現代人普遍缺鎂，這是慢性疲勞的隱形根源。',why:'缺鎂讓ATP無法被利用——你在發電，但電流被切斷了。',price:'NT$1,350',spec:'粉包 一袋30包'},
+    {name:'美寶',icon:'✨',iconBg:'rgba(83,74,183,0.12)',mechanism:'SIRT活化',detail:'透過活化Sirtuin家族蛋白，啟動粒線體新生信號，同時整合白藜蘆醇抗發炎訊號。SIRT1/SIRT3是粒線體品質管控的「總工程師」，促進受損粒線體清除與新粒線體生成。',why:'不只補充能量，而是讓粒線體自我更新——治本而非治標。',price:'NT$550',spec:'膠囊 一瓶約150粒'},
+  ],
+  hormone:[
+    {name:'D3（5000IU）',icon:'☀️',iconBg:'rgba(184,134,11,0.12)',mechanism:'荷爾蒙前體',detail:'維生素D本質上是一種荷爾蒙，是合成多種性荷爾蒙的原料。5000IU高劑量適合明顯缺乏者。研究顯示70%現代人缺乏維生素D，這直接影響睪固酮、雌激素的合成。',why:'荷爾蒙工廠缺原料，再多努力也生產不出成品。',price:'NT$580',spec:'錠劑 約320粒'},
+    {name:'蝦紅素+硒複方',icon:'🔬',iconBg:'rgba(59,109,17,0.12)',mechanism:'甲狀腺轉換',detail:'硒是甲狀腺脫碘酶的核心輔因子，負責將T4轉換為活性T3。蝦紅素提供強效抗氧化保護。缺硒時T4大量堆積卻無法轉換，造成「檢查正常但症狀嚴重」的甲狀腺問題。',why:'有原料沒有轉換酶，等於有貨物沒有工廠——全部積壓無法使用。',price:'NT$530',spec:'錠劑 約320粒'},
+    {name:'刺五加',icon:'🌿',iconBg:'rgba(59,109,17,0.12)',mechanism:'降皮質醇',detail:'慢性壓力使皮質醇長期偏高，直接抑制性荷爾蒙合成（皮質醇與性荷爾蒙搶奪同一原料）。刺五加作為適應原，幫助HPA軸恢復正常節律。',why:'壓力是荷爾蒙失衡的頭號殺手，從源頭降壓才能讓系統恢復。',price:'NT$495',spec:'膠囊 一瓶150粒'},
+    {name:'加強B群',icon:'🔵',iconBg:'rgba(24,95,165,0.12)',mechanism:'神經荷爾蒙',detail:'B6是多巴胺、血清素、GABA等神經荷爾蒙合成的關鍵輔因子。加強B群配方確保每一種B維生素的協同作用，從神經傳導到荷爾蒙代謝全面支持。',why:'B群缺乏是現代人最普遍的營養缺口，影響從情緒到荷爾蒙的每個環節。',price:'NT$520',spec:'膠囊 一瓶150粒'},
+  ],
+  neuro:[
+    {name:'酶菌醣體（茶胺酸）',icon:'🍵',iconBg:'rgba(59,109,17,0.12)',mechanism:'提升α波',detail:'茶胺酸能增加大腦α波活動——這是冥想狀態、創意流動、專注放鬆的腦波。不讓你昏昏欲睡，而是進入「清醒的平靜」狀態。同時整合益生菌、酵素、Beta多醣體。',why:'α波是高效工作、深度學習的最佳腦波狀態，不是藥物而是天然調頻。',price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+    {name:'GABA',icon:'🌊',iconBg:'rgba(83,74,183,0.12)',mechanism:'抑制神經興奮',detail:'GABA是大腦的主要抑制性神經傳導物質。現代人過度刺激導致神經系統持續過載，GABA幫助啟動「煞車系統」，讓大腦從高速模式切換到休養模式。',why:'神經系統一直踩油門不踩煞車，遲早燒壞引擎。',price:'NT$540',spec:'膠囊 一瓶130粒'},
+    {name:'銀杏複方（色氨酸）',icon:'🍂',iconBg:'rgba(184,134,11,0.12)',mechanism:'血清素原料',detail:'含銀杏250mg、巴西蘑菇50mg、色氨酸95mg、防風50mg、玉米黃質5mg。色胺酸是血清素的直接原料，銀杏同時改善腦部血液循環，讓神經傳導物質能有效到達目標區域。',why:'血清素不足是抑鬱、焦慮、強迫思維的生化根源，從原料補起才是根本解。',price:'NT$510',spec:'膠囊 一瓶150粒'},
+    {name:'神經營養素（B1+B3+B6）',icon:'🔵',iconBg:'rgba(24,95,165,0.12)',mechanism:'神經傳導',detail:'針對神經系統的專屬B群配方，使用不潮紅的B3形式。B1負責神經能量代謝，B3支持髓鞘維護，B6是神經傳導物質合成的核心輔因子，三者協同修復神經。',why:'神經系統的每一個傳導環節都需要B群，三合一更完整。',price:'NT$540',spec:'膠囊 一瓶130粒'},
+  ],
+  immune:[
+    {name:'D3（5000IU）',icon:'☀️',iconBg:'rgba(184,134,11,0.12)',mechanism:'免疫調節',detail:'維生素D是免疫系統的主要調節器，同時調控先天免疫和適應性免疫。缺乏時免疫系統要麼「反應過激」（過敏、自體免疫）要麼「反應遲鈍」（容易感染）。',why:'免疫失衡的根源往往是維生素D不足，這是最被低估的免疫關鍵。',price:'NT$580',spec:'錠劑 約320粒'},
+    {name:'酶菌醣體（β葡聚醣）',icon:'🌿',iconBg:'rgba(59,109,17,0.12)',mechanism:'巨噬細胞活化',detail:'β葡聚醣是天然的免疫調節多醣，直接與巨噬細胞受體結合，增強第一線免疫反應。不是刺激免疫過度活化，而是「訓練」免疫系統更精準識別威脅。',why:'免疫系統需要訓練，不是盲目強化，而是讓它更聰明、更精準。',price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+    {name:'丁酸鈉複合包',icon:'🧱',iconBg:'rgba(184,134,11,0.12)',mechanism:'免疫平衡',detail:'70%的免疫細胞存在腸道，丁酸鈉不僅修復腸壁，更直接調控腸道免疫細胞（Treg細胞），防止免疫系統過度反應造成自體免疫問題。',why:'腸道是免疫系統的總部，修好腸道就是修好免疫的根基。',price:'NT$890',spec:'一包6克 / 一袋30包'},
+    {name:'NAC複方',icon:'🔄',iconBg:'rgba(59,109,17,0.12)',mechanism:'降氧化壓力',detail:'NAC複方降低氧化壓力，保護免疫細胞免受自由基損傷，同時作為穀胱甘肽前體，全面強化細胞層面的抗氧化防禦系統。',why:'氧化壓力過高是免疫細胞功能下降的主因，NAC是最直接的保護盾。',price:'NT$530',spec:'膠囊 一瓶約150粒'},
+  ],
+  detox:[
+    {name:'NAC複方',icon:'🔄',iconBg:'rgba(59,109,17,0.12)',mechanism:'穀胱甘肽前體',detail:'NAC是合成「解毒之王」穀胱甘肽的直接原料。穀胱甘肽負責清除重金屬、藥物代謝物、活性氧。醫院用NAC治療嚴重肝臟中毒——它的解毒威力獲得醫學界認可。',why:'穀胱甘肽是人體最強的內源性抗氧化解毒系統，NAC是啟動它的鑰匙。',price:'NT$530',spec:'膠囊 一瓶約150粒'},
+    {name:'肝寶',icon:'🌿',iconBg:'rgba(59,109,17,0.12)',mechanism:'解毒主力',detail:'複方草本配方，整合多種支持肝臟兩階段解毒（Phase I + Phase II）的成分。肝臟是人體最大的解毒工廠，每天處理超過500種化學物質，需要全面支持。',why:'解毒不只靠單一成分，肝寶提供肝臟需要的完整解毒工具箱。',price:'NT$550',spec:'膠囊 一瓶約150粒'},
+    {name:'大補王（α硫辛酸）',icon:'⚗️',iconBg:'rgba(83,74,183,0.12)',mechanism:'重金屬結合',detail:'α硫辛酸是少數能同時溶於水和油脂的抗氧化劑，能穿越血腦屏障螯合重金屬，同時循環再生其他抗氧化劑，是解毒系統的「超級充電器」。',why:'重金屬積累是現代人最隱性的健康威脅，α硫辛酸是最強的天然螯合劑。',price:'NT$1,560',spec:'粉包 一袋20包'},
+    {name:'消化全酶（牛磺酸）',icon:'💧',iconBg:'rgba(24,95,165,0.12)',mechanism:'膽汁流動',detail:'牛磺酸是膽汁酸的結合物，促進膽汁分泌和流動。膽汁是脂溶性毒素的排出通道，膽汁流動不暢等於解毒管道阻塞。飯後食用，有B3潮紅反應請注意。',why:'很多人忽視膽汁在解毒中的作用，膽汁是毒素排出的最大高速公路。',price:'NT$870',spec:'粉包 一包6克 / 一袋30包'},
+  ],
+  sugar:[
+    {name:'苦瓜皂甘複方',icon:'🥬',iconBg:'rgba(59,109,17,0.12)',mechanism:'降低血糖',detail:'苦瓜皂甘結構類似胰島素，能與胰島素受體結合，模仿胰島素的降糖作用。多項研究顯示能有效改善空腹血糖和餐後血糖峰值。',why:'天然的胰島素模仿物，在不刺激胰臟的前提下幫助細胞攝取葡萄糖。',price:'NT$540',spec:'膠囊 一瓶約150粒'},
+    {name:'黃連素（小蘗鹼）',icon:'🟡',iconBg:'rgba(184,134,11,0.12)',mechanism:'AMPK活化',detail:'小蘗鹼通過激活AMPK（細胞能量感測器），實現與二甲雙胍（糖尿病藥物）相似的機制。研究顯示對血糖、血脂、體重三重改善，被稱為「天然二甲雙胍」。',why:'AMPK是代謝健康的總開關，小蘗鹼是最天然有效的AMPK活化劑。',price:'NT$560',spec:'膠囊 一瓶約150粒'},
+    {name:'美寶（α硫辛酸）',icon:'✨',iconBg:'rgba(83,74,183,0.12)',mechanism:'提升敏感性',detail:'α硫辛酸能直接提升胰島素受體的敏感性，讓細胞對胰島素訊號反應更靈敏。同時作為強力抗氧化劑，保護胰島β細胞免受氧化損傷。',why:'胰島素阻抗本質是受體失靈，α硫辛酸是修復受體敏感性最強的天然成分。',price:'NT$550',spec:'膠囊 一瓶約150粒'},
+    {name:'脾胃健',icon:'🍂',iconBg:'rgba(163,45,45,0.12)',mechanism:'降胰島素阻抗',detail:'含肉桂萃取等成分，能模擬胰島素活性，同時增加GLUT4（葡萄糖轉運蛋白）表達，幫助肌肉細胞更有效攝取葡萄糖而非儲存為脂肪。',why:'讓葡萄糖進入肌肉而非儲存為脂肪——這才是血糖管理的正確方向。',price:'NT$530',spec:'粉包 一包6克 / 30包一袋'},
+  ],
+  sleep:[
+    {name:'甘氨酸鎂複方粉包',icon:'🔩',iconBg:'rgba(24,95,165,0.12)',mechanism:'放鬆神經',detail:'鎂通過阻斷NMDA受體減少神經興奮，同時調節GABA受體促進放鬆。甘氨酸鎂是吸收率最高的形式，甘胺酸本身也有降低核心體溫幫助入睡的作用。',why:'缺鎂是睡眠障礙最被忽視的原因，鎂是最溫和最根本的睡眠修復。',price:'NT$1,350',spec:'粉包 一袋30包'},
+    {name:'粒線寶（5-HTP）',icon:'🔋',iconBg:'rgba(163,45,45,0.12)',mechanism:'褪黑素前驅',detail:'5-HTP是色胺酸→血清素→褪黑激素合成路徑的中間體。補充5-HTP能同時提升血清素（白天情緒穩定）和褪黑激素（夜間睡眠），解決「情緒影響睡眠」的連鎖問題。',why:'解決睡眠問題要追溯到神經傳導物質合成的上游，5-HTP是最精準的切入點。',price:'NT$550',spec:'膠囊 一瓶約150粒'},
+    {name:'酶菌醣體（茶胺酸）',icon:'🍵',iconBg:'rgba(59,109,17,0.12)',mechanism:'放鬆腦波',detail:'茶胺酸促進α波增加，這種「清醒的放鬆」狀態是入睡前大腦的理想準備狀態。幫助大腦從β波（焦慮思考）切換到α波（平靜放鬆），自然引導入睡。',why:'很多人睡不著不是不累，而是大腦頻率沒有切換——茶胺酸幫你切換模式。',price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+    {name:'GABA',icon:'🌊',iconBg:'rgba(83,74,183,0.12)',mechanism:'降低警報',detail:'GABA是大腦主要的抑制性神經傳導物質，直接降低神經過度活化，關閉夜晚的「警報系統」。讓緊繃的大腦真正進入休息模式。',why:'睡不著往往不是不累，而是大腦的警報系統沒有關閉。',price:'NT$540',spec:'膠囊 一瓶130粒'},
+  ],
+  inflam:[
+    {name:'薑黃素+胡椒鹼',icon:'🟠',iconBg:'rgba(184,134,11,0.12)',mechanism:'NF-kB抑制',detail:'NF-kB是「發炎總開關」，幾乎所有慢性病的炎症反應都通過NF-kB路徑。薑黃素是目前研究最深入的天然NF-kB抑制劑，搭配胡椒鹼提升吸收率20倍。',why:'關掉發炎總開關，才能從根本停止全身性炎症的惡性循環。',price:'NT$620',spec:'膠囊 一瓶'},
+    {name:'腸寶（槲皮素）',icon:'🍎',iconBg:'rgba(59,109,17,0.12)',mechanism:'肥大細胞穩定',detail:'槲皮素穩定肥大細胞，防止組織胺和其他炎性介質的過度釋放，同時抑制COX-2酶。對過敏引發的炎症有特別強的調節作用，降低腸漏同時控制發炎。',why:'過敏性發炎是現代人最常見的炎症形式，槲皮素是天然的抗組織胺發炎調節劑。',price:'NT$485',spec:'膠囊 一瓶150粒'},
+    {name:'EGCG複方',icon:'🍵',iconBg:'rgba(59,109,17,0.12)',mechanism:'抗氧化',detail:'茶多酚EGCG+積血草複方，強效清除引發炎症的活性氧自由基。EGCG是目前研究最廣泛的植物多酚，兼具抗氧化、抗炎、抗菌多重作用。',why:'氧化壓力是慢性發炎的底層驅動力，EGCG從根源攔截發炎訊號。',price:'NT$560',spec:'膠囊 一瓶150粒'},
+    {name:'美寶（白藜蘆醇）',icon:'✨',iconBg:'rgba(83,74,183,0.12)',mechanism:'抗發炎訊號',detail:'白藜蘆醇通過SIRT1/AMPK路徑調控炎症信號，同時具有強大的抗氧化作用，清除引發炎症的活性氧自由基，在葡萄皮中含量豐富但需濃縮萃取才達有效劑量。',why:'在訊號源頭調控炎症，比只是阻斷症狀更根本、更有效。',price:'NT$550',spec:'膠囊 一瓶約150粒'},
+  ],
+  repair:[
+    {name:'透明質酸鈉',icon:'💧',iconBg:'rgba(24,95,165,0.12)',mechanism:'組織保水',detail:'透明質酸是細胞外基質的主要成分，能結合自身重量1000倍的水分。關節液、皮膚、眼球都依賴透明質酸維持功能。修復組織時，提供充足的透明質酸是保持組織彈性和功能的關鍵。',why:'組織修復不只是補充蛋白質，保水性是讓新生組織正常運作的隱形支柱。',price:'NT$530',spec:'錠劑 約320粒'},
+    {name:'酵母鋅+核酸',icon:'🔩',iconBg:'rgba(59,109,17,0.12)',mechanism:'傷口修復',detail:'鋅參與超過300種酶的功能，在傷口修復中特別關鍵：調節炎症反應、促進細胞增殖、加速上皮化。核酸提供DNA合成原料，雙重加速修復。',why:'沒有鋅，修復工程就像工人拿到圖紙但沒有工具——什麼都做不了。',price:'NT$550',spec:'膠囊 一瓶'},
+    {name:'5R腸胃營養素',icon:'⚙️',iconBg:'rgba(24,95,165,0.12)',mechanism:'細胞再生',detail:'系統性的細胞再生支持方案，涵蓋細胞膜修復、粒線體功能恢復、DNA修復支持。不只是補充原料，而是啟動細胞的自我修復程序。',why:'真正的修復不是被動補充，而是主動啟動細胞的再生機制。',price:'NT$750',spec:'一包6g / 30包一袋'},
+    {name:'潤節晶',icon:'🦴',iconBg:'rgba(24,95,165,0.12)',mechanism:'結締組織修復',detail:'針對關節、韌帶、軟骨等結締組織的修復配方，提供膠原蛋白合成所需的關鍵營養素，同時支持透明質酸的生成，維持關節液的黏度和潤滑功能。',why:'關節和結締組織的修復需要長期穩定的營養支持，潤節晶是最直接的靶向方案。',price:'NT$580',spec:'膠囊 一瓶150粒'},
+  ],
+};
+
+let selectedSystems=[],diagAnswers={},currentPhase='select';
+
+function initGrid(){
+  const grid=document.getElementById('sys-grid');
+  SYSTEMS.forEach(sys=>{
+    const card=document.createElement('div');
+    card.className='sys-card';card.dataset.id=sys.id;
+    card.innerHTML=`<span class="sys-icon">${sys.icon}</span><div class="sys-name">${sys.name}</div><div class="sys-tagline">${sys.tagline}</div>`;
+    card.onclick=()=>toggleSystem(sys.id,card);
+    grid.appendChild(card);
+  });
+}
+
+function toggleSystem(id,card){
+  const idx=selectedSystems.indexOf(id);
+  if(idx===-1){selectedSystems.push(id);card.classList.add('selected');}
+  else{selectedSystems.splice(idx,1);card.classList.remove('selected');}
+  document.getElementById('sel-count').textContent=selectedSystems.length+' / 10';
+  document.getElementById('btn-to-diag').disabled=selectedSystems.length===0;
+  updateProgress();
+}
+
+function updateProgress(){
+  const pct=currentPhase==='select'?10:currentPhase==='diag'?50:100;
+  document.getElementById('progress').style.width=pct+'%';
+}
+
+function goPhase(phase){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.getElementById('phase-'+phase).classList.add('active');
+  currentPhase=phase;updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.getElementById('btn-to-diag').onclick=()=>{buildDiagForm();goPhase('diag');};
+
+function buildDiagForm(){
+  const container=document.getElementById('diag-content');container.innerHTML='';
+  selectedSystems.forEach(sysId=>{
+    const sys=SYSTEMS.find(s=>s.id===sysId);
+    const qs=QUESTIONS[sysId];
+    const sec=document.createElement('div');sec.className='diag-section';
+    sec.innerHTML=`<div class="diag-sys-header"><span style="font-size:20px">${sys.icon}</span><span class="diag-sys-name">${sys.name}</span><span class="diag-sys-formula">${sys.formula}</span></div>`;
+    const qList=document.createElement('div');qList.className='questions-list';
+    qs.forEach((q,qi)=>{
+      const key=sysId+'_'+qi;
+      const item=document.createElement('div');item.className='q-item';
+      const opts=q.opts.map((opt,oi)=>`<button class="q-opt" onclick="selectOpt(this,'${key}',${oi})">${opt}</button>`).join('');
+      item.innerHTML=`<div class="q-text">${q.q}</div><div class="q-options">${opts}</div>`;
+      qList.appendChild(item);
+    });
+    sec.appendChild(qList);container.appendChild(sec);
+  });
+}
+
+function selectOpt(btn,key,val){
+  btn.closest('.q-options').querySelectorAll('.q-opt').forEach(b=>b.classList.remove('selected-opt'));
+  btn.classList.add('selected-opt');diagAnswers[key]=val;
+}
+
+function calcScore(sysId){
+  const qs=QUESTIONS[sysId];let total=0,count=0;
+  qs.forEach((q,qi)=>{const key=sysId+'_'+qi;if(diagAnswers[key]!==undefined){total+=diagAnswers[key];count++;}});
+  if(count===0)return 75;
+  return Math.round(100-(total/count/3)*75);
+}
+
+function showResult(){
+  const container=document.getElementById('result-content');container.innerHTML='';
+  const scores=selectedSystems.map(id=>({id,score:calcScore(id)}));
+  const avgScore=Math.round(scores.reduce((a,b)=>a+b.score,0)/scores.length);
+  const dashOffset=Math.round(226*(1-avgScore/100));
+  const scoreColor=avgScore>=75?'#3B6D11':avgScore>=50?'#B8860B':'#A32D2D';
+  const scoreLabel=avgScore>=75?'狀態良好':avgScore>=50?'需要關注':'需要修復';
+  const scoreDesc=avgScore>=75?'整體狀態不錯，以下方案幫你維持巔峰':avgScore>=50?'部分系統出現訊號，及早干預效果最好':'多個系統需要支持，系統性修復方案如下';
+
+  container.innerHTML=`
+    <div class="result-header">
+      <div class="result-score-ring">
+        <svg viewBox="0 0 90 90"><circle cx="45" cy="45" r="36" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6"/><circle cx="45" cy="45" r="36" fill="none" stroke="${scoreColor}" stroke-width="6" stroke-dasharray="226" stroke-dashoffset="${dashOffset}" stroke-linecap="round" transform="rotate(-90 45 45)"/></svg>
+        <div class="result-score-num">${avgScore}</div>
+      </div>
+      <div class="result-title">${scoreLabel}</div>
+      <div class="result-desc">${scoreDesc}</div>
+    </div>
+    <div id="sys-scores"></div>
+    <div id="reco-list"></div>
+  `;
+
+  const grid=document.createElement('div');grid.className='system-result-grid';
+  scores.forEach(({id,score})=>{
+    const sys=SYSTEMS.find(s=>s.id===id);
+    const barClass=score>=75?'bar-good':score>=50?'bar-warn':'bar-danger';
+    const status=score>=75?'✓ 狀態穩定':score>=50?'⚠ 需要關注':'⚡ 優先修復';
+    const statusColor=score>=75?'#3B6D11':score>=50?'#B8860B':'#A32D2D';
+    const card=document.createElement('div');card.className='sys-result-card';
+    card.innerHTML=`<div class="sys-result-label"><span>${sys.icon}</span>${sys.name}</div><div class="sys-result-score">${score}<span style="font-size:13px;color:#999;font-weight:400">/100</span></div><div class="sys-result-bar-wrap"><div class="sys-result-bar ${barClass}" style="width:0%" data-score="${score}"></div></div><div class="sys-result-status" style="color:${statusColor}">${status}</div>`;
+    grid.appendChild(card);
+  });
+  document.getElementById('sys-scores').appendChild(grid);
+
+  const recoContainer=document.getElementById('reco-list');
+  const sortedScores=[...scores].sort((a,b)=>a.score-b.score);
+  sortedScores.forEach(({id,score})=>{
+    const sys=SYSTEMS.find(s=>s.id===id);
+    const nutrients=NUTRIENTS[id]||[];
+    const urgency=score<50?'優先修復':score<75?'重點補充':'日常維持';
+    const urgClass=score<50?'urg-critical':score<75?'urg-important':'urg-support';
+    const sec=document.createElement('div');sec.className='reco-section';
+    sec.innerHTML=`<div class="reco-sys-header"><span>${sys.icon}</span>${sys.name} 修復方案<span class="urgency-badge ${urgClass}">${urgency}</span></div><div class="nutrient-cards"></div>`;
+    const cards=sec.querySelector('.nutrient-cards');
+    nutrients.forEach((nut,ni)=>{
+      const cardId=id+'_nut_'+ni;
+      const card=document.createElement('div');card.className='nutrient-card';
+      card.innerHTML=`
+        <div class="nutrient-card-top" onclick="toggleDetail('${cardId}')">
+          <div class="nut-icon" style="background:${nut.iconBg}">${nut.icon}</div>
+          <div class="nut-info">
+            <div class="nut-name">${nut.name}</div>
+            <div class="nut-mechanism">${nut.mechanism}</div>
+            <div class="nut-price-tag">${nut.price} · ${nut.spec}</div>
+          </div>
+          <span class="expand-hint">▾</span>
+        </div>
+        <div class="nutrient-detail" id="${cardId}">
+          <div class="mech-box"><div class="mech-title">作用機制</div><div class="mech-text">${nut.detail}</div></div>
+          <div class="why-need"><div class="why-title">為什麼你現在需要它</div><div class="why-text">${nut.why}</div></div>
+          <div class="buy-block">
+            <div class="buy-info">
+              <div class="buy-product-name">${nut.name}</div>
+              <div class="buy-price">${nut.price}</div>
+              <div class="buy-spec">${nut.spec}</div>
+              <div class="buy-store">📦 7-11 賣貨便取貨付款</div>
+            </div>
+            <a class="btn-buy" href="${SHOP_URL}" target="_blank" rel="noopener">立即購買 →</a>
+          </div>
+        </div>`;
+      cards.appendChild(card);
+    });
+    recoContainer.appendChild(sec);
+  });
+
+  goPhase('result');
+  setTimeout(()=>{
+    document.querySelectorAll('.sys-result-bar').forEach(bar=>{
+      bar.style.width=bar.dataset.score+'%';
+    });
+  },300);
+}
+
+function toggleDetail(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('open');
+  const hint=el.previousElementSibling.querySelector('.expand-hint');
+  if(hint)hint.textContent=el.classList.contains('open')?'▴':'▾';
+}
+
+function restart(){
+  selectedSystems=[];diagAnswers={};
+  document.querySelectorAll('.sys-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('sel-count').textContent='0 / 10';
+  document.getElementById('btn-to-diag').disabled=true;
+  goPhase('select');
+}
+
+initGrid();updateProgress();
+</script>
+</body>
+</html>
