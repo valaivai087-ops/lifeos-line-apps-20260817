@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta charset="utf-8">
+<title>彩虹卡 2.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
+<style>
+:root{
+  --bg:#F2F2F6; --surface:#FFFFFF; --soft:#E9E8F0; --ink:#1B1A22; --muted:#625F76; --line:#DCDAE5;
+  --red:#D1433A; --orange:#E27C2A; --yellow:#E6B527; --green:#37905A; --blue:#2C77C4; --indigo:#4649A8; --violet:#8243B0;
+  --on-dark:#1B1A22; --on-light:#FFFFFF;
+  --serif:"Noto Serif TC","Songti TC",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --latin:"Newsreader",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#121117; --surface:#1B1A22; --soft:#24232D; --ink:#ECEAF3; --muted:#9C99AF; --line:#2E2C39;
+    --red:#E45A50; --orange:#EE9243; --yellow:#EEC445; --green:#4DAA6C; --blue:#4A92DE; --indigo:#7276D8; --violet:#A468D0;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#121117; --surface:#1B1A22; --soft:#24232D; --ink:#ECEAF3; --muted:#9C99AF; --line:#2E2C39;
+  --red:#E45A50; --orange:#EE9243; --yellow:#EEC445; --green:#4DAA6C; --blue:#4A92DE; --indigo:#7276D8; --violet:#A468D0;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.65;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:1120px;margin:0 auto}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* bilingual text */
+.zh{display:block}
+.en{display:block;font-family:var(--latin);color:var(--muted);font-size:.94em;line-height:1.45;margin-top:.15em}
+.en1{display:block;font-family:var(--latin)}
+.ui-en{font-family:var(--latin);color:var(--muted);font-size:.9em}
+.inline .zh,.inline .en,.inline .en1{display:inline}
+.inline .en{margin-left:.4em;margin-top:0}
+
+/* header */
+.spectrum{display:flex;height:8px;margin-inline:-16px}
+.spectrum span{flex:1}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding-block:28px 18px}
+.brand h1{font-family:var(--serif);font-size:clamp(28px,5vw,40px);line-height:1.1;margin:0;letter-spacing:.02em}
+.brand h1 .en1,.brand h1 .en{font-family:var(--latin);font-weight:600;letter-spacing:0}
+.brand h1 .en{font-size:.55em;color:var(--muted);margin-top:.3em}
+.brand p{margin:6px 0 0;color:var(--muted);font-size:14px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--surface)}
+.seg button{border:0;background:transparent;padding:6px 14px;border-radius:999px;cursor:pointer;font-size:13px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:28px;scrollbar-width:none}
+nav.tabs button{flex:none;border:0;background:none;padding:12px 14px 11px;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);font-size:14px;white-space:nowrap}
+nav.tabs button[aria-current="page"]{color:var(--ink);border-bottom-color:var(--ink);font-weight:500}
+
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 16px;border-radius:8px;cursor:pointer;font-size:14px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg-lb{display:inline-flex;align-items:center;padding:0 6px 0 8px;color:var(--muted)}
+.say{border:0;background:transparent;color:inherit;opacity:.6;cursor:pointer;padding:2px 3px;border-radius:4px;vertical-align:-2px;line-height:0}
+.say:hover,.say.on{opacity:1;background:color-mix(in srgb,currentColor 12%,transparent)}
+.say.on{color:var(--blue)}
+.face-head .say.on{color:inherit}
+.read-all{display:inline-flex;align-items:center;gap:6px;margin-top:12px;border:1px solid color-mix(in srgb,var(--on) 45%,transparent);background:transparent;color:var(--on);border-radius:999px;padding:4px 12px 4px 10px;font-size:12.5px;cursor:pointer}
+.read-all .ui-en{color:inherit;opacity:.8}
+.read-all:hover,.read-all.on{background:color-mix(in srgb,var(--on) 16%,transparent)}
+.btn.primary .ui-en,nav.tabs .ui-en,.seg .ui-en,.chip[aria-pressed="true"] .ui-en{color:inherit;opacity:.75}
+.label{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h2.sec{font-family:var(--serif);font-size:22px;margin:0 0 4px;text-wrap:balance}
+h2.sec .en,h2.sec .en1{font-family:var(--latin);font-weight:600}
+.lede{color:var(--muted);margin:0 0 22px;max-width:65ch}
+
+/* card face */
+.face{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.face-head{background:var(--c);color:var(--on);padding:18px 22px 22px}
+.face-head .meta{display:flex;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;opacity:.92}
+.face-head .meta .en,.face-head .meta .ui-en{color:inherit;opacity:.85}
+.face-title{font-family:var(--serif);font-size:clamp(21px,3vw,26px);line-height:1.4;margin:14px 0 0;text-wrap:balance}
+.face-title .en,.face-title .en1{font-family:var(--latin);font-weight:400;color:inherit;opacity:.88;font-size:.8em;margin-top:.35em;font-style:italic}
+.face-title .en1{font-style:normal;font-weight:600;opacity:1;font-size:1em}
+.face-body{padding:18px 22px 22px}
+.bignum{font-family:var(--mono);font-size:44px;line-height:1;font-weight:500;letter-spacing:-.02em}
+
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.steps li{position:relative;padding:0 0 16px 22px}
+.steps li::before{content:"";position:absolute;left:4px;top:8px;width:9px;height:9px;border-radius:50%;background:var(--c)}
+.steps li::after{content:"";position:absolute;left:8px;top:20px;bottom:2px;width:1px;background:var(--line)}
+.steps li:last-child{padding-bottom:0}
+.steps li:last-child::after{display:none}
+.steps li.key::before{box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 25%,transparent)}
+.steps .lb{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.steps p{margin:2px 0 0}
+.steps li.key p .zh{font-weight:500}
+.layer-box{background:var(--soft);border-radius:10px;padding:12px 14px;margin-bottom:18px}
+.layer-box p{margin:2px 0 0}
+.sub-h{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted);margin:0 0 12px;text-transform:uppercase}
+
+/* draw view */
+.draw-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:32px;align-items:start}
+.draw-actions{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.usage{color:var(--muted);font-size:13.5px;margin:14px 2px 0;max-width:60ch}
+.deal{animation:deal .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes deal{from{transform:perspective(900px) rotateY(-70deg) translateY(8px);opacity:.2}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.deal{animation:none}}
+.qs{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:14px;counter-reset:q}
+.qs li{counter-increment:q}
+.qs label{display:flex;gap:10px;align-items:baseline;margin-bottom:6px}
+.qs label::before{content:counter(q);font-family:var(--mono);font-size:12px;color:var(--bg);background:var(--ink);border-radius:50%;width:20px;height:20px;flex:none;display:inline-flex;align-items:center;justify-content:center;transform:translateY(-1px)}
+.qs textarea{width:100%;min-height:54px;resize:vertical;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:8px 10px;font:inherit;font-size:14px}
+.note{color:var(--muted);font-size:12.5px;margin-top:12px}
+
+/* cards view */
+.toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px 5px 8px;cursor:pointer;font-size:13px}
+.chip i{width:12px;height:12px;border-radius:50%;background:var(--c,var(--ink))}
+.chip[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.chip small{font-family:var(--mono);font-size:11px;opacity:.7}
+input[type=search]{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:8px 12px;font:inherit;font-size:14px;width:260px;max-width:100%}
+.count{font-family:var(--mono);font-size:12px;color:var(--muted);margin:6px 0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.tile{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:10px;transition:border-color .15s,transform .15s}
+.tile:hover{border-color:var(--c);transform:translateY(-1px)}
+.t-head{display:flex;align-items:center;gap:10px}
+.sw{background:var(--c);color:var(--on);font-family:var(--mono);font-size:13px;font-weight:500;min-width:38px;height:28px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;padding:0 6px}
+.t-kind{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.05em}
+.t-title{font-family:var(--serif);font-weight:600;font-size:15.5px;line-height:1.5}
+.t-title .en,.t-title .en1{font-family:var(--latin);font-weight:400}
+.t-title .en1{font-size:16px}
+.empty{color:var(--muted);padding:40px 0;text-align:center}
+
+/* os view */
+.os{display:grid;gap:12px}
+.os-row{display:grid;grid-template-columns:120px minmax(0,1fr) auto;gap:20px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 18px 14px 14px}
+.os-block{background:var(--c);color:var(--on);border-radius:10px;height:92px;display:flex;flex-direction:column;justify-content:space-between;padding:10px 12px}
+.os-block b{font-family:var(--serif);font-size:30px;line-height:1}
+.os-block span{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em}
+.os-stmt{font-family:var(--serif);font-size:19px;font-weight:600;margin:0}
+.os-stmt .en,.os-stmt .en1{font-family:var(--latin);font-weight:400}
+.os-themes{margin:6px 0 0;color:var(--muted);font-size:13.5px}
+.os-themes .en{font-size:1em}
+
+/* algo */
+.formula{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:36px}
+.node{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:14px;line-height:1.35}
+.node .en{font-size:.88em}
+.arrow{color:var(--muted);font-family:var(--mono)}
+.loop{counter-reset:s;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.loop li{counter-increment:s;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:baseline;position:relative}
+.loop li::before{content:counter(s,decimal-leading-zero);font-family:var(--mono);font-size:11px;color:var(--muted)}
+.loop li.hot{border-color:var(--ink)}
+.loop li.tail{background:var(--soft)}
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin:14px 0 0;color:var(--muted);font-size:12.5px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:14px;border-radius:4px;border:1px solid var(--line);background:var(--surface)}
+.legend i.hot{border-color:var(--ink)}
+.legend i.tail{background:var(--soft)}
+
+/* definition */
+.def{max-width:760px}
+.nots{list-style:none;padding:0;margin:0 0 14px;display:grid;gap:6px}
+.nots li{color:var(--muted);padding-left:20px;position:relative}
+.nots li::before{content:"✕";position:absolute;left:0;font-size:12px;top:3px}
+.thesis{font-family:var(--serif);font-size:clamp(20px,3vw,26px);font-weight:700;line-height:1.45;margin:0 0 30px;text-wrap:balance}
+.thesis .en,.thesis .en1{font-family:var(--latin);font-weight:400;font-style:italic}
+.thesis .en1{font-style:normal;font-weight:600}
+.eqs{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:0;border-top:1px solid var(--line);margin-bottom:34px}
+.eqs>div{padding:10px 14px 10px 0;border-bottom:1px solid var(--line)}
+.eqs .k{font-family:var(--serif);font-weight:600;padding-right:22px}
+.eqs .k .en,.eqs .k .en1{font-family:var(--latin)}
+.rainbow-h{font-family:var(--serif);font-size:20px;margin:0 0 14px}
+.rainbow-h .en,.rainbow-h .en1{font-family:var(--latin);font-weight:400}
+.layers{list-style:none;padding:0;margin:0 0 34px;display:grid;gap:8px}
+.layers li{display:flex;gap:12px;align-items:flex-start}
+.layers i{flex:none;width:14px;height:14px;border-radius:4px;background:var(--c);margin-top:5px}
+.goal{border-left:3px solid var(--ink);padding:4px 0 4px 18px;display:grid;gap:8px}
+.goal p{margin:0}
+.goal p:first-child .zh{font-weight:700}
+.intro-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:34px}
+
+/* dialog */
+dialog{border:0;padding:0;background:transparent;width:min(640px,calc(100% - 24px));max-height:calc(100% - 24px);color:var(--ink)}
+dialog::backdrop{background:rgba(12,11,18,.55)}
+.dlg-nav{display:flex;justify-content:space-between;gap:8px;margin-top:10px}
+.dlg-nav .btn{background:var(--surface)}
+
+@media (max-width:820px){
+  .draw-grid{grid-template-columns:1fr}
+  .os-row{grid-template-columns:84px minmax(0,1fr)}
+  .os-row .btn{grid-column:1 / -1;justify-self:start}
+  .os-block{height:84px}
+}
+@media (max-width:480px){
+  .eqs{grid-template-columns:1fr}
+  .eqs .k{border-bottom:0;padding-bottom:0}
+  input[type=search]{width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="spectrum" aria-hidden="true">
+  <span style="background:var(--red)"></span><span style="background:var(--orange)"></span><span style="background:var(--yellow)"></span><span style="background:var(--green)"></span><span style="background:var(--blue)"></span><span style="background:var(--indigo)"></span><span style="background:var(--violet)"></span>
+</div>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><h1 id="brandTitle"></h1><p id="brandSub"></p></div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Language">
+        <button data-lang="zh" id="lang-zh">中文</button>
+        <button data-lang="en" id="lang-en">English</button>
+        <button data-lang="both" id="lang-both">中英對照</button>
+      </div>
+      <div class="seg" role="group" aria-label="English speech speed" id="rateSeg">
+        <span class="seg-lb" aria-hidden="true"></span>
+        <button data-rate="0.7" id="rate-slow">慢 Slow</button>
+        <button data-rate="0.9" id="rate-normal">正常 Normal</button>
+        <button data-rate="1.1" id="rate-fast">快 Fast</button>
+      </div>
+    </div>
+  </header>
+  <nav class="tabs" id="tabs"></nav>
+  <main>
+    <section id="view-draw" hidden></section>
+    <section id="view-cards" hidden></section>
+    <section id="view-os" hidden></section>
+    <section id="view-algo" hidden></section>
+    <section id="view-def" hidden></section>
+  </main>
+</div>
+<dialog id="dlg"><div id="dlgBody"></div></dialog>
+
+<script>
+const RAW = "【彩虹卡2.0｜245張原創Model Update智慧卡】核心公式＝看見舊Model → 找到Prediction Error → Correct Action → Reality Feedback → Model Update → New Capability → New Wisdom使用方式＝每天抽1張，不要求自己「相信」，而是拿它測試今天正在運作的Model。━━━━━━━━━━━━【紅色｜安全 × 身體 × 資源 × 穩定｜01–35】01｜我不需要等世界完全安全，才開始生活。舊Model＝沒有風險才能行動。Prediction Error＝把不確定等同危險。Correct Action＝先做可逆的小行動。Model Update＝安全來自應變能力，不是零風險。能力＝風險管理。智慧＝真正的安全，是變動中仍有路可以走。02｜我先處理眼前能控制的10%。舊Model＝我要一次解決全部問題。Prediction Error＝高估控制範圍。Correct Action＝只找下一步。Model Update＝局部控制可以累積成整體改變。能力＝行動拆解。智慧＝能動的一步，比想像中的完整答案更有力量。03｜我的身體不是工具，而是整個系統的底盤。舊Model＝撐住就好。Prediction Error＝忽略身體成本。Correct Action＝今天修復睡眠、營養或活動的一個節點。Model Update＝身體狀態會改變所有Decision Quality。能力＝身體覺察。智慧＝底盤不穩，再好的策略也跑不遠。04｜休息不是停止，是系統維修。舊Model＝休息等於浪費時間。Prediction Error＝只計算產出，不計算恢復。Correct Action＝安排真正的Recovery。Model Update＝恢復是Performance的一部分。能力＝能量管理。智慧＝長期輸出取決於恢復速度。05｜資源不足時，我先重新配置，而不是恐慌。舊Model＝不夠就是完了。Prediction Error＝忽略替代方案。Correct Action＝盤點時間、金錢、人脈、工具。Model Update＝資源可以重組。能力＝資源配置。智慧＝真正的豐盛，是看見資源之間可以轉換。06｜我可以擁有，而不需要為擁有感到內疚。舊Model＝得到太多是不好的。Prediction Error＝把資源與道德價值綁定。Correct Action＝問自己如何善用資源。Model Update＝資源本身中性，使用方式才產生結果。能力＝承接能力。智慧＝能承接，才能創造更大的流動。07｜金錢是資訊與資源交換工具，不是我的價值。舊Model＝收入＝我的價值。Prediction Error＝把市場Output當成本體。Correct Action＝分開人格價值與市場價值。Model Update＝市場回饋可以更新策略，但不能定義我。能力＝財務認知。智慧＝價格是訊號，不是靈魂的標價。08｜今天的不足，不代表永久不足。舊Model＝現在沒有，以後也不會有。Prediction Error＝把當下線性外推到未來。Correct Action＝尋找可增加資源的Node。Model Update＝系統狀態可以改變。能力＝可能性辨識。智慧＝不要把現在的截圖誤認成人生影片。09｜我的家首先是一個能讓神經系統降低警戒的地方。舊Model＝家只需要功能完整。Prediction Error＝忽略環境對狀態的影響。Correct Action＝減少一個環境壓力源。Model Update＝空間也是神經系統Input。能力＝環境設計。智慧＝環境會偷偷參與你的每一次決策。10｜我可以慢下來，而不代表我正在退步。舊Model＝速度＝進步。Prediction Error＝忽略方向與品質。Correct Action＝檢查方向再加速。Model Update＝速度只有在方向正確時才有價值。能力＝節奏管理。智慧＝走得快不是自由，能調整速度才是。11｜身體的不舒服是訊號，不是敵人。舊Model＝症狀就是麻煩。Prediction Error＝只想消除Output。Correct Action＝觀察可能的Input與Pattern。Model Update＝訊號可以幫助定位系統狀態。能力＝身體訊號辨識。智慧＝不要只關掉警報器，也要看看哪裡冒煙。12｜我允許自己建立穩定的日常。舊Model＝有靈感才行動。Prediction Error＝依賴情緒啟動。Correct Action＝建立最小固定Routine。Model Update＝穩定結構降低決策成本。能力＝習慣設計。智慧＝穩定不是無聊，而是替自由提供底座。13｜我不用靠焦慮提醒自己負責。舊Model＝不焦慮就會鬆懈。Prediction Error＝把焦慮當執行系統。Correct Action＝改用Checklist與Deadline。Model Update＝外部系統可以取代內在恐慌。能力＝自我管理。智慧＝責任感不需要用痛苦當燃料。14｜我可以先建立Buffer，再追求最大化。舊Model＝資源全部投入才有效率。Prediction Error＝忽略波動。Correct Action＝保留時間、金錢與能量Buffer。Model Update＝冗餘能提高韌性。能力＝風險緩衝。智慧＝沒有Buffer的效率，常只是脆弱。15｜我值得被好好照顧，也包括被自己照顧。舊Model＝先照顧所有人才輪到我。Prediction Error＝忽略自身資源耗損。Correct Action＝今天先滿足一個基本需求。Model Update＝自我維護是長期利他的基礎。能力＝自我照護。智慧＝乾掉的井，無法長期供水。16｜我不需要囤積所有東西才能安心。舊Model＝擁有越多越安全。Prediction Error＝把數量當安全。Correct Action＝留下真正提高選擇權的資源。Model Update＝安全來自可用性，不是堆積量。能力＝資源篩選。智慧＝資源過多也會形成熵。17｜穩定不是永遠不變。舊Model＝變化代表失控。Prediction Error＝把穩定理解成靜止。Correct Action＝建立可調整結構。Model Update＝真正穩定是動態平衡。能力＝適應力。智慧＝樹能站住，不是因為它不動，而是因為它會彎。18｜我的時間也是資產。舊Model＝只有錢才算成本。Prediction Error＝忽略時間Opportunity Cost。Correct Action＝刪除一件低價值任務。Model Update＝時間配置就是人生配置。能力＝優先排序。智慧＝你把時間流向哪裡，生命就生成在哪裡。19｜我可以拒絕讓系統長期透支。舊Model＝再撐一下就好。Prediction Error＝低估累積性耗損。Correct Action＝找到最大耗能源。Model Update＝慢性透支最後會形成系統崩潰。能力＝負荷管理。智慧＝不要用明天的生命支付今天的效率。20｜我先讓自己站穩，再處理世界。舊Model＝所有事情都必須立即回應。Prediction Error＝外部Input直接控制內部State。Correct Action＝先穩定呼吸、身體與資訊量。Model Update＝State先於Strategy。能力＝狀態調節。智慧＝混亂的系統很難做出高品質決策。21｜真正的富足是選擇權增加。舊Model＝富足＝東西很多。Prediction Error＝只計算資產，不計算自由度。Correct Action＝增加一條可行路徑。Model Update＝Option Value也是資產。能力＝選擇權設計。智慧＝真正的財富，是你不必只剩一條路。22｜我允許自己接受幫助。舊Model＝什麼都自己做才叫厲害。Prediction Error＝忽略Network資源。Correct Action＝把一件事情交給適合的人。Model Update＝協作可以擴張系統容量。能力＝資源連結。智慧＝強大不是一個人扛完，而是知道如何連結。23｜我不因一次失敗否定整個未來。舊Model＝一次失敗＝我不行。Prediction Error＝樣本數不足。Correct Action＝增加測試次數。Model Update＝單次結果只是Data Point。能力＝迭代。智慧＝不要拿一個資料點畫完整條人生曲線。24｜我可以重新開始，而且帶著上一次的資料。舊Model＝重來就是歸零。Prediction Error＝忽略經驗累積。Correct Action＝寫下上一次留下的Evidence。Model Update＝重新開始≠從零開始。能力＝經驗轉化。智慧＝真正留下來的不是結果，而是模型。25｜我可以讓生活變簡單。舊Model＝複雜才代表厲害。Prediction Error＝把複雜度當價值。Correct Action＝刪除不必要步驟。Model Update＝好的系統會壓縮複雜度。能力＝簡化。智慧＝高階智慧常表現為更少、更準。26｜我的價值不需要靠過度工作證明。舊Model＝忙＝有價值。Prediction Error＝把活動量當成果。Correct Action＝改看Outcome。Model Update＝價值來自有效Output，不是疲憊程度。能力＝成果導向。智慧＝忙碌可能只是高耗能的原地旋轉。27｜我可以建立自己的安全網。舊Model＝只能期待事情不要出錯。Prediction Error＝被動風險模型。Correct Action＝建立Plan B。Model Update＝風險不能消失，但可以管理。能力＝備援設計。智慧＝自由常來自你知道第二條路在哪裡。28｜我不需要一次準備到完美。舊Model＝準備完整才能開始。Prediction Error＝高估開始門檻。Correct Action＝建立Minimum Viable Action。Model Update＝行動本身會產生新資訊。能力＝快速測試。智慧＝Reality會教你準備階段永遠學不到的東西。29｜我尊重自己的生理限制。舊Model＝意志可以無限超越身體。Prediction Error＝忽略硬體Constraint。Correct Action＝按照能量安排任務。Model Update＝限制不是羞恥，而是系統參數。能力＝能量配置。智慧＝知道限制，反而更能找到有效路徑。30｜我每天都可以增加一點抗脆弱性。舊Model＝最好永遠不要遇到壓力。Prediction Error＝把壓力全部視為傷害。Correct Action＝進行可恢復的小挑戰。Model Update＝適量壓力可以形成能力。能力＝抗脆弱。智慧＝不是躲過所有風，而是讓根系越來越深。31｜我把注意力放回真正重要的資源。舊Model＝所有事情都重要。Prediction Error＝Priority失效。Correct Action＝今天只選Top 3。Model Update＝注意力是有限頻寬。能力＝注意力管理。智慧＝你注意什麼，就在餵養什麼。32｜我可以為未來的自己留下餘裕。舊Model＝今天用完再說。Prediction Error＝過度折現未來。Correct Action＝預留10%的時間或資源。Model Update＝未來的自己也是Stakeholder。能力＝長期思考。智慧＝成熟，是今天的你開始照顧明天的你。33｜我不把短期波動誤認成長期趨勢。舊Model＝今天不好＝整體不好。Prediction Error＝時間尺度錯誤。Correct Action＝看7天、30天、90天趨勢。Model Update＝不同尺度會看到不同Reality。能力＝趨勢判讀。智慧＝不要用一天的天氣判斷整個氣候。34｜我建立可以恢復的生活，而不是永不出錯的生活。舊Model＝理想人生不應出問題。Prediction Error＝追求不存在的零故障系統。Correct Action＝設計Recovery Protocol。Model Update＝韌性比完美重要。能力＝恢復力。智慧＝真正強大的系統不是不跌倒，而是知道怎麼回來。35｜我已經站在新的起點。舊Model＝過去決定未來。Prediction Error＝忽略系統可更新性。Correct Action＝今天做一個與舊模式不同的選擇。Model Update＝歷史是Input，不是Command。能力＝重新生成。智慧＝過去提供資料，現在決定下一次更新。━━━━━━━━━━━━【橙色｜感受 × 喜悅 × 創造 × 流動｜36–70】36｜情緒是資訊，不是命令。舊Model＝我感覺什麼，就代表事實是什麼。Prediction Error＝把內在State當Reality。Correct Action＝先命名情緒，再查證事實。Model Update＝感受提供訊號，但需要校準。能力＝情緒辨識。智慧＝可以聽見情緒，不必服從情緒。37｜我允許快樂不需要理由。舊Model＝完成所有事情後才能快樂。Prediction Error＝把喜悅延後到不存在的終點。Correct Action＝今天安排一個微小愉悅。Model Update＝正向狀態也是系統資源。能力＝正向情緒生成。智慧＝快樂不只是獎品，也可以是燃料。38｜我允許悲傷流過，而不是住下來。舊Model＝悲傷來了就不會離開。Prediction Error＝把暫時State永久化。Correct Action＝感受它，但維持基本Routine。Model Update＝情緒具有時間動態。能力＝情緒流動。智慧＝情緒像天氣，不必把雨天改成地址。39｜我可以同時有兩種相反感受。舊Model＝我只能喜歡或討厭。Prediction Error＝二元化。Correct Action＝用「同時」描述經驗。Model Update＝複雜情緒可以共存。能力＝情緒複雜度。智慧＝成熟不是消除矛盾，而是容納矛盾。40｜我的需求值得被看見。舊Model＝有需求就是麻煩別人。Prediction Error＝把需求等同負擔。Correct Action＝清楚說出一個需求。Model Update＝需求是協調資訊。能力＝需求表達。智慧＝沒被說出的需求，常變成關係中的隱性成本。41｜創造不是等待靈感，而是允許第一版很普通。舊Model＝有好點子才開始。Prediction Error＝完美主義阻塞Output。Correct Action＝先做Version 0.1。Model Update＝創造來自迭代。能力＝創造力。智慧＝作品不是想出來的，是改出來的。42｜無聊也可能是新創造的入口。舊Model＝無聊必須立刻被手機填滿。Prediction Error＝過度刺激。Correct Action＝留下10分鐘無Input時間。Model Update＝空白能增加內部生成。能力＝自主思考。智慧＝沒有空白，就沒有地方長出新的東西。43｜我可以享受過程，而不是只追Outcome。舊Model＝只有結果有價值。Prediction Error＝忽略Process Reward。Correct Action＝找出今天值得享受的一個步驟。Model Update＝過程品質影響持續性。能力＝持續投入。智慧＝如果只能在終點快樂，一生大部分時間都會錯過。44｜我允許自己改變喜好。舊Model＝以前喜歡就應該一直喜歡。Prediction Error＝Identity Lock-in。Correct Action＝重新測試現在的偏好。Model Update＝Self Model可以更新。能力＝自我更新。智慧＝忠於自己，不等於忠於過去的自己。45｜我不需要壓住所有情緒才能成熟。舊Model＝成熟＝沒有情緒。Prediction Error＝把調節誤認為壓抑。Correct Action＝允許感受＋選擇行動。Model Update＝調節是感受與行動之間有空間。能力＝情緒調節。智慧＝自由存在於刺激與反應之間。46｜我允許關係裡存在Difference。舊Model＝不同就是不合。Prediction Error＝把差異預測成威脅。Correct Action＝先理解Difference來源。Model Update＝差異可以增加資訊。能力＝差異耐受。智慧＝沒有Difference的關係，也沒有Model Update。47｜我可以玩，而不必把所有時間變成產值。舊Model＝沒有產出的活動沒有價值。Prediction Error＝忽略探索性活動。Correct Action＝安排無目的遊戲。Model Update＝Play增加探索空間。能力＝探索力。智慧＝很多創新都從「沒有用」的遊戲開始。48｜我允許新的體驗進入生活。舊Model＝熟悉的才安全。Prediction Error＝過度利用舊路徑。Correct Action＝每週加入一個Novel Input。Model Update＝探索增加State Space。能力＝開放性。智慧＝沒有新Input，就只能重播舊世界。49｜我的感受可以被理解，不一定要被解決。舊Model＝難受就必須立刻修好。Prediction Error＝Solution Reflex。Correct Action＝先描述，不急著改變。Model Update＝理解本身可以降低混亂。能力＝情緒容納。智慧＝有些東西先被看見，才有可能真正改變。50｜我不因別人的情緒自動負責。舊Model＝別人不開心就是我的錯。Prediction Error＝責任邊界混亂。Correct Action＝區分我的行為與他的反應。Model Update＝每個人都有自己的內部模型。能力＝情緒界線。智慧＝同理不等於接管別人的神經系統。51｜我可以對自己好，而不用先證明值得。舊Model＝表現好才能獲得照顧。Prediction Error＝條件式自我價值。Correct Action＝先給基本照顧。Model Update＝照顧是系統維護，不是獎賞。能力＝自我支持。智慧＝你不會等手機表現好才替它充電。52｜好奇比批判更能產生新資訊。舊Model＝出錯就先責怪。Prediction Error＝責備阻斷探索。Correct Action＝改問「發生了什麼？」Model Update＝Curiosity增加Data。能力＝探索性思考。智慧＝判決讓問題結束，好奇讓理解開始。53｜我允許自己感受到想要。舊Model＝慾望是不好的。Prediction Error＝把慾望與失控混在一起。Correct Action＝辨識需求背後真正目標。Model Update＝慾望可以是資訊。能力＝需求辨識。智慧＝不是每個想要都要滿足，但每個想要都值得理解。54｜我可以重新設計讓自己更容易開始的環境。舊Model＝全靠意志力。Prediction Error＝忽略Environment Effect。Correct Action＝降低好行為摩擦力。Model Update＝環境參與行為生成。能力＝行為設計。智慧＝不要每天跟環境打仗，讓環境站到你這邊。55｜我允許事情有趣。舊Model＝認真就不能有趣。Prediction Error＝把嚴肅與品質綁定。Correct Action＝加入遊戲化元素。Model Update＝樂趣能提高持續投入。能力＝內在動機設計。智慧＝能長期玩的系統，常比只能硬撐的系統走得遠。56｜我的創意需要Output才能被Reality修正。舊Model＝一直想就會更完整。Prediction Error＝缺乏Feedback。Correct Action＝發布小版本。Model Update＝創造需要閉環。能力＝快速迭代。智慧＝沒有碰到Reality的創意，只是腦中的可能性。57｜我可以改變節奏。舊Model＝開始後就不能停。Prediction Error＝僵化節奏。Correct Action＝根據State調速。Model Update＝節奏應隨系統狀態變動。能力＝動態調節。智慧＝會換檔的人，比永遠踩油門的人走得遠。58｜我可以重新學習如何享受。舊Model＝我就是不會快樂。Prediction Error＝把技能缺口當人格。Correct Action＝每天記錄一個微小愉悅。Model Update＝感受能力可以訓練。能力＝正向覺察。智慧＝很多「我是這樣的人」，其實只是尚未訓練的能力。59｜我的情緒強度不等於事情的重要程度。舊Model＝越難受代表事情越嚴重。Prediction Error＝Affect Heuristic。Correct Action＝分開Emotion Score與Evidence Score。Model Update＝情緒與事實是兩條訊號。能力＝情緒校準。智慧＝警報聲很大，不代表火一定很大。60｜我允許自己被感動。舊Model＝柔軟就是脆弱。Prediction Error＝把開放性視為風險。Correct Action＝停留在一個真實感受裡。Model Update＝感受深度可以增加連結。能力＝感受力。智慧＝能被世界碰到，也是活著的一部分。61｜我不需要把每個感受都變成故事。舊Model＝難受一定代表有人做錯。Prediction Error＝過度解釋。Correct Action＝先描述身體感受。Model Update＝感受可以存在而不立即歸因。能力＝去故事化。智慧＝有時只是累，不一定是人生出了問題。62｜我可以讓好事情真正進來。舊Model＝好事很快就會失去。Prediction Error＝預先防禦。Correct Action＝停留20秒感受正向經驗。Model Update＝安全感也需要被神經系統學習。能力＝正向吸收。智慧＝如果只記得危險，大腦會低估世界的完整樣貌。63｜我允許自己探索不同版本的生活。舊Model＝人生只有一條正確路線。Prediction Error＝State Space過窄。Correct Action＝列出五種可能版本。Model Update＝人生是多路徑問題。能力＝可能性生成。智慧＝自由從看見第二條路開始。64｜我不必對每個刺激立即反應。舊Model＝訊息來了就要回。Prediction Error＝Input綁架Output。Correct Action＝建立Response Delay。Model Update＝延遲反應增加選擇空間。能力＝衝動控制。智慧＝不是反應越快越自由，而是選擇越多越自由。65｜我可以在不確定中保持好奇。舊Model＝不知道就是危險。Prediction Error＝不確定性厭惡。Correct Action＝把未知改寫成問題。Model Update＝Unknown可以轉成Search Space。能力＝探索。智慧＝不知道不是牆，也可能是一扇門。66｜我的創造力不需要得到所有人理解。舊Model＝別人不懂就是作品不好。Prediction Error＝過度依賴外部驗證。Correct Action＝先確認目標受眾。Model Update＝不同Audience有不同Model。能力＝創作定位。智慧＝不是所有種子都適合所有土壤。67｜我允許自己重新被世界驚喜。舊Model＝我已經知道會怎樣。Prediction Error＝過度自信預測。Correct Action＝刻意尋找反例。Model Update＝Reality永遠大於Model。能力＝認知開放。智慧＝當你認為什麼都知道，新的世界就進不來了。68｜我可以把情緒轉成創作，而不是轉成傷害。舊Model＝情緒只能壓住或爆發。Prediction Error＝選項不足。Correct Action＝寫、畫、走路、說出來。Model Update＝能量可以轉換Channel。能力＝情緒轉化。智慧＝同一股能量，換一條路，就可能生成不同結果。69｜我允許生命有流動性。舊Model＝確定才安心。Prediction Error＝過度固定。Correct Action＝保留修改空間。Model Update＝可更新結構比固定答案更有生命力。能力＝彈性。智慧＝流動不是失去方向，而是不被方向綁死。70｜我今天願意感受生命，而不只是管理生命。舊Model＝人生是一張待辦清單。Prediction Error＝Output吞噬Experience。Correct Action＝今天完整感受一件小事。Model Update＝生命品質不只等於完成量。能力＝臨在。智慧＝不要管理完整個人生，卻沒有真正活過它。━━━━━━━━━━━━【黃色｜Agency × 選擇 × 邊界 × 行動｜71–105】71｜別人的意見是Input，不是Command。舊Model＝別人反對，我就不能做。Prediction Error＝外控。Correct Action＝蒐集意見後自己決策。Model Update＝決策權回到自己。能力＝Agency。智慧＝聽取世界，不等於交出方向盤。72｜我可以做決定，再根據Feedback修正。舊Model＝一定要先選對。Prediction Error＝把決策當不可逆。Correct Action＝優先做可逆決策。Model Update＝很多決策其實是Experiment。能力＝決策力。智慧＝高品質決策不是永遠選對，而是修正得快。73｜我不需要所有人喜歡我。舊Model＝被喜歡＝安全。Prediction Error＝社會認同過度權重。Correct Action＝區分尊重與討好。Model Update＝關係品質比認同數量重要。能力＝自我定位。智慧＝如果每個人都能決定你，你就不存在了。74｜說不，也是完整句子。舊Model＝拒絕一定要有完美理由。Prediction Error＝邊界需要外部批准。Correct Action＝清楚而尊重地拒絕。Model Update＝界線不需要被所有人同意才成立。能力＝Boundary。智慧＝沒有邊界的善意，最後容易變成耗損。75｜我為自己的選擇承擔，但不為所有結果自責。舊Model＝結果不好＝我錯。Prediction Error＝結果偏誤。Correct Action＝評估當時資訊與決策流程。Model Update＝好決策也可能遇到壞結果。能力＝決策復盤。智慧＝評估決策，要看Process，不只看Outcome。76｜我先做，再讓Reality教我。舊Model＝理解完整才能行動。Prediction Error＝Analysis Paralysis。Correct Action＝建立小實驗。Model Update＝Action也是Learning。能力＝實驗力。智慧＝Reality是最終的老師。77｜我可以改變主意。舊Model＝改變代表不堅定。Prediction Error＝Consistency Bias。Correct Action＝新Evidence出現就更新。Model Update＝一致性服從證據，而非過去。能力＝認知彈性。智慧＝真正的堅定，是忠於Reality，不是忠於舊答案。78｜我的界線是資訊，不是攻擊。舊Model＝設界線會傷人。Prediction Error＝把限制與敵意混同。Correct Action＝說清楚我能做與不能做。Model Update＝邊界提高系統可預測性。能力＝界線溝通。智慧＝清楚比勉強更有利於長期關係。79｜我不等待動機，我設計啟動條件。舊Model＝想做才做得動。Prediction Error＝依賴Motivation。Correct Action＝設定2分鐘起步。Model Update＝行動可以先於動機。能力＝啟動力。智慧＝很多動力，是開始後才生成的。80｜我不把別人的期待直接變成我的責任。舊Model＝有人期待，我就應該做到。Prediction Error＝責任邊界錯置。Correct Action＝問「這是誰的課題？」Model Update＝期待≠義務。能力＝責任辨識。智慧＝你可以理解期待，而不必成為期待。81｜我把大問題切成下一個可執行動作。舊Model＝問題太大，所以不能開始。Prediction Error＝解析度不足。Correct Action＝拆到15分鐘內可完成。Model Update＝行動需要適當粒度。能力＝Task Decomposition。智慧＝山不是一次爬完，是一步一步消失在腳下。82｜我停止向不可能的完美交作業。舊Model＝不完美就不能推出。Prediction Error＝完美主義。Correct Action＝定義Good Enough。Model Update＝Iteration優於停滯。能力＝交付力。智慧＝完成的70分，常能更新成90分；不存在的100分不能。83｜我可以選擇不參加某些遊戲。舊Model＝別人在競爭，我也必須加入。Prediction Error＝預設接受外部Goal Function。Correct Action＝先問「這是我要的遊戲嗎？」Model Update＝可以選擇目標函數。能力＝自主定位。智慧＝最高階的勝利，有時是換一個值得玩的遊戲。84｜我的注意力由我配置。舊Model＝手機出現什麼我就看什麼。Prediction Error＝Attention被外部系統控制。Correct Action＝移除高干擾Input。Model Update＝注意力需要Architecture。能力＝專注。智慧＝注意力是你每天投票給哪個未來。85｜我可以承受短期不舒服，交換長期自由。舊Model＝不舒服就停止。Prediction Error＝即時舒適偏誤。Correct Action＝辨識有價值的不適。Model Update＝短期成本可能創造長期Option。能力＝延遲滿足。智慧＝自由有時藏在你願意承受的小摩擦裡。86｜我不需要證明自己比別人強。舊Model＝價值來自比較。Prediction Error＝零和模型。Correct Action＝與自己的Baseline比較。Model Update＝成長是Prediction Accuracy提升。能力＝自我迭代。智慧＝最值得超越的，是昨天限制你的模型。87｜我可以要求更清楚的資訊。舊Model＝不懂也不好意思問。Prediction Error＝假裝理解。Correct Action＝問一個具體問題。Model Update＝澄清降低Decision Error。能力＝提問力。智慧＝好問題是降低系統熵的工具。88｜我願意承認不知道。舊Model＝不知道代表能力差。Prediction Error＝知識防衛。Correct Action＝標記Unknown。Model Update＝知道不知道什麼，才有Learning Target。能力＝知識邊界覺察。智慧＝「不知道」是知識真正開始的位置。89｜我可以退出長期消耗我的結構。舊Model＝投入很多就必須繼續。Prediction Error＝Sunk Cost。Correct Action＝只看未來成本與收益。Model Update＝過去投入不能綁架未來。能力＝停損。智慧＝已經走錯十公里，不是再走十公里的理由。90｜我可以重新談條件。舊Model＝答應過就永遠不能調整。Prediction Error＝忽略環境變化。Correct Action＝當Constraint改變時重新協商。Model Update＝協議也是動態系統。能力＝協商。智慧＝新的Reality需要新的Agreement。91｜我不替別人的人生做全部決定。舊Model＝幫忙＝替他處理。Prediction Error＝剝奪他人Agency。Correct Action＝提供選項與Feedback。Model Update＝真正幫助會增加對方能力。能力＝賦能。智慧＝最好的幫助不是替他走，而是讓他會走。92｜我把錯誤變成資料。舊Model＝犯錯＝失敗。Prediction Error＝Error Shame。Correct Action＝標記Error Type。Model Update＝錯誤是Model Debug訊號。能力＝錯誤診斷。智慧＝錯誤若被分類，就開始變成資產。93｜我先找Bottleneck，不平均用力。舊Model＝每個地方都要更努力。Prediction Error＝資源平均分配。Correct Action＝找到限制整體Output的Node。Model Update＝改善瓶頸才提高系統產出。能力＝槓桿思考。智慧＝不是更努力，而是努力在限制點上。94｜我用Evidence更新自信。舊Model＝自信只能靠鼓勵。Prediction Error＝缺乏Reality Feedback。Correct Action＝完成小挑戰並留下紀錄。Model Update＝自信＝可回憶的成功Evidence。能力＝自我效能。智慧＝真正穩定的自信，是自己看過自己做到。95｜我可以從小權力開始拿回人生。舊Model＝除非能改變全部，否則沒用。Prediction Error＝All-or-Nothing。Correct Action＝找一件今天可決定的小事。Model Update＝Agency可以累積。能力＝自主性。智慧＝自由通常不是突然得到，而是一點一點拿回來。96｜我不需要在情緒最高點做重大決定。舊Model＝現在感覺很強烈，所以現在要決定。Prediction Error＝Hot State Bias。Correct Action＝延遲重大不可逆決策。Model Update＝State會影響Prediction。能力＝決策控制。智慧＝重要決策值得等神經系統回到Baseline。97｜我可以把問題外化。舊Model＝所有事情都放腦中。Prediction Error＝Working Memory超載。Correct Action＝寫成圖、表、Checklist。Model Update＝外部工具擴張認知容量。能力＝認知外掛。智慧＝大腦適合思考，不適合當倉庫。98｜我不讓羞恥阻止修正。舊Model＝承認錯誤會降低價值。Prediction Error＝Identity Defense。Correct Action＝承認＋修正＋Retest。Model Update＝價值與錯誤可以分離。能力＝修正力。智慧＝真正強大的人，不需要靠永遠正確保護自己。99｜我選擇高槓桿行動。舊Model＝做得越多越好。Prediction Error＝忽略Impact差異。Correct Action＝找20%產生80%結果的行動。Model Update＝Action有不同Leverage。能力＝策略力。智慧＝少做不是偷懶，做對才是槓桿。100｜我可以建立規則，保護重要的自己。舊Model＝每次臨場決定。Prediction Error＝Decision Fatigue。Correct Action＝建立Decision Rule。Model Update＝規則降低重複決策成本。能力＝制度設計。智慧＝好的規則，是過去清醒的你幫助未來疲累的你。101｜我可以主動創造機會。舊Model＝等別人選我。Prediction Error＝被動模型。Correct Action＝今天發出一個Proposal。Model Update＝機會也能被生成。能力＝Initiative。智慧＝High Agency的人，不只找門，也會造門。102｜我不把權威當Reality本身。舊Model＝專家說的就是答案。Prediction Error＝Authority Bias。Correct Action＝看Evidence、條件與適用範圍。Model Update＝權威是高權重Input，不是真理。能力＝獨立判斷。智慧＝尊重知識，不等於停止思考。103｜我願意為重要事情承受被誤解。舊Model＝被誤解就要立刻解釋。Prediction Error＝過度管理他人Model。Correct Action＝只向重要Stakeholder澄清。Model Update＝無法控制所有人的Interpretation。能力＝心理自主。智慧＝把所有人腦中的你管理好，是不可能完成的工作。104｜我不把自由誤認成沒有約束。舊Model＝自由＝想做什麼就做什麼。Prediction Error＝忽略後果。Correct Action＝選擇自己願意承擔的Constraint。Model Update＝自由＝能選擇約束與路徑。能力＝自主責任。智慧＝真正的自由不是沒有邊界，而是知道哪些邊界值得。105｜我今天至少做一件讓未來選擇變多的事。舊Model＝只解決今天。Prediction Error＝短期最佳化。Correct Action＝增加技能、資源、關係或備援。Model Update＝Option Value是長期目標。能力＝長期Agency。智慧＝最好的行動，常不是立刻舒服，而是讓未來不只剩一條路。━━━━━━━━━━━━【綠色｜愛 × 關係 × 接納 × 修復｜106–140】106｜愛不等於控制。107｜關心不等於替對方決定。108｜理解一個人，不代表同意他。109｜我可以愛一個人，同時保留界線。110｜好的關係容得下Difference。111｜衝突不是關係失敗，而是模型不同被看見。112｜我先確認對方真正需要什麼，再給予。113｜我不把犧牲程度當成愛的程度。114｜我可以接受別人無法提供我需要的一切。115｜關係不是讀心術，而是資訊交換。116｜我願意清楚說出期待。117｜我也願意讓對方說不。118｜我不因一次失望否定整段關係。119｜我看Pattern，不只看單次事件。120｜信任需要Evidence累積。121｜信任受損也需要新Evidence修復。122｜原諒不等於取消界線。123｜接納Reality不等於贊成Reality。124｜我停止期待改變一個不願更新的人。125｜我把能量放回自己可以改變的Node。126｜我不把孤單當成必須留在錯誤關係的理由。127｜真正的連結不要求我縮小自己。128｜我可以離開長期破壞系統的互動。129｜我願意看見別人的Model從哪裡生成。130｜同理是理解模型，不是承擔模型。131｜我先問，再假設。132｜我先聽懂，再回應。133｜我不把不同意解讀成不愛。134｜我允許關係重新協商。135｜有些關係適合靠近，有些適合調整距離。136｜距離也是關係設計的一部分。137｜成熟的愛會增加彼此Agency。138｜好的關係讓資訊可以安全流動。139｜我願意成為可靠的Feedback來源。140｜最好的關係不是彼此綁住，而是彼此擴張可能性。【綠色統一Model Update】舊Model＝愛＝服從＋犧牲＋控制＋永遠一致。Prediction Error＝把Difference預測成失去。Correct Action＝清楚溝通＋界線＋Feedback＋重新協商。Model Update＝愛＝連結＋差異＋尊重＋流動。New Capability＝同理＋界線＋溝通＋修復＋協作。New Wisdom＝真正穩定的關係，不是沒有Difference，而是Difference進來後系統仍然可以更新。━━━━━━━━━━━━【藍色｜表達 × 溝通 × 真實 × 傾聽｜141–175】141｜我說事實，不急著說判決。142｜我描述行為，不定義人格。143｜我說「我需要」，而不是「你應該知道」。144｜我說「我不同意」，不必說「你錯了」。145｜我先確認自己理解正確。146｜我可以問：「你的意思是……嗎？」147｜好的問題比快速答案更有價值。148｜我不靠暗示完成重要溝通。149｜重要需求值得直接表達。150｜我可以溫和而清楚。151｜清楚不等於殘忍。152｜沉默也不一定等於和平。153｜長期壓抑會增加系統熵。154｜我允許自己的聲音存在。155｜我不需要把每句話說得讓所有人舒服。156｜我選擇正確的時間、Channel與對象。157｜溝通失敗時，我先檢查Encoding。158｜對方沒懂，不一定代表對方故意。159｜我可以換一種表達方式。160｜我把抽象抱怨改成具體Request。161｜「你都不在乎我」→「我希望你今晚聽我說10分鐘。」162｜「學生都不用功」→「這週有8人缺交兩次。」163｜「我很失敗」→「這次結果低於我的預測。」164｜精準語言會降低認知熵。165｜我把「永遠」與「從不」換成具體頻率。166｜我把「一定」換成「目前Evidence顯示」。167｜我把「他就是」換成「我觀察到他這次」。168｜語言會建立Model，所以我慎選語言。169｜我不使用語言把暫時狀態永久化。170｜我可以說「我不知道」。171｜我可以說「我需要想一下」。172｜我可以說「我改變看法了」。173｜我可以說「這部分是我錯了」。174｜我可以說「我們重新定義問題」。175｜真正好的溝通，是讓雙方的Model更接近Reality。【藍色統一Model Update】舊Model＝溝通＝說服對方。Prediction Error＝把Output當成Communication完成。Correct Action＝Encode → Send → Receive → Confirm → Feedback。Model Update＝溝通是雙向控制迴路。New Capability＝精準表達＋傾聽＋提問＋澄清＋協商。New Wisdom＝不是「我說過了」就算溝通，而是資訊是否真的抵達。━━━━━━━━━━━━【靛色｜覺察 × 洞見 × Prediction Error × Model Update｜176–210】176｜我看到的世界，不等於世界本身。177｜大腦一直在預測，而不是被動錄影。178｜我看到的是Reality經過Model後的版本。179｜情緒會改變我的Prediction。180｜過去經驗會改變我今天看見的東西。181｜我問：哪些是Fact？182｜我問：哪些是Interpretation？183｜我問：哪些只是Prediction？184｜我問：我的Evidence有多少？185｜我問：有什麼反例？186｜我問：還有哪三種合理解釋？187｜我問：什麼Evidence會讓我改變想法？188｜如果答案是「沒有」，我可能正在保護信念，而不是尋找Reality。189｜我不把第一個解釋當最後答案。190｜我尋找Hidden Variable。191｜我尋找Confounder。192｜我尋找Feedback Loop。193｜我尋找Delay Effect。194｜我尋找Second-order Effect。195｜我尋找Bottleneck。196｜我尋找Leverage Point。197｜我尋找Constraint。198｜我尋找Network Effect。199｜我尋找Opportunity Cost。200｜我尋找Selection Bias。201｜我尋找Confirmation Bias。202｜我尋找Survivorship Bias。203｜我尋找Sunk Cost。204｜我尋找Base Rate。205｜我比較Prediction與Outcome。206｜Prediction Error不是羞恥，而是Learning Signal。207｜Error Type被辨認後，錯誤才開始可修正。208｜Bottleneck找到後，努力才開始有槓桿。209｜Retest完成後，才能知道Model是否真的改善。210｜Evidence累積後，能力才真正生成。【靛色統一Model Update】舊Model＝我的想法就是Reality。Prediction Error＝Model與Reality混在一起。Correct Action＝Prediction → Evidence → Error → Hypothesis → Test → Retest。Model Update＝Model只是暫時最好的壓縮。New Capability＝Metacognition＋Critical Thinking＋Systems Thinking。New Wisdom＝真正的聰明不是知道更多答案，而是更快知道自己的答案哪裡可能錯。━━━━━━━━━━━━【紫色｜智慧 × 不確定 × 超越 × 自我重構｜211–245】211｜Reality永遠大於我的Model。212｜沒有任何Model需要成為我的監獄。213｜知識是地圖，不是土地。214｜信念是工具，不是主人。215｜身份也是一個可以更新的Self Model。216｜「我是這種人」只是目前版本。217｜過去可以解釋我，但不必命令我。218｜我可以尊重傳統，同時繼續更新。219｜真正的傳承不是保存答案，而是保存更新能力。220｜老師最好的禮物不是讓學生永遠相信老師。221｜而是讓學生有一天可以超越老師的Model。222｜AI也不是Truth。223｜AI是高速度的Model Generator。224｜我用AI產生Hypothesis，不把AI Output當Reality。225｜AI最重要的價值是擴張Search Space。226｜最後仍然需要Reality Feedback。227｜智慧不是知道一切。228｜智慧是知道何時自己的Model可能失效。229｜成熟不是沒有不確定。230｜成熟是可以帶著不確定繼續前進。231｜控制不是自由。232｜選擇權才更接近自由。233｜自由＝不被舊Model綁架。234｜成長＝Prediction Accuracy持續提高。235｜學習＝Reality改寫Model。236｜能力＝Model可以穩定產生有效Action。237｜智慧＝跨情境仍能找到高槓桿結構。238｜痛苦有時來自Reality，有時來自Model與Reality長期不匹配。239｜所以我不急著消滅所有不舒服。240｜我先問：這個Prediction Error想告訴我什麼？241｜新的Difference進來，舊結構受到壓力。242｜壓力產生Prediction Error。243｜Prediction Error促使Model Update。244｜Model Update產生New Capability。245｜我不追求成為永遠正確的人，我要成為永遠可以更新的人。━━━━━━━━━━━━【彩虹卡2.0｜七層生命OS】紅｜STABILITY｜我能站穩。橙｜FLOW｜我能感受與流動。黃｜AGENCY｜我能選擇與行動。綠｜CONNECTION｜我能連結而不失去自己。藍｜COMMUNICATION｜我能讓資訊精準流動。靛｜METACOGNITION｜我能看見自己的Model。紫｜TRANSCENDENCE｜我能超越舊Model。━━━━━━━━━━━━【245張卡真正共用的底層演算法】Reality→Input→Internal Model→Prediction→Action→Outcome→Feedback→Prediction Error→Error Type→Bottleneck→New Hypothesis→Correct Action→Retest→Evidence→Model Update→New Capability→New Wisdom→更多Option→更高Agency→更高自由度━━━━━━━━━━━━【每天抽卡七問】①今天這張卡碰到我哪個問題？②我現在正在使用什麼舊Model？③這個Model正在預測什麼？④Reality真的支持它嗎？⑤Prediction Error在哪裡？⑥今天最小Correct Action是什麼？⑦晚上取得什麼Evidence，可以更新我的Model？━━━━━━━━━━━━【彩虹卡2.0最終定義】它不是算命卡。它不是告訴你宇宙已經決定什麼。它不是要求你相信一句漂亮的話。它是一個每天啟動一次Model Update的介面。抽卡＝選取一個Node。反思＝讀取Internal Model。行動＝進行Reality Test。結果＝取得Feedback。誤差＝找到Learning Signal。再測＝確認是否真的改變。能力＝更新後可以穩定產生的新Output。智慧＝把大量經驗壓縮成可以跨情境使用的Decision Rule。真正的彩虹，不是七種顏色。而是七層更新能力。安全讓你站穩。感受讓資訊流動。Agency讓你行動。關係讓差異進入。語言讓資訊交換。覺察讓模型被看見。智慧讓模型可以被超越。最終目標不是「每天得到一句答案」。而是每天降低一點Model與Reality之間的誤差。每天增加一點可行路徑。每天增加一點選擇權。每天生成一個比昨天更能面對Reality的自己。";
+
+/* ---------- English translations (order matches the document) ---------- */
+const EN = {
+  intro:{ title:"Rainbow Cards 2.0 | 245 Original Model Update Wisdom Cards",
+    formula:["See the old Model","Find the Prediction Error","Correct Action","Reality Feedback","Model Update","New Capability","New Wisdom"],
+    usage:"Draw one card a day. Don't require yourself to “believe” it — use it to test the Model that is running in you today." },
+  colors:["Red","Orange","Yellow","Green","Blue","Indigo","Violet"],
+  themes:["Safety × Body × Resources × Stability","Feeling × Joy × Creation × Flow","Agency × Choice × Boundaries × Action","Love × Relationships × Acceptance × Repair","Expression × Communication × Authenticity × Listening","Awareness × Insight × Prediction Error × Model Update","Wisdom × Uncertainty × Transcendence × Self-Reconstruction"],
+  unified:{
+    3:["Love = obedience + sacrifice + control + always agreeing.","Predicting Difference as loss.","Clear communication + boundaries + Feedback + renegotiation.","Love = connection + difference + respect + flow.","Empathy + boundaries + communication + repair + collaboration.","A truly stable relationship isn't one without Difference, but one whose system can still update after Difference comes in."],
+    4:["Communication = persuading the other person.","Treating Output as completed Communication.","Encode → Send → Receive → Confirm → Feedback.","Communication is a two-way control loop.","Precise expression + listening + asking + clarifying + negotiating.","It isn't communication just because “I said it”; it's whether the information actually arrived."],
+    5:["My thoughts are Reality.","Model and Reality mixed together.","Prediction → Evidence → Error → Hypothesis → Test → Retest.","A Model is just the best compression for now.","Metacognition + Critical Thinking + Systems Thinking.","Real intelligence isn't knowing more answers; it's finding out faster where your own answers might be wrong."]
+  },
+  osTitle:"Rainbow Cards 2.0 | The Seven-Layer Life OS",
+  os:["I can stand steady.","I can feel and flow.","I can choose and act.","I can connect without losing myself.","I can make information flow precisely.","I can see my own Model.","I can transcend old Models."],
+  algoTitle:"The underlying algorithm all 245 cards share",
+  algo:["Reality","Input","Internal Model","Prediction","Action","Outcome","Feedback","Prediction Error","Error Type","Bottleneck","New Hypothesis","Correct Action","Retest","Evidence","Model Update","New Capability","New Wisdom","More Options","Higher Agency","Greater Freedom"],
+  qTitle:"Seven questions for each daily draw",
+  qs:["Which of my problems does today's card touch?","What old Model am I using right now?","What is this Model predicting?","Does Reality actually support it?","Where is the Prediction Error?","What is today's smallest Correct Action?","What Evidence can I gather tonight to update my Model?"],
+  finalTitle:"Rainbow Cards 2.0: The Final Definition",
+  final:["It is not a fortune-telling deck.","It doesn't tell you what the universe has already decided.","It doesn't ask you to believe a pretty sentence.","It is an interface that launches one Model Update every day.",
+    "Drawing a card = selecting a Node.","Reflecting = reading your Internal Model.","Acting = running a Reality Test.","Results = obtaining Feedback.","Errors = finding the Learning Signal.","Retesting = confirming whether something truly changed.","Capability = the new Output you can reliably produce after updating.","Wisdom = compressing a great deal of experience into Decision Rules usable across contexts.",
+    "The true rainbow isn't seven colors.","It's seven layers of the ability to update.",
+    "Safety lets you stand steady.","Feeling lets information flow.","Agency lets you act.","Relationships let difference come in.","Language lets information be exchanged.","Awareness lets models be seen.","Wisdom lets models be transcended.",
+    "The ultimate goal isn't “getting an answer every day.”","It's reducing the error between Model and Reality a little every day.","Adding a few more viable paths every day.","Gaining a little more choice every day.","Becoming, every day, a self better able to face Reality than yesterday's."]
+};
+
+/* Cards 01–105: [title, Old Model, Prediction Error, Correct Action, Model Update, Capability, Wisdom] */
+const EN_FULL = [
+["I don't need to wait for the world to be completely safe before I start living.","I can only act when there is no risk.","Equating uncertainty with danger.","Take a small, reversible action first.","Safety comes from the ability to respond, not from zero risk.","Risk management.","True safety is still having a path forward amid change."],
+["I handle the 10% in front of me that I can control first.","I have to solve every problem at once.","Overestimating the scope of control.","Find only the next step.","Local control can accumulate into overall change.","Breaking actions down.","One step you can actually take is more powerful than an imagined complete answer."],
+["My body is not a tool; it is the chassis of the whole system.","Just hold on.","Ignoring the body's costs.","Today, repair one node: sleep, nutrition, or movement.","Your physical state changes all Decision Quality.","Body awareness.","With an unstable chassis, even the best strategy won't go far."],
+["Rest is not stopping; it is system maintenance.","Rest is a waste of time.","Counting only output, not recovery.","Schedule real Recovery.","Recovery is part of Performance.","Energy management.","Long-term output depends on how fast you recover."],
+["When resources are short, I reallocate first instead of panicking.","Not enough means it's over.","Ignoring alternatives.","Take stock of your time, money, connections, and tools.","Resources can be recombined.","Resource allocation.","True abundance is seeing that resources can be converted into one another."],
+["I can have things without feeling guilty for having them.","Getting too much is bad.","Tying resources to moral worth.","Ask yourself how to use your resources well.","Resources are neutral; how they are used is what produces results.","Capacity to receive.","Only by being able to receive can you create a greater flow."],
+["Money is a tool for exchanging information and resources, not my worth.","Income = my worth.","Treating market Output as the self.","Separate personal worth from market value.","Market feedback can update my strategy, but it cannot define me.","Financial literacy.","A price is a signal, not a price tag on the soul."],
+["Today's shortage doesn't mean permanent shortage.","What I don't have now, I will never have.","Linearly extrapolating the present into the future.","Look for a Node that can increase resources.","System states can change.","Recognizing possibilities.","Don't mistake a screenshot of now for the movie of your life."],
+["My home is, first of all, a place where my nervous system can lower its guard.","A home just needs to be fully functional.","Ignoring the environment's effect on your state.","Remove one environmental stressor.","Space is also Input to the nervous system.","Environment design.","Your environment quietly takes part in every decision you make."],
+["I can slow down without it meaning I'm falling behind.","Speed = progress.","Ignoring direction and quality.","Check the direction before speeding up.","Speed only has value when the direction is right.","Pace management.","Going fast isn't freedom; being able to adjust your speed is."],
+["Bodily discomfort is a signal, not an enemy.","Symptoms are just trouble.","Wanting only to eliminate the Output.","Observe the possible Inputs and Patterns.","Signals can help locate the system's state.","Reading body signals.","Don't just switch off the alarm — look for where the smoke is coming from."],
+["I allow myself to build a stable daily life.","I act only when inspired.","Relying on emotions to get started.","Build a minimal fixed Routine.","Stable structure lowers the cost of decisions.","Habit design.","Stability isn't boring; it's the base that supports freedom."],
+["I don't need anxiety to remind me to be responsible.","If I'm not anxious, I'll slack off.","Using anxiety as an execution system.","Switch to Checklists and Deadlines.","External systems can replace internal panic.","Self-management.","A sense of responsibility doesn't need pain as its fuel."],
+["I can build a Buffer first, then pursue maximization.","Committing all resources is the only efficient way.","Ignoring volatility.","Keep Buffers of time, money, and energy.","Redundancy increases resilience.","Risk buffering.","Efficiency without a Buffer is often just fragility."],
+["I deserve to be well cared for — including by myself.","I come last, after taking care of everyone else.","Ignoring the depletion of your own resources.","Meet one basic need first today.","Self-maintenance is the foundation of long-term altruism.","Self-care.","A dry well can't supply water for long."],
+["I don't need to hoard everything to feel secure.","The more I own, the safer I am.","Treating quantity as safety.","Keep the resources that truly increase your options.","Security comes from usability, not from accumulation.","Resource curation.","Too many resources can also become entropy."],
+["Stability doesn't mean never changing.","Change means losing control.","Understanding stability as stillness.","Build adjustable structures.","True stability is dynamic balance.","Adaptability.","A tree stands not because it doesn't move, but because it can bend."],
+["My time is an asset too.","Only money counts as a cost.","Ignoring the Opportunity Cost of time.","Delete one low-value task.","How you allocate your time is how you allocate your life.","Prioritization.","Wherever your time flows, that is where your life takes shape."],
+["I can refuse to let my system run on long-term overdraft.","Just hang on a little longer.","Underestimating cumulative wear.","Find your biggest energy drain.","Chronic overdraft eventually leads to system collapse.","Load management.","Don't pay for today's efficiency with tomorrow's life."],
+["I steady myself first, then deal with the world.","Everything must be responded to immediately.","External Input directly controlling internal State.","First stabilize your breathing, your body, and your information intake.","State comes before Strategy.","State regulation.","A chaotic system struggles to make high-quality decisions."],
+["True abundance is having more choices.","Abundance = having lots of things.","Counting assets but not degrees of freedom.","Add one more viable path.","Option Value is an asset too.","Designing options.","Real wealth is not being left with only one road."],
+["I allow myself to accept help.","Doing everything yourself is what makes you capable.","Ignoring Network resources.","Hand one task to the right person.","Collaboration can expand system capacity.","Connecting resources.","Strength isn't carrying it all alone; it's knowing how to connect."],
+["I don't write off my whole future because of one failure.","One failure = I'm not good enough.","Sample size too small.","Increase the number of tests.","A single result is just a Data Point.","Iteration.","Don't draw your whole life curve from a single data point."],
+["I can start over — and bring the data from last time.","Starting over means going back to zero.","Ignoring accumulated experience.","Write down the Evidence the last attempt left behind.","Starting over ≠ starting from zero.","Turning experience into learning.","What truly remains isn't the result — it's the model."],
+["I can make my life simpler.","Complexity means competence.","Treating complexity as value.","Delete unnecessary steps.","Good systems compress complexity.","Simplification.","Higher wisdom often shows up as less, and more precise."],
+["My worth doesn't need to be proven by overworking.","Busy = valuable.","Treating activity as achievement.","Look at the Outcome instead.","Value comes from effective Output, not from how exhausted you are.","Results orientation.","Busyness may just be high-energy spinning in place."],
+["I can build my own safety net.","All I can do is hope nothing goes wrong.","A passive risk model.","Create a Plan B.","Risk can't disappear, but it can be managed.","Backup design.","Freedom often comes from knowing where the second road is."],
+["I don't need to prepare perfectly all at once.","I can only start once I'm fully prepared.","Overestimating the threshold for starting.","Create a Minimum Viable Action.","Action itself generates new information.","Rapid testing.","Reality teaches you things the preparation stage never can."],
+["I respect my physical limits.","Willpower can override the body without limit.","Ignoring hardware Constraints.","Schedule tasks according to your energy.","Limits aren't shameful; they are system parameters.","Energy allocation.","Knowing your limits actually helps you find effective paths."],
+["Every day I can become a little more antifragile.","It's best never to face stress.","Treating all stress as harm.","Take on small, recoverable challenges.","The right amount of stress can build capability.","Antifragility.","It's not about avoiding every wind, but letting your roots grow deeper."],
+["I bring my attention back to the resources that truly matter.","Everything is important.","Priority failure.","Pick only a Top 3 today.","Attention is limited bandwidth.","Attention management.","Whatever you pay attention to, you are feeding."],
+["I can leave some slack for my future self.","Use it all up today and worry later.","Over-discounting the future.","Reserve 10% of your time or resources.","Your future self is also a Stakeholder.","Long-term thinking.","Maturity is when today's you starts taking care of tomorrow's you."],
+["I don't mistake short-term fluctuations for long-term trends.","A bad day = everything is bad.","Wrong time scale.","Look at the 7-, 30-, and 90-day trends.","Different scales reveal different Realities.","Reading trends.","Don't judge the whole climate by one day's weather."],
+["I build a life that can recover, not a life that never goes wrong.","An ideal life shouldn't have problems.","Pursuing a zero-failure system that doesn't exist.","Design a Recovery Protocol.","Resilience matters more than perfection.","Recovery ability.","Truly strong systems aren't the ones that never fall — they know how to come back."],
+["I am already standing at a new starting point.","The past determines the future.","Ignoring that the system can be updated.","Today, make one choice that differs from the old pattern.","History is Input, not Command.","Regeneration.","The past provides data; the present decides the next update."],
+/* 36–70 Orange */
+["Emotions are information, not commands.","Whatever I feel represents the facts.","Treating internal State as Reality.","Name the emotion first, then check the facts.","Feelings provide signals, but they need calibration.","Emotional recognition.","You can hear your emotions without obeying them."],
+["I allow happiness without needing a reason.","I can only be happy after I finish everything.","Postponing joy to a finish line that doesn't exist.","Schedule one small pleasure today.","Positive states are system resources too.","Generating positive emotion.","Happiness isn't only a prize; it can also be fuel."],
+["I let sadness flow through instead of moving in.","Once sadness comes, it never leaves.","Making a temporary State permanent.","Feel it, but keep your basic Routine.","Emotions have time dynamics.","Emotional flow.","Emotions are like weather — you don't have to make the rainy day your address."],
+["I can hold two opposite feelings at once.","I can only like or dislike.","Binary thinking.","Describe your experience with “at the same time.”","Complex emotions can coexist.","Emotional complexity.","Maturity isn't eliminating contradiction; it's holding it."],
+["My needs deserve to be seen.","Having needs means bothering others.","Equating needs with burdens.","Clearly state one need.","Needs are coordinating information.","Expressing needs.","Unspoken needs often become hidden costs in relationships."],
+["Creating isn't waiting for inspiration; it's allowing the first version to be ordinary.","I only start when I have a good idea.","Perfectionism blocking Output.","Make Version 0.1 first.","Creation comes from iteration.","Creativity.","Works aren't thought up; they're revised into being."],
+["Boredom can also be an entrance to new creation.","Boredom must be filled with my phone immediately.","Overstimulation.","Leave 10 minutes of no-Input time.","Empty space increases internal generation.","Independent thinking.","Without empty space, there's nowhere for new things to grow."],
+["I can enjoy the process, not just chase the Outcome.","Only results have value.","Ignoring Process Reward.","Find one step worth enjoying today.","The quality of the process affects sustainability.","Sustained engagement.","If you can only be happy at the finish line, you'll miss most of your life."],
+["I allow my preferences to change.","If I liked it before, I should always like it.","Identity Lock-in.","Retest your current preferences.","The Self Model can be updated.","Self-renewal.","Being true to yourself isn't the same as being loyal to your past self."],
+["I don't need to suppress every emotion to be mature.","Mature = having no emotions.","Mistaking regulation for suppression.","Allow the feeling + choose the action.","Regulation means there is space between feeling and action.","Emotional regulation.","Freedom lives in the space between stimulus and response."],
+["I allow Difference to exist in relationships.","Being different means being incompatible.","Predicting difference as a threat.","First understand where the Difference comes from.","Difference can add information.","Tolerance for difference.","A relationship without Difference also has no Model Update."],
+["I can play without turning all my time into productivity.","Activities without output have no value.","Ignoring exploratory activity.","Schedule purposeless play.","Play expands the space for exploration.","Exploration.","Many innovations start from “useless” play."],
+["I allow new experiences into my life.","Only the familiar is safe.","Over-exploiting old paths.","Add one Novel Input every week.","Exploration expands the State Space.","Openness.","Without new Input, you can only replay the old world."],
+["My feelings can be understood without necessarily being solved.","If it hurts, it must be fixed right away.","Solution Reflex.","Describe first; don't rush to change.","Understanding itself can reduce chaos.","Emotional holding.","Some things must first be seen before they can truly change."],
+["I am not automatically responsible for other people's emotions.","If someone is unhappy, it's my fault.","Blurred responsibility boundaries.","Distinguish my behavior from their reaction.","Everyone has their own internal model.","Emotional boundaries.","Empathy isn't taking over someone else's nervous system."],
+["I can be kind to myself without first proving I deserve it.","I only get cared for when I perform well.","Conditional self-worth.","Give basic care first.","Care is system maintenance, not a reward.","Self-support.","You don't wait for your phone to perform well before charging it."],
+["Curiosity produces more new information than criticism.","When something goes wrong, blame comes first.","Blame blocks exploration.","Ask instead: “What happened?”","Curiosity increases Data.","Exploratory thinking.","A verdict ends the problem; curiosity begins understanding."],
+["I allow myself to feel wanting.","Desire is bad.","Confusing desire with losing control.","Identify the real goal behind the need.","Desire can be information.","Recognizing needs.","Not every want has to be satisfied, but every want deserves to be understood."],
+["I can redesign my environment to make starting easier.","It all depends on willpower.","Ignoring the Environment Effect.","Reduce the friction for good behaviors.","The environment takes part in generating behavior.","Behavior design.","Don't fight your environment every day — get it on your side."],
+["I allow things to be fun.","If it's serious, it can't be fun.","Tying seriousness to quality.","Add gamified elements.","Fun increases sustained engagement.","Designing intrinsic motivation.","A system you can keep playing often goes further than one you can only grit your teeth through."],
+["My creativity needs Output so Reality can correct it.","If I keep thinking, it will become more complete.","Lack of Feedback.","Release a small version.","Creation needs a closed loop.","Rapid iteration.","Creativity that never touches Reality is just a possibility in your head."],
+["I can change my rhythm.","Once I start, I can't stop.","Rigid rhythm.","Adjust your speed according to your State.","Rhythm should shift with the system's state.","Dynamic adjustment.","People who can shift gears go further than those who always floor the gas."],
+["I can relearn how to enjoy.","I'm just someone who can't be happy.","Treating a skill gap as personality.","Record one small pleasure every day.","The ability to feel can be trained.","Positive awareness.","Many “this is just who I am” statements are really abilities not yet trained."],
+["The intensity of my emotions doesn't equal the importance of the matter.","The worse I feel, the more serious it must be.","Affect Heuristic.","Separate the Emotion Score from the Evidence Score.","Emotions and facts are two separate signals.","Emotional calibration.","A loud alarm doesn't necessarily mean a big fire."],
+["I allow myself to be moved.","Softness is weakness.","Treating openness as a risk.","Stay with one real feeling.","Depth of feeling can increase connection.","Sensitivity.","Being touchable by the world is part of being alive."],
+["I don't need to turn every feeling into a story.","If I feel bad, someone must have done something wrong.","Over-interpretation.","First describe the bodily sensation.","Feelings can exist without immediate attribution.","De-storying.","Sometimes you're just tired — it doesn't mean something is wrong with your life."],
+["I can let good things truly come in.","Good things will soon be lost.","Pre-emptive defense.","Stay with a positive experience for 20 seconds.","A sense of safety also has to be learned by the nervous system.","Absorbing the positive.","If you only remember danger, your brain underestimates the full picture of the world."],
+["I allow myself to explore different versions of life.","There is only one correct route in life.","State Space too narrow.","List five possible versions.","Life is a multi-path problem.","Generating possibilities.","Freedom begins with seeing a second road."],
+["I don't have to react immediately to every stimulus.","When a message comes, I must reply.","Input hijacking Output.","Build in a Response Delay.","Delaying a response creates room for choice.","Impulse control.","Freedom isn't reacting faster; it's having more choices."],
+["I can stay curious amid uncertainty.","Not knowing is dangerous.","Uncertainty aversion.","Rewrite the unknown as a question.","The Unknown can be turned into a Search Space.","Exploration.","Not knowing isn't a wall; it may be a door."],
+["My creativity doesn't need to be understood by everyone.","If others don't get it, the work is bad.","Over-reliance on external validation.","First confirm your target audience.","Different Audiences have different Models.","Creative positioning.","Not every seed suits every soil."],
+["I allow the world to surprise me again.","I already know how it will go.","Overconfident prediction.","Deliberately look for counterexamples.","Reality is always bigger than the Model.","Cognitive openness.","When you think you know everything, no new world can come in."],
+["I can turn emotion into creation rather than harm.","Emotions can only be suppressed or exploded.","Not enough options.","Write, draw, walk, talk it out.","Energy can switch Channels.","Emotional transformation.","The same energy, sent down a different path, can generate different results."],
+["I allow life to be fluid.","Only certainty is reassuring.","Over-fixing.","Leave room for revision.","Updatable structures are more alive than fixed answers.","Flexibility.","Flow isn't losing direction; it's not being bound by it."],
+["Today I'm willing to feel life, not just manage it.","Life is a to-do list.","Output swallowing Experience.","Fully feel one small thing today.","Quality of life isn't just the amount completed.","Presence.","Don't manage your whole life without ever truly living it."],
+/* 71–105 Yellow */
+["Other people's opinions are Input, not Command.","If others object, I can't do it.","External locus of control.","Gather opinions, then make the decision yourself.","Decision rights return to you.","Agency.","Listening to the world doesn't mean handing over the steering wheel."],
+["I can make a decision, then adjust it based on Feedback.","I must choose correctly first.","Treating decisions as irreversible.","Prioritize reversible decisions.","Many decisions are actually Experiments.","Decisiveness.","High-quality decision-making isn't always choosing right; it's correcting fast."],
+["I don't need everyone to like me.","Being liked = being safe.","Overweighting social approval.","Distinguish respect from people-pleasing.","The quality of relationships matters more than the amount of approval.","Self-positioning.","If everyone gets to decide who you are, you no longer exist."],
+["“No” is a complete sentence.","Refusing requires a perfect reason.","Believing boundaries need outside approval.","Refuse clearly and respectfully.","A boundary doesn't need everyone's agreement to be valid.","Boundary.","Kindness without boundaries easily turns into depletion."],
+["I take responsibility for my choices, but I don't blame myself for every outcome.","Bad result = I was wrong.","Outcome bias.","Evaluate the information and the decision process you had at the time.","Good decisions can still meet bad outcomes.","Decision review.","To evaluate a decision, look at the Process, not just the Outcome."],
+["I act first, then let Reality teach me.","I can only act once I fully understand.","Analysis Paralysis.","Set up a small experiment.","Action is also Learning.","Experimentation.","Reality is the ultimate teacher."],
+["I can change my mind.","Changing means I'm not steadfast.","Consistency Bias.","Update when new Evidence appears.","Consistency answers to evidence, not to the past.","Cognitive flexibility.","True steadfastness is loyalty to Reality, not to old answers."],
+["My boundaries are information, not attacks.","Setting boundaries hurts people.","Confusing limits with hostility.","State clearly what I can and cannot do.","Boundaries make the system more predictable.","Communicating boundaries.","Clarity serves long-term relationships better than reluctant compliance."],
+["I don't wait for motivation; I design the conditions for starting.","I can only get going when I feel like it.","Relying on Motivation.","Set a 2-minute start.","Action can come before motivation.","Initiation.","Much motivation is only generated after you start."],
+["I don't turn other people's expectations directly into my responsibilities.","If someone expects it, I should deliver it.","Misplaced responsibility boundaries.","Ask: “Whose task is this?”","Expectation ≠ obligation.","Identifying responsibility.","You can understand expectations without becoming them."],
+["I break big problems down into the next executable action.","The problem is too big, so I can't start.","Resolution too low.","Break it down until it can be done within 15 minutes.","Action needs the right granularity.","Task Decomposition.","A mountain isn't climbed all at once; it disappears beneath your feet step by step."],
+["I stop handing in homework to an impossible perfection.","If it isn't perfect, it can't be released.","Perfectionism.","Define Good Enough.","Iteration beats stagnation.","Delivery.","A finished 70 can often be updated into a 90; a nonexistent 100 cannot."],
+["I can choose not to play certain games.","If others are competing, I must join in too.","Accepting an external Goal Function by default.","First ask: “Is this the game I want?”","You can choose your objective function.","Self-positioning.","The highest win is sometimes switching to a game worth playing."],
+["My attention is mine to allocate.","Whatever pops up on my phone, I look at.","Attention controlled by external systems.","Remove high-distraction Inputs.","Attention needs Architecture.","Focus.","Attention is how you vote each day for which future you get."],
+["I can bear short-term discomfort in exchange for long-term freedom.","If it's uncomfortable, stop.","Immediate-comfort bias.","Identify valuable discomfort.","Short-term costs can create long-term Options.","Delayed gratification.","Freedom sometimes hides in the small friction you're willing to endure."],
+["I don't need to prove I'm better than others.","Worth comes from comparison.","Zero-sum model.","Compare against your own Baseline.","Growth is improved Prediction Accuracy.","Self-iteration.","What's most worth surpassing is the model that limited you yesterday."],
+["I can ask for clearer information.","If I don't understand, I'm too embarrassed to ask.","Pretending to understand.","Ask one specific question.","Clarifying reduces Decision Error.","Asking good questions.","A good question is a tool for reducing system entropy."],
+["I'm willing to admit I don't know.","Not knowing means I'm incompetent.","Knowledge defensiveness.","Mark the Unknown.","Only when you know what you don't know do you have a Learning Target.","Awareness of the edges of your knowledge.","“I don't know” is where knowledge truly begins."],
+["I can exit structures that drain me over the long term.","I've invested so much, I have to continue.","Sunk Cost.","Look only at future costs and benefits.","Past investment can't hold the future hostage.","Cutting losses.","Having walked ten kilometers the wrong way is no reason to walk ten more."],
+["I can renegotiate the terms.","Once I've agreed, I can never adjust.","Ignoring changes in the environment.","Renegotiate when the Constraints change.","Agreements are dynamic systems too.","Negotiation.","A new Reality calls for a new Agreement."],
+["I don't make every decision in someone else's life.","Helping = handling it for them.","Depriving others of Agency.","Offer options and Feedback.","Real help increases the other person's capability.","Empowerment.","The best help isn't walking for them, but helping them learn to walk."],
+["I turn mistakes into data.","Making a mistake = failure.","Error Shame.","Label the Error Type.","Errors are Model Debug signals.","Error diagnosis.","Once an error is classified, it starts becoming an asset."],
+["I find the Bottleneck first instead of spreading my effort evenly.","I need to try harder everywhere.","Distributing resources evenly.","Find the Node that limits overall Output.","Only improving the bottleneck raises system output.","Leverage thinking.","It's not about trying harder, but trying at the point of constraint."],
+["I update my confidence with Evidence.","Confidence can only come from encouragement.","Lack of Reality Feedback.","Complete a small challenge and keep a record.","Confidence = recallable Evidence of success.","Self-efficacy.","Truly stable confidence comes from having seen yourself do it."],
+["I can take my life back, starting with small powers.","Unless I can change everything, it's pointless.","All-or-Nothing.","Find one small thing you can decide today.","Agency can accumulate.","Autonomy.","Freedom usually isn't gained all at once; it's taken back bit by bit."],
+["I don't need to make major decisions at an emotional peak.","I feel this strongly now, so I must decide now.","Hot State Bias.","Delay major irreversible decisions.","State affects Prediction.","Decision control.","Important decisions deserve to wait until your nervous system returns to Baseline."],
+["I can externalize problems.","Keep everything in my head.","Working Memory overload.","Turn it into diagrams, tables, and Checklists.","External tools expand cognitive capacity.","Cognitive add-ons.","The brain is good at thinking, not at being a warehouse."],
+["I don't let shame stop me from correcting course.","Admitting mistakes lowers my worth.","Identity Defense.","Admit + correct + Retest.","Worth and mistakes can be separated.","Self-correction.","Truly strong people don't need to be always right to protect themselves."],
+["I choose high-leverage actions.","The more I do, the better.","Ignoring differences in Impact.","Find the 20% of actions that produce 80% of the results.","Actions have different Leverage.","Strategy.","Doing less isn't laziness; doing the right things is leverage."],
+["I can set rules that protect the important parts of me.","Decide on the spot every time.","Decision Fatigue.","Create a Decision Rule.","Rules lower the cost of repeated decisions.","System design.","A good rule is your clear-headed past self helping your tired future self."],
+["I can actively create opportunities.","Wait for others to choose me.","Passive model.","Send out one Proposal today.","Opportunities can be generated, too.","Initiative.","High Agency people don't just look for doors — they build them."],
+["I don't treat authority as Reality itself.","Whatever the experts say is the answer.","Authority Bias.","Look at the Evidence, the conditions, and the scope of application.","Authority is a high-weight Input, not the truth.","Independent judgment.","Respecting knowledge doesn't mean you stop thinking."],
+["I'm willing to be misunderstood for the sake of important things.","If I'm misunderstood, I must explain immediately.","Over-managing other people's Models.","Clarify only with important Stakeholders.","You can't control everyone's Interpretation.","Psychological autonomy.","Managing the version of you in everyone's head is an impossible job."],
+["I don't mistake freedom for having no constraints.","Freedom = doing whatever I want.","Ignoring consequences.","Choose the Constraints you're willing to carry.","Freedom = being able to choose your constraints and your path.","Self-directed responsibility.","True freedom isn't having no boundaries; it's knowing which boundaries are worth it."],
+["Today I'll do at least one thing that gives my future more choices.","Just solve today.","Short-term optimization.","Add skills, resources, relationships, or backups.","Option Value is a long-term goal.","Long-term Agency.","The best action often isn't what feels good right away, but what keeps the future from having only one road."]
+];
+
+/* Cards 106–245: single statements */
+const EN_SHORT = [
+/* 106–140 Green */
+"Love is not control.","Caring is not deciding for the other person.","Understanding someone doesn't mean agreeing with them.","I can love someone and still keep my boundaries.","A good relationship has room for Difference.",
+"Conflict isn't the relationship failing; it's different models becoming visible.","I first confirm what the other person truly needs, then I give.","I don't take the degree of sacrifice as the degree of love.","I can accept that others can't provide everything I need.","A relationship isn't mind reading; it's an exchange of information.",
+"I'm willing to state my expectations clearly.","I'm also willing to let the other person say no.","I don't reject a whole relationship over one disappointment.","I look at Patterns, not just single events.","Trust requires accumulated Evidence.",
+"Damaged trust also needs new Evidence to be repaired.","Forgiveness doesn't mean removing boundaries.","Accepting Reality doesn't mean approving of Reality.","I stop expecting to change someone who is unwilling to update.","I put my energy back into the Nodes I can change.",
+"I don't treat loneliness as a reason to stay in the wrong relationship.","Real connection doesn't require me to make myself smaller.","I can leave interactions that damage the system over time.","I'm willing to see where other people's Models come from.","Empathy is understanding a model, not taking it on.",
+"I ask first, then assume.","I listen until I understand, then respond.","I don't read disagreement as not being loved.","I allow relationships to be renegotiated.","Some relationships suit closeness; some suit adjusting the distance.",
+"Distance is also part of relationship design.","Mature love increases each other's Agency.","Good relationships let information flow safely.","I'm willing to be a reliable source of Feedback.","The best relationships don't tie each other down; they expand each other's possibilities.",
+/* 141–175 Blue */
+"I state facts; I don't rush to a verdict.","I describe behavior; I don't define character.","I say “I need,” not “you should know.”","I can say “I disagree” without saying “you're wrong.”","I first make sure I've understood correctly.",
+"I can ask: “Do you mean…?”","A good question is worth more than a fast answer.","I don't rely on hints to get important communication done.","Important needs deserve to be expressed directly.","I can be gentle and clear.",
+"Clarity is not cruelty.","Silence doesn't necessarily mean peace, either.","Long-term suppression increases system entropy.","I allow my voice to exist.","I don't need to make every sentence comfortable for everyone.",
+"I choose the right time, Channel, and person.","When communication fails, I check the Encoding first.","If they didn't understand, it doesn't necessarily mean it was on purpose.","I can try a different way of expressing it.","I turn abstract complaints into specific Requests.",
+"“You don't care about me at all” → “I'd like you to listen to me for 10 minutes tonight.”","“The students never study” → “This week, 8 students missed an assignment twice.”","“I'm such a failure” → “This result came in lower than I predicted.”","Precise language reduces cognitive entropy.","I replace “always” and “never” with specific frequencies.",
+"I replace “definitely” with “current Evidence shows.”","I replace “he's just like that” with “I observed that this time he…”","Language builds Models, so I choose my language carefully.","I don't use language to make temporary states permanent.","I can say “I don't know.”",
+"I can say “I need to think about it.”","I can say “I've changed my mind.”","I can say “I was wrong about this part.”","I can say “Let's redefine the problem.”","Truly good communication brings both people's Models closer to Reality.",
+/* 176–210 Indigo */
+"The world I see is not the world itself.","The brain is always predicting, not passively recording.","What I see is Reality after it has passed through my Model.","Emotions change my Predictions.","Past experiences change what I see today.",
+"I ask: what is Fact?","I ask: what is Interpretation?","I ask: what is only Prediction?","I ask: how much Evidence do I have?","I ask: what are the counterexamples?",
+"I ask: what are three other reasonable explanations?","I ask: what Evidence would change my mind?","If the answer is “none,” I may be protecting a belief rather than looking for Reality.","I don't treat the first explanation as the final answer.","I look for Hidden Variables.",
+"I look for Confounders.","I look for Feedback Loops.","I look for Delay Effects.","I look for Second-order Effects.","I look for Bottlenecks.",
+"I look for Leverage Points.","I look for Constraints.","I look for Network Effects.","I look for Opportunity Costs.","I look for Selection Bias.",
+"I look for Confirmation Bias.","I look for Survivorship Bias.","I look for Sunk Costs.","I look for the Base Rate.","I compare Prediction with Outcome.",
+"Prediction Error isn't shame; it's a Learning Signal.","Only once the Error Type is identified can the error begin to be corrected.","Only once the Bottleneck is found does effort begin to have leverage.","Only after the Retest can you know whether the Model has truly improved.","Only as Evidence accumulates is capability truly generated.",
+/* 211–245 Violet */
+"Reality is always bigger than my Model.","No Model needs to become my prison.","Knowledge is the map, not the territory.","Beliefs are tools, not masters.","Identity is also a Self Model that can be updated.",
+"“I'm this kind of person” is just the current version.","The past can explain me, but it doesn't have to command me.","I can respect tradition and still keep updating.","True inheritance isn't preserving answers; it's preserving the ability to update.","A teacher's best gift isn't making students believe the teacher forever.",
+"It's enabling students to one day surpass the teacher's Model.","AI isn't Truth either.","AI is a high-speed Model Generator.","I use AI to generate Hypotheses; I don't treat AI Output as Reality.","AI's most important value is expanding the Search Space.",
+"In the end, Reality Feedback is still needed.","Wisdom isn't knowing everything.","Wisdom is knowing when your own Model might fail.","Maturity isn't having no uncertainty.","Maturity is being able to keep moving forward with uncertainty.",
+"Control is not freedom.","Having choices is closer to freedom.","Freedom = not being held hostage by old Models.","Growth = continually improving Prediction Accuracy.","Learning = Reality rewriting the Model.",
+"Capability = a Model that can reliably produce effective Action.","Wisdom = still finding high-leverage structures across different contexts.","Pain sometimes comes from Reality, and sometimes from a long-standing mismatch between Model and Reality.","So I don't rush to eliminate every discomfort.","I first ask: what is this Prediction Error trying to tell me?",
+"A new Difference comes in, and the old structure comes under pressure.","Pressure creates Prediction Error.","Prediction Error drives Model Update.","Model Update creates New Capability.","I don't aim to be someone who is always right; I aim to be someone who can always update."
+];
+
+/* ---------- parse the Chinese source ---------- */
+const COLORS = [
+  {k:'red',zh:'紅',on:'var(--on-light)'},{k:'orange',zh:'橙',on:'var(--on-dark)'},{k:'yellow',zh:'黃',on:'var(--on-dark)'},
+  {k:'green',zh:'綠',on:'var(--on-light)'},{k:'blue',zh:'藍',on:'var(--on-light)'},{k:'indigo',zh:'靛',on:'var(--on-light)'},{k:'violet',zh:'紫',on:'var(--on-light)'}
+];
+const parts = RAW.split(/━+/).map(s=>s.trim()).filter(Boolean);
+const INTRO = (()=>{ const m = parts[0].match(/^【(.*?)】核心公式＝(.*?)使用方式＝(.*)$/s);
+  return {title:m[1], formula:m[2].split(/\s*→\s*/), usage:m[3]}; })();
+const SECT = [], CARDS = {};
+for(let i=1;i<=7;i++){
+  const sec = parts[i];
+  const hm = sec.match(/^【(.)色｜(.*?)｜(\d+)[–-](\d+)】/);
+  let body = sec.slice(hm[0].length), uni = null;
+  const ui = body.indexOf('【');
+  if(ui>=0){
+    const um = body.slice(ui).match(/】舊Model＝(.*?)Prediction Error＝(.*?)Correct Action＝(.*?)Model Update＝(.*?)New Capability＝(.*?)New Wisdom＝(.*)$/s);
+    uni = um.slice(1,7); body = body.slice(0,ui);
+  }
+  const ci = i-1;
+  SECT.push({ci, themes:hm[2], from:+hm[3], to:+hm[4], uni, uniEn:EN.unified[ci]||null});
+  body.split(/(?=(?<!\d)\d{2,3}｜)/).filter(s=>s.trim()).forEach(c=>{
+    const m = c.trim().match(/^(\d+)｜(.*?)(?:舊Model＝(.*?)Prediction Error＝(.*?)Correct Action＝(.*?)Model Update＝(.*?)能力＝(.*?)智慧＝(.*))?$/s);
+    const n = +m[1];
+    const full = m[3]!==undefined;
+    const en = n<=105 ? EN_FULL[n-1] : [EN_SHORT[n-106]];
+    CARDS[n] = {n, ci, zh:{title:m[2], f: full? m.slice(3,9):null}, en:{title:en[0], f: full? en.slice(1):null}};
+  });
+}
+const strip = s=>s.replace(/^【(.*?)】/,'');
+const hdr = s=>(s.match(/^【(.*?)】/)||[])[1]||'';
+const OS = [...strip(parts[8]).matchAll(/(.)｜([A-Z]+)｜(.*?。)/g)].map((m,i)=>({c:m[1],layer:m[2],zh:m[3],en:EN.os[i]}));
+const OS_TITLE = hdr(parts[8]);
+const ALGO = strip(parts[9]).split('→').map(s=>s.trim());
+const ALGO_TITLE = hdr(parts[9]);
+const QS = strip(parts[10]).split(/[①②③④⑤⑥⑦]/).map(s=>s.trim()).filter(Boolean);
+const Q_TITLE = hdr(parts[10]);
+const FINAL = strip(parts[11]).split('。').map(s=>s.trim()).filter(Boolean).map(s=>s+'。');
+const FINAL_TITLE = hdr(parts[11]);
+const TOTAL = Object.keys(CARDS).length;
+if(TOTAL!==245||EN_FULL.length!==105||EN_SHORT.length!==140||FINAL.length!==EN.final.length||ALGO.length!==EN.algo.length) console.warn('data mismatch',TOTAL,EN_FULL.length,EN_SHORT.length,FINAL.length,ALGO.length);
+
+/* ---------- helpers ---------- */
+const $ = s=>document.querySelector(s);
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store = {get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let LANG = store.get('rc-lang') || 'both';
+let RATE = [0.7,0.9,1.1].includes(store.get('rc-rate')) ? store.get('rc-rate') : 0.9;
+const CAN_SPEAK = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+const SPK = '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M4 9v6h4l5 4V5L8 9H4z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16 8.5a5 5 0 0 1 0 7M18.8 6a8.5 8.5 0 0 1 0 12"/></svg>';
+const sayBtn = en => CAN_SPEAK ? ` <button class="say" data-say="${esc(en)}" aria-label="Play English" title="Play English">${SPK}</button>` : '';
+function T(zh,en,say=true){
+  const sb = say ? sayBtn(en) : '';
+  if(LANG==='zh') return `<span class="zh">${esc(zh)}</span>`;
+  if(LANG==='en') return `<span class="en1">${esc(en)}${sb}</span>`;
+  if(zh===en) return `<span class="zh">${esc(zh)}${sb}</span>`;
+  return `<span class="zh">${esc(zh)}</span><span class="en">${esc(en)}${sb}</span>`;
+}
+function U(zh,en){
+  if(LANG==='zh'||zh===en) return esc(zh);
+  if(LANG==='en') return esc(en);
+  return `${esc(zh)} <span class="ui-en">${esc(en)}</span>`;
+}
+const pad = n=>String(n).padStart(2,'0');
+const colStyle = ci=>`--c:var(--${COLORS[ci].k});--on:${COLORS[ci].on}`;
+const FIELD = [['舊Model','Old Model'],['Prediction Error','Prediction Error'],['Correct Action','Correct Action'],['Model Update','Model Update'],['能力','Capability'],['智慧','Wisdom']];
+const UFIELD = [['舊Model','Old Model'],['Prediction Error','Prediction Error'],['Correct Action','Correct Action'],['Model Update','Model Update'],['New Capability','New Capability'],['New Wisdom','New Wisdom']];
+const today = ()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
+function dayCard(){ let h=0; for(const ch of today()) h=(h*31+ch.charCodeAt(0))>>>0; return (h%245)+1; }
+
+function steps(labels, zh, en){
+  return `<ol class="steps">${labels.map((lb,i)=>`<li class="${i===3?'key':''}"><span class="lb">${U(lb[0],lb[1])}</span><p>${T(zh[i],en[i])}</p></li>`).join('')}</ol>`;
+}
+function cardFace(n){
+  const c = CARDS[n], s = SECT[c.ci], os = OS[c.ci];
+  let body;
+  if(c.zh.f) body = steps(FIELD, c.zh.f, c.en.f);
+  else {
+    body = `<div class="layer-box"><span class="label">${U('所屬層級','Layer')} · ${esc(os.layer)}</span><p>${T(os.zh,os.en)}</p></div>`;
+    if(s.uni) body += `<p class="sub-h">${U(COLORS[c.ci].zh+'色統一 Model Update',EN.colors[c.ci]+' · shared Model Update')}</p>`+steps(UFIELD, s.uni, s.uniEn);
+  }
+  const readBtn = CAN_SPEAK ? `<button class="read-all" data-card="${n}">${SPK}<span>${U('朗讀整張英文','Read card aloud')}</span></button>` : '';
+  return `<div class="face-head">
+      <div class="meta"><span>No. ${pad(n)}</span><span>${U(COLORS[c.ci].zh+'色',EN.colors[c.ci])} · ${esc(os.layer)}</span></div>
+      ${readBtn}
+      <h3 class="face-title">${T(c.zh.title,c.en.title)}</h3>
+    </div>
+    <div class="face-body">${body}</div>`;
+}
+
+/* ---------- views ---------- */
+const VIEWS = [
+  ['draw','今日抽卡','Daily Draw'],['cards','全部卡片','All Cards'],['os','七層生命OS','Seven-Layer OS'],['algo','底層演算法','Core Algorithm'],['def','最終定義','Definition']
+];
+const state = { view:'draw', filter:-1, q:'', draw:null };
+(function initDraw(){ const saved = store.get('rc-draw'); state.draw = (saved && saved.d===today() && CARDS[saved.n]) ? saved.n : dayCard(); })();
+
+function renderChrome(){
+  document.documentElement.lang = LANG==='en'?'en':'zh-Hant';
+  $('#brandTitle').innerHTML = T('彩虹卡 2.0','Rainbow Cards 2.0',false);
+  const sub = INTRO.title.split('｜')[1]||INTRO.title;
+  $('#brandSub').innerHTML = `<span class="inline">${T(sub, EN.intro.title.split('| ')[1],false)}</span>`;
+  document.querySelectorAll('.seg button[data-lang]').forEach(b=>b.setAttribute('aria-pressed', b.dataset.lang===LANG));
+  document.querySelectorAll('.seg button[data-rate]').forEach(b=>b.setAttribute('aria-pressed', +b.dataset.rate===RATE));
+  $('#tabs').innerHTML = VIEWS.map(([k,z,e])=>`<button data-view="${k}" ${state.view===k?'aria-current="page"':''}>${U(z,e)}</button>`).join('');
+}
+
+function renderDraw(animate){
+  const n = state.draw, c = CARDS[n];
+  const key = `rc-j-${today()}-${n}`, ans = store.get(key) || [];
+  $('#view-draw').innerHTML = `
+  <div class="draw-grid">
+    <div>
+      <div class="draw-actions">
+        <button class="btn primary" id="btnDraw">${U('抽一張','Draw a card')}</button>
+        <button class="btn" id="btnToday">${U('今日卡','Today’s card')}</button>
+        <button class="btn" id="btnOpen">${U('在卡庫中開啟','Open in deck')}</button>
+      </div>
+      <article class="face ${animate?'deal':''}" style="${colStyle(c.ci)}">${cardFace(n)}</article>
+      <p class="usage"><span class="label">${U('使用方式','How to use')}</span><br>${T(INTRO.usage, EN.intro.usage)}</p>
+    </div>
+    <div>
+      <h2 class="sec">${T(Q_TITLE, EN.qTitle)}</h2>
+      <p class="lede" style="margin-bottom:0">${U('用這張卡測試今天正在運作的Model。','Use this card to test the Model running in you today.')}</p>
+      <ol class="qs">${QS.map((q,i)=>`<li><label for="q${i}"><span>${T(q,EN.qs[i])}</span></label><textarea id="q${i}" data-i="${i}" rows="2">${esc(ans[i]||'')}</textarea></li>`).join('')}</ol>
+      <p class="note">${U('筆記只儲存在這個瀏覽器裡，依日期與卡號分開保存。','Notes are saved only in this browser, kept separately for each date and card.')}</p>
+    </div>
+  </div>`;
+  $('#btnDraw').onclick = ()=>{ let r; do{ r = 1+Math.floor(Math.random()*245);}while(r===state.draw); setDraw(r); };
+  $('#btnToday').onclick = ()=>setDraw(dayCard());
+  $('#btnOpen').onclick = ()=>openCard(n);
+  document.querySelectorAll('.qs textarea').forEach(t=>t.addEventListener('input',()=>{
+    const a = store.get(key)||[]; a[+t.dataset.i]=t.value; store.set(key,a);
+  }));
+}
+function setDraw(n){ stopSpeech(); state.draw=n; store.set('rc-draw',{d:today(),n}); renderDraw(true); }
+
+function renderCards(){
+  const chip = (ci,label,range)=>`<button class="chip" data-f="${ci}" aria-pressed="${state.filter===ci}" style="${ci>=0?colStyle(ci):''}">${ci>=0?'<i></i>':''}${label}${range?` <small>${range}</small>`:''}</button>`;
+  $('#view-cards').innerHTML = `
+    <h2 class="sec">${U('245 張卡','All 245 cards')}</h2>
+    <p class="lede">${U('依顏色篩選，或搜尋中英文關鍵字。點卡片看完整內容。','Filter by color or search in Chinese or English. Tap a card to see everything on it.')}</p>
+    <div class="toolbar">
+      <div class="chips">${chip(-1,U('全部','All'))}${SECT.map(s=>chip(s.ci,U(COLORS[s.ci].zh,EN.colors[s.ci]),`${pad(s.from)}–${s.to}`)).join('')}</div>
+      <input type="search" id="q" value="${esc(state.q)}" placeholder="${LANG==='en'?'Search cards':LANG==='zh'?'搜尋卡片':'搜尋卡片 / Search'}" aria-label="Search cards">
+    </div>
+    <p class="count" id="count"></p>
+    <div class="grid" id="grid"></div>`;
+  document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{state.filter=+b.dataset.f; renderCards();});
+  $('#q').addEventListener('input',e=>{state.q=e.target.value; renderGrid();});
+  renderGrid();
+}
+function matches(c,q){
+  if(!q) return true;
+  const hay = [c.n, c.zh.title, c.en.title, ...(c.zh.f||[]), ...(c.en.f||[])].join(' ').toLowerCase();
+  return hay.includes(q.toLowerCase());
+}
+function renderGrid(){
+  const list = Object.values(CARDS).filter(c=>(state.filter<0||c.ci===state.filter) && matches(c,state.q.trim()));
+  $('#count').textContent = LANG==='en' ? `${list.length} cards` : LANG==='zh' ? `共 ${list.length} 張` : `共 ${list.length} 張 · ${list.length} cards`;
+  $('#grid').innerHTML = list.length ? list.map(c=>`<button class="tile" data-n="${c.n}" style="${colStyle(c.ci)}">
+      <span class="t-head"><span class="sw">${pad(c.n)}</span><span class="t-kind">${c.zh.f?U('完整卡 · 6 步','Full card · 6 steps'):U('單句卡','Statement')}</span></span>
+      <span class="t-title">${T(c.zh.title,c.en.title,false)}</span></button>`).join('')
+    : `<p class="empty">${U('沒有符合的卡片，試試其他關鍵字。','No cards match. Try another word.')}</p>`;
+  document.querySelectorAll('.tile').forEach(t=>t.onclick=()=>openCard(+t.dataset.n));
+}
+
+function renderOS(){
+  $('#view-os').innerHTML = `
+    <h2 class="sec">${T(OS_TITLE, EN.osTitle)}</h2>
+    <p class="lede">${U('七種顏色是七層更新能力。','The seven colors are seven layers of the ability to update.')}</p>
+    <div class="os">${OS.map((o,i)=>{ const s=SECT[i]; return `<div class="os-row" style="${colStyle(i)}">
+      <div class="os-block"><b>${esc(o.c)}</b><span>${esc(o.layer)}</span></div>
+      <div><p class="os-stmt">${T(o.zh,o.en)}</p><div class="os-themes">${T(s.themes,EN.themes[i])}</div><span class="label">${pad(s.from)}–${s.to} · ${s.to-s.from+1} ${U('張','cards')}</span></div>
+      <button class="btn" data-f="${i}">${U('看這層的卡','Browse cards')}</button></div>`;}).join('')}</div>`;
+  document.querySelectorAll('#view-os .btn').forEach(b=>b.onclick=()=>{state.filter=+b.dataset.f; state.q=''; go('cards');});
+}
+
+function renderAlgo(){
+  const zhF = INTRO.formula, enF = EN.intro.formula;
+  const hot = new Set(['Prediction Error','Correct Action','Model Update','New Capability','New Wisdom']);
+  $('#view-algo').innerHTML = `
+    <h2 class="sec">${U('核心公式','Core formula')}</h2>
+    <p class="lede">${U('每張卡都在走同一條路。','Every card walks the same path.')}</p>
+    <div class="formula">${zhF.map((z,i)=>`${i?'<span class="arrow">→</span>':''}<span class="node">${T(z,enF[i])}</span>`).join('')}</div>
+    <h2 class="sec">${T(ALGO_TITLE, EN.algoTitle)}</h2>
+    <p class="lede">${U('從Reality出發，經過誤差與修正，最後通往更高的自由度。','Starting from Reality, passing through error and correction, and ending in greater freedom.')}</p>
+    <ol class="loop">${ALGO.map((a,i)=>`<li class="${hot.has(a)?'hot':''} ${i>=17?'tail':''}"><span>${T(a,EN.algo[i])}</span></li>`).join('')}</ol>
+    <div class="legend"><span><i class="hot"></i>${U('核心公式中的步驟','Step in the core formula')}</span><span><i class="tail"></i>${U('最終收穫','What it adds up to')}</span></div>`;
+}
+
+function renderDef(){
+  const F = FINAL, E = EN.final;
+  const eq = (z,e)=>{ const [zk,...zv]=z.split('＝'); const [ek,...ev]=e.split(' = '); return `<div class="k">${T(zk,ek)}</div><div>${T(zv.join('＝'),ev.join(' = '))}</div>`; };
+  $('#view-def').innerHTML = `<div class="def">
+    <div class="intro-card">
+      <span class="label">${U('原創智慧卡','Original wisdom cards')}</span>
+      <p style="margin:6px 0 10px;font-family:var(--serif);font-weight:600;font-size:17px">${T(INTRO.title, EN.intro.title)}</p>
+      <p style="margin:0">${T(INTRO.usage, EN.intro.usage)}</p>
+    </div>
+    <h2 class="sec" style="margin-bottom:14px">${T(FINAL_TITLE, EN.finalTitle)}</h2>
+    <ul class="nots">${[0,1,2].map(i=>`<li>${T(F[i],E[i])}</li>`).join('')}</ul>
+    <p class="thesis">${T(F[3],E[3])}</p>
+    <div class="eqs">${[4,5,6,7,8,9,10,11].map(i=>eq(F[i],E[i])).join('')}</div>
+    <h3 class="rainbow-h">${T(F[12],E[12])}${T(F[13],E[13])}</h3>
+    <ul class="layers">${[14,15,16,17,18,19,20].map((i,k)=>`<li style="${colStyle(k)}"><i></i><div>${T(F[i],E[i])}</div></li>`).join('')}</ul>
+    <div class="goal">${[21,22,23,24,25].map(i=>`<p>${T(F[i],E[i])}</p>`).join('')}</div>
+  </div>`;
+}
+
+const RENDER = {draw:renderDraw, cards:renderCards, os:renderOS, algo:renderAlgo, def:renderDef};
+function go(v){
+  state.view = v;
+  VIEWS.forEach(([k])=>$('#view-'+k).hidden = k!==v);
+  renderChrome(); RENDER[v]();
+  if(location.hash.slice(1)!==v) history.replaceState(null,'','#'+v);
+}
+
+/* ---------- dialog ---------- */
+const dlg = $('#dlg'); let dlgN = null;
+function openCard(n){
+  stopSpeech(); dlgN = n; const c = CARDS[n];
+  $('#dlgBody').innerHTML = `<article class="face" style="${colStyle(c.ci)}">${cardFace(n)}</article>
+    <div class="dlg-nav"><button class="btn" id="dPrev">← ${U('上一張','Previous')}</button><button class="btn" id="dClose">${U('關閉','Close')}</button><button class="btn" id="dNext">${U('下一張','Next')} →</button></div>`;
+  $('#dPrev').onclick = ()=>openCard(n===1?245:n-1);
+  $('#dNext').onclick = ()=>openCard(n===245?1:n+1);
+  $('#dClose').onclick = ()=>dlg.close();
+  if(!dlg.open) dlg.showModal();
+}
+dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); });
+dlg.addEventListener('keydown',e=>{ if(e.key==='ArrowLeft') $('#dPrev').click(); if(e.key==='ArrowRight') $('#dNext').click(); });
+
+/* ---------- English speech ---------- */
+let VOICE = null, activeBtn = null;
+function pickVoice(){
+  if(!CAN_SPEAK) return;
+  const vs = speechSynthesis.getVoices().filter(v=>/^en[-_]/i.test(v.lang));
+  VOICE = vs.find(v=>/en[-_]US/i.test(v.lang) && /natural|google|samantha|aria|jenny/i.test(v.name))
+       || vs.find(v=>/en[-_]US/i.test(v.lang)) || vs[0] || null;
+}
+function stopSpeech(){
+  if(!CAN_SPEAK) return;
+  speechSynthesis.cancel();
+  if(activeBtn){ activeBtn.classList.remove('on'); activeBtn = null; }
+}
+function speak(lines, btn){
+  if(!CAN_SPEAK) return;
+  const wasActive = btn && btn===activeBtn;
+  stopSpeech();
+  if(wasActive) return;            // second tap on the same button stops it
+  if(!VOICE) pickVoice();
+  activeBtn = btn || null; if(btn) btn.classList.add('on');
+  lines.forEach((text,i)=>{
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = VOICE ? VOICE.lang : 'en-US'; if(VOICE) u.voice = VOICE; u.rate = RATE;
+    if(i===lines.length-1) u.onend = u.onerror = ()=>{ if(activeBtn===btn){ btn && btn.classList.remove('on'); activeBtn=null; } };
+    speechSynthesis.speak(u);
+  });
+}
+function cardLines(n){
+  const c = CARDS[n], s = SECT[c.ci];
+  const out = [`Card ${n}. ${c.en.title}`];
+  if(c.en.f) FIELD.forEach((lb,i)=>out.push(`${lb[1]}: ${c.en.f[i]}`));
+  else {
+    out.push(`Layer: ${EN.os[c.ci]}`);
+    if(s.uniEn) UFIELD.forEach((lb,i)=>out.push(`${lb[1]}: ${s.uniEn[i]}`));
+  }
+  return out;
+}
+if(CAN_SPEAK){
+  pickVoice();
+  speechSynthesis.addEventListener && speechSynthesis.addEventListener('voiceschanged', pickVoice);
+  $('.seg-lb').innerHTML = SPK;
+} else {
+  $('#rateSeg').hidden = true;
+}
+document.addEventListener('click',e=>{
+  const s = e.target.closest('.say');
+  if(s){ e.preventDefault(); e.stopPropagation(); speak([s.dataset.say], s); return; }
+  const r = e.target.closest('.read-all');
+  if(r){ speak(cardLines(+r.dataset.card), r); }
+});
+dlg.addEventListener('close', stopSpeech);
+
+/* ---------- boot ---------- */
+document.querySelectorAll('.seg button[data-lang]').forEach(b=>b.onclick=()=>{
+  stopSpeech(); LANG=b.dataset.lang; store.set('rc-lang',LANG); go(state.view); if(dlg.open) openCard(dlgN);
+});
+document.querySelectorAll('.seg button[data-rate]').forEach(b=>b.onclick=()=>{
+  RATE=+b.dataset.rate; store.set('rc-rate',RATE); renderChrome();
+});
+$('#tabs').addEventListener('click',e=>{ const b=e.target.closest('button[data-view]'); if(b) go(b.dataset.view); });
+const h = location.hash.slice(1);
+go(VIEWS.some(v=>v[0]===h)?h:'draw');
+</script>
+
+</body>
+</html>

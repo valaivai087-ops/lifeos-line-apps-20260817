@@ -314,6 +314,55 @@ details.deep summary{cursor:pointer;font-size:13px;color:var(--accent);font-weig
 .errgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
 .promptgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
 .prompt p{margin:6px 0 8px;line-height:1.7}
+.tdtop{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:760px){.tdtop{grid-template-columns:1fr}}
+.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,150px));gap:14px;justify-content:center;margin:14px 0}
+.slotc{display:grid;gap:6px;text-align:center;justify-items:center}
+.slotc>button,.slotempty{width:100%}
+.slotlab{font-family:var(--serif);font-weight:700;color:var(--gold)}
+.slotempty{aspect-ratio:300/516;border:2px dashed var(--line);border-radius:6px;display:grid;place-items:center;font-family:var(--mono);font-size:22px;color:var(--muted)}
+.deckfan{display:grid;grid-template-columns:repeat(auto-fill,minmax(42px,1fr));gap:6px;margin-top:6px}
+.cb{aspect-ratio:300/516;border-radius:4px;border:1px solid var(--gold);cursor:pointer;padding:0;
+ background:radial-gradient(circle at 50% 50%,color-mix(in srgb,var(--gold) 55%,transparent) 0 14%,transparent 15%),repeating-linear-gradient(45deg,color-mix(in srgb,var(--accent) 85%,#000) 0 4px,color-mix(in srgb,var(--accent) 65%,#000) 4px 8px);
+ transition:transform .15s,box-shadow .15s}
+.cb:hover,.cb:focus-visible{transform:translateY(-6px);box-shadow:0 6px 12px color-mix(in srgb,var(--ink) 25%,transparent)}
+.cb.gone{visibility:hidden}
+@media (prefers-reduced-motion:no-preference){.flipin .art{animation:flip .5s ease both}@keyframes flip{from{transform:rotateY(90deg)}to{transform:none}}}
+.tdread{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.tdposh{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.tdposb{font-size:14.5px;line-height:1.75}
+.tdsum{margin-top:14px}
+.elbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+.el{padding:2px 10px;border-radius:999px;font-size:13px;font-weight:700;color:#fff}
+.el0{background:#B5532F}.el1{background:#2F6FA8}.el2{background:#6B7F8E}.el3{background:#5B7A3A}.el4{background:#8A6A1F}
+.tdhist{display:grid;gap:8px}
+.tdh{display:grid;grid-template-columns:150px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:var(--surface)}
+@media (max-width:640px){.tdh{grid-template-columns:1fr}}
+.coinstage{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:16px;align-items:start}
+@media (max-width:640px){.coinstage{grid-template-columns:1fr}}
+.icladder{display:grid;gap:4px}
+.icrow{display:grid;grid-template-columns:52px 80px 1fr;gap:10px;align-items:center;padding:4px 8px;border-radius:4px;min-height:28px;font-size:13px}
+.icrow.empty{border:1px dashed var(--line)}
+.icrow.mv{background:color-mix(in srgb,var(--moving) 12%,transparent)}
+.icrow.mv .lbar i{background:var(--moving)}
+.coinbox{display:grid;gap:10px;justify-items:center;text-align:center}
+.coins{display:flex;gap:10px}
+.coin{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-family:var(--serif);font-weight:900;font-size:18px;border:3px double var(--gold)}
+.coin.h{background:color-mix(in srgb,var(--gold) 30%,var(--surface))}
+.coin.t{background:var(--sunk)}
+.coin.blank{color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.coin.h,.coin.t{animation:cflip .45s ease both}@keyframes cflip{from{transform:rotateY(180deg) scale(.8)}to{transform:none}}}
+.numrow{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.numbox{display:grid;gap:4px}
+.numbox input{width:110px;font-size:22px;font-family:var(--mono);text-align:center;padding:8px}
+.icres{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:860px){.icres{grid-template-columns:1fr}}
+.icfig{display:grid;gap:12px}
+.soupen{font-family:var(--sans);font-size:15.5px;line-height:1.8;color:var(--muted);border-left:3px solid var(--line);padding-left:12px}
+.warm{margin:0 0 6px;font-family:var(--serif);font-size:15px;color:var(--gold)}
+.warm::before{content:"❝ ";opacity:.7}
+.soupin{border-left:3px solid var(--gold);padding:4px 0 4px 12px}
+.soupin .soupbody{font-size:15.5px;margin:6px 0 0}
 .paths{display:grid;gap:8px}
 .path{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start}
 .path .pl{font-family:var(--mono);font-weight:500;padding-top:8px;color:var(--accent)}
@@ -777,7 +826,7 @@ verify:["小安預測：「兩週內至少有一位老客戶願意談合作」�
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-let L=LS.get("wn.lang2","zh");
+let L=LS.get("wn.lang3","bi");
 let TOPIC=LS.get("wn.topic","all");
 let SQ="";
 let TAB=LS.get("wn.tab","today");
@@ -855,7 +904,7 @@ const cardLink=C=>`<button class="chip" data-card="${C.id}">${L==="en"?C.en:C.zh
 const hName=h=>ti(h.zh,h.en);
 
 /* ========== TABS ========== */
-const TABS=[["today","今日智慧導航","Today's Navigation"],["guide","新手指南","Beginner's Guide"],["soup","心靈雞湯","Soul Soup"],["matrix","決策母體","Decision Matrix"],["lab","更新實驗室","Update Lab"],["iching","易經64卦","I Ching · 64"],["tarot","塔羅78牌","Tarot · 78"],["fusion","易經×塔羅整合","Integration"],["model","我的Model Update","My Model Update"]];
+const TABS=[["today","今日智慧導航","Today's Navigation"],["draw","塔羅抽牌","Tarot Draw"],["icast","易經起卦","I Ching Cast"],["guide","新手指南","Beginner's Guide"],["soup","心靈雞湯","Soul Soup"],["matrix","決策母體","Decision Matrix"],["lab","更新實驗室","Update Lab"],["iching","易經64卦","I Ching · 64"],["tarot","塔羅78牌","Tarot · 78"],["fusion","易經×塔羅整合","Integration"],["model","我的Model Update","My Model Update"]];
 function renderChrome(){
   document.documentElement.lang=L==="en"?"en":"zh-Hant";
   document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===L));
@@ -866,7 +915,7 @@ function render(){
   renderChrome();
   const m=$("#main");
   if(SQ.trim()){renderSearch(m,SQ.trim());return}
-  ({today:renderToday,guide:renderGuide,soup:renderSoup,matrix:renderMatrix,lab:renderLab,iching:renderIChing,tarot:renderTarot,fusion:renderFusion,model:renderModel})[TAB](m);
+  ({today:renderToday,guide:renderGuide,draw:renderDraw,icast:renderICast,soup:renderSoup,matrix:renderMatrix,lab:renderLab,iching:renderIChing,tarot:renderTarot,fusion:renderFusion,model:renderModel})[TAB](m);
 }
 
 /* ---------- TODAY ---------- */
@@ -1114,7 +1163,7 @@ function renderToday(m){
       ${structureHTML(rd)}
       <div class="flow">
       ${STEPS.map(([k,ch,qz,qe,hz,he])=>`<div class="step" id="st-${k}"><div class="mark">${ch}</div><div>
-        <h3>${ch}｜${ti(qz,qe)}</h3><p class="plain">${t(STEP_PL[k][0],STEP_PL[k][1])}</p>
+        <h3>${ch}｜${ti(qz,qe)}</h3><p class="plain">${t(STEP_PL[k][0],STEP_PL[k][1])}</p><p class="warm">${t(STEP_WARM[k][0],STEP_WARM[k][1])}</p>
         <div class="toolchip">${tp("用到","Uses")}：<b>${tp(STEP_TOOL[k][0],STEP_TOOL[k][1])}</b>　<span class="muted">${t(hz,he)}</span></div>
         ${stepViz(k,rd)}<div class="reading">${readFor(k,rd)}</div>
         <details class="deep"><summary>${tp("深入學習：原理・生活舉例・具體做法（依本次卦與牌）","Learn more: principle · life example · how-to (from this reading)")}</summary>${deepHTML(k,rd)}</details>
@@ -1162,7 +1211,7 @@ function quickHTML(rd){
     <li><span class="qk">${tp("今日心靈雞湯","Today's soul soup")}</span><div><button class="linkbtn" data-soup="${h.n}">《${L==="en"?esc(h.soup.te):esc(h.soup.tz)}》</button> <span class="small muted">${L==="en"?esc(h.soup.me):esc(h.soup.bz.slice(0,30))+"…"}</span></div></li>
     <li><span class="qk">${tp("7 天後對答案","Check in 7 days")}</span><div>${t(h.prz,h.pre)} <span class="small muted">（${P.check}）</span></div></li>
    </ol>
-   <div class="row" style="margin-top:12px"><button class="btn small" type="button" onclick="document.getElementById('cast').click()">${tp("重新起卦・抽牌","Cast & draw again")}</button><button class="btn primary small" type="button" onclick="document.getElementById('saveR').click()">${tp("收藏，7 天後回來對答案","Save and check back in 7 days")}</button><button class="btn small" type="button" data-goto="steps13">${tp("看完整 13 步講解 ↓","See all 13 steps ↓")}</button><button class="btn small" type="button" data-tab="guide">${tp("看不懂名詞？新手指南","Unfamiliar terms? Guide")}</button></div>
+   <div class="row" style="margin-top:12px"><button class="btn small" type="button" onclick="document.getElementById('cast').click()">${tp("重新起卦・抽牌","Cast & draw again")}</button><button class="btn primary small" type="button" onclick="document.getElementById('saveR').click()">${tp("收藏，7 天後回來對答案","Save and check back in 7 days")}</button><button class="btn small" type="button" data-tab="icast">${tp("親手擲錢起卦","Cast coins yourself")}</button><button class="btn small" type="button" data-tab="draw">${tp("憑直覺自己抽牌","Pick cards by intuition")}</button><button class="btn small" type="button" data-goto="steps13">${tp("看完整 13 步講解 ↓","See all 13 steps ↓")}</button><button class="btn small" type="button" data-tab="guide">${tp("看不懂名詞？新手指南","Unfamiliar terms? Guide")}</button></div>
   </div>`;
 }
 
@@ -1341,7 +1390,7 @@ function openSoup(n){
   openSheet(`<button class="btn small close" data-close>${tp("關閉","Close")}</button>
   <div class="eyebrow">${tp("心靈雞湯","Soul soup")}・${tp(s.th,themeEn(s.th))}・${h.zh}</div>
   <h2 class="soupt">${L==="en"?esc(s.te):esc(s.tz)}</h2>${L==="bi"?`<div class="muted">${esc(s.te)}</div>`:""}
-  ${L==="en"?`<p class="soupbody">${esc(s.me)}</p><p class="small muted">${esc(h.ple)}</p>`:`<p class="soupbody">${esc(s.bz)}</p>${L==="bi"?`<p class="small muted">${esc(s.me)}</p>`:""}`}
+  ${L!=="en"?`<p class="soupbody">${esc(s.bz)}</p>`:""}${L!=="zh"?`<p class="soupbody${L==="bi"?" soupen":""}">${esc(s.be)}</p>`:""}
   <div class="soupbox"><div><span class="tag">${tp("金句","Golden line")}</span><span class="gold">「${t(h.qz,h.qe)}」</span></div>
    <div><span class="tag">${tp("今天練習","Practice today")}</span>${t(h.az,h.ae)}</div>
    <div><span class="tag">${tp("帶走的智慧","Take away")}</span>${t(h.wz,h.we)}</div></div>
@@ -1355,7 +1404,7 @@ function renderSoup(m){
   <div class="souphero">
    <div class="eyebrow">${tp("今日一篇・依你的卦","Today's piece · from your hexagram")}　${today.zh}</div>
    <h2 class="soupt">${L==="en"?esc(today.soup.te):esc(today.soup.tz)}</h2>
-   <p class="soupbody">${L==="en"?esc(today.soup.me):esc(today.soup.bz)}</p>
+   ${L!=="en"?`<p class="soupbody">${esc(today.soup.bz)}</p>`:""}${L!=="zh"?`<p class="soupbody${L==="bi"?" soupen":""}">${esc(today.soup.be)}</p>`:""}
    <div class="row"><button class="btn primary small" data-soup="${today.n}">${tp("打開全文與練習","Open with practice")}</button><button class="btn small" id="soupRand">${tp("隨機抽一篇","Random piece")}</button></div>
   </div>
   <div class="toolbar" style="margin-top:20px"><input type="search" id="soupq" placeholder="${esc(tp("搜尋文章…","Search articles…"))}" value="${esc(SOUP_Q)}">
@@ -1369,7 +1418,7 @@ document.addEventListener("click",async e=>{
   const s=e.target.closest("[data-soup]");if(s){e.stopPropagation();openSoup(+s.dataset.soup);return}
   const f=e.target.closest("[data-fav]");if(f){e.stopPropagation();const n=+f.dataset.fav;FAV=FAV.includes(n)?FAV.filter(x=>x!==n):[...FAV,n];LS.set("wn.fav",FAV);if(TAB==="soup"&&!SQ)renderSoup($("#main"));openSoup(n);return}
   const nx=e.target.closest("[data-soupnext]");if(nx){e.stopPropagation();openSoup(+nx.dataset.soupnext%64+1);return}
-  const cp=e.target.closest("[data-copysoup]");if(cp){e.stopPropagation();const h=HEX[+cp.dataset.copysoup-1];const txt=`《${h.soup.tz}》\n\n${h.soup.bz}\n\n金句：「${h.qz}」\n今天練習：${h.az}\n——易經×塔羅 智慧導航・${h.zh}`;try{await navigator.clipboard.writeText(txt);cp.textContent=tp("已複製","Copied")}catch(err){cp.textContent=tp("無法複製，請手動選取文字","Couldn't copy — select the text manually")}}
+  const cp=e.target.closest("[data-copysoup]");if(cp){e.stopPropagation();const h=HEX[+cp.dataset.copysoup-1];const txt=`《${h.soup.tz}》${L!=="zh"?" "+h.soup.te:""}\n\n${L!=="en"?h.soup.bz+"\n\n":""}${L!=="zh"?h.soup.be+"\n\n":""}金句 Golden line：「${h.qz}」${L!=="zh"?" "+h.qe:""}\n今天練習 Practice：${h.az}${L!=="zh"?" "+h.ae:""}\n——易經×塔羅 智慧導航・${h.zh}`;try{await navigator.clipboard.writeText(txt);cp.textContent=tp("已複製","Copied")}catch(err){cp.textContent=tp("無法複製，請手動選取文字","Couldn't copy — select the text manually")}}
 },true);
 
 /* ---------- 華夏動態決策母體 ---------- */
@@ -1717,6 +1766,284 @@ GLOSS.push(["窮則變","At the limit, change","《繫辭》：「窮則變，�
  ["歷史權重","Historical weight","一個答案被重複、被引用的次數。權重高不代表正確，更不代表適合未來。","How often an answer has been repeated and cited. High weight isn't correctness, nor fitness for the future."],
  ["版本紀錄","Version history","把觀點的每次修改都保存下來，看得到自己怎麼更新。","Saving each revision of a view so you can see how you've updated."]);
 
+/* ---------- 塔羅抽牌導航：用直覺選牌，對應心境 ---------- */
+const MOODS=[["平靜","Calm",3,"平靜是很好的狀態，適合看清楚自己真正想要什麼。","Calm is a good place to see what you really want."],
+ ["焦慮","Anxious",2,"焦慮通常是想法跑在事實前面。先深呼吸三次，再看牌。","Anxiety is usually thoughts running ahead of facts. Take three breaths, then look."],
+ ["疲累","Tired",3,"累了不是失敗，是身體在提醒你補充。今天的牌會比較照顧你。","Tiredness isn't failure; it's your body asking to refuel."],
+ ["期待","Hopeful","M","期待是往前的力量，看看它要把你帶去哪裡。","Hope is forward energy; see where it wants to take you."],
+ ["難過","Sad",1,"難過的時候，不用急著變好。先讓牌陪你看看這份感受。","When you're sad, there's no rush to feel better. Let the cards sit with you first."],
+ ["生氣","Angry",0,"生氣裡常常藏著一個被踩到的界線。先找出那條界線。","Anger often hides a boundary that was crossed. Find that boundary first."],
+ ["迷惘","Lost","M","迷惘代表舊地圖不夠用了，正好是換新地圖的時候。","Feeling lost means the old map no longer works — a good time for a new one."]];
+const SPREADS={
+ 1:[["今日心境","Today's mood","這張牌就是你此刻內心的樣子。","This card is what your heart looks like right now.","mood"]],
+ 3:[["象","Image","處境看起來的樣子","How the situation looks","image"],["心","Heart","你心裡的想法和擔心","Your thoughts and worries","heart"],["盲","Blind spot","你可能忽略的地方","What you may be missing","blind"]],
+ 5:[["現在的心","Heart now","你此刻的內在狀態","Your inner state now","mood"],["壓力從哪裡來","Source of pressure","讓你卡住的原因","What's weighing on you","stress"],["被忽略的需要","Unmet need","你真正需要、卻沒照顧到的","What you need but haven't tended","need"],["可以做的事","What you can do","今天就能做的一步","One step you can take today","do"],["會帶來的變化","Change it brings","做了之後，可能出現的轉變","What may shift once you act","change"]]};
+const ELEM=[["火","Fire","行動力強，但容易急。先把熱情排進行程，再行動。","Strong drive but prone to rush. Schedule the passion, then act."],["水","Water","情感是主角。先照顧感受，再做決定。","Feelings lead. Tend them before deciding."],["風","Air","想得很多。把想法寫下來，區分哪些是事實。","Lots of thinking. Write thoughts down and separate out the facts."],["土","Earth","關注現實：身體、錢、工作。從一件具體的小事開始。","Focused on the practical: body, money, work. Start with one concrete thing."],["大牌","Major","這是人生層次的課題，不只是日常小事，值得慢慢想。","A life-level theme, not just daily business — worth reflecting on slowly."]];
+let TD={spread:LS.get("wn.spread",3),mood:null,deck:[],picked:[],saved:false};
+function tdShuffle(){const d=[...Array(78).keys()];for(let i=d.length-1;i>0;i--){const j=rnd(i+1);[d[i],d[j]]=[d[j],d[i]]}TD.deck=d;TD.picked=[];TD.saved=false}
+if(!TD.deck.length)tdShuffle();
+const elemOf=C=>C.major?4:C.suit;
+function resonantHex(C){if(C.major)return HEX[C.hex-1];const s=SUITS[C.suit];return HEX.find(h=>s.tri.includes(h.up)&&s.tri.includes(h.lo))}
+function posReading(kind,x){
+  const C=x.C,kw=x.rev?t(C.rz,C.re):t(C.uz,C.ue),tl=cardLine(C);
+  switch(kind){
+   case "mood":return t(`${C.plz} 關鍵字：${x.rev?C.rz:C.uz}。${x.rev?"逆位：這份心情有點卡住，允許它存在，再慢慢鬆開。":"正位：這份能量是順的，可以好好使用。"}`,`${C.ple} Keywords: ${x.rev?C.re:C.ue}. ${x.rev?"Reversed: the feeling is a bit stuck — let it be, then loosen it slowly.":"Upright: the energy flows; use it well."}`);
+   case "image":return `${t(C.plz,C.ple)}<div class="small">${tp("在這個主題上","On this topic")}：${tl}</div>`;
+   case "heart":return t(`你心裡的狀態是「${x.rev?C.rz:C.uz}」。${x.rev?"這股能量被卡住了，先承認它。":"這股能量可以直接成為動力。"}`,`Your inner state: ${x.rev?C.re:C.ue}. ${x.rev?"This energy is blocked — acknowledge it first.":"This energy can become fuel directly."}`)+`<div class="small">${tl}</div>`;
+   case "blind":return t(C.bz,C.be);
+   case "stress":return t(`壓力可能來自：${x.rev?C.rz:C.uz}。${C.bz}`,`The pressure may come from: ${x.rev?C.re:C.ue}. ${C.be}`);
+   case "need":return t(`${C.bz} 你需要的可能是：${C.uz}。`,`${C.be} What you may need: ${C.ue}.`);
+   case "do":return `<b>${t(C.doz,C.doe)}</b>`;
+   case "change":return `${tl}<div class="small">${kw}</div>`;
+  }
+}
+function drawSummary(){
+  const xs=TD.picked.map(p=>({C:CARDS[p.id],rev:p.rev})),n=xs.length;
+  const cnt=[0,0,0,0,0];xs.forEach(x=>cnt[elemOf(x.C)]++);
+  const mx=Math.max(...cnt),dom=cnt.map((v,i)=>[v,i]).filter(a=>a[0]===mx).map(a=>a[1]);
+  const revN=xs.filter(x=>x.rev).length;
+  const key=xs[n===3?1:0],kh=resonantHex(key.C),mxw=mxWhyCard(key.C);
+  const M=TD.mood!=null?MOODS[TD.mood]:null;
+  let moodLine="";
+  if(M){const target=M[2]==="M"?4:M[2],hit=cnt[target]>0;
+    moodLine=hit?t(`牌面呼應了你選的心情「${M[0]}」（出現${ELEM[target][0]}的牌）：你對自己的感受很準，照著這份感受去照顧自己。`,`The cards echo the mood you chose, "${M[1]}" (${ELEM[target][1]} cards appeared): you read yourself accurately — care for yourself along that line.`)
+      :t(`你選的是「${M[0]}」，但牌面以${ELEM[dom[0]][0]}為主：在「${M[0]}」底下，可能還有一層「${ELEM[dom[0]][2].split("。")[0]}」的狀態。`,`You chose "${M[1]}", but the cards lean ${ELEM[dom[0]][1]}: beneath "${M[1]}" there may be another layer — ${ELEM[dom[0]][3].split(".")[0].toLowerCase()}.`);}
+  return `<div class="summary tdsum">
+   <div class="eyebrow">${tp("心境總結","Mood summary")}</div>
+   <dl class="sumdl">
+    ${M?`<dt>${tp("你的心情","Your mood")}</dt><dd>${tp(M[0],M[1])}　<span class="small muted">${t(M[3],M[4])}</span></dd><dt>${tp("心情 × 牌面","Mood × cards")}</dt><dd>${moodLine}</dd>`:""}
+    <dt>${tp("元素分布","Elements")}</dt><dd><div class="elbar">${ELEM.map((e,i)=>cnt[i]?`<span class="el el${i}">${tp(e[0],e[1])} ${cnt[i]}</span>`:"").join("")}</div>${n>1?`<div class="small">${t(`以${dom.map(i=>ELEM[i][0]).join("、")}為主：${ELEM[dom[0]][2]}`,`Mostly ${dom.map(i=>ELEM[i][1]).join(", ")}: ${ELEM[dom[0]][3]}`)}</div>`:""}</dd>
+    <dt>${tp("逆位","Reversed")}</dt><dd>${revN===0?t("沒有逆位：能量大致順暢。","None reversed: energy is mostly flowing."):revN*2>=n?t(`${revN} 張逆位，超過一半：內在阻力比較多，今天先照顧自己，不必逼自己前進。`,`${revN} reversed, half or more: more inner resistance — look after yourself today rather than pushing forward.`):t(`${revN} 張逆位：有一個地方卡住了，找出它就好。`,`${revN} reversed: one spot is stuck; just find it.`)}</dd>
+    <dt>${tp("今天這樣做","Do today")}</dt><dd class="plainbox"><b>${t(key.C.doz,key.C.doe)}</b></dd>
+    <dt>${tp("記住這句話","Remember this")}</dt><dd class="gold">「${key.C.qz?t(key.C.qz,key.C.qe):t(kh.qz,kh.qe)}」</dd>
+    <dt>${tp("相關的卦","Related hexagram")}</dt><dd>${hexLink(kh)} ${t(kh.plz,kh.ple)}　<button class="linkbtn" data-soup="${kh.n}">《${L==="en"?esc(kh.soup.te):esc(kh.soup.tz)}》</button></dd>
+    <dt>${tp("心靈雞湯","Soul soup")}</dt><dd><div class="soupin"><b>《${tp(kh.soup.tz,kh.soup.te)}》</b>${L!=="en"?`<p class="soupbody">${esc(kh.soup.bz)}</p>`:""}${L!=="zh"?`<p class="soupbody${L==="bi"?" soupen":""}">${esc(kh.soup.be)}</p>`:""}</div></dd>
+    <dt>${tp("決策母體","Decision matrix")}</dt><dd>${mxw.m.loop+1}. <b>${tp(mxw.L6.zh,mxw.L6.en)}</b>　<span class="small">${t(mxw.L6.d,mxw.L6.de)}</span></dd>
+   </dl></div>`;
+}
+function renderDraw(m){
+  const need=+TD.spread,pos=SPREADS[need],done=TD.picked.length>=need;
+  const hist=Store.entries.filter(e=>e&&e.kind==="tarot").sort((a,b)=>b.created-a.created);
+  m.innerHTML=`
+  <div class="tdtop">
+   <div class="panel">
+    <div class="eyebrow">${tp("1. 先選現在的心情（可略過）","1. Pick your mood (optional)")}</div>
+    <div class="radios" style="margin-top:8px">${MOODS.map((x,i)=>`<label><input type="radio" name="tdmood" value="${i}" ${TD.mood===i?"checked":""}>${tp(x[0],x[1])}</label>`).join("")}</div>
+    ${TD.mood!=null?`<p class="small muted" style="margin:8px 0 0">${t(MOODS[TD.mood][3],MOODS[TD.mood][4])}</p>`:""}
+   </div>
+   <div class="panel">
+    <div class="eyebrow">${tp("2. 選牌陣","2. Pick a spread")}</div>
+    <div class="radios" style="margin-top:8px">${[[1,"單張・今日心境","1 card · today's mood"],[3,"三張・象心盲","3 cards · image-heart-blind"],[5,"五張・心境導航","5 cards · mood navigation"]].map(([k,z,e])=>`<label><input type="radio" name="tdspread" value="${k}" ${need===k?"checked":""}>${tp(z,e)}</label>`).join("")}</div>
+    <div class="row" style="margin-top:8px"><span class="small muted">${tp("主題","Topic")}：</span><div class="radios">${TOPICS.map(([k,z,e])=>`<label><input type="radio" name="tdtopic" value="${k}" ${TOPIC===k?"checked":""}>${tp(z,e)}</label>`).join("")}</div></div>
+   </div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+   <div class="row" style="justify-content:space-between"><div class="eyebrow">${done?tp("3. 抽牌完成","3. Draw complete"):t(`3. 深呼吸，憑直覺選 ${need} 張牌（還要選 ${need-TD.picked.length} 張）`,`3. Breathe, and pick ${need} card(s) by intuition (${need-TD.picked.length} to go)`)}</div><button class="btn small" id="tdShuffle">${tp("重新洗牌","Reshuffle")}</button></div>
+   <div class="slots">${pos.map((p,i)=>{const x=TD.picked[i];return `<div class="slotc"><div class="slotlab">${tp(p[0],p[1])}</div>${x?`<button data-card="${x.id}" class="flipin" style="border:0;background:none;padding:0;min-width:0">${cardFace(x.id,x.rev)}</button>`:`<div class="slotempty">${i+1}</div>`}<div class="small muted">${tp(p[2],p[3])}</div></div>`}).join("")}</div>
+   ${done?"":`<div class="deckfan">${TD.deck.map((id,i)=>TD.picked.some(p=>p.id===id)?`<span class="cb gone"></span>`:`<button class="cb" data-pick="${id}" aria-label="${tp("第","Card ")}${i+1}${tp(" 張牌","")}"></button>`).join("")}</div>`}
+  </div>
+  ${done?`<h2 class="mxh">${tp("牌在說什麼","What the cards say")}</h2>
+   <div class="tdread">${pos.map((p,i)=>{const x={C:CARDS[TD.picked[i].id],rev:TD.picked[i].rev};return `<section class="panel tdpos"><div class="tdposh"><span class="l6n">${i+1}</span><div><b>${tp(p[0],p[1])}</b>・${tp(x.C.zh,x.C.en)}${x.rev?`<span class="rvtag">${tp("逆","rev")}</span>`:""}<div class="small muted">${tp(p[2],p[3])}</div></div></div><div class="tdposb">${posReading(p[4],x)}</div></section>`}).join("")}</div>
+   ${drawSummary()}
+   <div class="row" style="margin-top:14px">
+    <button class="btn primary" id="tdSave" ${TD.saved?"disabled":""}>${TD.saved?tp("已收藏到心境紀錄","Saved to mood log"):tp("收藏到心境紀錄","Save to mood log")}</button>
+    ${need===3?`<button class="btn" id="tdToToday">${tp("用這三張牌走 13 步導航","Use these 3 cards in the 13 steps")}</button>`:""}
+    <button class="btn" id="tdAgain">${tp("再抽一次","Draw again")}</button>
+   </div>`:""}
+  <h2 class="mxh">${tp("心境紀錄","Mood log")}</h2>
+  ${hist.length?`<div class="chips" style="margin-bottom:10px">${MOODS.map((x,i)=>{const k=hist.filter(h=>h.mood===i).length;return k?`<span class="chip">${tp(x[0],x[1])} ×${k}</span>`:""}).join("")}</div>
+   <div class="tdhist">${hist.slice(0,20).map(h=>`<div class="tdh"><div class="small muted">${new Date(h.created).toLocaleString(L==="en"?"en":"zh-TW",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})}${h.mood!=null?"・"+tp(MOODS[h.mood][0],MOODS[h.mood][1]):""}</div><div class="chips">${h.picks.map(p=>cardLink(CARDS[p.id]).replace("</button>",p.rev?" ↺</button>":"</button>")).join("")}</div><button class="linkbtn small" data-tddel="${h.id}">${tp("刪除","Delete")}</button></div>`).join("")}</div>`
+   :`<p class="muted small">${t("還沒有紀錄。抽完牌後按「收藏到心境紀錄」，就能看到自己一段時間的心情變化。","No entries yet. After drawing, press Save to mood log to see how your moods change over time.")}</p>`}`;
+  m.querySelectorAll("input[name=tdmood]").forEach(r=>r.onchange=()=>{TD.mood=+r.value;renderDraw(m)});
+  m.querySelectorAll("input[name=tdspread]").forEach(r=>r.onchange=()=>{TD.spread=+r.value;LS.set("wn.spread",TD.spread);tdShuffle();renderDraw(m)});
+  m.querySelectorAll("input[name=tdtopic]").forEach(r=>r.onchange=()=>{TOPIC=r.value;LS.set("wn.topic",TOPIC);renderDraw(m)});
+  $("#tdShuffle").onclick=()=>{tdShuffle();renderDraw(m)};
+  m.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{if(TD.picked.length>=need)return;TD.picked.push({id:+b.dataset.pick,rev:rnd(10)<3});const y=scrollY;renderDraw(m);scrollTo(0,y)});
+  const sv=$("#tdSave");if(sv)sv.onclick=async()=>{await Store.put({id:uid(),kind:"tarot",created:Date.now(),spread:need,mood:TD.mood,topic:TOPIC,picks:TD.picked});TD.saved=true;renderDraw(m)};
+  const tt=$("#tdToToday");if(tt)tt.onclick=()=>{R.cards=TD.picked.map(p=>({id:p.id,rev:p.rev}));saveDraft();TAB="today";LS.set("wn.tab",TAB);render();scrollTo(0,0)};
+  const ag=$("#tdAgain");if(ag)ag.onclick=()=>{tdShuffle();renderDraw(m);scrollTo(0,0)};
+  m.querySelectorAll("[data-tddel]").forEach(b=>b.onclick=async()=>{if(b.dataset.armed!=="1"){b.dataset.armed="1";b.textContent=tp("再按一次確認","Tap again");return}await Store.del(b.dataset.tddel);renderDraw(m)});
+}
+
+/* ---------- 易經起卦導航：親手擲錢或數字起卦，對應心境 ---------- */
+const MOOD_TRI=[["坤","艮"],["坎"],["艮","坤"],["震","乾"],["兌","坎"],["離","震"],["巽","坎"]];
+const MOOD_RX=[["把這份平靜，用在一個你一直想好好決定的事上。","Use this calm on a decision you've wanted to make carefully."],
+ ["把擔心寫在左邊，已知的事實寫在右邊，一條一條對照。","Write worries on the left and known facts on the right; compare them line by line."],
+ ["今天刪掉一件事，早一點睡。","Drop one task today and go to bed earlier."],
+ ["把期待寫成一個有日期的小步驟。","Turn your hope into one small step with a date."],
+ ["找一個信任的人說一說，或把感受寫下來。","Talk to someone you trust, or write the feeling down."],
+ ["找出是哪一條界線被踩到了，想好一句平靜的話來說清楚。","Find which boundary was crossed and prepare one calm sentence to state it."],
+ ["只決定下一步，不必一次決定全部。","Decide only the next step, not everything at once."]];
+const XIANTIAN=["乾","兌","離","震","巽","坎","艮","坤"];  // 先天八卦數 1–8
+let IC={mood:null,method:LS.get("wn.icm","coin"),tosses:[],nums:["","",""],saved:false};
+const icLines=()=>IC.method==="coin"?IC.tosses.map(x=>x.v):IC.numLines||[];
+function icFromNums(){
+  const [a,b,c]=IC.nums.map(x=>parseInt(x,10));
+  if(![a,b,c].every(n=>n>0))return null;
+  const up=XIANTIAN[(a-1)%8],lo=XIANTIAN[(b-1)%8],mv=(c-1)%6;
+  const base=[...TRI[lo].l,...TRI[up].l];
+  return{lines:base.map((y,i)=>i===mv?(y?9:6):(y?7:8)),up,lo,mv};
+}
+function icReadingHTML(lines){
+  const base=lines.map(v=>v%2),moving=lines.map((v,i)=>v===6||v===9?i:-1).filter(i=>i>=0);
+  const h=hexOf(base),c=hexOf(lines.map(v=>v===9?0:v===6?1:v%2)),H=hu(h);
+  const M=IC.mood!=null?MOODS[IC.mood]:null,mt=IC.mood!=null?MOOD_TRI[IC.mood]:[];
+  const lo=moving.length?moving[0]:-1;
+  let rel="";
+  if(M){rel=mt.includes(h.lo)?t(`你的內心（下卦 ${TRI[h.lo].s} ${h.lo}・${TRI[h.lo].img}）正呼應「${M[0]}」：卦看見了你現在的感受，這份心情是真實的，值得被照顧。`,`Your inner self (lower trigram, ${TRI[h.lo].en}) echoes "${M[1]}": the hexagram sees what you feel — the feeling is real and deserves care.`)
+    :mt.includes(h.up)?t(`外在環境（上卦 ${TRI[h.up].s} ${h.up}・${TRI[h.up].img}）帶著「${M[0]}」的氣氛：這份心情可能大多來自外面的處境，不完全是你的問題。`,`Your surroundings (upper trigram, ${TRI[h.up].en}) carry the "${M[1]}" atmosphere: much of this feeling may come from outside, not entirely from you.`)
+    :t(`卦沒有直接呼應「${M[0]}」。它提醒你：在這份心情之外，處境真正的主題是「${h.kz}」。`,`The hexagram doesn't directly echo "${M[1]}". It reminds you that beyond this feeling, the real theme is "${h.ke}".`);}
+  return `<h2 class="mxh">${tp("卦在說什麼","What the hexagram says")}</h2>
+  <div class="icres">
+   <div class="panel icfig"><div class="hexpair">${hexFig(lines,moving)}<div><div class="hexname"><span class="no">${h.n}</span>${h.zh}</div><div class="small muted">${esc(h.en)}</div></div>${moving.length?`<span class="arrow">→</span>${hexFig(c.lines,[],"md")}<div><div class="hexname" style="font-size:20px"><span class="no">${c.n}</span>${c.zh}</div><div class="small muted">${tp("之卦","Relating")}</div></div>`:""}</div>
+    ${trigSplit(h)}</div>
+   <div class="summary">
+    <div class="eyebrow">${tp("心境解讀","Mood reading")}</div>
+    <dl class="sumdl">
+     ${M?`<dt>${tp("你的心情","Your mood")}</dt><dd>${tp(M[0],M[1])}　<span class="small muted">${t(M[3],M[4])}</span></dd><dt>${tp("心情 × 卦","Mood × hexagram")}</dt><dd>${rel}</dd>`:""}
+     <dt>${tp("現在的處境","Where you are")}</dt><dd>${t(h.plz,h.ple)}</dd>
+     <dt>${tp("內在與外在","Inside and outside")}</dt><dd>${t(`你的內心像「${TRI[h.lo].img}」——${TRI[h.lo].v}；外在環境像「${TRI[h.up].img}」——${TRI[h.up].v}。`,`Inside you is like ${TRI[h.lo].en.toLowerCase()} (${TRI[h.lo].ve}); around you is like ${TRI[h.up].en.toLowerCase()} (${TRI[h.up].ve}).`)}</dd>
+     <dt>${tp("現在的階段","Stage")}</dt><dd>${lo>=0?t(`第 ${lo+1} 爻動：<b>${PHASE_NAME[lo]}</b>。${POS[lo][3].split("：")[1]||""}。`,`Line ${lo+1} moves: <b>${PHASE_EN[lo]}</b>. ${POS[lo][4]}.`):t("沒有動爻：處境穩定，先照顧好現在。","No moving lines: the situation is steady; tend to the present.")}</dd>
+     ${moving.length?`<dt>${tp("接下來","Next")}</dt><dd>${t(`會轉向 ${c.zh}：${c.plz}`,`Turning toward ${c.en.split(" · ")[1]}: ${c.ple}`)}</dd>`:""}
+     <dt>${tp("心底正在醞釀","Brewing inside")}</dt><dd>${t(`互卦 ${H.zh}：${H.plz}`,`Nuclear ${H.en.split(" · ")[1]}: ${H.ple}`)}</dd>
+     <dt>${tp("心情處方","For this mood")}</dt><dd class="plainbox"><b>${IC.mood!=null?t(MOOD_RX[IC.mood][0],MOOD_RX[IC.mood][1]):t(h.az,h.ae)}</b>${IC.mood!=null?`<div class="small">${t(`卦的行動：${h.az}`,`The hexagram's action: ${h.ae}`)}</div>`:""}</dd>
+     <dt>${tp("記住這句話","Remember this")}</dt><dd class="gold">「${t(h.qz,h.qe)}」</dd>
+     <dt>${tp("帶走的智慧","Take away")}</dt><dd>${t(h.wz,h.we)}</dd>
+     <dt>${tp("心靈雞湯","Soul soup")}</dt><dd><div class="soupin"><b>《${tp(h.soup.tz,h.soup.te)}》</b>${L!=="en"?`<p class="soupbody">${esc(h.soup.bz)}</p>`:""}${L!=="zh"?`<p class="soupbody${L==="bi"?" soupen":""}">${esc(h.soup.be)}</p>`:""}</div></dd>
+    </dl>
+   </div>
+  </div>
+  <div class="row" style="margin-top:14px">
+   <button class="btn primary" id="icSave" ${IC.saved?"disabled":""}>${IC.saved?tp("已收藏到心境紀錄","Saved to mood log"):tp("收藏到心境紀錄","Save to mood log")}</button>
+   <button class="btn" id="icToToday">${tp("用這個卦走 13 步導航","Use this hexagram in the 13 steps")}</button>
+   <button class="btn" data-hex="${h.n}">${tp("看這一卦的完整說明","Full hexagram details")}</button>
+   <button class="btn" id="icAgain">${tp("再起一次卦","Cast again")}</button>
+  </div>`;
+}
+function renderICast(m){
+  const lines=icLines(),done=lines.length===6;
+  const hist=Store.entries.filter(e=>e&&e.kind==="iching").sort((a,b)=>b.created-a.created);
+  const coinHTML=IC.method==="coin"?`
+    <p class="small muted" style="margin:0 0 10px">${t("心裡想著現在的感受，按一次擲一爻。由下往上，共六次。正面算 3、反面算 2。","Hold your feeling in mind and press once per line — six times, from the bottom up. Heads 3, tails 2.")}</p>
+    <div class="coinstage">
+     <div class="icladder">${[5,4,3,2,1,0].map(i=>{const x=IC.tosses[i];return `<div class="icrow${x&&(x.v===6||x.v===9)?" mv":""}${x?"":" empty"}"><span class="lnm">${tp(POS[i][0]+"爻","L"+(i+1))}</span><span class="lbar">${x?(x.v%2?"<i></i>":"<i></i><i></i>"):""}</span><span class="small">${x?`${x.c.map(v=>v===3?tp("正","H"):tp("反","T")).join(" ")} = ${x.v}${x.v===6||x.v===9?`　<b class="hotn">${tp("動","moving")}</b>`:""}`:""}</span></div>`}).join("")}</div>
+     <div class="coinbox">${IC.tosses.length?`<div class="coins">${IC.tosses[IC.tosses.length-1].c.map(v=>`<span class="coin ${v===3?"h":"t"}">${v===3?tp("正","H"):tp("反","T")}</span>`).join("")}</div>`:`<div class="coins">${[0,1,2].map(()=>`<span class="coin blank">?</span>`).join("")}</div>`}
+      ${done?"":`<button class="btn primary" id="icToss">${t(`擲第 ${IC.tosses.length+1} 爻`,`Toss line ${IC.tosses.length+1}`)}</button><button class="btn small" id="icTossAll">${tp("一次擲完","Toss all")}</button>`}</div>
+    </div>`
+   :`<p class="small muted" style="margin:0 0 10px">${t("梅花易數的起卦法：心裡想著現在的感受，憑直覺寫下三個數字（1 以上都可以）。第一個數決定上卦、第二個決定下卦、第三個決定哪一爻在動。","The Plum Blossom method: holding your feeling in mind, write three numbers by intuition (any number from 1). The first sets the upper trigram, the second the lower, the third the moving line.")}</p>
+    <div class="numrow">${[0,1,2].map(i=>`<label class="numbox"><span class="small muted">${[tp("上卦","Upper"),tp("下卦","Lower"),tp("動爻","Moving")][i]}</span><input type="number" min="1" inputmode="numeric" id="icn${i}" value="${esc(IC.nums[i])}"></label>`).join("")}<button class="btn primary" id="icNum">${tp("起卦","Cast")}</button></div>
+    ${IC.numInfo?`<p class="small" style="margin:10px 0 0">${t(`算法：${IC.nums[0]} ÷ 8 餘數 → 上卦 ${IC.numInfo.up}；${IC.nums[1]} ÷ 8 餘數 → 下卦 ${IC.numInfo.lo}；${IC.nums[2]} ÷ 6 餘數 → 第 ${IC.numInfo.mv+1} 爻動。（先天八卦數：1 乾、2 兌、3 離、4 震、5 巽、6 坎、7 艮、8 坤；餘數 0 算 8 或 6）`,`How: ${IC.nums[0]} mod 8 → upper ${TRI[IC.numInfo.up].en}; ${IC.nums[1]} mod 8 → lower ${TRI[IC.numInfo.lo].en}; ${IC.nums[2]} mod 6 → line ${IC.numInfo.mv+1} moves. (Early Heaven numbers: 1 Heaven, 2 Lake, 3 Fire, 4 Thunder, 5 Wind, 6 Water, 7 Mountain, 8 Earth; remainder 0 counts as 8 or 6.)`)}</p>`:""}`;
+  m.innerHTML=`
+  <div class="tdtop">
+   <div class="panel"><div class="eyebrow">${tp("1. 先選現在的心情（可略過）","1. Pick your mood (optional)")}</div>
+    <div class="radios" style="margin-top:8px">${MOODS.map((x,i)=>`<label><input type="radio" name="icmood" value="${i}" ${IC.mood===i?"checked":""}>${tp(x[0],x[1])}</label>`).join("")}</div>
+    ${IC.mood!=null?`<p class="small muted" style="margin:8px 0 0">${t(MOODS[IC.mood][3],MOODS[IC.mood][4])}</p>`:""}</div>
+   <div class="panel"><div class="eyebrow">${tp("2. 選起卦方法","2. Choose a method")}</div>
+    <div class="radios" style="margin-top:8px"><label><input type="radio" name="icmeth" value="coin" ${IC.method==="coin"?"checked":""}>${tp("三枚錢・親手擲六次","Three coins · toss six times")}</label><label><input type="radio" name="icmeth" value="num" ${IC.method==="num"?"checked":""}>${tp("數字起卦・選三個數","Numbers · pick three")}</label></div>
+    <p class="small muted" style="margin:8px 0 0">${t("兩種都是傳統起卦法。擲錢比較像儀式，數字比較快。","Both are traditional. Coins feel like a ritual; numbers are quicker.")}</p></div>
+  </div>
+  <div class="panel" style="margin-top:14px"><div class="eyebrow">${done?tp("3. 起卦完成","3. Cast complete"):tp("3. 起卦","3. Cast")}</div>${coinHTML}</div>
+  ${done?icReadingHTML(lines):""}
+  <h2 class="mxh">${tp("易經心境紀錄","I Ching mood log")}</h2>
+  ${hist.length?`<div class="chips" style="margin-bottom:10px">${MOODS.map((x,i)=>{const k=hist.filter(h=>h.mood===i).length;return k?`<span class="chip">${tp(x[0],x[1])} ×${k}</span>`:""}).join("")}</div>
+   <div class="tdhist">${hist.slice(0,20).map(e=>{const hx=HEX[e.hex-1],cx=HEX[e.to-1];return `<div class="tdh"><div class="small muted">${new Date(e.created).toLocaleString(L==="en"?"en":"zh-TW",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})}${e.mood!=null?"・"+tp(MOODS[e.mood][0],MOODS[e.mood][1]):""}</div><div class="chips">${hexLink(hx)}${e.to!==e.hex?`<span class="muted">→</span>${hexLink(cx)}`:""}</div><button class="linkbtn small" data-icdel="${e.id}">${tp("刪除","Delete")}</button></div>`}).join("")}</div>`
+   :`<p class="muted small">${t("還沒有紀錄。起卦後按「收藏到心境紀錄」，就能看到自己一段時間的心情與卦。","No entries yet. After casting, press Save to mood log to see your moods and hexagrams over time.")}</p>`}`;
+  const keep=()=>{const y=scrollY;renderICast(m);scrollTo(0,y)};
+  m.querySelectorAll("input[name=icmood]").forEach(r=>r.onchange=()=>{IC.mood=+r.value;IC.saved=false;keep()});
+  m.querySelectorAll("input[name=icmeth]").forEach(r=>r.onchange=()=>{IC.method=r.value;LS.set("wn.icm",IC.method);IC.tosses=[];IC.numLines=null;IC.numInfo=null;IC.saved=false;keep()});
+  const toss=()=>{const c=[0,1,2].map(()=>rnd(2)?3:2);IC.tosses.push({c,v:c[0]+c[1]+c[2]})};
+  const ts=$("#icToss");if(ts)ts.onclick=()=>{toss();keep()};
+  const ta=$("#icTossAll");if(ta)ta.onclick=()=>{while(IC.tosses.length<6)toss();keep()};
+  const nb=$("#icNum");if(nb)nb.onclick=()=>{IC.nums=[0,1,2].map(i=>$("#icn"+i).value.trim());const r=icFromNums();if(!r){IC.numLines=null;IC.numInfo=null;keep();$("#icn0").focus();return}IC.numLines=r.lines;IC.numInfo=r;IC.saved=false;keep()};
+  [0,1,2].forEach(i=>{const el=$("#icn"+i);if(el)el.oninput=e=>{IC.nums[i]=e.target.value}});
+  const sv=$("#icSave");if(sv)sv.onclick=async()=>{const L6=icLines(),b=L6.map(v=>v%2),c=L6.map(v=>v===9?0:v===6?1:v%2);await Store.put({id:uid(),kind:"iching",created:Date.now(),mood:IC.mood,method:IC.method,lines:L6,hex:hexOf(b).n,to:hexOf(c).n});IC.saved=true;keep()};
+  const tt=$("#icToToday");if(tt)tt.onclick=()=>{R.lines=[...icLines()];saveDraft();TAB="today";LS.set("wn.tab",TAB);render();scrollTo(0,0)};
+  const ag=$("#icAgain");if(ag)ag.onclick=()=>{IC.tosses=[];IC.numLines=null;IC.numInfo=null;IC.nums=["","",""];IC.saved=false;renderICast(m);scrollTo(0,0)};
+  m.querySelectorAll("[data-icdel]").forEach(b=>b.onclick=async()=>{if(b.dataset.armed!=="1"){b.dataset.armed="1";b.textContent=tp("再按一次確認","Tap again");return}await Store.del(b.dataset.icdel);renderICast(m)});
+}
+
+/* ---- 心靈雞湯 64 篇英文全文 ---- */
+const SOUP_EN=[
+"Many of us wait until we feel ready before we begin, but that feeling usually arrives after we've started. Qian says, \"Heaven moves with strength\" — the sky doesn't wait for a good mood to turn; it simply rises each day. You don't need to run far at once, only one step further than yesterday. Strength isn't something you're born with; it grows by being used. And remember: the truly strong know when to hold back, because even a dragon that flies too high comes to regret it.",
+"Some people's worth isn't at the center of the stage but underneath it. Like the earth, they say nothing yet carry everything. If you've been supporting others lately and feel you don't matter, remember: without the earth, the highest sky means nothing. Just don't forget that the earth needs rain too. While you hold others up, put yourself on the list of people you care for.",
+"The first week in a new home: boxes everywhere, no scissors in sight, not even sure where the light switch is. No one says, \"I moved into the wrong house.\" New beginnings are simply messy. Zhun is a sprout pushing through stone to reach the light. If you're scrambling through a fresh start, that isn't a sign of failure — it's the sound of life growing. Today, just unpack one box.",
+"A child can ask \"why?\" a hundred times a day, which is exactly why children learn so fast. What stops adults isn't not knowing — it's being embarrassed to admit it. Meng says that those who truly want to learn go and ask. Today, find one thing you don't understand and ask someone who does. You may look a little foolish for a moment, but you're becoming wiser.",
+"A farmer who plants seeds doesn't dig them up every day to see if they've grown. They water, they weed, and they wait. Xu is about this kind of waiting — not anxious idling, but eating well, sleeping well and getting ready. If you're waiting for a result, shift your attention from \"why isn't it here yet?\" to \"am I ready for when it comes?\" Time sides with those who are prepared.",
+"Have you ever won an argument and felt empty afterwards? Song reminds us that fights carried to the end usually hurt both sides. Real victory isn't the other person going quiet; it's the problem solved and the relationship still standing. Next time your temper rises, try saying first, \"On this point, I agree with you.\" Many walls aren't pushed down by force — they melt through understanding.",
+"One chopstick snaps easily; a bundle won't break — as long as it's tied together. More people doesn't mean more strength; a shared direction does. Shi is about leading a group: a legitimate aim, experienced leadership and clear rules. If your team keeps pulling in different directions, it isn't that no one is trying — it's that you lack a common heading. First make clear where you're going together.",
+"Many friendships don't end in a fight; they fade from waiting. You wait for them to call, they wait for you, and a year slips by. Bi says closeness takes initiative; hesitate too long and the moment passes. Whoever comes to mind today, send a simple \"How have you been?\" No reason needed. People who reach out first are never left too long in the cold.",
+"Heavy clouds that won't break into rain make for the most stifling days. You may be right there: working hard, so close, yet not quite there. Xiao Chu says don't try to force the rain; fix the small details in front of you. The rain will come, and when it falls, you'll already have the vessel ready.",
+"Every life has stretches where you must walk right past a tiger: a difficult boss, a sensitive relative, a moment where one wrong word would cost you. Lü says you can step on the tiger's tail and not be bitten — through courtesy and a sense of measure. That isn't weakness; it's wisdom. Good manners carry you along the most dangerous paths.",
+"If you wait for the rain to fix the roof, it's always too late. Tai is the season when things go well and everything flows. The biggest trap of good times is believing they'll last forever. While you can, save a little money, sleep a little more, and tend to the people around you. Today's spare margin is tomorrow's umbrella.",
+"Some days nobody listens and nothing moves. Pi is exactly that moment of blockage. The most exhausting response is to push harder. Instead, pause, hold on to your principles and look after your body. The door won't stay shut forever — but keep your strength for the day it opens.",
+"It's easy to like people who think the way we do, but the applause of our own bubble can hide what's real. Tong Ren speaks of \"fellowship in the open fields\" — true partnership is open, not exclusive. Try talking with someone very different from you. You'll find the things you both care about are more than you imagined.",
+"The more you have — money, ability, influence — the more you're seen. Da You is like the sun high in the sky, lighting everything. But the brighter the light, the sharper the shadows. Having much is a responsibility, not a medal. Share a little of what you have with someone who needs it, and you'll find that's when it truly becomes yours.",
+"In the rice field, the fuller the grain, the lower the stalk bows; only empty heads stand tall. Modesty is often called one of the most fortunate of all sixty-four hexagrams. Humility isn't thinking less of yourself — it's seeing others. Today, publicly thank someone who helped you and name exactly what they did. Sharing the light doesn't make you any dimmer.",
+"Passion is like fire: warm and dazzling, but without a stove it burns out quickly — or burns you. Yu is a moment when spirits run high, perfect for turning enthusiasm into action. While it's hot, write your idea down as a concrete date and step. Let today's excitement become tomorrow's result.",
+"A river meeting a rock doesn't smash into it; it bends and keeps flowing to the sea. Sui teaches us to move with circumstances: the plan changed? That's fine. Someone has a better idea? Follow it. Flexibility isn't a lack of principle — it's knowing the direction while letting the path change. And Sui adds: when night falls, it's time to go home and rest.",
+"Every home has a drawer no one dares open, and every heart has a task that's been put off for too long. Gu speaks of these slowly decaying things. They don't disappear on their own; they only grow heavier. Today, open that drawer and sort just one compartment. We repair the past not to regret it, but to travel lighter.",
+"Many opportunities aren't stolen from us — we just weren't there. Lin says good fortune is drawing near. The best preparation is to show up in person: go to that gathering, answer that message, attend that meeting. But remember that good runs have cycles; on the way up, think about the way down. Be present, and stay clear-headed.",
+"We're often too busy to see beyond what's in front of us. Guan is like the wind moving across the land, seeing everything. Sometimes the most productive thing is to stop and observe: look at your own life, look at the people around you. And don't forget — how you live is being watched too, and others are learning from you.",
+"When a bone gets stuck in your throat, you don't pretend it's fine; you deal with it. Life has these snags too: a relationship left unclear, a problem you keep postponing. Shi He says what's stuck must be bitten through, decisively. Leave it and every bite will be uncomfortable.",
+"A gift wrapped with care makes us more eager to open it. Bi is about beauty: presentation, appearance, a sense of ceremony. These give life its warmth. But remember that wrapping serves what's inside. As you tend your outside, tend your heart too. Outer beauty must, in the end, be held up by the inner.",
+"In autumn, a tree lets its leaves fall one by one. It isn't dying; it's saving its strength for winter. Bo is a time of loss: some things are leaving you. There's no need to keep up appearances. Protect the roots that matter most. The leaves will grow back, as long as the roots remain.",
+"The winter solstice is the longest night of the year, yet from that day the light begins to return, little by little. Fu is \"one yang returning\": the lowest point is where the climb begins. If you're coming out of a low time, don't rush to recover everything at once. Pick up one small thing again — just one. Light comes back a little at a time.",
+"Some people calculate everything: which words will benefit them, which friends will be useful. Wu Wang says acting sincerely spares you much trouble. It also reminds us that even with good intentions, surprises still happen. Do what's right, then let go of your grip on the outcome. It's the lightest way to live.",
+"A reservoir looks still most days, but the water it holds can save an entire field in a drought. Da Chu is a time for accumulating: reading, saving, practicing skills, learning from those who came before. The reward isn't visible yet, but when the crucial moment arrives, you'll thank the self who quietly filled the reservoir today.",
+"The body becomes the food it eats, and the mind becomes what it takes in each day. Yi reminds us to watch our inputs: an hour of bad news won't lift your mood; a day of complaints will weigh you down. Today, switch off one source that leaves you uneasy, and replace it with a good book or a walk.",
+"A roof beam carrying too much weight will bend and eventually break. People are the same. Da Guo is a time of overload, and gritting your teeth to hold on isn't courage — it's danger. Admitting you can't carry it all, putting one thing down, asking someone for help — that isn't failure. It's what lets you keep going.",
+"When water meets a hollow, it fills it and flows on. It doesn't complain and it doesn't stop. Kan is danger upon danger, one hurdle after another. The best way through isn't to solve everything at once, but to be like water: clear one hurdle at a time and keep moving. With practice, even danger becomes a path.",
+"Fire burns only by clinging to wood, and people cling to things too: work, relationships, the approval of others. Li is brightness, letting us see everything clearly. Yet the hardest thing to see is often ourselves. Today, write down three things you depend on, and notice whether they light you up or wear you down.",
+"Much of the time we aren't listening to others; we're waiting for our turn to speak. Xian speaks of heart meeting heart, and that meeting begins with emptiness — setting your own voice aside to make room for someone else. Next time someone shares what's on their heart, don't offer advice. Just listen to the end, then say, \"I understand.\"",
+"A single drop can't wear through stone, but a drop every day for ten years can. Heng is about persistence. Success rarely comes from one day's burst; it comes from a thousand ordinary days added together. You don't need to do a lot today — just do it. And tomorrow too. Time will turn your little into a lot.",
+"Retreat isn't always defeat. Climbers caught in a blizzard go back to camp and climb again when the weather clears. Dun says that when conditions turn against you, step back with dignity and keep your strength. Just remember, before you retreat, decide when and how you'll return.",
+"True strength isn't how many people you can knock down; it's choosing not to strike when you could. Da Zhuang is a time of great power, when harsh words and rash acts come easily. Next time you want to lose your temper, wait ten seconds. Those who can hold back are the truly strong.",
+"Many people do excellent work but feel shy about letting anyone know. Jin is the sun rising over the horizon — it's time to be seen. Showing your work isn't boasting; it gives your value a chance to help more people. Just remember, the higher you climb, the more you should thank those who helped you up.",
+"In an unfriendly environment, shining too brightly can be dangerous. Ming Yi is the light going underground. You can cover your lamp for now, but don't let it go out. Speak a little less, observe more, and hold on to your principles. The night will pass, and your inner light is for when the day returns.",
+"We're often most polite to strangers and least patient with family. Jia Ren says a home's order comes from words matching deeds. Today, keep one small promise to someone at home: be back when you said you would, do what you agreed to do. Home is the first place we practice becoming good people.",
+"Fire rises and water flows down; they move in different directions, yet both are natural. Kui is about disagreement. With people who think differently, you don't have to win them over, nor cut them off. Start by cooperating on one small thing. You'll find that differences can exist and the relationship can carry on.",
+"When a boulder blocks the road, charging into it only hurts. Jian is a time when the way ahead is hard, and its advice is gentle: first look back at yourself, then find someone who can help. Sometimes a detour gets you there faster than forcing through. Changing direction isn't giving up; it's moving forward more wisely.",
+"After a thunderstorm, the air feels especially fresh. Xie is the moment tension is released. The problem is solved, yet many hearts stay clenched. Forgiving others, and yourself, isn't because they deserve it — it's because you deserve to feel light. Open your hands, and you'll be free to catch what comes next.",
+"The fuller the closet, the harder it is to choose what to wear; the fuller the schedule, the less time to think about what matters. Sun says that decreasing is sometimes the best investment. Cut one unnecessary appointment, one subscription that isn't worth it, one bout of anger that isn't worth having. What's left is room for the people and things that truly matter.",
+"When you see someone doing something well, learn it; when you find you're wrong, change it. Yi is the season of fastest growth, and the secret of growth is that simple. Today, pick someone you admire, learn one of their small habits, and use it today.",
+"The hardest part of a decision often isn't thinking it through but saying it out loud. Guai is the time to decide. But it reminds us to decide openly and honestly, not in anger. Sleep on an important decision before announcing it, and you'll say it more calmly, more clearly and more convincingly.",
+"A great fire often starts with a single match; a bad habit starts with \"just this once.\" Gou speaks of small changes that arrive unannounced. Treasure the good small things; deal early with the bad ones. Today, notice one small change that has just appeared — it may be growing.",
+"Gathering people is easy; gathering them well is hard. Cui is about coming together: a group needs a shared purpose, and preparation for the unexpected. At your next team or family gathering, beyond the lively chatter, be clear about why everyone is there. With a reason, a gathering has power.",
+"They say bamboo barely seems to grow for its first few years, while all along it's spreading roots underground; once they're firm, it can shoot up in a single season. Sheng says small things accumulate into greatness. Don't envy those who soar overnight. Finish a small piece each day — you're growing taller, just not yet visibly.",
+"Sometimes nothing you say is believed, and every explanation sounds like an excuse. Kun is a time of being trapped. The best response is to say less and do more, letting your actions speak for you. Your body can be hemmed in, but your purpose cannot.",
+"Someone digging for water gave up after several holes came up dry, though each was only a little short of the source. Jing says the saddest thing is quitting when the rope is just too short. Go back to the basics and keep digging deeper. The water has been there all along; it just takes a bit more patience.",
+"A snake must shed its skin to grow, but shedding too early leaves it hurt. Ge is a time for change, and what matters most in change is timing and reason. Don't change just for the sake of it. Be clear about why, wait until the moment is ripe, then step cleanly into your new self.",
+"Raw rice must be cooked to become a meal, and experience must be sorted to become wisdom. Ding is a cauldron that turns raw ingredients into nourishment. Today, write your latest experience in three lines: what happened, what you learned, what you'll do next time. You're cooking your days into ability.",
+"When thunder cracks, people jump; but once it passes, they laugh and carry on talking. Zhen is about sudden shocks. Being startled is normal; what matters is what comes after — learning one thing from it. Let every surprise become a reminder to grow.",
+"When wind ripples a lake, it reflects nothing clearly; when it's still, it mirrors the whole sky. Gen means stopping: stop when it's time. Our minds often won't stop, yet answers only surface in stillness. Today, give yourself five minutes of doing nothing at all.",
+"A tree that rushes to grow tall has shaky roots; a tree that grows step by step can weather any storm. Jian is about gradual progress. You don't need to skip a single step, nor see the finish line all at once. Just know what the next step is, and take it firmly.",
+"To be accepted, we sometimes agree to unfair terms: swallowing hurt, giving up our boundaries. Gui Mei reminds us that rushing into the wrong position only brings regret. Before you say yes, think through the worst case and make sure you could bear it. Loving yourself comes before any relationship.",
+"The noon sun is at its brightest, yet from that very moment it begins to sink. Feng is the peak, when everything is going well. Wise people use their best hours for the most important and hardest work — not out of pessimism, but because they know good times are precious and should be spent where they count.",
+"As guests in someone's home, we speak softly, take off our shoes and follow the house rules. Lü speaks of the wisdom of being somewhere new: a new job, a new city, a new group. Observe first, criticize less, keep a sense of proportion. Life itself is a journey, and we're all passing through; a little humility takes us further.",
+"You can't see the wind, yet it moves the whole forest. Xun is about gentle, persistent influence. Loud commands rarely change people; saying something softly and repeatedly slowly seeps in. Say important things three times; stay a little longer with the people who matter.",
+"Eating cake alone is one portion of joy; sharing it with a friend doubles it. Dui is joy, and joy grows through exchange. Today, share with a friend something you've learned lately, or a small thing that made you happy. Just remember, real joy doesn't need to please anyone.",
+"Even the hardest ice melts into water when spring comes, and begins to flow. Huan is about dissolving deadlock. A relationship gone cold, a project stuck in place — both have a day of thawing. You can offer a little warmth first: a greeting, a small concession. Once things are flowing, find the new direction together.",
+"Bamboo grows tall and straight because it grows node by node. Jie is about measure: setting yourself a few rules is good, but rules that are too harsh last only a few days before you drop them all. Be a little gentle with yourself. A limit you can keep is worth more than a perfect plan you can't.",
+"A lie can fool others, but never your own heart. Zhong Fu speaks of inner sincerity — so genuine it can move even pigs and fishes. Today, admit one true feeling to yourself: maybe fear, maybe envy, maybe longing. Admitting it is the first step to change.",
+"Not every day is suited to big things. Xiao Guo says that sometimes it's only right to fly low and do small things. But don't underestimate small things: a thoughtful reply, a tidy desk, a greeting sent on time. Those who do small things superbly are the ones trusted with big things when they come.",
+"Getting into your dream school, landing the job you wanted, finally moving into a new home — and then what? Ji Ji says that the moment something is complete is the moment to start maintaining it. A garden once planted still needs watering; a steady relationship still needs tending. Keeping takes more care than getting.",
+"The little fox had almost swum to the far bank when, at the very last moment, it wet its tail. Wei Ji is the last of the sixty-four hexagrams, yet its name means \"not yet complete.\" It tells us life has no real finish line, and the moment closest to the end needs the most care. Slow down and take the last step firmly. Then a new journey begins."];
+HEX.forEach((h,i)=>{h.soup.be=SOUP_EN[i]});
+// 13 步的暖心一句
+const STEP_WARM={event:["先把事情說清楚，心就會安定一半。","Say clearly what happened, and half your heart settles."],
+ image:["每個處境都有它的畫面；看懂畫面，就不再那麼害怕。","Every situation has its picture; once you see it, it's less frightening."],
+ heart:["你的擔心不是弱點，它是在保護你在乎的東西。","Your worry isn't weakness; it's protecting what you care about."],
+ blind:["看不見的地方不是缺點，只是還沒被照亮。","What you can't see isn't a flaw — it just hasn't been lit yet."],
+ sign:["大改變都是從小小的訊號開始的，你已經在注意了。","Big change starts with small signals, and you're already noticing."],
+ time:["每個階段都有它的意義，你不必急著跳到下一個。","Every stage has its meaning; there's no need to rush to the next."],
+ pos:["站在哪裡都沒關係，重要的是看清楚自己站在哪裡。","It doesn't matter where you stand, only that you see where you stand."],
+ change:["改變不可怕，它只是生命在找新的出口。","Change isn't frightening; it's life finding a new way through."],
+ path:["路不只一條，這本身就是一種希望。","There's more than one road — and that itself is hope."],
+ mean:["剛剛好的力氣，比拚盡全力走得更遠。","Just-right effort goes further than all-out effort."],
+ virtue:["你慢慢成為的那個人，比今天的結果更重要。","The person you're slowly becoming matters more than today's result."],
+ act:["一小步也是一步，今天的你已經在前進。","A small step is still a step; today, you're already moving."],
+ verify:["看錯不丟臉，願意對答案的人才會越來越準。","Being wrong isn't shameful; those willing to check get more accurate."]};
+
 /* ---------- I CHING ---------- */
 let hq="",htri="";
 function renderIChing(m){
@@ -1857,7 +2184,7 @@ const SAMPLE={id:"sample",sample:true,created:Date.now()-864e5*9,lines:[8,7,9,8,
 (()=>{const b=SAMPLE.lines.map(v=>v%2),c=SAMPLE.lines.map(v=>v===9?0:v===6?1:v%2);SAMPLE.hex=hexOf(b).n;SAMPLE.to=hexOf(c).n})();
 let armed=null;
 function renderModel(m){
-  const real=Store.entries.filter(e=>e&&e.hex).slice().sort((a,b)=>b.created-a.created);
+  const real=Store.entries.filter(e=>e&&e.hex&&!e.kind).slice().sort((a,b)=>b.created-a.created);
   const list=real.length?real:[SAMPLE];
   const done=real.filter(e=>e.outcome!=null);
   const brier=done.length?done.reduce((s,e)=>s+Math.pow(e.conf/100-e.outcome,2),0)/done.length:null;
@@ -1929,7 +2256,7 @@ function closeSheet(){$("#sheet").hidden=true;lastFocus&&lastFocus.focus&&lastFo
 
 /* ---------- global events ---------- */
 document.addEventListener("click",e=>{
-  const lb=e.target.closest("[data-lang]");if(lb){L=lb.dataset.lang;LS.set("wn.lang2",L);render();if(!$("#sheet").hidden)closeSheet();return}
+  const lb=e.target.closest("[data-lang]");if(lb){L=lb.dataset.lang;LS.set("wn.lang3",L);render();if(!$("#sheet").hidden)closeSheet();return}
   const tb=e.target.closest("[data-tab]");if(tb){TAB=tb.dataset.tab;LS.set("wn.tab",TAB);SQ="";$("#gs").value="";render();scrollTo(0,0);return}
   const tpc=e.target.closest("[data-topic]");if(tpc){TOPIC=tpc.dataset.topic;LS.set("wn.topic",TOPIC);const q=$("#quick");if(q)q.outerHTML=quickHTML(reading());return}
   const gl=e.target.closest("[data-gloss]");if(gl){TAB="guide";SQ="";$("#gs").value="";render();const el=document.getElementById("g-"+gl.dataset.gloss);el&&el.scrollIntoView({block:"center"});el&&el.classList.add("flash");return}
@@ -1943,7 +2270,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#sheet").hidden
 /* ---------- boot ---------- */
 if(!R.lines){castHex();drawCards();saveDraft()}
 let lastSig="";
-Store.listeners.push(()=>{const sig=JSON.stringify(Store.entries.map(e=>[e.id,e.updated]))+Store.mode;if(sig===lastSig)return;lastSig=sig;if(TAB==="model"||TAB==="lab"){const a=document.activeElement,open=a&&a.closest&&(a.closest(".entry")||a.closest("#labed"));if(!open)render()}else renderChrome()});
+Store.listeners.push(()=>{const sig=JSON.stringify(Store.entries.map(e=>[e.id,e.updated]))+Store.mode;if(sig===lastSig)return;lastSig=sig;if(TAB==="model"||TAB==="lab"||TAB==="draw"||TAB==="icast"){const a=document.activeElement,open=a&&a.closest&&(a.closest(".entry")||a.closest("#labed"));if(!open)render()}else renderChrome()});
 render();
 Store.init();
 </script>

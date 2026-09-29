@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>五層健康診斷 — 意識醫學</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0e0e0d;--paper:#faf9f5;--warm:#f0ede5;
+  --gold:#9a6f2a;--gold-l:#c9952e;--gold-ll:#f0d89a;--gold-bg:#fdf8ed;
+  --teal:#1a6b62;--teal-l:#2a9080;--teal-bg:#e8f5f3;
+  --navy:#1a2f4a;--slate:#4a5568;--muted:#8a9099;
+  --red-bg:#fdf0ed;--red:#9a3020;
+  --orange-bg:#fdf4e8;--orange:#7a4a10;
+  --green-bg:#eaf5ee;--green:#1a6b3a;
+  --radius:12px;--radius-lg:18px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;font-size:16px;line-height:1.6}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;animation:fadeIn .4s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* ── HERO (LANDING) ── */
+.hero{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
+.hero-left{background:var(--navy);padding:4rem;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.hero-left::before{content:'';position:absolute;top:-40%;right:-20%;width:500px;height:500px;border-radius:50%;border:1px solid rgba(255,255,255,.05);pointer-events:none}
+.hero-left::after{content:'';position:absolute;bottom:-30%;left:-20%;width:400px;height:400px;border-radius:50%;border:1px solid rgba(255,255,255,.04);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;border:1px solid rgba(201,149,46,.4);color:var(--gold-l);font-size:12px;letter-spacing:.06em;margin-bottom:2rem;font-weight:500}
+.hero-title{font-family:'Noto Serif TC',serif;font-size:clamp(32px,4vw,52px);font-weight:700;color:#fff;line-height:1.2;margin-bottom:1.5rem}
+.hero-title span{color:var(--gold-l)}
+.hero-desc{color:rgba(255,255,255,.6);font-size:15px;line-height:1.8;max-width:380px;margin-bottom:2.5rem}
+.formula{display:flex;flex-direction:column;gap:4px;margin-bottom:2.5rem}
+.formula-step{display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.5)}
+.formula-step strong{color:rgba(255,255,255,.85);font-weight:500}
+.formula-arrow{color:var(--gold-l);font-size:12px;margin-left:2px}
+.hero-cta{display:inline-flex;align-items:center;gap:10px;background:var(--gold-l);color:#fff;padding:16px 32px;border-radius:var(--radius);font-size:16px;font-weight:500;cursor:pointer;border:none;transition:all .2s;width:fit-content}
+.hero-cta:hover{background:var(--gold);transform:translateY(-1px)}
+.hero-cta svg{transition:transform .2s}
+.hero-cta:hover svg{transform:translateX(4px)}
+
+.hero-right{background:var(--warm);padding:4rem;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.layers-preview{width:100%;max-width:380px}
+.layer-preview-item{display:flex;align-items:center;gap:16px;padding:16px 20px;border-radius:var(--radius);margin-bottom:10px;border:1px solid rgba(0,0,0,.06);background:#fff;transition:transform .2s}
+.layer-preview-item:hover{transform:translateX(4px)}
+.layer-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.layer-preview-name{font-size:15px;font-weight:500;color:var(--ink)}
+.layer-preview-desc{font-size:12px;color:var(--muted);margin-top:2px}
+.layer-preview-q{margin-left:auto;font-size:12px;color:var(--muted);}
+.hero-note{text-align:center;margin-top:2rem;font-size:13px;color:var(--muted)}
+
+/* ── QUIZ ── */
+.quiz-shell{max-width:680px;margin:0 auto;padding:3rem 1.5rem}
+.quiz-progress-bar{height:4px;background:var(--warm);border-radius:2px;margin-bottom:2.5rem;overflow:hidden}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-l));border-radius:2px;transition:width .4s ease}
+.quiz-layer-header{text-align:center;margin-bottom:2rem}
+.quiz-layer-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:500;letter-spacing:.04em;margin-bottom:12px}
+.quiz-layer-title{font-family:'Noto Serif TC',serif;font-size:26px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.quiz-layer-desc{font-size:14px;color:var(--slate);max-width:440px;margin:0 auto}
+.q-card{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:14px;transition:all .2s;cursor:pointer}
+.q-card:hover{border-color:rgba(0,0,0,.15);box-shadow:var(--shadow)}
+.q-card.selected{border-color:var(--gold);background:var(--gold-bg)}
+.q-card.selected .q-check{background:var(--gold);border-color:var(--gold)}
+.q-inner{display:flex;align-items:flex-start;gap:14px}
+.q-check{width:22px;height:22px;border-radius:6px;border:1.5px solid #d0ccc4;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.q-check svg{opacity:0;transition:opacity .15s}
+.q-card.selected .q-check svg{opacity:1}
+.q-text{font-size:15px;color:var(--ink);line-height:1.55}
+.q-severity{display:flex;gap:6px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(0,0,0,.05)}
+.sev-btn{flex:1;padding:8px 0;border-radius:8px;border:1px solid rgba(0,0,0,.1);background:transparent;font-size:12px;color:var(--slate);cursor:pointer;transition:all .15s;text-align:center}
+.sev-btn:hover{background:var(--warm)}
+.sev-btn.sel-sev-1{background:#edf7ed;border-color:#4caf50;color:#2e7d32}
+.sev-btn.sel-sev-2{background:#fff8e8;border-color:#ff9800;color:#e65100}
+.sev-btn.sel-sev-3{background:#fde8e8;border-color:#ef5350;color:#c62828}
+.sev-label{font-size:10px;display:block;margin-top:2px;opacity:.75}
+
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(0,0,0,.07)}
+.quiz-step-label{font-size:13px;color:var(--muted)}
+.btn-quiz{padding:12px 28px;border-radius:var(--radius);font-size:15px;font-weight:500;cursor:pointer;border:none;transition:all .2s}
+.btn-prev{background:var(--warm);color:var(--slate)}
+.btn-prev:hover{background:#e8e4da}
+.btn-next{background:var(--navy);color:#fff}
+.btn-next:hover{background:#243a59}
+.btn-next:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── RESULTS ── */
+.result-shell{max-width:720px;margin:0 auto;padding:3rem 1.5rem}
+.result-hero{text-align:center;margin-bottom:3rem}
+.result-tag{display:inline-block;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:.06em;background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-ll);margin-bottom:1rem}
+.result-title{font-family:'Noto Serif TC',serif;font-size:clamp(24px,4vw,36px);font-weight:700;color:var(--ink);margin-bottom:10px;line-height:1.3}
+.result-sub{font-size:15px;color:var(--slate);max-width:480px;margin:0 auto}
+
+/* Radar-style scores */
+.score-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:2.5rem}
+.score-card{text-align:center;padding:1.25rem 0.75rem;border-radius:var(--radius-lg);border:1px solid rgba(0,0,0,.07);background:#fff;position:relative;overflow:hidden}
+.score-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:4px}
+.score-card.level-high::before{background:var(--teal)}
+.score-card.level-mid::before{background:var(--gold)}
+.score-card.level-low::before{background:#e05252}
+.score-num{font-family:'Noto Serif TC',serif;font-size:32px;font-weight:700;line-height:1;margin-bottom:4px}
+.score-card.level-high .score-num{color:var(--teal)}
+.score-card.level-mid .score-num{color:var(--gold)}
+.score-card.level-low .score-num{color:#e05252}
+.score-name{font-size:12px;color:var(--slate);font-weight:500;margin-bottom:4px}
+.score-bar-wrap{height:5px;background:var(--warm);border-radius:3px;margin-top:10px;overflow:hidden}
+.score-bar{height:100%;border-radius:3px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.score-card.level-high .score-bar{background:var(--teal)}
+.score-card.level-mid .score-bar{background:var(--gold)}
+.score-card.level-low .score-bar{background:#e05252}
+
+/* Health Map */
+.health-map{background:#fff;border:1px solid rgba(0,0,0,.07);border-radius:var(--radius-lg);padding:1.75rem;margin-bottom:2rem}
+.map-title{font-family:'Noto Serif TC',serif;font-size:18px;font-weight:700;color:var(--ink);margin-bottom:1.25rem;display:flex;align-items:center;gap:10px}
+.map-row{display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(0,0,0,.04)}
+.map-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.map-layer{width:72px;flex-shrink:0;font-size:13px;font-weight:500;color:var(--slate)}
+.map-bar-wrap{flex:1;height:8px;background:var(--warm);border-radius:4px;overflow:hidden}
+.map-bar{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.map-score-label{width:40px;text-align:right;font-size:13px;font-weight:600}
+
+/* Recommendations */
+.reco-section{margin-bottom:2rem}
+.reco-header{display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:var(--radius);margin-bottom:12px;border:1px solid rgba(0,0,0,.07)}
+.reco-header-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.reco-header-info{flex:1}
+.reco-header-title{font-size:15px;font-weight:600;color:var(--ink)}
+.reco-header-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.reco-items{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.reco-item{padding:12px 14px;border-radius:var(--radius);border:1px solid rgba(0,0,0,.06);background:#fff;display:flex;align-items:flex-start;gap:10px}
+.reco-dot{width:7px;height:7px;border-radius:50%;margin-top:6px;flex-shrink:0}
+.reco-name{font-size:14px;font-weight:500;color:var(--ink)}
+.reco-desc{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5}
+
+/* CTA Block */
+.cta-block{background:var(--navy);border-radius:var(--radius-lg);padding:2.5rem;text-align:center;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.cta-block::before{content:'';position:absolute;top:-50%;right:-20%;width:300px;height:300px;border-radius:50%;border:1px solid rgba(255,255,255,.05)}
+.cta-eyebrow{font-size:12px;color:var(--gold-l);letter-spacing:.08em;font-weight:600;margin-bottom:12px}
+.cta-title{font-family:'Noto Serif TC',serif;font-size:24px;font-weight:700;color:#fff;margin-bottom:10px;line-height:1.4}
+.cta-desc{font-size:14px;color:rgba(255,255,255,.6);margin-bottom:1.75rem;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.7}
+.cta-benefits{display:flex;justify-content:center;gap:1.5rem;margin-bottom:1.75rem;flex-wrap:wrap}
+.cta-benefit{font-size:13px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:6px}
+.cta-check{width:16px;height:16px;border-radius:50%;background:rgba(42,144,128,.3);border:1px solid rgba(42,144,128,.5);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.btn-line{display:inline-flex;align-items:center;gap:10px;background:#06c755;color:#fff;padding:16px 36px;border-radius:var(--radius);font-size:16px;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none;margin-bottom:12px}
+.btn-line:hover{background:#05b34b;transform:translateY(-2px)}
+.cta-note{font-size:12px;color:rgba(255,255,255,.35)}
+
+.btn-retry{display:inline-flex;align-items:center;gap:8px;background:var(--warm);color:var(--slate);padding:12px 24px;border-radius:var(--radius);font-size:14px;cursor:pointer;border:1px solid rgba(0,0,0,.1);transition:all .2s;text-decoration:none}
+.btn-retry:hover{background:#e8e4da}
+
+/* SHARE */
+.share-row{display:flex;gap:10px;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
+.share-btn{padding:10px 20px;border-radius:var(--radius);border:1px solid rgba(0,0,0,.1);background:#fff;font-size:13px;color:var(--slate);cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .15s}
+.share-btn:hover{background:var(--warm);border-color:rgba(0,0,0,.15)}
+
+/* RESP */
+@media(max-width:768px){
+  .hero{grid-template-columns:1fr}
+  .hero-right{display:none}
+  .hero-left{padding:2.5rem 1.5rem;min-height:100vh}
+  .score-grid{grid-template-columns:repeat(3,1fr)}
+  .reco-items{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════ SCREEN 1: LANDING -->
+<div class="screen active" id="screen-landing">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-badge">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" fill="#c9952e" opacity=".6"/><circle cx="5" cy="5" r="2" fill="#c9952e"/></svg>
+        意識醫學 × 功能醫學
+      </div>
+      <div class="hero-title">
+        你的健康<br>失衡在<span>哪一層</span>？
+      </div>
+      <div class="hero-desc">
+        傳統醫學只看物質層。意識醫學發現，健康失衡同時存在五個層次。25題精準診斷，3分鐘找出你的主要失衡，獲得個人化修復方案。
+      </div>
+      <div class="formula">
+        <div class="formula-step"><strong>診斷五層</strong> <span class="formula-arrow">→</span></div>
+        <div class="formula-step"><strong>看見失衡</strong> <span class="formula-arrow">→</span></div>
+        <div class="formula-step"><strong>得到報告</strong> <span class="formula-arrow">→</span></div>
+        <div class="formula-step"><strong>加入社群</strong> <span class="formula-arrow">→</span></div>
+        <div class="formula-step"><strong>長期陪伴</strong></div>
+      </div>
+      <button class="hero-cta" onclick="startQuiz()">
+        立即開始診斷（免費）
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+    <div class="hero-right">
+      <div class="layers-preview">
+        <div style="font-size:13px;color:var(--muted);margin-bottom:1rem;letter-spacing:.05em;text-transform:uppercase;font-weight:500">五層健康模型</div>
+        <div class="layer-preview-item"><div class="layer-dot" style="background:#2a9080"></div><div><div class="layer-preview-name">物質層</div><div class="layer-preview-desc">身體、器官、細胞</div></div><div class="layer-preview-q">5題</div></div>
+        <div class="layer-preview-item"><div class="layer-dot" style="background:#c9952e"></div><div><div class="layer-preview-name">能量層</div><div class="layer-preview-desc">粒線體、代謝、活力</div></div><div class="layer-preview-q">5題</div></div>
+        <div class="layer-preview-item"><div class="layer-dot" style="background:#8a5abc"></div><div><div class="layer-preview-name">情緒層</div><div class="layer-preview-desc">情緒、壓力、神經系統</div></div><div class="layer-preview-q">5題</div></div>
+        <div class="layer-preview-item"><div class="layer-dot" style="background:#2a6aad"></div><div><div class="layer-preview-name">信念層</div><div class="layer-preview-desc">思維模式、限制性信念</div></div><div class="layer-preview-q">5題</div></div>
+        <div class="layer-preview-item"><div class="layer-dot" style="background:#1a2f4a"></div><div><div class="layer-preview-name">意識層</div><div class="layer-preview-desc">使命感、方向、意義</div></div><div class="layer-preview-q">5題</div></div>
+        <div class="hero-note">完成後立即取得個人健康地圖 + 修復方案</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ SCREEN 2: QUIZ -->
+<div class="screen" id="screen-quiz">
+  <div class="quiz-shell">
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="quiz-layer-header" id="layer-header"></div>
+    <div id="questions-wrap"></div>
+    <div class="quiz-nav">
+      <div class="quiz-step-label" id="step-label"></div>
+      <div style="display:flex;gap:10px">
+        <button class="btn-quiz btn-prev" id="btn-prev" onclick="prevLayer()">← 上一步</button>
+        <button class="btn-quiz btn-next" id="btn-next" onclick="nextLayer()">下一步 →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ SCREEN 3: RESULTS -->
+<div class="screen" id="screen-results">
+  <div class="result-shell">
+    <div class="result-hero">
+      <div class="result-tag">你的個人健康地圖</div>
+      <div class="result-title" id="result-headline"></div>
+      <div class="result-sub" id="result-sub"></div>
+    </div>
+
+    <div class="score-grid" id="score-grid"></div>
+
+    <div class="health-map">
+      <div class="map-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        五層健康地圖
+      </div>
+      <div id="map-rows"></div>
+    </div>
+
+    <div id="reco-container"></div>
+
+    <div class="cta-block">
+      <div class="cta-eyebrow">下一步</div>
+      <div class="cta-title">加入意識健康社群<br>得到你的修復計畫</div>
+      <div class="cta-desc">社群每週提供針對你的失衡層次的具體建議，包含營養素、練習方法、和其他人的真實見證。</div>
+      <div class="cta-benefits">
+        <div class="cta-benefit"><div class="cta-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#2a9080" stroke-width="2"><path d="M2 6l3 3 5-5"/></svg></div>每週更新修復計畫</div>
+        <div class="cta-benefit"><div class="cta-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#2a9080" stroke-width="2"><path d="M2 6l3 3 5-5"/></svg></div>同類型失衡案例分享</div>
+        <div class="cta-benefit"><div class="cta-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#2a9080" stroke-width="2"><path d="M2 6l3 3 5-5"/></svg></div>免費問答與指導</div>
+      </div>
+      <br>
+      <a class="btn-line" href="https://line.me/" target="_blank" id="line-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.92 1.56 5.53 4 7.26V22l3.34-1.84C10.19 20.38 11.08 20.5 12 20.5c5.52 0 10-4.03 10-9s-4.48-9-10-9zm1 12.5h-2v-5h2v5zm-3 0H8v-5h2v5zm6 0h-2v-5h2v5z"/></svg>
+        加入LINE健康社群（免費）
+      </a>
+      <div class="cta-note">已有 847 人加入 · 每天都有新資訊</div>
+    </div>
+
+    <div style="text-align:center">
+      <a class="btn-retry" href="#" onclick="restartQuiz();return false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        重新診斷
+      </a>
+    </div>
+
+    <div class="share-row">
+      <div style="width:100%;text-align:center;font-size:13px;color:var(--muted);margin-bottom:6px">分享給需要的朋友</div>
+      <button class="share-btn" onclick="shareFB()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#1877f2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        Facebook
+      </button>
+      <button class="share-btn" onclick="copyLink()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        複製連結
+      </button>
+      <button class="share-btn" onclick="shareLine()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#06c755"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.92 1.56 5.53 4 7.26V22l3.34-1.84C10.19 20.38 11.08 20.5 12 20.5c5.52 0 10-4.03 10-9s-4.48-9-10-9z"/></svg>
+        LINE 分享
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const LAYERS = [
+  {
+    id:'physical', name:'物質層', emoji:'🌿', color:'#2a9080', bg:'#e8f5f3', desc:'身體、器官、腸道、免疫系統的狀態',
+    questions:[
+      '我經常感到腸胃不適（脹氣、便秘、腹瀉）',
+      '我有慢性疼痛或反覆發炎的問題',
+      '我長期服用藥物超過3個月',
+      '我的免疫力較差，容易生病或感冒',
+      '我的皮膚、頭髮或指甲狀況不佳',
+    ],
+    recos:[
+      {name:'腸道修復計畫', desc:'益生菌 + 麩醯胺酸 + 消化酵素', dot:'#2a9080'},
+      {name:'抗發炎飲食', desc:'去除麩質、乳製品，增加蔬果比例', dot:'#4caf50'},
+      {name:'粒線寶', desc:'CoQ10 + PQQ 細胞能量修復', dot:'#2a9080'},
+      {name:'低劑量纳洛酮LDN', desc:'調節免疫系統（需醫師處方）', dot:'#ff9800'},
+    ]
+  },
+  {
+    id:'energy', name:'能量層', emoji:'⚡', color:'#c9952e', bg:'#fdf8ed', desc:'粒線體功能、代謝效率、日常活力水平',
+    questions:[
+      '我常常感到疲勞，即使睡足8小時也覺得不夠',
+      '我早上起床困難，需要很長時間才能清醒',
+      '我有腦霧現象（思考模糊、記憶力下降）',
+      '我下午3~5點特別容易疲倦或想睡覺',
+      '我運動後需要很長時間才能恢復',
+    ],
+    recos:[
+      {name:'粒線體強化方案', desc:'CoQ10、NAD+、PQQ 三合一能量提升', dot:'#c9952e'},
+      {name:'間歇性斷食', desc:'16:8斷食法，優化代謝靈活性', dot:'#ff9800'},
+      {name:'睡眠優化', desc:'褪黑激素 + 鎂甘胺酸 + 睡眠週期訓練', dot:'#c9952e'},
+      {name:'DHEA補充', desc:'腎上腺皮質素前驅物，改善活力', dot:'#8a5abc'},
+    ]
+  },
+  {
+    id:'emotion', name:'情緒層', emoji:'💜', color:'#8a5abc', bg:'#f4edfb', desc:'情緒模式、壓力反應、神經系統靈活性',
+    questions:[
+      '我容易感到焦慮或擔心，且難以停止',
+      '我容易被小事激怒，情緒反應激烈',
+      '我長期感到壓力，很少有真正放鬆的時刻',
+      '我的睡眠品質差，難以入睡或淺眠多夢',
+      '我常有莫名的恐懼感或對未來的不安',
+    ],
+    recos:[
+      {name:'GABA補充', desc:'天然神經鎮靜劑，緩解焦慮', dot:'#8a5abc'},
+      {name:'鎂甘胺酸', desc:'放鬆肌肉與神經，改善睡眠品質', dot:'#6a3a9a'},
+      {name:'呼吸訓練', desc:'4-7-8呼吸法，每日10分鐘啟動副交感', dot:'#4caf50'},
+      {name:'覺察日記練習', desc:'每日記錄情緒觸發點，更新情緒程式', dot:'#8a5abc'},
+    ]
+  },
+  {
+    id:'belief', name:'信念層', emoji:'🔵', color:'#2a6aad', bg:'#eaf2fb', desc:'思維模式、自我概念、限制性信念的影響',
+    questions:[
+      '我常覺得自己不夠好，或不值得擁有更好的',
+      '我害怕失敗，因此常常不敢嘗試新事物',
+      '我對未來悲觀，覺得事情不會好轉',
+      '我覺得改變自己非常困難，本性難移',
+      '我的內在聲音常常批評、否定自己',
+    ],
+    recos:[
+      {name:'認知更新練習', desc:'識別限制性信念，建立新的神經迴路', dot:'#2a6aad'},
+      {name:'神經語言程序NLP', desc:'快速更新深層信念模式的工具', dot:'#1a4a8a'},
+      {name:'EFT情緒釋放技術', desc:'輕敲穴位釋放卡住的情緒記憶', dot:'#2a6aad'},
+      {name:'正念冥想訓練', desc:'重塑大腦前額葉的決策與自控能力', dot:'#4caf50'},
+    ]
+  },
+  {
+    id:'consciousness', name:'意識層', emoji:'✨', color:'#1a2f4a', bg:'#eaf0f7', desc:'生命意義感、人生方向、與更高目標的連結',
+    questions:[
+      '我缺乏明確的人生方向或目標',
+      '我缺乏使命感，不知道自己存在的意義',
+      '我缺乏歸屬感，感覺自己格格不入',
+      '我常感到人生空虛或無聊，找不到意義',
+      '我缺乏成長動力，對學習和探索失去興趣',
+    ],
+    recos:[
+      {name:'意識醫學療癒課程', desc:'系統化更新人格程式，找回生命方向', dot:'#1a2f4a'},
+      {name:'人生目標釐清', desc:'Ikigai方法找到熱情、才能、使命的交集', dot:'#2a6aad'},
+      {name:'社群連結實踐', desc:'加入有共同價值觀的社群，建立歸屬感', dot:'#06c755'},
+      {name:'每日覺察公式', desc:'疾病→覺察→更新→成長→智慧→自由', dot:'#c9952e'},
+    ]
+  }
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let currentLayer = 0;
+let scores = {};  // layerId → 0-100
+let severities = {};  // layerId → {qIdx: severity 1-3}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function startQuiz() {
+  currentLayer = 0;
+  scores = {};
+  severities = {};
+  LAYERS.forEach(l => { severities[l.id] = {}; });
+  showScreen('screen-quiz');
+  renderLayer();
+}
+
+function restartQuiz() {
+  startQuiz();
+  showScreen('screen-landing');
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function nextLayer() {
+  // Calculate score for current layer
+  calcScore(currentLayer);
+  if (currentLayer < LAYERS.length - 1) {
+    currentLayer++;
+    renderLayer();
+  } else {
+    showResults();
+  }
+}
+
+function prevLayer() {
+  if (currentLayer > 0) {
+    currentLayer--;
+    renderLayer();
+  } else {
+    showScreen('screen-landing');
+  }
+}
+
+function calcScore(layerIdx) {
+  const layer = LAYERS[layerIdx];
+  const sevMap = severities[layer.id];
+  let total = 0;
+  const maxPossible = layer.questions.length * 3;
+  for (let i = 0; i < layer.questions.length; i++) {
+    total += (sevMap[i] || 0);
+  }
+  // Invert: high severity = low score
+  const rawPct = total / maxPossible;
+  scores[layer.id] = Math.round((1 - rawPct) * 100);
+}
+
+// ── RENDER QUIZ ───────────────────────────────────────────────────────────────
+function renderLayer() {
+  const layer = LAYERS[currentLayer];
+  const pct = Math.round((currentLayer / LAYERS.length) * 100);
+  
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('step-label').textContent = `第 ${currentLayer + 1} 層 / 共 ${LAYERS.length} 層`;
+  document.getElementById('btn-prev').style.display = currentLayer > 0 ? 'block' : 'none';
+  
+  const isLast = currentLayer === LAYERS.length - 1;
+  document.getElementById('btn-next').textContent = isLast ? '查看我的健康地圖 →' : '下一層 →';
+
+  // Header
+  document.getElementById('layer-header').innerHTML = `
+    <div class="quiz-layer-badge" style="background:${layer.bg};color:${layer.color};border:1px solid ${layer.color}30">
+      ${layer.emoji} ${layer.name}
+    </div>
+    <div class="quiz-layer-title">${layer.name}診斷</div>
+    <div class="quiz-layer-desc">${layer.desc}</div>
+  `;
+
+  // Questions
+  const wrap = document.getElementById('questions-wrap');
+  wrap.innerHTML = '';
+  layer.questions.forEach((q, i) => {
+    const hasSev = severities[layer.id][i] || 0;
+    const div = document.createElement('div');
+    div.className = 'q-card' + (hasSev ? ' selected' : '');
+    div.id = `q-${layer.id}-${i}`;
+    div.innerHTML = `
+      <div class="q-inner">
+        <div class="q-check">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l3 3 5-5"/></svg>
+        </div>
+        <div class="q-text">${q}</div>
+      </div>
+      <div class="q-severity" id="sev-${layer.id}-${i}" style="display:${hasSev?'flex':'none'}">
+        <button class="sev-btn ${hasSev===1?'sel-sev-1':''}" onclick="setSev(event,'${layer.id}',${i},1)">輕微<span class="sev-label">偶爾發生</span></button>
+        <button class="sev-btn ${hasSev===2?'sel-sev-2':''}" onclick="setSev(event,'${layer.id}',${i},2)">中等<span class="sev-label">常常發生</span></button>
+        <button class="sev-btn ${hasSev===3?'sel-sev-3':''}" onclick="setSev(event,'${layer.id}',${i},3)">嚴重<span class="sev-label">每天困擾</span></button>
+      </div>
+    `;
+    div.addEventListener('click', (e) => {
+      if (e.target.closest('.sev-btn')) return;
+      toggleQ(layer.id, i);
+    });
+    wrap.appendChild(div);
+  });
+}
+
+function toggleQ(layerId, qIdx) {
+  const card = document.getElementById(`q-${layerId}-${qIdx}`);
+  const sevRow = document.getElementById(`sev-${layerId}-${qIdx}`);
+  const cur = severities[layerId][qIdx] || 0;
+  if (cur > 0) {
+    // Deselect
+    delete severities[layerId][qIdx];
+    card.classList.remove('selected');
+    sevRow.style.display = 'none';
+  } else {
+    // Select with default severity 1
+    severities[layerId][qIdx] = 1;
+    card.classList.add('selected');
+    sevRow.style.display = 'flex';
+    // Update sev buttons
+    sevRow.querySelectorAll('.sev-btn').forEach((b,i) => {
+      b.className = 'sev-btn' + (i===0 ? ' sel-sev-1' : '');
+    });
+  }
+}
+
+function setSev(e, layerId, qIdx, level) {
+  e.stopPropagation();
+  severities[layerId][qIdx] = level;
+  const sevRow = document.getElementById(`sev-${layerId}-${qIdx}`);
+  sevRow.querySelectorAll('.sev-btn').forEach((b,i) => {
+    b.className = 'sev-btn' + (i+1 === level ? ` sel-sev-${level}` : '');
+  });
+}
+
+// ── RESULTS ───────────────────────────────────────────────────────────────────
+function showResults() {
+  showScreen('screen-results');
+
+  // Sort layers by score ascending (lowest = most urgent)
+  const sorted = LAYERS.map(l => ({...l, score: scores[l.id] || 80}))
+    .sort((a,b) => a.score - b.score);
+  
+  const weakest = sorted[0];
+  const second = sorted[1];
+  const allGood = sorted.every(l => l.score >= 70);
+
+  // Headline
+  let headline, sub;
+  if (allGood) {
+    headline = '你的五層健康相對平衡';
+    sub = '你整體狀況良好，繼續保持，並可進一步深化意識層的成長。';
+  } else if (weakest.score < 40) {
+    headline = `${weakest.name}嚴重失衡，需要優先修復`;
+    sub = `你在${weakest.name}的得分只有 ${weakest.score} 分，這是目前最需要關注的層次。同時${second.name}也有提升空間。`;
+  } else {
+    headline = `${weakest.name}是你的主要失衡點`;
+    sub = `你在${weakest.name}得分 ${weakest.score} 分，需要重點關注。搭配修復方案，通常4~8週就能看到明顯改善。`;
+  }
+  document.getElementById('result-headline').textContent = headline;
+  document.getElementById('result-sub').textContent = sub;
+
+  // Score cards
+  const grid = document.getElementById('score-grid');
+  grid.innerHTML = '';
+  LAYERS.forEach(l => {
+    const s = scores[l.id] || 80;
+    const level = s >= 70 ? 'high' : s >= 45 ? 'mid' : 'low';
+    const div = document.createElement('div');
+    div.className = `score-card level-${level}`;
+    div.innerHTML = `
+      <div class="score-num">${s}</div>
+      <div class="score-name">${l.name}</div>
+      <div style="font-size:11px;color:var(--muted)">${level==='high'?'良好':level==='mid'?'需優化':'需修復'}</div>
+      <div class="score-bar-wrap"><div class="score-bar" style="width:0%" data-w="${s}%"></div></div>
+    `;
+    grid.appendChild(div);
+  });
+
+  // Map rows
+  const mapRows = document.getElementById('map-rows');
+  mapRows.innerHTML = '';
+  const barColors = {physical:'#2a9080', energy:'#c9952e', emotion:'#8a5abc', belief:'#2a6aad', consciousness:'#1a2f4a'};
+  LAYERS.forEach(l => {
+    const s = scores[l.id] || 80;
+    const row = document.createElement('div');
+    row.className = 'map-row';
+    row.innerHTML = `
+      <div class="map-layer">${l.name}</div>
+      <div class="map-bar-wrap"><div class="map-bar" style="width:0%;background:${barColors[l.id]}" data-w="${s}%"></div></div>
+      <div class="map-score-label" style="color:${barColors[l.id]}">${s}</div>
+    `;
+    mapRows.appendChild(row);
+  });
+
+  // Recommendations — show top 2 weakest layers
+  const recoContainer = document.getElementById('reco-container');
+  recoContainer.innerHTML = '';
+  sorted.slice(0, 2).forEach(l => {
+    const s = l.score;
+    if (s >= 80) return;
+    const urgency = s < 40 ? '嚴重失衡' : s < 60 ? '需要優化' : '可以提升';
+    const section = document.createElement('div');
+    section.className = 'reco-section';
+    section.innerHTML = `
+      <div class="reco-header" style="background:${l.bg};border-color:${l.color}20">
+        <div class="reco-header-icon" style="background:${l.color}20">${l.emoji}</div>
+        <div class="reco-header-info">
+          <div class="reco-header-title">${l.name}修復建議 · 得分 ${s} 分</div>
+          <div class="reco-header-sub">${urgency} · 建議優先處理</div>
+        </div>
+        <div style="font-size:22px;font-weight:700;color:${l.color}">${s}</div>
+      </div>
+      <div class="reco-items">
+        ${l.recos.map(r => `
+          <div class="reco-item">
+            <div class="reco-dot" style="background:${r.dot}"></div>
+            <div>
+              <div class="reco-name">${r.name}</div>
+              <div class="reco-desc">${r.desc}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    recoContainer.appendChild(section);
+  });
+
+  // Animate bars after render
+  setTimeout(() => {
+    document.querySelectorAll('[data-w]').forEach(el => {
+      el.style.width = el.dataset.w;
+    });
+  }, 300);
+}
+
+// ── SHARING ────────────────────────────────────────────────────────────────────
+function shareFB() {
+  const url = encodeURIComponent(window.location.href);
+  window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+}
+function shareLine() {
+  const url = encodeURIComponent(window.location.href);
+  const text = encodeURIComponent('我剛完成了五層健康診斷！來測試你的健康失衡在哪一層 👇');
+  window.open(`https://social-plugins.line.me/lineit/share?url=${url}&text=${text}`, '_blank');
+}
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    alert('連結已複製！');
+  }).catch(() => {
+    prompt('複製此連結：', window.location.href);
+  });
+}
+</script>
+</body>
+</html>
