@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>修正錯誤信念｜重建人生OS</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Microsoft JhengHei','PingFang TC','Noto Sans TC',sans-serif;background:#080C14;min-height:100vh;color:#fff;}
+
+/* HERO */
+.hero{background:linear-gradient(160deg,#080C14 0%,#0E1826 55%,#080C14 100%);border-bottom:1px solid rgba(138,100,180,0.2);padding:2.5rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% -10%,rgba(138,100,180,0.12) 0%,transparent 65%);pointer-events:none;}
+.hero-badge{display:inline-block;font-size:11px;letter-spacing:2px;color:#9B72CF;border:1px solid rgba(138,100,180,0.35);padding:4px 18px;border-radius:100px;margin-bottom:1rem;position:relative;}
+.hero-title{font-size:24px;font-weight:700;color:#fff;letter-spacing:2px;margin-bottom:6px;position:relative;}
+.hero-title em{color:#B99AE0;font-style:normal;}
+.hero-sub{font-size:13px;color:rgba(255,255,255,0.45);letter-spacing:1px;margin-bottom:1.25rem;position:relative;}
+.hero-divider{width:80px;height:1px;background:linear-gradient(90deg,transparent,#9B72CF,transparent);margin:0 auto 1.25rem;}
+.hero-tags{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;position:relative;}
+.hero-tag{font-size:11px;padding:5px 14px;border-radius:100px;background:rgba(138,100,180,0.08);border:1px solid rgba(138,100,180,0.2);color:#B99AE0;}
+.prog-bar{background:rgba(255,255,255,0.05);border-radius:100px;height:3px;margin:1.5rem 1.5rem 0;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,#9B72CF,#B8860B);border-radius:100px;transition:width 0.6s ease;width:0%;}
+
+/* CONTENT */
+.content{max-width:760px;margin:0 auto;padding:1.5rem 1rem;}
+.phase{display:none;}.phase.active{display:block;}
+.slabel{font-size:10px;font-weight:700;letter-spacing:2px;color:#9B72CF;margin-bottom:1rem;display:flex;align-items:center;gap:8px;text-transform:uppercase;}
+.slabel::after{content:'';flex:1;height:0.5px;background:rgba(138,100,180,0.2);}
+
+/* OS CHAIN */
+.os-chain{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;padding:1rem;background:rgba(138,100,180,0.04);border:1px solid rgba(138,100,180,0.15);border-radius:14px;margin-bottom:1.5rem;}
+.os-step{font-size:11px;font-weight:700;padding:5px 11px;border-radius:8px;}
+.os-s-start{background:rgba(163,45,45,0.15);border:1px solid rgba(163,45,45,0.3);color:#E87070;}
+.os-s-mid{background:rgba(138,100,180,0.1);border:1px solid rgba(138,100,180,0.25);color:#B99AE0;}
+.os-s-end{background:rgba(26,122,42,0.12);border:1px solid rgba(26,122,42,0.25);color:#6BCF7F;}
+.os-arr{font-size:12px;color:rgba(138,100,180,0.35);}
+
+/* CHAPTER GRID */
+.ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;margin-bottom:1.25rem;}
+.ch-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px 12px;cursor:pointer;transition:all 0.2s;text-align:center;position:relative;}
+.ch-card:hover{border-color:rgba(138,100,180,0.4);background:rgba(138,100,180,0.04);}
+.ch-card.picked{border:1.5px solid #9B72CF;background:rgba(138,100,180,0.07);}
+.ch-card.picked::after{content:'✓';position:absolute;top:8px;right:10px;font-size:11px;color:#9B72CF;font-weight:700;}
+.ch-icon{font-size:26px;margin-bottom:6px;display:block;}
+.ch-num{font-size:10px;color:#9B72CF;font-weight:600;margin-bottom:2px;letter-spacing:1px;}
+.ch-name{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;}
+.ch-desc{font-size:10px;color:rgba(255,255,255,0.35);line-height:1.4;}
+
+/* FILTER */
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem;}
+.f-tab{padding:6px 14px;border:1px solid rgba(255,255,255,0.1);border-radius:100px;font-size:11px;color:rgba(255,255,255,0.4);cursor:pointer;background:transparent;font-family:inherit;transition:all 0.2s;}
+.f-tab:hover{border-color:rgba(138,100,180,0.4);color:#9B72CF;}
+.f-tab.active{background:rgba(138,100,180,0.1);border-color:#9B72CF;color:#9B72CF;font-weight:600;}
+
+/* PICK HINT */
+.pick-hint{text-align:center;font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:1rem;}
+.pick-count{display:inline-block;background:rgba(138,100,180,0.1);color:#9B72CF;font-size:12px;padding:3px 12px;border-radius:100px;margin-left:6px;font-weight:600;}
+
+/* QUESTION */
+.q-block{margin-bottom:1.5rem;}
+.q-ch-header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(138,100,180,0.06);border:1px solid rgba(138,100,180,0.18);border-radius:12px;margin-bottom:10px;}
+.q-ch-icon{font-size:22px;}
+.q-ch-name{font-size:14px;font-weight:700;color:#fff;flex:1;}
+.q-ch-tag{font-size:11px;color:#9B72CF;}
+.q-list{display:flex;flex-direction:column;gap:8px;}
+.q-item{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:11px;padding:12px 14px;}
+.q-text{font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:9px;line-height:1.6;}
+.q-opts{display:flex;gap:7px;flex-wrap:wrap;}
+.q-opt{padding:6px 12px;border:1px solid rgba(255,255,255,0.12);border-radius:100px;font-size:11px;cursor:pointer;color:rgba(255,255,255,0.5);background:transparent;transition:all 0.15s;font-family:inherit;}
+.q-opt:hover{border-color:#9B72CF;color:#9B72CF;}
+.q-opt.sel{background:rgba(138,100,180,0.12);border-color:#9B72CF;color:#9B72CF;font-weight:600;}
+
+/* RESULT */
+.result-hero{background:linear-gradient(135deg,#080C14,#0E1826);border:1px solid rgba(138,100,180,0.25);border-radius:18px;padding:2rem;text-align:center;margin-bottom:1.5rem;}
+.rh-ring{width:110px;height:110px;margin:0 auto 1rem;position:relative;}
+.rh-ring svg{width:110px;height:110px;}
+.rh-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:700;color:#B99AE0;}
+.rh-title{font-size:20px;font-weight:700;color:#fff;margin-bottom:6px;}
+.rh-desc{font-size:13px;color:rgba(255,255,255,0.45);}
+
+/* RESULT CARD */
+.rc{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden;margin-bottom:14px;}
+.rc-header{display:flex;align-items:center;gap:12px;padding:14px 16px;}
+.rc-icon{font-size:24px;}
+.rc-info{flex:1;}
+.rc-name{font-size:15px;font-weight:700;color:#fff;}
+.rc-tag{font-size:11px;color:#9B72CF;margin-top:2px;}
+.rc-score-area{text-align:right;}
+.rc-score-num{font-size:18px;font-weight:700;}
+.rc-bar-wrap{width:80px;height:4px;background:rgba(255,255,255,0.08);border-radius:100px;margin-top:5px;overflow:hidden;}
+.rc-bar{height:100%;border-radius:100px;transition:width 1s ease;}
+.s-hi{background:#1a7a2a;}.s-md{background:#B8860B;}.s-lo{background:#A32D2D;}
+
+/* TABS */
+.rtabs{display:flex;gap:0;border:1px solid rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;margin:0 16px 12px;}
+.rtab{flex:1;padding:10px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;background:transparent;color:rgba(255,255,255,0.3);border:none;transition:all 0.2s;font-family:inherit;}
+.rtab.active{background:rgba(138,100,180,0.1);color:#9B72CF;}
+.tab-panel{display:none;padding:0 16px 16px;}.tab-panel.active{display:block;}
+
+/* EDU */
+.core-box{background:rgba(138,100,180,0.06);border:1px solid rgba(138,100,180,0.2);border-radius:12px;padding:14px;margin-bottom:10px;}
+.core-label{font-size:10px;color:#9B72CF;font-weight:700;letter-spacing:1px;margin-bottom:5px;}
+.core-text{font-size:14px;color:#fff;font-weight:600;line-height:1.6;font-style:italic;}
+.edu-box{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px;margin-bottom:10px;}
+.edu-title{font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.3);font-weight:700;margin-bottom:8px;}
+.edu-chain{display:flex;flex-direction:column;gap:3px;}
+.edu-chain-step{font-size:12px;color:rgba(255,255,255,0.6);display:flex;align-items:center;gap:8px;padding:3px 0;}
+.edu-chain-step.first-step{color:#E87070;}
+.edu-chain-step.last-step{color:#6BCF7F;}
+.edu-chain-step .chain-arr{font-size:10px;color:rgba(255,255,255,0.2);}
+.sci-box{background:rgba(46,80,138,0.1);border:1px solid rgba(46,80,138,0.25);border-left:4px solid rgba(80,120,200,0.5);border-radius:0 10px 10px 0;padding:12px 14px;margin-bottom:10px;}
+.sci-title{font-size:10px;color:rgba(130,170,220,0.8);font-weight:700;margin-bottom:5px;letter-spacing:0.5px;}
+.sci-text{font-size:12px;color:rgba(130,170,220,0.7);line-height:1.7;}
+.vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.vs-card{border-radius:10px;padding:10px 12px;}
+.vs-old{background:rgba(163,45,45,0.08);border:1px solid rgba(163,45,45,0.2);}
+.vs-new{background:rgba(26,122,42,0.08);border:1px solid rgba(26,122,42,0.2);}
+.vs-title{font-size:10px;font-weight:700;margin-bottom:6px;}
+.vs-old .vs-title{color:#E87070;}
+.vs-new .vs-title{color:#6BCF7F;}
+.vs-item{font-size:11px;color:rgba(255,255,255,0.55);padding:3px 0;line-height:1.4;}
+.update-box{background:rgba(184,134,11,0.05);border-left:3px solid #B8860B;padding:10px 14px;border-radius:0 10px 10px 0;margin-bottom:10px;}
+.ub-title{font-size:10px;color:#8B6508;font-weight:700;margin-bottom:3px;letter-spacing:0.5px;}
+.ub-text{font-size:13px;color:rgba(255,255,255,0.7);line-height:1.6;}
+.quote-box{background:rgba(138,100,180,0.05);border:1px solid rgba(138,100,180,0.15);border-radius:10px;padding:12px 16px;margin-bottom:10px;}
+.quote-text{font-size:13px;color:rgba(185,154,224,0.85);line-height:1.7;font-style:italic;}
+
+/* METHOD */
+.method-steps{display:flex;flex-direction:column;gap:10px;}
+.ms-card{display:flex;gap:12px;background:rgba(138,100,180,0.04);border:1px solid rgba(138,100,180,0.1);border-radius:12px;padding:12px 14px;}
+.ms-num{width:24px;height:24px;border-radius:50%;background:rgba(138,100,180,0.15);border:1px solid rgba(138,100,180,0.3);font-size:11px;font-weight:700;color:#9B72CF;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ms-body{flex:1;}
+.ms-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.ms-desc{font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;}
+.daily-box{background:rgba(26,122,42,0.05);border:1px solid rgba(26,122,42,0.15);border-left:3px solid rgba(26,122,42,0.5);border-radius:0 12px 12px 0;padding:12px 14px;margin-top:10px;}
+.daily-title{font-size:11px;color:rgba(107,207,127,0.8);font-weight:700;margin-bottom:6px;}
+.daily-item{font-size:12px;color:rgba(107,207,127,0.65);padding:3px 0;border-bottom:1px solid rgba(26,122,42,0.12);}
+.daily-item:last-child{border-bottom:none;}
+
+/* NUTRIENT */
+.nut-list{display:flex;flex-direction:column;gap:9px;}
+.nut-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;}
+.nut-top{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;transition:background 0.15s;}
+.nut-top:hover{background:rgba(138,100,180,0.04);}
+.nut-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.nut-info{flex:1;min-width:0;}
+.nut-name{font-size:13px;font-weight:700;color:#fff;}
+.nut-mech{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;}
+.nut-price{font-size:12px;color:#B8860B;font-weight:700;margin-top:3px;}
+.nut-exp{font-size:11px;color:rgba(255,255,255,0.2);flex-shrink:0;}
+.nut-cta{padding:7px 13px;background:linear-gradient(135deg,#B8860B,#D4A017);color:#080C14;border:none;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;text-decoration:none;display:inline-block;font-family:inherit;}
+.nut-detail{display:none;padding:0 14px 14px;border-top:1px solid rgba(255,255,255,0.05);}
+.nut-detail.open{display:block;}
+.nut-mbox{background:rgba(255,255,255,0.03);border-radius:10px;padding:10px 12px;margin:10px 0;}
+.nut-mt{font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.25);font-weight:700;margin-bottom:5px;}
+.nut-mb{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.7;}
+.nut-why{background:rgba(184,134,11,0.05);border-left:2px solid #B8860B;padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:10px;}
+.nut-wt{font-size:10px;color:#8B6508;font-weight:700;margin-bottom:3px;letter-spacing:0.5px;}
+.nut-wb{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.6;}
+.buy-block{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(184,134,11,0.05);border:1px solid rgba(184,134,11,0.18);border-radius:10px;}
+.bb-info{flex:1;}
+.bb-name{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
+.bb-price{font-size:16px;font-weight:700;color:#D4A017;}
+.bb-spec{font-size:10px;color:rgba(255,255,255,0.3);}
+.bb-store{font-size:10px;color:#B8860B;margin-top:2px;font-weight:600;}
+.btn-buy-full{padding:10px 18px;background:linear-gradient(135deg,#B8860B,#D4A017);color:#080C14;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;white-space:nowrap;flex-shrink:0;font-family:inherit;}
+
+/* BUTTONS */
+.btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,#6B4E9A,#9B72CF);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:opacity 0.2s,transform 0.1s;margin-top:1rem;font-family:inherit;}
+.btn-primary:hover{opacity:0.9;transform:translateY(-1px);}
+.btn-primary:disabled{opacity:0.2;cursor:not-allowed;transform:none;}
+.nav-row{display:flex;gap:10px;margin-top:1rem;}
+.btn-back{flex:1;padding:14px;background:transparent;border:1px solid rgba(255,255,255,0.12);border-radius:12px;font-size:14px;color:rgba(255,255,255,0.4);cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.btn-back:hover{border-color:rgba(138,100,180,0.4);color:#9B72CF;}
+.btn-restart{display:block;width:100%;padding:14px;background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:12px;font-size:14px;color:rgba(255,255,255,0.3);cursor:pointer;text-align:center;margin-top:1.5rem;transition:all 0.2s;font-family:inherit;}
+.btn-restart:hover{border-color:rgba(138,100,180,0.3);color:#9B72CF;}
+.footer{text-align:center;font-size:11px;color:rgba(255,255,255,0.15);padding:1.5rem 1rem;line-height:1.8;}
+
+@media(max-width:480px){
+  .ch-grid{grid-template-columns:1fr 1fr;}
+  .vs-grid{grid-template-columns:1fr;}
+  .hero-title{font-size:20px;}
+  .buy-block{flex-direction:column;align-items:flex-start;}
+  .btn-buy-full{width:100%;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">重建人生 OS</div>
+  <div class="hero-title"><em>修正錯誤信念</em>診斷系統</div>
+  <div class="hero-divider"></div>
+  <div class="hero-sub">信念 × 旁白 × 語言 × 身份 × 痛苦 × 世界觀 × 循環 × 修正 × 自由</div>
+  <div class="hero-tags">
+    <span class="hero-tag">診斷</span>
+    <span class="hero-tag">教育</span>
+    <span class="hero-tag">方法</span>
+    <span class="hero-tag">神經修復</span>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+</div>
+
+<div class="content">
+
+<!-- P1: SELECT -->
+<div class="phase active" id="p1">
+  <div class="slabel">人生OS更新鏈</div>
+  <div class="os-chain">
+    <span class="os-step os-s-start">舊信念</span><span class="os-arr">→</span>
+    <span class="os-step os-s-mid">感知濾鏡</span><span class="os-arr">→</span>
+    <span class="os-step os-s-mid">情緒</span><span class="os-arr">→</span>
+    <span class="os-step os-s-mid">選擇</span><span class="os-arr">→</span>
+    <span class="os-step os-s-mid">習慣</span><span class="os-arr">→</span>
+    <span class="os-step os-s-mid">人格</span><span class="os-arr">→</span>
+    <span class="os-step os-s-end">命運</span>
+  </div>
+
+  <div class="slabel" style="margin-top:1.5rem">選擇最困擾你的信念模組（可多選）</div>
+  <div class="pick-hint">選最有共鳴的章節 <span class="pick-count" id="pcount">0 已選</span></div>
+  <div class="filter-row" id="filters"></div>
+  <div class="ch-grid" id="ch-grid"></div>
+  <button class="btn-primary" id="btn-next" disabled>開始信念診斷 →</button>
+</div>
+
+<!-- P2: QUESTIONS -->
+<div class="phase" id="p2">
+  <div id="q-body"></div>
+  <div class="nav-row">
+    <button class="btn-back" onclick="go(1)">← 重新選擇</button>
+    <button class="btn-primary" style="flex:2;margin-top:0" onclick="showResult()">查看我的信念診斷報告 →</button>
+  </div>
+</div>
+
+<!-- P3: RESULT -->
+<div class="phase" id="p3">
+  <div id="result-body"></div>
+  <button class="btn-restart" onclick="restart()">↺ 重新診斷</button>
+</div>
+
+</div>
+
+<div class="footer">
+  資訊僅供參考，不能用來診斷和治療任何形式的身體不適。如有不適請線下及時就醫。<br>
+  購買連結：7-11 賣貨便 · 安全取貨付款
+</div>
+
+<script>
+const SHOP='https://myship.7-11.com.tw/general/detail/GM2407210007294';
+
+const CHAPTERS=[
+  {
+    id:'c1',num:'第1章',icon:'🌍',name:'信念如何塑造世界',tag:'你活在詮釋，不是現實',cat:'認識',
+    desc:'很多痛苦不是世界造成的，而是舊信念仍在運作',
+    core:'你以為你在看世界，其實你在看你的信念。信念是你的感知濾鏡、你的預測模型、你的自動化詮釋系統。更新信念，才能真正看見世界本來的樣子。',
+    science:'神經科學的「預測編碼理論」確認：大腦不是被動接收現實，而是主動用已有的信念模型詮釋輸入。信念形成「確認偏誤」——大腦優先看見符合信念的資訊，讓信念不斷自我強化。',
+    disease_chain:['舊信念在童年形成（通常12歲前）','成為感知濾鏡：只看到符合信念的事','情緒被信念的詮釋決定（不是現實）','選擇被信念自動輸出（看不見其他可能）','命運成為信念長期運作的可預測結果'],
+    update:'從「我在看世界」更新為「我在看我的信念——我的任務是提高詮釋的精度，讓它越來越接近真實」',
+    core_quote:'你以為你活在現實，但其實你活在詮釋。每一個情緒反應的背後，都有一個信念在運作。信念不是抽象的，它是神經迴路，是預測模型，是自動化的感知濾鏡。',
+    old_new:[
+      ['以為自己在客觀地看世界','知道自己帶著信念濾鏡在看'],
+      ['情緒是「現實」造成的','情緒是「對現實的詮釋」造成的'],
+      ['命運是神秘的天注定','命運是信念系統長期運作的結果'],
+      ['「我天生就是這樣」','「我形成了特定的預測模型，模型可以更新」'],
+    ],
+    methods:[
+      {t:'信念偵測練習：情緒觸發時往回追',d:'每當強烈情緒出現，問三個問題：①剛才發生了什麼事實（客觀的）？②我對它的詮釋是什麼？③這個詮釋背後的信念是什麼？這個過程把你從「被情緒吞沒」移到「觀察信念如何運作」，是修正的起點。'},
+      {t:'確認偏誤反制：主動找反例',d:'每當你形成一個強烈的負面確信，問：「有沒有任何不支持這個信念的證據？」哪怕一個反例，都開始打破信念的絕對性。每週練習3次，顯著提高感知的解析度。'},
+      {t:'信念地圖繪製',d:'花20分鐘列出你對這三件事的核心信念：世界（安全/危險）、他人（可信/不可信）、自己（有能力/沒能力）。不是要立刻改變，而是讓隱性信念變成顯性，才能被審視和修正。'},
+      {t:'鏈條觀察練習',d:'選一件讓你反覆困擾的事，追蹤它的完整鏈條：哪個信念→哪種感知→哪種情緒→哪種選擇→哪種結果→回頭強化哪個信念。看見完整鏈條，就看見了可以介入的地方。'},
+    ],
+    daily:['今天有哪個情緒出現？它背後的信念是什麼？','這個信念是事實，還是詮釋？','找一個不支持這個信念的反例','信念鏈條：信念→感知→情緒→選擇，今天哪裡可以介入？'],
+    qs:[
+      {q:'你是否常常感到「世界就是這麼殘酷/不公平/危險」，很難看到其他可能性？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'當情緒強烈時，你是否有能力區分「事實」和「對事實的詮釋」？',opts:['通常能','有時候','很少','幾乎不能']},
+      {q:'你是否注意到某些情境下你的情緒反應是「自動的」，幾乎不經過思考？',opts:['很少這樣','偶爾','常常','幾乎每次']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'前額葉 × 信念觀察能力',
+       det:'信念的觀察和更新需要前額葉的高效參與——前額葉負責「元認知」（觀察自己的思維）。鎂是前額葉NMDA受體的核心調節者，充足的鎂讓前額葉更有效地觀察和調節來自杏仁核的自動信念反應。缺鎂時「自動信念」更難被前額葉攔截和審視。',
+       why:'更新信念需要「看見自己在運作什麼信念」的能力。鎂讓你的前額葉保持有力量，能夠在信念自動啟動時踩下暫停鍵。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'神經營養素（B1+B3+B6）',ico:'🔵',bg:'rgba(24,95,165,0.15)',mech:'神經傳導 × 認知靈活性',
+       det:'信念更新需要神經認知靈活性——能從舊的思維路徑切換到新的路徑。B群（特別是B6和B3）是所有神經傳導物質合成和神經能量代謝的核心輔因子，充足的B群讓神經迴路保持切換靈活性，讓舊信念路徑不那麼絕對地主導。',
+       why:'信念太固化，是神經迴路缺乏靈活性的表現。B群幫助大腦維持「切換能力」，讓新的詮釋路徑有機會被啟動。',
+       price:'NT$540',spec:'膠囊 一瓶130粒'},
+    ]
+  },
+  {
+    id:'c2',num:'第2章',icon:'🎙️',name:'內在旁白如何形成',tag:'童年語言成為終身程式',cat:'認識',
+    desc:'你腦袋裡那個批評你的聲音，不是你，是你學來的',
+    core:'你腦袋裡那個批評你的聲音，不是你。是你童年接收到的語言，在幾十年後仍然自動重播。辨識它，是真正成長的開始。',
+    science:'童年的前語言期和青少年期，前額葉批判思考尚未成熟，外界語言被直接內化為神經真相。重複的批評語言形成「神經預測軌道」，在類似情境自動激活，感覺像「自己的聲音」，其實是他人語言的神經印記。',
+    disease_chain:['童年接收否定/比較/忽略語言','孩子大腦直接內化為「關於我的真相」','形成自動化的內在旁白程式','情緒高漲時旁白自動啟動（「我又搞砸了」）','舊旁白主導判斷→持續低估自己→人生受限'],
+    update:'從「這是我的真實想法」更新為「這是我學來的旁白程式——它不是真相，而是可以被識別和更新的神經印記」',
+    core_quote:'內在旁白，是童年接收到的語言在神經系統裡留下的印記。孩子的大腦直接把批評內化為「真相」，這個結論進入神經系統，成為長期運作的預測模型，直到有人有意識地去更新它。',
+    old_new:[
+      ['「我真的很爛」（相信旁白是真相）','「我有一個說我很爛的旁白，這是學來的」'],
+      ['被旁白批評就感到羞恥崩潰','「這是舊程式在說話，不是現在的事實」'],
+      ['旁白=自己的判斷','旁白=童年語言的神經印記'],
+      ['無法擺脫那個聲音','能觀察那個聲音，不被它吞沒'],
+    ],
+    methods:[
+      {t:'旁白偵測：情緒時暫停抓住那個聲音',d:'設定一個練習：每次感到強烈的自我批評或羞恥，立刻問「我腦袋裡現在說了什麼？」把那個句子寫下來。不是要立刻反駁，而是讓它從「我的想法」變成「我觀察到的一個聲音」。這一個距離，是自由的開始。'},
+      {t:'來源追蹤：這個聲音像誰？',d:'對每一個強烈的內在旁白，追問：「這個聲音像誰？它第一次出現在什麼時候？」很多人會發現，那個聲音是某個重要他人的語氣和語言。這不是要怪那個人，而是讓你知道：那個聲音來自外面，不是來自你。'},
+      {t:'質疑練習：它現在還準確嗎？',d:'對任何強烈的自我旁白，問三個問題：①這是一個事實，還是一個結論？②有沒有任何反例不支持它？③如果是我的好朋友說了這句話，我會怎麼回應他？這三個問題系統性地鬆動旁白的絕對性。'},
+      {t:'重新旁白練習：更新那個聲音',d:'每次注意到低維旁白，不是壓制它，而是加上一句：「也同時，有另一個聲音說：___」。例如：「我又搞砸了（舊旁白）——也同時，這是一個學習的機會，讓我找到哪裡需要調整（新聲音）。」兩個聲音並存，讓新聲音越來越強。'},
+    ],
+    daily:['今天有哪個旁白出現？把它寫下來','這個旁白像誰的聲音？什麼時候學來的？','「這不是真相，這是學來的程式」說一次','用一個新旁白替換今天出現的舊旁白'],
+    qs:[
+      {q:'你腦袋裡是否有一個「愛批評你」的聲音，在犯錯或被批評時特別大聲？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'你是否常常因為「腦袋裡的聲音」感到羞恥或自我否定，而不是因為實際發生的事？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你是否曾經追蹤過，那個批評你的聲音是從哪裡來的？',opts:['深入追蹤過','稍微想過','沒有想過','從未想過這個']},
+    ],
+    nutrients:[
+      {n:'銀杏複方（色氨酸）',ico:'🍂',bg:'rgba(184,134,11,0.15)',mech:'血清素 × 內在安全感',
+       det:'長期被否定的內在旁白，核心問題之一是血清素系統低效——血清素是安全感和自我接納的神經化學基礎。色胺酸是血清素的直接原料，充足的血清素讓大腦在面對自我批評旁白時，有足夠的「神經安全感緩衝」，不至於立刻崩潰。銀杏改善腦部血流讓血清素更有效傳遞。',
+       why:'內在旁白傷害你，是因為你的神經系統沒有足夠的安全感緩衝來接住那個聲音。補充血清素原料，是讓你能夠「觀察旁白而不被淹沒」的生理基礎。',
+       price:'NT$510',spec:'膠囊 一瓶150粒'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'杏仁核降噪 × 旁白解離',
+       det:'內在旁白觸發時，杏仁核激活產生強烈情緒，讓旁白感覺像「絕對真相」而不是可觀察的聲音。鎂通過阻斷NMDA受體降低杏仁核的激活強度，甘胺酸作為抑制性神經傳導物質協同降噪，讓你在旁白出現時保有「觀察者位置」而不被完全吞沒。',
+       why:'被舊旁白完全吞沒，是因為情緒訊號太強烈讓你失去觀察距離。鎂幫你在旁白出現時保持那個寶貴的觀察空間。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'c3',num:'第3章',icon:'🗣️',name:'語言如何塑造人格',tag:'語言是你的認知程式',cat:'語言',
+    desc:'你怎麼說自己，你就在用什麼程式運行自己',
+    core:'你用什麼語言說自己，你就在用什麼程式運行自己。低維語言是人格牢籠，高維語言是人格自由的工具。語言是最容易改變、也是影響最深遠的人格工程入口。',
+    science:'神經可塑性的核心原則：被反覆激活的神經路徑會被強化（Hebbian learning：Neurons that fire together, wire together）。「我做不到」說一次是表達，說一千次是神經訓練。語言選擇直接決定哪條神經路徑被反覆激活。',
+    disease_chain:['反覆使用低維語言（「我很爛」「我做不到」「一定完了」）','對應神經迴路被反覆激活和強化','大腦開始「相信」低維語言描述的世界','習得性無助形成：不是真的做不到，而是大腦學會相信做不到','人格開始低維化，行動力下降，焦慮升高'],
+    update:'從「語言只是表達」更新為「語言是神經訓練工具——每個重複使用的語言，都在強化對應的神經迴路，在塑造人格」',
+    core_quote:'語言不是思想的容器，語言是思想的塑造者。你怎麼說話，大腦就怎麼建模。「我很爛」說一次是表達，說一千次就是神經訓練。重複使用低維語言，就是在反覆訓練大腦相信低維世界。',
+    old_new:[
+      ['「我做不到」','「我現在還不會，但可以學」'],
+      ['「一定完了」','「我現在不確定，讓我看看可以做什麼」'],
+      ['「我很爛」','「這個方法沒有效，需要調整」'],
+      ['「所有人都討厭我」','「我感受到被排斥，我的依附感被觸發了」'],
+    ],
+    methods:[
+      {t:'低維語言清單建立',d:'這週開始記錄你最常對自己說的5句話。把它們寫下來，評估：哪些是低維（絕對化、人格化、無可能性）？哪些是高維（具體、有條件、保留可能）？不是要立刻改變全部，而是讓語言習慣變成看得見的東西。'},
+      {t:'語言替換表設計',d:'為你清單上的每一句低維語言，設計一個高維替換版本。原則：高維語言不是「正向思考」，而是「精確度更高、保留更多可能性的描述」。例：「我沒希望了」→「目前這個方向遇到了阻礙，我需要找到新的路徑」。每天選一句練習替換。'},
+      {t:'暫停-替換-強化 三步練習',d:'低維語言出現時：①暫停（一個深呼吸）②替換（用高維語言重新說一次）③強化（在日記裡記錄這次替換）。這三個步驟把「自動低維」轉化為「有意識高維」，是語言升維最直接的訓練方法。'},
+      {t:'灾難化語言特別訓練',d:'「一定完了」「最糟糕的要發生了」「這不會好的」——這類災難化語言每使用一次，杏仁核就被激活一次，讓焦慮基線升高。練習：把每一個災難化語言換成「我現在感到焦慮，但這是預測，不是現實。讓我看看實際上有什麼可以做的。」'},
+    ],
+    daily:['記錄今天用過的低維語言（1-3句）','每句低維語言練習替換成高維版本','注意：哪些情境會觸發最多低維語言？','晚上確認：今天有沒有成功用高維語言替換一次？'],
+    qs:[
+      {q:'你是否常常對自己使用絕對化語言，如「我永遠都這樣」「我肯定不行」？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'你是否常常災難化——在事情還未發生時，就預設最壞的結果？',opts:['很少','偶爾','常常','幾乎持續']},
+      {q:'你是否曾經刻意練習把「低維語言」換成「高維語言」？',opts:['固定在練習','偶爾嘗試','知道但沒做','不知道這個概念']},
+    ],
+    nutrients:[
+      {n:'酶菌醣體（茶胺酸）',ico:'🍵',bg:'rgba(0,120,80,0.15)',mech:'α波 × 語言替換的最佳神經狀態',
+       det:'語言替換練習需要前額葉主導（而非杏仁核主導）的神經狀態。茶胺酸促進α波增加，產生「清醒的平靜」——這是前額葉最有效運作、最能進行有意識語言選擇的神經狀態。同時腸腦軸修復讓情緒基線更穩定，減少災難化語言的神經化學驅動力。',
+       why:'高維語言需要前額葉足夠清醒，低維語言才不會自動劫持表達。茶胺酸是讓你進入「最佳語言選擇狀態」的天然工具。',
+       price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'突觸可塑性 × 新語言迴路建立',
+       det:'建立新的高維語言迴路，需要突觸可塑性——舊的低維語言神經路徑需要弱化，新的高維路徑需要被強化建立。鎂通過調節NMDA受體維持突觸可塑性，是語言神經迴路重建的物質基礎。每次練習高維語言替換，鎂確保新迴路真正能被建立。',
+       why:'語言習慣的改變是神經迴路的改變，神經迴路的改變需要突觸可塑性，突觸可塑性需要鎂。補鎂是讓語言訓練效果能真正落地到神經層面的底層支持。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'c4',num:'第4章',icon:'🪞',name:'重新定義自己',tag:'人格不是命運，是生存策略',cat:'身份',
+    desc:'你不是「就是這樣的人」，你是有特定神經適應的人',
+    core:'你不是「就是這樣的人」。你是一個人，在特定環境下，形成了特定的神經適應。神經可以重塑，適應可以更新。人格標籤不是你的本體，策略可以更新，命運可以改變。',
+    science:'神經科學確認「神經可塑性」（Neuroplasticity）：大腦的結構和功能可以在任何年齡因學習和經驗而改變。所謂的「人格特質」，很大程度上是神經系統在特定環境下形成的習慣模式——習慣可以改變，神經迴路可以重塑。',
+    disease_chain:['人格標籤被內化為固定本體（「我就是這樣的人」）','失去重新定義的可能性（標籤固化）','舊策略繼續運作，即使環境已經改變','「性格缺陷」的自我描述帶來羞恥而非修復方向','人格更新的動力和空間被剝奪'],
+    update:'從「我就是這樣的人（固定標籤）」更新為「我的系統在這個情境下產生了這樣的輸出，我可以理解這個機制並更新這個系統」',
+    core_quote:'身份綁架是人格更新最大的阻礙之一。重新定義自己，不是強迫相信不真實的東西，而是把自我描述的精度提高——從人格標籤移向機制描述，從「我就是這樣」移向「我的系統在這個情況下產生了這樣的輸出，我可以更新這個系統」。',
+    old_new:[
+      ['「我是失敗者」（人格判決）','「這個方法在這個情境下沒有達到目標」（誤差描述）'],
+      ['「我太脆弱了」','「我的神經系統因為長期高壓而高度敏感」'],
+      ['「我很懶惰」','「我的前額葉和神經系統已經耗盡，需要修復」'],
+      ['「我就是沒有價值」','「我一直活在一個把價值等同於表現的舊模型裡」'],
+    ],
+    methods:[
+      {t:'「因為…所以…」機制語言練習',d:'每次出現自我批評標籤，練習把它換成機制語言：「因為我的神經系統長期高警報，所以我對批評特別敏感」。這比「我就是玻璃心」更準確，也更能帶來修復方向。機制語言把你從受害者帶到工程師的位置。'},
+      {t:'狀態vs本體的區分練習',d:'練習區分：「我現在感到焦慮（狀態）」vs「我是一個焦慮的人（本體）」。前者是流動的、可以改變的；後者是固化的。每次把狀態標籤升格為本體標籤時，練習退回去：「我現在感到___，這是一個狀態，不是我的全部。」'},
+      {t:'人格的功能追問',d:'對任何讓你困擾的人格特質，問：「這個特質曾經在什麼情況下保護過我？它當時解決了什麼問題？」這個問題不是為了合理化，而是帶著理解重新定義——策略不是你的本體，而是曾經有用的適應，現在可以更新。'},
+      {t:'新的自我定義聲明',d:'設計一段新的自我定義，使用機制語言：「我曾經在___環境下形成了___的神經適應，這個適應當時保護了我。現在，我可以開始更新這個適應，建立___的新模式。」每天早晨讀一次，是身份更新最直接的神經訓練。'},
+    ],
+    daily:['注意到自己用了什麼人格標籤（「我就是___」）','把標籤換成機制語言（「因為…所以…」）','「我現在感到___（狀態）」vs「我是___的人（標籤）」——今天分辨一次','閱讀自己的新自我定義聲明'],
+    qs:[
+      {q:'你是否常常說「我就是這樣的人」或「我天生如此」來解釋自己的限制？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'當你有不好的情緒或行為時，你的第一反應是標籤自己（「我太爛了」）還是理解機制（「什麼在驅動這個反應」）？',opts:['通常找機制','有時找機制','通常貼標籤','幾乎都是貼標籤']},
+      {q:'你是否有意識地區分「我現在的狀態」和「我這個人的本體」？',opts:['清晰區分','有時區分','很少區分','從未區分']},
+    ],
+    nutrients:[
+      {n:'DHA（亞麻仁油）',ico:'🌿',bg:'rgba(0,120,80,0.15)',mech:'BDNF × 神經可塑性身份更新',
+       det:'身份更新需要神經可塑性——舊的身份認同迴路需要弱化，新的迴路需要建立。DHA促進BDNF（腦源性神經營養因子）的生成，BDNF是神經可塑性的核心信號分子，直接促進新神經迴路的形成。充足的DHA讓「我可以改變」不只是心理信念，而是有生理支撐的神經事實。',
+       why:'「我就是這樣的人」的固著感，部分是神經可塑性不足的生理表現。DHA讓大腦真正具備重新定義自己的神經條件。',
+       price:'NT$780',spec:'2瓶一組各500CC'},
+      {n:'美寶（SIRT活化）',ico:'✨',bg:'rgba(83,74,183,0.15)',mech:'SIRT1 × 深層身份程式更新',
+       det:'白藜蘆醇通過SIRT1路徑活化BDNF生成，同時啟動神經元的自我修復程序和表觀遺傳重編程。「身份」的深層神經基礎包含表觀遺傳層面的基因表達模式，SIRT1活化提供了在更深層更新身份程式的神經化學支持。',
+       why:'身份更新是大腦最深層的工程之一。美寶的SIRT1路徑從神經元的自我更新能力層面，為這個深層工程提供支撐。',
+       price:'NT$550',spec:'膠囊 一瓶約150粒'},
+    ]
+  },
+  {
+    id:'c5',num:'第5章',icon:'🔔',name:'重新定義痛苦',tag:'痛苦是訊號，不是懲罰',cat:'身份',
+    desc:'解碼痛苦的語言，是人格升維最重要的能力',
+    core:'痛苦不是你的敵人，也不是你的懲罰。痛苦是你的生命系統在說話——你需要停下來，好好聽。焦慮、羞恥、憤怒、崩潰，每一種都攜帶著關於系統狀態的重要資訊。',
+    science:'情感神經科學確認：情緒是大腦的預測性反饋機制，不是外界刺激的固定反應。每種情緒都有特定的生物學功能，攜帶特定的系統訊息。把痛苦詮釋為「懲罰」會增加二次羞恥；把它詮釋為「訊號」會釋放能量和創造更新空間。',
+    disease_chain:['痛苦被詮釋為懲罰或失敗的標誌','在已有痛苦的基礎上加一層羞恥（二次傷害）','逃避痛苦訊號（麻木/轉移/壓抑）','系統訊息被忽略，根本問題持續累積','更大的崩潰是被持續忽略的訊號最終爆發'],
+    update:'從「痛苦是我的懲罰/我很糟糕的證明」更新為「這個痛苦在告訴我什麼？我的系統的哪個部分需要更新？」',
+    core_quote:'在很多文化裡，痛苦被詮釋為懲罰、失敗、或者軟弱的證明。這個詮釋不只錯誤，還有害——它讓人在已經痛苦的同時，再加上一層羞恥。真正高維的理解是：痛苦是生命系統的反饋機制，是精密的訊號系統。',
+    old_new:[
+      ['「我為什麼這麼焦慮，我真是廢物」','「焦慮告訴我：我的預測系統認為有危險，讓我確認這是真實的危險嗎？」'],
+      ['「我這麼容易崩潰，我太脆弱了」','「崩潰告訴我：系統超過承載上限，需要停下來修復」'],
+      ['「我這麼容易憤怒，我太糟糕了」','「憤怒告訴我：有界線被侵犯了，需要被認識和守護」'],
+      ['「我這麼多內耗，我真的很沒用」','「內耗告訴我：有兩個內在預測在衝突，需要被整合」'],
+    ],
+    methods:[
+      {t:'痛苦解碼練習：「這在告訴我什麼？」',d:'每次痛苦出現時，練習問：「這個痛苦在告訴我什麼？」焦慮→預測系統問題；羞恥→價值模型受損；憤怒→界線被侵犯；內耗→內在衝突需要整合；崩潰→系統超載需要修復。這個問題本身創造了觀察者位置，讓你不再完全被痛苦吞沒。'},
+      {t:'二次羞恥識別和停止',d:'注意那個「為自己痛苦而感到羞恥」的模式——「我怎麼這麼容易焦慮/脆弱/崩潰」。每次注意到這個二次羞恥，對自己說：「我不需要為感到痛苦而羞恥。痛苦是訊號，不是我的失敗。」停止二次傷害，是讓系統能夠真正修復的前提。'},
+      {t:'崩潰後的訊號閱讀',d:'在崩潰或強烈痛苦之後（等情緒稍微平復），問自己：①這個崩潰積累了多久？②在崩潰之前，有哪些我一直忽略的小訊號？③這個崩潰在要求我什麼更新？把崩潰當作必要的系統報告，而不是人格失敗的證明。'},
+      {t:'痛苦→訊號→行動鏈條練習',d:'建立習慣：痛苦出現→解碼訊息→找到可以行動的方向。例：憤怒出現→「有界線被侵犯了」→「哪個界線？我可以如何明確它或守護它？」這個鏈條把你從受害者轉化為系統工程師。'},
+    ],
+    daily:['今天出現了哪種痛苦情緒？','這個情緒的訊號是什麼（焦慮/羞恥/憤怒/崩潰）？','有沒有對自己的痛苦加上二次羞恥？今天停止一次','痛苦→訊號→可以行動的方向：今天練習一次'],
+    qs:[
+      {q:'當你感到焦慮、羞恥或崩潰時，你是否常常再加上一層「我怎麼這麼脆弱/糟糕」的自我批評？',opts:['很少','偶爾','常常','幾乎每次']},
+      {q:'你是否能夠把情緒（如焦慮、憤怒）視為訊號，並問「它在告訴我什麼」？',opts:['習慣如此','有時候','很少','幾乎不能']},
+      {q:'你是否有慢性的身體症狀（失眠、疲勞、消化問題、焦慮）可能是長期被忽略的系統訊號？',opts:['幾乎沒有','輕微偶爾','常有','嚴重持續']},
+    ],
+    nutrients:[
+      {n:'酶菌醣體',ico:'🌿',bg:'rgba(0,120,80,0.15)',mech:'腸腦軸 × 情緒訊號清晰度',
+       det:'「讀懂痛苦訊號」需要腸腦軸健康——腸道是情緒神經傳導物質的重要生產地（90%的血清素在腸道）。腸道健康直接影響情緒調節系統的清晰度。酶菌醣體修復腸道菌相，讓情緒訊號的神經化學環境更清晰，讓你更能分辨「訊號」和「噪音」。',
+       why:'你讀不懂痛苦訊號，部分是因為情緒系統的神經化學環境不清晰。腸道健康讓這個環境清晰起來，讓訊號更容易被解讀。',
+       price:'NT$720',spec:'粉包 1包6克 / 1袋30包'},
+      {n:'加強B群',ico:'🔵',bg:'rgba(24,95,165,0.15)',mech:'腎上腺修復 × 崩潰恢復力',
+       det:'崩潰和長期高壓造成腎上腺疲勞，大量消耗B群。B群（特別是B5/B6）是腎上腺功能恢復的核心燃料。補充B群不只幫助身體從崩潰中更快恢復，也讓神經系統在壓力下有更足夠的資源，降低過度崩潰的頻率。',
+       why:'你的系統崩潰太頻繁，是神經資源持續不足的表現。B群是讓系統有資源撐住壓力、從崩潰恢復的核心燃料。',
+       price:'NT$520',spec:'膠囊 一瓶150粒'},
+    ]
+  },
+  {
+    id:'c6',num:'第6章',icon:'🔭',name:'世界觀如何升維',tag:'低維看事件，高維看系統',cat:'世界觀',
+    desc:'世界觀的維度決定你能看見多少可能性',
+    core:'你不是要消滅情緒，而是要擴大理解的範圍——讓情緒和理解並存。這就是真正的成熟。低維世界觀把世界簡化成事件/對錯/輸贏，高維世界觀理解世界為系統/機制/規律。',
+    science:'認知神經科學的「元認知」研究：高階認知能力（觀察自己的思維、理解系統規律）依賴前額葉的高效運作和神經整合能力。世界觀升維本質上是前額葉整合功能的提升——從反應式腦（杏仁核主導）到思考式腦（前額葉主導）的轉換。',
+    disease_chain:['低維世界觀：只看到事件和表面（「他傷害了我」）','以事件層的信息做出反應（憤怒/逃避/攻擊）','看不見更深的系統和機制','持續在表面層面循環，無法找到真正的槓桿點','情緒消耗大，選擇少，自由度低'],
+    update:'從「我在對抗這個事件」更新為「我在理解這個系統——什麼機制在這裡運作？我在這個機制裡扮演什麼角色？我可以在哪裡介入？」',
+    core_quote:'世界觀的維度，決定了你能看見多少可能性，決定了你在面對困難時有多少選擇。低維世界觀讓人容易被單一事件定義和淹沒。高維世界觀讓人能從更高處看見全局，從而有更多選擇。升維不是變得冷漠，而是在保有情感的同時，擴大了理解的範圍。',
+    old_new:[
+      ['「他傷害了我，他是壞人」（事件層）','「我們的依附模式碰撞了，都是從各自的創傷在反應」（系統層）'],
+      ['「為什麼我總這樣」（抱怨）','「什麼迴路在維持這個模式？」（機制理解）'],
+      ['「都是他的錯」（對錯判斷）','「什麼機制生成了這個結果？我在這個機制裡的角色是？」'],
+      ['「我就是壞情緒」（情緒融合）','「我現在很焦慮，同時這是我的預測系統在回應」（情緒+理解並存）'],
+    ],
+    methods:[
+      {t:'四層思考法練習',d:'任何困擾你的情境，試著走四層：①事件層（發生了什麼）→②模式層（這種情況有重複嗎）→③結構層（什麼在維持這個模式）→④本質層（最底層的驅動是什麼）。從第一層升到第四層，解決問題的選項從一個變成許多個。'},
+      {t:'情緒+理解並存練習',d:'高維不是讓情緒消失，而是讓情緒和理解同時存在。練習在情緒出現時，保有兩個聲音：「我現在感到___（情緒）」AND「同時，這個情緒在告訴我___（理解）」。不用選邊站，兩個都是真的，兩個都重要。'},
+      {t:'規律識別練習',d:'在筆記本裡開一個欄位，記錄重複出現的情境和反應：什麼樣的事情→我有什麼樣的反應？每三個月回頭看，規律會清晰可見。看見規律，才能在規律出現時多一份覺察，多一個選擇的空間。'},
+      {t:'「什麼系統在這裡運作」練習',d:'每次遇到衝突或困境，練習問：「什麼系統在這裡運作？」這個問題把注意力從「誰對誰錯」移向「什麼機制生成了這個情況」。後者不是要消除責任，而是讓你有更多角度和更多可能的介入點。'},
+    ],
+    daily:['今天有什麼事讓我停在「事件層」？能升到「系統層」嗎？','今天有哪個情緒+理解並存的時刻？','記錄一個「重複出現的模式」','問一次「什麼系統在這裡運作？」'],
+    qs:[
+      {q:'當困難發生時，你是否能夠從「對錯判斷」升級到「機制理解」（什麼系統在這裡運作）？',opts:['通常能','有時候','很少','幾乎不能']},
+      {q:'你是否注意到生活中有重複出現的情緒模式或人際模式？',opts:['很清楚','有些感覺','模糊','從未注意']},
+      {q:'面對情緒強烈的情況，你能否同時感受情緒，又保有理解的視角？',opts:['通常能','有時候','很難','幾乎不能']},
+    ],
+    nutrients:[
+      {n:'NMN複方',ico:'🔋',bg:'rgba(163,45,45,0.15)',mech:'NAD+ × 前額葉整合能力',
+       det:'世界觀升維需要前額葉高階整合功能——同時處理情緒資訊（杏仁核輸入）和系統性思考（前額葉），需要大量神經能量。NAD+是這個整合過程的核心能量輔酶，也是神經元DNA修復的必需物質。NMN補充NAD+前體，讓前額葉的整合能力保持在高效狀態。',
+       why:'世界觀升維是大腦最消耗能量的認知工作之一。NMN確保這個工作有足夠的神經能量支撐，讓前額葉真正能整合情緒和理性兩個維度。',
+       price:'NT$570',spec:'膠囊 一瓶150粒'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'杏仁核調節 × 前額葉升維空間',
+       det:'世界觀升維需要從「杏仁核主導（情緒反應）」切換到「前額葉主導（理解整合）」。鎂通過降低杏仁核的激活閾值，讓前額葉有更多「空間」進行整合和升維。缺鎂時，情緒反應更強烈，前額葉更難接管，世界觀升維更困難。',
+       why:'升維需要前額葉有足夠的空間工作。鎂通過降低杏仁核的「噪音」，讓前額葉能在情緒較平靜的環境中完成整合——這是世界觀升維的神經前提。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'c7',num:'第7章',icon:'🔁',name:'高熵循環',tag:'人生重播，不是命運，是程式',cat:'循環',
+    desc:'看見程式的那一刻，你就開始擁有選擇的自由',
+    core:'人生重播，不是命運，是程式。看見程式的那一刻，你就開始擁有選擇的自由。信念創造自我實現的循環：信念→感知→情緒→行為→結果→強化信念。任何一個環節都可以被介入。',
+    science:'系統動力學的「正向反饋迴路」（Reinforcing Loop）：信念系統是一個自我強化的動態系統。神經科學確認「確認偏誤」的機制——大腦優先處理符合已有信念的資訊，讓循環持續加深。打破循環需要有意識地在迴路中某個環節插入「干擾」。',
+    disease_chain:['舊信念（「我不好」「世界危險」）激活','選擇性感知：只看到符合信念的證據','情緒和行為被舊信念主導','結果往往符合（或被解讀為符合）舊信念','信念被強化，循環加深，人生重播'],
+    update:'從「這就是我的命/運氣」更新為「這是一個可被識別的自我強化循環——我可以在任何一個環節介入，每一次有意識的選擇都是在打破循環」',
+    core_quote:'高熵循環的核心是一個自我強化的回饋系統：信念→感知（只看見符合信念的證據）→情緒→行為→結果（通常符合信念）→信念得到強化→循環繼續。理解這個機制，因為它同時揭示了打破循環的入口：任何一個環節都可以被介入。',
+    old_new:[
+      ['「我就是不擅長關係」（固化）','「我有一個依附模式，在這個情境被觸發——這個模式可以更新」'],
+      ['「我總是失敗」（命運感）','「我在高熵循環裡，讓我找到介入點」'],
+      ['繼續重播舊劇本','「我又進入那個模式了」——觀察者位置，就是自由的開始'],
+      ['不知道為何重蹈覆轍','清楚看見循環的完整機制'],
+    ],
+    methods:[
+      {t:'循環地圖繪製',d:'選一個你生活中反覆出現的困境，繪製它的完整循環：底層信念→感知（你傾向看到什麼）→情緒→行為→結果→如何強化信念。把循環畫出來，讓它從隱性變成顯性。看見完整循環，是打破它的第一步。'},
+      {t:'觀察者位置訓練',d:'每次進入熟悉的循環時，練習說：「我又進入那個模式了。」這句話本身就創造了觀察者位置——你不再完全等同於循環，你開始有一個可以觀察循環的自己。觀察者不是高高在上的批評，而是帶著理解的見證。'},
+      {t:'多層次介入選擇',d:'對你的高熵循環，在每一個環節設計一個「介入選項」：①信念層：找到反例 ②感知層：主動尋找不符合信念的證據 ③行為層：暫停自動化行為，選擇一個不同的反應 ④解讀層：不讓結果自動強化舊信念。從任何一層開始都有效。'},
+      {t:'微小不同選擇練習',d:'打破循環不需要一次性完美。設定一個目標：每次進入循環時，做出哪怕一個微小的不同選擇。不是要完全改變，而是讓循環出現一道裂縫。裂縫夠多了，循環就會開始改變。'},
+    ],
+    daily:['今天有進入哪個熟悉的循環？','「我又進入那個模式了」——創造觀察者位置','在循環的哪個環節可以做一個微小不同的選擇？','今天的介入：信念/感知/行為/解讀——選一層介入'],
+    qs:[
+      {q:'你是否注意到生活中有反覆出現的困境（同樣的關係問題/失敗模式/情緒循環）？',opts:['幾乎沒有','偶爾有','常常有','非常明顯']},
+      {q:'當你陷入熟悉的困境時，你能否快速識別「我又進入那個模式了」？',opts:['通常能','有時候','很少','幾乎不能']},
+      {q:'你是否能看見「某個信念→特定行為→強化信念」的完整循環機制？',opts:['很清楚','有些感覺','模糊','從未想過']},
+    ],
+    nutrients:[
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'自動化行為暫停 × 循環打破',
+       det:'高熵循環的核心機制是「自動化行為」——沒有經過思考的慣性反應。鎂充足時前額葉對自動化行為有更強的抑制能力，讓「暫停」真正成為可能。缺鎂時，衝動和自動化反應更難被前額葉攔截，循環更難打破。',
+       why:'打破循環需要在行為出現前暫停。鎂讓前額葉有足夠的力量攔截自動化行為，給你創造選擇的空間——沒有這個暫停，循環很難真正被打破。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+      {n:'Q10（10:1）',ico:'⚡',bg:'rgba(184,134,11,0.15)',mech:'粒線體能量 × 持續覺察力',
+       det:'覺察高熵循環並持續介入，需要長時間的高品質前額葉運作——這是高耗能的認知工作。Q10通過電子傳遞鏈直接提升粒線體ATP生成效率，讓大腦有足夠的持續能量維持「覺察-選擇-介入」這個新迴路，而不是很快就退回自動化的舊循環。',
+       why:'打破高熵循環需要持續的能量和覺察。Q10讓大腦有足夠電力，讓有意識的選擇能夠持續運作，而不是打幾次就「斷電」退回舊模式。',
+       price:'NT$580',spec:'膠囊 一瓶150粒'},
+    ]
+  },
+  {
+    id:'c8',num:'第8章',icon:'🛠️',name:'真正修正',tag:'修正是工程，不是魔法',cat:'修正',
+    desc:'每一個有意識的語言選擇，都是在建立新的自由',
+    core:'修正信念不是一次頓悟，而是每天的選擇積累。每一個有意識的選擇，都在建立新的自由。修正是工程：停止強化舊迴路、建立觀察者位置、區分情緒與事實、語言升維、安全環境建立新迴路。',
+    science:'神經可塑性研究：新的神經迴路需要約66天的反覆激活才能形成穩定的習慣迴路。「舊迴路不會消失，但新迴路可以被建立得更強」——修正信念就是讓新的理解迴路比舊的自我否定迴路更強。這需要時間、重複、和在安全環境中的實踐。',
+    disease_chain:['知道問題所在，但不知道如何具體改變','期待一次性頓悟，失望後更加氣餒','沒有系統性的工具和練習','進步和退步不知道如何評估','放棄「我就是這樣的人，改不了的」'],
+    update:'從「我知道問題但改變不了」更新為「修正是一個有工具可以操作的工程——我可以今天就開始一個具體的小練習」',
+    core_quote:'很多人理解了問題所在，卻不知道如何開始改變。修正信念不是一個神秘的過程，它是一個可以被設計的工程。這個工程有幾個核心組成部分：停止主動強化舊信念、建立新的觀察習慣、在情緒高漲時恢復觀察者位置、逐步用高維語言替換低維語言。',
+    old_new:[
+      ['期待一次性頓悟改變一切','每天小選擇積累，持續工程比頓悟更有效'],
+      ['「我試過了，沒用」','「我在進行神經重塑工程，需要時間和重複」'],
+      ['只專注消除症狀（焦慮/低自尊）','專注建立新迴路，而不只是壓制舊迴路'],
+      ['「反彈了就是失敗了」','「反彈是神經重塑的正常過程，快速恢復才是指標」'],
+    ],
+    methods:[
+      {t:'停止強化舊信念的每日練習',d:'第一步不是建立新的，而是停止給舊的更多燃料。每天問：「今天我有沒有用語言/行為/解讀主動強化一個舊的低維信念？」如果有，不是批評自己，而是記錄它，這本身就是覺察的提升。'},
+      {t:'觀察者位置日常練習（正念基礎）',d:'每天花5分鐘練習觀察者位置：坐下，注意呼吸，然後觀察腦袋裡出現的想法——不評判，只觀察。這訓練的不是讓想法消失，而是建立「我可以觀察我的想法，而不是完全等同於它」的神經習慣。'},
+      {t:'情緒vs事實兩欄分離練習',d:'每當情緒強烈時，在筆記本寫兩欄：左欄「我感受到___」，右欄「真正發生的是___」。練習：左欄不過分壓縮情緒，右欄不過分加入詮釋。這個分離練習，隨著時間讓感知解析度顯著提高。'},
+      {t:'進步指標重新設定',d:'不要用「我再也不焦慮了」作為進步指標——那會讓你一直失望。改用：①從焦慮恢復的速度是否加快？②看見自己進入舊模式的速度是否加快？③舊模式出現後選擇不同回應的頻率是否增加？這些才是真正的修正指標。'},
+    ],
+    daily:['今天有沒有主動強化一個舊的低維信念？（不批評，只記錄）','5分鐘觀察者練習（坐下，觀察想法，不評判）','情緒vs事實兩欄：今天哪個情緒值得記錄？','今天的進步指標：恢復更快？看見更早？選擇不同？'],
+    qs:[
+      {q:'你是否有每天具體的信念修正練習（如日記、情緒追蹤、語言替換）？',opts:['固定在做','偶爾做','知道但沒做','完全沒有']},
+      {q:'當你「退步」（舊模式回來）時，你的反應通常是？',opts:['觀察並快速調整','有些沮喪','很沮喪，覺得沒希望','直接放棄']},
+      {q:'你是否能區分「情緒」和「事實」，在強烈情緒下仍能看見客觀發生了什麼？',opts:['通常能','有時候','很難','幾乎不能']},
+    ],
+    nutrients:[
+      {n:'粒線寶（5-HTP）',ico:'🔋',bg:'rgba(163,45,45,0.15)',mech:'血清素前驅 × 情緒修正基礎',
+       det:'修正工程需要情緒足夠穩定，讓觀察者位置能夠持續建立。5-HTP是色胺酸→血清素路徑的中間體，同時提升白天的血清素（情緒穩定性）和夜間的褪黑激素（睡眠修復）。情緒穩定是修正工程最重要的土壤——情緒波動太大，修正練習很難持續累積。',
+       why:'你想修正，但情緒不穩定讓你每次都從頭開始。5-HTP幫你建立情緒的穩定基礎，讓修正練習能夠一層一層往上疊加而不是不斷清零。',
+       price:'NT$550',spec:'膠囊 一瓶約150粒'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'深眠 × 神經重塑鞏固',
+       det:'神經迴路的鞏固主要在睡眠中進行——海馬迴在深眠期將白天的練習從短期記憶轉移到長期記憶，讓修正練習真正「落地」。甘胺酸降低核心體溫改善深眠品質，鎂的GABA受體調節促進深眠。深眠品質直接決定白天的修正練習有多少能被神經系統鞏固。',
+       why:'白天練習，晚上鞏固——這是神經重塑的基本規律。如果睡眠品質差，白天再努力修正，晚上也無法鞏固到神經系統。甘氨酸鎂讓你的修正練習真正被大腦保存。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+  {
+    id:'c9',num:'第9章',icon:'🦋',name:'真正自由',tag:'不再被舊信念控制',cat:'修正',
+    desc:'真正的自由，不是永遠順利，而是即使有混亂，你有能力看見、更新、重新生成',
+    core:'真正的自由，不是永遠順利，而是：即使有混亂，你有能力看見、更新、重新生成。語言改變→神經改變→人格改變→人生改變。這條路，從今天開始。',
+    science:'自我決定理論（SDT）研究：真正的自主性（自由）來自於：①能力感（我有能力影響結果）②自主感（我的行為來自自己的選擇）③成長感（我在持續更新）。這三者都需要更新信念系統才能真正建立——舊信念讓人感到無能、被控制、固化。',
+    disease_chain:['被舊信念完全主導，看不見信念的存在','即使看見了信念，沒有能力暫停和選擇','語言習慣把舊信念持續強化','人格在舊信念的系統裡越來越固化','生命選擇空間越來越小，越來越不自由'],
+    update:'從「自由是沒有問題/永遠順利」更新為「自由是：即使有舊信念出現，我有能力看見它，不被它完全控制，並在那個空間做出更新的選擇」',
+    core_quote:'真正的自由不是外部條件的完美，不是生活永遠順利，不是情緒永遠平靜。真正的自由是：即使外部有混亂，內在有一個更新的系統；即使舊信念出現，你有能力看見它而不是被它吞沒；即使遇到痛苦，你有能力把它轉化為更新的材料。',
+    old_new:[
+      ['「自由 = 沒有問題，永遠順利」','「自由 = 有能力看見舊信念，並在那個空間選擇」'],
+      ['「我什麼時候才能完全改變」','「每一次看見，就多一點自由」'],
+      ['語言→表達（被動）','語言→神經→人格→人生（主動工程）'],
+      ['等待一個到達的終點','自由是持續展開的方向，不是終點'],
+    ],
+    methods:[
+      {t:'「看見」練習：自由的起點',d:'每次注意到舊信念在運作，不需要立刻改變它，只需要說：「我注意到有一個信念，認為___。」這一句話創造了觀察者和被觀察信念之間的距離，那個距離就是自由開始的空間。練習讓這個距離越來越大。'},
+      {t:'語言鏈條：語言→神經→人格→人生',d:'每天有意識地選擇一個語言升維，知道自己在做的是：「我在用這個語言選擇訓練我的神經迴路，建立更自由的人格，為更好的人生投資。」這個框架讓每一個小選擇都有意義，不再是孤立的努力。'},
+      {t:'自由擴展日記',d:'每天結束時問：「今天我有沒有在哪個地方比昨天多了一點自由？」不需要大的改變，可以是「今天看見了一個舊模式，即使我沒有完全改變，我看見了」，這也是自由。記錄這些時刻，建立「我在持續擴展自由」的神經基礎。'},
+      {t:'「即使有混亂，我有能力___」練習',d:'每天完成這個句子：「即使___（今天出現的舊信念或困難），我有能力___（一個具體的更新選擇）。」例：「即使我今天感到很焦慮，我有能力注意到焦慮，問它告訴我什麼，然後做一件讓我稍微安定的事。」這是真正自由的練習。'},
+    ],
+    daily:['「我注意到有一個信念，認為___」——今天說一次','語言升維：我今天做的語言選擇，是在投資什麼人格和人生？','自由擴展日記：今天哪裡比昨天多了一點自由？','完成句子：「即使___，我有能力___」'],
+    qs:[
+      {q:'你對「自由」的定義是什麼？（接近哪個）',opts:['生活永遠順利','能力感和選擇感','不被舊信念控制','以上都不是，我不確定']},
+      {q:'當你遇到挫折時，你是否能感受到「即使有這個困難，我仍然有能力做出選擇」？',opts:['通常能','有時候','很少','幾乎不能']},
+      {q:'你是否感覺到生命的選擇空間在擴大（即使進步很慢）？',opts:['明顯感受到','輕微感受到','沒有感受到','感覺在縮小']},
+    ],
+    nutrients:[
+      {n:'美寶（SIRT活化）',ico:'✨',bg:'rgba(83,74,183,0.15)',mech:'SIRT1 × 深層自由更新',
+       det:'真正的自由需要神經可塑性在最深層面的支持——不只是新迴路的建立，而是舊迴路的持續弱化和整個神經系統的更新模式。白藜蘆醇通過SIRT1路徑活化BDNF（神經可塑性信號）和表觀遺傳重編程，是目前研究最深入的促神經可塑性天然成分，在分子層面支持自由更新的能力。',
+       why:'真正的自由是神經系統持續更新的能力。美寶在最深的分子層面支持這個更新能力，讓你的「越來越自由」不只是心理努力，而是有神經生物學支撐的真實變化。',
+       price:'NT$550',spec:'膠囊 一瓶約150粒'},
+      {n:'甘氨酸鎂複方',ico:'🔩',bg:'rgba(24,95,165,0.15)',mech:'全系統整合 × 持久自由基礎',
+       det:'鎂是超過300個酶反應的輔因子，在神經系統的幾乎每個環節都有作用：前額葉的理性調節、杏仁核的情緒調節、海馬迴的記憶鞏固、突觸可塑性的維持、睡眠品質的改善。「真正的自由」需要整個神經系統協同工作，鎂是讓這個協同成為可能的最廣泛基礎礦物質。',
+       why:'自由需要整個神經系統協同運作。鎂不是解決一個問題，而是讓整個系統有更好的運作基礎——從前額葉的理性到杏仁核的穩定到睡眠的修復，全部都需要它。',
+       price:'NT$1,350',spec:'粉包 一袋30包'},
+    ]
+  },
+];
+
+const FILTERS=['全部','認識','語言','身份','世界觀','循環','修正'];
+let picked=[],answers={},phase=1;
+
+function initFilters(){
+  const ct=document.getElementById('filters');
+  FILTERS.forEach((f,i)=>{
+    const btn=document.createElement('button');
+    btn.className='f-tab'+(i===0?' active':'');
+    btn.textContent=f; btn.dataset.f=f;
+    btn.onclick=()=>{
+      document.querySelectorAll('.f-tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active'); renderGrid(f);
+    };
+    ct.appendChild(btn);
+  });
+}
+
+function renderGrid(filter){
+  const g=document.getElementById('ch-grid'); g.innerHTML='';
+  const list=filter==='全部'?CHAPTERS:CHAPTERS.filter(c=>c.cat===filter);
+  list.forEach(c=>{
+    const card=document.createElement('div');
+    card.className='ch-card'+(picked.includes(c.id)?' picked':'');
+    card.dataset.id=c.id;
+    card.innerHTML=`<span class="ch-icon">${c.icon}</span><div class="ch-num">${c.num}</div><div class="ch-name">${c.name}</div><div class="ch-desc">${c.desc}</div>`;
+    card.onclick=()=>toggleCh(c.id,card);
+    g.appendChild(card);
+  });
+}
+
+function toggleCh(id,card){
+  const idx=picked.indexOf(id);
+  if(idx===-1){picked.push(id);card.classList.add('picked');}
+  else{picked.splice(idx,1);card.classList.remove('picked');}
+  document.getElementById('pcount').textContent=picked.length+' 已選';
+  document.getElementById('btn-next').disabled=picked.length===0;
+  updateProg();
+}
+
+function go(n){
+  document.querySelectorAll('.phase').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p'+n).classList.add('active');
+  phase=n; updateProg();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function updateProg(){
+  const p=phase===1?8:phase===2?48:100;
+  document.getElementById('prog').style.width=p+'%';
+}
+
+document.getElementById('btn-next').onclick=()=>{buildDiag();go(2);};
+
+function buildDiag(){
+  const body=document.getElementById('q-body'); body.innerHTML='';
+  picked.forEach(id=>{
+    const c=CHAPTERS.find(x=>x.id===id);
+    const blk=document.createElement('div'); blk.className='q-block';
+    blk.innerHTML=`<div class="q-ch-header"><span class="q-ch-icon">${c.icon}</span><span class="q-ch-name">${c.num}：${c.name}</span><span class="q-ch-tag">${c.tag}</span></div>`;
+    const ql=document.createElement('div'); ql.className='q-list';
+    c.qs.forEach((q,qi)=>{
+      const key=id+'_'+qi;
+      const item=document.createElement('div'); item.className='q-item';
+      const opts=q.opts.map((o,oi)=>`<button class="q-opt" onclick="pickOpt(this,'${key}',${oi})">${o}</button>`).join('');
+      item.innerHTML=`<div class="q-text">${q.q}</div><div class="q-opts">${opts}</div>`;
+      ql.appendChild(item);
+    });
+    blk.appendChild(ql); body.appendChild(blk);
+  });
+}
+
+function pickOpt(btn,key,val){
+  btn.closest('.q-opts').querySelectorAll('.q-opt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel'); answers[key]=val;
+}
+
+function calcScore(id){
+  const c=CHAPTERS.find(x=>x.id===id);
+  let t=0,ct=0;
+  c.qs.forEach((_,qi)=>{const k=id+'_'+qi;if(answers[k]!==undefined){t+=answers[k];ct++;}});
+  if(!ct)return 70;
+  return Math.round(100-(t/ct/3)*78);
+}
+
+function showResult(){
+  const body=document.getElementById('result-body'); body.innerHTML='';
+  const scores=picked.map(id=>({id,score:calcScore(id)}));
+  const avg=Math.round(scores.reduce((s,x)=>s+x.score,0)/scores.length);
+  const doff=Math.round(251*(1-avg/100));
+  const sc=avg>=72?'#1a7a2a':avg>=45?'#B8860B':'#A32D2D';
+  const lbl=avg>=72?'人生OS基礎穩固':avg>=45?'人生OS需要升級':'人生OS需要重建';
+  const desc=avg>=72?'你的信念系統有一定更新能力，以下方案幫你持續深化':avg>=45?'部分信念模組需要修正，及早介入效果最好':'多個核心信念需要系統性更新，從底層開始';
+
+  body.innerHTML=`
+    <div class="result-hero">
+      <div class="rh-ring">
+        <svg viewBox="0 0 90 90"><circle cx="45" cy="45" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="5"/><circle cx="45" cy="45" r="40" fill="none" stroke="${sc}" stroke-width="5" stroke-dasharray="251" stroke-dashoffset="${doff}" stroke-linecap="round" transform="rotate(-90 45 45)"/></svg>
+        <div class="rh-num">${avg}</div>
+      </div>
+      <div class="rh-title">${lbl}</div>
+      <div class="rh-desc">${desc}</div>
+    </div>
+    <div class="slabel">你現在活在 vs 你可以開始活在</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.5rem">
+      <div style="background:rgba(163,45,45,0.08);border:1px solid rgba(163,45,45,0.2);border-radius:12px;padding:12px">
+        <div style="font-size:10px;color:#E87070;font-weight:700;margin-bottom:8px">你曾經活在</div>
+        ${['舊信念的自動播放','童年旁白的控制','低維語言的神經訓練','身份標籤的固化','痛苦作為懲罰','高熵循環的重播'].map(s=>`<div style="font-size:11px;color:rgba(255,255,255,0.5);padding:3px 0;border-bottom:1px solid rgba(163,45,45,0.1)">${s}</div>`).join('')}
+      </div>
+      <div style="background:rgba(26,122,42,0.08);border:1px solid rgba(26,122,42,0.2);border-radius:12px;padding:12px">
+        <div style="font-size:10px;color:#6BCF7F;font-weight:700;margin-bottom:8px">你可以開始活在</div>
+        ${['有意識的信念更新','成年後自己選擇的聲音','高維語言的神經重建','機制理解的流動','痛苦作為訊號的解讀','看見循環後的選擇'].map(s=>`<div style="font-size:11px;color:rgba(255,255,255,0.5);padding:3px 0;border-bottom:1px solid rgba(26,122,42,0.1)">${s}</div>`).join('')}
+      </div>
+    </div>
+    <div class="slabel">你的信念系統診斷結果</div>
+    <div id="ch-results"></div>
+  `;
+
+  const container=document.getElementById('ch-results');
+  const sorted=[...scores].sort((a,b)=>a.score-b.score);
+  sorted.forEach(({id,score})=>{
+    const c=CHAPTERS.find(x=>x.id===id);
+    const bc=score>=72?'s-hi':score>=45?'s-md':'s-lo';
+    const nc=score>=72?'#1a7a2a':score>=45?'#B8860B':'#A32D2D';
+    const urg=score<45?'需要重建':score<72?'需要升級':'持續深化';
+
+    const card=document.createElement('div'); card.className='rc';
+    card.innerHTML=`
+      <div class="rc-header">
+        <span class="rc-icon">${c.icon}</span>
+        <div class="rc-info">
+          <div class="rc-name">${c.num}：${c.name}</div>
+          <div class="rc-tag">${c.tag}</div>
+        </div>
+        <div class="rc-score-area">
+          <div style="font-size:10px;background:rgba(${score<45?'163,45,45':score<72?'184,134,11':'26,122,42'},0.12);padding:2px 8px;border-radius:100px;color:${nc};font-weight:700;margin-bottom:3px;text-align:right">${urg}</div>
+          <div class="rc-score-num" style="color:${nc}">${score}<span style="font-size:12px;opacity:0.4">/100</span></div>
+          <div class="rc-bar-wrap"><div class="rc-bar ${bc}" style="width:0%" data-w="${score}%"></div></div>
+        </div>
+      </div>
+      <div style="padding:0 16px 4px">
+        <div class="rtabs" id="tabs_${id}">
+          <button class="rtab active" onclick="sw('${id}','edu',this)">📖 教育</button>
+          <button class="rtab" onclick="sw('${id}','meth',this)">🛠 方法</button>
+          <button class="rtab" onclick="sw('${id}','nut',this)">⚗️ 修復</button>
+        </div>
+      </div>
+      <div class="tab-panel active" id="edu_${id}"></div>
+      <div class="tab-panel" id="meth_${id}"></div>
+      <div class="tab-panel" id="nut_${id}"></div>
+    `;
+    container.appendChild(card);
+
+    // EDU
+    const edu=card.querySelector('#edu_'+id);
+    const vsHtml=c.old_new.map(([o,n])=>`
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px">
+        <div style="background:rgba(163,45,45,0.06);border:1px solid rgba(163,45,45,0.15);border-radius:8px;padding:8px 10px;font-size:11px;color:rgba(230,130,130,0.8)">${o}</div>
+        <div style="background:rgba(26,122,42,0.06);border:1px solid rgba(26,122,42,0.15);border-radius:8px;padding:8px 10px;font-size:11px;color:rgba(107,207,127,0.8)">${n}</div>
+      </div>`).join('');
+    edu.innerHTML=`
+      <div class="core-box"><div class="core-label">核心洞見</div><div class="core-text">${c.core}</div></div>
+      <div class="sci-box"><div class="sci-title">🔬 神經科學基礎</div><div class="sci-text">${c.science}</div></div>
+      <div class="edu-box">
+        <div class="edu-title">功能失調路徑</div>
+        <div class="edu-chain">
+          ${c.disease_chain.map((s,i)=>`<div class="edu-chain-step ${i===0?'first-step':i===c.disease_chain.length-1?'last-step':''}">${i>0?'<span class="chain-arr">↓</span>':''}<span>${s}</span></div>`).join('')}
+        </div>
+      </div>
+      <div class="update-box"><div class="ub-title">信念更新程式碼</div><div class="ub-text">${c.update}</div></div>
+      <div class="edu-box"><div class="edu-title">舊信念 → 更新信念</div>${vsHtml}</div>
+      <div class="quote-box"><div class="quote-text">${c.core_quote}</div></div>
+    `;
+
+    // METHOD
+    const meth=card.querySelector('#meth_'+id);
+    meth.innerHTML=`
+      <div class="method-steps">
+        ${c.methods.map((m,i)=>`<div class="ms-card"><div class="ms-num">${i+1}</div><div class="ms-body"><div class="ms-title">${m.t}</div><div class="ms-desc">${m.d}</div></div></div>`).join('')}
+      </div>
+      <div class="daily-box">
+        <div class="daily-title">每日練習清單</div>
+        ${c.daily.map(d=>`<div class="daily-item">✓ ${d}</div>`).join('')}
+      </div>
+    `;
+
+    // NUT
+    const nutP=card.querySelector('#nut_'+id);
+    nutP.innerHTML='<div class="nut-list" id="nuts_'+id+'"></div>';
+    const nl=nutP.querySelector('#nuts_'+id);
+    c.nutrients.forEach((n,ni)=>{
+      const nid=id+'_n'+ni;
+      const nc2=document.createElement('div'); nc2.className='nut-card';
+      nc2.innerHTML=`
+        <div class="nut-top" onclick="toggleNut('${nid}')">
+          <div class="nut-ico" style="background:${n.bg}">${n.ico}</div>
+          <div class="nut-info">
+            <div class="nut-name">${n.n}</div>
+            <div class="nut-mech">${n.mech}</div>
+            <div class="nut-price">${n.price} · ${n.spec}</div>
+          </div>
+          <span class="nut-exp" id="exp_${nid}">▾</span>
+          <a class="nut-cta" href="${SHOP}" target="_blank" rel="noopener" onclick="event.stopPropagation()">購買</a>
+        </div>
+        <div class="nut-detail" id="${nid}">
+          <div class="nut-mbox"><div class="nut-mt">作用機制</div><div class="nut-mb">${n.det}</div></div>
+          <div class="nut-why"><div class="nut-wt">為什麼你的信念更新系統現在需要它</div><div class="nut-wb">${n.why}</div></div>
+          <div class="buy-block">
+            <div class="bb-info">
+              <div class="bb-name">${n.n}</div>
+              <div class="bb-price">${n.price}</div>
+              <div class="bb-spec">${n.spec}</div>
+              <div class="bb-store">📦 7-11 賣貨便取貨付款</div>
+            </div>
+            <a class="btn-buy-full" href="${SHOP}" target="_blank" rel="noopener">立即購買 →</a>
+          </div>
+        </div>
+      `;
+      nl.appendChild(nc2);
+    });
+  });
+
+  go(3);
+  setTimeout(()=>{
+    document.querySelectorAll('.rc-bar').forEach(b=>{
+      b.style.transition='width 1s ease'; b.style.width=b.dataset.w;
+    });
+  },300);
+}
+
+function sw(id,tab,btn){
+  ['edu','meth','nut'].forEach(t=>document.getElementById(t+'_'+id).classList.toggle('active',t===tab));
+  document.querySelectorAll('#tabs_'+id+' .rtab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function toggleNut(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('open');
+  const exp=document.getElementById('exp_'+id);
+  if(exp)exp.textContent=el.classList.contains('open')?'▴':'▾';
+}
+function restart(){
+  picked=[];answers={};
+  document.querySelectorAll('.ch-card').forEach(c=>c.classList.remove('picked'));
+  document.getElementById('pcount').textContent='0 已選';
+  document.getElementById('btn-next').disabled=true;
+  go(1);
+}
+
+initFilters();
+renderGrid('全部');
+</script>
+</body>
+</html>
