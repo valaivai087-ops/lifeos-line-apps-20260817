@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人格工程 APP — Personality Operating System</title>
+<style>
+  :root {
+    --bg: #FFFFFF;
+    --bg-soft: #F8F9FF;
+    --bg-card: #FFFFFF;
+    --navy: #0D1B3E;
+    --teal: #006B7D;
+    --gold: #B8860B;
+    --gold-light: #E8A020;
+    --accent: #E83E3E;
+    --text: #1A1A2E;
+    --text-mid: #3A3A5C;
+    --text-soft: #6B6B8A;
+    --border: #E8EAF6;
+    --pill: #EEF2FF;
+    --shadow: 0 2px 16px rgba(13,27,62,0.08);
+    --shadow-hover: 0 6px 28px rgba(13,27,62,0.16);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-soft);
+    color: var(--text);
+    font-family: 'Microsoft JhengHei', 'PingFang TC', 'Noto Sans TC', sans-serif;
+    font-size: 17px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── TOP NAV ── */
+  .topnav {
+    background: var(--bg);
+    border-bottom: 2px solid var(--border);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(13,27,62,0.06);
+  }
+  .topnav-logo { font-size: 20px; font-weight: 900; color: var(--navy); letter-spacing: -0.5px; flex: 1; }
+  .topnav-logo span { color: var(--gold-light); }
+  .topnav-tab {
+    padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 700;
+    cursor: pointer; border: none; background: transparent; color: var(--text-soft);
+    transition: all 0.2s;
+  }
+  .topnav-tab.active { background: var(--navy); color: #fff; }
+  .topnav-tab:hover:not(.active) { background: var(--pill); color: var(--navy); }
+
+  /* ── SCREENS ── */
+  .screen { display: none; padding: 20px; max-width: 480px; margin: 0 auto; }
+  .screen.active { display: block; }
+
+  /* ── HERO SCORES ── */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, #1a3a6e 100%);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    color: #fff;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '🧠';
+    position: absolute; right: 16px; top: 16px;
+    font-size: 60px; opacity: 0.15;
+  }
+  .hero-title { font-size: 13px; font-weight: 700; letter-spacing: 2px; opacity: 0.7; margin-bottom: 4px; }
+  .hero-name { font-size: 24px; font-weight: 900; margin-bottom: 16px; }
+  .score-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .score-box { background: rgba(255,255,255,0.1); border-radius: var(--radius-sm); padding: 10px 8px; text-align: center; }
+  .score-box .val { font-size: 26px; font-weight: 900; color: #FFD700; line-height: 1; }
+  .score-box .lbl { font-size: 11px; opacity: 0.85; margin-top: 3px; line-height: 1.3; }
+  .score-box.main { background: rgba(232,160,32,0.25); border: 1px solid rgba(232,160,32,0.4); }
+  .hero-btn {
+    display: block; width: 100%; margin-top: 16px; padding: 12px;
+    background: linear-gradient(90deg, #E8A020, #FFD700);
+    color: var(--navy); font-weight: 900; font-size: 16px;
+    border: none; border-radius: var(--radius-sm); cursor: pointer;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── MODULE CARDS ── */
+  .section-title {
+    font-size: 18px; font-weight: 900; color: var(--navy);
+    margin: 20px 0 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 2px;
+    background: linear-gradient(90deg, var(--gold-light), transparent);
+  }
+
+  .mod-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+  .mod-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 16px 14px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    border: 1.5px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .mod-card:hover, .mod-card.active {
+    border-color: var(--gold-light);
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+  }
+  .mod-card .icon { font-size: 28px; margin-bottom: 8px; }
+  .mod-card .mod-name { font-size: 15px; font-weight: 900; color: var(--navy); }
+  .mod-card .mod-sub { font-size: 12px; color: var(--text-soft); margin-top: 3px; }
+  .mod-card .mod-num {
+    position: absolute; top: 10px; right: 12px;
+    font-size: 11px; font-weight: 700; color: var(--gold-light);
+    background: #FFF8E7; padding: 2px 6px; border-radius: 20px;
+  }
+
+  /* ── MODULE DETAIL ── */
+  .mod-detail {
+    background: var(--bg-card); border-radius: var(--radius);
+    padding: 20px; box-shadow: var(--shadow); margin-bottom: 16px;
+  }
+  .mod-detail-head {
+    display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px;
+    padding-bottom: 14px; border-bottom: 2px solid var(--border);
+  }
+  .mod-detail-icon { font-size: 40px; flex-shrink: 0; }
+  .mod-detail-title { font-size: 20px; font-weight: 900; color: var(--navy); }
+  .mod-detail-desc { font-size: 14px; color: var(--text-soft); margin-top: 4px; }
+
+  .formula-chain {
+    background: var(--bg-soft); border-radius: var(--radius-sm);
+    padding: 14px; margin: 12px 0;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+  }
+  .formula-item {
+    background: var(--bg-card); border: 1.5px solid var(--border);
+    border-radius: 8px; padding: 7px 20px; font-weight: 700; font-size: 15px;
+    color: var(--navy); min-width: 120px; text-align: center;
+  }
+  .formula-arrow { font-size: 16px; color: var(--gold-light); font-weight: 900; }
+
+  /* ── QUOTES ── */
+  .quotes-list { display: flex; flex-direction: column; gap: 10px; }
+  .quote-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    box-shadow: 0 1px 8px rgba(13,27,62,0.06);
+    border-left: 4px solid var(--gold-light);
+    font-size: 16px; font-weight: 700; color: var(--navy);
+    line-height: 1.6;
+  }
+  .quote-card .q-num { font-size: 11px; color: var(--text-soft); font-weight: 400; margin-bottom: 4px; }
+
+  /* ── NUTRIENTS ── */
+  .nutrient-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 18px 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--teal);
+  }
+  .nutrient-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .nutrient-icon { font-size: 28px; }
+  .nutrient-name { font-size: 17px; font-weight: 900; color: var(--navy); }
+  .nutrient-eng { font-size: 12px; color: var(--text-soft); margin-top: 2px; }
+  .nutrient-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .tag {
+    font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+    background: var(--pill); color: var(--navy);
+  }
+  .tag.brain { background: #EEF0FF; color: #3730A3; }
+  .tag.stress { background: #FFF7ED; color: #C2410C; }
+  .tag.energy { background: #ECFDF5; color: #065F46; }
+  .tag.neuro { background: #F5F3FF; color: #6D28D9; }
+  .tag.hormone { background: #FFF1F2; color: #BE123C; }
+  .mechanism-box {
+    background: var(--bg-soft); border-radius: var(--radius-sm);
+    padding: 12px 14px; font-size: 14px; color: var(--text-mid);
+    line-height: 1.75; margin-bottom: 10px;
+  }
+  .mechanism-box strong { color: var(--teal); }
+  .effect-list { list-style: none; }
+  .effect-list li {
+    font-size: 14px; color: var(--text-mid); padding: 4px 0;
+    display: flex; align-items: flex-start; gap: 6px;
+  }
+  .effect-list li::before { content: '✅'; font-size: 13px; flex-shrink: 0; margin-top: 2px; }
+  .buy-btn {
+    display: block; width: 100%; margin-top: 12px;
+    padding: 11px 16px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    color: #fff; font-weight: 900; font-size: 15px;
+    border: none; border-radius: var(--radius-sm);
+    cursor: pointer; text-align: center; text-decoration: none;
+    letter-spacing: 0.3px; box-shadow: 0 2px 8px rgba(184,134,11,0.3);
+  }
+  .buy-btn:hover { filter: brightness(1.08); }
+
+  /* ── DIAGNOSIS ── */
+  .quiz-card {
+    background: var(--bg-card); border-radius: var(--radius);
+    padding: 20px; box-shadow: var(--shadow); margin-bottom: 16px;
+  }
+  .quiz-progress { margin-bottom: 16px; }
+  .progress-bar-bg {
+    background: var(--border); border-radius: 20px; height: 8px; overflow: hidden;
+  }
+  .progress-bar { background: linear-gradient(90deg, var(--teal), var(--gold-light)); height: 100%; border-radius: 20px; transition: width 0.4s; }
+  .progress-label { font-size: 13px; color: var(--text-soft); margin-top: 5px; }
+  .q-text { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 16px; line-height: 1.5; }
+  .q-options { display: flex; flex-direction: column; gap: 8px; }
+  .q-opt {
+    padding: 13px 16px; border-radius: var(--radius-sm);
+    border: 2px solid var(--border); background: var(--bg-card);
+    font-size: 15px; color: var(--text); cursor: pointer;
+    transition: all 0.18s; font-weight: 600; text-align: left;
+  }
+  .q-opt:hover { border-color: var(--gold-light); background: #FFFBEF; }
+  .q-opt.selected { border-color: var(--navy); background: var(--navy); color: #fff; }
+  .q-nav { display: flex; gap: 10px; margin-top: 16px; }
+  .q-btn {
+    flex: 1; padding: 12px; border-radius: var(--radius-sm);
+    font-size: 15px; font-weight: 700; cursor: pointer; border: none;
+  }
+  .q-btn.prev { background: var(--border); color: var(--text-mid); }
+  .q-btn.next { background: var(--navy); color: #fff; }
+  .q-btn:disabled { opacity: 0.4; cursor: default; }
+
+  /* ── RESULT ── */
+  .result-box {
+    background: linear-gradient(135deg, var(--navy), #1a3a6e);
+    border-radius: var(--radius); padding: 24px 20px; color: #fff; margin-bottom: 16px;
+    text-align: center;
+  }
+  .result-type { font-size: 13px; opacity: 0.7; margin-bottom: 6px; letter-spacing: 2px; }
+  .result-name { font-size: 26px; font-weight: 900; color: #FFD700; margin-bottom: 8px; }
+  .result-desc { font-size: 15px; opacity: 0.9; line-height: 1.7; }
+  .result-scores { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin: 16px 0; }
+  .rscore { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 6px; text-align: center; }
+  .rscore .rv { font-size: 22px; font-weight: 900; color: #FFD700; }
+  .rscore .rl { font-size: 11px; opacity: 0.8; margin-top: 3px; }
+
+  .rec-section { margin-top: 16px; }
+  .rec-title { font-size: 16px; font-weight: 900; color: var(--navy); margin-bottom: 10px; }
+  .rec-card {
+    background: var(--bg-card); border-radius: var(--radius-sm);
+    padding: 12px 14px; margin-bottom: 8px; border-left: 4px solid var(--teal);
+    font-size: 14px; color: var(--text-mid);
+  }
+  .rec-card strong { color: var(--navy); font-size: 15px; display: block; margin-bottom: 4px; }
+
+  /* ── UPGRADE CARDS ── */
+  .upgrade-card {
+    background: var(--bg-card); border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 14px; box-shadow: var(--shadow);
+  }
+  .upgrade-old {
+    background: #FFF1F2; padding: 14px 16px; border-bottom: 2px solid #FCA5A5;
+  }
+  .upgrade-new {
+    background: #ECFDF5; padding: 14px 16px;
+  }
+  .upg-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .upg-label.old { color: #DC2626; }
+  .upg-label.new { color: #065F46; }
+  .upg-text { font-size: 15px; font-weight: 700; color: var(--navy); line-height: 1.5; }
+  .upgrade-arrow {
+    text-align: center; padding: 4px; background: var(--border);
+    font-size: 16px; color: var(--gold-light); font-weight: 900;
+  }
+
+  /* ── FLOATING CTA ── */
+  .float-cta {
+    position: fixed; bottom: 20px; right: 20px; z-index: 200;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: #fff; padding: 12px 20px; border-radius: 30px;
+    font-weight: 900; font-size: 14px; box-shadow: 0 4px 16px rgba(184,134,11,0.4);
+    cursor: pointer; border: none; text-decoration: none;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* ── AI COACH BOX ── */
+  .ai-box {
+    background: linear-gradient(135deg, #0D1B3E, #1a3a6e);
+    border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+    color: #fff;
+  }
+  .ai-box-title { font-size: 15px; font-weight: 900; color: #FFD700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .ai-input {
+    width: 100%; padding: 11px 14px; border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.2);
+    color: #fff; font-size: 15px; margin-bottom: 10px; outline: none;
+    font-family: inherit;
+  }
+  .ai-input::placeholder { color: rgba(255,255,255,0.4); }
+  .ai-input:focus { border-color: #FFD700; }
+  .ai-response {
+    background: rgba(255,255,255,0.08); border-radius: var(--radius-sm);
+    padding: 12px 14px; font-size: 15px; color: rgba(255,255,255,0.9);
+    min-height: 60px; line-height: 1.7; display: none;
+    white-space: pre-wrap;
+  }
+  .ai-response.visible { display: block; }
+  .ai-send {
+    width: 100%; padding: 11px; background: linear-gradient(90deg, #E8A020, #FFD700);
+    color: var(--navy); font-weight: 900; font-size: 15px;
+    border: none; border-radius: var(--radius-sm); cursor: pointer;
+  }
+
+  .disclaimer { font-size: 12px; color: var(--text-soft); text-align: center; padding: 20px 0 40px; }
+
+  /* scroll helper */
+  .pb80 { padding-bottom: 80px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-logo">人格<span>工程</span></div>
+  <button class="topnav-tab active" onclick="showTab('home')">首頁</button>
+  <button class="topnav-tab" onclick="showTab('modules')">模組</button>
+  <button class="topnav-tab" onclick="showTab('quiz')">診斷</button>
+  <button class="topnav-tab" onclick="showTab('nutrients')">黑科技</button>
+</nav>
+
+<!-- ━━━━━━━━━━━━━━ HOME ━━━━━━━━━━━━━━ -->
+<div id="screen-home" class="screen active pb80">
+
+  <div class="hero">
+    <div class="hero-title">PERSONALITY OPERATING SYSTEM</div>
+    <div class="hero-name">🔥 人格工程 APP</div>
+    <div class="score-grid">
+      <div class="score-box main">
+        <div class="val">82</div>
+        <div class="lbl">人格成熟度</div>
+      </div>
+      <div class="score-box">
+        <div class="val">80</div>
+        <div class="lbl">情緒穩定度</div>
+      </div>
+      <div class="score-box">
+        <div class="val">85</div>
+        <div class="lbl">信念升級度</div>
+      </div>
+      <div class="score-box">
+        <div class="val">78</div>
+        <div class="lbl">身份一致性</div>
+      </div>
+      <div class="score-box">
+        <div class="val">84</div>
+        <div class="lbl">生命力指數</div>
+      </div>
+      <div class="score-box">
+        <div class="val">81</div>
+        <div class="lbl">關係品質</div>
+      </div>
+    </div>
+    <button class="hero-btn" onclick="showTab('quiz')">🧠 立即進行人格診斷</button>
+  </div>
+
+  <div class="section-title">人格終極公式</div>
+  <div class="formula-chain" style="margin-bottom:20px;">
+    <div class="formula-item">信念</div>
+    <div class="formula-arrow">↓</div>
+    <div class="formula-item">預測</div>
+    <div class="formula-arrow">↓</div>
+    <div class="formula-item">決策</div>
+    <div class="formula-arrow">↓</div>
+    <div class="formula-item">行動</div>
+    <div class="formula-arrow">↓</div>
+    <div class="formula-item">習慣</div>
+    <div class="formula-arrow">↓</div>
+    <div class="formula-item">人格</div>
+    <div class="formula-arrow">↓</div>
+    <div class="formula-item" style="background:var(--navy);color:#FFD700;">命運</div>
+  </div>
+
+  <div class="section-title">🔥 今日金句</div>
+  <div class="quotes-list" id="daily-quotes"></div>
+
+  <div class="section-title">升級對比</div>
+  <div id="upgrade-cards"></div>
+
+  <div class="ai-box">
+    <div class="ai-box-title">🤖 AI 人格教練</div>
+    <textarea class="ai-input" rows="2" id="ai-input-home" placeholder="輸入你的困境，例如：我總是害怕失敗…"></textarea>
+    <button class="ai-send" onclick="askCoach('home')">💬 獲得人格洞察</button>
+    <div class="ai-response" id="ai-response-home"></div>
+  </div>
+
+</div>
+
+<!-- ━━━━━━━━━━━━━━ MODULES ━━━━━━━━━━━━━━ -->
+<div id="screen-modules" class="screen pb80">
+
+  <div class="section-title">12大人格工程模組</div>
+  <div class="mod-grid" id="mod-grid"></div>
+  <div id="mod-detail-area"></div>
+
+</div>
+
+<!-- ━━━━━━━━━━━━━━ QUIZ ━━━━━━━━━━━━━━ -->
+<div id="screen-quiz" class="screen pb80">
+  <div class="section-title">🧠 人格診斷系統</div>
+  <div id="quiz-area">
+    <div class="quiz-card">
+      <div class="quiz-progress">
+        <div class="progress-bar-bg"><div class="progress-bar" id="prog-bar" style="width:10%"></div></div>
+        <div class="progress-label" id="prog-label">第 1 題 / 共 12 題</div>
+      </div>
+      <div class="q-text" id="q-text"></div>
+      <div class="q-options" id="q-options"></div>
+      <div class="q-nav">
+        <button class="q-btn prev" onclick="quizPrev()" id="btn-prev" disabled>上一題</button>
+        <button class="q-btn next" onclick="quizNext()" id="btn-next" disabled>下一題</button>
+      </div>
+    </div>
+  </div>
+  <div id="quiz-result" style="display:none;"></div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━ NUTRIENTS ━━━━━━━━━━━━━━ -->
+<div id="screen-nutrients" class="screen pb80">
+  <div class="section-title">🔬 人格黑科技營養素</div>
+  <p style="font-size:14px;color:var(--text-soft);margin-bottom:16px;">每個人格模組都有對應的神經機制，透過精準營養素支持大腦最佳化，加速人格升級。</p>
+  <div id="nutrients-list"></div>
+  <div class="disclaimer">以上資訊僅供參考，請諮詢醫師或專業人員。</div>
+</div>
+
+<a class="float-cta" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 訂購黑科技</a>
+
+<script>
+// ─── DATA ────────────────────────────────────────────
+
+const MODULES = [
+  { id:1, icon:'🔍', name:'人格診斷中心', sub:'找出優勢 × 限制 × 防衛', chain:['優勢人格','限制人格','防衛模式','核心信念','AI人格地圖'] },
+  { id:2, icon:'🏗️', name:'人格生成系統', sub:'10大模型全解析', chain:['信念模型','情緒模型','習慣模型','身份模型','世界觀模型','人格重建模型'] },
+  { id:3, icon:'💎', name:'信念工程', sub:'升級你的預言系統', chain:['限制性信念','成長型信念','豐盛信念','價值信念'] },
+  { id:4, icon:'🌊', name:'情緒工程', sub:'情緒是訊號不是敵人', chain:['情緒辨識','情緒管理','情緒轉譯','情緒修復'] },
+  { id:5, icon:'⚡', name:'習慣工程', sub:'重複行為塑造人格', chain:['微習慣','行為設計','觸發系統','獎勵系統'] },
+  { id:6, icon:'👑', name:'身份工程', sub:'先成為 再做到', chain:['我是誰','我相信什麼','我想成為誰','行為→結果'] },
+  { id:7, icon:'🧭', name:'價值觀工程', sub:'決策的演算法', chain:['人生排序','選擇排序','時間排序','真實價值觀'] },
+  { id:8, icon:'🤝', name:'依附工程', sub:'關係模式重建', chain:['安全型','焦慮型','逃避型','混亂型'] },
+  { id:9, icon:'🪞', name:'防衛機制工程', sub:'找出人格盲區', chain:['合理化','投射','否認','逃避','補償'] },
+  { id:10, icon:'📖', name:'人生腳本工程', sub:'重寫你的劇本', chain:['受害者劇本','拯救者劇本','英雄劇本','成長者劇本'] },
+  { id:11, icon:'🔄', name:'人格重建工程', sub:'更新人生作業系統', chain:['舊人格','覺察','誤差','修正','更新','新人格'] },
+  { id:12, icon:'📈', name:'人格複利工程', sub:'每天1%×365天=37倍', chain:['閱讀複利','信念複利','習慣複利','健康複利','財富複利'] },
+];
+
+const MOD_QUOTES = {
+  1: ['你的人格，決定你的世界。', '人格是所有行為的源頭。', '人格是命運的根程式。'],
+  2: ['人格是人生的作業系統。', '人格不同，看見的世界也不同。', '改變人格，比改變環境更重要。'],
+  3: ['限制你的不是能力，而是信念。', '你相信什麼，就會看見什麼。', '人生最大的監獄，是錯誤信念。', '所有限制性信念都可以被更新。'],
+  4: ['情緒不是敵人，情緒是系統的通知。', '焦慮是對未來的不確定。', '情緒背後都有需求。', '看懂情緒才能看懂自己。'],
+  5: ['習慣重複久了就變人格。', '微小習慣創造巨大人生。', '行為塑造身份，身份塑造行為。'],
+  6: ['先成為，再做到。', '你不是做到才相信，你是相信了才做到。', '身份決定行為，行為決定結果。'],
+  7: ['時間花在哪裡，價值觀就在那裡。', '選擇暴露人格。', '壓力暴露人格。'],
+  8: ['童年依附塑造關係模式。', '安全型依附：我值得被愛。', '關係是人格最真實的鏡子。'],
+  9: ['人格最大的敵人是看不見自己。', '人格最大的槓桿是覺察。', '認識盲區，才能突破天花板。'],
+  10: ['很多人活的不是現在的人生，而是童年的劇本。', '成長者劇本：把問題變教材。', '你可以重寫你的人生腳本。'],
+  11: ['人格不是固定的，人格可以更新。', '真正的成長，是人格升級。', '智慧來自持續更新人格。'],
+  12: ['每天進步1%，365天後37倍成長。', '人格升級，人生就開始複利成長。', '成熟來自持續修正人格。'],
+};
+
+const ALL_QUOTES = [
+  '命運不是被世界決定，而是被人格決定。','人格不是天生固定，而是可以持續更新。',
+  '改變人格，才能改變命運。','信念決定預測，預測決定決策。',
+  '情緒是人格的訊號燈。','習慣重複久了就變人格，人格重複久了就變命運。',
+  '先成為，再做到。','你相信什麼，就會看見什麼。',
+  '人格最大的敵人是不願更新。','人格工程的終極目標：成為持續更新的人。',
+  '每天進步1%，365天後37倍成長。','所有限制性信念都可以被更新。',
+  '時間花在哪裡，價值觀就在那裡。','人格是所有行為的源頭。',
+  '情緒不是敵人，情緒是系統的通知。','看懂情緒才能看懂自己。',
+];
+
+const UPGRADES = [
+  { old:'❌ 我天生就是這樣，改不了', new:'✅ 人格是後天建構的，我可以升級' },
+  { old:'❌ 我就是容易焦慮的人', new:'✅ 焦慮是訊號，我可以解讀並回應它' },
+  { old:'❌ 我沒有執行力，總是半途而廢', new:'✅ 行為設計 + 觸發系統，讓改變自動發生' },
+  { old:'❌ 我做到了才能相信自己', new:'✅ 我先相信，行為自然跟上' },
+  { old:'❌ 我的問題都是別人造成的', new:'✅ 我是問題的共創者，也是解決者' },
+];
+
+const QUIZ_QUESTIONS = [
+  { q:'當你遇到困難時，你的第一反應是？', opts:['逃避，過一陣子再說','立刻找人幫忙','分析原因，尋找解法','覺得是自己的問題'] },
+  { q:'你如何看待「失敗」？', opts:['失敗讓我很受傷，很難走出來','失敗是學習，但還是難受','失敗是數據，我會修正','失敗證明我不夠好'] },
+  { q:'在親密關係中，你比較常出現哪種模式？', opts:['害怕失去，容易依賴','保持距離，不太表達','安心依靠，也給對方空間','想靠近又害怕被傷'] },
+  { q:'你對自己「值得被愛」的信念程度？', opts:['我覺得自己不夠好','偶爾覺得，不太確定','大部分時間覺得值得','完全相信，無條件的'] },
+  { q:'你最常出現哪種情緒模式？', opts:['焦慮、擔心未來','憤怒、感覺界線被侵犯','平靜，偶爾起伏','委屈、覺得沒被理解'] },
+  { q:'你的日常習慣建立狀態？', opts:['幾乎沒什麼固定習慣','有計劃，但常中斷','有幾個穩定的核心習慣','習慣系統完整，持續執行'] },
+  { q:'你如何做重要決策？', opts:['靠感覺，事後才後悔','問別人，自己沒把握','有清晰的價值觀依據','猶豫很久，怕選錯'] },
+  { q:'你對「成為更好的自己」的態度？', opts:['覺得太難，不知從哪開始','想改變，但常放棄','有系統地持續升級','偶爾努力，缺乏持續性'] },
+  { q:'你的人生腳本傾向？', opts:['受害者：覺得世界對我不公平','拯救者：總想幫助所有人','英雄者：靠成就證明自己','成長者：把問題變教材'] },
+  { q:'你的信念升級頻率？', opts:['很少重新審視自己的信念','偶爾反思，但改變不大','定期自我檢視，主動更新','持續覺察，每天小升級'] },
+  { q:'你的時間使用和你的「口頭價值觀」一致嗎？', opts:['幾乎不一致','有時一致','大部分一致','高度一致'] },
+  { q:'你如何看待自己的「人格盲區」？', opts:['從沒想過自己有盲區','知道有，但不想面對','願意被指出，積極改善','主動尋找，當作升級素材'] },
+];
+
+const RESULT_TYPES = [
+  { min:0, max:18, name:'人格種子期 🌱', desc:'你的人格系統正在建立基礎。覺察力開始萌芽，現在是最好的升級起點。', color:'#065F46', bg:'#ECFDF5' },
+  { min:19, max:30, name:'人格成長期 🌿', desc:'你有一定的自我認知，但某些信念和習慣仍在舊有模式中運作。關鍵突破在信念升級。', color:'#1D4ED8', bg:'#EFF6FF' },
+  { min:31, max:42, name:'人格躍升期 🚀', desc:'你的人格系統相當成熟，覺察力強，能主動管理情緒和信念。持續複利成長中。', color:'#B8860B', bg:'#FFFBEF' },
+];
+
+const NUTRIENTS = [
+  {
+    icon:'🧠', name:'磷脂醯絲胺酸 PS', eng:'Phosphatidylserine',
+    tags:['brain','neuro'],
+    mechanism:'PS是大腦神經細胞膜的核心磷脂，佔大腦細胞膜磷脂的15%。直接影響多巴胺、血清素、乙醯膽鹼等神經傳導物質的合成與釋放。',
+    effects:['提升工作記憶與注意力 → 加速信念覺察', '降低皮質醇（壓力荷爾蒙）→ 情緒工程核心支援', '促進神經可塑性 → 人格重建的生理基礎', '改善認知靈活性 → 突破舊有思維模式'],
+    link: 'https://myship.7-11.com.tw/general/detail/GM2407210007294',
+  },
+  {
+    icon:'🌊', name:'Omega-3 DHA+EPA', eng:'Fish Oil / Algae Oil',
+    tags:['brain','neuro','hormone'],
+    mechanism:'DHA佔大腦灰質脂肪酸的40%，直接構成神經突觸膜。EPA具強力抗發炎作用，降低神經發炎對情緒的影響。兩者協同調節HPA軸（壓力反應軸）。',
+    effects:['優化突觸傳導效率 → 加速習慣神經迴路建立', '降低杏仁核過度反應 → 情緒穩定工程', '支援前額葉皮質功能 → 提升決策品質', '調節血清素受體敏感性 → 豐盛信念的神經基礎'],
+    link: 'https://myship.7-11.com.tw/general/detail/GM2407210007294',
+  },
+  {
+    icon:'⚡', name:'輔酶 Q10（泛醌）', eng:'CoQ10 / Ubiquinol',
+    tags:['energy','neuro'],
+    mechanism:'CoQ10是粒線體電子傳遞鏈的核心輔因子，負責生產95%的細胞ATP能量。大腦神經元對ATP需求極高，CoQ10直接決定神經元的「運算速度」。',
+    effects:['提升神經元能量效率 → 人格複利工程核心燃料', '強力抗氧化保護神經細胞 → 延緩認知老化', '促進粒線體生合成 → 習慣執行的持久力', '改善慢性疲勞 → 釋放被疲勞壓抑的人格潛能'],
+    link: 'https://myship.7-11.com.tw/general/detail/GM2407210007294',
+  },
+  {
+    icon:'🌟', name:'NMN（菸醯胺單核苷酸）', eng:'Nicotinamide Mononucleotide',
+    tags:['energy','neuro','brain'],
+    mechanism:'NMN是NAD+的直接前體。NAD+是細胞能量代謝、DNA修復、長壽蛋白Sirtuins的關鍵輔因子。隨年齡NAD+下降，NMN補充可逆轉神經老化。',
+    effects:['活化Sirtuin長壽蛋白 → 人格持續升級的生物基礎', '增強神經突觸可塑性 → 信念重建更有效率', '修復神經DNA損傷 → 防止人格固化', '提升整體認知功能 → 身份工程的神經支援'],
+    link: 'https://myship.7-11.com.tw/general/detail/GM2407210007294',
+  },
+  {
+    icon:'😌', name:'GABA（γ-胺基丁酸）', eng:'Gamma-Aminobutyric Acid',
+    tags:['stress','neuro'],
+    mechanism:'GABA是大腦最主要的抑制性神經傳導物質，調節神經元興奮性。低GABA與焦慮、過度警覺、情緒失調直接相關，是情緒工程的關鍵調控分子。',
+    effects:['降低神經過度激活 → 從焦慮型依附走向安全型', '促進alpha腦波 → 覺察力提升的神經狀態', '改善睡眠品質 → 大腦信念系統在睡眠中整合', '緩解情緒反應 → 防衛機制不再過度啟動'],
+    link: 'https://myship.7-11.com.tw/general/detail/GM2407210007294',
+  },
+  {
+    icon:'🌿', name:'麩醯胺酸', eng:'L-Glutamine',
+    tags:['brain','energy'],
+    mechanism:'麩醯胺酸是大腦神經元最重要的代謝燃料之一，也是GABA和麩胺酸（興奮性神經傳導物質）的直接前體。調節腸腦軸（gut-brain axis）。',
+    effects:['腸腦軸調節 → 情緒波動的根源修復', '神經元能量補給 → 高強度思考後的恢復', '支援血腦屏障完整性 → 保護神經系統', '腸道黏膜修復 → 提升神經傳導物質前體吸收'],
+    link: 'https://myship.7-11.com.tw/general/detail/GM2407210007294',
+  },
+  {
+    icon:'☀️', name:'維生素 D3＋K2', eng:'Vitamin D3 + K2',
+    tags:['hormone','neuro','brain'],
+    mechanism:'D3是類固醇荷爾蒙前體，大腦中有超過2700個基因受D3調控，直接影響血清素、多巴胺合成。K2協同D3確保鈣質進入骨骼而非動脈。',
+    effects:['調控血清素合成 → 幸福感、豐盛信念的神經基礎', '提升免疫調節 → 降低慢性發炎對情緒的影響', '支援神經保護 → 人格複利的長期維護', '改善季節性情緒 → 穩定信念更新的動力'],
+    link: 'https://myship.7-11.com.tw/general/detail/GM2407210007294',
+  },
+  {
+    icon:'🟡', name:'薑黃素（BCM-95）', eng:'Curcumin Bioavailable',
+    tags:['neuro','brain','stress'],
+    mechanism:'薑黃素是強力NF-κB抑制劑，直接抑制神經發炎。促進BDNF（腦源性神經營養因子）分泌，BDNF是神經可塑性的關鍵生長因子，被稱為「大腦的肥料」。',
+    effects:['促進BDNF分泌 → 神經新生，信念升級的生理基礎', '強力抗神經發炎 → 消除情緒遲鈍和認知霧化', '抑制單胺氧化酶（MAO）→ 自然提升多巴胺、血清素', '改善海馬迴功能 → 舊創傷記憶的整合與釋放'],
+    link: 'https://myship.7-11.com.tw/general/detail/GM2407210007294',
+  },
+  {
+    icon:'⚗️', name:'丁酸鈉', eng:'Sodium Butyrate',
+    tags:['brain','neuro'],
+    mechanism:'丁酸鈉是腸道菌代謝膳食纖維的短鏈脂肪酸產物，是腸腦軸的核心信使。具HDAC抑制作用（表觀遺傳調控），影響基因表達和神經可塑性。',
+    effects:['表觀遺傳調控 → 改變基因表達模式，支援人格重建', '保護腸道屏障 → 腸漏症修復，根除情緒根源', '促進神經保護 → 防衛機制的生理基礎調整', '調節免疫-神經發炎軸 → 整體情緒系統優化'],
+    link: 'https://myship.7-11.com.tw/general/detail/GM2407210007294',
+  },
+  {
+    icon:'🌍', name:'益生菌（多菌株）', eng:'Multi-strain Probiotics',
+    tags:['brain','hormone'],
+    mechanism:'腸道被稱為「第二大腦」，含有超過一億個神經元，透過迷走神經直接與大腦溝通。腸道菌群生產約90%的血清素和大量多巴胺前體。',
+    effects:['優化腸腦軸溝通 → 情緒穩定度的根本提升', '提升血清素生產 → 自然豐盛感與幸福感', '調節HPA壓力軸 → 依附安全感的生理基礎', '改善認知功能（菌腦軸）→ 決策清晰度提升'],
+    link: 'https://myship.7-11.com.tw/general/detail/GM2407210007294',
+  },
+];
+
+// ─── RENDER ──────────────────────────────────────────
+
+function showTab(t) {
+  ['home','modules','quiz','nutrients'].forEach(s => {
+    document.getElementById('screen-'+s).classList.toggle('active', s===t);
+  });
+  document.querySelectorAll('.topnav-tab').forEach((b,i) => {
+    b.classList.toggle('active', ['home','modules','quiz','nutrients'][i]===t);
+  });
+}
+
+// ── Home quotes
+function renderHomeQuotes() {
+  const shuffled = [...ALL_QUOTES].sort(()=>Math.random()-0.5).slice(0,5);
+  document.getElementById('daily-quotes').innerHTML = shuffled.map((q,i) =>
+    `<div class="quote-card"><div class="q-num">金句 ${i+1}</div>${q}</div>`
+  ).join('');
+}
+
+// ── Upgrade cards
+function renderUpgrades() {
+  document.getElementById('upgrade-cards').innerHTML = UPGRADES.map(u => `
+    <div class="upgrade-card">
+      <div class="upgrade-old"><div class="upg-label old">❌ 舊人格模式</div><div class="upg-text">${u.old.replace('❌ ','')}</div></div>
+      <div class="upgrade-arrow">↓ 升級</div>
+      <div class="upgrade-new"><div class="upg-label new">✅ 升級後人格</div><div class="upg-text">${u.new.replace('✅ ','')}</div></div>
+    </div>
+  `).join('');
+}
+
+// ── Module grid
+function renderModules() {
+  document.getElementById('mod-grid').innerHTML = MODULES.map(m => `
+    <div class="mod-card" onclick="showModDetail(${m.id})">
+      <div class="mod-num">模組 ${m.id}</div>
+      <div class="icon">${m.icon}</div>
+      <div class="mod-name">${m.name}</div>
+      <div class="mod-sub">${m.sub}</div>
+    </div>
+  `).join('');
+}
+
+function showModDetail(id) {
+  const m = MODULES.find(x=>x.id===id);
+  const qs = MOD_QUOTES[id] || [];
+  const chain = m.chain.map((c,i) => 
+    `<div class="formula-item" style="${i===m.chain.length-1?'background:var(--navy);color:#FFD700;':''}">${c}</div>${i<m.chain.length-1?'<div class="formula-arrow">↓</div>':''}`
+  ).join('');
+  const quotes = qs.map(q=>`<div class="quote-card">${q}</div>`).join('');
+  document.getElementById('mod-detail-area').innerHTML = `
+    <div class="mod-detail">
+      <div class="mod-detail-head">
+        <div class="mod-detail-icon">${m.icon}</div>
+        <div>
+          <div class="mod-detail-title">第${id}模組：${m.name}</div>
+          <div class="mod-detail-desc">${m.sub}</div>
+        </div>
+      </div>
+      <div class="formula-chain">${chain}</div>
+      ${quotes ? `<div class="section-title" style="font-size:15px;margin:14px 0 8px;">🔥 模組金句</div><div class="quotes-list">${quotes}</div>` : ''}
+    </div>
+  `;
+  document.getElementById('mod-detail-area').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ── Quiz
+let qIdx = 0;
+let answers = {};
+
+function renderQuestion() {
+  const q = QUIZ_QUESTIONS[qIdx];
+  const pct = Math.round(((qIdx+1)/QUIZ_QUESTIONS.length)*100);
+  document.getElementById('prog-bar').style.width = pct+'%';
+  document.getElementById('prog-label').textContent = `第 ${qIdx+1} 題 / 共 ${QUIZ_QUESTIONS.length} 題`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-options').innerHTML = q.opts.map((o,i) => `
+    <button class="q-opt${answers[qIdx]===i?' selected':''}" onclick="selectOpt(${i})">${o}</button>
+  `).join('');
+  document.getElementById('btn-prev').disabled = qIdx===0;
+  document.getElementById('btn-next').textContent = qIdx===QUIZ_QUESTIONS.length-1 ? '查看結果 →' : '下一題';
+  document.getElementById('btn-next').disabled = answers[qIdx]===undefined;
+}
+
+function selectOpt(i) {
+  answers[qIdx] = i;
+  document.querySelectorAll('.q-opt').forEach((b,j)=>b.classList.toggle('selected',j===i));
+  document.getElementById('btn-next').disabled = false;
+}
+
+function quizPrev() { if(qIdx>0){qIdx--;renderQuestion();} }
+function quizNext() {
+  if(answers[qIdx]===undefined) return;
+  if(qIdx<QUIZ_QUESTIONS.length-1){ qIdx++; renderQuestion(); }
+  else { showResult(); }
+}
+
+function showResult() {
+  const total = Object.values(answers).reduce((s,v)=>s+v,0);
+  const type = RESULT_TYPES.find(t=>total>=t.min && total<=t.max) || RESULT_TYPES[2];
+  const scores = {
+    '信念升級度': Math.min(100, 60 + (answers[9]||0)*10 + (answers[2]||0)*5),
+    '情緒穩定度': Math.min(100, 55 + (answers[4]||0)*10 + (answers[0]||0)*5),
+    '身份一致性': Math.min(100, 50 + (answers[5]||0)*10 + (answers[7]||0)*8),
+    '人格成熟度': Math.min(100, 50 + (answers[11]||0)*12 + (answers[1]||0)*6),
+    '關係品質':   Math.min(100, 55 + (answers[2]||0)*12 + (answers[3]||0)*8),
+    '複利潛能':   Math.min(100, 45 + (answers[10]||0)*12 + (answers[8]||0)*8),
+  };
+  const scoreHtml = Object.entries(scores).map(([k,v])=>
+    `<div class="rscore"><div class="rv">${v}</div><div class="rl">${k}</div></div>`
+  ).join('');
+  document.getElementById('quiz-area').style.display='none';
+  document.getElementById('quiz-result').style.display='block';
+  document.getElementById('quiz-result').innerHTML = `
+    <div class="result-box">
+      <div class="result-type">你的人格發展階段</div>
+      <div class="result-name">${type.name}</div>
+      <div class="result-desc">${type.desc}</div>
+      <div class="result-scores">${scoreHtml}</div>
+    </div>
+    <div class="rec-section">
+      <div class="rec-title">🧭 AI 建議你的升級路徑</div>
+      <div class="rec-card"><strong>優先模組：信念工程 ＋ 情緒工程</strong>從覺察限制性信念開始，配合情緒辨識系統，建立人格升級的雙引擎。</div>
+      <div class="rec-card"><strong>黑科技配套：PS ＋ GABA ＋ Omega-3</strong>提供信念重建所需的神經可塑性支援，加速覺察與情緒穩定。</div>
+      <div class="rec-card"><strong>每日微習慣：覺察日誌 ×3分鐘</strong>記錄一個觸發點 → 情緒 → 背後信念，持續更新人格作業系統。</div>
+    </div>
+    <button class="hero-btn" style="margin-top:12px;" onclick="restartQuiz()">🔄 重新診斷</button>
+    <button class="hero-btn" style="margin-top:8px;background:linear-gradient(90deg,var(--teal),#009BB5);" onclick="showTab('nutrients')">🔬 查看對應黑科技</button>
+  `;
+}
+
+function restartQuiz() {
+  qIdx=0; answers={};
+  document.getElementById('quiz-area').style.display='block';
+  document.getElementById('quiz-result').style.display='none';
+  renderQuestion();
+}
+
+// ── Nutrients
+function renderNutrients() {
+  document.getElementById('nutrients-list').innerHTML = NUTRIENTS.map(n => `
+    <div class="nutrient-card">
+      <div class="nutrient-top">
+        <div class="nutrient-icon">${n.icon}</div>
+        <div><div class="nutrient-name">${n.name}</div><div class="nutrient-eng">${n.eng}</div></div>
+      </div>
+      <div class="nutrient-tags">${n.tags.map(t=>`<span class="tag ${t}">${{brain:'大腦神經',stress:'壓力調節',energy:'細胞能量',neuro:'神經可塑性',hormone:'荷爾蒙'}[t]||t}</span>`).join('')}</div>
+      <div class="mechanism-box"><strong>【作用機制】</strong> ${n.mechanism}</div>
+      <ul class="effect-list">${n.effects.map(e=>`<li>${e}</li>`).join('')}</ul>
+      <a class="buy-btn" href="${n.link}" target="_blank">🛒 購買黑科技 — 冠貞生技×大鳥工作坊</a>
+    </div>
+  `).join('');
+}
+
+// ── AI Coach
+async function askCoach(suffix) {
+  const input = document.getElementById('ai-input-'+suffix);
+  const resp  = document.getElementById('ai-response-'+suffix);
+  const text  = input.value.trim();
+  if(!text) return;
+  resp.classList.add('visible');
+  resp.textContent = '🧠 AI 人格教練思考中…';
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: `你是「人格工程APP」的AI人格教練。你的角色是從系統論角度分析用戶的人格模式，給出精準、深刻、激勵的洞察。
+
+核心框架：信念→預測→決策→行動→習慣→人格→命運
+你要：1) 找出信念根源 2) 指出防衛機制或人生腳本 3) 給出升級路徑 4) 推薦1-2個對應的模組
+
+語言風格：精簡有力、直指核心、充滿力量感。繁體中文。每段不超過3行。結尾給一句升級金句。
+
+最後可以提示：搭配對應的黑科技營養素可以加速神經可塑性，支援人格升級。`,
+        messages: [{role:'user', content: text}]
+      })
+    });
+    const data = await r.json();
+    const msg = data.content?.find(c=>c.type==='text')?.text || '請稍後再試';
+    resp.textContent = msg;
+  } catch(e) {
+    resp.textContent = '⚠️ 連線異常，請稍後再試。\n\n人格工程提示：你的困境，就是你的升級素材。';
+  }
+}
+
+// ─── INIT ────────────────────────────────────────────
+renderHomeQuotes();
+renderUpgrades();
+renderModules();
+renderQuestion();
+renderNutrients();
+</script>
+</body>
+</html>
