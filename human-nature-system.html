@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人性隱學系統｜懂人性，改命運</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0D1B3E;--teal:#1B5E7B;--gold:#8A6200;--lgold:#F5E6C0;
+  --green:#0F6E56;--red:#8B1A1A;--purple:#4A1A7A;
+  --bg:#F4F6F9;--card:#fff;--border:#DDE2E9;--text:#1a1a1a;--text2:#555;--text3:#999;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang TC','Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── NAV ── */
+.topnav{background:var(--navy);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-logo{color:var(--lgold);font-size:16px;font-weight:700;display:flex;align-items:center;gap:7px}
+.nav-tabs{display:flex;gap:4px}
+.nav-tab{background:transparent;border:none;color:rgba(255,255,255,.6);font-size:13px;padding:7px 12px;border-radius:8px;cursor:pointer;transition:.15s}
+.nav-tab.active,.nav-tab:hover{background:rgba(255,255,255,.12);color:#fff}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(150deg,#0D1B3E 0%,#1B5E7B 100%);color:#fff;padding:2.5rem 1.2rem 2rem;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(245,230,192,.15);color:var(--lgold);font-size:12px;padding:4px 12px;border-radius:999px;margin-bottom:14px;font-weight:500}
+.hero-title{font-size:26px;font-weight:700;line-height:1.4;margin-bottom:8px}
+.hero-sub{font-size:14px;opacity:.8;line-height:1.7;margin-bottom:20px}
+.hero-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:380px;margin:0 auto 22px}
+.hcard{background:rgba(255,255,255,.12);border-radius:12px;padding:10px 8px;text-align:center}
+.hcard-num{font-size:20px;font-weight:700;color:var(--lgold)}
+.hcard-label{font-size:11px;opacity:.75;margin-top:2px}
+
+/* ── PAGE ── */
+.page{display:none;padding:1rem}
+.page.active{display:block}
+
+/* ── SECTION HEADER ── */
+.sec-head{margin-bottom:16px}
+.sec-title{font-size:18px;font-weight:600;display:flex;align-items:center;gap:8px;color:var(--navy)}
+.sec-sub{font-size:13px;color:var(--text3);margin-top:3px}
+
+/* ── CARDS ── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;cursor:pointer;transition:box-shadow .2s}
+.card:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.card-icon{font-size:22px;color:var(--teal);margin-bottom:8px}
+.card-title{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.card-desc{font-size:12px;color:var(--text2);line-height:1.5}
+.card-tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;margin-top:6px}
+
+/* ── MODULE DETAIL ── */
+.module-back{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--teal);cursor:pointer;margin-bottom:16px;padding:8px 0}
+.module-hero{background:linear-gradient(135deg,var(--navy),var(--teal));border-radius:16px;padding:18px 16px;color:#fff;margin-bottom:16px}
+.module-title{font-size:20px;font-weight:700;margin-bottom:6px}
+.module-thesis{font-size:13px;opacity:.8;line-height:1.6}
+.insight-box{border-radius:12px;padding:13px;margin-bottom:10px;border-left:4px solid}
+.insight-box.gold{background:#FFF8E7;border-color:var(--gold)}
+.insight-box.teal{background:#E8F4FB;border-color:var(--teal)}
+.insight-box.red{background:#FDE8E8;border-color:var(--red)}
+.insight-box.green{background:#E6F5F0;border-color:var(--green)}
+.insight-box.purple{background:#F0E8FA;border-color:var(--purple)}
+.insight-label{font-size:11px;font-weight:700;margin-bottom:5px}
+.insight-text{font-size:13px;color:var(--navy);line-height:1.7}
+.vs-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px}
+.vs-table th{padding:9px 10px;font-weight:600;font-size:12px;color:#fff}
+.vs-table td{padding:8px 10px;border-bottom:1px solid #f0f0f0}
+.vs-table tr:last-child td{border-bottom:none}
+.vs-l{color:var(--red);font-weight:500}
+.vs-r{color:var(--green);font-weight:500}
+.formula-flow{display:flex;flex-direction:column;align-items:center;gap:4px;margin:14px 0}
+.formula-step{background:#FFF8E7;border:1.5px solid var(--gold);border-radius:10px;padding:9px 20px;font-size:14px;font-weight:600;color:var(--navy);text-align:center}
+.formula-arrow{font-size:20px;color:var(--gold);line-height:1}
+.checklist{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.check-item{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;background:#F8F8F8;border-radius:10px;font-size:13px;color:var(--navy);line-height:1.5}
+.check-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+
+/* ── QUIZ ── */
+.quiz-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px}
+.quiz-q{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:14px}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{background:#F8F8F8;border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;font-size:13px;cursor:pointer;text-align:left;transition:.15s}
+.quiz-opt:hover{border-color:var(--teal);background:#E8F4FB}
+.quiz-opt.correct{background:#E6F5F0;border-color:var(--green);color:var(--green);font-weight:600}
+.quiz-opt.wrong{background:#FDE8E8;border-color:var(--red);color:var(--red)}
+.quiz-explain{font-size:13px;color:var(--text2);background:#F8F8F8;border-radius:10px;padding:11px;margin-top:8px;line-height:1.6;display:none}
+.quiz-progress{background:#F0F0F0;border-radius:4px;height:4px;margin-bottom:16px}
+.quiz-fill{height:100%;border-radius:4px;background:var(--teal);transition:.4s}
+.score-box{background:linear-gradient(135deg,var(--navy),var(--teal));color:#fff;border-radius:16px;padding:20px;text-align:center;margin:16px 0}
+.score-num{font-size:48px;font-weight:700;color:var(--lgold)}
+.score-label{font-size:14px;opacity:.8;margin-top:4px}
+
+/* ── DIAGNOSIS ── */
+.diag-option{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;cursor:pointer;transition:.15s}
+.diag-option:hover,.diag-option.selected{border-color:var(--teal);background:#E8F4FB}
+.diag-option.selected .diag-radio{background:var(--teal);border-color:var(--teal)}
+.diag-option.selected .diag-radio::after{display:block}
+.diag-row{display:flex;align-items:flex-start;gap:10px}
+.diag-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:.15s}
+.diag-radio::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff;display:none}
+.diag-text{font-size:14px;color:var(--navy)}
+.diag-desc{font-size:12px;color:var(--text3);margin-top:2px}
+.diag-nav{display:flex;gap:8px;margin-top:14px}
+.btn-primary{flex:1;background:var(--navy);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s}
+.btn-primary:hover{background:var(--teal)}
+.btn-primary:disabled{background:#ccc;cursor:not-allowed}
+.btn-back{background:#F0F0F0;color:var(--text2);border:none;border-radius:10px;padding:12px 14px;font-size:14px;cursor:pointer}
+.result-bar{display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px}
+.bar-fill{height:8px;border-radius:4px;margin-bottom:10px}
+.result-type{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.result-sub{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px}
+
+/* ── TAGS ── */
+.tag-navy{background:#E8ECF5;color:var(--navy)}
+.tag-gold{background:#FFF8E7;color:var(--gold)}
+.tag-red{background:#FDE8E8;color:var(--red)}
+.tag-green{background:#E6F5F0;color:var(--green)}
+.tag-teal{background:#E8F4FB;color:var(--teal)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:9px 20px;border-radius:999px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="nav-logo"><i class="ti ti-brain"></i> 人性隱學</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('home')">首頁</button>
+    <button class="nav-tab" onclick="showPage('modules')">模組</button>
+    <button class="nav-tab" onclick="showPage('quiz')">測驗</button>
+    <button class="nav-tab" onclick="showPage('diag')">診斷</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ HOME ══════════════════════════════════ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-badge"><i class="ti ti-eye"></i> 人性隱學系統</div>
+    <div class="hero-title">懂人性，才能改命運</div>
+    <div class="hero-sub">人性不是善惡，而是生存演算法<br>理解機制，才能升級自己</div>
+    <div class="hero-cards">
+      <div class="hcard"><div class="hcard-num">11</div><div class="hcard-label">核心模組</div></div>
+      <div class="hcard"><div class="hcard-num">60+</div><div class="hcard-label">人性法則</div></div>
+      <div class="hcard"><div class="hcard-num">8</div><div class="hcard-label">人格維度</div></div>
+    </div>
+  </div>
+
+  <div style="padding:1rem">
+    <div class="sec-head">
+      <div class="sec-title"><i class="ti ti-route" style="color:var(--teal)"></i> 學習路徑</div>
+      <div class="sec-sub">從理解機制到升級人格，四個步驟</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+      <div class="card" onclick="showPage('modules')">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:40px;height:40px;border-radius:12px;background:#E8F4FB;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0"><i class="ti ti-book-2" style="color:var(--teal)"></i></div>
+          <div><div style="font-size:15px;font-weight:600;color:var(--navy)">① 學習模組</div><div style="font-size:13px;color:var(--text2);margin-top:2px">11大人性主題，深入學習每個機制</div></div>
+          <i class="ti ti-chevron-right" style="color:var(--text3);margin-left:auto"></i>
+        </div>
+      </div>
+      <div class="card" onclick="showPage('quiz')">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:40px;height:40px;border-radius:12px;background:#FFF8E7;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0"><i class="ti ti-help-circle" style="color:var(--gold)"></i></div>
+          <div><div style="font-size:15px;font-weight:600;color:var(--navy)">② 知識測驗</div><div style="font-size:13px;color:var(--text2);margin-top:2px">測試你對人性的理解深度</div></div>
+          <i class="ti ti-chevron-right" style="color:var(--text3);margin-left:auto"></i>
+        </div>
+      </div>
+      <div class="card" onclick="showPage('diag')">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:40px;height:40px;border-radius:12px;background:#F0E8FA;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0"><i class="ti ti-chart-radar" style="color:var(--purple)"></i></div>
+          <div><div style="font-size:15px;font-weight:600;color:var(--navy)">③ 人格診斷</div><div style="font-size:13px;color:var(--text2);margin-top:2px">找出你的人格模式與升級路徑</div></div>
+          <i class="ti ti-chevron-right" style="color:var(--text3);margin-left:auto"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-head">
+      <div class="sec-title"><i class="ti ti-bolt" style="color:var(--gold)"></i> 今日人性金句</div>
+    </div>
+    <div style="background:linear-gradient(135deg,#1B5E7B,#0D1B3E);border-radius:16px;padding:18px;color:#fff;margin-bottom:20px">
+      <div id="daily-quote" style="font-size:16px;font-weight:500;line-height:1.8;color:var(--lgold);text-align:center"></div>
+      <div style="text-align:center;margin-top:10px">
+        <button onclick="nextQuote()" style="background:rgba(255,255,255,.15);border:none;color:#fff;font-size:13px;padding:6px 16px;border-radius:999px;cursor:pointer">換一句 <i class="ti ti-refresh"></i></button>
+      </div>
+    </div>
+
+    <div class="sec-head">
+      <div class="sec-title"><i class="ti ti-list-check" style="color:var(--green)"></i> 核心人性法則</div>
+    </div>
+    <div class="checklist">
+      <div class="check-item"><i class="ti ti-check check-icon" style="color:var(--green)"></i>人性不是善惡，而是生存演算法</div>
+      <div class="check-item"><i class="ti ti-check check-icon" style="color:var(--green)"></i>情緒是訊號，不是問題本身</div>
+      <div class="check-item"><i class="ti ti-check check-icon" style="color:var(--green)"></i>人先考慮自己，這不是自私，這是人性</div>
+      <div class="check-item"><i class="ti ti-check check-icon" style="color:var(--green)"></i>看行動而非聽承諾，這是識人的核心</div>
+      <div class="check-item"><i class="ti ti-check check-icon" style="color:var(--green)"></i>越缺什麼，越容易被什麼拿捏</div>
+      <div class="check-item"><i class="ti ti-check check-icon" style="color:var(--green)"></i>改變自己的解讀，才能改變命運</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ MODULES ══════════════════════════════════ -->
+<div id="page-modules" class="page">
+  <div id="module-list">
+    <div style="padding:1rem 1rem 0">
+      <div class="sec-title"><i class="ti ti-layout-grid" style="color:var(--teal)"></i> 11大人性模組</div>
+      <div class="sec-sub" style="margin-top:3px">點擊任一主題深入學習</div>
+    </div>
+    <div style="padding:1rem;display:flex;flex-direction:column;gap:10px" id="moduleCards"></div>
+  </div>
+  <div id="module-detail" style="display:none;padding:1rem"></div>
+</div>
+
+<!-- ══════════════════════════════════ QUIZ ══════════════════════════════════ -->
+<div id="page-quiz" class="page" style="padding:1rem">
+  <div id="quiz-container"></div>
+</div>
+
+<!-- ══════════════════════════════════ DIAG ══════════════════════════════════ -->
+<div id="page-diag" class="page" style="padding:1rem">
+  <div id="diag-container"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════════════
+
+const QUOTES = [
+  '人性不是善惡，而是生存演算法\n理解機制，才能升級自己',
+  '同樣的事件，不同的解讀，造就完全不同的人生',
+  '越缺什麼，越容易被什麼拿捏\n最好的防身術，是讓自己不缺',
+  '看一個人，要看他在失敗時怎麼做\n這才是他真正的人格底色',
+  '廉價的本質，是過度供給\n稀缺性，才是真正的議價權',
+  '情緒可以有，但不一定要公開播放\n成熟不是沒情緒，而是懂得管理時機',
+  '真正聰明的人，不是最強的人\n而是最懂人性的人',
+  '人生最大的損耗，不是努力不夠\n而是在錯誤的迴路裡反覆消耗',
+  '福氣不是神明給的\n福氣是人格長期運作後產生的結果',
+  '低維看人看外表，高維看人看系統\n最高維看人看他的更新能力',
+  '識人的三把尺：失敗時看責任感，壓力下看人格底色，批評後看更新能力',
+];
+
+let quoteIdx = Math.floor(Math.random()*QUOTES.length);
+
+const MODULES = [
+  {
+    id:'observe', icon:'ti-eye', color:'teal', tagClass:'tag-teal', tag:'觀人術',
+    title:'如何看透一個人',
+    desc:'16個維度，讀懂人格底色',
+    thesis:'高維觀人，看系統，不看表面',
+    content: {
+      insight: {type:'gold', label:'核心洞見', text:'看一個人，最準確的三個時機：失敗時（看責任感）、壓力下（看人格底色）、面對批評後（看更新能力）。這三個時刻，人最難偽裝。'},
+      sections: [
+        {title:'16維觀人術', type:'table', headers:['觀察面向','看什麼','能看出什麼'], rows:[
+          ['對待弱者','對服務生、下屬的態度','品格與同理心'],
+          ['面對失敗','怪別人還是檢討自己','責任感'],
+          ['面對批評','防衛還是學習','成熟度'],
+          ['時間分配','時間花在哪裡','核心價值'],
+          ['面對誘惑','即時享樂還是延遲滿足','自律力'],
+          ['面對承諾','說到做到嗎','信任資產'],
+          ['獨處能力','焦慮還是自在','內在穩定度'],
+          ['持續學習','願不願意更新','未來上限'],
+        ]},
+        {title:'低維 vs 高維看人', type:'vs', left:'低維看人', right:'高維看人', rows:[
+          ['看外表','看習慣'],['看口才','看行動'],['看學歷','看學習力'],
+          ['看情緒','看恢復力'],['看成功','看誠信'],['看結果','看系統'],
+        ]},
+      ],
+      quote: '口說的是願望，行動才是真相',
+    }
+  },
+  {
+    id:'survival', icon:'ti-shield', color:'navy', tagClass:'tag-navy', tag:'生存機制',
+    title:'人性的底層演算法',
+    desc:'大腦如何生成行為與決策',
+    thesis:'人性是生存策略，不是善惡標籤',
+    content:{
+      insight:{type:'teal', label:'核心洞見', text:'人類大腦的核心目標只有一個：最大化生存機率、降低不確定性。所有看起來「奇怪」的人性反應，幾乎都可以從這個角度理解。'},
+      sections:[
+        {title:'人性背後的生存機制', type:'checks', items:[
+          {icon:'ti-shield', text:'焦慮：大腦預測到未知威脅，啟動高警報模式保護自己'},
+          {icon:'ti-heart', text:'討好：為了維持社群連結，避免被排斥的生存策略'},
+          {icon:'ti-eye', text:'嫉妒：監控他人相對地位，確保資源分配的雷達系統'},
+          {icon:'ti-lock', text:'控制欲：試圖降低不確定性，增加預測感'},
+          {icon:'ti-users', text:'尋求認可：確認自己在群體中的價值，提高合作機會'},
+          {icon:'ti-run', text:'逃避：減少預測的能量消耗，回到舒適的已知區'},
+        ]},
+        {title:'高熵 vs 低熵人格', type:'vs', left:'高熵循環（消耗）', right:'低熵循環（升級）', rows:[
+          ['恐懼→高警報→情緒化','覺察→觀察→修正'],
+          ['災難化預測','現實驗證'],
+          ['控制欲強','接納不確定性'],
+          ['關係高耗能','建立低耗能關係'],
+          ['情緒接管人格','情緒調節後決策'],
+          ['人生重播模式','持續更新模型'],
+        ]},
+      ],
+      formula:['生存威脅感知','大腦高警報','情緒反應','行為輸出','結果回饋','模型更新'],
+      quote: '了解機制，才能超越機制',
+    }
+  },
+  {
+    id:'emotion', icon:'ti-mood-smile', color:'gold', tagClass:'tag-gold', tag:'情緒機制',
+    title:'情緒是訊號，不是敵人',
+    desc:'解讀情緒背後的真實需求',
+    thesis:'情緒不是需要壓抑的問題，而是需要解讀的訊號',
+    content:{
+      insight:{type:'gold', label:'核心洞見', text:'每一種情緒，都是大腦發出的訊號。壓抑情緒等於拒絕訊號，情緒就會以更大的代價重新浮現。真正的情緒管理，是解讀訊號，而不是消滅訊號。'},
+      sections:[
+        {title:'四大情緒的真實訊號', type:'table', headers:['情緒','表面現象','底層訊號','正確回應'], rows:[
+          ['焦慮','坐立難安','預測到未知威脅','驗證威脅真實性'],
+          ['憤怒','激動失控','界線被侵犯，需求被阻礙','表達界線，保護需求'],
+          ['悲傷','低落哭泣','失去某個重要的東西','整合失去，允許重組'],
+          ['羞愧','想躲藏','身份感受到否定','區分行為錯誤與身份否定'],
+        ]},
+        {title:'情緒解讀公式', type:'formula', steps:['事件發生','情緒出現','解讀訊號（這在告訴我什麼？）','找到真實需求','採取有效行動']},
+      ],
+      quote: '情緒不是你的問題，是你的老師',
+    }
+  },
+  {
+    id:'belief', icon:'ti-brain', color:'purple', tagClass:'tag-navy', tag:'信念系統',
+    title:'信念如何綁架人生',
+    desc:'從解讀到信念到命運的完整路徑',
+    thesis:'人不是活在現實裡，而是活在信念裡',
+    content:{
+      insight:{type:'purple', label:'核心洞見', text:'信念不是天生的，而是從無數次的解讀中積累而成的「結論」。同樣一件事發生，解讀不同，積累的信念就不同，最終的命運也就截然不同。'},
+      sections:[
+        {title:'限制性信念 vs 成長型信念', type:'vs', left:'限制性解讀', right:'成長型解讀', rows:[
+          ['我不夠好','我在某些方面還有成長空間'],
+          ['我失敗了','這個方法在此情境下沒奏效'],
+          ['沒人愛我','我目前的連結方式需要調整'],
+          ['我做不到','我目前的能力還不足，可以學'],
+          ['這是命','這是一個我可以修正的模型'],
+        ]},
+        {title:'命運公式', type:'formula', steps:['事件（中性）','解讀（賦予意義）','信念（積累結論）','身份（我是誰）','人格（自動模式）','命運（長期結果）']},
+      ],
+      quote: '改變解讀，才能改變命運',
+    }
+  },
+  {
+    id:'relationship', icon:'ti-heart', color:'red', tagClass:'tag-red', tag:'人際關係',
+    title:'情感的底層邏輯',
+    desc:'男女關係背後的需求與系統',
+    thesis:'愛情的本質，是兩個需求系統能否長期協同',
+    content:{
+      insight:{type:'red', label:'核心洞見', text:'大多數感情問題，不是「愛不愛」的問題，而是「需求有沒有被看見和回應」的問題。爭吵的表面是事件，底層是需求衝突。'},
+      sections:[
+        {title:'感情現象的底層邏輯', type:'table', headers:['表面現象','大眾解讀','底層邏輯'], rows:[
+          ['一見鍾情','命中注定','快速價值評估'],
+          ['吃醋','太愛了','害怕失去資源'],
+          ['冷戰','沒感情了','防衛系統啟動'],
+          ['爭吵','個性不合','需求衝突'],
+          ['分手','不愛了','長期預測失敗'],
+          ['外遇','花心','新獎勵系統誘惑'],
+          ['白頭到老','運氣好','持續更新關係'],
+        ]},
+        {title:'關係的核心需求', type:'checks', items:[
+          {icon:'ti-heart', text:'被愛 = 被重視，不只是言語，更是行動'},
+          {icon:'ti-eye', text:'被理解 = 被看見真實的自己，不是被期待'},
+          {icon:'ti-user', text:'被選擇 = 在有其他選擇的情況下，仍然選擇我'},
+          {icon:'ti-shield', text:'安全感 = 能預測對方的行為，不需要高度警覺'},
+        ]},
+      ],
+      quote: '愛的語言不同，不代表愛的深度不同',
+    }
+  },
+  {
+    id:'protect', icon:'ti-shield-check', color:'navy', tagClass:'tag-navy', tag:'防身智慧',
+    title:'不被算計的10大忠告',
+    desc:'人性真相與高階生存策略',
+    thesis:'認識人性，不是為了算計別人，而是保護自己',
+    content:{
+      insight:{type:'teal', label:'核心洞見', text:'被算計的人，不是因為壞運氣，而是因為暴露了弱點、需求、或底牌。了解人性，才能保護自己的選擇權。'},
+      sections:[
+        {title:'10大防算計忠告', type:'checks', items:[
+          {icon:'ti-lock', text:'不輕易透露底牌：資訊是籌碼，說太多等於交出控制權'},
+          {icon:'ti-alert-triangle', text:'不高估人性：人先考慮自己，先驗證再相信'},
+          {icon:'ti-user', text:'不讓需求感外露：越缺越被拿捏，保持內在獨立'},
+          {icon:'ti-clock', text:'不被情緒控制：衝動時延遲決策，情緒最容易被利用'},
+          {icon:'ti-eye', text:'不只聽說什麼：語言可以偽裝，觀察行動才是真相'},
+          {icon:'ti-hand-stop', text:'不讓善良失去邊界：有原則的善良，才能長久'},
+          {icon:'ti-trending-up', text:'不停止成長：實力才是最根本的底牌'},
+        ]},
+        {title:'最容易被算計的人格特質', type:'table', headers:['人格類型','被拿捏的原因','升級方向'], rows:[
+          ['討好型','害怕被討厭','建立邊界感'],
+          ['衝動型','情緒主導','練習延遲決策'],
+          ['天真型','過度相信人','先驗證再信任'],
+          ['依賴型','害怕失去','建立多重選擇'],
+          ['受害型','習慣怪別人','建立責任感'],
+        ]},
+      ],
+      quote: '強者不記恨，強者提高實力',
+    }
+  },
+  {
+    id:'hide', icon:'ti-eye-off', color:'teal', tagClass:'tag-teal', tag:'隱藏智慧',
+    title:'成熟的隱藏藝術',
+    desc:'什麼時候說，什麼時候保留',
+    thesis:'成熟不是沒情緒，而是知道何時表達何時保留',
+    content:{
+      insight:{type:'gold', label:'核心洞見', text:'真正成熟的人，不是什麼都不說，而是清楚知道：什麼時候說，說給誰聽，說多少。資訊本質上是籌碼，過度暴露就是交出控制權。'},
+      sections:[
+        {title:'四大情況下，不要暴露', type:'checks', items:[
+          {icon:'ti-flame', text:'憤怒時不暴露：憤怒降低判斷力，此時決策錯誤率最高'},
+          {icon:'ti-sun', text:'開心時不高調：高調容易招嫉，引發不必要的競爭'},
+          {icon:'ti-cloud-rain', text:'脆弱時不輕信：脆弱時容易誤判對方的動機'},
+          {icon:'ti-coins', text:'需求時不外露：越缺越被拿捏，讓自己成為稀缺'},
+        ]},
+        {title:'中年後要死藏的6張底牌', type:'table', headers:['底牌','為何要藏','過度曝光的風險'], rows:[
+          ['真實財務','人性容易比較','嫉妒、借錢、算計'],
+          ['未來計畫','成事不說','干擾、唱衰'],
+          ['核心人脈','重要資源','被利用'],
+          ['家庭弱點','最脆弱處','成為攻擊點'],
+          ['真實情緒','情緒是籌碼','被拿捏'],
+          ['核心能力','競爭優勢','被模仿取代'],
+        ]},
+      ],
+      quote: '說話是本能，沉默是修煉',
+    }
+  },
+  {
+    id:'value', icon:'ti-diamond', color:'gold', tagClass:'tag-gold', tag:'自我價值',
+    title:'永遠不要做廉價的人',
+    desc:'稀缺性才是真正的議價權',
+    thesis:'廉價的本質不是沒錢，而是失去稀缺性',
+    content:{
+      insight:{type:'gold', label:'核心洞見', text:'市場不會根據你的辛苦定價，市場只根據稀缺性定價。廉價的本質是過度供給——你的時間、精力、情感、原則都可以過度供給，結果是失去議價權。'},
+      sections:[
+        {title:'廉價模式的長期代價', type:'table', headers:['廉價行為','短期收益','長期代價'], rows:[
+          ['討好所有人','暫時被喜歡','失去尊重'],
+          ['免費付出','獲得掌聲','被視為理所當然'],
+          ['降低原則','減少衝突','失去底線'],
+          ['情緒反應','發洩壓力','失去信用'],
+          ['過度透明','獲得認同','失去主導權'],
+        ]},
+        {title:'稀缺性建立公式', type:'formula', steps:['可創造的價值','可被信任的程度','不可輕易取代性','真正的稀缺性','提高議價權']},
+      ],
+      quote: '讓自己難以取代，而非讓自己廉價',
+    }
+  },
+  {
+    id:'temper', icon:'ti-sun', color:'green', tagClass:'tag-green', tag:'脾氣福氣',
+    title:'脾氣裡藏著你的福氣',
+    desc:'7種壞脾氣如何消耗命運',
+    thesis:'福氣是人格長期運作的複利結果',
+    content:{
+      insight:{type:'green', label:'核心洞見', text:'脾氣不是天生的性格，而是神經系統的慣性反應模式。慣性反應可以被覺察，可以被訓練，可以被升級。改變脾氣，就是在改變你的命運軌跡。'},
+      sections:[
+        {title:'7種壞脾氣的底層機制', type:'table', headers:['壞脾氣','底層信念','神經模式','長期代價'], rows:[
+          ['抱怨','世界欠我','受害模式','人緣變差'],
+          ['憤怒','必須照我意思','控制模式','關係衝突'],
+          ['嫉妒','別人不該比我好','比較模式','內耗增加'],
+          ['計較','我不能吃虧','匱乏模式','合作機會減少'],
+          ['傲慢','我永遠正確','防衛模式','成長停止'],
+          ['猜疑','人都不可信','高警報模式','信任崩潰'],
+          ['怨恨','我無法放下','反芻模式','能量卡住'],
+        ]},
+        {title:'低福氣 vs 高福氣人格', type:'vs', left:'低福氣人格', right:'高福氣人格', rows:[
+          ['抱怨','感恩'],['控制','信任'],['嫉妒','欣賞'],
+          ['計較','分享'],['傲慢','謙虛'],['猜疑','真誠'],['怨恨','放下'],
+        ]},
+      ],
+      quote: '你的脾氣，就是你命運的預告片',
+    }
+  },
+  {
+    id:'middle', icon:'ti-building', color:'teal', tagClass:'tag-teal', tag:'中年智慧',
+    title:'中年人最高級的活法',
+    desc:'不是拼命省錢，而是優化系統',
+    thesis:'中年的核心任務：從擴張轉為優化，從增加轉為降低內耗',
+    content:{
+      insight:{type:'teal', label:'核心洞見', text:'中年最容易犯的錯：把焦點放在錢的多少，而不是放在生命系統的品質。真正的財富，是健康的身體、清晰的關係、有效的時間和持續的選擇權。'},
+      sections:[
+        {title:'中年四大核心投資', type:'checks', items:[
+          {icon:'ti-heart-rate-monitor', text:'投資健康：生病的代價遠比預防高；睡眠是最高報酬率的投資'},
+          {icon:'ti-clock', text:'投資時間：學會拒絕，保護注意力；時間是中年最稀缺的資產'},
+          {icon:'ti-users', text:'投資關係：深化少數高品質關係；清理高耗能連結'},
+          {icon:'ti-trending-up', text:'投資認知：持續更新，不讓思維固化；認知上限決定財富上限'},
+        ]},
+        {title:'中年三大核心資產', type:'table', headers:['資產','比金錢重要的原因','如何積累'], rows:[
+          ['信任','降低合作成本','言出必行，長期一致'],
+          ['健康','保留創造能力','預防優先，系統維護'],
+          ['選擇權','保留人生自由','避免單點依賴'],
+        ]},
+      ],
+      quote: '中年不是走下坡，而是從擴張到精煉',
+    }
+  },
+  {
+    id:'entropy', icon:'ti-infinity', color:'navy', tagClass:'tag-navy', tag:'低熵工程',
+    title:'人性低熵工程學',
+    desc:'從生存循環到智慧湧現的完整路徑',
+    thesis:'低熵人格：更少內耗，更高自由，更深智慧',
+    content:{
+      insight:{type:'teal', label:'核心洞見', text:'人性的高熵狀態：恐懼→高警報→情緒化→防衛→內耗→重播。低熵工程的目標不是消滅人性，而是理解機制，降低無效消耗，讓能量用在真正重要的地方。'},
+      sections:[
+        {title:'16大人性機制', type:'checks', items:[
+          {icon:'ti-shield', text:'生存機制：大腦天生趨向安全，避開威脅'},
+          {icon:'ti-heart', text:'依附機制：渴望連結是人類的基本需求，討好是依附焦慮的表現'},
+          {icon:'ti-eye', text:'注意力機制：注意力等於生命能量，短影音成癮削弱深度思考'},
+          {icon:'ti-mood-smile', text:'情緒機制：情緒是訊號，不是敵人，壓抑只是延後爆炸'},
+          {icon:'ti-user', text:'身份機制：人格不是固定的，而是可以更新的模型'},
+          {icon:'ti-chart-bar', text:'比較機制：社群媒體放大比較焦慮，回到自身節律是解方'},
+          {icon:'ti-star', text:'獎賞機制：多巴胺偏愛短期刺激，需要刻意建立長期複利迴路'},
+          {icon:'ti-refresh', text:'更新機制：能持續更新模型的人，才能真正成長'},
+        ]},
+        {title:'低熵人格生成路徑', type:'formula', steps:['覺察（注意到模式）','觀察（理解機制）','修正（更新假設）','穩態（建立新節律）','智慧（湧現）']},
+      ],
+      quote: '人性不是你的監獄，理解人性才是鑰匙',
+    }
+  },
+];
+
+const QUIZ = [
+  {q:'看一個人最準確的時機是？',opts:['他成功的時候','他失敗時如何面對','他快樂的時候','他自我介紹時'],correct:1,explain:'失敗時最能看出一個人的責任感和真實人格。成功時人人都展示最好的一面，失敗才是照妖鏡。'},
+  {q:'「越缺什麼，越容易被什麼拿捏」，這反映了哪種人性機制？',opts:['貪婪機制','需求曝光效應','比較機制','情緒機制'],correct:1,explain:'當一個人的需求被對方看見，對方就握有了籌碼。保持內在不缺，才能保持選擇的自由。'},
+  {q:'情緒的本質是什麼？',opts:['需要壓抑的問題','道德的標準','生存系統的訊號','性格的缺陷'],correct:2,explain:'情緒是大腦的生存訊號。焦慮=感知到未知威脅，憤怒=界線被侵犯，悲傷=失去重要事物。壓抑訊號，問題依然存在。'},
+  {q:'廉價的本質是什麼？',opts:['沒有錢','失去稀缺性','做壞事','缺乏學歷'],correct:1,explain:'廉價不等於沒錢。廉價的本質是過度供給，導致失去稀缺性，失去議價權。出賣原則、時間、人格去換短期利益，就是廉價。'},
+  {q:'哪種人格最不容易被算計？',opts:['天真型','討好型','建立稀缺性的人','感情豐富型'],correct:2,explain:'讓自己有實力、有選擇、有邊界，才是根本的防護。被算計，通常是因為暴露了弱點或需求。'},
+  {q:'高熵人生的底層循環是？',opts:['成長→學習→更新','恐懼→高警報→情緒化→防衛→內耗','計畫→行動→反思','休息→恢復→再出發'],correct:1,explain:'高熵的人生以恐懼為核心，觸發高警報，情緒化決策，防衛性行為，不斷內耗，陷入重播模式。低熵工程就是打破這個循環。'},
+  {q:'「脾氣」的底層是什麼？',opts:['天生性格','命運安排','神經系統的慣性反應','環境決定'],correct:2,explain:'脾氣不是天生固定的，而是神經系統的慣性反應模式。慣性是可以被覺察和訓練的。改變脾氣，就是在重塑神經迴路。'},
+  {q:'關係中「爭吵」的底層邏輯是什麼？',opts:['個性不合','命運不合','需求衝突','講話方式問題'],correct:2,explain:'爭吵的表面是事件，底層是需求沒有被看見和回應。理解對方的需求，比討論對錯更有效。'},
+  {q:'識人最高維度的工具是什麼？',opts:['星座分析','血型判斷','觀察行動，而非聽承諾','第一印象'],correct:2,explain:'語言可以偽裝，行動才是真相。觀察一個人在失敗時、壓力下、有利益衝突時的行動，才能看清真實人格。'},
+  {q:'中年人最重要的三大資產是？',opts:['房子、車子、存款','信任、健康、選擇權','人脈、名譽、地位','知識、技能、學歷'],correct:1,explain:'信任降低合作成本，健康保留創造能力，選擇權保留人生自由。這三種資產，比純粹的錢更能決定中年後的生命品質。'},
+];
+
+const DIAG = {
+  title:'人格模式診斷',
+  sub:'12個問題，找出你的人性盲點與升級方向',
+  questions:[
+    {q:'當事情出問題時，你第一反應是？',opts:['思考自己能做什麼','找出是誰的責任','感到焦慮，不知所措','等待別人來解決']},
+    {q:'面對批評，你通常的反應是？',opts:['先感謝，仔細思考','立刻解釋或辯護','內心受傷，表面平靜','完全接受，不論對錯']},
+    {q:'你的情緒最常影響你做決定嗎？',opts:['很少，我傾向冷靜分析','有時候','常常，尤其重要時刻','幾乎每次']},
+    {q:'對於別人的成功，你通常感受到？',opts:['真心替對方開心','有點嫉妒但激勵自己','強烈嫉妒或不舒服','完全沒感覺']},
+    {q:'在人際關係中，你最常做的是？',opts:['建立真實連結','討好對方，希望被喜歡','保持距離，不想依賴','分析對方的動機'],},
+    {q:'面對不確定的未來，你通常？',opts:['接受並準備應對','感到強烈焦慮','積極規劃但難免擔心','完全不去想它']},
+    {q:'你覺得自己的人格可以改變嗎？',opts:['非常相信，持續在改變','有一點相信','不太確定','認為人格是固定的']},
+    {q:'當你面臨壓力時，你最常出現什麼反應？',opts:['保持穩定，系統應對','情緒化，難以理性','表面冷靜，內在耗竭','完全逃避壓力']},
+  ],
+  types:[
+    {name:'成長型人格', score:[0,2], color:'var(--green)', desc:'你有較強的自我覺察和成長能力，傾向從問題中學習。你的優勢是更新能力強，風險是有時可能過度理性而忽略情感需求。建議：持續深化覺察，並建立更穩固的情緒基礎。'},
+    {name:'穩健型人格', score:[3,5], color:'var(--teal)', desc:'你在情緒管理和人際關係上相對穩定，但可能在面對高壓時出現盲點。你的優勢是可預測性高，讓人信任。建議：主動尋找自己的盲點，在舒適中保持成長動力。'},
+    {name:'高警報型人格', score:[6,8], color:'var(--gold)', desc:'你的大腦傾向高警報模式，在壓力下容易情緒化或防衛。這不是你的錯，而是生存機制過度活躍。建議：練習降低警報的技術（呼吸、觀察者視角），建立安全感的內在基礎。'},
+    {name:'高耗能型人格', score:[9,99], color:'var(--red)', desc:'你目前可能在高熵循環中，消耗大量能量在控制、防衛或比較。這是可以改變的。建議：先從一件事開始練習：每次情緒出現時，先問「這個情緒在告訴我什麼需求？」'},
+  ],
+};
+
+// ══════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════
+let quizState={current:0,score:0,done:false,answered:[]};
+let diagState={current:0,answers:[],done:false};
+let currentModule=null;
+
+// ══════════════════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════════════════
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t=>{
+    if(t.textContent.trim()==={home:'首頁',modules:'模組',quiz:'測驗',diag:'診斷'}[id])t.classList.add('active');
+  });
+  if(id==='modules')renderModules();
+  if(id==='quiz')renderQuiz();
+  if(id==='diag')renderDiag();
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+function nextQuote(){
+  quoteIdx=(quoteIdx+1)%QUOTES.length;
+  document.getElementById('daily-quote').textContent=QUOTES[quoteIdx];
+}
+
+// ══════════════════════════════════════════════════════════════════
+// MODULES
+// ══════════════════════════════════════════════════════════════════
+function renderModules(){
+  const list=document.getElementById('moduleCards');
+  list.innerHTML=MODULES.map((m,i)=>`
+    <div class="card" onclick="openModule(${i})">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:44px;height:44px;border-radius:14px;background:var(--${m.color==='navy'?'navy':m.color==='gold'?'gold':m.color==='red'?'red':m.color==='green'?'green':m.color==='purple'?'purple':'teal'});display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;opacity:.85">
+          <i class="ti ${m.icon}" style="color:#fff"></i>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:15px;font-weight:600;color:var(--navy)">${m.title}</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px">${m.desc}</div>
+          <span class="card-tag ${m.tagClass}" style="margin-top:5px">${m.tag}</span>
+        </div>
+        <i class="ti ti-chevron-right" style="color:var(--text3);flex-shrink:0"></i>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openModule(idx){
+  currentModule=idx;
+  const m=MODULES[idx];
+  const c=m.content;
+  document.getElementById('module-list').style.display='none';
+  const det=document.getElementById('module-detail');
+  det.style.display='block';
+  det.scrollTop=0;
+
+  let html=`
+    <div class="module-back" onclick="closeModule()"><i class="ti ti-arrow-left"></i> 返回模組列表</div>
+    <div class="module-hero">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <i class="ti ${m.icon}" style="font-size:24px;color:var(--lgold)"></i>
+        <span style="font-size:12px;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:999px">${m.tag}</span>
+      </div>
+      <div class="module-title">${m.title}</div>
+      <div class="module-thesis">${m.thesis}</div>
+    </div>`;
+
+  // Insight box
+  const ins=c.insight;
+  const insColors={gold:'var(--gold)',teal:'var(--teal)',red:'var(--red)',green:'var(--green)',purple:'var(--purple)'};
+  html+=`<div class="insight-box ${ins.type}" style="margin-bottom:12px"><div class="insight-label" style="color:${insColors[ins.type]}">▌ ${ins.label}</div><div class="insight-text">${ins.text}</div></div>`;
+
+  // Sections
+  c.sections.forEach(sec=>{
+    html+=`<div style="font-size:15px;font-weight:600;color:var(--navy);margin:16px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--border)">${sec.title}</div>`;
+
+    if(sec.type==='table'){
+      html+=`<div style="overflow-x:auto"><table class="vs-table"><thead><tr>${sec.headers.map(h=>`<th style="background:var(--navy);text-align:left">${h}</th>`).join('')}</tr></thead><tbody>`;
+      sec.rows.forEach((row,ri)=>{
+        html+=`<tr style="background:${ri%2===0?'#F8F8F8':'#fff'}">${row.map((cell,ci)=>`<td class="${ci===0?'':'ci===1?vs-l:vs-r'}">${cell}</td>`).join('')}</tr>`;
+      });
+      html+=`</tbody></table></div>`;
+    }
+
+    if(sec.type==='vs'){
+      html+=`<div style="overflow-x:auto"><table class="vs-table"><thead><tr><th style="background:var(--red)">${sec.left}</th><th style="background:var(--green)">${sec.right}</th></tr></thead><tbody>`;
+      sec.rows.forEach((row,ri)=>{
+        html+=`<tr style="background:${ri%2===0?'#F8F8F8':'#fff'}"><td class="vs-l">${row[0]}</td><td class="vs-r">${row[1]}</td></tr>`;
+      });
+      html+=`</tbody></table></div>`;
+    }
+
+    if(sec.type==='checks'){
+      html+=`<div class="checklist">`;
+      sec.items.forEach(item=>{
+        html+=`<div class="check-item"><i class="ti ${item.icon} check-icon" style="color:var(--teal)"></i>${item.text}</div>`;
+      });
+      html+=`</div>`;
+    }
+
+    if(sec.type==='formula'){
+      html+=`<div style="font-size:12px;color:var(--gold);font-weight:700;text-align:center;margin-bottom:8px">【公式】</div><div class="formula-flow">`;
+      sec.steps.forEach((s,i)=>{
+        html+=`<div class="formula-step">${s}</div>`;
+        if(i<sec.steps.length-1)html+=`<div class="formula-arrow">↓</div>`;
+      });
+      html+=`</div>`;
+    }
+  });
+
+  // Formula (standalone)
+  if(c.formula){
+    html+=`<div style="font-size:15px;font-weight:600;color:var(--navy);margin:16px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--border)">核心公式</div>
+    <div style="font-size:12px;color:var(--gold);font-weight:700;text-align:center;margin-bottom:8px">【公式】</div><div class="formula-flow">`;
+    c.formula.forEach((s,i)=>{
+      html+=`<div class="formula-step">${s}</div>`;
+      if(i<c.formula.length-1)html+=`<div class="formula-arrow">↓</div>`;
+    });
+    html+=`</div>`;
+  }
+
+  // Quote
+  html+=`<div style="background:linear-gradient(135deg,#0D1B3E,#1B5E7B);border-radius:14px;padding:16px;margin-top:16px;text-align:center">
+    <div style="font-size:16px;font-weight:600;color:var(--lgold);line-height:1.7">「${c.quote}」</div>
+  </div>`;
+
+  det.innerHTML=html;
+  det.scrollIntoView({behavior:'smooth'});
+}
+
+function closeModule(){
+  document.getElementById('module-list').style.display='block';
+  document.getElementById('module-detail').style.display='none';
+}
+
+// ══════════════════════════════════════════════════════════════════
+// QUIZ
+// ══════════════════════════════════════════════════════════════════
+function renderQuiz(){
+  const con=document.getElementById('quiz-container');
+  if(quizState.done){renderQuizScore();return;}
+  const q=QUIZ[quizState.current];
+  const pct=Math.round(quizState.current/QUIZ.length*100);
+  con.innerHTML=`
+    <div style="margin-bottom:4px;font-size:13px;color:var(--text3)">題目 ${quizState.current+1} / ${QUIZ.length}</div>
+    <div class="quiz-progress"><div class="quiz-fill" style="width:${pct}%"></div></div>
+    <div class="quiz-card">
+      <div class="quiz-q">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.opts.map((opt,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i})" id="opt-${i}">${opt}</button>`).join('')}
+      </div>
+      <div class="quiz-explain" id="quiz-explain">${q.explain}</div>
+    </div>
+    <div style="text-align:center;margin-top:8px;font-size:13px;color:var(--text3)">已答對 ${quizState.score} 題</div>`;
+}
+
+function answerQuiz(idx){
+  const q=QUIZ[quizState.current];
+  if(quizState.answered[quizState.current])return;
+  quizState.answered[quizState.current]=true;
+  const opts=document.querySelectorAll('.quiz-opt');
+  opts.forEach((o,i)=>{
+    o.style.pointerEvents='none';
+    if(i===q.correct)o.classList.add('correct');
+    else if(i===idx&&idx!==q.correct)o.classList.add('wrong');
+  });
+  document.getElementById('quiz-explain').style.display='block';
+  if(idx===q.correct)quizState.score++;
+  setTimeout(()=>{
+    quizState.current++;
+    if(quizState.current>=QUIZ.length){quizState.done=true;renderQuizScore();}
+    else renderQuiz();
+  },2000);
+}
+
+function renderQuizScore(){
+  const pct=Math.round(quizState.score/QUIZ.length*100);
+  const msg=pct>=80?'人性高手！你對人性有深刻的理解':pct>=60?'理解不錯！繼續深化這些洞見':'還有成長空間，多學習幾個模組再來挑戰！';
+  document.getElementById('quiz-container').innerHTML=`
+    <div class="score-box">
+      <div style="font-size:14px;opacity:.8;margin-bottom:8px">測驗完成！</div>
+      <div class="score-num">${quizState.score}/${QUIZ.length}</div>
+      <div class="score-label">正確率 ${pct}%</div>
+      <div style="font-size:14px;margin-top:12px;opacity:.85">${msg}</div>
+    </div>
+    <button class="btn-primary" onclick="resetQuiz()">再測一次</button>
+    <button style="width:100%;background:#F0F0F0;color:var(--navy);border:none;border-radius:10px;padding:12px;font-size:14px;cursor:pointer;margin-top:8px" onclick="showPage('modules')">回去學習模組</button>`;
+}
+
+function resetQuiz(){quizState={current:0,score:0,done:false,answered:[]};renderQuiz();}
+
+// ══════════════════════════════════════════════════════════════════
+// DIAG
+// ══════════════════════════════════════════════════════════════════
+function renderDiag(){
+  const con=document.getElementById('diag-container');
+  if(diagState.done){renderDiagResult();return;}
+
+  if(diagState.current===0){
+    con.innerHTML=`
+      <div style="text-align:center;padding:1rem 0 1.5rem">
+        <div style="font-size:22px;font-weight:700;color:var(--navy);margin-bottom:8px">${DIAG.title}</div>
+        <div style="font-size:14px;color:var(--text2);line-height:1.7">${DIAG.sub}</div>
+      </div>
+      <div class="insight-box teal" style="margin-bottom:16px">
+        <div class="insight-label" style="color:var(--teal)">▌ 診斷說明</div>
+        <div class="insight-text">誠實回答每個問題，選最接近你真實反應的選項（不是你希望自己的樣子）。沒有好壞之分，只有對自己更真實的了解。</div>
+      </div>
+      <button class="btn-primary" onclick="startDiag()">開始診斷</button>`;
+    return;
+  }
+
+  const qi=diagState.current-1;
+  const q=DIAG.questions[qi];
+  const pct=Math.round(qi/DIAG.questions.length*100);
+  const selected=diagState.answers[qi];
+
+  con.innerHTML=`
+    <div style="margin-bottom:4px;font-size:13px;color:var(--text3)">問題 ${qi+1} / ${DIAG.questions.length}</div>
+    <div class="quiz-progress"><div class="quiz-fill" style="width:${pct}%"></div></div>
+    <div style="font-size:16px;font-weight:600;color:var(--navy);margin-bottom:16px;line-height:1.5">${q.q}</div>
+    ${q.opts.map((opt,i)=>`
+      <div class="diag-option ${selected===i?'selected':''}" onclick="selectDiag(${i})">
+        <div class="diag-row">
+          <div class="diag-radio"></div>
+          <div class="diag-text">${opt}</div>
+        </div>
+      </div>`).join('')}
+    <div class="diag-nav">
+      ${qi>0?`<button class="btn-back" onclick="diagBack()"><i class="ti ti-arrow-left"></i></button>`:''}
+      <button class="btn-primary" onclick="diagNext()" ${selected===undefined?'disabled':''}>
+        ${qi<DIAG.questions.length-1?'下一題':'查看結果'}
+      </button>
+    </div>`;
+}
+
+function startDiag(){diagState.current=1;renderDiag();}
+
+function selectDiag(idx){
+  diagState.answers[diagState.current-1]=idx;
+  renderDiag();
+}
+
+function diagNext(){
+  if(diagState.current>=DIAG.questions.length){
+    diagState.done=true;renderDiagResult();
+  } else {
+    diagState.current++;renderDiag();
+  }
+}
+
+function diagBack(){
+  if(diagState.current>1){diagState.current--;renderDiag();}
+}
+
+function renderDiagResult(){
+  // Score based on answers (0=best, 3=worst pattern)
+  const total=diagState.answers.reduce((s,a)=>s+a,0);
+  const type=DIAG.types.find(t=>total>=t.score[0]&&total<=t.score[1])||DIAG.types[DIAG.types.length-1];
+
+  const bars=[
+    {label:'成長動力',val:Math.max(20,100-total*8)},
+    {label:'情緒穩定',val:Math.max(15,95-total*7)},
+    {label:'人際智慧',val:Math.max(20,90-total*6)},
+    {label:'自我覺察',val:Math.max(25,85-total*5)},
+  ];
+
+  const barColors=['var(--green)','var(--teal)','var(--navy)','var(--gold)'];
+
+  let html=`
+    <div style="background:linear-gradient(135deg,var(--navy),var(--teal));border-radius:16px;padding:18px;color:#fff;text-align:center;margin-bottom:16px">
+      <div style="font-size:13px;opacity:.7;margin-bottom:6px">你的人格模式</div>
+      <div style="font-size:22px;font-weight:700;color:var(--lgold)">${type.name}</div>
+    </div>
+    <div class="insight-box gold" style="margin-bottom:14px">
+      <div class="insight-label" style="color:var(--gold)">▌ 診斷解讀</div>
+      <div class="insight-text">${type.desc}</div>
+    </div>
+    <div style="font-size:15px;font-weight:600;color:var(--navy);margin-bottom:12px">人格維度分析</div>`;
+
+  bars.forEach((b,i)=>{
+    html+=`
+      <div class="result-bar"><span style="font-size:13px;color:var(--navy);font-weight:500">${b.label}</span><span style="font-size:13px;color:var(--text3)">${b.val}%</span></div>
+      <div class="bar-fill" style="background:${barColors[i]};width:${b.val}%;opacity:.75"></div>`;
+  });
+
+  html+=`
+    <div style="font-size:15px;font-weight:600;color:var(--navy);margin:14px 0 10px">推薦學習模組</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${total<4?`
+        <div class="card" onclick="openModule(1);showPage('modules')"><div style="display:flex;align-items:center;gap:10px"><i class="ti ti-shield" style="color:var(--teal);font-size:18px"></i><div><div style="font-size:14px;font-weight:600">人性的底層演算法</div><div style="font-size:12px;color:var(--text3)">深化你的系統思維</div></div></div></div>
+      `:total<8?`
+        <div class="card" onclick="openModule(2);showPage('modules')"><div style="display:flex;align-items:center;gap:10px"><i class="ti ti-mood-smile" style="color:var(--gold);font-size:18px"></i><div><div style="font-size:14px;font-weight:600">情緒是訊號，不是敵人</div><div style="font-size:12px;color:var(--text3)">提升情緒解讀能力</div></div></div></div>
+      `:`
+        <div class="card" onclick="openModule(10);showPage('modules')"><div style="display:flex;align-items:center;gap:10px"><i class="ti ti-infinity" style="color:var(--navy);font-size:18px"></i><div><div style="font-size:14px;font-weight:600">人性低熵工程學</div><div style="font-size:12px;color:var(--text3)">從高熵循環走向低熵智慧</div></div></div></div>
+      `}
+      <div class="card" onclick="openModule(3);showPage('modules')"><div style="display:flex;align-items:center;gap:10px"><i class="ti ti-brain" style="color:var(--purple);font-size:18px"></i><div><div style="font-size:14px;font-weight:600">信念如何綁架人生</div><div style="font-size:12px;color:var(--text3)">升級你的解讀框架</div></div></div></div>
+    </div>
+    <button class="btn-primary" style="margin-top:14px" onclick="resetDiag()">重新診斷</button>`;
+
+  document.getElementById('diag-container').innerHTML=html;
+}
+
+function resetDiag(){diagState={current:0,answers:[],done:false};renderDiag();}
+
+// ══════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════
+document.getElementById('daily-quote').textContent=QUOTES[quoteIdx];
+renderModules();
+</script>
+</body>
+</html>
