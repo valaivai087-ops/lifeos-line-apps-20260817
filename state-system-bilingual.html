@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>State 狀態系統｜雙語</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#1f2328;--sub:#667085;--line:#e3e1da;--acc:#2f6f5e;--risk:#b4553d;--res:#2f6f5e;--hl:#eef5f2}
+@media(prefers-color-scheme:dark){:root{--bg:#16181b;--card:#1f2226;--ink:#e8e6e1;--sub:#9aa3ad;--line:#30343a;--acc:#6fc0a6;--risk:#e08a72;--res:#6fc0a6;--hl:#22302c}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px}
+.bar{max-width:860px;margin:0 auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+h1{font-size:17px;margin:0 8px 0 0}
+#s{flex:1;min-width:160px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}
+button{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
+button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.tabs{max-width:860px;margin:8px auto 0;display:flex;gap:6px;overflow-x:auto}
+.tabs button{white-space:nowrap}
+main{max-width:860px;margin:0 auto;padding:16px}
+section{margin-bottom:22px}
+h2{font-size:16px;color:var(--acc);margin:0 0 8px}
+.it{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 12px;margin-bottom:6px}
+.it.k{background:var(--hl);border-color:var(--acc)}
+.en{color:var(--sub);font-size:14.5px}
+.it div.en{cursor:pointer}
+.it div.en::after{content:' 🔊';font-style:normal;opacity:.6}
+.it div.en.sp{color:var(--acc)}
+.lang-zh .en,.lang-en .zh{display:none}
+.lang-en .en{color:var(--ink);font-size:16px}
+#cnt{color:var(--sub);font-size:13px}
+.opts{display:flex;gap:6px;margin-top:6px}
+.opts button{width:40px;padding:4px 0}
+.row{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:14.5px}
+.row .lb{width:190px;flex:none}
+.row .tr{flex:1;height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.row .tr i{display:block;height:100%}
+.row .v{width:48px;text-align:right;flex:none}
+textarea{width:100%;min-height:48px;margin-top:6px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+table{border-collapse:collapse;width:100%;font-size:14px;margin-top:8px}
+td,th{border:1px solid var(--line);padding:4px 8px;text-align:center}
+td:first-child,th:first-child{text-align:left}
+.note{color:var(--sub);font-size:13.5px}
+.fb{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+.fb canvas{width:300px;max-width:100%;height:auto;border-radius:8px;flex:none}
+.fb .tx{flex:1;min-width:240px}
+.fb .tag{color:var(--acc);font-size:14px;margin-top:6px}
+.act{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+</style>
+</head>
+<body class="lang-both">
+<header>
+  <div class="bar">
+    <h1>State 狀態系統</h1>
+    <input id="s" type="search" placeholder="搜尋 Search…（中文或 English）">
+    <span id="cnt"></span>
+    <span id="lang"><button data-l="both" class="on">雙語</button><button data-l="zh">中</button><button data-l="en">EN</button></span>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</header>
+<main id="main"></main>
+
+<script>
+const TABS=[['life','人生80句'],['school','高中生80句'],['scan','State Scan 診斷'],['teacher','老師判讀'],['mech','生成機制與優化'],['fb','臉書貼文圖卡']];
+
+const RAW=`
+#life|【核心結構】|Core Structure
+同一個Reality，不同State會抽取不同Information。 || The same reality yields different information to different states.
+State改變→Attention改變→Interpretation改變→Prediction改變→Decision改變→Action改變→Feedback改變→人生軌跡改變。 || State changes → attention changes → interpretation changes → prediction changes → decision changes → action changes → feedback changes → life trajectory changes.
+所以很多時候，不是世界突然變了，而是「觀看世界的系統」變了。 || So very often the world did not suddenly change; the system that views the world did.
+#life|【State 80句】|80 State Shifts
+01｜焦慮State看到的是Threat；平穩State看到的是Options。 || An anxious state sees threats; a calm state sees options.
+02｜自卑State看到的是Comparison；成長State看到的是Information。 || An insecure state sees comparison; a growth state sees information.
+03｜匱乏State看到的是「我沒有」；Agency State看到的是「我能改變什麼」。 || A scarcity state sees “what I lack”; an agency state sees “what I can change.”
+04｜恐懼State看到的是危險；勇氣State看到的是下一步。 || A fearful state sees danger; a courageous state sees the next step.
+05｜憤怒State看到的是冒犯；覺察State看到的是Boundary。 || An angry state sees offense; an aware state sees a boundary.
+06｜悲傷State看到的是失去；整合State看到的是曾經擁有。 || A grieving state sees loss; an integrated state sees what was once had.
+07｜挫折State看到的是「不行」；學習State看到的是Prediction Error。 || A frustrated state sees “it won’t work”; a learning state sees a prediction error.
+08｜失敗State看到的是終點；實驗State看到的是Data。 || A failure state sees the end; an experimental state sees data.
+09｜無助State看到的是不可控；Agency State尋找的是Control Variable。 || A helpless state sees the uncontrollable; an agency state looks for a control variable.
+10｜混亂State看到的是全部一起來；系統State尋找的是Priority。 || A chaotic state sees everything arriving at once; a systems state looks for priority.
+11｜壓力State看到的是事情太多；策略State尋找的是Leverage Point。 || A stressed state sees too much to do; a strategic state looks for the leverage point.
+12｜完美State看到的是還不夠好；迭代State看到的是下一版可以更好。 || A perfectionist state sees “not good enough”; an iterative state sees a better next version.
+13｜拖延State看到的是巨大任務；行動State看到的是Minimum Action。 || A procrastinating state sees a huge task; an action state sees the minimum action.
+14｜內耗State反覆問「為什麼」；行動State開始問「下一步是什麼」。 || A ruminating state keeps asking “why”; an action state asks “what is the next step?”
+15｜抱怨State尋找責任；改善State尋找變數。 || A complaining state looks for blame; an improving state looks for variables.
+16｜受害State問「為什麼是我」；Agency State問「現在什麼仍由我決定」。 || A victim state asks “why me?”; an agency state asks “what is still mine to decide?”
+17｜控制State想改變別人；設計State開始改變Conditions。 || A controlling state wants to change others; a design state changes the conditions.
+18｜執著State只接受一種結果；彈性State保留多條路徑。 || An attached state accepts only one outcome; a flexible state keeps several paths open.
+19｜僵化State保護舊答案；學習State歡迎新證據。 || A rigid state protects old answers; a learning state welcomes new evidence.
+20｜防衛State把不同意見看成攻擊；探索State把不同意見看成差異資訊。 || A defensive state reads disagreement as attack; an exploring state reads it as information about difference.
+21｜證明State想證明自己正確；科學State想知道自己哪裡可能錯。 || A proving state wants to be right; a scientific state wants to know where it may be wrong.
+22｜面子State害怕犯錯；成長State需要錯誤。 || An ego state fears mistakes; a growth state needs them.
+23｜羞恥State說「我不好」；學習State說「這個策略沒有效」。 || A shame state says “I am bad”; a learning state says “this strategy didn’t work.”
+24｜自責State攻擊Identity；反思State修正Behavior。 || A self-blaming state attacks identity; a reflective state corrects behavior.
+25｜悲觀State預測「一定失敗」；機率State問「成功機率如何提高？」 || A pessimistic state predicts certain failure; a probabilistic state asks how to raise the odds of success.
+26｜樂觀State不是假裝沒問題；高Agency State是相信問題可以被拆解。 || Optimism is not pretending there is no problem; high agency is believing the problem can be broken down.
+27｜急躁State要求立即結果；複利State觀察長期Trend。 || An impatient state demands instant results; a compounding state watches the long-term trend.
+28｜短視State看今天舒服不舒服；策略State看今天的選擇會生成什麼未來。 || A short-sighted state asks whether today is comfortable; a strategic state asks what future today’s choice generates.
+29｜衝動State追逐即時獎賞；決策State計算延遲成本。 || An impulsive state chases instant reward; a decision state calculates the delayed cost.
+30｜誘惑State看到的是現在的快樂；長期State看到的是未來的自己。 || A tempted state sees present pleasure; a long-term state sees the future self.
+31｜嫉妒State看到別人擁有什麼；學習State研究別人做對了什麼。 || A jealous state sees what others have; a learning state studies what they did right.
+32｜競爭State看到的是對手；合作State看到的是互補能力。 || A competitive state sees rivals; a cooperative state sees complementary abilities.
+33｜比較State問「誰比較好」；成長State問「我比昨天多了什麼能力？」 || A comparison state asks “who is better?”; a growth state asks “what can I do today that I couldn’t yesterday?”
+34｜孤單State看到的是沒有人陪；連結State看到的是我可以主動靠近誰。 || A lonely state sees no one around; a connecting state sees whom it can approach.
+35｜討好State看到的是別人的評價；自主State看到的是自己的價值與界線。 || A people-pleasing state sees others’ judgments; an autonomous state sees its own values and boundaries.
+36｜依賴State問「誰來救我」；Agency State問「我先能完成哪一步？」 || A dependent state asks “who will save me?”; an agency state asks “which step can I finish first?”
+37｜控制State要求孩子聽話；教育State培養孩子自己做決策的能力。 || A controlling state demands obedience from a child; an educating state builds the child’s ability to decide.
+38｜焦慮父母看到孩子的不足；成長型父母看到孩子正在形成中的能力。 || Anxious parents see a child’s shortcomings; growth-minded parents see abilities still forming.
+39｜低分State看到的是「我很笨」；Learning State看到的是「哪個Node還沒建立？」 || A low-score state sees “I’m stupid”; a learning state asks “which node isn’t built yet?”
+40｜考試State只想知道答案；學習State想知道答案是怎麼生成的。 || A test state only wants the answer; a learning state wants to know how the answer is generated.
+41｜背誦State收集答案；理解State建立Structure。 || A memorizing state collects answers; an understanding state builds structure.
+42｜努力State計算讀了幾小時；效率State計算修正了多少Error。 || An effort state counts hours studied; an effective state counts errors corrected.
+43｜高手崇拜State看到天賦；模型State尋找高手背後可以複製的Mechanism。 || A hero-worship state sees talent; a model state looks for the replicable mechanism behind the expert.
+44｜不會State說「我沒有能力」；Not Yet State說「這個能力還沒生成」。 || A “can’t” state says “I lack the ability”; a not-yet state says “this ability hasn’t been built yet.”
+45｜固定型State把能力當屬性；成長型State把能力當可更新系統。 || A fixed state treats ability as a trait; a growth state treats it as an updatable system.
+46｜資訊焦慮State想知道全部；決策State只尋找足以支持下一步的資訊。 || An information-anxious state wants to know everything; a decision state seeks just enough to support the next step.
+47｜知識State問「我知道多少」；智慧State問「什麼時候該用哪個Model？」 || A knowledge state asks “how much do I know?”; a wisdom state asks “which model applies when?”
+48｜答案State收藏結論；模型State理解答案成立的條件。 || An answer state collects conclusions; a model state understands the conditions under which they hold.
+49｜迷信State只尋找支持證據；科學State主動尋找反證。 || A superstitious state seeks only confirming evidence; a scientific state actively seeks disconfirmation.
+50｜確定State害怕不知道；探索State把不知道當成研究入口。 || A certainty state fears not knowing; an exploring state treats not knowing as the entrance to inquiry.
+51｜錯誤State想掩蓋Prediction Error；智慧State利用Prediction Error升級Model。 || A mistake state hides prediction errors; a wisdom state uses them to upgrade the model.
+52｜成功State只想複製過去；更新State會問「環境是否已經改變？」 || A success state only wants to repeat the past; an updating state asks “has the environment changed?”
+53｜舒適State保護既有結構；進化State允許適度擾動帶來重組。 || A comfort state protects existing structure; an evolving state lets moderate disturbance bring reorganization.
+54｜低熵幻想想讓世界永遠不變；複雜系統思維知道變動本身就是常態。 || The low-entropy fantasy wants the world never to change; complex-systems thinking knows change is the norm.
+55｜危機State只看到系統崩潰；重構State尋找哪些舊結構正在失效。 || A crisis state sees only collapse; a restructuring state looks for which old structures are failing.
+56｜失去State只看到門關了；選項State開始掃描還有哪些門。 || A loss state sees the door that closed; an options state scans for the doors that remain.
+57｜疾病恐懼State只看到診斷名稱；照護State開始區分醫療、生活與支持系統中有哪些可控變數。 || An illness-fear state sees only the diagnosis; a care state sorts out the controllable variables in treatment, daily life, and support.
+58｜疲累State責怪自己不夠努力；恢復State先檢查睡眠、負荷與資源。 || An exhausted state blames itself for not trying hard enough; a recovery state first checks sleep, load, and resources.
+59｜身體焦慮State把每個訊號都當危險；觀察State建立Baseline、Trend與需要就醫的門檻。 || A body-anxious state treats every signal as danger; an observing state sets a baseline, a trend, and a threshold for seeing a doctor.
+60｜健康State不是要求永遠沒有症狀；調節State是提升發現問題、處理問題與恢復的能力。 || Health is not never having symptoms; regulation is improving the ability to notice, handle, and recover from problems.
+61｜金錢匱乏State只看到價格；資源State同時看到成本、價值與Opportunity Cost。 || A money-scarcity state sees only price; a resource state sees cost, value, and opportunity cost together.
+62｜消費State問「我能不能買」；財務State問「這會增加還是減少未來自由度？」 || A consumer state asks “can I buy it?”; a financial state asks “does this add to or reduce my future freedom?”
+63｜工作焦慮State看到永遠做不完；槓桿State尋找最重要的20%。 || A work-anxious state sees work that never ends; a leverage state looks for the most important 20%.
+64｜忙碌State把所有事情都當重要；策略State知道不做什麼同樣重要。 || A busy state treats everything as important; a strategic state knows what not to do matters just as much.
+65｜創業焦慮State把沒人買解讀成否定；市場State把它解讀成Feedback。 || A founder-anxiety state reads “no one bought” as rejection; a market state reads it as feedback.
+66｜銷售恐懼State害怕被拒絕；驗證State把拒絕當成需求模型資料。 || A sales-fear state dreads rejection; a validation state treats rejection as data for the demand model.
+67｜關係衝突State想判斷誰對誰錯；系統State觀察互動循環如何被共同生成。 || A conflict state wants to judge who is right; a systems state observes how the interaction loop is co-created.
+68｜爭吵State想贏過對方；修復State想改變下一輪Interaction Pattern。 || An arguing state wants to win; a repair state wants to change the next round’s interaction pattern.
+69｜委屈State累積帳本；Boundary State提早表達需求。 || A resentful state keeps a ledger; a boundary state states its needs early.
+70｜失戀State只看到「他離開我」；重構State開始問「這段關係教會我什麼？」 || A heartbroken state sees only “they left me”; a restructuring state asks “what did this relationship teach me?”
+71｜孤獨State等待別人填補；成熟State建立與自己、他人及世界的多重連結。 || A lonely state waits for others to fill the gap; a mature state builds multiple connections with self, others, and the world.
+72｜幸福追逐State說「等我得到X就好了」；幸福啟用State問「現在可以啟動什麼？」 || A happiness-chasing state says “I’ll be fine once I get X”; a happiness-activating state asks “what can I start now?”
+73｜顯化幻想State等待宇宙送來結果；顯化行動State設計讓結果更可能發生的Conditions。 || A manifestation-fantasy state waits for the universe to deliver; a manifestation-action state designs conditions that make the result more likely.
+74｜願望State反覆想像終點；Agency State每天增加一點結果發生的Probability。 || A wishing state keeps imagining the finish line; an agency state raises the probability of the result a little each day.
+75｜命運State認為人生已被決定；更新State知道模型、策略與選項仍然可以改變。 || A fate state believes life is already decided; an updating state knows models, strategies, and options can still change.
+76｜過去State說「我一直都是這樣」；自由State說「那只是舊Model的歷史紀錄」。 || A past state says “I’ve always been like this”; a free state says “that’s just the history log of an old model.”
+77｜身份State說「這就是我」；生成State說「這是目前版本的我」。 || An identity state says “this is who I am”; a generative state says “this is the current version of me.”
+78｜成功State問「我得到什麼」；意義State問「我因此生成了什麼能力？」 || A success state asks “what did I get?”; a meaning state asks “what ability did I build because of it?”
+79｜幸福State不是世界完全符合Prediction；自由State是Reality不同時仍能Update。 || Happiness is not the world matching your prediction; freedom is being able to update when reality differs.
+80｜最高Agency State不是相信自己可以控制一切；而是知道任何Reality進來，我都可以重新觀察、重新預測、重新選擇、重新行動、重新生成下一個自己。 || The highest agency state is not believing you control everything; it is knowing that whatever reality arrives, you can observe again, predict again, choose again, act again, and generate your next self.
+#life|【80句背後只有一個母體】|One Matrix Behind All 80
+Reality→State→Attention→Information Selection→Interpretation→Prediction→Decision→Action→Feedback→Model Update→New State→New Reality。
+#life|【真正的關鍵】|The Real Key
+State不是Reality。 || State is not reality.
+State是你讀取Reality時使用的「濾鏡＋權重系統」。 || State is the “filter plus weighting system” you use to read reality.
+同一個考試失敗，有人讀成「我不行」，有人讀成「方法失配」。 || The same failed exam is read by one person as “I can’t” and by another as “the method didn’t fit.”
+同一個高手出現，有人讀成「我很差」，有人讀成「免費教材來了」。 || The same expert appears: one reads “I’m bad,” another reads “free teaching material just arrived.”
+同一個拒絕，有人讀成「我沒有價值」，有人讀成「我的預測需要更新」。 || The same rejection: one reads “I’m worthless,” another reads “my prediction needs updating.”
+同一個未知，有人讀成Threat，有人讀成Option。 || The same unknown: one reads threat, another reads option.
+外部事件相同，內部編碼不同，下一個Decision就開始分岔。 || Same external event, different internal encoding, and the next decision begins to diverge.
+Decision持續分岔，長期人生軌跡就會完全不同。 || As decisions keep diverging, long-term life trajectories become completely different.
+所以真正需要訓練的，不是永遠保持「高State」。 || So what truly needs training is not staying in a “high state” forever.
+而是培養State Awareness。 || It is building state awareness.
+我現在在哪個State？ || What state am I in right now?
+這個State正在讓我放大什麼？ || What is this state making me magnify?
+它正在讓我忽略什麼？ || What is it making me ignore?
+我現在的Interpretation是Reality，還是Model？ || Is my current interpretation reality, or a model?
+還有什麼第二種解釋？ || What is a second possible explanation?
+哪一個最小Action可以取得新資訊？ || Which smallest action could bring new information?
+Reality回來後，我願不願意Update？ || When reality answers back, am I willing to update?
+#life|【一句總結】|In One Line
+低Agency的人被State決定Reality。 || Low-agency people let state decide their reality.
+高Agency的人能看見State、切換State、測試Reality、更新Model。 || High-agency people can see the state, switch states, test reality, and update the model.
+真正的自由，不是永遠看見美好的世界。 || Real freedom is not always seeing a beautiful world.
+真正的自由，是你不再只能用同一個State看世界。 || Real freedom is no longer being limited to seeing the world through a single state.
+
+#school|【核心公式】|Core Formula
+同一個校園、同一場考試、同一個老師、同一份考卷，不同State會看見完全不同的世界。 || The same school, test, teacher, and exam can look completely different in different states.
+State→Attention→Interpretation→Prediction→Decision→Action→Feedback→Model Update。
+狀態改變→注意力改變→解讀改變→預測改變→決策改變→行動改變→結果開始改變。 || Change your state, and you change what you notice, how you interpret it, what you do, and what you become.
+#school|【高中生80句】|80 Shifts for Students
+01｜焦慮State看到的是「我會不會考差？」；準備State看到的是「現在還能補哪一題型？」 || An anxious state asks, “What if I fail?”; a prepared state asks, “What can I still improve?”
+02｜自卑State看到的是「別人都比我強」；學習State看到的是「別人有哪些方法值得我學？」 || An insecure state sees people who are better; a learning state sees methods worth learning.
+03｜匱乏State看到的是「我沒有天分」；Agency State看到的是「我可以增加什麼能力？」 || A scarcity state says, “I have no talent”; an agency state asks, “What skill can I build?”
+04｜恐懼State看到的是「不要答錯」；勇氣State看到的是「答錯就多一筆資料」。 || A fearful state says, “Don’t get it wrong”; a courageous state says, “Every mistake gives me data.”
+05｜低分State看到的是「我很笨」；診斷State看到的是「哪個Node還沒建立？」 || A low-score state says, “I’m stupid”; a diagnostic state asks, “Which learning node is missing?”
+06｜考試State只看到分數；成長State看到能力變化。 || A test-focused state sees scores; a growth state sees changes in ability.
+07｜比較State問「誰比我高？」；成長State問「我比上次多會了什麼？」 || A comparison state asks, “Who scored higher?”; a growth state asks, “What can I do now that I couldn’t before?”
+08｜固定型State說「我就是不會英文」；成長型State說「我現在還不會」。 || A fixed state says, “I’m bad at English”; a growth state says, “I can’t do it yet.”
+09｜挫折State看到的是失敗；實驗State看到的是Data。 || A frustrated state sees failure; an experimental state sees data.
+10｜錯誤State想把錯題藏起來；高手State把錯題留下來研究。 || A mistake-avoiding state hides errors; a mastery state studies them.
+11｜面子State害怕問問題；學習State害怕問題一直沒被解決。 || An ego state fears asking questions; a learning state fears leaving questions unresolved.
+12｜害羞State想「大家會笑我」；練習State想「這正是我需要練的能力」。 || A shy state thinks, “They may laugh at me”; a practice state thinks, “This is exactly the skill I need to train.”
+13｜完美State要求第一次就做好；迭代State允許第一版很普通。 || A perfectionist state demands a perfect first try; an iterative state allows an imperfect first version.
+14｜拖延State看到整座山；行動State只看到下一步。 || A procrastinating state sees the whole mountain; an action state sees the next step.
+15｜壓力State說「功課好多」；策略State問「最重要的三件是哪三件？」 || A stressed state says, “I have too much homework”; a strategic state asks, “Which three tasks matter most?”
+16｜混亂State什麼都想做；Priority State知道先做什麼。 || A confused state tries to do everything; a priority state knows what comes first.
+17｜疲累State責怪自己懶；恢復State檢查睡眠、休息與負荷。 || An exhausted state calls itself lazy; a recovery state checks sleep, rest, and workload.
+18｜熬夜State想多讀兩小時；長期State思考明天大腦還剩多少效率。 || A late-night state wants two more hours of study; a long-term state asks how well the brain will work tomorrow.
+19｜忙碌State計算讀書時間；效率State計算真正學會多少。 || A busy state counts study hours; an effective state counts what was actually learned.
+20｜背誦State記答案；理解State建立Structure。 || A memorizing state remembers answers; an understanding state builds structure.
+21｜刷題State追求題數；診斷State追求找到錯誤模式。 || A drill state counts questions; a diagnostic state searches for error patterns.
+22｜錯題State說「又錯了」；Learning OS說「找到Bug了」。 || A mistake state says, “Wrong again”; a Learning OS says, “I found a bug.”
+23｜自責State說「我怎麼這麼粗心」；分析State問「粗心發生在哪個步驟？」 || A self-blaming state says, “Why am I so careless?”; an analytical state asks, “At which step did the error happen?”
+24｜失敗State說「我不行」；Model State說「這個方法不行」。 || A failure state says, “I can’t do it”; a model state says, “This method didn’t work.”
+25｜悲觀State預測「下次一定還是很差」；更新State問「改哪個變數最可能提高分數？」 || A pessimistic state predicts another bad result; an updating state asks which variable could improve the next one.
+26｜焦慮State一直想像結果；Agency State開始準備下一個Action。 || An anxious state keeps imagining the outcome; an agency state prepares the next action.
+27｜無助State說「老師教太快」；Agency State問「我可以怎麼補回來？」 || A helpless state says, “The teacher goes too fast”; an agency state asks, “How can I catch up?”
+28｜抱怨State說「考卷太難」；學習State問「難在哪一類？」 || A complaining state says, “The test was too hard”; a learning state asks, “What type of question was hard?”
+29｜逃避State不敢看成績；更新State第一時間找Prediction Error。 || An avoiding state refuses to look at the score; an updating state immediately looks for prediction errors.
+30｜答案State只問「答案是什麼？」；高手State問「為什麼答案會生成？」 || An answer state asks, “What is the answer?”; a mastery state asks, “How is the answer generated?”
+31｜被動State等老師告訴我；主動State自己先形成Prediction。 || A passive state waits for the teacher; an active state makes a prediction first.
+32｜抄筆記State想全部記下來；模型State尋找最核心的結構。 || A note-taking state tries to copy everything; a model-building state searches for the core structure.
+33｜資訊State收集很多資料；智慧State知道什麼時候使用哪個資訊。 || An information state collects facts; a wisdom state knows when to use them.
+34｜記憶State問「怎麼背？」；理解State問「它跟什麼連在一起？」 || A memory state asks, “How do I memorize this?”; an understanding state asks, “What is this connected to?”
+35｜短期State問「這會不會考？」；能力State問「這會讓我多什麼能力？」 || A short-term state asks, “Will this be on the test?”; an ability state asks, “What skill will this build?”
+36｜考前State想一次救全部；系統State每天修一點。 || A cramming state tries to fix everything at once; a systems state improves a little every day.
+37｜天才State認為高手天生就會；機制State研究高手怎麼練。 || A talent state assumes top students are born gifted; a mechanism state studies how they train.
+38｜嫉妒State看到別人的高分；學習State看到免費的Benchmark。 || A jealous state sees someone else’s high score; a learning state sees a free benchmark.
+39｜競爭State希望別人變弱；成長State希望自己變強。 || A competitive state wants others to become weaker; a growth state wants itself to become stronger.
+40｜高手威脅State說「他讓我看起來很差」；高手資源State說「他讓我看到更高的可能性」。 || A threatened state says, “They make me look weak”; a resource state says, “They show me what is possible.”
+41｜分組焦慮State害怕遇到高手；合作State想「我可以從他身上學什麼？」 || A group-work anxiety state fears strong classmates; a collaborative state asks, “What can I learn from them?”
+42｜社交焦慮State想「他們喜不喜歡我？」；連結State想「我能不能先了解他們？」 || A socially anxious state asks, “Do they like me?”; a connecting state asks, “Can I understand them first?”
+43｜討好State想讓所有人喜歡；自主State知道不需要被所有人認同。 || A people-pleasing state wants everyone’s approval; an autonomous state knows universal approval is unnecessary.
+44｜孤單State等別人來找；Agency State主動說第一句話。 || A lonely state waits for others; an agency state starts the first conversation.
+45｜被排擠State只問「為什麼沒有人喜歡我？」；選項State問「哪裡還有適合我的連結？」 || A rejected state asks, “Why doesn’t anyone like me?”; an options state asks, “Where else can I build meaningful connections?”
+46｜衝突State想贏；關係State想讓下一次互動更好。 || A conflict state wants to win; a relationship state wants the next interaction to improve.
+47｜憤怒State看到同學冒犯；Boundary State知道自己需要說清楚界線。 || An angry state sees disrespect; a boundary state recognizes the need to set limits.
+48｜委屈State一直累積；溝通State提早表達。 || A resentful state stores frustration; a communication state speaks up early.
+49｜八卦State把別人的錯誤變娛樂；智慧State把別人的錯誤變案例。 || A gossip state turns mistakes into entertainment; a wisdom state turns them into lessons.
+50｜從眾State問「大家都怎麼做？」；自主State問「什麼適合我的目標？」 || A conforming state asks, “What is everyone doing?”; an autonomous state asks, “What fits my goal?”
+51｜手機State看到即時刺激；目標State看到注意力成本。 || A phone-driven state sees instant stimulation; a goal-driven state sees the cost to attention.
+52｜遊戲State看到下一場；長期State看到明天的自己。 || A gaming state sees the next round; a long-term state sees tomorrow’s self.
+53｜誘惑State問「現在爽不爽？」；決策State問「這個選擇會把我帶去哪裡？」 || A temptation state asks, “Does this feel good now?”; a decision state asks, “Where will this choice take me?”
+54｜懶散State說「今天不做沒差」；複利State知道每天都在投票給未來的自己。 || A lazy state says, “Skipping today won’t matter”; a compounding state knows every day is a vote for your future self.
+55｜動機State等「想讀書」；行動State先讀五分鐘。 || A motivation state waits to feel like studying; an action state starts with five minutes.
+56｜意志力State逼自己撐；環境設計State把手機移走。 || A willpower state forces itself to resist; an environment-design state removes the phone.
+57｜巨大目標State想一次改變人生；Minimum Action State先改變今天的一個行為。 || A huge-goal state tries to change life overnight; a minimum-action state changes one behavior today.
+58｜夢想State只想像結果；Agency State建立每天會發生的行動。 || A dream state imagines the result; an agency state builds daily actions.
+59｜願望State說「我想考上好大學」；策略State問「我要建立哪些能力？」 || A wish state says, “I want to enter a great university”; a strategy state asks, “What abilities do I need to build?”
+60｜目標State只盯終點；系統State建立每天能運作的Process。 || A goal state stares at the finish line; a systems state builds a process that works every day.
+61｜選科焦慮State問「選錯怎麼辦？」；探索State問「我可以用什麼小實驗取得更多資訊？」 || A course-choice anxiety state asks, “What if I choose wrong?”; an exploration state asks, “What small experiment can give me more information?”
+62｜生涯焦慮State要求現在就知道一輩子做什麼；探索State允許自己逐步更新。 || A career-anxious state demands a lifelong answer now; an exploratory state allows the answer to evolve.
+63｜未來焦慮State想預測所有事情；適應State建立面對未知的能力。 || A future-anxious state wants to predict everything; an adaptive state builds the ability to handle uncertainty.
+64｜選擇恐懼State害怕走錯路；學習State知道每條路都會產生Feedback。 || A choice-fearing state worries about the wrong path; a learning state knows every path produces feedback.
+65｜後悔State一直重播過去；更新State把過去轉成下一次決策規則。 || A regretful state keeps replaying the past; an updating state turns the past into a rule for better future decisions.
+66｜身份State說「我就是這種人」；生成State說「這只是現在版本的我」。 || An identity state says, “That’s just who I am”; a generative state says, “That’s only my current version.”
+67｜標籤State說「我是差生」；模型State說「我目前有幾個能力尚未建立」。 || A labeling state says, “I’m a bad student”; a model state says, “Some of my skills are still under construction.”
+68｜自信State不是「我一定會成功」；真正自信是「失敗後我知道怎麼更新」。 || Confidence is not “I will definitely succeed”; real confidence is “I know how to update after failure.”
+69｜勇敢State不是沒有恐懼；勇敢是恐懼存在時仍能做下一步。 || Courage is not the absence of fear; it is taking the next step while fear is present.
+70｜樂觀State不是相信事情一定會變好；高Agency樂觀是相信自己還能繼續找方法。 || Optimism is not believing everything will go well; high-agency optimism is believing you can keep searching for better ways.
+71｜自由State不是想做什麼就做什麼；自由是知道自己還有Options。 || Freedom is not doing whatever you want; freedom is knowing you still have options.
+72｜幸福State不是等考完才開始；幸福是今天也能啟用。 || Happiness does not have to wait until exams are over; it can be activated today.
+73｜感恩State不是假裝沒有問題；感恩是問題存在時仍看見已有資源。 || Gratitude is not pretending problems do not exist; it is seeing available resources even when problems remain.
+74｜意義State不是問「讀這個有什麼用？」；而是問「它正在把我訓練成什麼樣的人？」 || A meaning state does not only ask, “What is this useful for?”; it asks, “Who is this training me to become?”
+75｜成功State只看名次；成長State看自己生成了哪些可帶走的能力。 || A success state sees rankings; a growth state sees abilities you can carry into the future.
+76｜輸贏State問「我贏了誰？」；High Agency State問「我增加了多少選擇權？」 || A win-or-lose state asks, “Who did I beat?”; a high-agency state asks, “How many more options have I created?”
+77｜低Agency State等待老師、父母、運氣改變世界；High Agency State先找自己能動的第一個槓桿。 || A low-agency state waits for teachers, parents, or luck to change things; a high-agency state finds the first lever it can move.
+78｜舊Model說「以前失敗，所以以後也會失敗」；新Model說「以前的資料可以讓下一次預測更準」。 || The old model says, “I failed before, so I’ll fail again”; the new model says, “Past data can improve my next prediction.”
+79｜低維學習追求「永遠不要錯」；高維學習追求「錯了之後更新得比別人快」。 || Low-level learning tries never to be wrong; higher-level learning tries to update faster after being wrong.
+80｜真正的高中高手，不是永遠考最高分的人，而是能不斷把Reality→Error→Feedback→Model Update→Capability的人。 || A powerful high school learner is not someone who always gets the highest score, but someone who can continuously turn reality into errors, feedback, model updates, and new capabilities.
+#school|【高中生State OS｜六問】|Student State OS: Six Questions
+①我現在在哪個State？ || What state am I in right now?
+②這個State讓我一直注意什麼？ || What is this state making me notice?
+③我是不是把Interpretation當成Reality？ || Am I confusing my interpretation with reality?
+④這次錯誤告訴我哪個Model需要更新？ || What model does this mistake tell me to update?
+⑤現在最小可以做什麼？ || What is the smallest action I can take now?
+⑥做完之後，我要看什麼Feedback？ || What feedback should I check afterward?
+#school|【高中生最重要的模型】|The Most Important Models
+考差≠我很差。 || A bad score does not mean I am a bad student.
+不會≠沒能力。 || Not knowing something does not mean I lack ability.
+錯誤≠失敗。 || A mistake is not failure.
+高手≠威脅。 || A strong classmate is not a threat.
+焦慮≠事實。 || Anxiety is not reality.
+Prediction≠Reality。 || A prediction is not reality.
+現在的我≠永遠的我。 || Who I am now is not who I must always be.
+#school|【真正的學習自由】|Real Learning Freedom
+自由不是「我什麼都會」。 || Freedom is not knowing everything.
+自由是「遇到不會，我知道怎麼學」。 || Freedom is knowing how to learn when you do not know.
+自由不是「我永遠不考差」。 || Freedom is not never getting a bad score.
+自由是「考差之後，我知道怎麼找到Error並更新Model」。 || Freedom is knowing how to find the error and update your model after a poor result.
+自由不是「世界永遠符合我的Prediction」。 || Freedom is not having reality always match your predictions.
+自由是「Prediction錯了，我仍然能更新」。 || Freedom is being able to update when your prediction is wrong.
+#school|【給高中生的一句話】|A Word to High School Students
+不要急著證明你有多厲害。 || Don’t rush to prove how good you are.
+先證明你有多會更新。 || Prove how well you can update.
+因為高中真正值得帶走的，不只是分數。 || Because the most valuable thing to take from high school is not just a score.
+而是一套遇到未知→敢預測→敢犯錯→會修正→再挑戰的Learning OS。 || It is a Learning OS that lets you face the unknown, make predictions, learn from mistakes, update, and try again.
+分數會過期。 || Scores expire.
+能力可以複利。 || Abilities compound.
+Model可以更新。 || Models can be updated.
+而一個會更新自己的人，未來永遠比現在擁有更多Options。 || A person who knows how to update will keep creating more options for the future.
+
+#scan|【高中生 State Scan｜學生狀態快速診斷表】|Student State Scan
+目的：不是替學生貼標籤，而是找出「此刻哪個State正在影響學習與行動」。 || Purpose: not to label students, but to find which state is shaping learning and action right now.
+State會變，所以結果不是人格測驗，而是當下系統快照。 || States change, so the result is not a personality test but a snapshot of the system at this moment.
+建議頻率：每週一次，約2分鐘完成。評分方式：每題選最接近「最近7天」的狀態。 || Suggested frequency: once a week, about 2 minutes. Rate each item by how you have been over the last 7 days.
+1＝完全不像我｜2＝有一點｜3＝有時候｜4＝很像我｜5＝非常像我 || 1 = Not like me at all｜2 = A little｜3 = Sometimes｜4 = Mostly true｜5 = Very true
+
+#teacher|【老師計分方式】|Scoring
+A焦慮＝01–03。B自卑＝04–06。C匱乏＝07–09。D逃避＝10–12。E混亂＝13–15。 || A Anxiety = 01–03. B Insecurity = 04–06. C Scarcity = 07–09. D Avoidance = 10–12. E Overload = 13–15.
+F固定＝16–18。G學習＝19–21。H Agency＝22–24。I平穩＝25–27。J意義＝28–30。 || F Fixed = 16–18. G Learning = 19–21. H Agency = 22–24. I Regulation = 25–27. J Meaning = 28–30.
+每個State最低3分，最高15分。 || Each state scores from 3 to 15.
+前六類A–F＝目前可能需要支持的State訊號。 || A–F are signals of states that may currently need support.
+後四類G–J＝目前可以調用的正向資源。 || G–J are positive resources that can currently be drawn on.
+不要把總分加成「好學生／壞學生」。 || Do not add everything up into “good student / bad student.”
+真正有價值的是看學生的State Profile。 || The real value lies in the student’s state profile.
+#teacher|【老師快速判讀】|Quick Reading
+A高｜焦慮高→先降低Threat，再談成績。 || A high｜High anxiety → lower the threat first, then talk about grades.
+B高｜比較高→減少排名式自我評價，轉向個人Baseline。 || B high｜High comparison → reduce ranking-based self-evaluation; shift to a personal baseline.
+C高｜匱乏高→幫學生看見Resources與可訓練能力。 || C high｜High scarcity → help the student see resources and trainable abilities.
+D高｜逃避高→把任務縮成Minimum Action。 || D high｜High avoidance → shrink the task to a minimum action.
+E高｜混亂高→協助排序Priority，只留下一步。 || E high｜High overload → help set priority; leave only the next step.
+F高｜固定高→把「我是怎樣的人」改寫成「哪個能力尚未建立」。 || F high｜High fixedness → rewrite “what kind of person I am” as “which ability isn’t built yet.”
+G高｜學習高→適合增加挑戰與錯誤分析。 || G high｜High learning → ready for more challenge and error analysis.
+H高｜Agency高→給更多自主選擇與責任。 || H high｜High agency → give more autonomy and responsibility.
+I高｜平穩高→學生已有一定Self-Regulation能力。 || I high｜High regulation → the student already has some self-regulation ability.
+J高｜意義高→可進一步連結生涯、使命與長期目標。 || J high｜High meaning → connect further to career, mission, and long-term goals.
+#teacher|【最重要的不是單一分數，而是組合】|Combinations Matter More Than Single Scores
+A高＋D高＝焦慮→逃避循環。 || A + D high = anxiety → avoidance loop.
+B高＋F高＝比較→自我標籤循環。 || B + F high = comparison → self-labeling loop.
+C高＋D高＝「我沒有能力」→不行動循環。 || C + D high = “I have no ability” → inaction loop.
+E高＋D高＝事情太多→無法開始循環。 || E + D high = too much to do → can’t-start loop.
+A高＋E高＝Threat過高→認知負荷過高。 || A + E high = threat too high → cognitive load too high.
+G高＋H高＝Learning＋Agency，代表學生已具有很好的更新能力。 || G + H high = learning plus agency: the student already updates well.
+H高＋I高＝能行動，也能調節，是很重要的自主學習底盤。 || H + I high = can act and can regulate: a vital base for self-directed learning.
+G高＋H高＋I高＋J高＝Learning OS開始形成。 || G + H + I + J high = a Learning OS is starting to form.
+#teacher|【老師不要只看最高分】|Don’t Look Only at the Highest Score
+更值得看的是「兩週變化」。 || What deserves more attention is the two-week change.
+Week 1＝Baseline。Week 2＝Retest。 || Week 1 = baseline. Week 2 = retest.
+比較State變化，而不是比較學生彼此。 || Compare changes in state, not students against each other.
+例如：焦慮12→8。逃避13→7。Agency 6→10。Learning 8→12。 || Example: Anxiety 12→8. Avoidance 13→7. Agency 6→10. Learning 8→12.
+這比一句「最近有進步」更有診斷價值。 || This has more diagnostic value than saying “you’ve improved lately.”
+#teacher|【State→老師介入】|State → Teacher Intervention
+焦慮Threat→Safety。 || Anxiety / Threat → Safety.
+自卑Comparison→Growth。 || Insecurity / Comparison → Growth.
+匱乏Scarcity→Resources。 || Scarcity → Resources.
+逃避Avoidance→Minimum Action。 || Avoidance → Minimum Action.
+混亂Overload→Priority。 || Overload → Priority.
+固定Fixed→Not Yet。 || Fixed → Not Yet.
+學習Learning→Challenge。 || Learning → Challenge.
+Agency→Autonomy。 || Agency → Autonomy.
+平穩Regulation→Maintain。 || Regulation → Maintain.
+意義Meaning→Purpose。 || Meaning → Purpose.
+#teacher|【整套學生Learning OS】|The Full Student Learning OS
+學生填表→State Scan→找最高風險State→找最高資源State→辨識Pattern→找到Bottleneck→老師只介入一個Leverage Point→設定一個Minimum Action→執行7天→Retest→比較Prediction Error→Model Update。 || Student fills in the form → State Scan → find the highest-risk state → find the highest-resource state → identify the pattern → find the bottleneck → teacher intervenes at one leverage point only → set one minimum action → run for 7 days → retest → compare prediction error → model update.
+#teacher|【最重要的一句】|The Most Important Line
+這張表不是要回答「這個學生是什麼樣的人？」 || This form is not designed to answer, “What kind of student is this?”
+它真正要回答的是：「這個學生現在卡在哪個State？下一個最小可更新點在哪裡？」 || It asks, “What state is this student currently stuck in, and what is the smallest point we can help them update?”
+學生不是一個固定標籤。 || A student is not a fixed label.
+學生是一個持續更新中的系統。 || A student is a system that is still updating.
+#teacher|【老師最重要的判斷順序】|The Teacher’s Order of Questions
+不要先問：「他為什麼不努力？」 || Don’t start with “Why isn’t this student trying?”
+先問：「他現在在哪個State？」 || First ask: “What state is the student in right now?”
+再問：「什麼Trigger生成這個State？」 || Then: “What trigger generated this state?”
+再問：「他的Attention被什麼抓走？」 || Then: “What has captured their attention?”
+再問：「他正在做什麼Prediction？」 || Then: “What prediction are they making?”
+再問：「這個Prediction來自哪個舊Model？」 || Then: “Which old model does this prediction come from?”
+再問：「哪一個Control Variable最容易改？」 || Then: “Which control variable is easiest to change?”
+最後才問：「今天的Minimum Action是什麼？」 || Only then: “What is today’s minimum action?”
+#teacher|【真正的教育控制論】|Educational Cybernetics
+學生出現問題。↓ 不要直接修理Behavior。 || A student shows a problem. ↓ Don’t fix the behavior directly.
+↓ 先找Behavior背後的State。 || ↓ First find the state behind the behavior.
+↓ 再找State背後的Prediction。 || ↓ Then the prediction behind the state.
+↓ 再找Prediction背後的Model。 || ↓ Then the model behind the prediction.
+↓ 再找Model形成的Evidence。 || ↓ Then the evidence that formed the model.
+↓ 設計新的Experience。 || ↓ Design a new experience.
+↓ 產生新的Evidence。 || ↓ Produce new evidence.
+↓ 形成Prediction Error。 || ↓ Create a prediction error.
+↓ Model Update。↓ State改變。↓ Behavior改變。↓ Outcome改變。 || ↓ Model update. ↓ State changes. ↓ Behavior changes. ↓ Outcome changes.
+
+#mech|【核心母體】|Core Matrix
+State不是人格。 || State is not personality.
+State是「此刻的大腦與身體，根據過去經驗、現在環境與未來預測，暫時形成的運作模式」。 || State is the operating mode the brain and body temporarily form right now, based on past experience, the present environment, and predictions of the future.
+State生成鏈＝Trigger觸發→Prediction預測→Attention注意→Interpretation解讀→Body Response身體反應→Emotion情緒→Decision決策→Action行動→Feedback回饋→Model強化或更新。 || State generation chain = Trigger → Prediction → Attention → Interpretation → Body response → Emotion → Decision → Action → Feedback → Model reinforced or updated.
+所以學生不是「懶、笨、玻璃心、沒救」。 || So a student is not “lazy, stupid, fragile, or hopeless.”
+更精準的問題是：什麼機制正在生成他現在的State？ || The more precise question is: what mechanism is generating their current state?
+優化State也不是叫學生「想開一點」。 || Optimizing a state is not telling a student to “just lighten up.”
+而是找到生成State的Control Variable，改變其中一個關鍵節點。 || It is finding the control variable that generates the state and changing one key node.
+#mech|【A｜焦慮 Threat State】|A｜Anxiety / Threat State
+生成機制①｜即將考試、被點名、成績公布、父母期待等Trigger進入。 || Mechanism 1｜Triggers arrive: an upcoming exam, being called on, grades released, parental expectations.
+生成機制②｜大腦預測「我可能失敗」。 || Mechanism 2｜The brain predicts, “I might fail.”
+生成機制③｜Attention開始自動搜尋危險訊號。 || Mechanism 3｜Attention automatically scans for danger signals.
+生成機制④｜小錯誤被放大成「我要完蛋了」。 || Mechanism 4｜Small mistakes are magnified into “I’m doomed.”
+生成機制⑤｜心跳、肌肉緊繃、呼吸變快等喚醒提高。 || Mechanism 5｜Arousal rises: heart rate, muscle tension, faster breathing.
+生成機制⑥｜工作記憶被擔憂占用。 || Mechanism 6｜Working memory is occupied by worry.
+生成機制⑦｜表現下降又成為「我果然不行」的新證據。 || Mechanism 7｜Lower performance becomes new evidence for “I knew I couldn’t.”
+生成循環＝Threat Prediction→焦慮→表現下降→更多Threat Prediction。 || Loop = threat prediction → anxiety → lower performance → more threat prediction.
+優化①｜先處理State，不急著講大道理。 || Optimize 1｜Deal with the state first; hold the lectures.
+優化②｜把「我會不會考差？」改成「現在能多拿哪一分？」 || Optimize 2｜Change “What if I do badly?” into “Which point can I still gain now?”
+優化③｜把巨大考試拆成今天的Minimum Action。 || Optimize 3｜Break the huge exam into today’s minimum action.
+優化④｜建立考前固定Routine，降低未知性。 || Optimize 4｜Build a fixed pre-exam routine to reduce uncertainty.
+優化⑤｜練習慢呼吸、短暫活動、睡眠與恢復。 || Optimize 5｜Practice slow breathing, brief movement, sleep, and recovery.
+優化⑥｜把結果目標改成Process Goal。 || Optimize 6｜Turn outcome goals into process goals.
+優化⑦｜建立「焦慮≠危險」的辨識能力。 || Optimize 7｜Build the ability to recognize that anxiety ≠ danger.
+Model Update＝「我必須確定成功才能行動」→「即使不確定，我仍能完成下一步」。 || Model update = “I must be sure of success before I act” → “Even uncertain, I can still finish the next step.”
+#mech|【B｜自卑 Comparison State】|B｜Insecurity / Comparison State
+生成機制①｜看到高分同學、高手、排名。 || Mechanism 1｜Seeing high-scoring classmates, experts, rankings.
+生成機制②｜Attention自動進行Social Comparison。 || Mechanism 2｜Attention automatically runs social comparison.
+生成機制③｜只看見對方優勢，忽略自己的成長。 || Mechanism 3｜Only the other person’s strengths are seen; one’s own growth is ignored.
+生成機制④｜把Performance差異轉成Identity差異。 || Mechanism 4｜A performance gap is converted into an identity gap.
+生成機制⑤｜「他考90，我考60」被編碼成「他比較有價值」。 || Mechanism 5｜“They got 90, I got 60” is encoded as “they are worth more.”
+生成機制⑥｜自我效能下降。 || Mechanism 6｜Self-efficacy drops.
+生成機制⑦｜不敢挑戰→能力差距反而擴大。 || Mechanism 7｜Avoiding challenge → the ability gap actually widens.
+生成循環＝Comparison→自卑→逃避挑戰→能力成長變慢→更多Comparison。 || Loop = comparison → insecurity → avoiding challenge → slower growth → more comparison.
+優化①｜比較對象從「別人」改成「自己的Baseline」。 || Optimize 1｜Switch the comparison target from others to your own baseline.
+優化②｜問：「他有哪些策略可以複製？」 || Optimize 2｜Ask: “Which of their strategies can I copy?”
+優化③｜把高手從Threat重新編碼成Information。 || Optimize 3｜Re-encode the expert from threat to information.
+優化④｜追蹤自己的週進步，而非只追蹤排名。 || Optimize 4｜Track your own weekly progress, not just rank.
+優化⑤｜建立Skill Evidence Bank，記錄自己已經會什麼。 || Optimize 5｜Build a skill evidence bank recording what you can already do.
+優化⑥｜區分Performance與Identity。 || Optimize 6｜Separate performance from identity.
+優化⑦｜讓學生體驗可完成的小成功。 || Optimize 7｜Let the student experience small, achievable wins.
+Model Update＝「別人厲害＝我很差」→「別人厲害＝環境裡出現可學習的資訊」。 || Model update = “They’re great = I’m bad” → “They’re great = learnable information has appeared in my environment.”
+#mech|【C｜匱乏 Scarcity State】|C｜Scarcity State
+生成機制①｜學生持續注意「我沒有」。 || Mechanism 1｜The student keeps attending to “what I don’t have.”
+生成機制②｜沒有天分、沒有時間、沒有資源、沒有好老師成為主要敘事。 || Mechanism 2｜No talent, no time, no resources, no good teacher becomes the main story.
+生成機制③｜可用Resources被注意系統忽略。 || Mechanism 3｜Available resources are ignored by the attention system.
+生成機制④｜Options在主觀世界中減少。 || Mechanism 4｜Options shrink in the subjective world.
+生成機制⑤｜Agency下降。 || Mechanism 5｜Agency drops.
+生成機制⑥｜行動減少。 || Mechanism 6｜Action decreases.
+生成機制⑦｜資源真的因此更少。 || Mechanism 7｜Resources really do become fewer as a result.
+生成循環＝Scarcity Attention→看不到資源→少行動→少機會→更加匱乏。 || Loop = scarcity attention → resources unseen → less action → fewer opportunities → more scarcity.
+優化①｜每天列出3個Available Resources。 || Optimize 1｜List 3 available resources every day.
+優化②｜把「我沒有什麼」改問「我現在能使用什麼？」 || Optimize 2｜Replace “what don’t I have?” with “what can I use right now?”
+優化③｜建立People／Tools／Time／Knowledge資源地圖。 || Optimize 3｜Build a resource map of people / tools / time / knowledge.
+優化④｜讓學生知道能力本身也是可生成資源。 || Optimize 4｜Let students know ability itself is a resource that can be generated.
+優化⑤｜建立求助能力。 || Optimize 5｜Build the ability to ask for help.
+優化⑥｜增加低成本嘗試。 || Optimize 6｜Increase low-cost attempts.
+優化⑦｜把缺乏重新定義為「尚未建立」。 || Optimize 7｜Redefine lack as “not yet built.”
+Model Update＝「我沒有，所以不能開始」→「我先用現有資源開始，再生成下一個資源」。 || Model update = “I don’t have it, so I can’t start” → “I start with what I have, then generate the next resource.”
+#mech|【D｜逃避 Avoidance State】|D｜Avoidance State
+生成機制①｜任務被預測為痛苦、困難或可能失敗。 || Mechanism 1｜The task is predicted to be painful, hard, or likely to fail.
+生成機制②｜大腦傾向降低短期不舒服。 || Mechanism 2｜The brain tends to reduce short-term discomfort.
+生成機制③｜滑手機、睡覺、聊天、打遊戲帶來立即舒緩。 || Mechanism 3｜Scrolling, sleeping, chatting, gaming bring immediate relief.
+生成機制④｜逃避因此獲得即時Reward。 || Mechanism 4｜Avoidance thus earns an instant reward.
+生成機制⑤｜大腦學會「逃避＝舒服」。 || Mechanism 5｜The brain learns “avoidance = comfort.”
+生成機制⑥｜任務累積。 || Mechanism 6｜Tasks pile up.
+生成機制⑦｜壓力更大，再次逃避。 || Mechanism 7｜Pressure grows, and avoidance repeats.
+生成循環＝壓力→逃避→短期舒服→任務累積→更大壓力→更多逃避。 || Loop = pressure → avoidance → short-term relief → tasks pile up → more pressure → more avoidance.
+優化①｜不要要求「完成」，只要求「開始」。 || Optimize 1｜Don’t ask for “finished”; ask only for “started.”
+優化②｜Minimum Action＝先做5分鐘。 || Optimize 2｜Minimum action = do 5 minutes first.
+優化③｜把任務切成小到不值得逃避。 || Optimize 3｜Cut the task so small it isn’t worth avoiding.
+優化④｜手機移出環境。 || Optimize 4｜Move the phone out of the environment.
+優化⑤｜降低開始的摩擦成本。 || Optimize 5｜Lower the friction of starting.
+優化⑥｜完成第一小步後立即標記Done。 || Optimize 6｜Mark “done” right after the first small step.
+優化⑦｜獎勵「啟動行為」，而不只獎勵結果。 || Optimize 7｜Reward starting, not only results.
+Model Update＝「我要有動力才能開始」→「開始之後，動力才可能生成」。 || Model update = “I need motivation to start” → “Motivation can only be generated after starting.”
+#mech|【E｜混亂 Overload State】|E｜Overload State
+生成機制①｜大量作業、考試、社團、人際訊息同時進入。 || Mechanism 1｜Homework, exams, clubs, and social messages all arrive at once.
+生成機制②｜Working Memory超載。 || Mechanism 2｜Working memory overloads.
+生成機制③｜所有任務都感覺重要。 || Mechanism 3｜Every task feels important.
+生成機制④｜無法建立Priority。 || Mechanism 4｜Priority cannot be established.
+生成機制⑤｜頻繁切換Task。 || Mechanism 5｜Frequent task switching.
+生成機制⑥｜注意力碎片化。 || Mechanism 6｜Attention fragments.
+生成機制⑦｜完成率下降，混亂進一步增加。 || Mechanism 7｜Completion drops and chaos increases further.
+生成循環＝Input過多→Overload→無法排序→無法完成→Input堆積。 || Loop = too much input → overload → can’t prioritize → can’t finish → input piles up.
+優化①｜把腦中的事情全部Externalize寫出來。 || Optimize 1｜Externalize everything in your head onto paper.
+優化②｜一次只留下Top 3。 || Optimize 2｜Keep only the top 3 at a time.
+優化③｜再從Top 3選出Top 1。 || Optimize 3｜Then pick the top 1 from the top 3.
+優化④｜使用「現在／今天／本週／以後」分類。 || Optimize 4｜Sort by now / today / this week / later.
+優化⑤｜一次只開一個Task。 || Optimize 5｜Open only one task at a time.
+優化⑥｜減少通知與環境刺激。 || Optimize 6｜Reduce notifications and environmental stimulation.
+優化⑦｜每天固定一次Reset。 || Optimize 7｜Do one fixed reset every day.
+Model Update＝「全部都要現在完成」→「排序本身就是能力」。 || Model update = “Everything must be done now” → “Prioritizing is itself a skill.”
+#mech|【F｜固定 Fixed State】|F｜Fixed State
+生成機制①｜過去失敗被壓縮成Identity。 || Mechanism 1｜Past failure is compressed into identity.
+生成機制②｜「這次數學沒考好」變成「我沒有數學細胞」。 || Mechanism 2｜“I did badly on this math test” becomes “I’m not a math person.”
+生成機制③｜Identity開始預測未來。 || Mechanism 3｜Identity starts predicting the future.
+生成機制④｜學生減少練習與挑戰。 || Mechanism 4｜The student practices and attempts less.
+生成機制⑤｜能力真的停滯。 || Mechanism 5｜Ability really does stagnate.
+生成機制⑥｜停滯又證明原本Identity。 || Mechanism 6｜Stagnation then confirms the original identity.
+生成循環＝失敗→Identity Label→少練習→能力停滯→Label被強化。 || Loop = failure → identity label → less practice → stagnation → label reinforced.
+優化①｜全面加入Yet。 || Optimize 1｜Add “yet” everywhere.
+優化②｜「我不會」→「我現在還不會」。 || Optimize 2｜“I can’t” → “I can’t yet.”
+優化③｜Identity Language改成Skill Language。 || Optimize 3｜Change identity language into skill language.
+優化④｜問：「到底是哪個技能不會？」 || Optimize 4｜Ask: “Exactly which skill is missing?”
+優化⑤｜把能力拆成Node。 || Optimize 5｜Break ability into nodes.
+優化⑥｜記錄Before／After Evidence。 || Optimize 6｜Record before / after evidence.
+優化⑦｜讓學生親眼看到自己的變化曲線。 || Optimize 7｜Let students see their own change curve.
+Model Update＝「能力是固定屬性」→「能力是可以被訓練的結構」。 || Model update = “Ability is a fixed trait” → “Ability is a trainable structure.”
+#mech|【G｜學習 Learning State】|G｜Learning State
+生成機制①｜未知不再被預測為Threat。 || Mechanism 1｜The unknown is no longer predicted as a threat.
+生成機制②｜未知被重新編碼成Information Gap。 || Mechanism 2｜The unknown is re-encoded as an information gap.
+生成機制③｜Curiosity啟動。 || Mechanism 3｜Curiosity switches on.
+生成機制④｜學生願意Prediction。 || Mechanism 4｜The student is willing to predict.
+生成機制⑤｜Prediction與Reality產生Error。 || Mechanism 5｜Prediction and reality produce an error.
+生成機制⑥｜學生分析Error。 || Mechanism 6｜The student analyzes the error.
+生成機制⑦｜Model Update發生。 || Mechanism 7｜A model update occurs.
+生成循環＝Curiosity→Prediction→Error→Feedback→Update→Capability。 || Loop = curiosity → prediction → error → feedback → update → capability.
+優化①｜先猜再看答案。 || Optimize 1｜Guess first, then check the answer.
+優化②｜每次錯題一定分類Error Type。 || Optimize 2｜Always classify the error type of each wrong answer.
+優化③｜問「為什麼錯？」而不只問「答案是什麼？」 || Optimize 3｜Ask “why was it wrong?”, not only “what is the answer?”
+優化④｜錯題後立即換題Retest。 || Optimize 4｜After an error, retest immediately with a new question.
+優化⑤｜建立錯誤BANK。 || Optimize 5｜Build an error bank.
+優化⑥｜要求學生教別人。 || Optimize 6｜Have students teach others.
+優化⑦｜增加跨情境Transfer。 || Optimize 7｜Increase transfer across contexts.
+Model Update＝「錯誤代表我不好」→「錯誤是Learning Signal」。 || Model update = “Mistakes mean I’m bad” → “Mistakes are learning signals.”
+#mech|【H｜Agency 行動 State】|H｜Agency / Action State
+生成機制①｜學生相信自己的Action能影響部分Outcome。 || Mechanism 1｜The student believes their action can influence part of the outcome.
+生成機制②｜注意力從不可控轉向可控。 || Mechanism 2｜Attention shifts from the uncontrollable to the controllable.
+生成機制③｜Options增加。 || Mechanism 3｜Options increase.
+生成機制④｜Decision速度提高。 || Mechanism 4｜Decisions get faster.
+生成機制⑤｜Action增加。 || Mechanism 5｜Action increases.
+生成機制⑥｜取得更多Feedback。 || Mechanism 6｜More feedback is obtained.
+生成機制⑦｜成功與失敗都能產生Information。 || Mechanism 7｜Both success and failure produce information.
+生成循環＝Action→Feedback→Learning→More Options→More Agency。 || Loop = action → feedback → learning → more options → more agency.
+優化①｜每天問：「現在什麼是我可以控制的？」 || Optimize 1｜Ask daily: “What can I control right now?”
+優化②｜每個問題至少生成3個Options。 || Optimize 2｜Generate at least 3 options for every problem.
+優化③｜要求學生自己先提出Solution。 || Optimize 3｜Ask students to propose their own solution first.
+優化④｜老師少一點直接給答案。 || Optimize 4｜Teachers give fewer direct answers.
+優化⑤｜增加Choice。 || Optimize 5｜Increase choice.
+優化⑥｜讓學生承擔低風險Decision。 || Optimize 6｜Let students own low-risk decisions.
+優化⑦｜回顧「我做了什麼讓結果改變？」 || Optimize 7｜Review: “What did I do that changed the result?”
+Model Update＝「等別人改變」→「先移動自己能移動的第一個槓桿」。 || Model update = “Wait for others to change” → “Move the first lever I can move.”
+#mech|【I｜平穩 Regulation State】|I｜Regulation State
+生成機制①｜學生能察覺自己的身體與情緒訊號。 || Mechanism 1｜The student can notice their own bodily and emotional signals.
+生成機制②｜知道State只是State，不等於Reality。 || Mechanism 2｜Knows a state is just a state, not reality.
+生成機制③｜壓力出現時不立即反應。 || Mechanism 3｜Doesn’t react immediately when pressure appears.
+生成機制④｜建立短暫Pause。 || Mechanism 4｜Creates a brief pause.
+生成機制⑤｜前額葉有機會重新參與Decision。 || Mechanism 5｜The prefrontal cortex gets a chance to rejoin the decision.
+生成機制⑥｜重新評估Options。 || Mechanism 6｜Options are re-evaluated.
+生成機制⑦｜選擇更適合長期目標的Action。 || Mechanism 7｜An action better suited to long-term goals is chosen.
+生成循環＝Notice→Pause→Regulate→Reappraise→Choose→Act。 || Loop = notice → pause → regulate → reappraise → choose → act.
+優化①｜先命名State：「我現在很焦慮。」 || Optimize 1｜Name the state first: “I’m feeling anxious right now.”
+優化②｜不要說：「事情真的很糟。」 || Optimize 2｜Don’t say: “Things really are terrible.”
+優化③｜使用短暫呼吸與身體Reset。 || Optimize 3｜Use a brief breathing and body reset.
+優化④｜睡眠、活動、飲食與休息維持Baseline。 || Optimize 4｜Maintain the baseline with sleep, movement, food, and rest.
+優化⑤｜重要Decision避免在高度情緒喚醒時立即做。 || Optimize 5｜Avoid making important decisions immediately under high emotional arousal.
+優化⑥｜建立個人Recovery Menu。 || Optimize 6｜Build a personal recovery menu.
+優化⑦｜練習從Emotion→Information。 || Optimize 7｜Practice turning emotion into information.
+Model Update＝「我感覺很糟＝事情很糟」→「感受是訊號，不一定是事實」。 || Model update = “I feel terrible = things are terrible” → “Feelings are signals, not necessarily facts.”
+#mech|【J｜意義 Meaning State】|J｜Meaning State
+生成機制①｜學生能把現在的努力連到Future Self。 || Mechanism 1｜The student can link present effort to the future self.
+生成機制②｜眼前痛苦因此得到Context。 || Mechanism 2｜Present pain thereby gains context.
+生成機制③｜延遲獎賞變得比較可以接受。 || Mechanism 3｜Delayed reward becomes easier to accept.
+生成機制④｜Persistence增加。 || Mechanism 4｜Persistence increases.
+生成機制⑤｜困難不再只是成本，也成為能力生成過程。 || Mechanism 5｜Difficulty is no longer just cost; it becomes the process of building ability.
+生成機制⑥｜Identity與Action開始一致。 || Mechanism 6｜Identity and action begin to align.
+生成機制⑦｜學生從「被要求學習」轉成「我選擇成為某種人」。 || Mechanism 7｜The student shifts from “I’m told to study” to “I choose to become a certain kind of person.”
+生成循環＝Meaning→Persistence→Action→Capability→Identity→More Meaning。 || Loop = meaning → persistence → action → capability → identity → more meaning.
+優化①｜問：「你想成為什麼樣的人？」 || Optimize 1｜Ask: “What kind of person do you want to become?”
+優化②｜問：「這件事正在訓練你哪個能力？」 || Optimize 2｜Ask: “Which ability is this training in you?”
+優化③｜把科目連到Future Self。 || Optimize 3｜Connect the subject to the future self.
+優化④｜把分數目標升級成Capability Goal。 || Optimize 4｜Upgrade score goals into capability goals.
+優化⑤｜讓學生自己設定一個值得完成的挑戰。 || Optimize 5｜Let students set a challenge worth completing.
+優化⑥｜每週寫一次「我這週生成了什麼？」 || Optimize 6｜Write once a week: “What did I build this week?”
+優化⑦｜把努力從外部要求轉成Identity Investment。 || Optimize 7｜Turn effort from an external demand into an identity investment.
+Model Update＝「我為了老師父母讀書」→「我正在投資未來的自己」。 || Model update = “I study for my teachers and parents” → “I am investing in my future self.”
+#mech|【10大State一頁速查】|Ten States at a Glance
+A焦慮｜核心機制＝Threat Prediction｜優化＝Safety＋Next Step。 || A Anxiety｜Core mechanism = threat prediction｜Optimize = safety + next step.
+B自卑｜核心機制＝Social Comparison｜優化＝Baseline＋Learning。 || B Insecurity｜Core mechanism = social comparison｜Optimize = baseline + learning.
+C匱乏｜核心機制＝Resource Blindness｜優化＝Resource Scan。 || C Scarcity｜Core mechanism = resource blindness｜Optimize = resource scan.
+D逃避｜核心機制＝Short-term Relief｜優化＝Minimum Action。 || D Avoidance｜Core mechanism = short-term relief｜Optimize = minimum action.
+E混亂｜核心機制＝Cognitive Overload｜優化＝Priority。 || E Overload｜Core mechanism = cognitive overload｜Optimize = priority.
+F固定｜核心機制＝Identity Lock｜優化＝Not Yet＋Skill Decomposition。 || F Fixed｜Core mechanism = identity lock｜Optimize = not yet + skill decomposition.
+G學習｜核心機制＝Prediction Error｜優化＝Feedback＋Retest。 || G Learning｜Core mechanism = prediction error｜Optimize = feedback + retest.
+H Agency｜核心機制＝Perceived Control｜優化＝Options＋Action。 || H Agency｜Core mechanism = perceived control｜Optimize = options + action.
+I平穩｜核心機制＝Self-Regulation｜優化＝Notice＋Pause＋Reset。 || I Regulation｜Core mechanism = self-regulation｜Optimize = notice + pause + reset.
+J意義｜核心機制＝Future Connection｜優化＝Purpose＋Future Self。 || J Meaning｜Core mechanism = future connection｜Optimize = purpose + future self.
+#mech|【學生State轉換地圖】|State Conversion Map
+焦慮Threat→平穩Regulation。 || Anxiety / Threat → Regulation.
+自卑Comparison→學習Learning。 || Insecurity / Comparison → Learning.
+匱乏Scarcity→資源Resources。 || Scarcity → Resources.
+逃避Avoidance→行動Action。 || Avoidance → Action.
+混亂Overload→優先Priority。 || Overload → Priority.
+固定Fixed→成長Growth。 || Fixed → Growth.
+錯誤Error→Feedback。 || Error → Feedback.
+失敗Failure→Data。 || Failure → Data.
+未知Unknown→Question。 || Unknown → Question.
+高手Threat→Benchmark。 || Expert as threat → Benchmark.
+壓力Pressure→Signal。 || Pressure → Signal.
+困難Obstacle→Training。 || Obstacle → Training.
+不會Cannot→Not Yet。 || Cannot → Not Yet.
+等待Waiting→Agency。 || Waiting → Agency.
+分數Score→Diagnosis。 || Score → Diagnosis.
+結果Outcome→Feedback。 || Outcome → Feedback.
+#mech|【最終公式】|Final Formula
+Trigger→Model→Prediction→State→Attention→Decision→Action→Feedback→Prediction Error→Model Update。
+老師真正能做的，不是控制學生。 || What a teacher can truly do is not control students.
+老師能做的是Design Conditions。 || What a teacher can do is design conditions.
+好的教育不是一直告訴學生「你要更努力」。 || Good education is not repeatedly telling students “try harder.”
+而是找到學生卡住的生成機制，再提供剛好足以產生新Evidence的環境與行動。 || It is finding the generating mechanism where the student is stuck, then providing just enough environment and action to produce new evidence.
+真正的High Agency學生，也不是永遠處於最好State。 || A truly high-agency student is not always in the best state either.
+而是逐漸學會三件事。 || They gradually learn three things.
+我知道自己現在在哪個State。 || I know what state I am in.
+我知道這個State是怎麼生成的。 || I know how this state was generated.
+我知道下一步如何讓系統重新流動。 || I know how to get the system moving again.
+這才是State Awareness→State Regulation→Model Update→Agency真正完整的能力鏈。 || This is the complete capability chain: state awareness → state regulation → model update → agency.
+`;
+
+const G=[['A','焦慮 Threat','Anxiety / Threat'],['B','自卑 Comparison','Insecurity / Comparison'],['C','匱乏 Scarcity','Scarcity'],['D','逃避 Avoidance','Avoidance'],['E','混亂 Overload','Overload'],['F','固定 Fixed','Fixed'],['G','學習 Learning','Learning'],['H','Agency 行動','Agency'],['I','平穩 Regulation','Regulation'],['J','意義 Meaning','Meaning']];
+const Q=[
+['考試、被點名或交作業前，我常先想到「如果失敗怎麼辦？」','Before tests, being called on, or deadlines, I often think, “What if I fail?”'],
+['事情還沒發生，我的大腦就會先想像最糟的結果。','Before something happens, my mind often imagines the worst outcome.'],
+['壓力大時，我很難把注意力放回眼前這一步。','When I feel stressed, it is hard to focus on the next step.'],
+['看到同學比我厲害，我容易覺得自己不夠好。','When classmates perform better, I tend to feel that I am not good enough.'],
+['我常用別人的成績、能力或表現判斷自己的價值。','I often judge my value by comparing my performance with others.'],
+['看到高手時，我比較容易感到威脅，而不是想學他的做法。','When I see a strong student, I tend to feel threatened rather than curious about how they learn.'],
+['遇到不會的內容，我容易想「我就是沒有這個能力」。','When I cannot do something, I tend to think, “I just don’t have this ability.”'],
+['我常注意自己缺少什麼，而忽略自己已經擁有的資源。','I often focus on what I lack instead of the resources I already have.'],
+['我容易覺得別人有天分、資源或機會，而我沒有。','I often feel that others have talents, resources, or opportunities that I do not have.'],
+['遇到困難的科目或題目，我會想先逃開。','When a subject or question feels difficult, I tend to avoid it.'],
+['我知道事情要做，卻常拖到最後才開始。','I know what I need to do, but I often wait until the last minute.'],
+['看到不好的成績或錯題時，我有時不太想面對。','When I get a poor score or see mistakes, I sometimes prefer not to face them.'],
+['事情一多，我就不知道應該先做哪一件。','When I have many things to do, I do not know where to start.'],
+['我常覺得「全部都很重要」，所以反而很難開始。','I often feel that everything is important, which makes it hard to start.'],
+['讀書時，我容易在不同科目、手機與其他事情之間跳來跳去。','When studying, I often jump between subjects, my phone, and other distractions.'],
+['我有些科目會直接認為「我就是不擅長」。','For some subjects, I simply believe, “I’m just not good at this.”'],
+['如果努力後還是考不好，我容易覺得努力沒有用。','If I work hard but still get a poor score, I tend to feel that effort is useless.'],
+['犯錯時，我容易把「方法錯了」解讀成「我不行」。','When I make a mistake, I tend to interpret “my method was wrong” as “I am not capable.”'],
+['答錯之後，我會想知道自己到底錯在哪裡。','After getting something wrong, I want to know exactly why.'],
+['看到比我厲害的同學，我願意研究他的學習方法。','When I see a stronger student, I am willing to study how they learn.'],
+['我能把「不會」理解成「現在還不會」。','I can see “I can’t do it” as “I can’t do it yet.”'],
+['遇到問題時，我會先找自己現在能改變的部分。','When I face a problem, I first look for what I can change.'],
+['即使不知道完整答案，我通常還是能找到一個下一步。','Even when I do not know the full answer, I can usually find a next step.'],
+['如果一個方法沒有效，我願意換方法再試。','If one method does not work, I am willing to try another.'],
+['壓力來時，我通常能慢慢讓自己恢復。','When stress comes, I can usually help myself recover.'],
+['考不好時，我可以先處理情緒，再分析問題。','After a poor result, I can manage my emotions before analyzing the problem.'],
+['我能分辨「我現在很焦慮」和「事情真的很糟」並不是同一件事。','I can tell the difference between “I feel anxious” and “things are actually terrible.”'],
+['我知道現在學習不只是為了分數，也是在建立未來能力。','I know that learning is not only about scores but also about building future abilities.'],
+['即使一件事很難，我仍能找到值得完成它的理由。','Even when something is difficult, I can find a reason to keep going.'],
+['我能說出現在努力和未來想成為的自己有什麼關係。','I can explain how my current effort connects to the person I want to become.']];
+const OPEN=[['31｜最近最消耗我的事情是：','The thing draining me the most recently is:'],['32｜如果老師現在只能幫我一件事，我希望是：','If my teacher could help me with only one thing right now, I would choose:'],['33｜我現在最想改善的一件事是：','The one thing I most want to improve right now is:']];
+const READ={A:['焦慮高→先降低Threat，再談成績。介入：Safety','High anxiety → lower the threat first, then talk about grades. Intervention: Safety'],B:['比較高→減少排名式自我評價，轉向個人Baseline。介入：Growth','High comparison → shift from ranking to a personal baseline. Intervention: Growth'],C:['匱乏高→看見Resources與可訓練能力。介入：Resources','High scarcity → see resources and trainable abilities. Intervention: Resources'],D:['逃避高→把任務縮成Minimum Action。','High avoidance → shrink the task to a minimum action.'],E:['混亂高→排序Priority，只留下一步。','High overload → set priority; leave only the next step.'],F:['固定高→把「我是怎樣的人」改寫成「哪個能力尚未建立」。介入：Not Yet','High fixedness → rewrite identity as “which ability isn’t built yet.” Intervention: Not Yet'],G:['學習高→適合增加挑戰與錯誤分析。介入：Challenge','High learning → add challenge and error analysis. Intervention: Challenge'],H:['Agency高→給更多自主選擇與責任。介入：Autonomy','High agency → give more autonomy and responsibility. Intervention: Autonomy'],I:['平穩高→已有一定Self-Regulation能力。介入：Maintain','High regulation → self-regulation is in place. Intervention: Maintain'],J:['意義高→連結生涯、使命與長期目標。介入：Purpose','High meaning → connect to career, mission, long-term goals. Intervention: Purpose']};
+const COMBO=[['AD','焦慮→逃避循環','Anxiety → avoidance loop'],['BF','比較→自我標籤循環','Comparison → self-labeling loop'],['CD','「我沒有能力」→不行動循環','“I have no ability” → inaction loop'],['ED','事情太多→無法開始循環','Too much to do → can’t-start loop'],['AE','Threat過高→認知負荷過高','Threat too high → cognitive load too high'],['GH','Learning＋Agency，已具有很好的更新能力','Learning + agency: already updates well'],['HI','能行動，也能調節：自主學習底盤','Can act and regulate: the base for self-directed learning'],['GHIJ','Learning OS開始形成','A Learning OS is starting to form']];
+const HIGH=11;
+
+const $=id=>document.getElementById(id), main=$('main');
+const esc=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const bi=(z,e)=>`<div class="zh">${esc(z)}</div><div class="en">${esc(e||z)}</div>`;
+const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+
+let sec;const S80=[];
+RAW.trim().split('\n').forEach(l=>{
+  l=l.trim(); if(!l)return;
+  if(l[0]==='#'){const [t,z,e]=l.slice(1).split('|');sec=document.createElement('section');sec.dataset.tab=t;sec.innerHTML=`<h2><span class="zh">${z} </span><span class="en">${e}</span></h2>`;main.appendChild(sec);return}
+  const [z,e]=l.split(' || '), d=document.createElement('div');
+  d.className='it'+(/^(生成循環|Model Update)/.test(z)?' k':'');
+  d.innerHTML=bi(z,e); d.dataset.t=(z+' '+(e||'')).toLowerCase(); sec.appendChild(d);
+  if(/^\d\d｜/.test(z))S80.push([sec.dataset.tab,z,e]);
+});
+
+// ---- State Scan 互動問卷 ----
+let cur=ld('stateScan.cur',{a:[],o:['','','']}), hist=ld('stateScan.hist',[]);
+const quiz=document.createElement('section'); quiz.dataset.tab='scan';
+quiz.innerHTML='<h2><span class="zh">【作答】</span><span class="en">Questions</span></h2>';
+Q.forEach((q,i)=>{
+  if(i%3===0){const g=G[i/3],h=document.createElement('div');h.className='note';h.style.margin='12px 0 4px';h.innerHTML=`<b>${g[0]}｜<span class="zh">${g[1]} </span><span class="en">${g[2]} State</span></b>`;quiz.appendChild(h)}
+  const n=String(i+1).padStart(2,'0'), d=document.createElement('div'); d.className='it';
+  d.dataset.t=(q[0]+' '+q[1]).toLowerCase();
+  d.innerHTML=bi(n+'｜'+q[0],q[1])+'<div class="opts">'+[1,2,3,4,5].map(v=>`<button data-q="${i}" data-v="${v}">${v}</button>`).join('')+'</div>';
+  quiz.appendChild(d);
+});
+OPEN.forEach((q,i)=>{const d=document.createElement('div');d.className='it';d.dataset.t=(q[0]+' '+q[1]).toLowerCase();d.innerHTML=bi(q[0],q[1])+`<textarea data-o="${i}"></textarea>`;quiz.appendChild(d)});
+const res=document.createElement('div'); quiz.appendChild(res); main.insertBefore(quiz,main.querySelector('[data-tab=teacher]'));
+quiz.querySelectorAll('textarea').forEach(t=>{t.value=cur.o[t.dataset.o]||'';t.oninput=()=>{cur.o[t.dataset.o]=t.value;sv('stateScan.cur',cur)}});
+quiz.addEventListener('click',e=>{const b=e.target.closest('button[data-q]');if(!b)return;cur.a[b.dataset.q]=+b.dataset.v;sv('stateScan.cur',cur);upd()});
+
+function scores(a){return G.map((g,i)=>{const s=a.slice(i*3,i*3+3);return s.length===3&&s.every(Boolean)?s[0]+s[1]+s[2]:null})}
+function upd(){
+  quiz.querySelectorAll('button[data-q]').forEach(b=>b.classList.toggle('on',cur.a[b.dataset.q]==b.dataset.v));
+  const sc=scores(cur.a), done=sc.every(v=>v!==null);
+  let h='<h2 style="margin-top:18px"><span class="zh">【State Profile】</span><span class="en">State Profile</span></h2><div class="it">';
+  G.forEach((g,i)=>{const v=sc[i],c=i<6?'var(--risk)':'var(--res)';h+=`<div class="row"><span class="lb">${g[0]} <span class="zh">${g[1]}</span><span class="en"> ${g[2]}</span></span><span class="tr"><i style="width:${v?(v-3)/12*100:0}%;background:${c}"></i></span><span class="v">${v||'—'}/15</span></div>`});
+  h+=`<div class="note">${bi('A–F＝可能需要支持的訊號；G–J＝可調用的資源。本APP以 ≥'+HIGH+' 分視為「高」（自訂門檻，可依學生Baseline調整）。','A–F = signals that may need support; G–J = resources. This app treats ≥'+HIGH+' as “high” (an app-chosen threshold; adjust to the student’s baseline).')}</div></div>`;
+  const hi=G.filter((g,i)=>sc[i]>=HIGH).map(g=>g[0]);
+  hi.forEach(k=>{h+=`<div class="it">${bi(k+'高｜'+READ[k][0],k+' high｜'+READ[k][1])}</div>`});
+  COMBO.forEach(c=>{if([...c[0]].every(k=>hi.includes(k)))h+=`<div class="it k">${bi([...c[0]].join('＋')+'｜'+c[1],[...c[0]].join(' + ')+'｜'+c[2])}</div>`});
+  h+=`<div class="act"><button id="save"${done?'':' disabled'}>儲存本週紀錄 Save</button><button id="reset">清空作答 Reset</button>${done?'':'<span class="note">'+cur.a.filter(Boolean).length+'/30</span>'}</div>`;
+  if(hist.length){
+    const hs=hist.slice(-4);
+    h+='<h2><span class="zh">【Baseline → Retest】</span><span class="en">Baseline → Retest</span></h2><table><tr><th>State</th>'+hs.map(x=>`<th>${x.d}</th>`).join('')+'<th>Δ</th></tr>';
+    G.forEach((g,i)=>{const d=hs.length>1?hs[hs.length-1].s[i]-hs[hs.length-2].s[i]:0;h+=`<tr><td>${g[0]} <span class="zh">${g[1]}</span><span class="en"> ${g[2]}</span></td>`+hs.map(x=>`<td>${x.s[i]}</td>`).join('')+`<td>${hs.length>1?(d>0?'+':'')+d:''}</td></tr>`});
+    h+='</table>';
+    const lo=hs[hs.length-1].o||[];
+    if(lo.some(Boolean))h+='<div class="note" style="margin-top:6px">'+OPEN.map((q,i)=>lo[i]?esc(q[0]+lo[i]):'').filter(Boolean).join('<br>')+'</div>';
+    h+='<div class="act"><button id="delh">刪除最後一筆紀錄 Delete last</button></div>';
+  }
+  res.innerHTML=h;
+  $('save').onclick=()=>{hist.push({d:new Date().toLocaleDateString('sv').slice(5),s:sc,o:[...cur.o]});sv('stateScan.hist',hist);upd()};
+  $('reset').onclick=()=>{cur={a:[],o:['','','']};sv('stateScan.cur',cur);quiz.querySelectorAll('textarea').forEach(t=>t.value='');upd()};
+  if($('delh'))$('delh').onclick=()=>{if(confirm('刪除最後一筆紀錄？ Delete the last record?')){hist.pop();sv('stateScan.hist',hist);upd()}};
+}
+upd();
+
+// ---- 臉書貼文圖卡：[金句中文(\n換行), 金句英文, 內文中文, 內文英文, hashtags, 漸層色1, 漸層色2] ----
+const FB=[
+['焦慮不是事實，\n只是大腦太想保護你。','Anxiety is not a fact. It is your brain trying too hard to protect you.',
+'考試前心跳很快，不代表你會考差。那只是大腦在預測危險，還不是現實。\n先慢慢呼吸三次，再問自己：「現在還能多拿哪一分？」\n你不需要確定會成功才能開始。你只需要完成下一步。\n焦慮可以在，你還是可以往前走。',
+'A racing heart before an exam does not mean you will fail. It is only your brain predicting danger, not reality.\nTake three slow breaths, then ask: “Which point can I still gain right now?”\nYou don’t need to be sure of success to begin. You only need to finish the next step.\nAnxiety can stay, and you can still move forward.',
+'#焦慮不等於事實 #下一步 #StateAwareness #考前','#3d6a8a','#1f3a52'],
+['別人的光，\n不會讓你變暗。','Someone else’s light does not dim yours.',
+'同學考90分，不是在證明你很差。那是環境裡出現了一份免費教材。\n把「他比我強」換成「他做對了什麼？」\n真正值得比較的對象只有一個：昨天的你。\n今天比昨天多會一點點，就是贏。',
+'A classmate scoring 90 is not proof that you are bad. It is free teaching material showing up in your environment.\nSwap “they’re better than me” for “what did they do right?”\nThere is only one person worth comparing yourself with: who you were yesterday.\nKnowing a little more than yesterday is already a win.',
+'#不比較 #跟昨天的自己比 #成長 #StateAwareness','#8a5a7a','#4a2c48'],
+['你擁有的，\n比你注意到的多。','You have more than you have noticed.',
+'當你一直盯著「我沒有」，資源就會從眼前消失。\n今天試著寫下三樣你現在能用的東西：一個人、一個工具、一段時間。\n能力不是先擁有才開始，而是開始之後才長出來。\n先用手上有的出發，下一個資源會在路上出現。',
+'When you keep staring at “what I don’t have,” your resources vanish from view.\nToday, write down three things you can use right now: one person, one tool, one block of time.\nAbility is not something you own before you start; it grows after you start.\nSet off with what is in your hands, and the next resource will appear along the way.',
+'#資源盤點 #先開始 #Agency #StateAwareness','#b07a3c','#6b4420'],
+['不用完成，\n先開始五分鐘。','You don’t have to finish. Just start for five minutes.',
+'拖延不是懶，是大腦想躲開不舒服。\n所以不要跟自己說「把它做完」，只說「我先做五分鐘」。\n把手機放到另一個房間，翻開第一頁，寫下第一行。\n動力不是等來的，是開始之後才出現的。',
+'Procrastination is not laziness; it is your brain dodging discomfort.\nSo don’t tell yourself “finish it.” Just say, “I’ll do five minutes.”\nPut your phone in another room, open the first page, write the first line.\nMotivation is not something you wait for. It shows up after you start.',
+'#五分鐘 #MinimumAction #拖延 #StateAwareness','#c0694e','#7a3526'],
+['不是事情太多，\n是還沒選出第一件。','It’s not that there is too much. You just haven’t picked the first thing yet.',
+'當全部都很重要，就等於沒有一件能開始。\n把腦袋裡的事全部寫在紙上，圈出三件，再從三件裡選一件。\n現在只做這一件，其他的先放著，它們不會跑掉。\n排序不是偷懶，排序本身就是一種能力。',
+'When everything is important, nothing can begin.\nWrite down everything in your head, circle three, then pick one of the three.\nDo only that one now. The rest can wait; they are not going anywhere.\nPrioritizing is not slacking. Prioritizing is itself a skill.',
+'#一次一件 #Priority #整理思緒 #StateAwareness','#5c6f8f','#2e3a55'],
+['不是不會，\n是還沒學會。','It’s not “I can’t.” It’s “I can’t yet.”',
+'一次沒考好，不等於你沒有這個細胞。\n在每一句「我不會」後面加上兩個字：「還沒」。\n然後問得更小一點：到底是哪一個技能還沒建立？\n現在的你，只是目前的版本，不是最後的版本。',
+'One bad test does not mean you “just aren’t that kind of person.”\nAdd one word to every “I can’t”: “yet.”\nThen ask a smaller question: exactly which skill isn’t built yet?\nWho you are now is only the current version, not the final one.',
+'#NotYet #成長型思維 #目前版本的我 #StateAwareness','#6a8a5a','#33502c'],
+['錯題不是傷口，\n是地圖。','A wrong answer is not a wound. It is a map.',
+'每一題錯題都在告訴你：下一步該往哪裡走。\n不要急著把它藏起來，先問「我錯在哪一步？」\n再找一題類似的重新試一次。\n會更新的人，比永遠不犯錯的人走得更遠。',
+'Every wrong answer is telling you where to go next.\nDon’t rush to hide it. First ask, “At which step did I go wrong?”\nThen find a similar question and try again.\nPeople who can update go further than people who never make mistakes.',
+'#錯題是地圖 #LearningOS #找到Bug了 #StateAwareness','#2f8f7a','#17524a'],
+['別等世界改變，\n先動你搬得動的那塊石頭。','Don’t wait for the world to change. Move the stone you can move.',
+'老師教太快、考卷太難、時間太少，這些都可能是真的。\n但還有一個問題更有力量：「現在什麼仍然由我決定？」\n替每個難題想出三個選項，然後挑一個最小的去做。\n每一次行動，都會替你打開更多選擇。',
+'The teacher goes too fast, the test is too hard, time is too short. All of that may be true.\nBut one question has more power: “What is still mine to decide right now?”\nCome up with three options for each problem, then do the smallest one.\nEvery action opens more choices for you.',
+'#Agency #我能決定什麼 #第一個槓桿 #StateAwareness','#3f7fa8','#1d4568'],
+['感覺很糟，\n不等於事情很糟。','Feeling terrible does not mean things are terrible.',
+'情緒是訊號，不是判決。\n先替它取個名字：「我現在很焦慮。」光是說出來，你就退後了一步。\n停一下，喝口水，走一走，好好睡一覺。\n等心安靜下來，你會看見剛才看不見的路。',
+'Emotions are signals, not verdicts.\nName it first: “I am feeling anxious right now.” Just saying it puts you one step back.\nPause. Drink some water, take a walk, get a good night’s sleep.\nOnce your mind settles, you will see paths you couldn’t see before.',
+'#感受是訊號 #先暫停 #自我調節 #StateAwareness','#7a8fa0','#3c4c5c'],
+['你不是在讀書，\n你在投資未來的自己。','You are not just studying. You are investing in your future self.',
+'分數會過期，但你練出來的能力會跟著你一輩子。\n今天這一頁很難，正是因為它在把你訓練成更強的人。\n問問自己：我想成為什麼樣的人？這件事正在幫我練什麼？\n每一天的努力，都是投給未來自己的一票。',
+'Scores expire, but the abilities you build stay with you for life.\nToday’s page is hard precisely because it is training you into someone stronger.\nAsk yourself: who do I want to become? What is this training in me?\nEach day’s effort is a vote cast for your future self.',
+'#投資未來的自己 #能力會複利 #意義 #StateAwareness','#a8842f','#5e4712']];
+
+function wrapEn(x,t,w){const o=[];let l='';t.split(' ').forEach(s=>{const n=l?l+' '+s:s;if(x.measureText(n).width>w&&l){o.push(l);l=s}else l=n});o.push(l);return o}
+function wrapZh(x,t,w){const o=[];let l='';(t.match(/[A-Za-z0-9'’\-]+ ?|./g)||[]).forEach(s=>{if(l&&x.measureText(l+s).width>w&&!/^[，。；？！」、：]/.test(s)){o.push(l);l=s}else l+=s});o.push(l);return o}
+// 以1080座標繪製，依canvas實際寬度縮放（縮圖與下載共用）
+function card(c,p,lab){
+  const x=c.getContext('2d');x.setTransform(c.width/1080,0,0,c.width/1080,0,0);
+  const gr=x.createLinearGradient(0,0,1080,1080);
+  gr.addColorStop(0,p[5]);gr.addColorStop(1,p[6]);x.fillStyle=gr;x.fillRect(0,0,1080,1080);
+  x.strokeStyle='rgba(255,255,255,.35)';x.lineWidth=3;x.strokeRect(48,48,984,984);
+  x.fillStyle='#fff';x.textAlign='center';x.textBaseline='middle';
+  const f='"Microsoft JhengHei","PingFang TC",sans-serif';
+  x.font='600 34px '+f;x.globalAlpha=.85;x.fillText(lab,540,140);x.globalAlpha=1;
+  const pt=p[0].split('\n');let sz=88,es,zl,el,zh,eh;
+  do{sz-=4;es=Math.max(26,Math.round(sz*.45));x.font='bold '+sz+'px '+f;zl=pt.flatMap(l=>wrapZh(x,l,880));
+    x.font='italic '+es+'px Georgia,serif';el=wrapEn(x,p[1],840);zh=zl.length*sz*1.45;eh=el.length*es*1.45;
+  }while((zh+70+eh>700&&sz>36)||(zl.length>pt.length&&sz>64));
+  let y=540-(zh+70+eh)/2+sz*.72;
+  x.font='bold '+sz+'px '+f;zl.forEach(l=>{x.fillText(l,540,y);y+=sz*1.45});
+  y+=70-sz*.45;x.fillRect(480,y-48,120,3);
+  x.font='italic '+es+'px Georgia,serif';x.globalAlpha=.9;el.forEach(l=>{x.fillText(l,540,y);y+=es*1.45});
+  x.font='30px '+f;x.globalAlpha=.75;x.fillText('State不是Reality｜State is not reality',540,950);x.globalAlpha=1;
+}
+function copy(t,b){
+  const ok=()=>{const o=b.textContent;b.textContent='已複製 Copied';setTimeout(()=>b.textContent=o,1200)};
+  const fall=()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');ok()}catch(e){}a.remove()};
+  try{navigator.clipboard.writeText(t).then(ok,fall)}catch(e){fall()}
+}
+const fbs=document.createElement('section');fbs.dataset.tab='fb';
+fbs.innerHTML='<h2><span class="zh">【十大State｜臉書貼文＋圖卡】</span><span class="en">Ten States: Facebook Posts + Cards</span></h2><div class="note" style="margin-bottom:8px">'+bi('每則可下載 1080×1080 圖卡、複製貼文（依目前語言設定複製）。','Each post: download a 1080×1080 card and copy the caption (copied in the current language setting).')+'</div>';
+main.appendChild(fbs);
+FB.forEach((p,i)=>{
+  const g=G[i],d=document.createElement('div');d.className='it fb';
+  d.dataset.t=(g.join(' ')+' '+p.slice(0,5).join(' ')).toLowerCase();
+  const q=p[0].replace('\n','');
+  d.innerHTML=`<canvas width="1080" height="1080"></canvas><div class="tx"><b>${g[0]}｜<span class="zh">${g[1]} </span><span class="en">${g[2]} State</span></b><div class="zh" style="white-space:pre-line">【${esc(q)}】\n${esc(p[2])}</div><div class="en" style="white-space:pre-line;margin-top:6px">${esc(p[1])}\n${esc(p[3])}</div><div class="tag">${esc(p[4])}</div><div class="act"><button class="dl">下載圖卡 Download</button><button class="cp">複製貼文 Copy</button></div></div>`;
+  fbs.appendChild(d);
+  const c=d.querySelector('canvas');card(c,p,g[0]+'｜'+g[1]+' State');
+  d.querySelector('.dl').onclick=()=>c.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='State圖卡_'+g[0]+'_'+g[1].split(' ')[0]+'.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)});
+  d.querySelector('.cp').onclick=e=>{
+    const l=document.body.className.slice(5),z='【'+q+'】\n'+p[2],en=p[1]+'\n'+p[3];
+    copy((l==='zh'?z:l==='en'?en:z+'\n\n'+en)+'\n\n'+p[4],e.target);
+  };
+});
+
+// ---- 兩組80句：每句一則貼文＋圖卡（縮圖捲到才畫，下載時另畫1080） ----
+const ASK=[['我現在在哪個State？','What state am I in right now?'],['這個State正在讓我放大什麼？','What is this state making me magnify?'],['它正在讓我忽略什麼？','What is it making me ignore?'],['我現在的Interpretation是Reality，還是Model？','Is my interpretation reality, or a model?'],['還有什麼第二種解釋？','What is a second possible explanation?'],['哪一個最小Action可以取得新資訊？','Which smallest action could bring new information?'],['Reality回來後，我願不願意Update？','When reality answers back, am I willing to update?']];
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target._draw();io.unobserve(e.target)}}),{rootMargin:'300px'});
+[['life','人生80句','Life 80','#人生80句'],['school','高中生80句','Student 80','#高中生80句']].forEach(([t,zn,en,tag])=>{
+  const s=document.createElement('section');s.dataset.tab='fb';
+  s.innerHTML=`<h2><span class="zh">【${zn}｜貼文＋圖卡】</span><span class="en">${en}: Posts + Cards</span></h2>`;main.appendChild(s);
+  S80.filter(r=>r[0]===t).forEach((r,i)=>{
+    const no=r[1].slice(0,2),z=r[1].slice(3),a=ASK[i%7],col=FB[i%10],lab=zn+'｜'+no;
+    const p=[z.replace('；','；\n'),r[2],'同一個Reality，換一個State，就會看見不同的下一步。\n今天問自己：'+a[0],'Same reality, different state, different next step.\nAsk yourself today: '+a[1],'#StateAwareness '+tag+' #換個State看世界',col[5],col[6]];
+    const d=document.createElement('div');d.className='it fb';d.dataset.t=(lab+' '+p.slice(0,5).join(' ')).toLowerCase();
+    d.innerHTML=`<canvas width="480" height="480"></canvas><div class="tx"><b>${lab}</b><div class="zh" style="white-space:pre-line">【${esc(z)}】\n${esc(p[2])}</div><div class="en" style="white-space:pre-line;margin-top:6px">${esc(p[1])}\n${esc(p[3])}</div><div class="tag">${esc(p[4])}</div><div class="act"><button class="dl">下載圖卡 Download</button><button class="cp">複製貼文 Copy</button></div></div>`;
+    s.appendChild(d);
+    const c=d.querySelector('canvas');c._draw=()=>card(c,p,lab);io.observe(c);
+    d.querySelector('.dl').onclick=()=>{const o=document.createElement('canvas');o.width=o.height=1080;card(o,p,lab);o.toBlob(b=>{const l=document.createElement('a');l.href=URL.createObjectURL(b);l.download='State圖卡_'+zn+'_'+no+'.png';l.click();setTimeout(()=>URL.revokeObjectURL(l.href),2000)})};
+    d.querySelector('.cp').onclick=e=>{
+      const l=document.body.className.slice(5),zt='【'+z+'】\n'+p[2],et=p[1]+'\n'+p[3];
+      copy((l==='zh'?zt:l==='en'?et:zt+'\n\n'+et)+'\n\n'+p[4],e.target);
+    };
+  });
+});
+
+// ---- 英文朗讀：點英文句子發音，再點一次停止（瀏覽器內建語音，不連API） ----
+let spk=null;
+main.addEventListener('click',e=>{
+  const el=e.target.closest('.it div.en');if(!el||!window.speechSynthesis)return;
+  const same=spk===el;speechSynthesis.cancel();if(spk)spk.classList.remove('sp');spk=null;if(same)return;
+  const u=new SpeechSynthesisUtterance(el.textContent.replace(/[→↓]/g,', ').replace(/[｜＝]/g,'. '));
+  u.lang='en-US';u.rate=.95;
+  const v=speechSynthesis.getVoices().find(v=>/^en[-_]US/i.test(v.lang))||speechSynthesis.getVoices().find(v=>/^en/i.test(v.lang));if(v)u.voice=v;
+  u.onend=u.onerror=()=>{el.classList.remove('sp');if(spk===el)spk=null};
+  spk=el;el.classList.add('sp');speechSynthesis.speak(u);
+});
+
+// ---- 分頁、語言、搜尋 ----
+let tab=ld('stateScan.tab','life');
+$('tabs').innerHTML=TABS.map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join('');
+function apply(){
+  const q=$('s').value.trim().toLowerCase(); let n=0;
+  document.querySelectorAll('section').forEach(sc=>{
+    let v=0; sc.querySelectorAll('.it').forEach(it=>{const ok=!q||it.dataset.t.includes(q);it.hidden=!ok;if(ok)v++});
+    sc.hidden=q?!v:sc.dataset.tab!==tab; if(q)n+=v;
+  });
+  res.hidden=!!q;
+  $('cnt').textContent=q?n+' 筆':'';
+  $('tabs').querySelectorAll('button').forEach(b=>b.classList.toggle('on',!q&&b.dataset.t===tab));
+}
+$('tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;tab=b.dataset.t;sv('stateScan.tab',tab);$('s').value='';apply();scrollTo(0,0)};
+$('s').oninput=apply;
+function lang(l){document.body.className='lang-'+l;$('lang').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.l===l));sv('stateScan.lang',l)}
+$('lang').onclick=e=>{const b=e.target.closest('button');if(b)lang(b.dataset.l)};
+lang(ld('stateScan.lang','both'));
+apply();
+</script>
+</body>
+</html>

@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>新語言生成器｜心靈雞湯版</title>
+<style>
+:root{
+  --bg:#f6f5f1;--card:#ffffff;--ink:#1d1d1f;--muted:#6b6b70;--line:#e3e1da;
+  --accent:#2f6f5e;--accent-soft:#e3f0ec;--old:#9a5b3c;--mark:#ffe58a;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#141517;--card:#1e2023;--ink:#ecebe7;--muted:#9a9a9f;--line:#2e3034;
+    --accent:#7cc4ae;--accent-soft:#1f302b;--old:#d89a78;--mark:#6b5a12;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.6}
+header{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 16px 0}
+.wrap{max-width:900px;margin:0 auto}
+.top{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+h1{font-size:18px;margin:0 8px 0 0;white-space:nowrap}
+#q{flex:1;min-width:180px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:15px}
+#q:focus{outline:2px solid var(--accent);border-color:transparent}
+button{font:inherit;cursor:pointer}
+.btn{padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.tabs{display:flex;gap:4px;overflow-x:auto;margin-top:10px;scrollbar-width:none}
+.tab{padding:8px 12px;border:0;background:none;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+main{padding:16px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chip{font-size:13px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--muted)}
+.chip:hover{color:var(--accent);border-color:var(--accent)}
+h2{font-size:17px;margin:26px 0 10px;padding-left:10px;border-left:4px solid var(--accent)}
+h2 small{color:var(--muted);font-weight:normal;font-size:13px;margin-left:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;transition:border-color .15s}
+.card:hover{border-color:var(--accent)}
+.meta{display:flex;gap:8px;align-items:baseline;margin-bottom:4px}
+.num{font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:1px 7px}
+.ttl{font-weight:600;font-size:14px}
+.src{margin-left:auto;font-size:11px;color:var(--muted)}
+.old{color:var(--old);font-size:14px}
+.old::before{content:"以前｜";color:var(--muted)}
+.card.soup .new::before,.new.plain::before{content:"";}
+.card.soup .new{font-weight:500;line-height:1.7}
+.today{background:var(--accent-soft);border-radius:14px;padding:18px 20px;margin-bottom:16px;font-size:19px;font-weight:700;color:var(--accent);line-height:1.6}
+.today small{display:block;font-size:12px;font-weight:normal;color:var(--muted);margin-bottom:4px}
+.new{font-weight:600;font-size:15px;margin-top:2px}
+.new::before{content:"現在｜";color:var(--muted);font-weight:normal}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
+.block{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.block h3{margin:0 0 8px;font-size:16px;color:var(--accent)}
+.block ul,.block ol{margin:0;padding-left:22px}
+.block li{margin:3px 0}
+.block p{margin:6px 0}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.flow span{background:var(--accent-soft);color:var(--accent);padding:3px 10px;border-radius:8px;font-size:14px;font-weight:600}
+.flow i{color:var(--muted);font-style:normal}
+.quote{font-weight:600;border-left:3px solid var(--accent);padding-left:10px}
+.block pre{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:8px 0;font-family:inherit;font-size:14px;white-space:pre-wrap;line-height:1.5}
+.tblwrap{overflow-x:auto;margin:6px 0}
+.block table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+.block th,.block td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.block th{color:var(--muted);font-weight:600}
+.block td:first-child{font-weight:700;color:var(--accent);white-space:nowrap}
+.hero{text-align:center;font-size:22px;font-weight:700;letter-spacing:2px;color:var(--accent);margin:4px 0 10px}
+.empty{color:var(--muted);text-align:center;padding:40px 0}
+.count{color:var(--muted);font-size:13px;margin-bottom:8px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:99px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.show{opacity:1}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+#modal.show{display:flex}
+#modal .card{max-width:480px;width:100%;padding:24px;cursor:default}
+#modal .new{font-size:20px}
+#modal .old{font-size:16px}
+#modal .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="top">
+    <h1>換句話說・心靈雞湯</h1>
+    <input id="q" type="search" placeholder="搜尋：焦慮、生氣、懶、底線、失敗…" autocomplete="off">
+    <button class="btn" id="rand">🎲 隨機一句</button>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</div></header>
+<main><div class="wrap" id="view"></div></main>
+<div id="modal"><div class="card" id="mcard"></div></div>
+<div id="toast"></div>
+
+<script>
+/* ===== 資料 0：心靈雞湯 ===== */
+const SOUP_RAW = `#一|你不是你的標籤
+一次考差，不代表你很差；它只是說，這裡還可以再練。
+你不是懶，你只是還沒找到一個容易開始的方法。
+別急著說「我就是這樣」，你還在長大，還在改變。
+標籤是別人貼的，也可以由你自己撕下來。
+你做錯了一件事，不等於你是一個錯的人。
+「還不會」的後面，藏著一個「快要會」。
+#二|心情是小信差
+焦慮不是壞東西，它只是提醒你：有件事你很在乎。
+生氣的時候，問問自己：是哪條線被踩到了？
+難過，是因為你認真在乎過。
+嫉妒在偷偷告訴你：那也是你想要的。
+心情像天氣，會來，也會走；你是那片天空。
+不用趕走壞心情，先聽聽它想說什麼。
+#三|看清楚，再下結論
+先看發生了什麼，再決定要怎麼想。
+「他討厭我」是猜的；「他今天沒回我」才是事實。
+「大家」通常只是兩三個人，「每次」通常只是兩三次。
+把話說清楚一點，煩惱就會小一點。
+看錯了方向，跑再快也到不了。
+多問一句「真的嗎？」，心就會輕一點。
+#四|大問題，拆成小問題
+山很高，但你只需要走眼前這一步。
+太難的事，拆成三小塊，就沒那麼可怕了。
+一團亂的時候，拿張紙寫下來，往往只有三件事。
+不用一次解決全部，先解開最卡的那一個結。
+找到源頭，比擦一百次地板更有用。
+努力很好，用對地方的努力更好。
+#五|錯誤是禮物
+錯誤不是在笑你，它是在教你。
+失敗只是告訴你：這條路不通，換一條。
+沒有白走的路，每一步都算數。
+與其後悔「早知道」，不如開心「現在知道了」。
+分數不是判決書，是一張告訴你哪裡該補的地圖。
+跌倒不丟臉，賴在地上不起來才可惜。
+#六|總有路可以走
+「不可能」常常只是「現在還不行」。
+當你覺得只有兩條路時，試著再想第三條。
+沒有時間？先從兩分鐘開始。
+路不是沒有，只是還沒被你看見。
+做不到全部，就先做十分之一。
+管不了風往哪吹，但可以調整自己的帆。
+#七|先做一小步
+不用等到準備好；先做，就會慢慢準備好。
+今天的一小步，比明天的一大步更真實。
+知道一百個道理，不如今天做一件小事。
+完美會讓你停在原地，第一版會帶你出發。
+想讓自己不拖延，就把第一步變得很簡單。
+與其硬忍，不如把手機放遠一點。
+#八|好好相處
+他拒絕的是這件事，不是你這個人。
+與其等他猜，不如好好說出你的需要。
+改變不了別人，但可以改變和他相處的方式。
+立下底線不是自私，是好好照顧自己。
+吵架不全是壞事，它讓你們看見彼此不一樣的地方。
+你可以善良，也可以說「不」。
+#九|一直更新自己
+厲害的人不是從不犯錯，而是願意改。
+「我可能錯了」是很有勇氣的一句話。
+以前有用的方法，現在不一定有用；沒關係，再試新的。
+真正學會，是換一題、換一天，還做得出來。
+做到一次是運氣，做到很多次是實力。
+把經驗變成一句提醒自己的話，那就是智慧。
+#十|送給今天的你
+新的說法不是要騙自己開心，而是幫自己看得更清楚。
+換一句話，就多一條路。
+你說出口的每一句話，都在幫自己畫地圖。
+對自己說話溫柔一點，你也是第一次長大。
+慢慢來，比較快。
+今天比昨天多懂一點點，就很棒了。`;
+
+/* ===== 資料 1：換句話說 100 ===== */
+const S1 = `#A|把事情看清楚 01–20
+01|我是誰 → 我做了什麼|我是＿＿的人|我只是在＿＿的時候，做了＿＿這件事。
+02|個性 → 習慣|我就是＿＿|我在什麼時候，比較容易變成＿＿？
+03|批評 → 看見|他很＿＿|我真的看到的，是他做了＿＿。
+04|感覺 → 事實|我覺得＿＿|我的心情是＿＿；真正確定的事是＿＿。
+05|亂猜 → 可能|他一定是因為＿＿|也許是因為＿＿，但我還不確定。
+06|猜他的心 → 看他的行為|他故意＿＿|我只看到他做了＿＿；他心裡怎麼想，我還不知道。
+07|每次 → 哪幾次|他每次都＿＿|最近真的有哪幾次是這樣？
+08|永遠 → 這陣子|我永遠＿＿|只是最近這段時間，我比較常＿＿。
+09|全部 → 一部分|我什麼都不會|我現在還不會的，只是＿＿。
+10|很糟 → 說清楚|事情很糟|其實是發生了＿＿，影響了＿＿。
+11|結果 → 細項|我考很差|我是在＿＿、＿＿、＿＿這三種題目丟分。
+12|貼標籤 → 數一數|我很懶|這週我有＿＿次沒照計畫開始。
+13|印象 → 數字|最近變差了|是哪個數字從＿＿變成＿＿？
+14|想像 → 真的發生的事|大家都不喜歡我|真正發生的事，其實只有＿＿。
+15|我的解讀 → 他的原話|他看不起我|他說／做了＿＿；是我把它想成＿＿。
+16|生氣 → 提醒|我很生氣|我的生氣，是想提醒我＿＿。
+17|焦慮 → 擔心的事|我很焦慮|我是在擔心＿＿會發生。
+18|委屈 → 期待落空|我很委屈|我本來期待＿＿，結果卻是＿＿。
+19|害怕 → 怕什麼|我好怕|我真正怕的是＿＿。
+20|一團亂 → 三件事|全部亂掉了|其實只有＿＿、＿＿、＿＿這三件事。
+#B|把事情想明白 21–40
+21|一個原因 → 很多原因|都是因為＿＿|可能是＿＿、＿＿、＿＿一起造成的。
+22|為什麼 → 怎麼來的|為什麼這麼糟？|這件事是怎麼一步一步變成這樣的？
+23|表面 → 源頭|我要解決＿＿|是什麼一直讓這個問題冒出來？
+24|全部改 → 找卡關點|我要全部改善|現在最卡住我的，是哪一個地方？
+25|更努力 → 用對力|我要更努力|改哪一個地方，進步會最多？
+26|我不行 → 還沒學會|我不行|我還缺哪一項技巧？
+27|不能 → 被什麼擋住|我不能＿＿|現在擋住我的是什麼？
+28|沒辦法 → 缺什麼|沒有辦法|我缺的是時間、錢、幫手、資訊、工具，還是能力？
+29|太難 → 拆小|太難了|可以拆成哪三個小問題？
+30|只能這樣 → 還有別條路|只能這樣|除了這個方法，還有第二、第三種嗎？
+31|二選一 → 多幾種|只能A或B|能不能把兩個混在一起，想出新辦法？
+32|合不來 → 哪裡不同|我們合不來|我們是需要的、在乎的、想法，還是底線不一樣？
+33|怪別人 → 看情況|都是他的問題|是哪些情況，讓這件事一再發生？
+34|怪自己 → 看環境|我沒自制力|身邊有什麼東西一直在誘惑我？
+35|現在 → 拉長時間|現在很糟|一週後、一年後、五年後再看，會怎樣？
+36|選哪個 → 我真正要什麼|我要A還是B？|不管選哪個，我心裡真正想要的是什麼？
+37|他錯了 → 換位置看|他錯了|如果我站在他的位置，會看到什麼？
+38|一定有效 → 前提是什麼|這一定有效|我是先相信了哪些事，才這樣認為？
+39|一定 → 有多可能|一定會發生|照現在的情況看，可能性有多大？
+40|只有一個解釋 → 多想三個|原因就是＿＿|還有哪三種別的可能？
+#C|把事情做出來 41–60
+41|想變好 → 下一步|我要變好|今天我可以做的下一小步是＿＿。
+42|大目標 → 小小一步|我要學好英文|今天先做＿＿分鐘／＿＿題就好。
+43|完美 → 先有第一版|還沒準備好|現在能先交出的第一版是什麼？
+44|等確定 → 先試試|等我確定再做|可以先做哪個不花力氣的小試驗？
+45|想很多 → 試一下|我不知道答案|做什麼小測試，就能多知道一點？
+46|多做 → 練弱點|多做題目|我該專門練哪一種錯？
+47|知道 → 做到|我知道了|所以今天我要改哪一個小動作？
+48|看懂 → 自己做|我看懂了|把答案蓋起來，我還做得出來嗎？
+49|這題會 → 換題也會|這題會了|換一題沒看過的，我還會嗎？
+50|今天會 → 以後也會|今天會了|明天、三天後、一週後，我還記得嗎？
+51|要他改 → 改做法|我要他改|我可以改變哪些相處的方式？
+52|命令 → 底線|他一定要＿＿|如果他不做，我的底線和備案是＿＿。
+53|抱怨 → 開口請求|都沒人幫我|我想請誰、幫我做哪一件事？
+54|大家一起 → 誰負責|大家一起處理|誰做什麼？什麼時候做完？
+55|好忙 → 先做一件|事情好多|現在最重要的那一件是＿＿。
+56|樣樣都做 → 抓重點|全部都重要|哪一小部分做好，效果最大？
+57|拖延 → 讓開始變簡單|我總是拖延|怎樣讓第一步輕鬆到不想拖？
+58|硬忍 → 改環境|我要忍住手機|怎樣讓手機變得不好拿？
+59|祈禱 → 先準備|希望不要出事|出事之前，我可以先準備什麼？
+60|失控 → 我能管的|我什麼都控制不了|現在還有哪些事，是我自己能決定的？
+#D|把錯誤變禮物 61–80
+61|失敗 → 猜錯了|我失敗了|我原本以為會怎樣，結果哪裡不一樣？
+62|錯 → 線索|我又錯了|這次的錯，想告訴我什麼？
+63|罵自己 → 找原因|我怎麼這麼笨|真正的原因是什麼？
+64|後悔 → 學到|早知道就＿＿|現在的我，比當時多懂了什麼？
+65|白做 → 少一條錯路|全部白費|這次讓我知道，哪條路走不通？
+66|沒用 → 什麼時候沒用|這方法沒用|它是在什麼情況下沒效？
+67|成功 → 為什麼成功|太好了，成功了|到底是做對了哪件事？
+68|運氣 → 我能做的|只是運氣好／差|哪些是碰巧？哪些是我能努力的？
+69|分數 → 體檢表|我只有55分|這55分告訴我，哪裡還需要補？
+70|挑毛病 → 提醒|他在挑我毛病|他說的話裡，哪些是可以檢查看看的？
+71|反駁 → 看證據|我才沒有！|有哪些事實支持他？哪些不支持？
+72|證明我對 → 願意被糾正|我要證明我是對的|看到什麼，我會願意改變想法？
+73|成功一次 → 再做幾次|我成功了|再做三次，還能成功嗎？
+74|失敗一次 → 別急著放棄|這方法失敗|只試一次，就能說它沒用嗎？
+75|今天 → 長期|今天變好了|這是剛好，還是真的在進步？
+76|感覺 → 數字|我覺得有效|看哪個數字，能知道真的有效？
+77|做完 → 有用嗎|我做完了|做完之後，有得到想要的結果嗎？
+78|訂正 → 再考一次|我訂正完了|再做一次，還會錯嗎？
+79|知道問題 → 改想法|我知道問題了|我原本的想法，哪裡要修改？
+80|經歷 → 道理|我經歷過了|這次經驗，可以變成哪一句提醒自己的話？
+#E|把關係顧好 81–90
+81|拒絕我 → 拒絕這件事|他拒絕我|他拒絕的是我這個人，還是這次的請求？
+82|不愛我 → 哪個需要沒被看見|他不愛我|我有哪個需要，還沒被回應？
+83|不尊重 → 哪個行為|他不尊重我|是哪個行為，踩到了我的底線？
+84|不懂我 → 我說清楚了嗎|他不懂我|我的想法、心情、需要，哪個還沒說清楚？
+85|敵人 → 想要的不同|他跟我作對|我們想要的東西，哪裡不一樣？
+86|不配合 → 對他有什麼好處|他就是不配合|為什麼配合我，對他來說不划算？
+87|吵架 → 發現|又吵架了|這次吵架，讓我們看見了哪個老問題？
+88|不敢拒絕 → 我可以選|我不能拒絕|拒絕會付出什麼代價？我願意嗎？
+89|犧牲 → 我的選擇|我都是為了你|這是我自己願意的，還是該重新說好底線？
+90|完了 → 重新安排|我們完了|這段關係要修補、少見一點、重訂規則，還是放手？
+#F|把經驗變智慧 91–100
+91|就是這樣 → 目前的看法|事情就是這樣|這是我目前覺得最合理的看法。
+92|我相信 → 我猜|我相信＿＿|我先猜是＿＿，可以怎麼試試看？
+93|以前 → 現在|我以前遇過|以前的經驗，現在還適用多少？
+94|老樣子 → 有新情況嗎|以前都這樣|以前可以參考，但現在有沒有新情況？
+95|一定對 → 什麼時候對|這方法就是對的|它在什麼情況下才對？
+96|懂道理 → 能預測|我懂這個道理|照這個道理，接下來會發生什麼？
+97|我認為 → 怎樣算對|我認為會＿＿|看到什麼結果，才算我猜對或猜錯？
+98|我的想法 → 願意改|我的想法是＿＿|發生什麼事，我就該換個想法？
+99|學會 → 到哪都會|我已經學會|換個人、換一題、換個地方，我還做得到嗎？
+100|找到答案 → 會找答案|我找到答案了|我能不能用同樣的方法，再找到下一個答案？`;
+
+/* ===== 資料 2：暖心口訣 100 ===== */
+const S2 = `#一|我是誰 → 我做了什麼｜一次沒做好，不代表你就是這樣的人
+我就是笨|我只是哪個觀念還沒懂？
+我就是懶|我是卡在哪一步沒有開始？
+我沒天分|哪個能力還沒練起來？
+我很沒用|現在哪件事對我來說還太難？
+我很失敗|是哪個目標還沒做到？
+我不是讀書的料|是哪種讀書方法不適合我？
+我沒組織能力|哪個做事步驟還沒建立好？
+我不會溝通|在哪種場合，我最說不出口？
+我沒有自制力|什麼時候我最容易忍不住？
+我就是這樣|這個習慣是怎麼養成的？
+#二|批評 → 事實｜先別急著說誰好誰壞
+他很自私|他這次先顧了什麼？
+他很沒責任感|是哪件該做的事沒做完？
+他很難相處|我們在什麼時候最容易吵起來？
+他很不成熟|他還缺哪個能力來處理這件事？
+他很沒禮貌|是哪個動作讓我不舒服？
+他很冷血|我期待他怎麼回應，而他沒有？
+他很奇怪|他的想法跟我哪裡不一樣？
+這學生很差|他現在最弱的三個地方是什麼？
+這孩子沒救|只是哪些方法還沒有用？
+這件事很糟|實際上損失了什麼、影響了什麼？
+#三|心情 → 提醒｜心情不是判決，是小信差
+我很焦慮|我在擔心什麼事會發生？
+我好生氣|是哪個底線或期待被碰到了？
+我好難過|我正在失去什麼？我在乎的是什麼？
+我好嫉妒|他有什麼，是我也想要的？
+我好委屈|我付出的和我期待的，哪裡不平衡？
+我好害怕|我覺得什麼事可能會發生？
+我很煩|有哪些沒做完的事一直掛在心上？
+我好挫折|我原本以為的，和實際結果差在哪？
+我沒安全感|哪些事先確定下來，我會比較安心？
+我要消滅負面情緒|這個心情想告訴我什麼？
+#四|問題 → 怎麼來的｜把「有問題」換成「怎麼發生的」
+為什麼我這麼倒楣？|是哪些原因一起造成的？
+為什麼總是我？|是什麼事情一直在重複？
+問題好多|哪個問題是其他問題的源頭？
+事情好複雜|可以拆成哪幾小塊？
+完全亂掉了|是從哪一步開始出錯的？
+怎麼救？|真正卡住的地方在哪裡？
+為什麼一直沒改善？|哪個地方一直沒有改？
+我已經很努力|我的力氣，有沒有用在最關鍵的地方？
+做很多都沒效|哪些事做了，卻跟目標沒關係？
+到底哪裡有問題？|這個結果是一步一步怎麼來的？
+#五|失敗 → 猜錯了｜錯誤是老師，不是敵人
+我失敗了|我是哪裡猜錯了？
+又做錯了|這次是哪一種錯？
+白努力了|這次讓我知道哪個方法不行？
+早知道不要做|現在的我比當初多知道什麼？
+這次完蛋了|已經發生了，現在還能補救什麼？
+我怎麼又犯同樣錯？|我哪個舊想法還沒換掉？
+我明明會|我是「看過」，還是「真的會」？
+運氣不好|哪些是碰巧，哪些是我可以改進的？
+計畫失敗|我原本以為的哪件事，其實沒有成立？
+結果證明我不行|結果只是說：現在的方法還不夠。
+#六|不可能 → 被什麼卡住｜把一面牆拆成一塊塊磚
+不可能|是什麼讓它「現在」還做不到？
+我沒辦法|我缺的是技巧、資源，還是方法？
+沒有時間|我的時間現在被哪些事占走？
+沒有錢|最少最少需要多少？
+沒有人幫我|我需要的是哪一種幫忙？
+環境不允許|哪個條件要先改變？
+我做不到那麼多|最小能做的一步是什麼？
+現在不能開始|哪個超小版本今天就能開始？
+條件不成熟|最少要有什麼就能起步？
+只能這樣|是什麼讓我只看到這一條路？
+#七|二選一 → 更多選擇｜世界不是只有兩條路
+只能留下或離開|留下和離開，各是想保護什麼？
+工作或家庭只能選一個|兩邊我最想留住的是什麼？
+忍耐或翻臉|還有哪些好好說出底線的方法？
+答應或得罪他|能不能只答應一部分，或再商量？
+成功或失敗|這次可以先做什麼小試驗？
+做或不做|能不能先做十分之一？
+原諒或斷絕|關係可以保持哪幾種距離？
+控制或放棄|哪些我能管，哪些要學著接受？
+聽我的或反對我|我們有沒有共同想要的結果？
+A還是B？|有沒有第三、第四、第五種？
+#八|人際 → 底線、需要、在乎｜把「他怎樣」換成「我需要什麼」
+他不尊重我|我的哪個底線被踩到了？
+他不愛我|我期待他用什麼方式表達愛？
+他不在乎|我期待他做什麼，而他沒做？
+他在利用我|我們的付出，哪裡不公平？
+他背叛我|我們說好的哪件事被打破了？
+他故意氣我|我有證據知道他是故意的嗎？
+他針對我|還有哪些別的可能？
+我要讓他理解我|我要怎麼把需要說得更清楚？
+我要他改|我能改變哪些相處方式？
+他一定要配合|如果他不配合，我的備案是什麼？
+#九|控制 → 自己做主｜把力氣放回自己手上
+我要控制結果|我可以做什麼，讓成功的機會變大？
+我要大家認同|我把理由和證據說清楚就好。
+我要孩子聽話|我想幫孩子養成什麼能力？
+我要學生努力|怎樣讓「開始努力」變得更容易？
+我要家人負責|誰負責什麼、何時完成，說清楚了嗎？
+我要別人尊重我|我要先把自己的底線立好。
+我要避免所有風險|我可以先準備什麼備用方案？
+事情不能出錯|萬一出錯，要怎麼補救？
+我一定要贏|我真正想要的結果是什麼？
+我要證明自己|我可以為別人帶來什麼幫助？
+#十|答案 → 一直更新｜最厲害的人，是願意改的人
+我知道了|我能不能自己再做一次？
+這就是真相|現在的證據，能支持到什麼程度？
+我一定是對的|看到什麼，我會願意改變想法？
+以前都有效|現在的環境跟以前一樣嗎？
+專家都這樣說|證據是什麼？什麼情況下才適用？
+這方法最好|對誰、什麼時候、什麼情況下有效？
+找到答案了|換個情況還說得通嗎？
+我已經改變了|新習慣能不能一直做下去？
+這次成功了|是做對了哪件事才成功？
+這就是我的新想法|下一次的事實，會怎麼考驗它？`;
+
+/* ===== 資料 3：口訣 30 ===== */
+const S3 = `他就是這種人|他這次做了什麼？
+我一直都這樣|這個習慣通常什麼時候出現？
+他故意的|我有什麼證據知道他怎麼想？
+都是他的錯|是哪些原因一起造成的？
+我感覺如此，所以就是如此|感覺是提醒，那事實是什麼？
+我很焦慮|我的心正在擔心什麼？
+我不應該生氣|生氣在提醒我哪個底線？
+我很懶|是哪裡讓我覺得「開始」太難？
+我沒自制力|身邊什麼東西一直在誘惑我？
+我很笨|是哪個技巧還沒學起來？
+我粗心|我漏看了哪個地方？
+太難了|還能拆成哪三小步？
+事情太多|現在最卡的是哪一件？
+我要更努力|改哪裡最有效？
+我要全部做好|現在最重要的那一小部分是什麼？
+我不要這個|那我想要的是什麼？
+A還是B？|A和B，都想保護什麼？
+只有這條路|還能想出哪三條路？
+我要讓他改|我能改變哪些條件？
+他不尊重我|是哪個行為踩到我的底線？
+他拒絕我|他拒絕的是我，還是這次的提議？
+我們關係完了|現在是哪個衝突還沒解決？
+他跟我作對|我們哪個想法不一樣？
+別人批評我|他說的話，哪部分值得留下來？
+我早知道就……|現在多知道了什麼？
+白做了|這次試驗幫我排除了什麼？
+這方法沒用|它在什麼情況下沒效？
+我已經懂了|換一題，我還做得出來嗎？
+我要證明我是對的|看到什麼，我會願意改？
+這就是真相|這是目前最合理的看法嗎？`;
+
+/* ===== 資料 4：六句口訣 ===== */
+const S4 = `我是誰|我做了什麼？
+誰不好|發生了什麼？
+我不行|還缺什麼？
+失敗了|哪裡猜錯了？
+沒辦法|還有哪些選擇？
+一定如此|事實怎麼說？`;
+
+/* ===== 小抄 ===== */
+const THEORY = [
+  {t:"最重要的一件事", items:[
+    "重點不是「把話說好聽」。",
+    "**舊說法＝太快下結論。**",
+    "**新說法＝把結論重新打開，變成看得見、想得通、有得選、做得到、能檢查、可以改。**"]},
+  {t:"一條路線", flow:["舊說法","撕掉標籤","回到事實","找出不同","找出原因","找出能改的地方","想出選擇","做一小步","看結果","更新想法"]},
+  {t:"換句話說的10個步驟", ol:true, items:[
+    "**不講身份**：「我是什麼」→「發生了什麼」",
+    "**不急著評分**：「好／壞」→「證據是什麼」",
+    "**說清楚一點**：「全部」→「到底是哪一部分」",
+    "**找原因**：「為什麼這麼糟」→「是怎麼變成這樣的」",
+    "**找不同**：「失敗」→「我以為的和實際的差在哪」",
+    "**找卡關點**：「全部要改」→「哪個地方最關鍵」",
+    "**想選擇**：「沒辦法」→「還有哪些路」",
+    "**去行動**：「我知道」→「下一步做什麼」",
+    "**去檢查**：「我相信」→「怎麼知道對不對」",
+    "**去更新**：「答案」→「有新情況時怎麼改」"]},
+  {t:"10句小口訣", items:[
+    "我是誰 → 我做了什麼","批評 → 事實","心情 → 提醒","模糊 → 清楚","問題 → 怎麼來的",
+    "失敗 → 猜錯了","不能 → 被什麼卡住","沒路 → 更多選擇","知道 → 去做＋檢查","答案 → 一直更新"]},
+  {t:"10個換句話機器", ol:true, items:[
+    "**我是誰 → 我做了什麼**：我是誰？ → 我做了什麼？",
+    "**批評 → 事實**：誰好誰壞？ → 到底發生什麼？",
+    "**心情 → 提醒**：我好難受 → 它在提醒我什麼？",
+    "**問題 → 怎麼來的**：怎麼這麼糟？ → 它是怎麼發生的？",
+    "**失敗 → 猜錯了**：我失敗 → 我哪裡猜錯？",
+    "**不可能 → 卡在哪**：做不到 → 卡在哪個條件？",
+    "**二選一 → 更多選擇**：A還是B？ → 第三、第四種呢？",
+    "**吵架 → 哪裡不同**：誰對誰錯？ → 我們的想法、需要、在乎、底線差在哪？",
+    "**控制 → 自己做主**：怎麼改變別人？ → 我能改變什麼？",
+    "**答案 → 一直更新**：我知道了 → 事實還支持嗎？"]},
+  {t:"八個轉彎", items:[
+    "我是誰 → 我做了什麼","批評 → 事實","心情 → 提醒","問題 → 怎麼來的",
+    "失敗 → 猜錯了","困住 → 選擇","被批評 → 被提醒","真理 → 可以改的想法"]},
+  {t:"這句話好不好？問自己六件事", items:[
+    "不要問：這句話正不正面？改問：",
+    "① 更接近事實了嗎？","② 說得更清楚了嗎？","③ 更知道原因了嗎？",
+    "④ 選擇變多了嗎？","⑤ 知道下一步了嗎？","⑥ 以後發現不對，還能改嗎？",
+    "**六個都是「是」，才是真正的好說法。**"]},
+  {t:"它不是什麼", items:[
+    "不是「把難聽話換成好聽話」，而是：",
+    "模糊 → 清楚","我是誰 → 我做了什麼","批評 → 資料","心情 → 提醒","問題 → 怎麼來的",
+    "失敗 → 猜錯了","不能 → 條件","困住 → 選擇","控制 → 自己做主","答案 → 可以改的想法"]},
+  {t:"總口訣", items:[
+    "少貼標籤，多找事實；","少判好壞，多找原因；","少問誰錯，多找不同；","少說不能，多找卡在哪；",
+    "少困在二選一，多想幾條路；","少證明自己，多讓事實說話；","少守著答案，多更新想法。",
+    "一句話說出口後，不是把世界定死，而是讓下一個問題、下一個選擇、下一步，自然長出來。"]},
+  {t:"成長的路", flow:["看得準","分得細","找到原因","想出選擇","做出行動","收到回饋","改掉舊想法","長出能力","變成智慧"]},
+  {t:"一句話記住", items:[
+    "**新的說法不是要讓我感覺比較好，而是讓我看得更準、想得更多、做得更對、改得更快。**",
+    "新說法＝把事實看清楚＋找到原因＋多想幾條路＋動手去做＋聽聽結果怎麼說＋願意改想法。"]}
+];
+
+/* ===== 成長九步 ===== */
+const NINE = [
+  {t:"九個字口訣", hero:"看 → 分 → 機 → 選 → 做 → 回 → 改 → 能 → 智", items:[
+    "**看**｜把事情看清楚","**分**｜把問題分成小塊","**機**｜找出原因","**選**｜想出選擇","**做**｜動手去做",
+    "**回**｜看看結果","**改**｜改掉舊想法","**能**｜練成能力","**智**｜變成智慧"],
+    p:["> 看清、分細、找因、想路、去做、看果、再改、練熟、成智。",
+       "這九步不是一條直線，而是一個會一直轉的圈圈。每轉一圈，你就比上一圈多懂一點。"]},
+  {t:"完整路線", pre:`事實
+↓
+① 看｜看清楚　事實 ≠ 我編的故事
+↓
+② 分｜分小塊　大問題 → 小問題
+↓
+③ 機｜找原因　老是發生 → 為什麼 → 源頭
+↓
+④ 選｜想選擇　一條路 → 好幾條路
+↓
+⑤ 做｜動手做　選一個 → 做一小步
+↓
+⑥ 回｜看結果　我以為的 ↔ 實際的
+↓
+⑦ 改｜改想法　猜錯了 → 換個想法
+↓
+⑧ 能｜成能力　一再做到 → 真的會了
+↓
+⑨ 智｜成智慧　到哪都通的道理
+↓
+面對新的事情 ↺`,
+    flow:["事實","想法","行動","事實","更好的想法 ↺"]},
+  {t:"每一步在做什麼", table:{head:["口訣","問自己","怎麼做","得到什麼"], rows:[
+    ["看","到底發生什麼？","把事實和猜測分開","事實"],
+    ["分","它是哪一種問題？","拆小、分類","小問題"],
+    ["機","它怎麼來的？","找重複的地方、猜原因","原因"],
+    ["選","還能怎麼做？","多想幾個辦法","選擇"],
+    ["做","現在做什麼？","做最小的一步","小試驗"],
+    ["回","結果如何？","比一比「我以為」和「實際」","回饋"],
+    ["改","哪裡猜錯？","找出猜錯的地方","新想法"],
+    ["能","下次還做得到嗎？","練習、再測、換題","能力"],
+    ["智","可以留下什麼道理？","濃縮成一句話","智慧"]]}},
+  {t:"① 看｜把事情看清楚", p:[
+    "> 先看事實，不急著編故事。",
+    "**例**：「學生根本不想學。」——「不想學」是你猜的。換成「最近5次作業，他有3次沒寫完。」這才是事實。",
+    "> 看錯了，後面越努力，可能錯得越遠。"]},
+  {t:"② 分｜把問題分成小塊", p:[
+    "> 大問題解不開，小問題才解得開。"],
+    flow:["英文不好","閱讀不好","長句常看錯","不會斷句","練斷句"],
+    p2:["拆到這麼小，終於知道要練什麼了。",
+    "> 分類不是為了貼標籤，而是為了找到可以下手的地方。"]},
+  {t:"③ 機｜找出原因", p:[
+    "> 不要只問「哪裡錯」，要問「怎麼變成這樣的」。"],
+    flow:["單字不夠","句子看得慢","閱讀速度變慢","時間不夠","後面亂猜","閱讀丟分"],
+    p2:["表面上是「閱讀錯很多」，源頭可能是「單字不夠」。",
+    "> 只處理表面，很快又會再來；找到源頭，才會真的不一樣。"]},
+  {t:"④ 選｜想出選擇", p:[
+    "> 沒有選擇，就沒有真正的決定。",
+    "**例**：不要只問「我要不要繼續？」，可以想："],
+    items:["A｜照原來的方法繼續","B｜做少一點","C｜換個方法","D｜找人一起","E｜先試兩個禮拜","F｜先停一下，之後再看"],
+    p2:["每個選擇都想一想：要花多少力氣？有什麼好處？有什麼風險？做了還能不能反悔？",
+    "> 能想出的路越多，你就越自由。"]},
+  {t:"⑤ 做｜動手去做", p:[
+    "> 想法再好，沒做之前都只是猜的。",
+    "**例**：不要說「我要把英文學好」，改成「今天背20個常用單字＋讀1篇文章＋記下錯在哪」。",
+    "行動不只是為了「做完」，更是為了**多知道一點**。",
+    "> 你做了一次，事實才有機會告訴你：你想的對不對。"]},
+  {t:"⑥ 回｜看看結果", p:[
+    "> 做完不算完成，看到結果才算。",
+    "**例**：我以為「背20個單字，閱讀就會少錯」；結果「本來錯8題，還是錯8題」。這不是「我很失敗」，而是**我原本想的原因可能不完整**——也許真正卡住的是長句子。",
+    "> 回饋，是事實寫給你的一封回信。"]},
+  {t:"⑦ 改｜改掉舊想法", p:[
+    "> 錯不可怕，不改才會一直重來。"],
+    flow:["舊想法：閱讀差是因為單字差","試了沒進步","新發現：單字認得，但句子斷錯","新想法：卡在斷句","新做法：練長句拆解"],
+    p2:["學習，就是在這一步真正發生的。"]},
+  {t:"⑧ 能｜練成能力", p:[
+    "> 做到一次叫結果，一再做到才叫能力。",
+    "**怎樣才算「真的會了」？**"],
+    items:["看得懂 ≠ 做得出來","原題會 ≠ 換題也會","今天會 ≠ 明天還會","熟悉的地方會 ≠ 陌生的地方也會"],
+    p2:["> 真正的能力：換題、換時間、換地方，還是做得到。"]},
+  {t:"⑨ 智｜變成智慧", p:[
+    "> 能力幫你解決一次問題；智慧留下一句可以一直用的道理。",
+    "**例**：遇過很多次以後，濃縮成一句——「當有人說『我粗心』，不要就這樣算了；繼續問：到底漏看了什麼？」英文粗心、數學粗心、工作粗心，都能用這一句。",
+    "很多經驗 → 找出共同的地方 → 丟掉不重要的細節 → 留下一句道理。"]},
+  {t:"三個圈圈", hero:"看分機｜選做回｜改能智", items:[
+    "**第一圈｜看懂**：看 → 分 → 機——世界到底發生什麼？",
+    "**第二圈｜去做**：選 → 做 → 回——我要怎麼試試看？",
+    "**第三圈｜長大**：改 → 能 → 智——這次經驗怎麼讓下一次的我更強？"],
+    p2:["> 前三步看懂世界；中三步走進世界；後三步讓世界回過頭來教你。"]},
+  {t:"一圈走完的問句", pre:`【看】到底發生了什麼？
+↓
+【分】這是哪一種問題？
+↓
+【機】它是怎麼來的？
+↓
+【選】我有哪些選擇？
+↓
+【做】先做哪個小試驗？
+↓
+【回】結果怎麼說？
+↓
+【改】哪個想法要換掉？
+↓
+【能】我能不能一再做到？
+↓
+【智】能不能變成一句到哪都能用的話？
+↓
+【新的事情】下一圈 ↺`},
+  {t:"最後三句話", p:[
+    "> 看得準，才不會解錯問題。",
+    "> 做得出來，事實才有機會糾正你。",
+    "> 改得動，經驗才會真的變成能力和智慧。"],
+    hero2:"智慧 ≠ 經歷很多　｜　智慧 = 經歷 × 回饋 × 改想法 × 到處能用 × 濃縮成一句",
+    p2:["沒有回饋，經歷只是重複；沒有改，錯只會再犯；不能用在別處，能力就只在原地；沒有濃縮，下次就想不起來。"],
+    flow2:["看世界","拆世界","懂世界","想出可能","走進真實","聽見回音","更新自己","長出能力","變成智慧"]}
+];
+
+/* ===== 小課堂 ===== */
+const LESSON = [
+  {t:"開場", items:[
+    "換一種說話的方式，人生真的會不一樣嗎？會的。我們常說「我很笨」、「他又在針對我」，這些話就像一張舊地圖，把自己關在裡面。",
+    "這堂課要學的，不是把難聽話變好聽，而是把事情說得更清楚——清楚到你馬上知道下一步要做什麼。"]},
+  {t:"這堂課要學會", items:[
+    "知道舊說法和新說法哪裡不一樣。",
+    "在讀書、犯錯、心情、交朋友、家庭、自我成長這六件事上，用新的說法。",
+    "記住「六句口訣」，讓自己一直進步。"]},
+  {t:"為什麼說話會改變我們看到的世界", items:[
+    "你有沒有說過「反正我就是學不會」、「這件事根本沒辦法」？那不是事實，那只是舊說法畫出來的舊地圖，讓你看不到別條路。",
+    "新說法不是硬要自己往好處想，而是把事情「重新分類」。",
+    "當你把「我好糟」拆成清楚的事實，腦袋就會從「我為什麼這麼糟？」變成「哪一步最卡？要怎麼解決？」——你就把方向盤拿回自己手上了。"]},
+  {t:"用在讀書、犯錯、心情", items:[
+    "**讀書**：「我記性不好」→「我只有一直看，沒有練習把它想出來」→ 做法：隔幾天就回想一次。",
+    "**犯錯**：「我又失敗了」→「我原本以為的，和實際結果不一樣」。錯誤不是你這個人的污點，只是一個要修改的想法。",
+    "**心情**：「我不能焦慮」→「我的心正在提醒我：有件事要注意」。心情不是敵人，是信差；聽懂了，就做一小步去回應它。"]},
+  {t:"用在朋友、家人、自己", items:[
+    "**朋友**：「他不尊重我。」→「是哪一個行為，讓我覺得底線被踩到？」這樣談的是那件事，不是在罵那個人。",
+    "**家人**：「為什麼都是我在照顧？」→「我們家的照顧，太靠一個人了。」這樣就能開始談分工和備案。",
+    "**自己**：「我很懶」→「這件事要開始，太費力了」。把第一步縮小到只要做2分鐘。改變環境，比考驗意志力更有用。"]},
+  {t:"六個大轉彎", ol:true, items:[
+    "**我是誰 → 我做了什麼**：從「我是怎樣的人」變成「我現在做了什麼」。",
+    "**批評 → 事實**：從「誰好誰壞」變成「真正發生了什麼」。",
+    "**心情 → 提醒**：從「我覺得是這樣，所以就是這樣」變成「這個心情在提醒我什麼」。",
+    "**問題 → 怎麼來的**：從「我有問題」變成「這個結果是怎麼發生的」。",
+    "**失敗 → 猜錯了**：從「我失敗了」變成「我哪個想法要更新」。",
+    "**不可能 → 選擇**：從「沒有路」變成「只是還沒找到路」。",
+    "這六個轉彎，會改變你腦袋找答案的方向：不再問「我為什麼這麼糟？」，而是問「哪裡最卡？」。"]},
+  {t:"總複習", items:[
+    "**新說法的目的**：不是好聽，而是說得夠清楚，清楚到知道下一步。",
+    "**六個大轉彎**：把我是誰、批評、心情、問題、失敗、不可能，換成我做了什麼、事實、提醒、怎麼來的、猜錯了、選擇。",
+    "**六句口訣**：看下面的卡片。"]}
+];
+
+/* ===== 解析 ===== */
+function parse(text, kind, src){
+  const out=[]; let group=null, groupSub="", n=0;
+  text.trim().split("\n").forEach(line=>{
+    line=line.trim(); if(!line) return;
+    if(line[0]==="#"){ const p=line.slice(1).split("|"); group=p[0]+"｜"+p[1]; groupSub=p[2]||""; return; }
+    const p=line.split("|"); n++;
+    if(kind===3) out.push({src,group,num:String(n).padStart(2,"0"),ttl:"",old:"",nw:line});
+    else if(kind===1) out.push({src,group,num:String(+p[0]).padStart(2,"0"),ttl:p[1],old:p[2],nw:p[3]});
+    else out.push({src,group:group&&(group+(groupSub?"｜"+groupSub:"")),num:String(n).padStart(2,"0"),ttl:"",old:"不說「"+p[0]+"」",nw:p[1]});
+  });
+  return out;
+}
+const SETS = [
+  {id:"soup", name:"心靈雞湯", items:parse(SOUP_RAW,3,"心靈雞湯")},
+  {id:"f100", name:"換句話說100", items:parse(S1,1,"換句話說100")},
+  {id:"k100", name:"暖心口訣100", items:parse(S2,2,"暖心口訣100")},
+  {id:"k30",  name:"口訣30", items:parse(S3,2,"口訣30")},
+];
+const SOUP = SETS[0].items;
+const SIX = parse(S4,2,"六句口訣");
+const ALL = SETS.flatMap(s=>s.items).concat(SIX);
+const TABS = [...SETS.map(s=>({id:s.id,name:s.name})),{id:"theory",name:"小抄"},{id:"nine",name:"成長九步"},{id:"lesson",name:"小課堂"}];
+
+/* ===== 工具 ===== */
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let query="";
+function hl(s){
+  let h=esc(s).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");
+  if(!query) return h;
+  const re=new RegExp("("+esc(query).replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi");
+  return h.replace(/(<[^>]+>)|([^<]+)/g,(m,tag,txt)=>tag?tag:txt.replace(re,"<mark>$1</mark>"));
+}
+function card(it,showSrc){
+  const i=ALL.indexOf(it);
+  return `<div class="card${it.old?"":" soup"}" data-i="${i}">
+    <div class="meta"><span class="num">${it.num}</span>${it.ttl?`<span class="ttl">${hl(it.ttl)}</span>`:""}${showSrc?`<span class="src">${it.src}</span>`:""}</div>
+    ${it.old?`<div class="old">${hl(it.old)}</div>`:""}<div class="new">${hl(it.nw)}</div></div>`;
+}
+const flowH=f=>`<div class="flow">${f.map(x=>`<span>${hl(x)}</span>`).join("<i>→</i>")}</div>`;
+const parasH=ps=>ps.map(x=>x.startsWith("> ")?`<p class="quote">${hl(x.slice(2))}</p>`:`<p>${hl(x)}</p>`).join("");
+function block(b,id){
+  let body="";
+  if(b.hero) body+=`<div class="hero">${hl(b.hero)}</div>`;
+  if(b.p) body+=parasH(b.p);
+  if(b.pre) body+=`<pre>${hl(b.pre)}</pre>`;
+  if(b.flow) body+=flowH(b.flow);
+  if(b.items){ const tag=b.ol?"ol":"ul"; body+=`<${tag}>${b.items.map(x=>`<li>${hl(x)}</li>`).join("")}</${tag}>`; }
+  if(b.table) body+=`<div class="tblwrap"><table><tr>${b.table.head.map(h=>`<th>${hl(h)}</th>`).join("")}</tr>${b.table.rows.map(r=>`<tr>${r.map(c=>`<td>${hl(c)}</td>`).join("")}</tr>`).join("")}</table></div>`;
+  if(b.hero2) body+=`<div class="hero" style="font-size:17px;letter-spacing:0">${hl(b.hero2)}</div>`;
+  if(b.p2) body+=parasH(b.p2);
+  if(b.flow2) body+=flowH(b.flow2);
+  return `<div class="block"${id?` id="${id}"`:""}><h3>${hl(b.t)}</h3>${body}</div>`;
+}
+const blockText=b=>[b.t,b.hero||"",b.hero2||"",b.pre||"",...(b.p||[]),...(b.p2||[]),...(b.flow||[]),...(b.flow2||[]),...(b.items||[]),
+  ...(b.table?[...b.table.head,...b.table.rows.flat()]:[])].join(" ");
+
+/* ===== 渲染 ===== */
+let tab="soup";
+try{ tab=localStorage.getItem("nl-soup-tab")||tab; }catch(e){}
+if(!TABS.some(t=>t.id===tab)) tab="soup";
+const today=SOUP[Math.floor(Date.now()/864e5)%SOUP.length];
+
+function renderTabs(){
+  $("#tabs").innerHTML=TABS.map(t=>`<button class="tab${t.id===tab&&!query?" on":""}" data-t="${t.id}">${t.name}</button>`).join("");
+}
+function renderSet(items){
+  const groups=[...new Set(items.map(i=>i.group))];
+  if(groups.length===1&&!groups[0]) return `<div class="grid">${items.map(i=>card(i)).join("")}</div>`;
+  const chips=`<div class="chips">${groups.map((g,k)=>`<button class="chip" data-g="g${k}">${esc(g.split("｜").slice(0,2).join("｜"))}</button>`).join("")}</div>`;
+  return chips+groups.map((g,k)=>{
+    const p=g.split("｜");
+    return `<h2 id="g${k}">${esc(p[0])}｜${esc(p[1])}${p[2]?`<small>${esc(p[2])}</small>`:""}</h2>
+      <div class="grid">${items.filter(i=>i.group===g).map(i=>card(i)).join("")}</div>`;
+  }).join("");
+}
+function render(){
+  renderTabs();
+  const v=$("#view");
+  if(query){
+    const q=query.toLowerCase();
+    const hits=ALL.filter(i=>(i.ttl+" "+i.old+" "+i.nw+" "+(i.group||"")).toLowerCase().includes(q));
+    const bl=[...THEORY,...NINE,...LESSON].filter(b=>blockText(b).toLowerCase().includes(q));
+    v.innerHTML=`<div class="count">找到 ${hits.length} 句、${bl.length} 段說明</div>`+
+      (hits.length?`<div class="grid">${hits.map(i=>card(i,true)).join("")}</div>`:"")+
+      (bl.length?`<h2>說明段落</h2>${bl.map(b=>block(b)).join("")}`:"")+
+      (!hits.length&&!bl.length?`<div class="empty">沒有符合「${esc(query)}」的內容</div>`:"");
+    return;
+  }
+  const set=SETS.find(s=>s.id===tab);
+  if(set) v.innerHTML=(tab==="soup"?`<div class="today"><small>今天送你一句</small>${esc(today.nw)}</div>`:"")+renderSet(set.items);
+  else if(tab==="theory") v.innerHTML=THEORY.map(b=>block(b)).join("");
+  else if(tab==="nine") v.innerHTML=`<div class="chips">${NINE.map((b,k)=>`<button class="chip" data-g="n${k}">${esc(b.t)}</button>`).join("")}</div>`+
+    NINE.map((b,k)=>block(b,"n"+k)).join("");
+  else v.innerHTML=LESSON.map(b=>block(b)).join("")+`<h2>六句口訣</h2><div class="grid">${SIX.map(i=>card(i)).join("")}</div>`;
+}
+
+/* ===== 互動 ===== */
+$("#tabs").onclick=e=>{
+  const b=e.target.closest(".tab"); if(!b) return;
+  tab=b.dataset.t; query=""; $("#q").value="";
+  try{ localStorage.setItem("nl-soup-tab",tab); }catch(e){}
+  render(); window.scrollTo(0,0);
+};
+$("#q").oninput=e=>{ query=e.target.value.trim(); render(); };
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),1400); }
+function copy(it){
+  const txt=it.old?it.old.replace(/^不說/,"")+" → "+it.nw:it.nw;
+  (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast("已複製"),()=>toast(txt));
+}
+$("#view").onclick=e=>{
+  const c=e.target.closest(".chip");
+  if(c){ const el=document.getElementById(c.dataset.g); window.scrollTo({top:el.getBoundingClientRect().top+scrollY-$("header").offsetHeight-8,behavior:"smooth"}); return; }
+  const k=e.target.closest(".card[data-i]"); if(k) copy(ALL[+k.dataset.i]);
+};
+function showRandom(){
+  const it=ALL[Math.floor(Math.random()*ALL.length)];
+  $("#mcard").innerHTML=`<div class="meta"><span class="num">${it.num}</span>${it.ttl?`<span class="ttl">${esc(it.ttl)}</span>`:""}<span class="src">${it.src}</span></div>
+    ${it.old?`<div class="old">${esc(it.old)}</div>`:""}<div class="new${it.old?"":" plain"}">${esc(it.nw)}</div>
+    <div class="acts"><button class="btn" id="mcopy">複製</button><button class="btn" id="mnext">再一句</button><button class="btn" id="mclose">關閉</button></div>`;
+  $("#mcopy").onclick=()=>copy(it); $("#mnext").onclick=showRandom; $("#mclose").onclick=()=>$("#modal").classList.remove("show");
+  $("#modal").classList.add("show");
+}
+$("#rand").onclick=showRandom;
+$("#modal").onclick=e=>{ if(e.target.id==="modal") $("#modal").classList.remove("show"); };
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape") $("#modal").classList.remove("show");
+  if(e.key==="/"&&document.activeElement!==$("#q")){ e.preventDefault(); $("#q").focus(); }
+});
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,1422 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>新語言生成器｜心靈雞湯雙語版</title>
+<style>
+:root{
+  --bg:#f6f5f1;--card:#ffffff;--ink:#1d1d1f;--muted:#6b6b70;--line:#e3e1da;
+  --accent:#2f6f5e;--accent-soft:#e3f0ec;--old:#9a5b3c;--mark:#ffe58a;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#141517;--card:#1e2023;--ink:#ecebe7;--muted:#9a9a9f;--line:#2e3034;
+    --accent:#7cc4ae;--accent-soft:#1f302b;--old:#d89a78;--mark:#6b5a12;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.6}
+header{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 16px 0}
+.wrap{max-width:900px;margin:0 auto}
+.top{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+h1{font-size:18px;margin:0 8px 0 0;white-space:nowrap}
+#q{flex:1;min-width:180px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:15px}
+#q:focus{outline:2px solid var(--accent);border-color:transparent}
+button{font:inherit;cursor:pointer}
+.btn{padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.tabs{display:flex;gap:4px;overflow-x:auto;margin-top:10px;scrollbar-width:none}
+.tab{padding:8px 12px;border:0;background:none;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+main{padding:16px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chip{font-size:13px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--muted)}
+.chip:hover{color:var(--accent);border-color:var(--accent)}
+h2{font-size:17px;margin:26px 0 10px;padding-left:10px;border-left:4px solid var(--accent)}
+h2 small{color:var(--muted);font-weight:normal;font-size:13px;margin-left:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;transition:border-color .15s}
+.card:hover{border-color:var(--accent)}
+.meta{display:flex;gap:8px;align-items:baseline;margin-bottom:4px}
+.num{font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:1px 7px}
+.ttl{font-weight:600;font-size:14px}
+.src{margin-left:auto;font-size:11px;color:var(--muted)}
+.old{color:var(--old);font-size:14px}
+.old::before{content:"以前｜";color:var(--muted)}
+.card.soup .new::before,.new.plain::before{content:"";}
+.card.soup .new{font-weight:500;line-height:1.7}
+.today{background:var(--accent-soft);border-radius:14px;padding:18px 20px;margin-bottom:16px;font-size:19px;font-weight:700;color:var(--accent);line-height:1.6}
+.today small{display:block;font-size:12px;font-weight:normal;color:var(--muted);margin-bottom:4px}
+.new{font-weight:600;font-size:15px;margin-top:2px}
+.new::before{content:"現在｜";color:var(--muted);font-weight:normal}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
+.block{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.block h3{margin:0 0 8px;font-size:16px;color:var(--accent)}
+.block ul,.block ol{margin:0;padding-left:22px}
+.block li{margin:3px 0}
+.block p{margin:6px 0}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.flow span{background:var(--accent-soft);color:var(--accent);padding:3px 10px;border-radius:8px;font-size:14px;font-weight:600}
+.flow i{color:var(--muted);font-style:normal}
+.quote{font-weight:600;border-left:3px solid var(--accent);padding-left:10px}
+.block pre{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:8px 0;font-family:inherit;font-size:14px;white-space:pre-wrap;line-height:1.5}
+.tblwrap{overflow-x:auto;margin:6px 0}
+.block table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+.block th,.block td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.block th{color:var(--muted);font-weight:600}
+.block td:first-child{font-weight:700;color:var(--accent);white-space:nowrap}
+.hero{text-align:center;font-size:22px;font-weight:700;letter-spacing:2px;color:var(--accent);margin:4px 0 10px}
+.empty{color:var(--muted);text-align:center;padding:40px 0}
+.count{color:var(--muted);font-size:13px;margin-bottom:8px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:99px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.show{opacity:1}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+#modal.show{display:flex}
+#modal .card{max-width:480px;width:100%;padding:24px;cursor:default}
+#modal .new{font-size:20px}
+#modal .old{font-size:16px}
+.en{display:block;color:var(--muted);font-size:13.5px;font-weight:normal;cursor:pointer;line-height:1.45;margin:1px 0 5px;letter-spacing:0}
+.en::before{content:"🔊 ";font-size:11px;opacity:.55}
+.en:hover,.en.on{color:var(--accent)}
+.flow+.en{margin-top:6px}
+pre.en{font-size:13px}
+.hero .en,.today .en{font-size:14px}
+.say{margin-left:auto;border:1px solid var(--line);background:none;border-radius:8px;padding:1px 8px;font-size:13px;color:var(--muted)}
+.say:hover{border-color:var(--accent);color:var(--accent)}
+.say+.src,.fb+.src{margin-left:6px}
+.fb{margin-left:4px;border:1px solid var(--line);background:none;border-radius:8px;padding:1px 8px;font-size:13px;color:var(--muted)}
+.fb:hover{border-color:var(--accent);color:var(--accent)}
+#fbc{width:100%;height:auto;border-radius:10px;border:1px solid var(--line);display:block}
+#fbt{width:100%;margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px;line-height:1.55;resize:vertical}
+#modal .card.wide{max-width:520px;max-height:94vh;overflow-y:auto;overflow-x:hidden;padding:16px}
+#modal .card.wide .acts{flex-wrap:wrap;margin-top:10px}
+#slow.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+#modal .en{font-size:16px}
+#modal .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="top">
+    <h1>換句話說・心靈雞湯</h1>
+    <input id="q" type="search" placeholder="搜尋：焦慮、生氣、懶、底線、失敗…" autocomplete="off">
+    <button class="btn" id="vsrc" title="沒聲音時按這裡換另一種語音">🔈 內建語音</button>
+    <button class="btn" id="slow" title="英文慢速朗讀">🐢 慢速</button>
+    <button class="btn" id="rand">🎲 隨機一句</button>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</div></header>
+<main><div class="wrap" id="view"></div></main>
+<div id="modal"><div class="card" id="mcard"></div></div>
+<div id="toast"></div>
+
+<script>
+/* ===== 資料 0：心靈雞湯 ===== */
+const SOUP_RAW = `#一|你不是你的標籤
+一次考差，不代表你很差；它只是說，這裡還可以再練。
+你不是懶，你只是還沒找到一個容易開始的方法。
+別急著說「我就是這樣」，你還在長大，還在改變。
+標籤是別人貼的，也可以由你自己撕下來。
+你做錯了一件事，不等於你是一個錯的人。
+「還不會」的後面，藏著一個「快要會」。
+#二|心情是小信差
+焦慮不是壞東西，它只是提醒你：有件事你很在乎。
+生氣的時候，問問自己：是哪條線被踩到了？
+難過，是因為你認真在乎過。
+嫉妒在偷偷告訴你：那也是你想要的。
+心情像天氣，會來，也會走；你是那片天空。
+不用趕走壞心情，先聽聽它想說什麼。
+#三|看清楚，再下結論
+先看發生了什麼，再決定要怎麼想。
+「他討厭我」是猜的；「他今天沒回我」才是事實。
+「大家」通常只是兩三個人，「每次」通常只是兩三次。
+把話說清楚一點，煩惱就會小一點。
+看錯了方向，跑再快也到不了。
+多問一句「真的嗎？」，心就會輕一點。
+#四|大問題，拆成小問題
+山很高，但你只需要走眼前這一步。
+太難的事，拆成三小塊，就沒那麼可怕了。
+一團亂的時候，拿張紙寫下來，往往只有三件事。
+不用一次解決全部，先解開最卡的那一個結。
+找到源頭，比擦一百次地板更有用。
+努力很好，用對地方的努力更好。
+#五|錯誤是禮物
+錯誤不是在笑你，它是在教你。
+失敗只是告訴你：這條路不通，換一條。
+沒有白走的路，每一步都算數。
+與其後悔「早知道」，不如開心「現在知道了」。
+分數不是判決書，是一張告訴你哪裡該補的地圖。
+跌倒不丟臉，賴在地上不起來才可惜。
+#六|總有路可以走
+「不可能」常常只是「現在還不行」。
+當你覺得只有兩條路時，試著再想第三條。
+沒有時間？先從兩分鐘開始。
+路不是沒有，只是還沒被你看見。
+做不到全部，就先做十分之一。
+管不了風往哪吹，但可以調整自己的帆。
+#七|先做一小步
+不用等到準備好；先做，就會慢慢準備好。
+今天的一小步，比明天的一大步更真實。
+知道一百個道理，不如今天做一件小事。
+完美會讓你停在原地，第一版會帶你出發。
+想讓自己不拖延，就把第一步變得很簡單。
+與其硬忍，不如把手機放遠一點。
+#八|好好相處
+他拒絕的是這件事，不是你這個人。
+與其等他猜，不如好好說出你的需要。
+改變不了別人，但可以改變和他相處的方式。
+立下底線不是自私，是好好照顧自己。
+吵架不全是壞事，它讓你們看見彼此不一樣的地方。
+你可以善良，也可以說「不」。
+#九|一直更新自己
+厲害的人不是從不犯錯，而是願意改。
+「我可能錯了」是很有勇氣的一句話。
+以前有用的方法，現在不一定有用；沒關係，再試新的。
+真正學會，是換一題、換一天，還做得出來。
+做到一次是運氣，做到很多次是實力。
+把經驗變成一句提醒自己的話，那就是智慧。
+#十|送給今天的你
+新的說法不是要騙自己開心，而是幫自己看得更清楚。
+換一句話，就多一條路。
+你說出口的每一句話，都在幫自己畫地圖。
+對自己說話溫柔一點，你也是第一次長大。
+慢慢來，比較快。
+今天比昨天多懂一點點，就很棒了。`;
+
+/* ===== 資料 1：換句話說 100 ===== */
+const S1 = `#A|把事情看清楚 01–20
+01|我是誰 → 我做了什麼|我是＿＿的人|我只是在＿＿的時候，做了＿＿這件事。
+02|個性 → 習慣|我就是＿＿|我在什麼時候，比較容易變成＿＿？
+03|批評 → 看見|他很＿＿|我真的看到的，是他做了＿＿。
+04|感覺 → 事實|我覺得＿＿|我的心情是＿＿；真正確定的事是＿＿。
+05|亂猜 → 可能|他一定是因為＿＿|也許是因為＿＿，但我還不確定。
+06|猜他的心 → 看他的行為|他故意＿＿|我只看到他做了＿＿；他心裡怎麼想，我還不知道。
+07|每次 → 哪幾次|他每次都＿＿|最近真的有哪幾次是這樣？
+08|永遠 → 這陣子|我永遠＿＿|只是最近這段時間，我比較常＿＿。
+09|全部 → 一部分|我什麼都不會|我現在還不會的，只是＿＿。
+10|很糟 → 說清楚|事情很糟|其實是發生了＿＿，影響了＿＿。
+11|結果 → 細項|我考很差|我是在＿＿、＿＿、＿＿這三種題目丟分。
+12|貼標籤 → 數一數|我很懶|這週我有＿＿次沒照計畫開始。
+13|印象 → 數字|最近變差了|是哪個數字從＿＿變成＿＿？
+14|想像 → 真的發生的事|大家都不喜歡我|真正發生的事，其實只有＿＿。
+15|我的解讀 → 他的原話|他看不起我|他說／做了＿＿；是我把它想成＿＿。
+16|生氣 → 提醒|我很生氣|我的生氣，是想提醒我＿＿。
+17|焦慮 → 擔心的事|我很焦慮|我是在擔心＿＿會發生。
+18|委屈 → 期待落空|我很委屈|我本來期待＿＿，結果卻是＿＿。
+19|害怕 → 怕什麼|我好怕|我真正怕的是＿＿。
+20|一團亂 → 三件事|全部亂掉了|其實只有＿＿、＿＿、＿＿這三件事。
+#B|把事情想明白 21–40
+21|一個原因 → 很多原因|都是因為＿＿|可能是＿＿、＿＿、＿＿一起造成的。
+22|為什麼 → 怎麼來的|為什麼這麼糟？|這件事是怎麼一步一步變成這樣的？
+23|表面 → 源頭|我要解決＿＿|是什麼一直讓這個問題冒出來？
+24|全部改 → 找卡關點|我要全部改善|現在最卡住我的，是哪一個地方？
+25|更努力 → 用對力|我要更努力|改哪一個地方，進步會最多？
+26|我不行 → 還沒學會|我不行|我還缺哪一項技巧？
+27|不能 → 被什麼擋住|我不能＿＿|現在擋住我的是什麼？
+28|沒辦法 → 缺什麼|沒有辦法|我缺的是時間、錢、幫手、資訊、工具，還是能力？
+29|太難 → 拆小|太難了|可以拆成哪三個小問題？
+30|只能這樣 → 還有別條路|只能這樣|除了這個方法，還有第二、第三種嗎？
+31|二選一 → 多幾種|只能A或B|能不能把兩個混在一起，想出新辦法？
+32|合不來 → 哪裡不同|我們合不來|我們是需要的、在乎的、想法，還是底線不一樣？
+33|怪別人 → 看情況|都是他的問題|是哪些情況，讓這件事一再發生？
+34|怪自己 → 看環境|我沒自制力|身邊有什麼東西一直在誘惑我？
+35|現在 → 拉長時間|現在很糟|一週後、一年後、五年後再看，會怎樣？
+36|選哪個 → 我真正要什麼|我要A還是B？|不管選哪個，我心裡真正想要的是什麼？
+37|他錯了 → 換位置看|他錯了|如果我站在他的位置，會看到什麼？
+38|一定有效 → 前提是什麼|這一定有效|我是先相信了哪些事，才這樣認為？
+39|一定 → 有多可能|一定會發生|照現在的情況看，可能性有多大？
+40|只有一個解釋 → 多想三個|原因就是＿＿|還有哪三種別的可能？
+#C|把事情做出來 41–60
+41|想變好 → 下一步|我要變好|今天我可以做的下一小步是＿＿。
+42|大目標 → 小小一步|我要學好英文|今天先做＿＿分鐘／＿＿題就好。
+43|完美 → 先有第一版|還沒準備好|現在能先交出的第一版是什麼？
+44|等確定 → 先試試|等我確定再做|可以先做哪個不花力氣的小試驗？
+45|想很多 → 試一下|我不知道答案|做什麼小測試，就能多知道一點？
+46|多做 → 練弱點|多做題目|我該專門練哪一種錯？
+47|知道 → 做到|我知道了|所以今天我要改哪一個小動作？
+48|看懂 → 自己做|我看懂了|把答案蓋起來，我還做得出來嗎？
+49|這題會 → 換題也會|這題會了|換一題沒看過的，我還會嗎？
+50|今天會 → 以後也會|今天會了|明天、三天後、一週後，我還記得嗎？
+51|要他改 → 改做法|我要他改|我可以改變哪些相處的方式？
+52|命令 → 底線|他一定要＿＿|如果他不做，我的底線和備案是＿＿。
+53|抱怨 → 開口請求|都沒人幫我|我想請誰、幫我做哪一件事？
+54|大家一起 → 誰負責|大家一起處理|誰做什麼？什麼時候做完？
+55|好忙 → 先做一件|事情好多|現在最重要的那一件是＿＿。
+56|樣樣都做 → 抓重點|全部都重要|哪一小部分做好，效果最大？
+57|拖延 → 讓開始變簡單|我總是拖延|怎樣讓第一步輕鬆到不想拖？
+58|硬忍 → 改環境|我要忍住手機|怎樣讓手機變得不好拿？
+59|祈禱 → 先準備|希望不要出事|出事之前，我可以先準備什麼？
+60|失控 → 我能管的|我什麼都控制不了|現在還有哪些事，是我自己能決定的？
+#D|把錯誤變禮物 61–80
+61|失敗 → 猜錯了|我失敗了|我原本以為會怎樣，結果哪裡不一樣？
+62|錯 → 線索|我又錯了|這次的錯，想告訴我什麼？
+63|罵自己 → 找原因|我怎麼這麼笨|真正的原因是什麼？
+64|後悔 → 學到|早知道就＿＿|現在的我，比當時多懂了什麼？
+65|白做 → 少一條錯路|全部白費|這次讓我知道，哪條路走不通？
+66|沒用 → 什麼時候沒用|這方法沒用|它是在什麼情況下沒效？
+67|成功 → 為什麼成功|太好了，成功了|到底是做對了哪件事？
+68|運氣 → 我能做的|只是運氣好／差|哪些是碰巧？哪些是我能努力的？
+69|分數 → 體檢表|我只有55分|這55分告訴我，哪裡還需要補？
+70|挑毛病 → 提醒|他在挑我毛病|他說的話裡，哪些是可以檢查看看的？
+71|反駁 → 看證據|我才沒有！|有哪些事實支持他？哪些不支持？
+72|證明我對 → 願意被糾正|我要證明我是對的|看到什麼，我會願意改變想法？
+73|成功一次 → 再做幾次|我成功了|再做三次，還能成功嗎？
+74|失敗一次 → 別急著放棄|這方法失敗|只試一次，就能說它沒用嗎？
+75|今天 → 長期|今天變好了|這是剛好，還是真的在進步？
+76|感覺 → 數字|我覺得有效|看哪個數字，能知道真的有效？
+77|做完 → 有用嗎|我做完了|做完之後，有得到想要的結果嗎？
+78|訂正 → 再考一次|我訂正完了|再做一次，還會錯嗎？
+79|知道問題 → 改想法|我知道問題了|我原本的想法，哪裡要修改？
+80|經歷 → 道理|我經歷過了|這次經驗，可以變成哪一句提醒自己的話？
+#E|把關係顧好 81–90
+81|拒絕我 → 拒絕這件事|他拒絕我|他拒絕的是我這個人，還是這次的請求？
+82|不愛我 → 哪個需要沒被看見|他不愛我|我有哪個需要，還沒被回應？
+83|不尊重 → 哪個行為|他不尊重我|是哪個行為，踩到了我的底線？
+84|不懂我 → 我說清楚了嗎|他不懂我|我的想法、心情、需要，哪個還沒說清楚？
+85|敵人 → 想要的不同|他跟我作對|我們想要的東西，哪裡不一樣？
+86|不配合 → 對他有什麼好處|他就是不配合|為什麼配合我，對他來說不划算？
+87|吵架 → 發現|又吵架了|這次吵架，讓我們看見了哪個老問題？
+88|不敢拒絕 → 我可以選|我不能拒絕|拒絕會付出什麼代價？我願意嗎？
+89|犧牲 → 我的選擇|我都是為了你|這是我自己願意的，還是該重新說好底線？
+90|完了 → 重新安排|我們完了|這段關係要修補、少見一點、重訂規則，還是放手？
+#F|把經驗變智慧 91–100
+91|就是這樣 → 目前的看法|事情就是這樣|這是我目前覺得最合理的看法。
+92|我相信 → 我猜|我相信＿＿|我先猜是＿＿，可以怎麼試試看？
+93|以前 → 現在|我以前遇過|以前的經驗，現在還適用多少？
+94|老樣子 → 有新情況嗎|以前都這樣|以前可以參考，但現在有沒有新情況？
+95|一定對 → 什麼時候對|這方法就是對的|它在什麼情況下才對？
+96|懂道理 → 能預測|我懂這個道理|照這個道理，接下來會發生什麼？
+97|我認為 → 怎樣算對|我認為會＿＿|看到什麼結果，才算我猜對或猜錯？
+98|我的想法 → 願意改|我的想法是＿＿|發生什麼事，我就該換個想法？
+99|學會 → 到哪都會|我已經學會|換個人、換一題、換個地方，我還做得到嗎？
+100|找到答案 → 會找答案|我找到答案了|我能不能用同樣的方法，再找到下一個答案？`;
+
+/* ===== 資料 2：暖心口訣 100 ===== */
+const S2 = `#一|我是誰 → 我做了什麼｜一次沒做好，不代表你就是這樣的人
+我就是笨|我只是哪個觀念還沒懂？
+我就是懶|我是卡在哪一步沒有開始？
+我沒天分|哪個能力還沒練起來？
+我很沒用|現在哪件事對我來說還太難？
+我很失敗|是哪個目標還沒做到？
+我不是讀書的料|是哪種讀書方法不適合我？
+我沒組織能力|哪個做事步驟還沒建立好？
+我不會溝通|在哪種場合，我最說不出口？
+我沒有自制力|什麼時候我最容易忍不住？
+我就是這樣|這個習慣是怎麼養成的？
+#二|批評 → 事實｜先別急著說誰好誰壞
+他很自私|他這次先顧了什麼？
+他很沒責任感|是哪件該做的事沒做完？
+他很難相處|我們在什麼時候最容易吵起來？
+他很不成熟|他還缺哪個能力來處理這件事？
+他很沒禮貌|是哪個動作讓我不舒服？
+他很冷血|我期待他怎麼回應，而他沒有？
+他很奇怪|他的想法跟我哪裡不一樣？
+這學生很差|他現在最弱的三個地方是什麼？
+這孩子沒救|只是哪些方法還沒有用？
+這件事很糟|實際上損失了什麼、影響了什麼？
+#三|心情 → 提醒｜心情不是判決，是小信差
+我很焦慮|我在擔心什麼事會發生？
+我好生氣|是哪個底線或期待被碰到了？
+我好難過|我正在失去什麼？我在乎的是什麼？
+我好嫉妒|他有什麼，是我也想要的？
+我好委屈|我付出的和我期待的，哪裡不平衡？
+我好害怕|我覺得什麼事可能會發生？
+我很煩|有哪些沒做完的事一直掛在心上？
+我好挫折|我原本以為的，和實際結果差在哪？
+我沒安全感|哪些事先確定下來，我會比較安心？
+我要消滅負面情緒|這個心情想告訴我什麼？
+#四|問題 → 怎麼來的｜把「有問題」換成「怎麼發生的」
+為什麼我這麼倒楣？|是哪些原因一起造成的？
+為什麼總是我？|是什麼事情一直在重複？
+問題好多|哪個問題是其他問題的源頭？
+事情好複雜|可以拆成哪幾小塊？
+完全亂掉了|是從哪一步開始出錯的？
+怎麼救？|真正卡住的地方在哪裡？
+為什麼一直沒改善？|哪個地方一直沒有改？
+我已經很努力|我的力氣，有沒有用在最關鍵的地方？
+做很多都沒效|哪些事做了，卻跟目標沒關係？
+到底哪裡有問題？|這個結果是一步一步怎麼來的？
+#五|失敗 → 猜錯了｜錯誤是老師，不是敵人
+我失敗了|我是哪裡猜錯了？
+又做錯了|這次是哪一種錯？
+白努力了|這次讓我知道哪個方法不行？
+早知道不要做|現在的我比當初多知道什麼？
+這次完蛋了|已經發生了，現在還能補救什麼？
+我怎麼又犯同樣錯？|我哪個舊想法還沒換掉？
+我明明會|我是「看過」，還是「真的會」？
+運氣不好|哪些是碰巧，哪些是我可以改進的？
+計畫失敗|我原本以為的哪件事，其實沒有成立？
+結果證明我不行|結果只是說：現在的方法還不夠。
+#六|不可能 → 被什麼卡住｜把一面牆拆成一塊塊磚
+不可能|是什麼讓它「現在」還做不到？
+我沒辦法|我缺的是技巧、資源，還是方法？
+沒有時間|我的時間現在被哪些事占走？
+沒有錢|最少最少需要多少？
+沒有人幫我|我需要的是哪一種幫忙？
+環境不允許|哪個條件要先改變？
+我做不到那麼多|最小能做的一步是什麼？
+現在不能開始|哪個超小版本今天就能開始？
+條件不成熟|最少要有什麼就能起步？
+只能這樣|是什麼讓我只看到這一條路？
+#七|二選一 → 更多選擇｜世界不是只有兩條路
+只能留下或離開|留下和離開，各是想保護什麼？
+工作或家庭只能選一個|兩邊我最想留住的是什麼？
+忍耐或翻臉|還有哪些好好說出底線的方法？
+答應或得罪他|能不能只答應一部分，或再商量？
+成功或失敗|這次可以先做什麼小試驗？
+做或不做|能不能先做十分之一？
+原諒或斷絕|關係可以保持哪幾種距離？
+控制或放棄|哪些我能管，哪些要學著接受？
+聽我的或反對我|我們有沒有共同想要的結果？
+A還是B？|有沒有第三、第四、第五種？
+#八|人際 → 底線、需要、在乎｜把「他怎樣」換成「我需要什麼」
+他不尊重我|我的哪個底線被踩到了？
+他不愛我|我期待他用什麼方式表達愛？
+他不在乎|我期待他做什麼，而他沒做？
+他在利用我|我們的付出，哪裡不公平？
+他背叛我|我們說好的哪件事被打破了？
+他故意氣我|我有證據知道他是故意的嗎？
+他針對我|還有哪些別的可能？
+我要讓他理解我|我要怎麼把需要說得更清楚？
+我要他改|我能改變哪些相處方式？
+他一定要配合|如果他不配合，我的備案是什麼？
+#九|控制 → 自己做主｜把力氣放回自己手上
+我要控制結果|我可以做什麼，讓成功的機會變大？
+我要大家認同|我把理由和證據說清楚就好。
+我要孩子聽話|我想幫孩子養成什麼能力？
+我要學生努力|怎樣讓「開始努力」變得更容易？
+我要家人負責|誰負責什麼、何時完成，說清楚了嗎？
+我要別人尊重我|我要先把自己的底線立好。
+我要避免所有風險|我可以先準備什麼備用方案？
+事情不能出錯|萬一出錯，要怎麼補救？
+我一定要贏|我真正想要的結果是什麼？
+我要證明自己|我可以為別人帶來什麼幫助？
+#十|答案 → 一直更新｜最厲害的人，是願意改的人
+我知道了|我能不能自己再做一次？
+這就是真相|現在的證據，能支持到什麼程度？
+我一定是對的|看到什麼，我會願意改變想法？
+以前都有效|現在的環境跟以前一樣嗎？
+專家都這樣說|證據是什麼？什麼情況下才適用？
+這方法最好|對誰、什麼時候、什麼情況下有效？
+找到答案了|換個情況還說得通嗎？
+我已經改變了|新習慣能不能一直做下去？
+這次成功了|是做對了哪件事才成功？
+這就是我的新想法|下一次的事實，會怎麼考驗它？`;
+
+/* ===== 資料 3：口訣 30 ===== */
+const S3 = `他就是這種人|他這次做了什麼？
+我一直都這樣|這個習慣通常什麼時候出現？
+他故意的|我有什麼證據知道他怎麼想？
+都是他的錯|是哪些原因一起造成的？
+我感覺如此，所以就是如此|感覺是提醒，那事實是什麼？
+我很焦慮|我的心正在擔心什麼？
+我不應該生氣|生氣在提醒我哪個底線？
+我很懶|是哪裡讓我覺得「開始」太難？
+我沒自制力|身邊什麼東西一直在誘惑我？
+我很笨|是哪個技巧還沒學起來？
+我粗心|我漏看了哪個地方？
+太難了|還能拆成哪三小步？
+事情太多|現在最卡的是哪一件？
+我要更努力|改哪裡最有效？
+我要全部做好|現在最重要的那一小部分是什麼？
+我不要這個|那我想要的是什麼？
+A還是B？|A和B，都想保護什麼？
+只有這條路|還能想出哪三條路？
+我要讓他改|我能改變哪些條件？
+他不尊重我|是哪個行為踩到我的底線？
+他拒絕我|他拒絕的是我，還是這次的提議？
+我們關係完了|現在是哪個衝突還沒解決？
+他跟我作對|我們哪個想法不一樣？
+別人批評我|他說的話，哪部分值得留下來？
+我早知道就……|現在多知道了什麼？
+白做了|這次試驗幫我排除了什麼？
+這方法沒用|它在什麼情況下沒效？
+我已經懂了|換一題，我還做得出來嗎？
+我要證明我是對的|看到什麼，我會願意改？
+這就是真相|這是目前最合理的看法嗎？`;
+
+/* ===== 資料 4：六句口訣 ===== */
+const S4 = `我是誰|我做了什麼？
+誰不好|發生了什麼？
+我不行|還缺什麼？
+失敗了|哪裡猜錯了？
+沒辦法|還有哪些選擇？
+一定如此|事實怎麼說？`;
+
+/* ===== 小抄 ===== */
+const THEORY = [
+  {t:"最重要的一件事", items:[
+    "重點不是「把話說好聽」。",
+    "**舊說法＝太快下結論。**",
+    "**新說法＝把結論重新打開，變成看得見、想得通、有得選、做得到、能檢查、可以改。**"]},
+  {t:"一條路線", flow:["舊說法","撕掉標籤","回到事實","找出不同","找出原因","找出能改的地方","想出選擇","做一小步","看結果","更新想法"]},
+  {t:"換句話說的10個步驟", ol:true, items:[
+    "**不講身份**：「我是什麼」→「發生了什麼」",
+    "**不急著評分**：「好／壞」→「證據是什麼」",
+    "**說清楚一點**：「全部」→「到底是哪一部分」",
+    "**找原因**：「為什麼這麼糟」→「是怎麼變成這樣的」",
+    "**找不同**：「失敗」→「我以為的和實際的差在哪」",
+    "**找卡關點**：「全部要改」→「哪個地方最關鍵」",
+    "**想選擇**：「沒辦法」→「還有哪些路」",
+    "**去行動**：「我知道」→「下一步做什麼」",
+    "**去檢查**：「我相信」→「怎麼知道對不對」",
+    "**去更新**：「答案」→「有新情況時怎麼改」"]},
+  {t:"10句小口訣", items:[
+    "我是誰 → 我做了什麼","批評 → 事實","心情 → 提醒","模糊 → 清楚","問題 → 怎麼來的",
+    "失敗 → 猜錯了","不能 → 被什麼卡住","沒路 → 更多選擇","知道 → 去做＋檢查","答案 → 一直更新"]},
+  {t:"10個換句話機器", ol:true, items:[
+    "**我是誰 → 我做了什麼**：我是誰？ → 我做了什麼？",
+    "**批評 → 事實**：誰好誰壞？ → 到底發生什麼？",
+    "**心情 → 提醒**：我好難受 → 它在提醒我什麼？",
+    "**問題 → 怎麼來的**：怎麼這麼糟？ → 它是怎麼發生的？",
+    "**失敗 → 猜錯了**：我失敗 → 我哪裡猜錯？",
+    "**不可能 → 卡在哪**：做不到 → 卡在哪個條件？",
+    "**二選一 → 更多選擇**：A還是B？ → 第三、第四種呢？",
+    "**吵架 → 哪裡不同**：誰對誰錯？ → 我們的想法、需要、在乎、底線差在哪？",
+    "**控制 → 自己做主**：怎麼改變別人？ → 我能改變什麼？",
+    "**答案 → 一直更新**：我知道了 → 事實還支持嗎？"]},
+  {t:"八個轉彎", items:[
+    "我是誰 → 我做了什麼","批評 → 事實","心情 → 提醒","問題 → 怎麼來的",
+    "失敗 → 猜錯了","困住 → 選擇","被批評 → 被提醒","真理 → 可以改的想法"]},
+  {t:"這句話好不好？問自己六件事", items:[
+    "不要問：這句話正不正面？改問：",
+    "① 更接近事實了嗎？","② 說得更清楚了嗎？","③ 更知道原因了嗎？",
+    "④ 選擇變多了嗎？","⑤ 知道下一步了嗎？","⑥ 以後發現不對，還能改嗎？",
+    "**六個都是「是」，才是真正的好說法。**"]},
+  {t:"它不是什麼", items:[
+    "不是「把難聽話換成好聽話」，而是：",
+    "模糊 → 清楚","我是誰 → 我做了什麼","批評 → 資料","心情 → 提醒","問題 → 怎麼來的",
+    "失敗 → 猜錯了","不能 → 條件","困住 → 選擇","控制 → 自己做主","答案 → 可以改的想法"]},
+  {t:"總口訣", items:[
+    "少貼標籤，多找事實；","少判好壞，多找原因；","少問誰錯，多找不同；","少說不能，多找卡在哪；",
+    "少困在二選一，多想幾條路；","少證明自己，多讓事實說話；","少守著答案，多更新想法。",
+    "一句話說出口後，不是把世界定死，而是讓下一個問題、下一個選擇、下一步，自然長出來。"]},
+  {t:"成長的路", flow:["看得準","分得細","找到原因","想出選擇","做出行動","收到回饋","改掉舊想法","長出能力","變成智慧"]},
+  {t:"一句話記住", items:[
+    "**新的說法不是要讓我感覺比較好，而是讓我看得更準、想得更多、做得更對、改得更快。**",
+    "新說法＝把事實看清楚＋找到原因＋多想幾條路＋動手去做＋聽聽結果怎麼說＋願意改想法。"]}
+];
+
+/* ===== 成長九步 ===== */
+const NINE = [
+  {t:"九個字口訣", hero:"看 → 分 → 機 → 選 → 做 → 回 → 改 → 能 → 智", items:[
+    "**看**｜把事情看清楚","**分**｜把問題分成小塊","**機**｜找出原因","**選**｜想出選擇","**做**｜動手去做",
+    "**回**｜看看結果","**改**｜改掉舊想法","**能**｜練成能力","**智**｜變成智慧"],
+    p:["> 看清、分細、找因、想路、去做、看果、再改、練熟、成智。",
+       "這九步不是一條直線，而是一個會一直轉的圈圈。每轉一圈，你就比上一圈多懂一點。"]},
+  {t:"完整路線", pre:`事實
+↓
+① 看｜看清楚　事實 ≠ 我編的故事
+↓
+② 分｜分小塊　大問題 → 小問題
+↓
+③ 機｜找原因　老是發生 → 為什麼 → 源頭
+↓
+④ 選｜想選擇　一條路 → 好幾條路
+↓
+⑤ 做｜動手做　選一個 → 做一小步
+↓
+⑥ 回｜看結果　我以為的 ↔ 實際的
+↓
+⑦ 改｜改想法　猜錯了 → 換個想法
+↓
+⑧ 能｜成能力　一再做到 → 真的會了
+↓
+⑨ 智｜成智慧　到哪都通的道理
+↓
+面對新的事情 ↺`,
+    flow:["事實","想法","行動","事實","更好的想法 ↺"]},
+  {t:"每一步在做什麼", table:{head:["口訣","問自己","怎麼做","得到什麼"], rows:[
+    ["看","到底發生什麼？","把事實和猜測分開","事實"],
+    ["分","它是哪一種問題？","拆小、分類","小問題"],
+    ["機","它怎麼來的？","找重複的地方、猜原因","原因"],
+    ["選","還能怎麼做？","多想幾個辦法","選擇"],
+    ["做","現在做什麼？","做最小的一步","小試驗"],
+    ["回","結果如何？","比一比「我以為」和「實際」","回饋"],
+    ["改","哪裡猜錯？","找出猜錯的地方","新想法"],
+    ["能","下次還做得到嗎？","練習、再測、換題","能力"],
+    ["智","可以留下什麼道理？","濃縮成一句話","智慧"]]}},
+  {t:"① 看｜把事情看清楚", p:[
+    "> 先看事實，不急著編故事。",
+    "**例**：「學生根本不想學。」——「不想學」是你猜的。換成「最近5次作業，他有3次沒寫完。」這才是事實。",
+    "> 看錯了，後面越努力，可能錯得越遠。"]},
+  {t:"② 分｜把問題分成小塊", p:[
+    "> 大問題解不開，小問題才解得開。"],
+    flow:["英文不好","閱讀不好","長句常看錯","不會斷句","練斷句"],
+    p2:["拆到這麼小，終於知道要練什麼了。",
+    "> 分類不是為了貼標籤，而是為了找到可以下手的地方。"]},
+  {t:"③ 機｜找出原因", p:[
+    "> 不要只問「哪裡錯」，要問「怎麼變成這樣的」。"],
+    flow:["單字不夠","句子看得慢","閱讀速度變慢","時間不夠","後面亂猜","閱讀丟分"],
+    p2:["表面上是「閱讀錯很多」，源頭可能是「單字不夠」。",
+    "> 只處理表面，很快又會再來；找到源頭，才會真的不一樣。"]},
+  {t:"④ 選｜想出選擇", p:[
+    "> 沒有選擇，就沒有真正的決定。",
+    "**例**：不要只問「我要不要繼續？」，可以想："],
+    items:["A｜照原來的方法繼續","B｜做少一點","C｜換個方法","D｜找人一起","E｜先試兩個禮拜","F｜先停一下，之後再看"],
+    p2:["每個選擇都想一想：要花多少力氣？有什麼好處？有什麼風險？做了還能不能反悔？",
+    "> 能想出的路越多，你就越自由。"]},
+  {t:"⑤ 做｜動手去做", p:[
+    "> 想法再好，沒做之前都只是猜的。",
+    "**例**：不要說「我要把英文學好」，改成「今天背20個常用單字＋讀1篇文章＋記下錯在哪」。",
+    "行動不只是為了「做完」，更是為了**多知道一點**。",
+    "> 你做了一次，事實才有機會告訴你：你想的對不對。"]},
+  {t:"⑥ 回｜看看結果", p:[
+    "> 做完不算完成，看到結果才算。",
+    "**例**：我以為「背20個單字，閱讀就會少錯」；結果「本來錯8題，還是錯8題」。這不是「我很失敗」，而是**我原本想的原因可能不完整**——也許真正卡住的是長句子。",
+    "> 回饋，是事實寫給你的一封回信。"]},
+  {t:"⑦ 改｜改掉舊想法", p:[
+    "> 錯不可怕，不改才會一直重來。"],
+    flow:["舊想法：閱讀差是因為單字差","試了沒進步","新發現：單字認得，但句子斷錯","新想法：卡在斷句","新做法：練長句拆解"],
+    p2:["學習，就是在這一步真正發生的。"]},
+  {t:"⑧ 能｜練成能力", p:[
+    "> 做到一次叫結果，一再做到才叫能力。",
+    "**怎樣才算「真的會了」？**"],
+    items:["看得懂 ≠ 做得出來","原題會 ≠ 換題也會","今天會 ≠ 明天還會","熟悉的地方會 ≠ 陌生的地方也會"],
+    p2:["> 真正的能力：換題、換時間、換地方，還是做得到。"]},
+  {t:"⑨ 智｜變成智慧", p:[
+    "> 能力幫你解決一次問題；智慧留下一句可以一直用的道理。",
+    "**例**：遇過很多次以後，濃縮成一句——「當有人說『我粗心』，不要就這樣算了；繼續問：到底漏看了什麼？」英文粗心、數學粗心、工作粗心，都能用這一句。",
+    "很多經驗 → 找出共同的地方 → 丟掉不重要的細節 → 留下一句道理。"]},
+  {t:"三個圈圈", hero:"看分機｜選做回｜改能智", items:[
+    "**第一圈｜看懂**：看 → 分 → 機——世界到底發生什麼？",
+    "**第二圈｜去做**：選 → 做 → 回——我要怎麼試試看？",
+    "**第三圈｜長大**：改 → 能 → 智——這次經驗怎麼讓下一次的我更強？"],
+    p2:["> 前三步看懂世界；中三步走進世界；後三步讓世界回過頭來教你。"]},
+  {t:"一圈走完的問句", pre:`【看】到底發生了什麼？
+↓
+【分】這是哪一種問題？
+↓
+【機】它是怎麼來的？
+↓
+【選】我有哪些選擇？
+↓
+【做】先做哪個小試驗？
+↓
+【回】結果怎麼說？
+↓
+【改】哪個想法要換掉？
+↓
+【能】我能不能一再做到？
+↓
+【智】能不能變成一句到哪都能用的話？
+↓
+【新的事情】下一圈 ↺`},
+  {t:"最後三句話", p:[
+    "> 看得準，才不會解錯問題。",
+    "> 做得出來，事實才有機會糾正你。",
+    "> 改得動，經驗才會真的變成能力和智慧。"],
+    hero2:"智慧 ≠ 經歷很多　｜　智慧 = 經歷 × 回饋 × 改想法 × 到處能用 × 濃縮成一句",
+    p2:["沒有回饋，經歷只是重複；沒有改，錯只會再犯；不能用在別處，能力就只在原地；沒有濃縮，下次就想不起來。"],
+    flow2:["看世界","拆世界","懂世界","想出可能","走進真實","聽見回音","更新自己","長出能力","變成智慧"]}
+];
+
+/* ===== 小課堂 ===== */
+const LESSON = [
+  {t:"開場", items:[
+    "換一種說話的方式，人生真的會不一樣嗎？會的。我們常說「我很笨」、「他又在針對我」，這些話就像一張舊地圖，把自己關在裡面。",
+    "這堂課要學的，不是把難聽話變好聽，而是把事情說得更清楚——清楚到你馬上知道下一步要做什麼。"]},
+  {t:"這堂課要學會", items:[
+    "知道舊說法和新說法哪裡不一樣。",
+    "在讀書、犯錯、心情、交朋友、家庭、自我成長這六件事上，用新的說法。",
+    "記住「六句口訣」，讓自己一直進步。"]},
+  {t:"為什麼說話會改變我們看到的世界", items:[
+    "你有沒有說過「反正我就是學不會」、「這件事根本沒辦法」？那不是事實，那只是舊說法畫出來的舊地圖，讓你看不到別條路。",
+    "新說法不是硬要自己往好處想，而是把事情「重新分類」。",
+    "當你把「我好糟」拆成清楚的事實，腦袋就會從「我為什麼這麼糟？」變成「哪一步最卡？要怎麼解決？」——你就把方向盤拿回自己手上了。"]},
+  {t:"用在讀書、犯錯、心情", items:[
+    "**讀書**：「我記性不好」→「我只有一直看，沒有練習把它想出來」→ 做法：隔幾天就回想一次。",
+    "**犯錯**：「我又失敗了」→「我原本以為的，和實際結果不一樣」。錯誤不是你這個人的污點，只是一個要修改的想法。",
+    "**心情**：「我不能焦慮」→「我的心正在提醒我：有件事要注意」。心情不是敵人，是信差；聽懂了，就做一小步去回應它。"]},
+  {t:"用在朋友、家人、自己", items:[
+    "**朋友**：「他不尊重我。」→「是哪一個行為，讓我覺得底線被踩到？」這樣談的是那件事，不是在罵那個人。",
+    "**家人**：「為什麼都是我在照顧？」→「我們家的照顧，太靠一個人了。」這樣就能開始談分工和備案。",
+    "**自己**：「我很懶」→「這件事要開始，太費力了」。把第一步縮小到只要做2分鐘。改變環境，比考驗意志力更有用。"]},
+  {t:"六個大轉彎", ol:true, items:[
+    "**我是誰 → 我做了什麼**：從「我是怎樣的人」變成「我現在做了什麼」。",
+    "**批評 → 事實**：從「誰好誰壞」變成「真正發生了什麼」。",
+    "**心情 → 提醒**：從「我覺得是這樣，所以就是這樣」變成「這個心情在提醒我什麼」。",
+    "**問題 → 怎麼來的**：從「我有問題」變成「這個結果是怎麼發生的」。",
+    "**失敗 → 猜錯了**：從「我失敗了」變成「我哪個想法要更新」。",
+    "**不可能 → 選擇**：從「沒有路」變成「只是還沒找到路」。",
+    "這六個轉彎，會改變你腦袋找答案的方向：不再問「我為什麼這麼糟？」，而是問「哪裡最卡？」。"]},
+  {t:"總複習", items:[
+    "**新說法的目的**：不是好聽，而是說得夠清楚，清楚到知道下一步。",
+    "**六個大轉彎**：把我是誰、批評、心情、問題、失敗、不可能，換成我做了什麼、事實、提醒、怎麼來的、猜錯了、選擇。",
+    "**六句口訣**：看下面的卡片。"]}
+];
+
+/* ===== English：心靈雞湯 ===== */
+const EN_SOUP = `One bad test doesn't mean you are bad; it just shows where to practice more.
+You're not lazy. You just haven't found an easy way to start yet.
+Don't rush to say "that's just who I am." You are still growing and changing.
+Labels are stuck on by others, and you can peel them off yourself.
+Doing one thing wrong doesn't make you a wrong person.
+Behind "not yet" hides "almost there."
+Anxiety isn't bad. It just reminds you that you care about something.
+When you're angry, ask yourself: which line got crossed?
+You feel sad because you truly cared.
+Envy is quietly telling you: you want that too.
+Feelings are like weather. They come and go; you are the sky.
+Don't chase a bad mood away. Listen to what it wants to say first.
+First see what happened, then decide what to think.
+"He hates me" is a guess; "he didn't reply today" is a fact.
+"Everyone" is usually two or three people; "every time" is usually two or three times.
+Say it a little more clearly, and the worry gets a little smaller.
+If you're facing the wrong way, running faster won't get you there.
+Ask "Is that really true?" one more time, and your heart feels lighter.
+The mountain is high, but you only need to take the step in front of you.
+Break a hard thing into three small pieces, and it's not so scary.
+When everything feels messy, write it down. Often it's only three things.
+You don't have to fix everything at once. Untie the tightest knot first.
+Finding the source beats mopping the floor a hundred times.
+Hard work is good. Hard work in the right place is better.
+Mistakes aren't laughing at you. They're teaching you.
+Failure only says: this road is closed, try another.
+No road is walked for nothing. Every step counts.
+Instead of regretting "if only I had known," be glad that "now I know."
+A score is not a verdict. It's a map showing where to improve.
+Falling isn't shameful. Staying down is the real pity.
+"Impossible" often just means "not yet."
+When you think there are only two roads, try to think of a third.
+No time? Start with two minutes.
+The road is there. You just haven't seen it yet.
+If you can't do it all, do one tenth first.
+You can't control the wind, but you can adjust your sails.
+You don't have to wait until you're ready. Start, and you'll get ready along the way.
+A small step today is more real than a big step tomorrow.
+Knowing a hundred lessons is not as good as doing one small thing today.
+Perfect keeps you standing still. Version one gets you going.
+To stop putting things off, make the first step very easy.
+Instead of fighting the urge, put your phone farther away.
+He said no to the request, not to you.
+Instead of waiting for him to guess, kindly say what you need.
+You can't change others, but you can change how you get along with them.
+Setting a limit isn't selfish. It's taking good care of yourself.
+A fight isn't all bad. It shows you where you two are different.
+You can be kind and still say "no."
+Great people aren't those who never make mistakes, but those willing to change.
+"I might be wrong" is a very brave sentence.
+What worked before may not work now. That's okay; try something new.
+You've really learned it when you can still do it on a new question, on a new day.
+Doing it once is luck. Doing it many times is skill.
+Turn an experience into one sentence to remind yourself. That is wisdom.
+New words aren't for fooling yourself into feeling happy. They help you see more clearly.
+Change one sentence, and you gain one more road.
+Every sentence you say is drawing a map for yourself.
+Speak gently to yourself. This is your first time growing up, too.
+Take it slow. It's faster that way.
+If you understand a little more today than yesterday, that's wonderful.`;
+
+/* ===== English：換句話說 100（標題|以前|現在） ===== */
+const EN_S1 = `Who I am → What I did|I am a ___ person.|I just did ___ when ___ happened.
+Personality → Habit|That's just me: ___.|When do I tend to become ___?
+Judging → Seeing|He is so ___.|What I actually saw was that he did ___.
+Feeling → Fact|I feel that ___.|My feeling is ___; what I know for sure is ___.
+Guess → Maybe|It must be because ___.|Maybe it's because ___, but I'm not sure yet.
+Guessing his mind → Watching his actions|He did ___ on purpose.|I only saw him do ___; I don't know what he was thinking.
+Every time → Which times|He always ___.|Which times did it really happen lately?
+Forever → Lately|I always ___.|It's just that lately I often ___.
+Everything → One part|I can't do anything.|What I can't do yet is only ___.
+Terrible → Be specific|Things are terrible.|What happened was ___, and it affected ___.
+Result → Details|I did badly on the test.|I lost points on ___, ___, and ___ questions.
+Label → Count|I'm lazy.|This week I didn't start as planned ___ times.
+Impression → Number|Things got worse lately.|Which number went from ___ to ___?
+Imagination → What really happened|Nobody likes me.|What really happened was only ___.
+My reading → His words|He looks down on me.|He said or did ___; I took it to mean ___.
+Anger → Reminder|I'm so angry.|My anger is reminding me of ___.
+Anxiety → The worry|I'm so anxious.|I'm worried that ___ will happen.
+Hurt → Unmet hope|I feel wronged.|I was hoping for ___, but I got ___.
+Fear → Fear of what|I'm so scared.|What I'm really afraid of is ___.
+A mess → Three things|Everything is a mess.|There are really only three things: ___, ___, and ___.
+One cause → Many causes|It's all because of ___.|Maybe ___, ___, and ___ caused it together.
+Why → How|Why is it so bad?|How did this happen, step by step?
+Surface → Source|I need to fix ___.|What keeps making this problem show up?
+Fix all → Find the stuck point|I need to improve everything.|Which one spot is holding me back the most right now?
+Try harder → Push in the right place|I need to work harder.|Which one change would help me improve the most?
+I can't → Not learned yet|I'm not good enough.|Which skill am I still missing?
+Can't → What's blocking|I can't ___.|What is blocking me right now?
+No way → What's missing|There's no way.|Am I short on time, money, helpers, information, tools, or skill?
+Too hard → Break it down|It's too hard.|What three smaller problems can I break it into?
+Only this → Other roads|This is the only way.|Besides this, is there a second or third way?
+Either-or → More choices|It's either A or B.|Can I mix the two and make a new plan?
+Don't get along → Where we differ|We just don't get along.|Do we differ in needs, cares, ideas, or limits?
+Blame others → Look at the situation|It's all his fault.|What conditions make this happen again and again?
+Blame myself → Look around|I have no self-control.|What around me keeps tempting me?
+Now → Longer view|Right now is awful.|How will it look in a week, a year, five years?
+Which one → What I really want|Should I pick A or B?|Whichever I pick, what do I really want deep down?
+He's wrong → Switch seats|He is wrong.|If I stood where he stands, what would I see?
+Surely works → What I assumed|This will surely work.|What did I believe first to think so?
+Surely → How likely|It will surely happen.|From what I see now, how likely is it?
+One explanation → Three more|The reason is ___.|What are three other possible reasons?
+Get better → Next step|I want to get better.|My next small step today is ___.
+Big goal → Tiny step|I want to be good at English.|Today I'll just do ___ minutes or ___ questions.
+Perfect → First version|I'm not ready yet.|What first version can I hand in now?
+Wait → Try|I'll do it when I'm sure.|What small, easy test can I try first?
+Overthinking → Test|I don't know the answer.|What small test would tell me a little more?
+Do more → Practice weak spots|Do more questions.|Which kind of mistake should I practice?
+Know → Do|I get it.|So which small action will I change today?
+Understand → Do it myself|I understand it.|If I cover the answer, can I still do it?
+This one → New ones too|I can do this question.|Can I do a new one I haven't seen?
+Today → Later too|I learned it today.|Will I still remember it tomorrow, in three days, in a week?
+Make him change → Change the way|I want him to change.|What can I change about how we get along?
+Order → Limit|He must ___.|If he doesn't, my limit and backup plan are ___.
+Complain → Ask|Nobody helps me.|Who will I ask, and for what exactly?
+Everyone → Who's in charge|Let's all handle it together.|Who does what? By when?
+Busy → One thing first|There's so much to do.|The most important thing right now is ___.
+Everything → Key part|Everything is important.|Which small part gives the biggest result?
+Putting off → Easy start|I always put things off.|How can I make the first step too easy to delay?
+Hold back → Change the setup|I must resist my phone.|How can I make my phone harder to reach?
+Hope → Prepare|I hope nothing goes wrong.|What can I prepare before something goes wrong?
+Out of control → What I can decide|I can't control anything.|What things can I still decide for myself?
+Failure → Wrong guess|I failed.|What did I expect, and what turned out different?
+Mistake → Clue|I got it wrong again.|What is this mistake trying to tell me?
+Scolding myself → Finding the cause|How can I be so stupid?|What is the real cause?
+Regret → Lesson|If only I had ___.|What do I understand now that I didn't then?
+Wasted → One wrong road less|It was all for nothing.|Which road did this show me doesn't work?
+Useless → When it fails|This method is useless.|In what situations does it not work?
+Success → Why|Great, it worked!|What exactly did I do right?
+Luck → What I can do|It was just good or bad luck.|Which parts were chance? Which parts can I work on?
+Score → Check-up|I only got 55.|What does this 55 tell me I still need to work on?
+Picking on me → Reminder|He's picking on me.|Which parts of what he said can I check?
+Arguing back → Evidence|I did not!|Which facts support him? Which don't?
+Proving I'm right → Open to correction|I'll prove I'm right.|What would make me willing to change my mind?
+Once → A few more times|I did it!|Can I do it three more times?
+One failure → Don't quit yet|This method failed.|Is one try enough to say it doesn't work?
+Today → Long term|Today went better.|Is it a lucky day, or am I really improving?
+Feeling → Number|I feel it's working.|Which number can show it really works?
+Done → Did it help|I finished it.|After finishing, did I get the result I wanted?
+Corrected → Test again|I corrected my mistakes.|If I do it again, will I still get it wrong?
+Know the problem → Change the idea|I know the problem now.|Which part of my old idea should I change?
+Experience → Lesson|I've been through it.|What one-sentence reminder can I take from this?
+Rejected me → Rejected the request|He rejected me.|Did he say no to me, or to this request?
+Doesn't love me → Unmet need|He doesn't love me.|Which need of mine hasn't been answered?
+No respect → Which action|He doesn't respect me.|Which action crossed my limit?
+Doesn't get me → Did I say it clearly|He doesn't understand me.|Which thought, feeling, or need haven't I made clear?
+Enemy → Different wants|He's against me.|Where do our wants differ?
+Won't cooperate → What's in it for him|He just won't cooperate.|Why isn't working with me worth it for him?
+Fight → Discovery|We fought again.|What old problem did this fight show us?
+Can't say no → I can choose|I can't say no.|What would saying no cost? Am I willing to pay it?
+Sacrifice → My choice|I did it all for you.|Did I choose this, or should we reset the limits?
+It's over → Rearrange|We're finished.|Should we repair it, meet less, set new rules, or let go?
+That's how it is → My current view|That's just how it is.|This is the view that makes the most sense to me for now.
+I believe → I guess|I believe ___.|My guess is ___. How can I test it?
+Before → Now|I've seen this before.|How much of that past experience still fits today?
+Same as always → Anything new|It's always been like this.|The past is a guide, but is there anything new now?
+Always right → Right when|This method is just right.|In what situations is it right?
+Know the idea → Predict|I understand this idea.|According to it, what will happen next?
+I think → What counts|I think ___ will happen.|What result would show I was right or wrong?
+My idea → Willing to change|My idea is ___.|What would have to happen for me to change my idea?
+Learned → Anywhere|I've learned it.|With a new person, a new question, a new place, can I still do it?
+Found the answer → Can find answers|I found the answer.|Can I use the same way to find the next answer?`;
+
+/* ===== English：暖心口訣 100（以前|現在） ===== */
+const EN_S2 = `I'm just stupid.|Which idea have I not understood yet?
+I'm just lazy.|Which step am I stuck on before starting?
+I have no talent.|Which skill haven't I built up yet?
+I'm useless.|Which task is still too hard for me right now?
+I'm a failure.|Which goal haven't I reached yet?
+I'm not made for studying.|Which way of studying doesn't suit me?
+I can't organize anything.|Which routine haven't I set up yet?
+I'm bad at talking to people.|In which situations is it hardest for me to speak?
+I have no self-control.|When is it hardest for me to hold back?
+That's just how I am.|How did this habit form?
+He's so selfish.|What did he put first this time?
+He's so irresponsible.|Which task didn't get done?
+He's hard to get along with.|When do we clash most easily?
+He's so immature.|What skill does he still lack to handle this?
+He's so rude.|Which action made me uncomfortable?
+He's so cold.|What response was I hoping for that he didn't give?
+He's so weird.|How is his way of thinking different from mine?
+This student is terrible.|What are his three weakest areas right now?
+This kid is hopeless.|Which methods just haven't worked yet?
+This is awful.|What was actually lost, and what was affected?
+I'm so anxious.|What am I worried will happen?
+I'm so angry.|Which limit or hope got touched?
+I'm so sad.|What am I losing? What do I care about?
+I'm so jealous.|What does he have that I want too?
+I feel so wronged.|Where are my giving and my hopes out of balance?
+I'm so scared.|What do I think might happen?
+I'm so annoyed.|Which unfinished things keep hanging on my mind?
+I'm so frustrated.|How is the result different from what I expected?
+I feel insecure.|What would help me feel safer if it were settled first?
+I must get rid of bad feelings.|What is this feeling trying to tell me?
+Why am I so unlucky?|Which causes came together to make this?
+Why is it always me?|What keeps repeating?
+So many problems.|Which problem is the source of the others?
+It's so complicated.|What small pieces can I break it into?
+It's a total mess.|At which step did it first go wrong?
+How do I save this?|Where is the real stuck point?
+Why is it never getting better?|Which part has never been changed?
+I've already worked so hard.|Is my effort going to the most important spot?
+I did so much and nothing worked.|Which things did I do that had nothing to do with the goal?
+What on earth is wrong?|How did this result come about, step by step?
+I failed.|Where did I guess wrong?
+I did it wrong again.|What kind of mistake is it this time?
+All that effort for nothing.|Which method did this show me doesn't work?
+I should never have done it.|What do I know now that I didn't back then?
+I'm doomed this time.|It already happened. What can I still fix now?
+Why do I keep making the same mistake?|Which old idea haven't I replaced yet?
+But I know this!|Have I just seen it, or can I really do it?
+Just bad luck.|Which parts were chance, and which can I improve?
+The plan failed.|Which thing I assumed turned out not to be true?
+This proves I'm not good enough.|It only shows my current method isn't enough yet.
+Impossible.|What makes it not doable right now?
+I can't do it.|Do I lack skill, resources, or a method?
+I have no time.|What is taking up my time right now?
+I have no money.|What is the least I really need?
+Nobody helps me.|What kind of help do I need?
+The situation won't allow it.|Which condition has to change first?
+I can't do that much.|What is the smallest step I can do?
+I can't start now.|What tiny version can I start today?
+The time isn't right.|What is the least I need to get started?
+This is the only way.|What is making me see only this one road?
+I can only stay or leave.|What is staying protecting? What is leaving protecting?
+I can only choose work or family.|What do I most want to keep from both sides?
+Put up with it or blow up.|What other ways are there to state my limit kindly?
+Say yes or upset him.|Can I say yes to part of it, or talk it over again?
+Succeed or fail.|What small test can I try first this time?
+Do it or don't.|Can I do one tenth of it first?
+Forgive or cut off.|What different distances can this relationship have?
+Control it or give up.|Which parts can I manage, and which must I accept?
+Agree with me or be against me.|Is there a result we both want?
+A or B?|Is there a third, fourth, or fifth choice?
+He doesn't respect me.|Which of my limits was crossed?
+He doesn't love me.|How do I hope he will show love?
+He doesn't care.|What did I hope he would do that he didn't?
+He's using me.|Where is our give-and-take unfair?
+He betrayed me.|Which promise between us was broken?
+He's making me angry on purpose.|Do I have proof that it was on purpose?
+He's targeting me.|What other explanations are possible?
+I must make him understand me.|How can I state my needs more clearly?
+I want him to change.|What can I change about how we deal with each other?
+He has to cooperate.|If he doesn't, what is my backup plan?
+I must control the result.|What can I do to raise my chances of success?
+I need everyone to agree.|I just need to explain my reasons and evidence clearly.
+I want my child to obey.|What ability do I want to help my child build?
+I want students to work hard.|How can I make it easier to start working?
+I want my family to take responsibility.|Is it clear who does what, and by when?
+I want others to respect me.|I need to set my own limits first.
+I must avoid every risk.|What backup can I prepare?
+Nothing can go wrong.|If something goes wrong, how will we recover?
+I have to win.|What result do I really want?
+I have to prove myself.|What help can I bring to others?
+I get it.|Can I do it again by myself?
+This is the truth.|How far does the evidence support it right now?
+I must be right.|What would make me willing to change my mind?
+It always worked before.|Is the situation now the same as before?
+The experts all say so.|What is the evidence? When does it apply?
+This method is the best.|For whom, when, and in what situation does it work?
+I found the answer.|Does it still hold in a different situation?
+I've already changed.|Can I keep up the new habit?
+It worked this time.|What did I do right to make it work?
+This is my new idea.|How will the next real situation test it?`;
+
+/* ===== English：口訣 30 ===== */
+const EN_S3 = `That's just the kind of person he is.|What did he do this time?
+I've always been like this.|When does this habit usually show up?
+He did it on purpose.|What proof do I have of what he was thinking?
+It's all his fault.|Which causes came together to make this?
+I feel it, so it must be true.|The feeling is a reminder. What are the facts?
+I'm so anxious.|What is my heart worried about?
+I shouldn't be angry.|Which limit is my anger reminding me of?
+I'm lazy.|What makes starting feel too hard?
+I have no self-control.|What around me keeps tempting me?
+I'm stupid.|Which skill haven't I learned yet?
+I'm careless.|Which part did I miss?
+It's too hard.|What three small steps can I break it into?
+There's too much to do.|Which one is the most stuck right now?
+I need to work harder.|Where would a change help the most?
+I must do everything well.|What is the most important small part right now?
+I don't want this.|Then what do I want?
+A or B?|What are A and B both trying to protect?
+There's only this road.|What three other roads can I think of?
+I must make him change.|What conditions can I change?
+He doesn't respect me.|Which action crossed my limit?
+He rejected me.|Did he reject me, or this proposal?
+Our relationship is over.|Which conflict is still unsolved right now?
+He's against me.|Which of our ideas is different?
+People criticize me.|Which part of what he said is worth keeping?
+If only I had known...|What do I know now that I didn't?
+It was a waste.|What did this test rule out for me?
+This method is useless.|In what situations does it not work?
+I already understand.|Can I still do it on a different question?
+I'll prove I'm right.|What would make me willing to change?
+This is the truth.|Is this the most reasonable view for now?`;
+
+/* ===== English：六句口訣 ===== */
+const EN_S4 = `Who I am|What did I do?
+Who is bad|What happened?
+I can't|What is missing?
+I failed|Where did I guess wrong?
+No way|What other choices are there?
+It must be so|What do the facts say?`;
+
+/* ===== English：小抄 ===== */
+const EN_THEORY = [
+  {t:`The most important thing`, items:[
+    `The point is not to make words sound nice.`,
+    `**Old words = jumping to a conclusion too fast.**`,
+    `**New words = opening the conclusion again, so you can see it, think it through, choose, act, check, and change.**`]},
+  {t:`One path`, flow:[`Old words`,`Peel off the label`,`Back to facts`,`Find the gap`,`Find the cause`,`Find what can change`,`Think of choices`,`Take a small step`,`Look at the result`,`Update your idea`]},
+  {t:`Ten steps to say it another way`, items:[
+    `**Drop the identity**: "what I am" → "what happened"`,
+    `**Don't grade it yet**: "good or bad" → "what is the evidence"`,
+    `**Be more specific**: "everything" → "which part exactly"`,
+    `**Find the cause**: "why so bad" → "how did it get this way"`,
+    `**Find the gap**: "failure" → "how the result differs from what I expected"`,
+    `**Find the stuck point**: "fix everything" → "which spot matters most"`,
+    `**Think of choices**: "no way" → "what other roads are there"`,
+    `**Act**: "I know" → "what is my next step"`,
+    `**Check**: "I believe" → "how do I know if it's right"`,
+    `**Update**: "the answer" → "how do I change it when things change"`]},
+  {t:`Ten short rules`, items:[
+    `Who I am → What I did`,`Judging → Facts`,`Feelings → Reminders`,`Vague → Clear`,`Problem → How it came about`,
+    `Failure → Wrong guess`,`Can't → What's blocking`,`No road → More choices`,`Know → Do and check`,`Answer → Keep updating`]},
+  {t:`Ten sentence changers`, items:[
+    `**Who I am → What I did**: Who am I? → What did I do?`,
+    `**Judging → Facts**: Who's good or bad? → What really happened?`,
+    `**Feelings → Reminders**: I feel awful → What is it reminding me of?`,
+    `**Problem → How it came about**: Why so bad? → How did it happen?`,
+    `**Failure → Wrong guess**: I failed → Where did I guess wrong?`,
+    `**Impossible → Where it's stuck**: I can't → Which condition is blocking me?`,
+    `**Either-or → More choices**: A or B? → What about a third or fourth?`,
+    `**Fight → Where we differ**: Who's right? → How do our ideas, needs, cares, and limits differ?`,
+    `**Control → My own choice**: How do I change others? → What can I change?`,
+    `**Answer → Keep updating**: I get it → Do the facts still support it?`]},
+  {t:`Eight turns`, items:[
+    `Who I am → What I did`,`Judging → Facts`,`Feelings → Reminders`,`Problem → How it came about`,
+    `Failure → Wrong guess`,`Stuck → Choices`,`Criticized → Reminded`,`Truth → An idea that can change`]},
+  {t:`Is this a good sentence? Ask six things`, items:[
+    `Don't ask: is this sentence positive? Ask instead:`,
+    `1. Is it closer to the facts?`,`2. Is it clearer?`,`3. Do I understand the cause better?`,
+    `4. Do I have more choices?`,`5. Do I know my next step?`,`6. Can I still change it later if it turns out wrong?`,
+    `**Only when all six are "yes" is it a truly good sentence.**`]},
+  {t:`What it is not`, items:[
+    `It is not swapping harsh words for sweet words. It is:`,
+    `Vague → Clear`,`Who I am → What I did`,`Judging → Data`,`Feelings → Reminders`,`Problem → How it came about`,
+    `Failure → Wrong guess`,`Can't → Conditions`,`Stuck → Choices`,`Control → My own choice`,`Answer → An idea that can change`]},
+  {t:`The big rhyme`, items:[
+    `Fewer labels, more facts.`,`Less judging, more causes.`,`Less "who's wrong," more "where we differ."`,`Less "I can't," more "where am I stuck."`,
+    `Less either-or, more roads.`,`Less proving myself, more letting facts speak.`,`Less guarding the answer, more updating my idea.`,
+    `After you say a sentence, the world should not be locked. The next question, the next choice, and the next step should grow from it.`]},
+  {t:`The road of growing`, flow:[`See clearly`,`Sort finely`,`Find the cause`,`Think of choices`,`Take action`,`Get feedback`,`Drop old ideas`,`Build ability`,`Become wisdom`]},
+  {t:`One sentence to remember`, items:[
+    `**New words are not for feeling better. They help me see more clearly, think more widely, act more wisely, and change more quickly.**`,
+    `New words = see the facts + find the cause + think of more roads + take action + listen to the result + be willing to change.`]}
+];
+
+/* ===== English：成長九步 ===== */
+const EN_NINE = [
+  {t:`The nine-word rule`, hero:`See → Sort → Cause → Choose → Do → Feedback → Change → Skill → Wisdom`, items:[
+    `**See**: see things clearly`,`**Sort**: break the problem into small pieces`,`**Cause**: find the cause`,`**Choose**: think of choices`,`**Do**: take action`,
+    `**Feedback**: look at the result`,`**Change**: drop the old idea`,`**Skill**: build it into ability`,`**Wisdom**: turn it into wisdom`],
+    p:[`See clearly, sort finely, find the cause, think of roads, do it, check the result, change, practice, grow wise.`,
+       `These nine steps are not a straight line. They are a circle that keeps turning. Each turn, you understand a little more.`]},
+  {t:`The full path`, pre:`Facts
+1. See: facts are not the story I made up.
+2. Sort: big problem → small problems.
+3. Cause: keeps happening → why → the source.
+4. Choose: one road → several roads.
+5. Do: pick one → take a small step.
+6. Feedback: what I expected, and what happened.
+7. Change: guessed wrong → new idea.
+8. Skill: do it again and again → really learned.
+9. Wisdom: a lesson that works anywhere.
+Then face the next thing, and go around again.`,
+    flow:[`Facts`,`Idea`,`Action`,`Facts`,`A better idea`]},
+  {t:`What each step does`, table:{head:[`Word`,`Ask yourself`,`How`,`What you get`], rows:[
+    [`See`,`What really happened?`,`Separate facts from guesses`,`Facts`],
+    [`Sort`,`What kind of problem is it?`,`Break it down and sort it`,`Small problems`],
+    [`Cause`,`How did it come about?`,`Look for repeats and guess the cause`,`The cause`],
+    [`Choose`,`What else can I do?`,`Think of several ways`,`Choices`],
+    [`Do`,`What do I do now?`,`Take the smallest step`,`A small test`],
+    [`Feedback`,`How did it go?`,`Compare what I expected with what happened`,`Feedback`],
+    [`Change`,`Where did I guess wrong?`,`Find the wrong guess`,`A new idea`],
+    [`Skill`,`Can I do it again next time?`,`Practice, retest, try new questions`,`Ability`],
+    [`Wisdom`,`What lesson can I keep?`,`Shrink it into one sentence`,`Wisdom`]]}},
+  {t:`1. See clearly`, p:[
+    `Look at the facts first. Don't rush to make up a story.`,
+    `Example: "The student just doesn't want to learn." That is your guess. Try: "In the last five assignments, he didn't finish three." That is a fact.`,
+    `If you see it wrong, the harder you work, the further off you go.`]},
+  {t:`2. Sort into small pieces`, p:[`Big problems can't be solved. Small ones can.`],
+    flow:[`Bad at English`,`Bad at reading`,`Often misread long sentences`,`Can't split sentences`,`Practice splitting sentences`],
+    p2:[`Now it's small enough to know what to practice.`,
+    `Sorting is not for sticking on labels. It is for finding a place to start.`]},
+  {t:`3. Find the cause`, p:[`Don't just ask "what's wrong." Ask "how did it get this way."`],
+    flow:[`Not enough words`,`Slow at reading sentences`,`Reading gets slower`,`Not enough time`,`Guessing at the end`,`Losing points in reading`],
+    p2:[`On the surface it's "many reading mistakes." The source may be "not enough words."`,
+    `Fix only the surface and it comes back. Find the source and things truly change.`]},
+  {t:`4. Think of choices`, p:[
+    `Without choices, there is no real decision.`,
+    `Example: don't only ask "Should I keep going?" Think of:`],
+    items:[`A: Keep going the same way`,`B: Do a little less`,`C: Try another method`,`D: Find someone to do it with`,`E: Try it for two weeks first`,`F: Pause, and decide later`],
+    p2:[`For each choice, ask: how much effort? What good? What risk? Can I undo it?`,
+    `The more roads you can think of, the freer you are.`]},
+  {t:`5. Take action`, p:[
+    `However good the idea, it is only a guess until you do it.`,
+    `Example: don't say "I'll get good at English." Say "Today: 20 common words, one article, and write down my mistakes."`,
+    `Action is not just for finishing. It is for **learning a little more**.`,
+    `Once you act, the facts get a chance to tell you whether you were right.`]},
+  {t:`6. Look at the result`, p:[
+    `Doing it is not the end. Seeing the result is.`,
+    `Example: I expected "learn 20 words and I'll make fewer reading mistakes." Result: "8 wrong before, still 8 wrong." That's not "I'm a failure." It means **my idea of the cause may be incomplete**. Maybe long sentences are the real stuck point.`,
+    `Feedback is a letter the facts write back to you.`]},
+  {t:`7. Drop the old idea`, p:[`Mistakes aren't scary. Not changing is what makes them repeat.`],
+    flow:[`Old idea: poor reading comes from poor vocabulary`,`Tried it, no progress`,`New finding: I know the words but split sentences wrong`,`New idea: I'm stuck on splitting sentences`,`New plan: practice breaking down long sentences`],
+    p2:[`This step is where learning really happens.`]},
+  {t:`8. Build ability`, p:[
+    `Doing it once is a result. Doing it again and again is ability.`,
+    `**How do I know I've really learned it?**`],
+    items:[`Understanding is not the same as doing.`,`Doing the same question is not the same as doing a new one.`,`Knowing it today is not the same as knowing it tomorrow.`,`Doing it in a familiar place is not the same as doing it in a new place.`],
+    p2:[`Real ability: a new question, a new time, a new place, and you can still do it.`]},
+  {t:`9. Turn it into wisdom`, p:[
+    `Ability solves one problem. Wisdom leaves a lesson you can use again and again.`,
+    `Example: after many times, shrink it into one line: "When someone says 'I was careless,' don't stop there. Ask: what exactly did you miss?" It works for English, math, and work.`,
+    `Many experiences → find what they share → drop the small details → keep one lesson.`]},
+  {t:`Three circles`, hero:`See, Sort, Cause｜Choose, Do, Feedback｜Change, Skill, Wisdom`, items:[
+    `**Circle one, understand**: see → sort → cause. What is really happening?`,
+    `**Circle two, act**: choose → do → feedback. How can I test it?`,
+    `**Circle three, grow**: change → skill → wisdom. How does this make the next me stronger?`],
+    p2:[`The first three steps help you understand the world. The middle three take you into it. The last three let the world teach you back.`]},
+  {t:`Questions for one full circle`, pre:`See: What really happened?
+Sort: What kind of problem is this?
+Cause: How did it come about?
+Choose: What choices do I have?
+Do: Which small test do I try first?
+Feedback: What does the result say?
+Change: Which idea should I replace?
+Skill: Can I do it again and again?
+Wisdom: Can I turn it into one sentence that works anywhere?
+Then a new thing comes, and the next circle begins.`},
+  {t:`Three last sentences`, p:[
+    `See clearly, and you won't solve the wrong problem.`,
+    `Act, and the facts get a chance to correct you.`,
+    `Change, and experience truly becomes ability and wisdom.`],
+    hero2:`Wisdom is not just many experiences. Wisdom = experience × feedback × changing ideas × using it anywhere × shrinking it into one line.`,
+    p2:[`Without feedback, experience is only repeating. Without change, mistakes come again. If it can't be used elsewhere, ability stays in one place. Without shrinking it down, you won't remember it next time.`],
+    flow2:[`See the world`,`Break it down`,`Understand it`,`Think of what's possible`,`Step into real life`,`Hear the echo`,`Update yourself`,`Build ability`,`Become wise`]}
+];
+
+/* ===== English：小課堂 ===== */
+const EN_LESSON = [
+  {t:`Opening`, items:[
+    `Can a new way of speaking really change your life? Yes. We often say "I'm stupid" or "He's picking on me again." These words are like an old map that locks us inside.`,
+    `This lesson is not about making harsh words sound nice. It is about saying things more clearly, so clearly that you know your next step right away.`]},
+  {t:`What you will learn`, items:[
+    `Know how old words and new words differ.`,
+    `Use new words in six areas: studying, mistakes, feelings, friends, family, and growing up.`,
+    `Remember the six short rules so you keep improving.`]},
+  {t:`Why words change the world we see`, items:[
+    `Have you ever said "I'll never learn this" or "There's just no way"? That is not a fact. It is an old map drawn by old words, hiding the other roads.`,
+    `New words are not about forcing yourself to think positive. They are about sorting things again.`,
+    `When you break "I'm terrible" into clear facts, your mind moves from "Why am I so bad?" to "Which step is the most stuck, and how do I fix it?" You take the steering wheel back.`]},
+  {t:`In studying, mistakes, and feelings`, items:[
+    `**Studying**: "I have a bad memory" → "I only keep reading; I don't practice recalling" → Plan: recall it again every few days.`,
+    `**Mistakes**: "I failed again" → "What I expected and what happened were different." A mistake is not a stain on you. It is just an idea that needs fixing.`,
+    `**Feelings**: "I must not be anxious" → "My heart is reminding me to pay attention to something." Feelings are messengers, not enemies. Listen, then take one small step.`]},
+  {t:`With friends, family, and yourself`, items:[
+    `**Friends**: "He doesn't respect me." → "Which action made me feel my limit was crossed?" Now you talk about the action, not attack the person.`,
+    `**Family**: "Why am I the only one taking care of everything?" → "Our family's care depends too much on one person." Now you can talk about sharing the work and a backup plan.`,
+    `**Yourself**: "I'm lazy" → "Starting this takes too much effort." Shrink the first step to just two minutes. Changing your surroundings works better than testing your willpower.`]},
+  {t:`Six big turns`, items:[
+    `**Who I am → What I did**: from "what kind of person I am" to "what I just did."`,
+    `**Judging → Facts**: from "who is good or bad" to "what really happened."`,
+    `**Feelings → Reminders**: from "I feel it, so it's true" to "what is this feeling reminding me of."`,
+    `**Problem → How it came about**: from "something is wrong with me" to "how did this result happen."`,
+    `**Failure → Wrong guess**: from "I failed" to "which idea of mine needs an update."`,
+    `**Impossible → Choices**: from "there is no road" to "I just haven't found the road yet."`,
+    `These six turns change where your mind looks for answers: not "Why am I so bad?" but "Where is it most stuck?"`]},
+  {t:`Review`, items:[
+    `**The goal of new words**: not to sound nice, but to be clear enough to know the next step.`,
+    `**Six big turns**: change who I am, judging, feelings, problems, failure, and impossible into what I did, facts, reminders, how it came about, wrong guesses, and choices.`,
+    `**Six short rules**: see the cards below.`]}
+];
+
+/* ===== 解析 ===== */
+function parse(text, kind, src){
+  const out=[]; let group=null, groupSub="", n=0;
+  text.trim().split("\n").forEach(line=>{
+    line=line.trim(); if(!line) return;
+    if(line[0]==="#"){ const p=line.slice(1).split("|"); group=p[0]+"｜"+p[1]; groupSub=p[2]||""; return; }
+    const p=line.split("|"); n++;
+    if(kind===3) out.push({src,group,num:String(n).padStart(2,"0"),ttl:"",old:"",nw:line});
+    else if(kind===1) out.push({src,group,num:String(+p[0]).padStart(2,"0"),ttl:p[1],old:p[2],nw:p[3]});
+    else out.push({src,group:group&&(group+(groupSub?"｜"+groupSub:"")),num:String(n).padStart(2,"0"),ttl:"",old:"不說「"+p[0]+"」",nw:p[1]});
+  });
+  return out;
+}
+const SETS = [
+  {id:"soup", name:"心靈雞湯", items:parse(SOUP_RAW,3,"心靈雞湯")},
+  {id:"f100", name:"換句話說100", items:parse(S1,1,"換句話說100")},
+  {id:"k100", name:"暖心口訣100", items:parse(S2,2,"暖心口訣100")},
+  {id:"k30",  name:"口訣30", items:parse(S3,2,"口訣30")},
+];
+const SOUP = SETS[0].items;
+const SIX = parse(S4,2,"六句口訣");
+const ALL = SETS.flatMap(s=>s.items).concat(SIX);
+/* 把英文接到每一句、每一段 */
+function attach(items, text){
+  text.trim().split("\n").forEach((line,i)=>{
+    const p=line.trim().split("|"), it=items[i]; if(!it) return;
+    it.en = p.length===3 ? {ttl:p[0],old:p[1],nw:p[2]} : p.length===2 ? {ttl:"",old:p[0],nw:p[1]} : {ttl:"",old:"",nw:p[0]};
+  });
+}
+attach(SETS[0].items,EN_SOUP); attach(SETS[1].items,EN_S1); attach(SETS[2].items,EN_S2); attach(SETS[3].items,EN_S3); attach(SIX,EN_S4);
+THEORY.forEach((b,i)=>b.en=EN_THEORY[i]); NINE.forEach((b,i)=>b.en=EN_NINE[i]); LESSON.forEach((b,i)=>b.en=EN_LESSON[i]);
+const sayText=it=>it.en.old?`Instead of: ${it.en.old} Say: ${it.en.nw}`:it.en.nw;
+const TABS = [...SETS.map(s=>({id:s.id,name:s.name})),{id:"theory",name:"小抄"},{id:"nine",name:"成長九步"},{id:"lesson",name:"小課堂"}];
+
+/* ===== 工具 ===== */
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let query="";
+function hl(s){
+  let h=esc(s).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");
+  if(!query) return h;
+  const re=new RegExp("("+esc(query).replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi");
+  return h.replace(/(<[^>]+>)|([^<]+)/g,(m,tag,txt)=>tag?tag:txt.replace(re,"<mark>$1</mark>"));
+}
+function card(it,showSrc){
+  const i=ALL.indexOf(it);
+  return `<div class="card${it.old?"":" soup"}" data-i="${i}">
+    <div class="meta"><span class="num">${it.num}</span>${it.ttl?`<span class="ttl">${hl(it.ttl)}</span>`:""}<button class="say" data-i="${i}" title="朗讀英文">🔊</button><button class="fb" data-i="${i}" title="臉書貼文＋圖卡">📣</button>${showSrc?`<span class="src">${it.src}</span>`:""}</div>
+    ${it.en.ttl?en(it.en.ttl):""}
+    ${it.old?`<div class="old">${hl(it.old)}</div>${en(it.en.old)}`:""}<div class="new">${hl(it.nw)}</div>${en(it.en.nw)}</div>`;
+}
+const en=s=>s?`<span class="en">${hl(s)}</span>`:"";
+const flowH=(f,e)=>`<div class="flow">${f.map(x=>`<span>${hl(x)}</span>`).join("<i>→</i>")}</div>`+(e?en(e.join(" → ")):"");
+const parasH=(ps,e=[])=>ps.map((x,k)=>x.startsWith("> ")?`<p class="quote">${hl(x.slice(2))}${en(e[k])}</p>`:`<p>${hl(x)}${en(e[k])}</p>`).join("");
+function block(b,id){
+  const e=b.en||{};
+  let body="";
+  if(b.hero) body+=`<div class="hero">${hl(b.hero)}${en(e.hero)}</div>`;
+  if(b.p) body+=parasH(b.p,e.p);
+  if(b.pre) body+=`<pre>${hl(b.pre)}</pre>`+(e.pre?`<pre class="en">${hl(e.pre)}</pre>`:"");
+  if(b.flow) body+=flowH(b.flow,e.flow);
+  if(b.items){ const tag=b.ol?"ol":"ul"; body+=`<${tag}>${b.items.map((x,k)=>`<li>${hl(x)}${en((e.items||[])[k])}</li>`).join("")}</${tag}>`; }
+  if(b.table){ const et=e.table||{head:[],rows:[]};
+    body+=`<div class="tblwrap"><table><tr>${b.table.head.map((h,k)=>`<th>${hl(h)}<br>${esc(et.head[k]||"")}</th>`).join("")}</tr>${b.table.rows.map((r,j)=>`<tr>${r.map((c,k)=>`<td>${hl(c)}${en((et.rows[j]||[])[k])}</td>`).join("")}</tr>`).join("")}</table></div>`; }
+  if(b.hero2) body+=`<div class="hero" style="font-size:17px;letter-spacing:0">${hl(b.hero2)}${en(e.hero2)}</div>`;
+  if(b.p2) body+=parasH(b.p2,e.p2);
+  if(b.flow2) body+=flowH(b.flow2,e.flow2);
+  return `<div class="block"${id?` id="${id}"`:""}><h3>${hl(b.t)}${en(e.t)}</h3>${body}</div>`;
+}
+const blockText=b=>[JSON.stringify(b.en||""),b.t,b.hero||"",b.hero2||"",b.pre||"",...(b.p||[]),...(b.p2||[]),...(b.flow||[]),...(b.flow2||[]),...(b.items||[]),
+  ...(b.table?[...b.table.head,...b.table.rows.flat()]:[])].join(" ");
+
+/* ===== 渲染 ===== */
+let tab="soup";
+try{ tab=localStorage.getItem("nl-soup-tab")||tab; }catch(e){}
+if(!TABS.some(t=>t.id===tab)) tab="soup";
+const today=SOUP[Math.floor(Date.now()/864e5)%SOUP.length];
+
+function renderTabs(){
+  $("#tabs").innerHTML=TABS.map(t=>`<button class="tab${t.id===tab&&!query?" on":""}" data-t="${t.id}">${t.name}</button>`).join("");
+}
+function renderSet(items){
+  const groups=[...new Set(items.map(i=>i.group))];
+  if(groups.length===1&&!groups[0]) return `<div class="grid">${items.map(i=>card(i)).join("")}</div>`;
+  const chips=`<div class="chips">${groups.map((g,k)=>`<button class="chip" data-g="g${k}">${esc(g.split("｜").slice(0,2).join("｜"))}</button>`).join("")}</div>`;
+  return chips+groups.map((g,k)=>{
+    const p=g.split("｜");
+    return `<h2 id="g${k}">${esc(p[0])}｜${esc(p[1])}${p[2]?`<small>${esc(p[2])}</small>`:""}</h2>
+      <div class="grid">${items.filter(i=>i.group===g).map(i=>card(i)).join("")}</div>`;
+  }).join("");
+}
+function render(){
+  renderTabs();
+  const v=$("#view");
+  if(query){
+    const q=query.toLowerCase();
+    const hits=ALL.filter(i=>(i.ttl+" "+i.old+" "+i.nw+" "+(i.group||"")+" "+i.en.ttl+" "+i.en.old+" "+i.en.nw).toLowerCase().includes(q));
+    const bl=[...THEORY,...NINE,...LESSON].filter(b=>blockText(b).toLowerCase().includes(q));
+    v.innerHTML=`<div class="count">找到 ${hits.length} 句、${bl.length} 段說明</div>`+
+      (hits.length?`<div class="grid">${hits.map(i=>card(i,true)).join("")}</div>`:"")+
+      (bl.length?`<h2>說明段落</h2>${bl.map(b=>block(b)).join("")}`:"")+
+      (!hits.length&&!bl.length?`<div class="empty">沒有符合「${esc(query)}」的內容</div>`:"");
+    return;
+  }
+  const set=SETS.find(s=>s.id===tab);
+  if(set) v.innerHTML=(tab==="soup"?`<div class="today"><small>今天送你一句 Today's line</small>${esc(today.nw)}${en(today.en.nw)}</div>`:"")+renderSet(set.items);
+  else if(tab==="theory") v.innerHTML=THEORY.map(b=>block(b)).join("");
+  else if(tab==="nine") v.innerHTML=`<div class="chips">${NINE.map((b,k)=>`<button class="chip" data-g="n${k}">${esc(b.t)}</button>`).join("")}</div>`+
+    NINE.map((b,k)=>block(b,"n"+k)).join("");
+  else v.innerHTML=LESSON.map(b=>block(b)).join("")+`<h2>六句口訣</h2><div class="grid">${SIX.map(i=>card(i)).join("")}</div>`;
+}
+
+/* ===== 互動 ===== */
+$("#tabs").onclick=e=>{
+  const b=e.target.closest(".tab"); if(!b) return;
+  tab=b.dataset.t; query=""; $("#q").value="";
+  try{ localStorage.setItem("nl-soup-tab",tab); }catch(e){}
+  render(); window.scrollTo(0,0);
+};
+$("#q").oninput=e=>{ query=e.target.value.trim(); render(); };
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),1400); }
+function copy(it){
+  const txt=(it.old?it.old.replace(/^不說/,"")+" → "+it.nw:it.nw)+"\n"+(it.en.old?it.en.old+" → ":"")+it.en.nw;
+  (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast("已複製"),()=>toast(txt));
+}
+/* ===== 英文朗讀（瀏覽器內建，不用網路金鑰） ===== */
+let slow=false, voice=null;
+function pickVoice(){
+  const vs=(window.speechSynthesis?speechSynthesis.getVoices():[]).filter(v=>/^en/i.test(v.lang));
+  const us=vs.filter(v=>/en[-_]US/i.test(v.lang));
+  voice=us.find(v=>v.localService)||us[0]||vs.find(v=>v.localService)||vs[0]||null;   // 優先用電腦內建的聲音，最穩
+}
+if(window.speechSynthesis){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+let seq=0, audio=null, online=false;
+try{ online=localStorage.getItem("nl-voice")==="online"; }catch(e){}
+function showVsrc(){ $("#vsrc").textContent=online?"🌐 線上語音":"🔈 內建語音"; }
+showVsrc();
+$("#vsrc").onclick=()=>{ online=!online; try{ localStorage.setItem("nl-voice",online?"online":"local"); }catch(e){} showVsrc(); speak("Hello! Can you hear me?"); };
+function stopSpeak(){
+  seq++;
+  if(window.speechSynthesis) speechSynthesis.cancel();
+  if(audio){ audio.pause(); audio=null; }
+  document.querySelectorAll(".en.on").forEach(x=>x.classList.remove("on"));
+}
+/* 備援：內建語音沒聲音時，改用線上語音（不需要金鑰，但要有網路） */
+function speakOnline(t, el, my){
+  const parts=[]; let cur="";
+  (t.match(/[^.!?;,]+[.!?;,]*\s*/g)||[t]).forEach(s=>{ if((cur+s).length>170&&cur){ parts.push(cur); cur=s; } else cur+=s; });
+  if(cur.trim()) parts.push(cur);
+  const done=()=>{ if(el) el.classList.remove("on"); };
+  const next=k=>{
+    if(my!==seq) return;
+    if(k>=parts.length){ done(); return; }
+    audio=new Audio("https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q="+encodeURIComponent(parts[k].trim()));
+    audio.playbackRate=slow?0.75:1;
+    audio.onended=()=>next(k+1);
+    audio.onerror=()=>{ if(my===seq){ done(); toast("這裡發不出聲音，請用 Chrome 開啟並確認喇叭音量"); } };
+    audio.play().catch(()=>audio&&audio.onerror());
+  };
+  next(0);
+}
+function speak(text, el){
+  stopSpeak();
+  const my=seq;
+  const t=text.replace(/\*\*/g,"").replace(/_{2,}/g," blank ").replace(/[→↓]/g,", ").replace(/↔/g," versus ").replace(/×/g," times ").replace(/[｜|=+]/g,", ");
+  if(el) el.classList.add("on");
+  toast("🔊 朗讀中…");
+  if(online || !window.speechSynthesis || !speechSynthesis.getVoices().length){ speakOnline(t,el,my); return; }
+  const u=new SpeechSynthesisUtterance(t);
+  let started=false;
+  u.lang="en-US"; if(voice) u.voice=voice; u.rate=slow?0.7:0.95; u.volume=1;
+  u.onstart=()=>{ started=true; };
+  u.onend=()=>{ if(my===seq&&el) el.classList.remove("on"); };
+  u.onerror=ev=>{ if(my===seq&&ev.error!=="canceled"&&ev.error!=="interrupted") speakOnline(t,el,my); };
+  window._u=u;   // 留住參照，避免 Chrome 唸到一半被回收
+  // Chrome 的老毛病：cancel() 後馬上 speak() 會沒聲音，所以稍等一下再唸
+  setTimeout(()=>{ if(my!==seq) return; speechSynthesis.resume(); speechSynthesis.speak(u); },120);
+  setTimeout(()=>{ if(my===seq&&!started){ speechSynthesis.cancel(); speakOnline(t,el,my); } },2000);
+}
+$("#slow").onclick=e=>{ slow=!slow; e.currentTarget.classList.toggle("on",slow); toast(slow?"慢速朗讀":"正常速度"); };
+/* ===== 臉書貼文＋圖卡（每一句都有） ===== */
+const THEME_OF={A:2,B:3,C:6,D:4,E:7,F:8,"一":0,"二":2,"三":1,"四":3,"五":4,"六":5,"七":5,"八":7,"九":5,"十":8};
+function soupFor(it){
+  if(!it.old) return null;
+  const k=it.group?it.group.split("｜")[0]:"";
+  const th=k in THEME_OF?THEME_OF[k]:9;
+  return SOUP[th*6+ALL.indexOf(it)%6];
+}
+const oldZh=it=>it.old.replace(/^不說「/,"").replace(/」$/,"");
+function postText(it){
+  const tags="#心靈雞湯 #換句話說 #每天一句 #給自己的話 #正能量 #成長";
+  if(!it.old) return `🌿 ${it.nw}\n\n${it.en.nw}\n\n今天把這句話送給你，也送給自己。\n如果你也需要，留一個 ❤️，或分享給那個正在努力的人。\n\n${tags}`;
+  const s=soupFor(it);
+  return `🌿 換一句話，心就鬆一點\n\n以前我會說：「${oldZh(it)}」\n現在我想換一句：「${it.nw}」\n\n${s.nw}\n\n🔤 English\nInstead of: ${it.en.old}\nTry: ${it.en.nw}\n${s.en.nw}\n\n你今天想換掉哪一句話？留言告訴我 💬\n\n${tags}`;
+}
+const PALS=[["#fdf6e3","#f7d9c4","#4a3b32","#c0623f"],["#e8f3ee","#cde5da","#23483d","#2f6f5e"],["#eef2fb","#d6def5","#2b3558","#4a5fb0"],["#fff4f6","#fbd5dc","#5a2a35","#c2506a"],["#1f2a30","#2f4a4a","#f3efe6","#f0c36a"]];
+const CJKF='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+function wrap(ctx,text,maxW){
+  const toks=text.match(/[A-Za-z0-9'’\-_]+|\s+|[^]/g)||[], lines=[]; let cur="";
+  for(const t of toks){
+    if(ctx.measureText(cur+t).width>maxW && cur.trim() && !/^[，。？！；：、」』）,.?!;:”"]$/.test(t)){ lines.push(cur.trim()); cur=/^\s+$/.test(t)?"":t; }
+    else cur+=t;
+  }
+  if(cur.trim()) lines.push(cur.trim());
+  return lines;
+}
+function drawCard(it,pi){
+  const c=$("#fbc"), ctx=c.getContext("2d"), W=1080, H=1080, P=PALS[pi%PALS.length], M=110;
+  const g=ctx.createLinearGradient(0,0,W,H); g.addColorStop(0,P[0]); g.addColorStop(1,P[1]);
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle=P[3]; ctx.globalAlpha=.12; ctx.beginPath(); ctx.arc(W-90,110,230,0,7); ctx.fill(); ctx.beginPath(); ctx.arc(70,H-60,170,0,7); ctx.fill(); ctx.globalAlpha=1;
+  ctx.textBaseline="top";
+  let scale=1, rows, total;
+  do{  // 字太多就縮小，直到放得進去
+    rows=[];
+    const add=(text,size,weight,color,alpha,gap)=>{ size=Math.round(size*scale); ctx.font=`${weight} ${size}px ${CJKF}`;
+      wrap(ctx,text,W-2*M).forEach((l,k,a)=>rows.push({l,size,weight,color,alpha,h:size*1.45,gap:k===a.length-1?gap*scale:0})); };
+    if(it.old){
+      add("以前我會說",30,600,P[3],1,10);
+      add("「"+oldZh(it)+"」",44,500,P[2],.6,44);
+      add("現在我想換一句",30,600,P[3],1,10);
+      add(it.nw,64,800,P[2],1,34);
+      add(it.en.nw,34,500,P[2],.72,40);
+      add(soupFor(it).nw,32,500,P[3],1,0);
+    }else{
+      add(it.nw,70,800,P[2],1,44);
+      add(it.en.nw,38,500,P[2],.72,0);
+    }
+    total=rows.reduce((s,r)=>s+r.h+r.gap,0); scale-=.06;
+  }while(total>H-330 && scale>.4);
+  ctx.fillStyle=P[3]; ctx.font=`800 150px Georgia,serif`; ctx.fillText("“",M-14,70);
+  let y=190+(H-330-total)/2;
+  rows.forEach(r=>{ ctx.font=`${r.weight} ${r.size}px ${CJKF}`; ctx.fillStyle=r.color; ctx.globalAlpha=r.alpha; ctx.fillText(r.l,M,y); y+=r.h+r.gap; });
+  ctx.globalAlpha=1; ctx.fillStyle=P[3]; ctx.fillRect(M,H-128,90,6);
+  ctx.font=`700 32px ${CJKF}`; ctx.fillStyle=P[2]; ctx.fillText("換句話說・心靈雞湯",M,H-104);
+  ctx.font=`500 26px ${CJKF}`; ctx.globalAlpha=.6; ctx.textAlign="right"; ctx.fillText(`${it.src} ${it.num}`,W-M,H-98); ctx.textAlign="left"; ctx.globalAlpha=1;
+}
+function showPost(it){
+  let pi=ALL.indexOf(it);
+  const m=$("#mcard"); m.classList.add("wide");
+  m.innerHTML=`<canvas id="fbc" width="1080" height="1080"></canvas>
+    <textarea id="fbt" rows="9"></textarea>
+    <div class="acts"><button class="btn" id="fbpal">🎨 換配色</button><button class="btn" id="fbdl">⬇ 下載圖卡</button><button class="btn" id="fbcp">📋 複製貼文</button><button class="btn" id="fbx">關閉</button></div>`;
+  $("#fbt").value=postText(it); drawCard(it,pi);
+  $("#fbpal").onclick=()=>drawCard(it,++pi);
+  $("#fbdl").onclick=()=>$("#fbc").toBlob(async b=>{
+    const filename=`雞湯圖卡_${it.src}_${it.num}.png`;
+    // 部署在 claude.ai 上時，要透過平台的下載功能；本機直接開檔則用一般下載
+    const dl=window.claude&&window.claude.use?await window.claude.use("downloads"):null;
+    if(dl){ try{ await dl.save({filename,data:b}); toast("圖卡已下載"); }catch(err){ toast(err&&err.code==="declined"?"已取消下載":"這裡無法下載圖卡"); } return; }
+    const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); toast("圖卡已下載");
+  });
+  $("#fbcp").onclick=()=>{ const t=$("#fbt"); (navigator.clipboard?navigator.clipboard.writeText(t.value):Promise.reject()).then(()=>toast("貼文已複製"),()=>{ t.select(); document.execCommand("copy"); toast("貼文已複製"); }); };
+  $("#fbx").onclick=()=>$("#modal").classList.remove("show");
+  $("#modal").classList.add("show");
+}
+document.addEventListener("click",e=>{
+  const f=e.target.closest(".fb"); if(f){ showPost(ALL[+f.dataset.i]); return; }
+  const s=e.target.closest(".say"); if(s){ speak(sayText(ALL[+s.dataset.i])); return; }
+  const x=e.target.closest(".en"); if(x) speak(x.textContent, x);
+});
+$("#view").onclick=e=>{
+  if(e.target.closest(".en,.say,.fb")) return;
+  const c=e.target.closest(".chip");
+  if(c){ const el=document.getElementById(c.dataset.g); window.scrollTo({top:el.getBoundingClientRect().top+scrollY-$("header").offsetHeight-8,behavior:"smooth"}); return; }
+  const k=e.target.closest(".card[data-i]"); if(k) copy(ALL[+k.dataset.i]);
+};
+function showRandom(){
+  const it=ALL[Math.floor(Math.random()*ALL.length)];
+  $("#mcard").innerHTML=`<div class="meta"><span class="num">${it.num}</span>${it.ttl?`<span class="ttl">${esc(it.ttl)}</span>`:""}<span class="src">${it.src}</span></div>
+    ${it.old?`<div class="old">${esc(it.old)}</div>${en(it.en.old)}`:""}<div class="new${it.old?"":" plain"}">${esc(it.nw)}</div>${en(it.en.nw)}
+    <div class="acts"><button class="btn say" data-i="${ALL.indexOf(it)}" style="margin-left:0;padding:8px 12px">🔊 朗讀</button><button class="btn fb" data-i="${ALL.indexOf(it)}" style="margin-left:0;padding:8px 12px">📣 臉書貼文</button><button class="btn" id="mcopy">複製</button><button class="btn" id="mnext">再一句</button><button class="btn" id="mclose">關閉</button></div>`;
+  $("#mcard").classList.remove("wide");
+  $("#mcopy").onclick=()=>copy(it); $("#mnext").onclick=showRandom; $("#mclose").onclick=()=>$("#modal").classList.remove("show");
+  $("#modal").classList.add("show");
+}
+$("#rand").onclick=showRandom;
+$("#modal").onclick=e=>{ if(e.target.id==="modal") $("#modal").classList.remove("show"); };
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape") $("#modal").classList.remove("show");
+  if(e.key==="/"&&document.activeElement!==$("#q")){ e.preventDefault(); $("#q").focus(); }
+});
+render();
+</script>
+</body>
+</html>

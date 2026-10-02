@@ -72,6 +72,17 @@ main{max-width:1100px;margin:0 auto;padding:16px 16px 60px}
 .steps{list-style:none;margin:6px 0;padding:0;counter-reset:s}
 .steps li{counter-increment:s;position:relative;padding:4px 0 4px 34px;font-size:15px}
 .steps li::before{content:counter(s);position:absolute;left:0;top:6px;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;display:grid;place-items:center;font-family:Georgia,serif}
+.fbbtn{margin-top:12px}
+.say{cursor:pointer}
+.say:hover{text-decoration:underline dotted}
+.say::after{content:" 🔊";font-size:.75em;opacity:.55;font-style:normal}
+button .say::after,.flow .say::after,.lab .say::after,.cat .say::after,.count .say::after{content:none}
+button .say{cursor:inherit;text-decoration:none}
+.say.on{color:var(--accent)}
+.fb{margin-top:10px}
+.fb canvas{display:block;width:100%;max-width:420px;height:auto;border-radius:12px;border:1px solid var(--line)}
+.fb textarea{display:block;width:100%;height:200px;margin-top:8px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:14px/1.6 system-ui,"Microsoft JhengHei",sans-serif;resize:vertical}
+.fb .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .empty{text-align:center;color:var(--muted);padding:40px 0}
 footer{text-align:center;color:var(--muted);font-size:13px;padding:0 16px 30px}
 @media (max-width:520px){.grid,.pgrid{grid-template-columns:1fr}.row{grid-template-columns:72px 1fr}.seg button{padding:7px 9px}}
@@ -281,7 +292,7 @@ let lang='both',tab='models',cat=-1,query='';
 try{lang=localStorage.getItem('soup68-lang')||'both'}catch(e){}
 const sp=s=>{const i=s.indexOf('|');return i<0?[s,s]:[s.slice(0,i),s.slice(i+1)]};
 function T(s,lines){let[z,e]=sp(s);if(lines){z=z.replace(/？(?!$)/g,'？<br>').replace(/。(?!$)/g,'。<br>');e=e.replace(/\? (?=[A-Z"])/g,'?<br>')}
- if(lang==='zh')return z;if(lang==='en')return e;return`<span class="zh">${z}</span><span class="en">${e}</span>`}
+ if(lang==='zh')return z;if(lang==='en')return`<span class="say">${e}</span>`;return`<span class="zh">${z}</span><span class="en say">${e}</span>`}
 const strip=s=>s.replace(/<[^>]+>/g,'').toLowerCase();
 const pad=n=>String(n).padStart(2,'0');
 function mName(m){const[z,e]=sp(m[1]);return`${z}模型|${e} Model`}
@@ -294,7 +305,8 @@ function card(m,i,open){
  return`<details class="card" id="m${i+1}" style="--c:${c}"${open?' open':''}><summary><span class="num">${pad(i+1)}</span><div><div class="cat">${T(CATS[m[0]][0])}</div><div class="name">${T(mName(m))}</div><div class="wis">${T(m[2])}</div></div></summary>
  <div class="body">${row('st',m[3])}${row('on',on)}${row('nd',m[6])}${row('lv',m[7])}${row('lm',m[8])}${row('ab',m[9])}
  <div class="box q"><span class="lab">${T(LAB.q)}</span>${T(m[10],1)}</div>
- <div class="box a"><span class="lab">${T(LAB.a)}</span>${T(m[11])}</div></div></details>`}
+ <div class="box a"><span class="lab">${T(LAB.a)}</span>${T(m[11])}</div>${fbBtn('m'+i)}</div></details>`}
+function fbBtn(k){return`<button class="btn fbbtn" data-say="${k}">🔊 ${lang==='en'?'Read aloud':'朗讀英文'}</button> <button class="btn fbbtn" data-fb="${k}">📣 ${lang==='en'?'Facebook post + card':lang==='zh'?'臉書貼文＋圖卡':'臉書貼文＋圖卡 Facebook post'}</button><div class="fb" hidden></div>`}
 
 function pcard(p){
  let h=`<div class="pcard"><h3>${T(p.t)}</h3>`;
@@ -303,7 +315,7 @@ function pcard(p){
  if(p.list)h+=`<ul class="plist">${p.list.map(x=>`<li>${T(x)}</li>`).join('')}</ul>`;
  if(p.steps)h+=`<ol class="steps">${p.steps.map(x=>`<li>${T(x)}</li>`).join('')}</ol>`;
  if(p.outro)h+=`<p>${T(p.outro)}</p>`;
- return h+'</div>'}
+ return h+fbBtn('p'+P.indexOf(p))+'</div>'}
 const pText=p=>strip([p.t,p.intro||'',p.outro||'',...(p.flow||[]),...(p.list||[]),...(p.steps||[])].join(' '));
 
 let todayIdx=(()=>{const d=new Date();return Math.floor((d-new Date(d.getFullYear(),0,0))/864e5)%68})();
@@ -314,7 +326,7 @@ function renderToday(){
  <h2>${pad(todayIdx+1)}・${T(mName(m))}</h2><div class="big">${T(m[2])}</div>
  <div class="box q"><span class="lab" style="color:var(--accent)">${T(LAB.q)}</span>${T(m[10],1)}</div>
  <div class="box a"><span class="lab" style="color:var(--accent)">${T(LAB.a)}</span>${T(m[11])}</div>
- <div class="btns"><button class="btn fill" id="another">${T('換一碗|Another bowl')}</button><button class="btn" id="goto">${T('看完整內容|Read in full')}</button></div></div>`;
+ <div class="btns"><button class="btn fill" id="another">${T('換一碗|Another bowl')}</button><button class="btn" id="goto">${T('看完整內容|Read in full')}</button></div>${fbBtn('m'+todayIdx)}</div>`;
  $('#another').onclick=()=>{let n;do{n=Math.floor(Math.random()*68)}while(n===todayIdx);todayIdx=n;renderToday()};
  $('#goto').onclick=()=>{const el=$('#m'+(todayIdx+1));if(el){el.open=true;el.scrollIntoView({behavior:'smooth',block:'start'})}};
 }
@@ -332,6 +344,85 @@ function render(){
  $('#c1').textContent=q?`(${ms.length})`:'';$('#c2').textContent=q?`(${ps.length})`:'';
  renderToday();
 }
+// ── 臉書貼文＋圖卡 ──
+const FF='"Noto Serif TC","Songti TC","PMingLiU",Georgia,serif';
+const plain=s=>s.replace(/<[^>]+>/g,'').replace(/　/g,' ');
+const Lg=(s,l)=>plain(sp(s)[l==='en'?1:0]);
+const langs=()=>lang==='both'?['zh','en']:[lang];
+function fbData(k){
+ const i=+k.slice(1);
+ if(k[0]==='m'){
+  const m=M[i],c=CATS[m[0]],g=(j,l)=>Lg(m[j],l),nm=l=>Lg(mName(m),l);
+  return{color:c[1],tag:l=>Lg(c[0],l)+(l==='en'?'':'母體'),title:l=>`${pad(i+1)}・${nm(l)}`,quote:m[2],foot:m[11],file:`${pad(i+1)}-${nm('zh')}`,
+   post:l=>l==='en'
+    ?`🍲 68 Soul Recipes for Life | ${pad(i+1)} ${nm(l)}\n\n"${g(2,l)}"\n\n${g(3,l)}\n\n🔄 The old me: ${g(4,l)}\n✨ The new me: ${g(5,l)}\n\n👀 Notice: ${g(6,l)}\n🗝️ Gentle lever: ${g(7,l)}\n🤍 Honest reminder: ${g(8,l)}\n🌱 You will grow: ${g(9,l)}\n\n💭 Ask yourself:\n${g(10,l).replace(/\? (?=[A-Z"])/g,'?\n')}\n\n👣 Today's tiny step:\n${g(11,l)}\n\n#SoulSoup #LifeOS #68Models #${nm(l).replace(/[^A-Za-z]/g,'')} #${Lg(c[0],l)}`
+    :`🍲 人生68碗心靈雞湯｜${pad(i+1)} ${nm(l)}\n\n「${g(2,l)}」\n\n${g(3,l)}\n\n🔄 從前的我：${g(4,l)}\n✨ 現在的我：${g(5,l)}\n\n👀 留意：${g(6,l)}\n🗝️ 小槓桿：${g(7,l)}\n🤍 溫柔提醒：${g(8,l)}\n🌱 你會長出：${g(9,l)}\n\n💭 問問自己：\n${g(10,l).replace(/？(?!$)/g,'？\n')}\n\n👣 今天的一小步：\n${g(11,l)}\n\n#心靈雞湯 #LifeOS #68模型 #${nm(l).replace(/\s/g,'')} #${Lg(c[0],l)}母體`};
+ }
+ const p=P[i];
+ return{color:'#c96f4a',tag:l=>l==='en'?'Principles':'心法',title:l=>Lg(p.t,l),quote:p.outro||p.intro||(q=>q.map(x=>sp(x)[0]).join('')+'|'+q.map(x=>sp(x)[1]).join(' '))((p.list||p.steps).slice(0,3)),file:'心法-'+Lg(p.t,'zh'),
+  post:l=>[`🍲 ${l==='en'?'68 Soul Recipes for Life | ':'人生68碗心靈雞湯｜'}${Lg(p.t,l)}`,p.intro&&Lg(p.intro,l),p.flow&&p.flow.map(f=>Lg(f,l)).join(' → '),p.list&&p.list.map(x=>'🌿 '+Lg(x,l)).join('\n'),p.steps&&p.steps.map((x,n)=>`${n+1}. ${Lg(x,l)}`).join('\n'),p.outro&&Lg(p.outro,l),l==='en'?'#SoulSoup #LifeOS #68Models #HighAgency':'#心靈雞湯 #LifeOS #68模型 #HighAgency'].filter(Boolean).join('\n\n')};
+}
+function wrap(ctx,text,maxW){
+ const tk=text.match(/[A-Za-z0-9'’"“”\-.,!?:;()_%+×=>/]+\s*|[\s\S]/g)||[],lines=[];let cur='';
+ for(const t of tk){if(cur&&ctx.measureText((cur+t).trimEnd()).width>maxW){lines.push(cur.trimEnd());cur=t.trimStart()}else cur+=t}
+ if(cur.trim())lines.push(cur.trimEnd());return lines}
+function rr(ctx,x,y,w,h,r){ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,w,h,r);else ctx.rect(x,y,w,h)}
+function drawCard(cv,d){
+ const ctx=cv.getContext('2d'),ls=langs(),l0=ls[0];cv.width=cv.height=1080;
+ ctx.fillStyle='#fbf6ee';ctx.fillRect(0,0,1080,1080);
+ const g=ctx.createLinearGradient(0,0,1080,1080);g.addColorStop(0,d.color+'55');g.addColorStop(1,d.color+'11');ctx.fillStyle=g;ctx.fillRect(0,0,1080,1080);
+ rr(ctx,50,50,980,980,40);ctx.fillStyle='#fffdf8';ctx.fill();ctx.strokeStyle=d.color+'66';ctx.lineWidth=3;ctx.stroke();
+ ctx.textBaseline='alphabetic';ctx.textAlign='left';
+ ctx.font=`700 28px ${FF}`;const tag=d.tag(l0),tw=ctx.measureText(tag).width;
+ rr(ctx,100,105,tw+48,56,28);ctx.fillStyle=d.color;ctx.fill();ctx.fillStyle='#fff';ctx.fillText(tag,124,143);
+ const title=d.title(l0);let ts=46;do{ctx.font=`700 ${ts}px ${FF}`;ts-=2}while(ctx.measureText(title).width>880&&ts>22);
+ ctx.fillStyle='#3b2f2a';ctx.fillText(title,100,235);
+ ctx.fillStyle=d.color+'40';ctx.font=`700 200px Georgia,serif`;ctx.fillText('“',84,420);
+ const top=300,bot=d.foot?740:930,area=bot-top,gap=34;let blocks,h;
+ for(let s=1;s>.3;s-=.04){h=0;blocks=ls.map((l,n)=>{const zh=l==='zh',size=(zh?62:ls.length>1?34:52)*s,font=`${zh?'700':'italic 400'} ${size}px ${FF}`;ctx.font=font;
+   const lines=wrap(ctx,Lg(d.quote,l),840),lh=size*(zh?1.5:1.4);h+=lines.length*lh+(n?gap:0);return{font,lines,lh,color:n?'#8a7a6e':'#3b2f2a'}});if(h<=area)break}
+ let y=top+(area-h)/2;ctx.textAlign='center';
+ blocks.forEach((b,n)=>{if(n)y+=gap;ctx.font=b.font;ctx.fillStyle=b.color;b.lines.forEach(t=>{y+=b.lh;ctx.fillText(t,540,y-b.lh*.28)})});
+ ctx.textAlign='left';
+ if(d.foot){rr(ctx,100,770,880,180,24);ctx.fillStyle=d.color+'22';ctx.fill();
+  ctx.fillStyle=d.color;ctx.font=`700 26px ${FF}`;ctx.fillText(l0==='en'?"👣 Today's tiny step":'👣 今天的一小步',130,815);
+  let fs=30,lines;do{ctx.font=`400 ${fs}px ${FF}`;lines=wrap(ctx,Lg(d.foot,l0),820);fs-=2}while(lines.length*(fs+2)*1.35>118&&fs>14);
+  ctx.fillStyle='#3b2f2a';const lh=(fs+2)*1.35;lines.forEach((t,n)=>ctx.fillText(t,130,822+lh*(n+1)))}
+ ctx.textAlign='center';ctx.fillStyle='#8a7a6e';ctx.font=`400 24px ${FF}`;ctx.fillText('人生68碗心靈雞湯 ・ LifeOS',540,1000);
+}
+document.addEventListener('click',e=>{
+ const b=e.target.closest('[data-fb]');
+ if(b){const box=b.nextElementSibling;box.hidden=!box.hidden;if(!box.hidden&&!box.firstChild){
+   const d=fbData(b.dataset.fb),en=lang==='en';
+   box.innerHTML=`<canvas></canvas><textarea></textarea><div class="btns"><button class="btn fill" data-act="copy">${en?'Copy post':'複製貼文'}</button><button class="btn" data-act="dl">${en?'Download card':'下載圖卡'}</button></div>`;
+   box.querySelector('textarea').value=langs().map(d.post).join('\n\n———\n\n');
+   const cv=box.querySelector('canvas');cv.dataset.file=d.file;drawCard(cv,d);
+   if(document.fonts&&document.fonts.load)document.fonts.load(`700 60px "Noto Serif TC"`,Lg(d.quote,'zh')+d.title('zh')).then(()=>drawCard(cv,d)).catch(()=>{})}
+  return}
+ const a=e.target.closest('[data-act]');if(!a)return;const box=a.closest('.fb');
+ if(a.dataset.act==='copy'){const ta=box.querySelector('textarea'),old=a.textContent,ok=()=>{a.textContent='✓';setTimeout(()=>a.textContent=old,1200)};
+  const fb=()=>{ta.select();document.execCommand('copy');ok()};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(ta.value).then(ok,fb);else fb()}
+ else{const cv=box.querySelector('canvas');cv.toBlob(bl=>{const u=URL.createObjectURL(bl),l=document.createElement('a');l.href=u;l.download=cv.dataset.file+'.png';document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),2000)})}
+});
+// ── 英文朗讀（瀏覽器內建語音，不需網路服務）──
+let sayEl=null;
+function speak(text,el){
+ const S=window.speechSynthesis;if(!S){alert('這個瀏覽器不支援語音朗讀，請改用 Edge 或 Chrome。');return}
+ const same=el&&el===sayEl&&S.speaking;S.cancel();if(sayEl)sayEl.classList.remove('on');sayEl=null;if(same)return;
+ const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=.92;
+ const v=S.getVoices().filter(x=>/^en/i.test(x.lang));if(v.length)u.voice=v.find(x=>/natural|online/i.test(x.name)&&/en-US/i.test(x.lang))||v.find(x=>/en-US/i.test(x.lang))||v[0];
+ if(el){sayEl=el;el.classList.add('on');u.onend=u.onerror=()=>{el.classList.remove('on');if(sayEl===el)sayEl=null}}
+ S.speak(u)}
+if(window.speechSynthesis)speechSynthesis.getVoices();
+document.addEventListener('click',e=>{
+ const b=e.target.closest('[data-say]');
+ if(b){const k=b.dataset.say,i=+k.slice(1);
+  const t=k[0]==='m'?[mName(M[i]),...M[i].slice(2)].map(s=>Lg(s,'en')).join(' ')
+   :fbData(k).post('en').split('\n').filter(x=>x[0]!=='#').join('. ');
+  speak(t.replace(/[^\x20-\x7E’“”—→×]/g,' ').replace(/→/g,', then ').replace(/_+/g,' blank '),b);return}
+ const s=e.target.closest('.say');
+ if(s&&!e.target.closest('button'))speak(s.innerText.replace(/_+/g,' blank '),s)});
 $('#q').addEventListener('input',e=>{query=e.target.value;render()});
 $('#lang').addEventListener('click',e=>{const l=e.target.dataset.l;if(!l)return;lang=l;try{localStorage.setItem('soup68-lang',l)}catch(_){}render()});
 document.querySelector('.tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tab=b.dataset.t;render()});

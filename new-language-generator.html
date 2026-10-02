@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>新語言生成器</title>
+<style>
+:root{
+  --bg:#f6f5f1;--card:#ffffff;--ink:#1d1d1f;--muted:#6b6b70;--line:#e3e1da;
+  --accent:#2f6f5e;--accent-soft:#e3f0ec;--old:#9a5b3c;--mark:#ffe58a;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#141517;--card:#1e2023;--ink:#ecebe7;--muted:#9a9a9f;--line:#2e3034;
+    --accent:#7cc4ae;--accent-soft:#1f302b;--old:#d89a78;--mark:#6b5a12;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.6}
+header{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 16px 0}
+.wrap{max-width:900px;margin:0 auto}
+.top{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+h1{font-size:18px;margin:0 8px 0 0;white-space:nowrap}
+#q{flex:1;min-width:180px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:15px}
+#q:focus{outline:2px solid var(--accent);border-color:transparent}
+button{font:inherit;cursor:pointer}
+.btn{padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.tabs{display:flex;gap:4px;overflow-x:auto;margin-top:10px;scrollbar-width:none}
+.tab{padding:8px 12px;border:0;background:none;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+main{padding:16px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.chip{font-size:13px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--muted)}
+.chip:hover{color:var(--accent);border-color:var(--accent)}
+h2{font-size:17px;margin:26px 0 10px;padding-left:10px;border-left:4px solid var(--accent)}
+h2 small{color:var(--muted);font-weight:normal;font-size:13px;margin-left:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;transition:border-color .15s}
+.card:hover{border-color:var(--accent)}
+.meta{display:flex;gap:8px;align-items:baseline;margin-bottom:4px}
+.num{font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:1px 7px}
+.ttl{font-weight:600;font-size:14px}
+.src{margin-left:auto;font-size:11px;color:var(--muted)}
+.old{color:var(--old);font-size:14px}
+.old::before{content:"舊｜";color:var(--muted)}
+.new{font-weight:600;font-size:15px;margin-top:2px}
+.new::before{content:"新｜";color:var(--muted);font-weight:normal}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
+.block{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.block h3{margin:0 0 8px;font-size:16px;color:var(--accent)}
+.block ul,.block ol{margin:0;padding-left:22px}
+.block li{margin:3px 0}
+.block p{margin:6px 0}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.flow span{background:var(--accent-soft);color:var(--accent);padding:3px 10px;border-radius:8px;font-size:14px;font-weight:600}
+.flow i{color:var(--muted);font-style:normal}
+.quote{font-weight:600;border-left:3px solid var(--accent);padding-left:10px}
+.block pre{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:8px 0;font-family:inherit;font-size:14px;white-space:pre-wrap;line-height:1.5}
+.tblwrap{overflow-x:auto;margin:6px 0}
+.block table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+.block th,.block td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.block th{color:var(--muted);font-weight:600}
+.block td:first-child{font-weight:700;color:var(--accent);white-space:nowrap}
+.hero{text-align:center;font-size:22px;font-weight:700;letter-spacing:2px;color:var(--accent);margin:4px 0 10px}
+.empty{color:var(--muted);text-align:center;padding:40px 0}
+.count{color:var(--muted);font-size:13px;margin-bottom:8px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:99px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.show{opacity:1}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+#modal.show{display:flex}
+#modal .card{max-width:480px;width:100%;padding:24px;cursor:default}
+#modal .new{font-size:20px}
+#modal .old{font-size:16px}
+#modal .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="top">
+    <h1>新語言生成器</h1>
+    <input id="q" type="search" placeholder="搜尋：焦慮、Boundary、懶、Evidence…" autocomplete="off">
+    <button class="btn" id="rand">🎲 隨機一句</button>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</div></header>
+<main><div class="wrap" id="view"></div></main>
+<div id="modal"><div class="card" id="mcard"></div></div>
+<div id="toast"></div>
+
+<script>
+/* ===== 資料 1：新語言生成公式｜100句 ===== */
+const S1 = `#A|看得更準：Reality 公式 01–20
+01|身份 → 行為|我是＿＿的人|我在＿＿情境，做了＿＿行為。
+02|人格 → Pattern|我就是＿＿|我在什麼條件下容易出現＿＿Pattern？
+03|評價 → 觀察|他很＿＿|我實際觀察到他做了＿＿。
+04|感覺 → 事實|我覺得＿＿|我的感受是＿＿；目前能確認的事實是＿＿。
+05|猜測 → Hypothesis|他一定是因為＿＿|一個可能解釋是＿＿，但還需要Evidence。
+06|動機推論 → Evidence|他故意＿＿|我看見的行為是＿＿；他的動機目前未知。
+07|概化 → 樣本|他每次都＿＿|最近哪幾次真的發生＿＿？
+08|永遠 → 時間範圍|我永遠＿＿|最近＿＿期間，我經常＿＿。
+09|全部 → 部分|我什麼都不會|目前主要不會的是＿＿。
+10|模糊 → 具體|事情很糟|具體發生了＿＿，造成＿＿影響。
+11|結果 → 組成|我考很差|我在＿＿、＿＿、＿＿三類題目失分。
+12|標籤 → 指標|我很懶|我這週有＿＿次沒有按計畫開始。
+13|印象 → Data|最近變差了|哪個指標從＿＿變成＿＿？
+14|故事 → Event|大家都不喜歡我|實際發生的事件是＿＿。
+15|Interpretation → Reality|他看不起我|他說／做了＿＿；我把它解讀成＿＿。
+16|情緒 → Signal|我很生氣|我的生氣可能正在提醒＿＿。
+17|焦慮 → Prediction|我很焦慮|我正在預測＿＿可能發生。
+18|委屈 → Expectation Gap|我很委屈|我原本期待＿＿，Reality卻是＿＿。
+19|害怕 → Risk|我好怕|我擔心的具體風險是＿＿。
+20|混亂 → Nodes|全部亂掉了|現在其實有A＿＿、B＿＿、C＿＿三件事。
+#B|想得更多：Model 公式 21–40
+21|單因果 → 多因果|都是因為＿＿|結果可能由＿＿＋＿＿＋＿＿共同生成。
+22|問題 → Mechanism|為什麼這麼糟？|這個結果是怎麼一步一步生成的？
+23|表象 → Generator|我要解決＿＿症狀|什麼機制一直生成這個症狀？
+24|很多問題 → Bottleneck|我要全部改善|哪一個Node現在最限制Outcome？
+25|努力 → Leverage|我要更努力|改哪個變數，結果可能改最多？
+26|不會 → Skill Gap|我不行|我缺的是哪一項Skill？
+27|不能 → Constraint|我不能＿＿|目前限制我的Constraint是什麼？
+28|沒資源 → Resource Gap|沒有辦法|缺時間、錢、人、資訊、工具，還是能力？
+29|難 → Complexity|太難了|可以拆成哪三個比較小的問題？
+30|死局 → Option Space|只能這樣|除了A，還有B、C、D嗎？
+31|A/B → C/D/E|只能A或B|兩者之外還有哪些組合方案？
+32|衝突 → Difference|我們合不來|我們在哪個Need／Interest／Model／Boundary不同？
+33|責怪 → System|都是他的問題|系統中哪些條件讓這個問題反覆發生？
+34|個人 → Environment|我沒自制力|環境裡有哪些誘因一直推動這個行為？
+35|現在 → 時間尺度|現在很糟|一週、一年、五年尺度分別怎麼看？
+36|表面選擇 → Higher Outcome|我要A還是B？|A與B背後真正想得到的是什麼？
+37|反對 → Alternative Model|他錯了|如果站在他的Model裡，他看到了什麼？
+38|答案 → Assumption|這一定有效|這個結論建立在哪些Assumptions上？
+39|確定 → Probability|一定會發生|目前Evidence支持多大的可能性？
+40|單一模型 → Model Competition|原因就是＿＿|至少還有哪些三種Alternative Models？
+#C|做得更對：Action 公式 41–60
+41|目標 → 下一步|我要變好|今天下一個可執行Action是＿＿。
+42|大目標 → Minimum Action|我要學好英文|今天先完成＿＿分鐘／＿＿題。
+43|完美 → Version 1|還沒準備好|什麼是現在能推出的V1？
+44|等待 → Experiment|等我確定再做|先做哪個低成本Experiment？
+45|想很多 → Probe|我不知道答案|做什麼小測試可以取得更多資訊？
+46|努力 → Targeted Practice|多做題目|針對哪一類Error做練習？
+47|知道 → 行動|我知道了|所以今天會改哪一個行為？
+48|理解 → Retrieval|我看懂了|關掉答案，我還能做出來嗎？
+49|會做 → Transfer|這題會了|換一道陌生題還會嗎？
+50|短期會 → Retention|今天會了|Day 1／3／7還記得嗎？
+51|控制別人 → Design Conditions|我要他改|我能改變哪些合作條件？
+52|要求 → Boundary|他一定要＿＿|如果他不做，我的界線與Plan B是＿＿。
+53|抱怨 → Request|都沒人幫我|我要向誰提出什麼具體Request？
+54|責任模糊 → Owner|大家一起處理|誰負責什麼？何時完成？
+55|忙碌 → Priority|事情好多|現在最重要的一件事是＿＿。
+56|平均用力 → 80/20|全部都重要|哪20%最影響80%的Outcome？
+57|阻力 → Friction Design|我總是拖延|怎麼讓第一步更容易開始？
+58|誘惑 → Environment Design|我要忍住手機|怎麼讓手機更難拿到？
+59|風險 → Buffer|希望不要出事|出事前可以建立什麼備援？
+60|失控 → Control Circle|我什麼都控制不了|現在有哪些變數仍在我的控制圈？
+#D|改得更快：Feedback 公式 61–80
+61|失敗 → Prediction Error|我失敗了|哪個Prediction沒有實現？
+62|錯誤 → Data|我又錯了|這次Error提供了什麼資訊？
+63|自責 → Root Cause|我怎麼這麼笨|真正Root Cause是什麼？
+64|後悔 → Learning|早知道就＿＿|現在多知道了哪個重要資訊？
+65|白做 → Experiment Result|全部白費|這次排除了哪條無效路徑？
+66|方法無效 → Condition|這方法沒用|它在哪些條件下沒有效？
+67|成功 → Mechanism|太好了，成功了|究竟哪個Mechanism讓它成功？
+68|運氣 → 可控變數|只是運氣好／差|哪些是隨機？哪些是可控？
+69|分數 → Diagnosis|我只有55分|55分透露哪些能力缺口？
+70|批評 → Feedback|他在挑我毛病|這份Feedback有哪些部分可以驗證？
+71|防衛 → Evidence|我才沒有！|有哪些Evidence支持或反對這個Feedback？
+72|證明自己 → Falsification|我要證明我是對的|什麼Evidence會證明我的Model需要改？
+73|一次成功 → Replication|我成功了|再做三次還能重現嗎？
+74|一次失敗 → Sample Size|這方法失敗|一次結果足以否定它嗎？
+75|結果 → Trend|今天變好了|這是一次波動還是持續Trend？
+76|感覺有效 → Measurement|我覺得有效|哪個指標可以驗證效果？
+77|完成 → Outcome|我做完了|做完有沒有產生預期Outcome？
+78|訂正 → Retest|我訂正完了|重新測一次還會錯嗎？
+79|回饋 → Update|我知道問題了|我要修改Model的哪個部分？
+80|經驗 → Wisdom|我經歷過了|這次經驗能壓縮出什麼Rule？
+#E|關係與界線：Relationship 公式 81–90
+81|拒絕我 → 拒絕提議|他拒絕我|他拒絕的是我，還是這次Request？
+82|不愛我 → Need Gap|他不愛我|哪個Need沒有被回應？
+83|不尊重 → Boundary Event|他不尊重我|哪個具體行為越過我的Boundary？
+84|不理解 → Communication Gap|他不懂我|哪個資訊／感受／需求還沒傳達清楚？
+85|敵人 → Interest Difference|他跟我作對|我們的利益在哪裡不同？
+86|不合作 → Incentive|他就是不配合|目前有哪些誘因讓合作對他不划算？
+87|衝突 → Information|又吵架了|這次衝突暴露了哪個長期差異？
+88|討好 → Choice|我不能拒絕|拒絕的成本是什麼？我願不願承擔？
+89|犧牲 → Agency|我都是為了你|這是我選擇承擔的，還是需要重新設界線？
+90|關係結束 → Relationship Design|我們完了|這段關係需要修復、降頻、重設界線，還是結束？
+#F|智慧生成：Model Update 公式 91–100
+91|真相 → Current Model|事情就是這樣|這是我目前最符合Evidence的Model。
+92|信念 → Hypothesis|我相信＿＿|我目前假設＿＿，怎麼測試？
+93|經驗 → Evidence|我以前遇過|這段經驗能代表現在多少？
+94|過去 → Prior|以前都這樣|過去可以當Prior，但現在有沒有新Evidence？
+95|規則 → Context|這方法就是對的|在哪些Context下成立？
+96|知識 → Prediction|我懂這個理論|這個理論能做出什麼Prediction？
+97|Prediction → Reality Test|我認為會＿＿|Reality出現什麼結果才算支持／反對？
+98|Model → Update|我的Model是＿＿|什麼Prediction Error會迫使我更新？
+99|能力 → Transfer|我已經學會|換人、換題、換情境還能做到嗎？
+100|智慧 → 生成|我找到答案了|我能不能用這個結構生成下一個新答案？`;
+
+/* ===== 資料 2：新語言能力｜100句口訣 ===== */
+const S2 = `#一|身份 → 行為｜不要把一次經驗變成「我是誰」
+我就是笨|我哪個概念還沒懂？
+我就是懶|我在哪一步沒有啟動？
+我沒天分|哪個能力還沒練出來？
+我很沒用|現在什麼任務超過我的能力？
+我很失敗|哪個Outcome沒有達成？
+我不是讀書的料|哪種學習方法不適合我？
+我沒組織能力|哪個流程還沒建立？
+我不會溝通|哪種情境下我最不會表達？
+我沒有自制力|什麼情境最容易讓我失控？
+我就是這樣|這個Pattern是怎麼形成的？
+#二|評價 → Reality｜不要急著判好壞
+他很自私|他這次把什麼利益放在前面？
+他很沒責任感|哪件責任沒有完成？
+他很難相處|哪種互動最容易產生衝突？
+他很不成熟|哪個能力還不足以處理這件事？
+他很沒禮貌|哪個具體行為讓我不舒服？
+他很冷血|他沒有做出我期待的哪種回應？
+他很奇怪|他的Model跟我的哪裡不同？
+這學生很差|他目前哪三個Skill最弱？
+這孩子沒救|目前哪些方法沒有產生效果？
+這件事很糟|實際損失與影響是什麼？
+#三|情緒 → Signal｜情緒不是判決書
+我很焦慮|我正在預測什麼風險？
+我好生氣|哪個界線或期待被碰到了？
+我好難過|我正在失去或在乎什麼？
+我好嫉妒|對方身上有什麼是我也想要的？
+我好委屈|我的付出與期待哪裡不對等？
+我好害怕|我認為什麼事情可能發生？
+我很煩|有哪些未完成事項正在占用注意力？
+我好挫折|Prediction與Reality差在哪裡？
+我沒安全感|我需要增加哪些可預測性？
+我要消滅負面情緒|這個情緒帶來什麼資訊？
+#四|問題 → Mechanism｜從「有問題」轉成「怎麼生成」
+為什麼我這麼倒楣？|哪些因素共同產生這個結果？
+為什麼總是我？|什麼Pattern正在重複？
+問題好多|哪個問題在生成其他問題？
+事情好複雜|可以拆成哪些Nodes？
+完全亂掉了|哪個流程先失效？
+怎麼救？|真正的Bottleneck在哪裡？
+為什麼一直沒改善？|哪個變數一直沒有改？
+我已經很努力|努力有沒有作用在Leverage Point？
+做很多都沒效|哪些Action沒有連到Outcome？
+到底哪裡有問題？|結果是經過哪條因果鏈生成的？
+#五|失敗 → Prediction Error｜錯誤是資料
+我失敗了|哪個Prediction錯了？
+又做錯了|這次是哪類Error？
+白努力了|這次排除了哪個錯誤策略？
+早知道不要做|現在比當初多知道什麼？
+這次完蛋了|損失已發生，現在可修正什麼？
+我怎麼又犯同樣錯？|哪個Model其實還沒更新？
+我明明會|是Recognition還是Mastery？
+運氣不好|哪些是隨機，哪些是可改善因素？
+計畫失敗|哪個Assumption沒有成立？
+結果證明我不行|結果證明目前方法還不夠。
+#六|不可能 → Constraint｜把牆拆成條件
+不可能|哪個Constraint讓它現在做不到？
+我沒辦法|缺Skill、Resource還是Strategy？
+沒有時間|時間目前被哪些事情占用？
+沒有錢|最低需要多少資源？
+沒有人幫我|我需要哪一種具體支援？
+環境不允許|哪個環境條件必須先改？
+我做不到那麼多|Minimum Viable Action是什麼？
+現在不能開始|什麼最小版本今天能開始？
+條件不成熟|最低啟動條件是什麼？
+只能這樣|哪個限制讓我只看見這個選項？
+#七|A／B困境 → Options｜跳出雙重束縛
+只能留下或離開|兩邊各自保護什麼？
+工作或家庭只能選一個|我要保留兩邊的哪些核心價值？
+忍耐或翻臉|還有哪些界線表達方式？
+答應或得罪他|能不能部分答應、重新協商？
+成功或失敗|這次可以先做哪個Experiment？
+做或不做|能不能先做10%的版本？
+原諒或斷絕|關係可以有哪些距離？
+控制或放棄|哪些可控，哪些要接受？
+聽我的或反對我|還有哪些共同Outcome？
+A還是B？|有沒有C、D、E？
+#八|人際 → Boundary／Need／Interest｜
+他不尊重我|哪個Boundary被越過？
+他不愛我|我期待什麼愛的行為？
+他不在乎|我期待他做什麼，而他沒有做？
+他在利用我|這段交換哪裡不對等？
+他背叛我|哪項共同約定被破壞？
+他故意氣我|他的動機有Evidence嗎？
+他針對我|還有哪些可能的Explanation？
+我要讓他理解我|我要怎麼讓需求更清楚？
+我要他改|我能改哪些互動條件？
+他一定要配合|如果他不合作，我的Plan B是什麼？
+#九|控制 → Agency｜把力量拿回可控範圍
+我要控制結果|我要提高哪些成功機率？
+我要大家認同|我要把理由與Evidence說清楚。
+我要孩子聽話|我要培養孩子什麼能力？
+我要學生努力|我要怎麼降低努力的啟動成本？
+我要家人負責|責任、Owner與期限清楚了嗎？
+我要別人尊重我|我要建立什麼Boundary？
+我要避免所有風險|我要建立什麼Buffer？
+事情不能出錯|出錯後Recovery機制是什麼？
+我一定要贏|我真正的Outcome是什麼？
+我要證明自己|我要創造什麼Value？
+#十|答案 → Model Update｜最高階新語言
+我知道了|我能不能自己重做？
+這就是真相|目前Evidence支持到什麼程度？
+我一定是對的|什麼Evidence會讓我改變？
+以前都有效|現在的Environment變了嗎？
+專家都這樣說|Evidence與適用條件是什麼？
+這方法最好|對誰、何時、什麼條件下有效？
+找到答案了|換情境還成立嗎？
+我已經改變了|新行為能不能穩定重複？
+這次成功了|成功來自哪個Mechanism？
+這就是我的新Model|下一次Reality會怎麼測試它？`;
+
+/* ===== 資料 3：新語言30句口訣｜Language Update ===== */
+const S3 = `他就是這種人|他這次做了什麼？
+我一直都這樣|這個Pattern什麼時候出現？
+他故意的|我有什麼證據知道他的動機？
+都是他的錯|哪些因素共同造成結果？
+我感覺如此，所以就是如此|感受是Signal，事實是什麼？
+我很焦慮|我的系統正在擔心什麼？
+我不應該生氣|生氣在提醒哪個界線？
+我很懶|哪裡的啟動成本太高？
+我沒自制力|環境裡什麼一直在誘惑我？
+我很笨|是哪個Skill還沒建立？
+我粗心|我漏掉了哪個訊號？
+太難了|還能拆成哪三小步？
+事情太多|現在最大的Bottleneck是哪一個？
+我要更努力|哪個Leverage改了最有效？
+我要全部做好|現在最重要的20%是什麼？
+我不要X|我要創造什麼Y？
+A還是B？|A、B共同想保護什麼？
+只有這條路|還能生成哪三個Options？
+我要讓他改|我能改變哪些條件？
+他不尊重我|哪個具體行為越過我的Boundary？
+他拒絕我|他拒絕的是我，還是這次提議？
+我們關係完了|現在是哪個衝突還沒解決？
+他跟我作對|我們在哪個Model上不同？
+別人批評我|這份Feedback哪部分值得留下？
+我早知道就……|現在多知道了什麼？
+白做了|這次Experiment排除了什麼？
+這方法沒用|在哪些條件下沒有效？
+我已經懂了|換一道題，我還做得出來嗎？
+我要證明我是對的|什麼Evidence會讓我改變？
+這就是真相|這是目前最符合Evidence的Model嗎？`;
+
+/* ===== 資料 4：課程六句口訣 ===== */
+const S4 = `我是誰|我做了什麼？
+誰不好|發生了什麼？
+我不行|缺了什麼？
+失敗了|哪個預測錯了？
+沒辦法|還有哪些選項？
+一定如此|Reality怎麼驗證？`;
+
+/* ===== 原理（生成器／壓縮版） ===== */
+const THEORY = [
+  {t:"核心定義", flow:null, items:[
+    "核心不是「把話說好聽」。",
+    "**舊語言＝快速下結論**",
+    "**新語言＝把結論重新打開，轉成可觀察、可分析、可選擇、可行動、可驗證、可更新的模型。**"]},
+  {t:"總母公式", flow:["舊語言","拆標籤","回Reality","找差異","找機制","找變數","生選項","最小行動","Feedback","Model Update"]},
+  {t:"新語言生成器（10步）", ol:true, items:[
+    "**去身份化**：「我是什麼」→「發生什麼」",
+    "**去評價化**：「好／壞」→「Evidence是什麼」",
+    "**提高解析度**：「全部」→「到底哪一部分」",
+    "**找生成機制**：「為什麼這麼糟」→「怎麼生成的」",
+    "**找差異**：「失敗」→「Prediction與Reality差在哪」",
+    "**找瓶頸**：「全部要改」→「哪個Node最關鍵」",
+    "**生選項**：「沒辦法」→「A/B/C/D還有什麼」",
+    "**轉成行動**：「我知道」→「下一步做什麼」",
+    "**Reality Test**：「我相信」→「怎麼驗證」",
+    "**Model Update**：「答案」→「新Evidence進來後怎麼更新」"]},
+  {t:"最後壓成10條公式", items:[
+    "身份 → 行為","評價 → 事實","情緒 → 訊號","模糊 → 具體","問題 → 機制",
+    "失敗 → Prediction Error","不能 → Constraint","困局 → Options","知道 → Action + Test","答案 → Model Update"]},
+  {t:"10大新語言轉換器", ol:true, items:[
+    "**身份 → 行為**：我是誰？ → 我做了什麼？",
+    "**評價 → Reality**：誰好誰壞？ → 到底發生什麼？",
+    "**情緒 → Signal**：我好難受 → 它在提醒什麼？",
+    "**問題 → Mechanism**：怎麼這麼糟？ → 它怎麼生成？",
+    "**失敗 → Prediction Error**：我失敗 → 哪個預測錯？",
+    "**不可能 → Constraint**：做不到 → 卡在哪個條件？",
+    "**困境 → Options**：A還是B？ → C、D、E呢？",
+    "**衝突 → Difference**：誰對誰錯？ → Model／Need／Interest／Boundary差在哪？",
+    "**控制 → Agency**：怎麼改變別人？ → 我能改變什麼？",
+    "**答案 → Model Update**：我知道了 → Reality還支持嗎？"]},
+  {t:"新語言八轉", items:[
+    "身份 → 行為","評價 → 事實","情緒 → 訊號","問題 → 機制",
+    "失敗 → 誤差","困境 → 選項","批評 → 回饋","真理 → 可更新模型"]},
+  {t:"好語言檢核：六個問題", items:[
+    "不要問：這句話正不正向？改問六件事：",
+    "① 更接近Reality嗎？","② 解析度提高了嗎？","③ Mechanism更清楚嗎？",
+    "④ Options增加了嗎？","⑤ 下一個Action出現了嗎？","⑥ 未來Evidence還能修正它嗎？",
+    "**六個都是YES，才是真正高品質的「新語言」。**"]},
+  {t:"最終母體", items:[
+    "不是「負面語言 → 正面語言」，而是：",
+    "模糊 → 精確","身份 → 行為","評價 → 資料","情緒 → 訊號","問題 → 機制",
+    "失敗 → 誤差","不能 → 條件","困局 → 選項","控制 → Agency","答案 → 可更新Model"]},
+  {t:"總口訣", items:[
+    "少貼標籤，多找事實；","少判好壞，多找機制；","少問誰錯，多找差異；","少說不能，多找條件；",
+    "少困A/B，多生選項；","少證明自己，多讓Reality驗證；","少守答案，多做Model Update。",
+    "一句話說出口後，不是把世界定死，而是讓下一個問題、下一個選項、下一個行動自然長出來。"]},
+  {t:"成長路徑", flow:["看得準","分得細","找得到機制","生得出選項","做得出行動","收得到回饋","改得動模型","長得出能力","壓縮成智慧"]},
+  {t:"一句話記住", items:[
+    "**新語言不是讓我感覺比較好，而是讓我看得更準、想得更多、做得更對、改得更快。**",
+    "新語言＝提高Reality解析度＋找到生成機制＋增加Options＋產生Action＋接受Feedback＋允許Model Update。"]}
+];
+
+/* ===== 課程 ===== */
+const LESSON = [
+  {t:"Introduction", items:[
+    "改變你說話的方式，就能徹底改變你的人生走向？這不是心靈雞湯，而是一套精準的認知重構系統！我們常用「我很笨」、「他又在針對我」等舊語言，為自己畫下一張張充滿限制的舊地圖。",
+    "本課程將帶領你掌握「新語言能力」，不求把壞話美化，而是把現實說得更精確，精確到讓你立刻知道下一步該做什麼。"]},
+  {t:"學習目標", items:[
+    "理解新舊語言的本質差異，掌握「認知重構」的七步轉化機制。",
+    "學會在學習、錯誤、情緒、人際關係、家庭照顧及自我成長等六大領域中應用新語言。",
+    "內化「新語言六句口訣」，建立持續自我反覆運算與更新的思維模型。"]},
+  {t:"核心觀念：語言如何塑造我們的現實", items:[
+    "你是否曾陷入「反正我就是學不會」或「這件事根本沒辦法」的絕望感中？這並非事實，而是你的「舊語言」為你繪製了「舊地圖」，限制了你的預測與選擇。",
+    "新語言能力的核心，並非盲目的正向思考或「把壞話改成好話」，而是精準的「重新分類（Reclassification）」。",
+    "當我們將含糊的自我批判，拆解為高解析度的現實描述時，大腦的搜尋方向就會從「我為什麼這麼糟？」轉向「哪個步驟摩擦力最大？該如何排除？」。這能幫我們找回自主權（Agency），並啟動全新的行動。"]},
+  {t:"實戰應用：學習、錯誤與情緒", items:[
+    "**學習重構**：「我記性不好」→「我只有輸入，檢索次數不足」→ 新選擇：間隔回想。將模糊的能力問題，轉化為具體的技術缺口。",
+    "**錯誤重構**：「我又失敗了」→「這次的預測（Prediction）沒有被現實（Reality）支持」。錯誤不再是人格污點，而是等待修改的預測模型（Model Update）。",
+    "**情緒重構**：「我不能焦慮」→「我的系統正在預測威脅」。情緒不是敵人，而是傳遞重要資訊的信號（Signal）；理解後採取最小可行行動（Minimum Action）應對。"]},
+  {t:"實戰應用：人際、家庭與自我成長", items:[
+    "**人際**：「他不尊重我。」→「哪一個具體行為讓我感到界線被越過？」把爭執引導至具體的邊界（Boundary）問題，而非對人性的指責。",
+    "**家庭**：「為什麼都是我在照顧？」→「這個照顧系統過度依賴單一照顧者。」跳脫受害者情結，開始建立分工與備援機制。",
+    "**自我成長**：「我很懶」→「任務的啟動成本過高」。把第一步縮小到只要做2分鐘。改變環境設計（Environment Design），遠比考驗自制力更有效。"]},
+  {t:"核心本質：六大轉換", ol:true, items:[
+    "**身份（Identity）→ 行為（Behavior）**：從「我是怎樣的人」變成「我現在做了什麼」。",
+    "**評判（Judgment）→ 現實（Reality）**：從「誰好誰壞」變成「真正發生了什麼」。",
+    "**情緒（Emotion）→ 信號（Signal）**：從「我感覺如此等於事實如此」變成「這個感受在提醒什麼」。",
+    "**問題（Problem）→ 機制（Mechanism）**：從「我有問題」變成「這個結果是如何生成的」。",
+    "**失敗（Failure）→ 預測誤差（Prediction Error）**：從「我失敗了」變成「哪個思維模型需要更新」。",
+    "**不可能（Impossible）→ 選擇（Options）**：從「沒有路」變成「目前還沒找到可行路徑」。",
+    "這六大轉換改變了大腦的「搜尋方向」：不再問「我為什麼這麼糟？」，而是問「哪個環節摩擦力最大？」。"]},
+  {t:"Summary", items:[
+    "**新語言的真正目的**：不是追求好聽或正向，而是透過「高解析度」的描述，精確指出下一步行動。",
+    "**六大核心轉換**：將身份、評判、情緒、問題、失敗與不可能，轉化為行為、現實、信號、機制、預測誤差與選項。",
+    "**新語言六句口訣**：見下方卡片。"]}
+];
+
+/* ===== 智慧生成九步法 ===== */
+const NINE = [
+  {t:"九字口訣", hero:"看 → 分 → 機 → 選 → 做 → 回 → 改 → 能 → 智", items:[
+    "**看**｜看得準","**分**｜分得細","**機**｜找到機制","**選**｜生成選項","**做**｜採取行動",
+    "**回**｜取得回饋","**改**｜更新模型","**能**｜形成能力","**智**｜壓縮智慧"],
+    p:["> 看準、分細、找機、生選、去做、收回、再改、成能、化智。",
+       "它不是九個漂亮名詞，而是一個會循環的生成機制。"]},
+  {t:"完整公式", pre:`Reality
+↓
+① 看｜OBSERVE　　看得準　　　Fact ≠ Story
+↓
+② 分｜CLASSIFY　 分得細　　　大問題 → Nodes
+↓
+③ 機｜MECHANISM　找得到機制　Pattern → Cause → Generator
+↓
+④ 選｜OPTIONS　　生得出選項　A → A/B/C/D
+↓
+⑤ 做｜ACTION　　 做得出行動　Option → Minimum Action
+↓
+⑥ 回｜FEEDBACK　 收得到回饋　Prediction ↔ Reality
+↓
+⑦ 改｜UPDATE　　 改得動模型　Prediction Error → Model Update
+↓
+⑧ 能｜CAPABILITY 長得出能力　反覆成功 → Skill
+↓
+⑨ 智｜WISDOM　　 壓縮成智慧　跨情境規律 → Transferable Rule
+↓
+面對新的Reality ↺`,
+    flow:["Reality","Model","Action","Reality","Better Model ↺"],
+    p2:["它不是直線。每跑一輪，理論上都應該比上一輪多一點資訊。"]},
+  {t:"每一層真正的機制", table:{head:["口訣","核心問題","生成機制","產物"], rows:[
+    ["看","到底發生什麼？","事實／解釋分離","Data"],
+    ["分","它屬於哪一類？","Chunk Down＋Classification","Node"],
+    ["機","它怎麼生成？","Pattern＋因果假設","Mechanism"],
+    ["選","還能怎麼做？","Option Generation","Options"],
+    ["做","現在做什麼？","Minimum Action","Experiment"],
+    ["回","結果如何？","Prediction vs Reality","Feedback"],
+    ["改","哪裡猜錯？","Prediction Error","Model Update"],
+    ["能","下次能做到嗎？","Practice＋Retest＋Transfer","Capability"],
+    ["智","可留下什麼規律？","Compression＋Generalization","Wisdom"]]}},
+  {t:"① 看｜看得準", step:1, p:[
+    "> 先看事實，不急著講故事。",
+    "**公式**：Event → Observation → Evidence；而不是 Event → 情緒 → Interpretation → Conclusion。",
+    "**例**：舊語言「學生根本不想學。」（「不想學」已經是Interpretation）→ 新語言「最近5次作業，他有3次沒有完成。」這才開始接近Data。",
+    "**機制**：降低Interpretation → 提高Reality Resolution",
+    "> 看錯了，後面越努力可能錯得越遠。"]},
+  {t:"② 分｜分得細", step:2, p:[
+    "> 大問題不能解，小問題才能解。",
+    "**公式**：Problem → Category → Node → Subnode"],
+    flow:["英文不好","閱讀不好","長句錯很多","關係子句切錯","Clause Boundary Node"],
+    p2:["現在終於可以訓練。",
+    "**機制**：模糊 ↓ → Resolution ↑ → 可操作性 ↑",
+    "> 分類不是為了貼標籤，而是為了找到操作入口。"]},
+  {t:"③ 機｜找得到機制", step:3, p:[
+    "> 不要只問「哪裡錯」，要問「怎麼生成」。",
+    "**公式**：Input → Process → Output"],
+    flow:["字彙不足","句子解析慢","閱讀速度下降","時間不足","後面亂猜","閱讀失分"],
+    p2:["表面問題＝閱讀錯很多；Generator可能＝字彙不足。",
+    "**機制**：Event → Pattern → Structure → Generator",
+    "> 治表象只能暫時改結果；找到Generator，才可能改變結果的生成方式。"]},
+  {t:"④ 選｜生得出選項", step:4, p:[
+    "> 沒有選項，就沒有真正的選擇。",
+    "**公式**：Problem → A/B/C/D → Cost × Benefit × Risk × Reversibility",
+    "**例**：不是「我要不要繼續？」，而是："],
+    items:["A｜繼續原方法","B｜降低規模","C｜換方法","D｜找人合作","E｜做兩週Experiment","F｜暫停後再評估"],
+    p2:["**機制**：Option Space ↑ → Agency ↑",
+    "> 自由的一部分，來自能生成多少真正可行的選項。"]},
+  {t:"⑤ 做｜做得出行動", step:5, p:[
+    "> 再好的Model，不進Reality，都只是Hypothesis。",
+    "**公式**：Option → Minimum Action → Experiment",
+    "**例**：不要「我要把英文學好」，改成「今天20個高頻字＋1篇閱讀＋記錄錯誤類型」。",
+    "**機制**：行動真正的功能不只是「完成」，而是**取得新資訊**。Action = Reality Probe。",
+    "> 你做一次，Reality才有機會回答你：「你的Model到底對不對？」"]},
+  {t:"⑥ 回｜收得到回饋", step:6, p:[
+    "> 做完不算完成，收到Reality才算。",
+    "**公式**：Prediction − Reality = Prediction Error",
+    "**例**：Prediction「背20個單字，閱讀錯題應下降」；Reality「原本錯8題 → 仍錯8題」。這不是「我很失敗」，而是**我的因果Model可能不完整**——也許真正瓶頸是長句解析。",
+    "**機制**：Action → Result → Difference → Information",
+    "> Feedback是Reality寫給Model的回信。"]},
+  {t:"⑦ 改｜改得動模型", step:7, p:[
+    "> 錯不可怕，不改才會重複。",
+    "**公式**：Prediction Error → Diagnose → Reclassify → Update"],
+    flow:["舊Model：閱讀差＝單字差","實驗後沒有改善","新Evidence：單字認得，句構切錯","Model Update：瓶頸＝Clause Boundary","新Action：長句拆解訓練"],
+    p2:["這就是學習真正發生的位置。"]},
+  {t:"⑧ 能｜長得出能力", step:8, p:[
+    "> 一次做到叫結果，反覆做到才叫能力。",
+    "**公式**：Action → Success → Retest → Repetition → Transfer → Capability",
+    "**判斷「真的會了」**："],
+    items:["看懂 ≠ 會做","原題會 ≠ 換題會","今天會 ≠ 明天會","熟悉情境會 ≠ 陌生情境會"],
+    p2:["> 真正能力：換題、換時間、換情境，仍能做到。"]},
+  {t:"⑨ 智｜壓縮成智慧", step:9, p:[
+    "> 能力解決一次問題；智慧留下可重複使用的規律。",
+    "**公式**：Experience → Pattern → Principle → Compression → Transfer",
+    "**例**：經歷很多次後壓縮成——「當學生說『我粗心』，不要接受『粗心』作為Diagnosis；繼續追問漏看的是什麼。」這是一條可遷移的Rule：英文粗心、數學粗心、工作粗心、財務粗心，都能重新展開。",
+    "**機制**：大量Experience → 找共同Pattern → 去掉不必要細節 → 保留生成規律 → Wisdom"]},
+  {t:"三大循環", hero:"看分機｜選做回｜改能智", items:[
+    "**第一圈｜認知**：看 → 分 → 機（Reality → Classification → Mechanism）——世界到底發生什麼？",
+    "**第二圈｜行動**：選 → 做 → 回（Options → Action → Feedback）——我要怎麼測試？",
+    "**第三圈｜進化**：改 → 能 → 智（Update → Capability → Wisdom）——這次經驗如何讓下一次的我更強？"],
+    p2:["> 前三步看懂世界；中三步進入世界；後三步讓世界反過來更新自己。"]},
+  {t:"最重要的閉環", pre:`【看】Reality是什麼？
+↓
+【分】問題是哪一類？
+↓
+【機】怎麼生成？
+↓
+【選】有哪些Options？
+↓
+【做】做最小Experiment
+↓
+【回】Reality怎麼回答？
+↓
+【改】哪個Model要更新？
+↓
+【能】能否穩定重現？
+↓
+【智】能否壓縮成跨情境Rule？
+↓
+【新Reality】下一輪 ↺`},
+  {t:"濃縮三句與最高階公式", p:[
+    "> 看得準，才不會解錯問題。",
+    "> 做得出，Reality才有機會糾正你。",
+    "> 改得動，經驗才會真正變成能力與智慧。"],
+    hero2:"智慧 ≠ 經驗很多　｜　智慧 = 經驗 × 回饋 × Model Update × Transfer × 壓縮",
+    p2:["沒有回饋，經驗可能只是重複；沒有更新，錯誤可能只是再犯；沒有遷移，能力只能用在原情境；沒有壓縮，就很難形成下一次能快速調用的智慧。"],
+    flow2:["看世界","拆世界","理解世界","產生可能","進入Reality","接收Reality","更新自己","長出能力","生成智慧"]}
+];
+
+/* ===== 解析 ===== */
+function parse(text, kind, src){
+  const out=[]; let group=null, groupSub="", n=0;
+  text.trim().split("\n").forEach(line=>{
+    line=line.trim(); if(!line) return;
+    if(line[0]==="#"){ const p=line.slice(1).split("|"); group=p[0]+"｜"+p[1]; groupSub=p[2]||""; return; }
+    const p=line.split("|"); n++;
+    if(kind===1) out.push({src,group,num:String(+p[0]).padStart(2,"0"),ttl:p[1],old:p[2],nw:p[3]});
+    else out.push({src,group:group&&(group+(groupSub?"｜"+groupSub:"")),num:String(n).padStart(2,"0"),ttl:"",old:"不說「"+p[0]+"」",nw:p[1]});
+  });
+  return out;
+}
+const SETS = [
+  {id:"f100", name:"生成公式100", items:parse(S1,1,"生成公式100")},
+  {id:"k100", name:"口訣100", items:parse(S2,2,"口訣100")},
+  {id:"k30",  name:"口訣30", items:parse(S3,2,"口訣30")},
+];
+const SIX = parse(S4,2,"六句口訣");
+const ALL = SETS.flatMap(s=>s.items).concat(SIX);
+const TABS = [...SETS.map(s=>({id:s.id,name:s.name})),{id:"theory",name:"生成器・壓縮"},{id:"nine",name:"智慧生成九步法"},{id:"lesson",name:"課程"}];
+
+/* ===== 工具 ===== */
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let query="";
+function hl(s){
+  let h=esc(s).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>");
+  if(!query) return h;
+  const re=new RegExp("("+esc(query).replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi");
+  return h.replace(/(<[^>]+>)|([^<]+)/g,(m,tag,txt)=>tag?tag:txt.replace(re,"<mark>$1</mark>"));
+}
+function card(it,showSrc){
+  const i=ALL.indexOf(it);
+  return `<div class="card" data-i="${i}">
+    <div class="meta"><span class="num">${it.num}</span>${it.ttl?`<span class="ttl">${hl(it.ttl)}</span>`:""}${showSrc?`<span class="src">${it.src}</span>`:""}</div>
+    <div class="old">${hl(it.old)}</div><div class="new">${hl(it.nw)}</div></div>`;
+}
+const flowH=f=>`<div class="flow">${f.map(x=>`<span>${hl(x)}</span>`).join("<i>→</i>")}</div>`;
+const parasH=ps=>ps.map(x=>x.startsWith("> ")?`<p class="quote">${hl(x.slice(2))}</p>`:`<p>${hl(x)}</p>`).join("");
+function block(b,id){
+  let body="";
+  if(b.hero) body+=`<div class="hero">${hl(b.hero)}</div>`;
+  if(b.p) body+=parasH(b.p);
+  if(b.pre) body+=`<pre>${hl(b.pre)}</pre>`;
+  if(b.flow) body+=flowH(b.flow);
+  if(b.items){ const tag=b.ol?"ol":"ul"; body+=`<${tag}>${b.items.map(x=>`<li>${hl(x)}</li>`).join("")}</${tag}>`; }
+  if(b.table) body+=`<div class="tblwrap"><table><tr>${b.table.head.map(h=>`<th>${hl(h)}</th>`).join("")}</tr>${b.table.rows.map(r=>`<tr>${r.map(c=>`<td>${hl(c)}</td>`).join("")}</tr>`).join("")}</table></div>`;
+  if(b.hero2) body+=`<div class="hero" style="font-size:17px;letter-spacing:0">${hl(b.hero2)}</div>`;
+  if(b.p2) body+=parasH(b.p2);
+  if(b.flow2) body+=flowH(b.flow2);
+  return `<div class="block"${id?` id="${id}"`:""}><h3>${hl(b.t)}</h3>${body}</div>`;
+}
+const blockText=b=>[b.t,b.hero||"",b.hero2||"",b.pre||"",...(b.p||[]),...(b.p2||[]),...(b.flow||[]),...(b.flow2||[]),...(b.items||[]),
+  ...(b.table?[...b.table.head,...b.table.rows.flat()]:[])].join(" ");
+
+/* ===== 渲染 ===== */
+let tab="f100";
+try{ tab=localStorage.getItem("nl-tab")||tab; }catch(e){}
+if(!TABS.some(t=>t.id===tab)) tab="f100";
+
+function renderTabs(){
+  $("#tabs").innerHTML=TABS.map(t=>`<button class="tab${t.id===tab&&!query?" on":""}" data-t="${t.id}">${t.name}</button>`).join("");
+}
+function renderSet(items){
+  const groups=[...new Set(items.map(i=>i.group))];
+  if(groups.length===1&&!groups[0]) return `<div class="grid">${items.map(i=>card(i)).join("")}</div>`;
+  const chips=`<div class="chips">${groups.map((g,k)=>`<button class="chip" data-g="g${k}">${esc(g.split("｜").slice(0,2).join("｜"))}</button>`).join("")}</div>`;
+  return chips+groups.map((g,k)=>{
+    const p=g.split("｜");
+    return `<h2 id="g${k}">${esc(p[0])}｜${esc(p[1])}${p[2]?`<small>${esc(p[2])}</small>`:""}</h2>
+      <div class="grid">${items.filter(i=>i.group===g).map(i=>card(i)).join("")}</div>`;
+  }).join("");
+}
+function render(){
+  renderTabs();
+  const v=$("#view");
+  if(query){
+    const q=query.toLowerCase();
+    const hits=ALL.filter(i=>(i.ttl+" "+i.old+" "+i.nw+" "+(i.group||"")).toLowerCase().includes(q));
+    const bl=[...THEORY,...NINE,...LESSON].filter(b=>blockText(b).toLowerCase().includes(q));
+    v.innerHTML=`<div class="count">找到 ${hits.length} 句、${bl.length} 段說明</div>`+
+      (hits.length?`<div class="grid">${hits.map(i=>card(i,true)).join("")}</div>`:"")+
+      (bl.length?`<h2>說明段落</h2>${bl.map(b=>block(b)).join("")}`:"")+
+      (!hits.length&&!bl.length?`<div class="empty">沒有符合「${esc(query)}」的內容</div>`:"");
+    return;
+  }
+  const set=SETS.find(s=>s.id===tab);
+  if(set) v.innerHTML=renderSet(set.items);
+  else if(tab==="theory") v.innerHTML=THEORY.map(b=>block(b)).join("");
+  else if(tab==="nine") v.innerHTML=`<div class="chips">${NINE.map((b,k)=>`<button class="chip" data-g="n${k}">${esc(b.t)}</button>`).join("")}</div>`+
+    NINE.map((b,k)=>block(b,"n"+k)).join("");
+  else v.innerHTML=LESSON.map(b=>block(b)).join("")+`<h2>新語言六句口訣</h2><div class="grid">${SIX.map(i=>card(i)).join("")}</div>`;
+}
+
+/* ===== 互動 ===== */
+$("#tabs").onclick=e=>{
+  const b=e.target.closest(".tab"); if(!b) return;
+  tab=b.dataset.t; query=""; $("#q").value="";
+  try{ localStorage.setItem("nl-tab",tab); }catch(e){}
+  render(); window.scrollTo(0,0);
+};
+$("#q").oninput=e=>{ query=e.target.value.trim(); render(); };
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),1400); }
+function copy(it){
+  const txt=it.old.replace(/^不說/,"")+" → "+it.nw;
+  (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast("已複製"),()=>toast(txt));
+}
+$("#view").onclick=e=>{
+  const c=e.target.closest(".chip");
+  if(c){ const el=document.getElementById(c.dataset.g); window.scrollTo({top:el.getBoundingClientRect().top+scrollY-$("header").offsetHeight-8,behavior:"smooth"}); return; }
+  const k=e.target.closest(".card[data-i]"); if(k) copy(ALL[+k.dataset.i]);
+};
+function showRandom(){
+  const it=ALL[Math.floor(Math.random()*ALL.length)];
+  $("#mcard").innerHTML=`<div class="meta"><span class="num">${it.num}</span>${it.ttl?`<span class="ttl">${esc(it.ttl)}</span>`:""}<span class="src">${it.src}</span></div>
+    <div class="old">${esc(it.old)}</div><div class="new">${esc(it.nw)}</div>
+    <div class="acts"><button class="btn" id="mcopy">複製</button><button class="btn" id="mnext">再一句</button><button class="btn" id="mclose">關閉</button></div>`;
+  $("#mcopy").onclick=()=>copy(it); $("#mnext").onclick=showRandom; $("#mclose").onclick=()=>$("#modal").classList.remove("show");
+  $("#modal").classList.add("show");
+}
+$("#rand").onclick=showRandom;
+$("#modal").onclick=e=>{ if(e.target.id==="modal") $("#modal").classList.remove("show"); };
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape") $("#modal").classList.remove("show");
+  if(e.key==="/"&&document.activeElement!==$("#q")){ e.preventDefault(); $("#q").focus(); }
+});
+render();
+</script>
+</body>
+</html>

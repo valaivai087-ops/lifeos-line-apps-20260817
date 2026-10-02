@@ -363,6 +363,24 @@ details.deep summary{cursor:pointer;font-size:13px;color:var(--accent);font-weig
 .warm::before{content:"❝ ";opacity:.7}
 .soupin{border-left:3px solid var(--gold);padding:4px 0 4px 12px}
 .soupin .soupbody{font-size:15.5px;margin:6px 0 0}
+.fbbar{margin-bottom:16px}
+.fbgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:860px){.fbgrid{grid-template-columns:1fr}}
+.fbcv{width:100%;height:auto;max-width:560px;display:block;border:1px solid var(--line);border-radius:6px;background:var(--sunk)}
+.fbtxt{min-height:420px;font-size:14.5px;line-height:1.75}
+.fblist{display:flex;flex-wrap:wrap;gap:6px}
+.en,.say,.sayp{cursor:pointer}
+.en::after,.say::after,.sayp::after{content:" 🔊";font-size:.72em;opacity:.45;white-space:nowrap}
+button .en,label .en,.tab .en,.chip .en,summary .en,a .en,button .say,label .say,.chip .say,summary .say,a .say{cursor:inherit}
+button .en::after,label .en::after,.tab .en::after,.chip .en::after,summary .en::after,a .en::after,button .say::after,label .say::after,.chip .say::after,summary .say::after,a .say::after{content:none}
+.en:hover,.say:hover,.sayp:hover{text-decoration:underline dotted;text-underline-offset:3px}
+button .en:hover,label .en:hover,button .say:hover,label .say:hover{text-decoration:none}
+.speaking{background:color-mix(in srgb,var(--gold) 28%,transparent);border-radius:3px;outline:2px solid color-mix(in srgb,var(--gold) 55%,transparent)}
+.speaking::after{opacity:1!important}
+.sayrate{align-items:center}
+.sayrate .sayico{padding:0 4px 0 10px;font-size:13px}
+.sayrate button{padding:5px 9px}
+.saynote{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:13.5px;z-index:80}
 .paths{display:grid;gap:8px}
 .path{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start}
 .path .pl{font-family:var(--mono);font-weight:500;padding-top:8px;color:var(--accent)}
@@ -459,6 +477,7 @@ footer{border-top:1px solid var(--line);padding-block:20px 40px;color:var(--mute
   <div class="wrap">
     <div class="bar">
       <div class="brand"><h1>易經<span class="x">×</span>塔羅</h1><small>Wisdom Navigator</small></div>
+      <div class="seg sayrate" role="group" aria-label="英文朗讀速度 Reading speed" title="英文朗讀速度 Reading speed"><span class="sayico" aria-hidden="true">🔊</span><button type="button" data-rate="0.7">慢</button><button type="button" data-rate="0.9">中</button><button type="button" data-rate="1.1">快</button></div>
       <input type="search" id="gs" class="gsearch" placeholder="搜尋卦、牌、名詞… Search" aria-label="搜尋 Search">
       <div class="seg" role="group" aria-label="Language">
         <button type="button" data-lang="zh">中</button>
@@ -830,7 +849,7 @@ let L=LS.get("wn.lang3","bi");
 let TOPIC=LS.get("wn.topic","all");
 let SQ="";
 let TAB=LS.get("wn.tab","today");
-const t=(z,e)=>L==="zh"?z:L==="en"?e:`${z}<span class="en">${e}</span>`;
+const t=(z,e)=>L==="zh"?z:L==="en"?`<span class="say">${e}</span>`:`${z}<span class="en">${e}</span>`;
 const tp=(z,e)=>L==="zh"?z:L==="en"?e:`${z} / ${e}`;
 const ti=(z,e)=>L==="zh"?z:L==="en"?e:`${z}<span class="en">${e}</span>`;
 function rnd(n){const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n}
@@ -904,18 +923,19 @@ const cardLink=C=>`<button class="chip" data-card="${C.id}">${L==="en"?C.en:C.zh
 const hName=h=>ti(h.zh,h.en);
 
 /* ========== TABS ========== */
-const TABS=[["today","今日智慧導航","Today's Navigation"],["draw","塔羅抽牌","Tarot Draw"],["icast","易經起卦","I Ching Cast"],["guide","新手指南","Beginner's Guide"],["soup","心靈雞湯","Soul Soup"],["matrix","決策母體","Decision Matrix"],["lab","更新實驗室","Update Lab"],["iching","易經64卦","I Ching · 64"],["tarot","塔羅78牌","Tarot · 78"],["fusion","易經×塔羅整合","Integration"],["model","我的Model Update","My Model Update"]];
+const TABS=[["today","今日智慧導航","Today's Navigation"],["draw","塔羅抽牌","Tarot Draw"],["icast","易經起卦","I Ching Cast"],["guide","新手指南","Beginner's Guide"],["soup","心靈雞湯","Soul Soup"],["fb","臉書貼文","Facebook Posts"],["matrix","決策母體","Decision Matrix"],["lab","更新實驗室","Update Lab"],["iching","易經64卦","I Ching · 64"],["tarot","塔羅78牌","Tarot · 78"],["fusion","易經×塔羅整合","Integration"],["model","我的Model Update","My Model Update"]];
 function renderChrome(){
   document.documentElement.lang=L==="en"?"en":"zh-Hant";
   document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===L));
+  document.querySelectorAll("[data-rate]").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.rate===SAY_RATE)));const sr=document.querySelector(".sayrate");if(sr)sr.hidden=L==="zh";
   $("#tabs").innerHTML=TABS.map(([k,z,e])=>`<button class="tab" role="tab" aria-selected="${k===TAB}" data-tab="${k}">${ti(z,e)}</button>`).join("");
   $("#foot").innerHTML=`<p>${t("象 ≠ 真相。牌與卦不是替你預言命運，而是幫助你看見 Pattern、盲點、時位、變化與可能路徑。真正答案最後必須回到 Reality 接受驗證。","Symbol ≠ Truth. Cards and hexagrams don't predict your fate; they help you see patterns, blind spots, timing, position, change and possible paths. The real answer must return to reality to be tested.")}</p><p class="small">${t("資料：64 卦卦辭與大象傳（古典原文）、384 爻位結構自動分析、78 張塔羅正逆位；卦牌對應為本 App 的共振設計，非傳統定論。","Data: the 64 judgments and Great Image texts (classical Chinese), automatic structural analysis of all 384 line positions, 78 tarot cards upright and reversed. Hexagram–card pairings are this app's resonance design, not traditional doctrine.")} ${t("牌面：Rider-Waite-Smith 1909，Pamela Colman Smith 繪，公有領域（Wikimedia Commons）。","Card art: Rider-Waite-Smith (1909) by Pamela Colman Smith, public domain via Wikimedia Commons.")} · ${Store.mode==="cloud"?tp("紀錄已同步到你的私人雲端空間","Records sync to your private cloud space"):tp("紀錄儲存在此瀏覽器","Records are stored in this browser")}</p>`;
 }
 function render(){
-  renderChrome();
+  sayStop();renderChrome();
   const m=$("#main");
   if(SQ.trim()){renderSearch(m,SQ.trim());return}
-  ({today:renderToday,guide:renderGuide,draw:renderDraw,icast:renderICast,soup:renderSoup,matrix:renderMatrix,lab:renderLab,iching:renderIChing,tarot:renderTarot,fusion:renderFusion,model:renderModel})[TAB](m);
+  ({today:renderToday,guide:renderGuide,draw:renderDraw,icast:renderICast,soup:renderSoup,fb:renderFB,matrix:renderMatrix,lab:renderLab,iching:renderIChing,tarot:renderTarot,fusion:renderFusion,model:renderModel})[TAB](m);
 }
 
 /* ---------- TODAY ---------- */
@@ -1211,7 +1231,7 @@ function quickHTML(rd){
     <li><span class="qk">${tp("今日心靈雞湯","Today's soul soup")}</span><div><button class="linkbtn" data-soup="${h.n}">《${L==="en"?esc(h.soup.te):esc(h.soup.tz)}》</button> <span class="small muted">${L==="en"?esc(h.soup.me):esc(h.soup.bz.slice(0,30))+"…"}</span></div></li>
     <li><span class="qk">${tp("7 天後對答案","Check in 7 days")}</span><div>${t(h.prz,h.pre)} <span class="small muted">（${P.check}）</span></div></li>
    </ol>
-   <div class="row" style="margin-top:12px"><button class="btn small" type="button" onclick="document.getElementById('cast').click()">${tp("重新起卦・抽牌","Cast & draw again")}</button><button class="btn primary small" type="button" onclick="document.getElementById('saveR').click()">${tp("收藏，7 天後回來對答案","Save and check back in 7 days")}</button><button class="btn small" type="button" data-tab="icast">${tp("親手擲錢起卦","Cast coins yourself")}</button><button class="btn small" type="button" data-tab="draw">${tp("憑直覺自己抽牌","Pick cards by intuition")}</button><button class="btn small" type="button" data-goto="steps13">${tp("看完整 13 步講解 ↓","See all 13 steps ↓")}</button><button class="btn small" type="button" data-tab="guide">${tp("看不懂名詞？新手指南","Unfamiliar terms? Guide")}</button></div>
+   <div class="row" style="margin-top:12px"><button class="btn small" type="button" onclick="document.getElementById('cast').click()">${tp("重新起卦・抽牌","Cast & draw again")}</button><button class="btn primary small" type="button" onclick="document.getElementById('saveR').click()">${tp("收藏，7 天後回來對答案","Save and check back in 7 days")}</button><button class="btn small" type="button" data-fb="reading:0">${tp("做成臉書貼文＋圖卡","Make a Facebook post + card")}</button><button class="btn small" type="button" data-tab="icast">${tp("親手擲錢起卦","Cast coins yourself")}</button><button class="btn small" type="button" data-tab="draw">${tp("憑直覺自己抽牌","Pick cards by intuition")}</button><button class="btn small" type="button" data-goto="steps13">${tp("看完整 13 步講解 ↓","See all 13 steps ↓")}</button><button class="btn small" type="button" data-tab="guide">${tp("看不懂名詞？新手指南","Unfamiliar terms? Guide")}</button></div>
   </div>`;
 }
 
@@ -1390,11 +1410,11 @@ function openSoup(n){
   openSheet(`<button class="btn small close" data-close>${tp("關閉","Close")}</button>
   <div class="eyebrow">${tp("心靈雞湯","Soul soup")}・${tp(s.th,themeEn(s.th))}・${h.zh}</div>
   <h2 class="soupt">${L==="en"?esc(s.te):esc(s.tz)}</h2>${L==="bi"?`<div class="muted">${esc(s.te)}</div>`:""}
-  ${L!=="en"?`<p class="soupbody">${esc(s.bz)}</p>`:""}${L!=="zh"?`<p class="soupbody${L==="bi"?" soupen":""}">${esc(s.be)}</p>`:""}
+  ${L!=="en"?`<p class="soupbody">${esc(s.bz)}</p>`:""}${L!=="zh"?`<p class="sayp soupbody${L==="bi"?" soupen":""}">${esc(s.be)}</p>`:""}
   <div class="soupbox"><div><span class="tag">${tp("金句","Golden line")}</span><span class="gold">「${t(h.qz,h.qe)}」</span></div>
    <div><span class="tag">${tp("今天練習","Practice today")}</span>${t(h.az,h.ae)}</div>
    <div><span class="tag">${tp("帶走的智慧","Take away")}</span>${t(h.wz,h.we)}</div></div>
-  <div class="row" style="margin-top:14px"><button class="btn small" data-fav="${n}">${fav?tp("★ 已收藏","★ Saved"):tp("☆ 收藏這篇","☆ Save")}</button><button class="btn small" data-copysoup="${n}">${tp("複製全文","Copy text")}</button>${hexLink(h)}<button class="btn small" data-soupnext="${n}">${tp("下一篇 →","Next →")}</button></div>`);
+  <div class="row" style="margin-top:14px"><button class="btn small" data-fav="${n}">${fav?tp("★ 已收藏","★ Saved"):tp("☆ 收藏這篇","☆ Save")}</button>${L!=="zh"?`<button class="btn small" data-saytext="soupEn${n}">🔊 ${tp("朗讀英文","Read English aloud")}</button><span id="soupEn${n}" hidden>${esc(s.te)}. ${esc(s.be)}</span>`:""}<button class="btn small" data-copysoup="${n}">${tp("複製全文","Copy text")}</button>${fbBtn("hex",n)}${hexLink(h)}<button class="btn small" data-soupnext="${n}">${tp("下一篇 →","Next →")}</button></div>`);
 }
 function soupCard(h){const s=h.soup;return `<button class="soupc" data-soup="${h.n}"><span class="stag">${tp(s.th,themeEn(s.th))}${FAV.includes(h.n)?` <span class="gold">★</span>`:""}</span><b>${L==="en"?esc(s.te):esc(s.tz)}</b><span class="small muted">${h.zh}${L!=="zh"?" · "+esc(h.en.split(" · ")[1]):""}</span><span class="excerpt">${L==="en"?esc(s.me):esc(s.bz.slice(0,46))+"…"}</span></button>`}
 function renderSoup(m){
@@ -1404,7 +1424,7 @@ function renderSoup(m){
   <div class="souphero">
    <div class="eyebrow">${tp("今日一篇・依你的卦","Today's piece · from your hexagram")}　${today.zh}</div>
    <h2 class="soupt">${L==="en"?esc(today.soup.te):esc(today.soup.tz)}</h2>
-   ${L!=="en"?`<p class="soupbody">${esc(today.soup.bz)}</p>`:""}${L!=="zh"?`<p class="soupbody${L==="bi"?" soupen":""}">${esc(today.soup.be)}</p>`:""}
+   ${L!=="en"?`<p class="soupbody">${esc(today.soup.bz)}</p>`:""}${L!=="zh"?`<p class="sayp soupbody${L==="bi"?" soupen":""}">${esc(today.soup.be)}</p>`:""}
    <div class="row"><button class="btn primary small" data-soup="${today.n}">${tp("打開全文與練習","Open with practice")}</button><button class="btn small" id="soupRand">${tp("隨機抽一篇","Random piece")}</button></div>
   </div>
   <div class="toolbar" style="margin-top:20px"><input type="search" id="soupq" placeholder="${esc(tp("搜尋文章…","Search articles…"))}" value="${esc(SOUP_Q)}">
@@ -1817,7 +1837,7 @@ function drawSummary(){
     <dt>${tp("今天這樣做","Do today")}</dt><dd class="plainbox"><b>${t(key.C.doz,key.C.doe)}</b></dd>
     <dt>${tp("記住這句話","Remember this")}</dt><dd class="gold">「${key.C.qz?t(key.C.qz,key.C.qe):t(kh.qz,kh.qe)}」</dd>
     <dt>${tp("相關的卦","Related hexagram")}</dt><dd>${hexLink(kh)} ${t(kh.plz,kh.ple)}　<button class="linkbtn" data-soup="${kh.n}">《${L==="en"?esc(kh.soup.te):esc(kh.soup.tz)}》</button></dd>
-    <dt>${tp("心靈雞湯","Soul soup")}</dt><dd><div class="soupin"><b>《${tp(kh.soup.tz,kh.soup.te)}》</b>${L!=="en"?`<p class="soupbody">${esc(kh.soup.bz)}</p>`:""}${L!=="zh"?`<p class="soupbody${L==="bi"?" soupen":""}">${esc(kh.soup.be)}</p>`:""}</div></dd>
+    <dt>${tp("心靈雞湯","Soul soup")}</dt><dd><div class="soupin"><b>《${tp(kh.soup.tz,kh.soup.te)}》</b>${L!=="en"?`<p class="soupbody">${esc(kh.soup.bz)}</p>`:""}${L!=="zh"?`<p class="sayp soupbody${L==="bi"?" soupen":""}">${esc(kh.soup.be)}</p>`:""}</div></dd>
     <dt>${tp("決策母體","Decision matrix")}</dt><dd>${mxw.m.loop+1}. <b>${tp(mxw.L6.zh,mxw.L6.en)}</b>　<span class="small">${t(mxw.L6.d,mxw.L6.de)}</span></dd>
    </dl></div>`;
 }
@@ -1848,6 +1868,7 @@ function renderDraw(m){
    <div class="row" style="margin-top:14px">
     <button class="btn primary" id="tdSave" ${TD.saved?"disabled":""}>${TD.saved?tp("已收藏到心境紀錄","Saved to mood log"):tp("收藏到心境紀錄","Save to mood log")}</button>
     ${need===3?`<button class="btn" id="tdToToday">${tp("用這三張牌走 13 步導航","Use these 3 cards in the 13 steps")}</button>`:""}
+    <button class="btn" data-fb="card:${TD.picked[need===3?1:0].id}">${tp("做成臉書貼文＋圖卡","Make a Facebook post + card")}</button>
     <button class="btn" id="tdAgain">${tp("再抽一次","Draw again")}</button>
    </div>`:""}
   <h2 class="mxh">${tp("心境紀錄","Mood log")}</h2>
@@ -1909,7 +1930,7 @@ function icReadingHTML(lines){
      <dt>${tp("心情處方","For this mood")}</dt><dd class="plainbox"><b>${IC.mood!=null?t(MOOD_RX[IC.mood][0],MOOD_RX[IC.mood][1]):t(h.az,h.ae)}</b>${IC.mood!=null?`<div class="small">${t(`卦的行動：${h.az}`,`The hexagram's action: ${h.ae}`)}</div>`:""}</dd>
      <dt>${tp("記住這句話","Remember this")}</dt><dd class="gold">「${t(h.qz,h.qe)}」</dd>
      <dt>${tp("帶走的智慧","Take away")}</dt><dd>${t(h.wz,h.we)}</dd>
-     <dt>${tp("心靈雞湯","Soul soup")}</dt><dd><div class="soupin"><b>《${tp(h.soup.tz,h.soup.te)}》</b>${L!=="en"?`<p class="soupbody">${esc(h.soup.bz)}</p>`:""}${L!=="zh"?`<p class="soupbody${L==="bi"?" soupen":""}">${esc(h.soup.be)}</p>`:""}</div></dd>
+     <dt>${tp("心靈雞湯","Soul soup")}</dt><dd><div class="soupin"><b>《${tp(h.soup.tz,h.soup.te)}》</b>${L!=="en"?`<p class="soupbody">${esc(h.soup.bz)}</p>`:""}${L!=="zh"?`<p class="sayp soupbody${L==="bi"?" soupen":""}">${esc(h.soup.be)}</p>`:""}</div></dd>
     </dl>
    </div>
   </div>
@@ -1917,6 +1938,7 @@ function icReadingHTML(lines){
    <button class="btn primary" id="icSave" ${IC.saved?"disabled":""}>${IC.saved?tp("已收藏到心境紀錄","Saved to mood log"):tp("收藏到心境紀錄","Save to mood log")}</button>
    <button class="btn" id="icToToday">${tp("用這個卦走 13 步導航","Use this hexagram in the 13 steps")}</button>
    <button class="btn" data-hex="${h.n}">${tp("看這一卦的完整說明","Full hexagram details")}</button>
+   <button class="btn" data-fb="hex:${h.n}">${tp("做成臉書貼文＋圖卡","Make a Facebook post + card")}</button>
    <button class="btn" id="icAgain">${tp("再起一次卦","Cast again")}</button>
   </div>`;
 }
@@ -2044,6 +2066,144 @@ const STEP_WARM={event:["先把事情說清楚，心就會安定一半。","Say 
  act:["一小步也是一步，今天的你已經在前進。","A small step is still a step; today, you're already moving."],
  verify:["看錯不丟臉，願意對答案的人才會越來越準。","Being wrong isn't shameful; those willing to check get more accurate."]};
 
+/* ---------- 臉書貼文：每個狀態的心靈雞湯貼文＋圖卡 ---------- */
+const cardSrc=c=>`${CARDIMG[c]}`;
+const FB_STYLES={light:{bg:"#ECEEE8",panel:"#F7F8F4",ink:"#1B2224",mut:"#5A6660",acc:"#2C6B64",gold:"#9A7428",z:"素雅",e:"Light"},
+ dark:{bg:"#101618",panel:"#172022",ink:"#E3E8E1",mut:"#93A19B",acc:"#74BAAE",gold:"#D6B064",z:"夜色",e:"Dark"},
+ jade:{bg:"#245A54",panel:"#2C6B64",ink:"#F4F8F2",mut:"#C7DDD6",acc:"#F4F8F2",gold:"#F0D48A",z:"青玉",e:"Jade"}};
+const FB_SIZES={sq:[1080,1080,"方形 1080×1080","Square 1080×1080"],wide:[1200,630,"橫式 1200×630","Landscape 1200×630"]};
+let FB={type:LS.get("wn.fbt","hex"),id:LS.get("wn.fbi",1),style:LS.get("wn.fbs","light"),size:LS.get("wn.fbz","sq")};
+const fbImgCache={};
+function fbLoadImg(src){return fbImgCache[src]||(fbImgCache[src]=new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=src}))}
+function fbData(type,id){
+  if(type==="hex"){const h=HEX[id-1],s=h.soup;return{kind:"hex",h,title:s.tz,titleE:s.te,quote:h.qz,quoteE:h.qe,body:s.bz,bodyE:s.be,prac:h.az,pracE:h.ae,label:`${h.zh}卦`,labelE:h.en.split(" · ")[1],tags:["心靈雞湯","易經",h.zh+"卦",s.th,h.cz],file:`易經_${String(h.n).padStart(2,"0")}_${h.zh}`}}
+  if(type==="card"){const C=CARDS[id],kh=resonantHex(C);return{kind:"card",C,title:`今天的牌：${C.zh}`,titleE:`Today's card: ${C.en}`,quote:C.qz||kh.qz,quoteE:C.qz?C.qe:kh.qe,
+    body:`${C.plz}\n\n感情｜${C.loz}\n工作｜${C.woz}\n金錢｜${C.moz}\n\n${kh.soup.bz.split("。").slice(0,2).join("。")}。`,
+    bodyE:`${C.ple}\n\nLove | ${C.loe}\nWork | ${C.woe}\nMoney | ${C.moe}\n\n${kh.soup.be.split(". ").slice(0,2).join(". ")}.`,
+    prac:C.doz,pracE:C.doe,label:C.zh,labelE:C.en,tags:["心靈雞湯","塔羅",C.zh,C.major?"大阿爾克那":SUITS[C.suit].zh,"每日一牌"],file:`塔羅_${String(C.id).padStart(2,"0")}_${C.zh}`}}
+  if(type==="mood"){const M=MOODS[id],rx=MOOD_RX[id],tri=MOOD_TRI[id][0],h=HEX.find(x=>x.up===tri&&x.lo===tri);return{kind:"mood",M,h,title:`給正在「${M[0]}」的你`,titleE:`For you, feeling ${M[1].toLowerCase()}`,quote:M[3],quoteE:M[4],
+    body:`${M[3]}\n\n${h.soup.bz}`,bodyE:`${M[4]}\n\n${h.soup.be}`,prac:rx[0],pracE:rx[1],label:M[0],labelE:M[1],tags:["心靈雞湯","情緒照顧",M[0],"自我覺察",h.zh+"卦"],file:`心情_${M[0]}`}}
+  // 本次導航
+  const rd=reading(),h=rd.h,cs=R.cards.map(x=>CARDS[x.id]);
+  return{kind:"reading",h,cs,title:`今日智慧導航：${h.zh}`,titleE:`Today's navigation: ${h.en.split(" · ")[1]}`,quote:h.qz,quoteE:h.qe,
+    body:`${h.plz}\n\n三張牌說：\n${cs.map((C,i)=>`${["象","心","盲"][i]}｜${C.zh}：${C.plz}`).join("\n")}\n\n${h.soup.bz}`,
+    bodyE:`${h.ple}\n\nThe three cards say:\n${cs.map((C,i)=>`${["Image","Heart","Blind spot"][i]} | ${C.en}: ${C.ple}`).join("\n")}\n\n${h.soup.be}`,
+    prac:h.az,pracE:h.ae,label:`${h.zh}卦`,labelE:h.en.split(" · ")[1],tags:["心靈雞湯","易經","塔羅",h.zh+"卦","今日導航"],file:`今日導航_${h.zh}`};
+}
+function fbText(d){
+  const tags=d.tags.map(x=>"#"+String(x).replace(/[\s・、]/g,"")).join(" ");
+  const zh=`【${d.title}】\n\n${d.body}\n\n✨ 金句：「${d.quote}」\n👣 今天練習：${d.prac}`;
+  const en=`${d.titleE}\n\n${d.bodyE}\n\n✨ "${d.quoteE}"\n👣 Today's practice: ${d.pracE}`;
+  return (L==="zh"?zh:L==="en"?en:zh+"\n\n— — —\n\n"+en)+"\n\n"+tags+"\n\n象 ≠ 真相｜易經×塔羅 智慧導航";
+}
+function fbWrap(ctx,text,maxW){
+  const out=[];let line="";
+  const toks=/[　-鿿＀-￯]/.test(text)?[...text]:text.split(/(\s+)/);
+  for(const tk of toks){const test=line+tk;if(ctx.measureText(test).width>maxW&&line){out.push(line.trimEnd());line=tk.trimStart()}else line=test}
+  if(line.trim())out.push(line.trimEnd());return out;
+}
+function fbHex(ctx,lines,x,y,w,gap,th,col,mov){
+  for(let i=5;i>=0;i--){const yy=y+(5-i)*(th+gap);ctx.fillStyle=col;
+    if(lines[i]%2)ctx.fillRect(x,yy,w,th);else{const seg=w*0.42;ctx.fillRect(x,yy,seg,th);ctx.fillRect(x+w-seg,yy,seg,th)}}
+}
+async function fbDraw(cv,d){
+  const S=FB_STYLES[FB.style],[W,H]=FB_SIZES[FB.size],wide=FB.size==="wide";
+  cv.width=W;cv.height=H;const ctx=cv.getContext("2d");
+  const serif='"Noto Serif TC","Songti TC","PMingLiU",serif',sans='"Noto Sans TC","Microsoft JhengHei",sans-serif';
+  try{await Promise.all([document.fonts.load(`900 60px "Noto Serif TC"`,d.title+d.quote),document.fonts.load(`500 30px "Noto Sans TC"`,d.prac)])}catch(e){}
+  ctx.fillStyle=S.bg;ctx.fillRect(0,0,W,H);
+  const pad=wide?48:64;
+  ctx.fillStyle=S.panel;ctx.fillRect(pad/2,pad/2,W-pad,H-pad);
+  ctx.strokeStyle=S.gold;ctx.lineWidth=3;ctx.strokeRect(pad/2+10,pad/2+10,W-pad-20,H-pad-20);
+  // 左／上方的圖像
+  const symW=wide?250:300,symX=wide?pad+40:(W-symW)/2,symY=wide?130:150;
+  let symBottom=symY;
+  if(d.kind==="card"){const im=await fbLoadImg(cardSrc(d.C.id));const ih=symW*516/300*(wide?0.78:0.72),iw=ih*300/516,ix=wide?symX+(symW-iw)/2:(W-iw)/2;
+    if(im){ctx.drawImage(im,ix,symY,iw,ih);ctx.strokeStyle=S.gold;ctx.lineWidth=4;ctx.strokeRect(ix,symY,iw,ih)}symBottom=symY+ih}
+  else if(d.kind==="mood"){ctx.fillStyle=S.gold;ctx.font=`900 ${wide?150:190}px ${serif}`;ctx.textAlign="center";ctx.textBaseline="top";ctx.fillText(d.M[0],wide?symX+symW/2:W/2,symY-10);symBottom=symY+(wide?170:210);
+    fbHex(ctx,d.h.lines,(wide?symX+symW/2:W/2)-70,symBottom+10,140,10,12,S.acc);symBottom+=150}
+  else{const hw=wide?190:220,th=wide?20:24,gap=wide?16:18,hx=wide?symX+(symW-hw)/2:(W-hw)/2;fbHex(ctx,d.h.lines,hx,symY+10,hw,gap,th,S.acc);symBottom=symY+10+6*(th+gap);
+    ctx.fillStyle=S.mut;ctx.font=`700 ${wide?30:34}px ${serif}`;ctx.textAlign="center";ctx.textBaseline="top";ctx.fillText(L==="en"?d.labelE:d.label,wide?symX+symW/2:W/2,symBottom+6);symBottom+=54;
+    if(d.kind==="reading"){const ims=await Promise.all(d.cs.map(C=>fbLoadImg(cardSrc(C.id))));const cw=wide?70:84,ch=cw*516/300,tot=cw*3+24,sx=(wide?symX+symW/2:W/2)-tot/2;ims.forEach((im,i)=>{if(im)ctx.drawImage(im,sx+i*(cw+12),symBottom+10,cw,ch)});symBottom+=ch+20}}
+  // 文字區
+  const tx=wide?symX+symW+50:pad+50,tw=wide?W-tx-pad-40:W-2*(pad+50),cx=wide?tx:W/2;
+  ctx.textAlign=wide?"left":"center";ctx.textBaseline="top";
+  ctx.fillStyle=S.mut;ctx.font=`500 ${wide?22:26}px ${sans}`;ctx.fillText("易經 × 塔羅　智慧導航",cx,wide?86:88);
+  let y=wide?136:symBottom+34;
+  const title=L==="en"?d.titleE:d.title;
+  let ts=wide?50:62;ctx.font=`900 ${ts}px ${serif}`;let tl=fbWrap(ctx,title,tw);
+  while(tl.length>2&&ts>34){ts-=4;ctx.font=`900 ${ts}px ${serif}`;tl=fbWrap(ctx,title,tw)}
+  ctx.fillStyle=S.ink;tl.forEach(l=>{ctx.fillText(l,cx,y);y+=ts*1.3});
+  y+=wide?12:18;
+  const quote=L==="en"?`"${d.quoteE}"`:`「${d.quote}」`;
+  const maxY=H-pad-(wide?120:170);
+  let qs=wide?44:60;ctx.font=`700 ${qs}px ${serif}`;let ql=fbWrap(ctx,quote,tw);
+  while(y+ql.length*qs*1.45>maxY&&qs>24){qs-=3;ctx.font=`700 ${qs}px ${serif}`;ql=fbWrap(ctx,quote,tw)}
+  ctx.fillStyle=S.gold;ql.forEach(l=>{ctx.fillText(l,cx,y);y+=qs*1.45});
+  if(L==="bi"){y+=6;let es=wide?20:24;ctx.font=`400 ${es}px ${sans}`;ctx.fillStyle=S.mut;let el=fbWrap(ctx,`"${d.quoteE}"`,tw);if(y+el.length*es*1.4<maxY+30)el.forEach(l=>{ctx.fillText(l,cx,y);y+=es*1.4})}
+  // 底部：今天練習
+  const by=H-pad-(wide?92:128);
+  ctx.strokeStyle=S.gold;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(tx,by);ctx.lineTo(tx+tw,by);ctx.stroke();
+  let ps=wide?24:29;ctx.font=`500 ${ps}px ${sans}`;const prac=(L==="en"?"Today: "+d.pracE:"今天練習｜"+d.prac);let pl=fbWrap(ctx,prac,tw);
+  while(pl.length>2&&ps>18){ps-=2;ctx.font=`500 ${ps}px ${sans}`;pl=fbWrap(ctx,prac,tw)}
+  ctx.fillStyle=S.ink;pl.slice(0,2).forEach((l,i)=>ctx.fillText(l,cx,by+14+i*ps*1.4));
+}
+function fbOptions(){
+  if(FB.type==="hex")return HEX.map(h=>[h.n,`${h.n}. ${h.zh}｜${h.soup.tz}`,`${h.n}. ${h.en.split(" · ")[1]} | ${h.soup.te}`]);
+  if(FB.type==="card")return CARDS.map(C=>[C.id,C.zh,C.en]);
+  if(FB.type==="mood")return MOODS.map((M,i)=>[i,`給正在「${M[0]}」的你`,`Feeling ${M[1].toLowerCase()}`]);
+  return [[0,"本次導航","Current reading"]];
+}
+function fbGo(type,id){FB.type=type;FB.id=id;LS.set("wn.fbt",type);LS.set("wn.fbi",id);TAB="fb";LS.set("wn.tab",TAB);SQ="";const g=$("#gs");if(g)g.value="";if(!$("#sheet").hidden)closeSheet();render();scrollTo(0,0)}
+function renderFB(m){
+  const opts=fbOptions();if(!opts.some(o=>o[0]===FB.id))FB.id=opts[0][0];
+  const d=fbData(FB.type,FB.id),idx=opts.findIndex(o=>o[0]===FB.id);
+  const TYPES=[["hex","易經 64 卦","64 hexagrams"],["card","塔羅 78 牌","78 cards"],["mood","七種心情","7 moods"],["reading","本次導航","Current reading"]];
+  m.innerHTML=`
+  <p class="muted" style="margin-top:0;max-width:75ch">${t("每一個狀態（卦、牌、心情、這次的導航）都有一篇心靈雞湯貼文和一張圖卡。選好之後，複製文字、下載圖卡，就能貼到臉書。","Every state — hexagram, card, mood, or your current reading — has a soul-soup post and an image card. Pick one, copy the text, download the card, and post to Facebook.")}</p>
+  <div class="fbbar panel">
+   <div class="radios">${TYPES.map(([k,z,e])=>`<label><input type="radio" name="fbtype" value="${k}" ${FB.type===k?"checked":""}>${tp(z,e)}</label>`).join("")}</div>
+   ${FB.type!=="reading"?`<div class="row" style="flex-wrap:nowrap;margin-top:10px"><button class="btn small" id="fbPrev" aria-label="${tp("上一個","Previous")}">←</button><select id="fbSel" style="flex:1;min-width:0">${opts.map(o=>`<option value="${o[0]}" ${o[0]===FB.id?"selected":""}>${esc(tp(o[1],o[2]))}</option>`).join("")}</select><button class="btn small" id="fbNext" aria-label="${tp("下一個","Next")}">→</button><button class="btn small" id="fbRand">${tp("隨機","Random")}</button></div><div class="small muted" style="margin-top:6px">${idx+1} / ${opts.length}</div>`:`<p class="small muted" style="margin:10px 0 0">${t("用你目前在「今日智慧導航」的卦和三張牌。","Uses the hexagram and three cards currently in Today's Navigation.")}</p>`}
+  </div>
+  <div class="fbgrid">
+   <div>
+    <div class="row" style="margin-bottom:8px"><span class="small muted">${tp("圖卡風格","Card style")}</span><div class="radios">${Object.entries(FB_STYLES).map(([k,v])=>`<label><input type="radio" name="fbstyle" value="${k}" ${FB.style===k?"checked":""}>${tp(v.z,v.e)}</label>`).join("")}</div></div>
+    <div class="row" style="margin-bottom:10px"><span class="small muted">${tp("尺寸","Size")}</span><div class="radios">${Object.entries(FB_SIZES).map(([k,v])=>`<label><input type="radio" name="fbsize" value="${k}" ${FB.size===k?"checked":""}>${tp(v[2],v[3])}</label>`).join("")}</div></div>
+    <canvas id="fbCv" class="fbcv" role="img" aria-label="${esc(tp(d.title,d.titleE))}"></canvas>
+    <div class="row" style="margin-top:10px"><button class="btn primary" id="fbDl">${tp("下載圖卡（PNG）","Download card (PNG)")}</button><span class="small" id="fbDlMsg" role="status"></span></div>
+    <p class="small muted" style="margin:6px 0 0">${t("如果下載沒有反應，可以在圖卡上按右鍵（手機長按）選「另存圖片」。","If the download doesn't start, right-click the card (long-press on a phone) and choose Save image.")}</p>
+   </div>
+   <div>
+    <label class="lbl" for="fbTxt">${tp("貼文文字（可以直接修改）","Post text (edit freely)")}</label>
+    <textarea id="fbTxt" class="fbtxt">${esc(fbText(d))}</textarea>
+    <div class="row" style="margin-top:10px"><button class="btn primary" id="fbCopy">${tp("複製貼文","Copy post")}</button>${L!=="zh"?`<button class="btn small" data-saytext="fbTxt">🔊 ${tp("朗讀英文","Read English aloud")}</button>`:""}<span class="small muted" id="fbCount"></span></div>
+    <ol class="small" style="margin:14px 0 0;padding-left:20px;line-height:1.8"><li>${tp("按「下載圖卡」。","Press Download card.")}</li><li>${tp("按「複製貼文」。","Press Copy post.")}</li><li>${tp("到臉書建立貼文：貼上文字，再加入剛下載的圖卡。","Create a Facebook post: paste the text and add the downloaded card.")}</li></ol>
+   </div>
+  </div>
+  ${FB.type!=="reading"?`<h2 class="mxh">${tp("全部","All")} ${opts.length}</h2><div class="fblist">${opts.map(o=>`<button class="chip${o[0]===FB.id?" mxchip":""}" data-fbpick="${o[0]}">${esc(tp(o[1].split("｜")[0],o[2].split(" | ")[0]))}</button>`).join("")}</div>`:""}`;
+  const cv=$("#fbCv");fbDraw(cv,d);
+  const cnt=()=>{$("#fbCount").textContent=tp(`${$("#fbTxt").value.length} 字`,`${$("#fbTxt").value.length} characters`)};cnt();$("#fbTxt").oninput=cnt;
+  const set=(k,v,ls)=>{FB[k]=v;LS.set(ls,v);const y=scrollY;renderFB(m);scrollTo(0,y)};
+  m.querySelectorAll("input[name=fbtype]").forEach(r=>r.onchange=()=>{FB.type=r.value;LS.set("wn.fbt",FB.type);FB.id=fbOptions()[0][0];LS.set("wn.fbi",FB.id);renderFB(m)});
+  m.querySelectorAll("input[name=fbstyle]").forEach(r=>r.onchange=()=>set("style",r.value,"wn.fbs"));
+  m.querySelectorAll("input[name=fbsize]").forEach(r=>r.onchange=()=>set("size",r.value,"wn.fbz"));
+  const sel=$("#fbSel");if(sel){sel.onchange=()=>set("id",+sel.value,"wn.fbi");$("#fbPrev").onclick=()=>set("id",opts[(idx-1+opts.length)%opts.length][0],"wn.fbi");$("#fbNext").onclick=()=>set("id",opts[(idx+1)%opts.length][0],"wn.fbi");$("#fbRand").onclick=()=>set("id",opts[rnd(opts.length)][0],"wn.fbi")}
+  m.querySelectorAll("[data-fbpick]").forEach(b=>b.onclick=()=>{FB.id=+b.dataset.fbpick;LS.set("wn.fbi",FB.id);renderFB(m);scrollTo(0,0)});
+  $("#fbCopy").onclick=async e=>{const ta=$("#fbTxt");try{await navigator.clipboard.writeText(ta.value);e.target.textContent=tp("已複製","Copied")}catch(err){ta.select();e.target.textContent=tp("已選取，請按 Ctrl+C","Selected — press Ctrl+C")}};
+  $("#fbDl").onclick=async()=>{
+    const msg=$("#fbDlMsg"),name=d.file+"_"+FB.style+".png";
+    const blob=await new Promise(r=>cv.toBlob(r,"image/png"));
+    if(!blob){msg.textContent=tp("圖卡還在產生，請再按一次。","The card is still rendering — press again.");return}
+    try{const dl=window.claude&&window.claude.use?await window.claude.use("downloads"):null;
+      if(dl){await dl.save({filename:name,data:blob});msg.textContent=tp("已儲存","Saved");return}}
+    catch(err){if(err&&err.code==="declined"){msg.textContent=tp("已取消","Cancelled");return}}
+    try{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);msg.textContent=tp("已開始下載："+name,"Download started: "+name)}
+    catch(err){msg.textContent=tp("無法自動下載，請在圖卡上按右鍵另存。","Couldn't download automatically — right-click the card to save it.")}
+  };
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-fb]");if(b){e.stopPropagation();const [ty,id]=b.dataset.fb.split(":");fbGo(ty,+id)}},true);
+const fbBtn=(type,id)=>`<button class="btn small" data-fb="${type}:${id}">${tp("做成臉書貼文＋圖卡","Make a Facebook post + card")}</button>`;
+
 /* ---------- I CHING ---------- */
 let hq="",htri="";
 function renderIChing(m){
@@ -2080,6 +2240,7 @@ function openHex(n){
    <dt>${tp("常見誤差","Typical error")}</dt><dd>${t(h.ez,h.ee)}</dd>
    <dt>Model Update</dt><dd>${t(h.mz,h.me)}</dd>
    <dt>${tp("心靈雞湯","Soul soup")}</dt><dd><button class="linkbtn" data-soup="${h.n}">《${L==="en"?esc(h.soup.te):esc(h.soup.tz)}》</button></dd>
+   <dt>${tp("臉書貼文","Facebook post")}</dt><dd>${fbBtn("hex",h.n)}</dd>
    ${mxRow(mxWhyHex(h))}
    ${xx?`<dt>${tp("十二消息","Sovereign")}</dt><dd>${tp(xx[0],xx[1])}</dd>`:""}
    <dt>${tp("相關卦","Related")}</dt><dd class="chips"><span class="small muted">${tp("互","Nuclear")}</span>${hexLink(H)}<span class="small muted">${tp("錯","Opposite")}</span>${hexLink(X)}<span class="small muted">${tp("綜","Inverted")}</span>${hexLink(Z)}</dd>
@@ -2115,6 +2276,7 @@ function openCard(id){
    <dt>${tp("工作","Work")}</dt><dd>${t(C.woz,C.woe)}</dd>
    <dt>${tp("金錢","Money")}</dt><dd>${t(C.moz,C.moe)}</dd>
    <dt>${tp("今天這樣做","Do today")}</dt><dd class="plainbox"><b>${t(C.doz,C.doe)}</b></dd>
+   <dt>${tp("臉書貼文","Facebook post")}</dt><dd>${fbBtn("card",C.id)}</dd>
    ${mxRow(mxWhyCard(C))}
    <dt>${tp("逆位時","If reversed")}</dt><dd>${t(`能量卡住或過度：${C.rz}。先處理這一點，再照上面的做法。`,`Energy is blocked or overdone: ${C.re}. Address that first, then follow the steps above.`)}</dd>
    <dt>${tp("正位","Upright")}</dt><dd>${t(C.uz,C.ue)}</dd>
@@ -2252,8 +2414,32 @@ function bindEntry(el){
 /* ---------- sheet ---------- */
 let lastFocus=null;
 function openSheet(html){lastFocus=document.activeElement;$("#sheetInner").innerHTML=html;$("#sheet").hidden=false;$("#sheetInner").scrollTop=0;const c=$("#sheetInner [data-close]");c&&c.focus()}
-function closeSheet(){$("#sheet").hidden=true;lastFocus&&lastFocus.focus&&lastFocus.focus()}
+function closeSheet(){sayStop();$("#sheet").hidden=true;lastFocus&&lastFocus.focus&&lastFocus.focus()}
 
+/* ---------- 英文朗讀 English read-aloud (Web Speech API，不需 token) ---------- */
+let SAY_EL=null,SAY_RATE=LS.get("wn.rate",0.9);
+function sayStop(){try{speechSynthesis.cancel()}catch(e){}if(SAY_EL){SAY_EL.classList.remove("speaking");SAY_EL=null}}
+function sayVoice(){try{const vs=speechSynthesis.getVoices();return vs.find(v=>/en[-_]US/i.test(v.lang)&&/natural|google|samantha|aria|jenny/i.test(v.name))||vs.find(v=>/en[-_]US/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null}catch(e){return null}}
+function say(text,el){
+  if(!("speechSynthesis" in window)){sayNote(tp("這個瀏覽器不支援朗讀。","This browser doesn't support read-aloud."));return}
+  const same=SAY_EL===el;sayStop();if(same)return;
+  const clean=String(text).replace(/[🔊✨👣]/g,"").replace(/\s+/g," ").trim();if(!clean)return;
+  const u=new SpeechSynthesisUtterance(clean);u.lang="en-US";u.rate=SAY_RATE;const v=sayVoice();if(v)u.voice=v;
+  u.onend=u.onerror=()=>{if(SAY_EL===el){el&&el.classList.remove("speaking");SAY_EL=null}};
+  SAY_EL=el;el&&el.classList.add("speaking");
+  try{speechSynthesis.speak(u)}catch(e){sayNote(tp("無法播放聲音。","Couldn't play audio."))}
+}
+function sayNote(msg){let n=document.getElementById("sayNote");if(!n){n=document.createElement("div");n.id="sayNote";n.className="saynote";n.setAttribute("role","status");document.body.appendChild(n)}n.textContent=msg;n.hidden=false;clearTimeout(sayNote.t);sayNote.t=setTimeout(()=>{n.hidden=true},3500)}
+try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{}}catch(e){}
+document.addEventListener("click",e=>{
+  const rb=e.target.closest("[data-rate]");if(rb){SAY_RATE=+rb.dataset.rate;LS.set("wn.rate",SAY_RATE);document.querySelectorAll("[data-rate]").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.rate===SAY_RATE)));return}
+  const sb=e.target.closest("[data-saytext]");if(sb){e.stopPropagation();const tgt=document.getElementById(sb.dataset.saytext);if(tgt)say(tgt.value!=null&&tgt.tagName==="TEXTAREA"?tgt.value.replace(/[^\x00-\x7F]+/g," "):tgt.textContent,sb);return}
+  const el=e.target.closest(".en,.say,.sayp");if(!el)return;
+  if(el.closest("button,label,select,a,summary,.tab,.chip"))return;
+  if(String(getSelection())) return;
+  say(el.textContent,el);
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")sayStop()});
 /* ---------- global events ---------- */
 document.addEventListener("click",e=>{
   const lb=e.target.closest("[data-lang]");if(lb){L=lb.dataset.lang;LS.set("wn.lang3",L);render();if(!$("#sheet").hidden)closeSheet();return}

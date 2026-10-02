@@ -477,6 +477,19 @@ figure.bodyfig figcaption{text-align:center}
 .route17 span.act{background:var(--c);color:var(--surface);font-weight:700}
 .route17 i{font-style:normal;color:var(--muted)}
 
+/* v12 speech */
+.en{cursor:pointer;border-radius:4px}
+.en::after{content:" 🔊";font-size:.85em;opacity:.65}
+.en:hover{background:var(--sunk)}
+.en.speaking{background:color-mix(in srgb,var(--s2) 30%,transparent)}
+.saysel{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 12px;font-size:13.5px;white-space:nowrap}
+.saysel:hover{border-color:var(--accent)}
+
+/* v11 facebook */
+.fbgrid{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:820px){.fbgrid{grid-template-columns:1fr}}
+.fbimg{width:100%;max-width:420px;aspect-ratio:1;border-radius:12px;border:1px solid var(--line);background:var(--sunk);display:block}
+
 /* v10 trauma */
 .trahead{display:flex;gap:14px;align-items:center;background:color-mix(in srgb,var(--c) calc(var(--tint)*100%),var(--surface));border:1px solid color-mix(in srgb,var(--c) 35%,var(--line));border-radius:12px;padding:12px 16px}
 .traw{font-family:var(--serif);font-weight:900;font-size:40px;line-height:1;color:var(--c);flex:none}
@@ -525,6 +538,7 @@ figure.bodyfig figcaption{text-align:center}
       <button type="button" role="tab" id="tab-dec" aria-selected="false">決策母體</button>
       <button type="button" role="tab" id="tab-tra" aria-selected="false">創傷解套</button>
       <button type="button" role="tab" id="tab-nut" aria-selected="false">營養導航</button>
+      <button type="button" role="tab" id="tab-fb" aria-selected="false">臉書貼文</button>
       <button type="button" role="tab" id="tab-fw" aria-selected="false">整合框架</button>
       <button type="button" role="tab" id="tab-gl" aria-selected="false">白話詞典</button>
     </div>
@@ -533,6 +547,7 @@ figure.bodyfig figcaption{text-align:center}
       <input id="q" type="search" placeholder="搜尋：肝、膽經、恐、失眠、足三里、心腎不交…" autocomplete="off" aria-label="搜尋">
       <div class="results" id="results" hidden></div>
     </div>
+    <button type="button" class="saysel" id="saySel" title="先用滑鼠選取一段英文，再按這裡">🔊 朗讀選取的英文</button>
   </div>
 
   <div id="routerView" class="nut" hidden></div>
@@ -557,6 +572,7 @@ figure.bodyfig figcaption{text-align:center}
   <div id="decView" class="nut" hidden></div>
   <div id="traView" class="nut" hidden></div>
   <div id="nutView" class="nut" hidden></div>
+  <div id="fbView" class="nut" hidden></div>
   <div id="fwView" class="fw" hidden></div>
   <div id="glView" hidden></div>
 
@@ -1352,6 +1368,107 @@ function renderTrauma(){
   V.querySelectorAll("[data-safety]").forEach(b=>b.onclick=()=>{setView("nav");select("jueyin");window.scrollTo({top:0,behavior:"smooth"})});
 }
 
+/* ===== 臉書貼文＋心靈雞湯圖卡 ===== */
+const HEX = {"--s1":"#2F8052","--s2":"#A87C0E","--s3":"#C25E22","--s4":"#2F64A0","--s5":"#6A4A9E","--s6":"#B8322F"};
+const FB = {
+  taiyang:{body:"穩定不是運氣，是每天一點一點累積出來的。\n趁現在還有餘裕，把睡眠、飲食、活動顧好，替自己多留一點緩衝。\n問題來的時候，你會感謝今天的自己。",act:"今晚固定時間上床，記下一件真的讓你恢復的事。",tags:"#恢復力 #穩定 #自我照顧"},
+  yangming:{body:"卡住我們的，常常不是事情本身，而是那句「事情不應該是這樣」。\n期待可以保留，但先讓現實進來，才看得到下一步。",act:"把心裡的一句「應該」，改寫成「我希望」。",tags:"#接受現實 #放下 #認知彈性"},
+  shaoyang:{body:"生氣不是壞事，它在提醒你：有一條界線被踩到了。\n不用壓下去，也不用炸出來。\n先深呼吸，再決定把力氣放在哪裡最有效。",act:"寫下一句：我真正想保護的是什麼？",tags:"#界線 #憤怒 #情緒覺察"},
+  taiyin:{body:"失去之後，不需要急著振作。\n今天只要吃一餐、走十分鐘、找一個人，就已經在把自己慢慢養回來。",act:"吃一餐、走十分鐘、找一個人。",tags:"#失落 #悲傷 #慢慢來"},
+  shaoyin:{body:"害怕的時候，大腦會把「有可能」當成「一定會」。\n你不需要看清整條路，只要完成眼前的一小步。\n那一小步，就是推翻恐懼的證據。",act:"選一件 10 分鐘內做得完的小事，做完對自己說：DONE。",tags:"#焦慮 #小成功 #下一步"},
+  jueyin:{q:["看不到出口的時候，先不要一個人。","現在的我看不到出口，不等於出口不存在。","撐不住不是你的錯，是你已經撐太久了。","今天只做一件事：讓一個人知道你現在的狀況。","求助不是軟弱，是把自己接回更大的系統。"],
+    body:"如果你現在覺得看不到出口，請先不要一個人撐。\n這不是你不夠努力，而是你已經撐太久了。\n請找一個信任的人，或撥打 1925 安心專線（24 小時、免付費）。有立即危險請撥 119。",act:"讓一個人知道你現在的狀況。",tags:"#你不是一個人 #求助 #安心專線1925",
+    cta:"如果身邊有人正在這個狀態，請陪著對方，而不是勸對方想開。"}
+};
+let fbState="taiyang", fbIdx=0, fbStyle="light", fbText="";
+const fbQuotes = k => FB[k].q || S(k).soup;
+function fbPost(k,i){
+  const s=S(k), f=FB[k], q=fbQuotes(k)[i%fbQuotes(k).length];
+  return `【${s.g}｜${s.mode}】${s.say}\n\n${q}\n\n${f.body}\n\n今天的小練習：${f.act}\n\n${f.cta||"你今天在哪個 State？留言告訴我一個詞就好。"}\n\n#六經State #LifeOS #心靈雞湯 ${f.tags}`;
+}
+function wrapCJK(ctx,text,maxW){
+  const lines=[]; let cur="";
+  for(const ch of text){
+    if(ctx.measureText(cur+ch).width>maxW && cur && !"，。！？、：；」』）".includes(ch)){ lines.push(cur); cur=ch; }
+    else cur+=ch;
+  }
+  if(cur) lines.push(cur); return lines;
+}
+async function drawCard(){
+  const cv=$("#fbCanvas"); if(!cv) return;
+  const s=S(fbState), q=fbQuotes(fbState)[fbIdx%fbQuotes(fbState).length], col=HEX[s.c];
+  try{ await Promise.all([document.fonts.load('900 64px "Noto Serif TC"',q+s.g),document.fonts.load('500 30px "Noto Sans TC"',s.mode+s.say)]); }catch(e){}
+  const W=1080, ctx=cv.getContext("2d"), SERIF='"Noto Serif TC","Songti TC","PMingLiU",serif', SANS='"Noto Sans TC","Microsoft JhengHei",sans-serif';
+  const dark = fbStyle==="color", bg = dark?col:(fbStyle==="ink"?"#17201D":"#F4F7F5"), ink = (dark||fbStyle==="ink")?"#FFFFFF":"#18211E", accent = dark?"#FFFFFF":(fbStyle==="ink"?"#FFFFFF":col);
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,W);
+  if(!dark){ ctx.fillStyle=col; ctx.fillRect(0,0,W,22); ctx.fillRect(0,W-22,W,22); }
+  // watermark glyph
+  ctx.save(); ctx.globalAlpha = dark?0.14:(fbStyle==="ink"?0.10:0.08); ctx.fillStyle = dark?"#FFFFFF":col; ctx.font=`900 440px ${SERIF}`; ctx.textAlign="right"; ctx.textBaseline="alphabetic"; ctx.fillText(s.g,W-40,W-90); ctx.restore();
+  // header
+  ctx.textAlign="left"; ctx.textBaseline="middle";
+  ctx.font=`500 30px ${SANS}`; ctx.fillStyle=ink; ctx.globalAlpha=.75; ctx.fillText("LifeOS｜六經 State 導航",90,120); ctx.globalAlpha=1;
+  const chip=`${s.g}・${s.mode}`; ctx.font=`700 34px ${SANS}`; const cw=ctx.measureText(chip).width+56;
+  ctx.fillStyle = dark?"rgba(255,255,255,.2)":col; ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(90,170,cw,64,32); else ctx.rect(90,170,cw,64); ctx.fill();
+  ctx.fillStyle="#FFFFFF"; ctx.fillText(chip,118,203);
+  // quote
+  let size=72, lines; ctx.textAlign="left";
+  do{ ctx.font=`900 ${size}px ${SERIF}`; lines=wrapCJK(ctx,q,W-180); size-=4; }while(lines.length>5 && size>40);
+  size+=4; const lh=size*1.5, total=lines.length*lh, y0=(W-total)/2+40;
+  ctx.fillStyle=accent; ctx.font=`900 150px ${SERIF}`; ctx.globalAlpha=.35; ctx.fillText("「",70,y0-50); ctx.globalAlpha=1;
+  ctx.fillStyle=ink; ctx.font=`900 ${size}px ${SERIF}`;
+  lines.forEach((l,i)=>ctx.fillText(l,90,y0+i*lh+lh/2));
+  // divider + footer
+  ctx.fillStyle=accent; ctx.fillRect(90,y0+total+34,120,6);
+  ctx.font=`500 34px ${SANS}`; ctx.fillStyle=ink; ctx.globalAlpha=.85; ctx.fillText(s.say, 90, W-130); ctx.globalAlpha=1;
+  if(fbState==="jueyin"){ ctx.font=`700 30px ${SANS}`; ctx.fillStyle=ink; ctx.fillText("安心專線 1925（24 小時）｜緊急請撥 119", 90, W-82); }
+  try{ $("#fbImg").src=cv.toDataURL("image/png"); }catch(e){}
+}
+function renderFB(){
+  const s=S(fbState), qs=fbQuotes(fbState);
+  fbText=fbPost(fbState,fbIdx);
+  $("#fbView").innerHTML=`
+  <div class="nhero">
+    <div class="tag">Facebook Post Maker</div>
+    <h3>心靈雞湯圖卡＋臉書貼文</h3>
+    <p>選 State、選一句話，就會產生一張 1080×1080 的圖卡和一篇可以直接貼上的貼文。貼文可以自己改字。</p>
+  </div>
+  <section class="blk">
+    <div class="blk-h"><h3>選 State</h3><span class="tag">六個狀態都有</span></div>
+    <div class="bodychips">${RKEYS.map(k=>{const x=S(k);return `<button type="button" data-fbs="${k}" style="--c:var(${x.c})" aria-pressed="${k===fbState}">${x.g}｜${x.mode}</button>`}).join("")}</div>
+  </section>
+  <div class="fbgrid" style="--c:var(${s.c})">
+    <section class="blk">
+      <div class="blk-h"><h3>圖卡</h3><span class="tag">1080 × 1080</span></div>
+      <canvas id="fbCanvas" width="1080" height="1080" hidden></canvas>
+      <img id="fbImg" class="fbimg" alt="${s.g}心靈雞湯圖卡">
+      <div class="lens-tabs">${[["light","淺色"],["color","色塊"],["ink","深色"]].map(([k,t])=>`<button type="button" data-fbst="${k}" aria-selected="${fbStyle===k}">${t}</button>`).join("")}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="done-btn" id="fbDl" type="button">下載圖卡 PNG</button><button class="ghost" id="fbNext" type="button">換一句（${fbIdx%qs.length+1}/${qs.length}）</button></div>
+      <p class="lensnote">如果按下載沒有反應（網頁版可能被擋），請在圖卡上按右鍵「另存圖片」，手機則長按圖片儲存。桌面檔可以直接下載。</p>
+    </section>
+    <section class="blk">
+      <div class="blk-h"><h3>貼文文字</h3><span class="tag">可直接修改</span></div>
+      <textarea id="fbTa" rows="18" style="background:var(--surface);min-height:360px;font-size:14.5px;line-height:1.7">${esc(fbText)}</textarea>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="done-btn" id="fbCopy" type="button">複製貼文</button><button class="ghost" id="fbReset" type="button">還原文字</button></div>
+      ${fbState==="jueyin"?`<div class="medical">厥陰的貼文是寫給「正在撐的人」與「身邊的人」看的：只放陪伴與求助資訊，不放產品、不用「想開一點」這類說法。</div>`:""}
+    </section>
+  </div>
+  <section class="blk">
+    <div class="blk-h"><h3>${s.g}的全部句子</h3><span class="tag">點一句換到圖卡上</span></div>
+    <ul class="qs" style="--c:var(${s.c})">${qs.map((x,i)=>`<li><button type="button" data-fbq="${i}" style="border:0;background:none;padding:0;text-align:left;font:inherit;color:inherit;${i===fbIdx%qs.length?"font-weight:700":""}">${x}</button></li>`).join("")}</ul>
+  </section>`;
+  const V=$("#fbView");
+  V.querySelectorAll("[data-fbs]").forEach(b=>b.onclick=()=>{fbState=b.dataset.fbs;fbIdx=0;renderFB()});
+  V.querySelectorAll("[data-fbst]").forEach(b=>b.onclick=()=>{fbStyle=b.dataset.fbst;renderFB()});
+  V.querySelectorAll("[data-fbq]").forEach(b=>b.onclick=()=>{fbIdx=+b.dataset.fbq;renderFB()});
+  $("#fbNext").onclick=()=>{fbIdx=(fbIdx+1)%qs.length;renderFB()};
+  $("#fbReset").onclick=()=>{$("#fbTa").value=fbPost(fbState,fbIdx)};
+  $("#fbCopy").onclick=async e=>{const b=e.currentTarget, ta=$("#fbTa");
+    try{await navigator.clipboard.writeText(ta.value);b.textContent="已複製"}catch(err){ta.focus();ta.select();b.textContent="已選取，請按 Ctrl+C"}};
+  $("#fbDl").onclick=()=>{const cv=$("#fbCanvas");
+    try{cv.toBlob(bl=>{const a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download=`${s.g}-心靈雞湯-${fbIdx%qs.length+1}.png`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)},"image/png")}catch(err){}};
+  drawCard();
+}
+
 /* ===== 六經狀態判斷（State Router） ===== */
 const RKEYS=["taiyang","yangming","shaoyang","taiyin","shaoyin","jueyin"];
 const RQ = [
@@ -2065,7 +2182,7 @@ function figMeridian(){
 }
 
 /* ===== tabs ===== */
-const VIEWS={router:["#tab-router","#routerView"],nav:["#tab-nav","#navView"],map:["#tab-map","#mapView"],dec:["#tab-dec","#decView"],tra:["#tab-tra","#traView"],nut:["#tab-nut","#nutView"],fw:["#tab-fw","#fwView"],gl:["#tab-gl","#glView"]};
+const VIEWS={router:["#tab-router","#routerView"],nav:["#tab-nav","#navView"],map:["#tab-map","#mapView"],dec:["#tab-dec","#decView"],tra:["#tab-tra","#traView"],fb:["#tab-fb","#fbView"],nut:["#tab-nut","#nutView"],fw:["#tab-fw","#fwView"],gl:["#tab-gl","#glView"]};
 function setView(v){
   view=v;
   Object.entries(VIEWS).forEach(([k,[t,el]])=>{$(t).setAttribute("aria-selected",k===v);$(el).hidden=k!==v});
@@ -2075,6 +2192,7 @@ function setView(v){
   if(v==="dec") renderDecision();
   if(v==="router") renderRouter();
   if(v==="tra") renderTrauma();
+  if(v==="fb") renderFB();
   if(v==="gl") renderGlossary();
 }
 Object.entries(VIEWS).forEach(([k,[t]])=>{$(t).onclick=()=>setView(k)});
@@ -2260,7 +2378,7 @@ function peTable(s){
     <div class="upd"><span class="k">Model Update</span><span class="v">${s.pe.upd}</span></div>
     <div><span class="k">怎麼驗證</span><span class="v">${s.pe.test}</span></div>
   </div>
-  ${s.ab?`<div class="ability"><div class="tag">${s.g}要建立的能力</div><div class="n">${s.ab.n}</div><p>${s.ab.p}</p></div>`:""}`;
+  ${s.ab?`<div class="ability"><div class="tag">${s.g}要建立的能力</div><div class="n en">${s.ab.n}</div><p>${s.ab.p}</p></div>`:""}`;
 }
 
 /* ===== panel ===== */
@@ -2274,7 +2392,7 @@ function renderPanel(){
 
   p.innerHTML = `
   <div class="hero">
-    <div class="name"><h2>${s.g}</h2><span class="modechip">${s.mode}</span><span class="say">${s.say}</span><span class="core">${s.core}</span></div>
+    <div class="name"><h2>${s.g}</h2><span class="modechip">${s.mode}</span><span class="say">${s.say}</span><span class="core en">${s.core}</span></div>
     <p class="line1">${s.line}</p>
     <div class="chain">${s.chain.map(x=>`<span>${x}</span>`).join("<i>→</i>")}</div>
     <div class="up">升回去的方向：<b>${s.up}</b></div>
@@ -2334,7 +2452,7 @@ function renderPanel(){
   <section class="soup">
     <div class="tag">今日心靈雞湯 · ${s.g}</div>
     <blockquote id="soupText">${s.soup[soupIdx%s.soup.length]}</blockquote>
-    <div class="btns"><button class="ghost" id="soupNext" type="button">換一句</button><button class="ghost" id="soupCopy" type="button">複製</button></div>
+    <div class="btns"><button class="ghost" id="soupNext" type="button">換一句</button><button class="ghost" id="soupCopy" type="button">複製</button><button class="ghost" id="soupFb" type="button">做成臉書圖卡 →</button></div>
   </section>`;
 
   p.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{const k=b.dataset.w; why.has(k)?why.delete(k):why.add(k); renderPanel()});
@@ -2350,6 +2468,7 @@ function renderPanel(){
   ["pred","real","upd"].forEach(k=>{$("#pe-"+k).oninput=e=>{peDraft[k]=e.target.value}});
   $("#pe-err").oninput=e=>{peDraft.err=+e.target.value;$("#pe-err-o").textContent=e.target.value};
   $("#soupNext").onclick=()=>{soupIdx=(soupIdx+1)%s.soup.length;$("#soupText").textContent=s.soup[soupIdx];$("#soupCopy").textContent="複製"};
+  $("#soupFb").onclick=()=>{fbState=s.key;fbIdx=soupIdx%s.soup.length;setView("fb");window.scrollTo({top:0,behavior:"smooth"})};
   $("#soupCopy").onclick=async e=>{
     const b=e.currentTarget;
     try{await navigator.clipboard.writeText($("#soupText").textContent);b.textContent="已複製"}
@@ -2578,6 +2697,34 @@ function renderGlossary(){
 
 $("#sosBtn").onclick=()=>{setView("nav"); select("jueyin"); $("#panel").scrollIntoView({behavior:"smooth",block:"start"})};
 soupIdx = S(cur).soup ? Math.floor(Math.random()*S(cur).soup.length) : 0;
+/* ===== 英文發音（瀏覽器內建語音，不需網路 API） ===== */
+const onlyEnglish = t => (t||"").replace(/[^A-Za-z0-9'\-\s]/g," ").replace(/\s+/g," ").trim();
+function speakEn(text, el){
+  const t=onlyEnglish(text);
+  if(!t || !("speechSynthesis" in window)) return false;
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(t);
+    u.lang="en-US"; u.rate=0.85;
+    const v=speechSynthesis.getVoices().find(x=>/^en[-_]US/i.test(x.lang)) || speechSynthesis.getVoices().find(x=>/^en/i.test(x.lang));
+    if(v) u.voice=v;
+    if(el){ document.querySelectorAll(".en.speaking").forEach(x=>x.classList.remove("speaking")); el.classList.add("speaking"); u.onend=u.onerror=()=>el.classList.remove("speaking"); }
+    speechSynthesis.speak(u);
+    return true;
+  }catch(e){ return false; }
+}
+try{ if("speechSynthesis" in window) speechSynthesis.getVoices(); }catch(e){}
+document.addEventListener("click",e=>{
+  const el=e.target.closest(".en"); if(!el) return;
+  speakEn(el.textContent, el);
+});
+$("#saySel").onclick=e=>{
+  const b=e.currentTarget, t=onlyEnglish(String(window.getSelection()));
+  if(!("speechSynthesis" in window)){ b.textContent="這個瀏覽器不支援語音"; return; }
+  if(!t){ b.textContent="請先選取一段英文"; setTimeout(()=>b.textContent="🔊 朗讀選取的英文",1800); return; }
+  speakEn(t);
+};
+
 renderLadder(); renderVars(); renderPanel();
 $("#toRouter").onclick=()=>{setView("router");window.scrollTo({top:0,behavior:"smooth"})};
 setView("router");

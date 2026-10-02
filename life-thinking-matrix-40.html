@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>人生思維母體 LifeOS</title>
+<style>
+:root{--bg:#faf7f2;--card:#fff;--ink:#2b2622;--mute:#7a7068;--line:#e8e0d6;--acc:#c0703a;--acc2:#fbeee3;--soup:#fff8ec;--soupb:#f0d9b5;
+--g1:#3b82c4;--g2:#c0703a;--g3:#7b5cc4;--g4:#2e9d6a;--g5:#c24b5a;--g6:#b8891c}
+@media (prefers-color-scheme:dark){:root{--bg:#1b1917;--card:#252220;--ink:#eee7df;--mute:#a89e94;--line:#3a3530;--acc:#e59a63;--acc2:#3a2b20;--soup:#2c251e;--soupb:#5a4630}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;line-height:1.7;font-size:15px}
+header{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px 0}
+.wrap{max-width:980px;margin:0 auto}
+h1{margin:0;font-size:20px;letter-spacing:.5px}
+h1 small{font-weight:400;color:var(--mute);font-size:13px;margin-left:6px}
+.bar{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+#q{flex:1;min-width:180px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:15px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button,.btn{border:0;background:var(--card);color:var(--ink);padding:8px 11px;cursor:pointer;font-size:13px}
+.seg button.on{background:var(--acc);color:#fff}
+.btn{border:1px solid var(--line);border-radius:10px}
+.btn:hover{border-color:var(--acc)}
+.tabs{display:flex;gap:2px;overflow-x:auto}
+.tabs button{border:0;background:none;color:var(--mute);padding:8px 12px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;font-size:14px}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--acc);font-weight:600}
+.spk{border:1px solid var(--line);background:var(--card);border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:14px;padding:0;margin-left:6px;vertical-align:middle}
+.spk:hover{border-color:var(--acc)}
+.en,.enn{cursor:pointer}.en:hover,.enn:hover{text-decoration:underline dotted}
+.tabs .cnt:empty{display:none}
+.tabs .cnt{font-size:11px;background:var(--acc2);color:var(--acc);border-radius:8px;padding:0 6px;margin-left:4px}
+main{padding:14px 16px 60px}
+.panel{display:none}.panel.on{display:block}
+.lang-zh .en{display:none!important}.lang-en .zh{display:none!important}
+.today{background:var(--soup);border:1px solid var(--soupb);border-radius:14px;padding:14px 16px;margin-bottom:14px;cursor:pointer}
+.today .lb{font-size:12px;color:var(--acc);font-weight:600;letter-spacing:1px}
+.today .t{font-size:16px;margin-top:4px}
+.today .e{font-size:14px;color:var(--mute);font-style:italic}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:4px 12px;cursor:pointer;font-size:13px}
+.chip.on{background:var(--ink);color:var(--bg)}
+.tools{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
+.card[hidden]{display:none}
+.card>summary{list-style:none;cursor:pointer;padding:14px 16px}
+.card>summary::-webkit-details-marker{display:none}
+.hd{display:flex;gap:12px;align-items:flex-start}
+.num{flex:none;width:38px;height:38px;border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+.nm{font-size:17px;font-weight:700}
+.enn{font-size:13px;font-weight:400;color:var(--mute)}
+.q{font-size:14px;color:var(--mute)}
+.gb{margin-left:auto;flex:none;font-size:11px;border-radius:8px;padding:2px 8px;color:#fff;white-space:nowrap}
+.soup{margin-top:10px;background:var(--soup);border-left:3px solid var(--soupb);border-radius:6px;padding:8px 12px;font-size:14px}
+.soup .en{font-style:italic;color:var(--mute);display:block}
+.soup .lbl{font-size:11px;color:var(--acc);font-weight:600;margin-right:6px}
+.bd{padding:0 16px 16px;border-top:1px dashed var(--line)}
+h4{margin:14px 0 6px;font-size:13px;color:var(--acc);letter-spacing:.5px}
+.pre{white-space:pre-line}
+.onf{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.onf>div{background:var(--bg);border-radius:10px;padding:8px 10px;font-size:14px}
+.onf b{display:block;font-size:11px;color:var(--mute);font-weight:600}
+.onf .en{display:block;color:var(--mute);font-size:12.5px}
+.ex{margin-top:8px;background:var(--acc2);border-radius:10px;padding:8px 10px;font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+.mx td{border-bottom:1px solid var(--line);padding:6px 8px;vertical-align:top}
+.mx td:first-child{width:130px;color:var(--mute);font-size:12.5px;white-space:nowrap}
+.mx tr.hl td{background:var(--acc2)}
+.tbl{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+.tbl th{position:sticky;top:0;background:var(--acc2);font-size:13px}
+.tbl tr{cursor:pointer}.tbl tr[hidden]{display:none}
+.tbl .en{display:block;color:var(--mute);font-size:12px}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.sec[hidden]{display:none}
+.sec h3{margin:0 0 8px;font-size:16px}
+.sec h3 .enn{margin-left:6px}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.flow span.s{background:var(--acc2);border-radius:8px;padding:3px 9px;font-size:14px}
+.flow span.a{color:var(--mute)}
+.vf{counter-reset:v;margin:0;padding:0;list-style:none}
+.vf li{position:relative;padding:6px 0 6px 40px;border-left:2px solid var(--line);margin-left:14px}
+.vf li::before{counter-increment:v;content:counter(v);position:absolute;left:-14px;top:6px;width:26px;height:26px;border-radius:50%;background:var(--acc);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center}
+.vf li b{margin-right:6px}
+.pairs{display:grid;grid-template-columns:1fr auto 1fr;gap:4px 10px;font-size:14px}
+.pairs .a{color:var(--mute)}
+.pairs .o{color:var(--mute);text-decoration:line-through;text-decoration-color:var(--soupb)}
+.mb{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}
+.mb button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:2px 8px;font-size:13px;cursor:pointer}
+.mb button:hover{border-color:var(--acc)}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:4px 10px;font-size:14px}
+.kv>b{color:var(--mute);font-weight:600;font-size:12.5px;padding-top:2px}
+.big{font-size:17px;font-weight:600;text-align:center;padding:10px;background:var(--soup);border-radius:10px;margin:8px 0}
+.fb{display:grid;grid-template-columns:250px 1fr;gap:12px;align-items:start}
+.fbc{width:100%;height:auto;border-radius:10px;border:1px solid var(--line);display:block}
+.fbt{width:100%;height:250px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);padding:10px;font:inherit;font-size:13.5px;line-height:1.6;resize:vertical;margin-bottom:8px}
+@media (max-width:640px){.fb{grid-template-columns:1fr}.fbc{max-width:300px}}
+.empty{color:var(--mute);text-align:center;padding:30px;display:none}
+.flash{animation:fl 1.6s}
+@keyframes fl{0%{box-shadow:0 0 0 4px var(--acc)}100%{box-shadow:0 0 0 0 transparent}}
+@media (max-width:640px){.onf{grid-template-columns:1fr}.mx td:first-child{width:96px;white-space:normal}.gb{display:none}.kv{grid-template-columns:1fr}.pairs{grid-template-columns:1fr auto 1fr;font-size:13px}}
+</style>
+</head>
+<body class="lang-both">
+<header><div class="wrap">
+  <h1>人生思維母體 <small>LifeOS · 40 Mental Models</small></h1>
+  <div class="bar">
+    <input id="q" type="search" placeholder="搜尋思維、關鍵字、例子… Search (e.g. 瓶頸 / feedback / 孩子)">
+    <div class="seg" id="lang"><button data-l="zh">中</button><button data-l="both" class="on">中+EN</button><button data-l="en">EN</button></div>
+    <button class="btn" id="rnd" title="隨機一則">🎲 隨機</button>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-t="t40" class="on">40 大思維<span class="cnt"></span></button>
+    <button data-t="tfb">臉書貼文＋圖卡<span class="cnt"></span></button>
+    <button data-t="t8">8 大母體<span class="cnt"></span></button>
+    <button data-t="t6">6 大母體<span class="cnt"></span></button>
+    <button data-t="tf">循環與流程<span class="cnt"></span></button>
+    <button data-t="tw">公式與智慧<span class="cnt"></span></button>
+  </nav>
+</div></header>
+
+<main class="wrap">
+<!-- 40 -->
+<section class="panel on" id="t40">
+  <div class="today" id="today"></div>
+  <div class="chips" id="gchips"></div>
+  <div class="tools">
+    <button class="btn" id="vCard">卡片 Cards</button>
+    <button class="btn" id="vTbl">對照表 Table</button>
+    <button class="btn" id="openAll">全部展開</button>
+    <button class="btn" id="closeAll">全部收合</button>
+    <button class="btn" id="dlAllImg">下載全部40張圖卡</button>
+    <button class="btn" id="dlAllTxt">下載全部貼文文字</button>
+  </div>
+  <div id="cards"></div>
+  <div class="tbl" id="tblWrap" style="display:none"><table><thead><tr><th>#</th><th>思維 Model</th><th>舊Model｜沒有這個思維</th><th>新Model｜升級後</th><th>功效／能力</th></tr></thead><tbody id="tbody"></tbody></table></div>
+  <div class="empty">找不到符合的內容 · No results</div>
+</section>
+
+<!-- fb -->
+<section class="panel" id="tfb">
+  <div class="tools">
+    <button class="btn" onclick="document.getElementById('dlAllImg').click()">下載全部40張圖卡</button>
+    <button class="btn" onclick="document.getElementById('dlAllTxt').click()">下載全部貼文文字</button>
+  </div>
+  <div id="fbList"></div>
+  <div class="empty">找不到符合的內容 · No results</div>
+</section>
+
+<!-- 8 -->
+<section class="panel" id="t8">
+  <div class="sec it"><h3>把40種思維壓縮成8大母體 <span class="enn">8 Core Matrices</span></h3>
+  <div class="flow"><span class="s">① SEE 看見</span><span class="a">→</span><span class="s">② TRACE 上溯</span><span class="a">→</span><span class="s">③ FOCUS 聚焦</span><span class="a">→</span><span class="s">④ DECIDE 決策</span><span class="a">→</span><span class="s">⑤ PROTECT 防守</span><span class="a">→</span><span class="s">⑥ ACT 行動</span><span class="a">→</span><span class="s">⑦ LEARN 學習</span><span class="a">→</span><span class="s">⑧ EVOLVE 進化</span></div></div>
+  <div id="g8"></div>
+  <div class="empty">找不到符合的內容 · No results</div>
+</section>
+
+<!-- 6 -->
+<section class="panel" id="t6">
+  <div class="sec it"><h3>40大思維 → 六大思維母體 <span class="enn">Six Thinking Matrices</span></h3>
+  <div class="flow"><span class="s">①看懂世界</span><span class="a">→</span><span class="s">②找到關鍵</span><span class="a">→</span><span class="s">③做對決策</span><span class="a">→</span><span class="s">④有效行動</span><span class="a">→</span><span class="s">⑤保護系統</span><span class="a">→</span><span class="s">⑥學習進化</span></div>
+  <div class="big">看 → 找 → 選 → 做 → 守 → 升</div>
+  <div class="pairs"><span>看｜SEE 看見系統</span><span class="a">→</span><span>Structure</span><span>找｜FOCUS 找到關鍵</span><span class="a">→</span><span>Leverage</span><span>選｜DECIDE 選擇策略</span><span class="a">→</span><span>Decision</span><span>做｜ACT 真正行動</span><span class="a">→</span><span>Action</span><span>守｜PROTECT 保護系統</span><span class="a">→</span><span>Buffer</span><span>升｜EVOLVE 持續更新</span><span class="a">→</span><span>Model Update</span></div>
+  <h4>最後形成</h4>
+  <div class="flow"><span class="s">Structure</span><span class="a">→</span><span class="s">Leverage</span><span class="a">→</span><span class="s">Decision</span><span class="a">→</span><span class="s">Action</span><span class="a">→</span><span class="s">Feedback</span><span class="a">→</span><span class="s">Error</span><span class="a">→</span><span class="s">Model Update</span><span class="a">→</span><span class="s">Capability</span><span class="a">→</span><span class="s">Wisdom</span></div></div>
+  <div id="g6"></div>
+  <div class="sec it"><h3>最終智慧 <span class="enn">Final Wisdom</span></h3>
+  <div class="pre">SEE讓你不再「看錯」。
+FOCUS讓你不再「用錯力」。
+DECIDE讓你不再「選錯方向」。
+ACT讓你不再「只懂不做」。
+PROTECT讓你不會「一次錯誤就出局」。
+EVOLVE讓你「每次錯誤都比以前更強」。</div>
+  <div class="big">看得懂 → 找得準 → 選得好 → 做得出 → 撐得住 → 改得快</div>
+  <p class="zh">真正完整的人生OS，不是永遠做對。而是把每一次Reality與Prediction的差異，都轉成下一輪更好的Model、更強的Capability與更大的Freedom。</p>
+  <p class="en" style="color:var(--mute);font-style:italic">A complete Life OS isn't about always being right. It's about turning every gap between reality and prediction into a better model, stronger capability and greater freedom for the next round.</p></div>
+  <div class="empty">找不到符合的內容 · No results</div>
+</section>
+
+<!-- flows -->
+<section class="panel" id="tf">
+  <div class="sec it"><h3>為什麼需要完整的「人生思維母體」 <span class="enn">Why a complete matrix</span></h3>
+  <div class="pre">上游思維回答「問題從哪裡生成」。
+槓桿思維回答「改哪裡最划算」。
+但你還需要知道「世界怎麼運作、資訊怎麼判斷、風險怎麼管理、行動怎麼選、錯了怎麼更新」。</div>
+  <h4>完整公式 Complete Formula</h4>
+  <div class="flow" data-f="看見 See,拆解 Decompose,上溯 Trace,找槓桿 Leverage,預測 Predict,決策 Decide,行動 Act,回饋 Feedback,更新 Update,複利 Compound"></div></div>
+
+  <div class="sec it"><h3>最終人生OS <span class="enn">The Final Life OS</span></h3>
+  <ol class="vf" data-v="SEE｜我到底看到了什麼？;TRACE｜它真正從哪裡生成？;FOCUS｜最大槓桿在哪裡？;PREDICT｜如果我的Model正確，接下來會怎樣？;DECIDE｜在成本、風險、機率與選擇權下，哪個Action合理？;PROTECT｜如果我錯了，系統撐得住嗎？;ACT｜最小可行行動是什麼？;FEEDBACK｜Reality回了什麼資料？;ERROR｜哪裡跟Prediction不同？;UPDATE｜Model要改哪裡？;COMPOUND｜這次有沒有留下能力？;EVOLVE｜下一輪的我是否比上一輪更有選擇？"></ol></div>
+
+  <div class="sec it"><h3>人生最強循環 <span class="enn">The Strongest Life Loop</span></h3>
+  <ol class="vf" data-v="Signal｜看見訊號;Pattern｜找到重複模式;Structure｜看到背後結構;Generator｜找到問題生成器;Bottleneck｜找到最大卡點;Leverage｜找到最大槓桿;Prediction｜先做預測;Minimum Action｜最小行動;Feedback｜讀取現實;Prediction Error｜找到預測誤差;Model Update｜更新模型;Capability｜形成能力;Compound｜長期複利;Freedom｜增加未來選擇權"></ol></div>
+
+  <div class="sec it"><h3>40大思維統一公式 <span class="enn">Unified Formula for Every Model</span></h3>
+  <div class="flow" data-f="Structure 結構,Old Model 舊模型,Prediction 舊預測,Error 預測誤差,Model Update 模型更新,Leverage 槓桿,Node 關鍵節點,Capability 能力,Wisdom 智慧,Rule 規律,New Prediction 新預測,Action 新行動"></div></div>
+
+  <div class="sec it"><h3>40種思維共同的底層母體 <span class="enn">The Shared Wisdom-Generating Loop</span></h3>
+  <p class="zh" style="margin-top:0">所有思維其實都可以放進同一個智慧生成循環：</p>
+  <ol class="vf" data-v="INPUT｜發生什麼？;SIGNAL｜哪裡出現異常？;PATTERN｜是不是反覆發生？;STRUCTURE｜背後結構是什麼？;MODEL｜我原本怎麼理解？;PREDICTION｜照這個Model，應該發生什麼？;REALITY｜實際發生什麼？;ERROR｜Prediction與Reality差多少？;GENERATOR｜什麼機制生成這個差異？;BOTTLENECK｜現在最卡的是哪個節點？;LEVERAGE｜改哪裡效益最大？;CONSTRAINT｜有哪些不能忽略的限制？;OPTION｜有哪些可選策略？;DECISION｜目前Evidence下選哪個？;MINIMUM ACTION｜最小可行行動是什麼？;FEEDBACK｜Reality回傳什麼？;MODEL UPDATE｜哪些假設、權重、策略要修改？;RETEST｜換情境再測一次;CAPABILITY｜這次留下什麼能力？;WISDOM｜可以壓縮成什麼規律？;TRANSFER｜能不能搬到其他情境？;COMPOUND｜能不能長期累積？;GENERATION｜能不能進一步創造新價值？;FREEDOM｜最後是否增加未來選擇權？"></ol></div>
+
+  <div class="sec it"><h3>新舊人生最大的差異 <span class="enn">Old Life vs New Life</span></h3>
+  <h4>舊Model</h4><div class="flow" data-f="Event,Reaction,努力,暫時解決,下一次再來"></div>
+  <h4>新Model</h4><div class="flow" data-f="Signal,Pattern,Structure,Generator,Prediction,Error,Bottleneck,Leverage,Action,Feedback,Model Update,Retest,Capability,Wisdom,Transfer,Compound,Freedom"></div></div>
+
+  <div class="sec it"><h3>最精簡新舊Model <span class="enn">Simplest Old vs New Model</span></h3>
+  <h4>舊Model</h4><div class="flow" data-f="問題來了,努力解決,問題再來,繼續努力"></div>
+  <h4>新Model</h4><div class="flow" data-f="看見Signal,找到Generator,辨識Bottleneck,找到Leverage Point,預測,最小實驗,Feedback,Prediction Error,Model Update,形成Capability,長期Compound"></div></div>
+
+  <div class="sec it"><h3>每個Error都可以這樣轉 <span class="enn">How to Transform Every Error</span></h3>
+  <div class="pre">Error不是：「我不夠好。」
+Error是：「我的Prediction與Reality不一致。」</div>
+  <h4>所以</h4>
+  <div class="flow" data-f="Error,不要自責,不要合理化,不要隱藏,不要重複原Action,把Error轉成Data,找Generator,找Bottleneck,找Leverage,Model Update,重新Prediction,重新Action,Retest"></div>
+  <div class="soup"><span class="zh"><span class="lbl">心靈雞湯</span>錯誤不是你的標籤，而是你的路標。它不是在說「你不行」，而是在說「往這裡修正，你會更好」。</span><span class="en">An error isn't your label — it's your signpost. It doesn't say "you can't"; it says "adjust here, and you'll be better."</span></div></div>
+
+  <div class="sec it"><h3>整套LifeOS總公式 <span class="enn">The Whole LifeOS Formula</span></h3>
+  <ol class="vf" data-v="INPUT;① SEE｜看懂Reality → Pattern→Structure→Mechanism;② FOCUS｜找到Generator → Bottleneck→Leverage Point;③ DECIDE｜比較Options → Probability→Cost→Risk→Optionality;④ ACT｜最小行動 → Experiment→Feedback;⑤ PROTECT｜控制風險 → Buffer→Backup→Boundary;⑥ EVOLVE｜利用Error → Prediction Error→Model Update→Retest→Capability→Transfer→Wisdom→Generation→Compound;【更多Options＝更大的Freedom】"></ol></div>
+  <div class="empty">找不到符合的內容 · No results</div>
+</section>
+
+<!-- wisdom -->
+<section class="panel" id="tw">
+  <div class="sec it"><h3>一句話總公式 <span class="enn">One-line Formulas</span></h3>
+  <div class="pre">上游思維告訴你「不要只救火」。
+槓桿思維告訴你「不要每個地方都用力」。
+系統思維告訴你「不要只看一個點」。
+機率思維告訴你「不要假裝世界是確定的」。
+二階思維告訴你「不要只看眼前結果」。
+反證思維告訴你「不要只找自己想看的證據」。
+安全邊際告訴你「不要把人生押到極限」。
+實驗思維告訴你「不知道就小規模測試」。
+回饋思維告訴你「沒有Data就不知道有沒有進步」。
+更新思維告訴你「昨天的答案不能綁架今天」。
+複利思維告訴你「真正巨大的差異，是小差異乘上時間」。
+Agency思維告訴你「不要等待世界完全準備好才開始行動」。</div>
+  <h4>最後全部可以壓縮成一條</h4>
+  <div class="flow" data-f="看得更完整,找到更上游,抓到真正槓桿,做更好的預測,用最小行動測試,讀取現實回饋,修正模型,留下能力,持續複利"></div>
+  <div class="big zh">真正的智慧，不是擁有一套永遠正確的Model。<br>真正的智慧，是建立一套「發現自己錯了之後，能比別人更快更新」的系統。</div>
+  <div class="big en">True wisdom isn't owning a model that's always right. It's building a system that updates faster than others once you find you're wrong.</div>
+  <p class="zh">真正的自由，也不是世界完全照你的Prediction運行。真正的自由，是Reality推翻你的舊Model時，你仍然有能力重構自己。</p>
+  <p class="en" style="color:var(--mute);font-style:italic">True freedom isn't the world following your predictions. It's still being able to rebuild yourself when reality overturns your old model.</p></div>
+
+  <div class="sec it"><h3>舊人生OS → 新人生OS <span class="enn">Old Life OS → New Life OS</span></h3>
+  <div class="pairs" data-p="被動>Agency;救火>上游;平均用力>槓桿;單點因果>系統;非黑即白>機率;相信自己>反證自己;追求確定>持續更新;追求完美>快速迭代;靠意志力>設計環境;一次成功>長期複利;避免壓力>利用壓力;消除錯誤>利用錯誤;替別人負責>建立邊界;只看今天>管理時間尺度;追求答案>建立能力;保存舊Model>持續Model Update"></div>
+  <h4>改成 Rewire</h4>
+  <div class="pairs" data-p="出事→救火>訊號→預防;到處努力>瓶頸→槓桿;只看一點>系統→網路;非黑即白>機率→更新;害怕錯誤>錯誤→Data;追求完美>實驗→迭代;靠意志力>環境→誘因;遇到壓力>壓力→資訊→能力;只看今天>複利→長期;什麼都自己扛>邊界→合作;等別人改變>Agency→Action;記住答案>Pattern→Mechanism→Wisdom;解決一次>Capability→永久留下"></div></div>
+
+  <div class="sec it"><h3>最後總公式 <span class="enn">The Final Formula</span></h3>
+  <h4>舊人生</h4><div class="flow" data-f="Event,Reaction,消耗,再發生"></div>
+  <h4>新人生</h4><div class="flow" data-f="Signal,Pattern,Structure,Generator,Bottleneck,Leverage,Prediction,Action,Feedback,Error,Model Update,Capability,Compound,Freedom"></div>
+  <p class="zh">真正的功效不是讓你「永遠做對」。而是讓你更早發現錯誤、更快修正模型、更少重複同樣的錯誤。</p>
+  <div class="kv"><b>成長 Growth</b><span>＝Prediction越來越準。</span><b>能力 Capability</b><span>＝遇到新問題仍然知道怎麼處理。</span><b>智慧 Wisdom</b><span>＝用更少的規則看懂更多的現象。</span><b>自由 Freedom</b><span>＝Reality改變時，你仍有能力更新自己，而不是被昨天的Model綁架。</span></div></div>
+
+  <div class="sec it"><h3>智慧生成的核心規律 <span class="enn">Core Laws of Wisdom</span></h3>
+  <div class="pre">沒有Prediction→很難辨識Error。
+沒有Error→缺少更新訊號。
+沒有Feedback→不知道Action效果。
+沒有Model Update→同類錯誤容易重複。
+沒有Retest→不知道更新是否真的有效。
+沒有Transfer→只是記住單一答案。
+沒有Capability→下次仍依賴別人。
+沒有Compound→能力沒有被時間放大。
+沒有Generation→仍停留在使用別人的答案。</div></div>
+
+  <div class="sec it"><h3>最終壓縮｜人生智慧公式 <span class="enn">The Life Wisdom Equation</span></h3>
+  <ol class="vf" data-v="Reality − Prediction ＝ Prediction Error;Error ＋ Feedback ＝ Data;Data ＋ Mechanism ＝ Model Update;Model Update ＋ Action ＋ Retest ＝ Capability;Capability ＋ Transfer ＋ Time ＝ Compound;Compound ＋ Agency ＋ Creation ＝ 更多Options;更多Options ＝ 更大的Freedom"></ol>
+  <p class="zh">真正的高手不是擁有最多答案。而是擁有一套：</p>
+  <div class="flow" data-f="看見Signal,辨識Pattern,找到Structure,提出Prediction,接受Error,找到Leverage,採取Action,讀取Feedback,Model Update,Retest,形成Capability,壓縮Wisdom,跨域Transfer,長期Compound,持續Generation"></div>
+  <p class="zh" style="margin-bottom:0">的智慧生成系統。</p></div>
+
+  <div class="sec it"><h3>一句話｜真正的高手 <span class="enn">What a Master Really Is</span></h3>
+  <p class="zh" style="margin-top:0">真正的高手不是「每次出事都很會救」。而是：</p>
+  <div class="flow" data-f="看得比別人完整,想得比別人上游,抓得到真正槓桿,用小實驗取得回饋,錯了立刻Model Update,每一次錯誤都轉成Capability,最後讓同樣的問題越來越少，自己的自由度越來越大"></div>
+  <div class="soup"><span class="zh"><span class="lbl">心靈雞湯</span>你不需要永遠是對的，你只需要比昨天的自己，更願意學習一點點。</span><span class="en">You don't need to be right forever — only a little more willing to learn than yesterday's you.</span></div></div>
+  <div class="empty">找不到符合的內容 · No results</div>
+</section>
+</main>
+
+<script>
+const G6={SEE:{zh:`看懂`,en:`SEE`,c:`--g1`},FOCUS:{zh:`找準`,en:`TRACE & FOCUS`,c:`--g2`},DECIDE:{zh:`選對`,en:`DECIDE`,c:`--g3`},ACT:{zh:`做到`,en:`ACT`,c:`--g4`},PROTECT:{zh:`撐住`,en:`PROTECT`,c:`--g5`},EVOLVE:{zh:`升級`,en:`LEARN & EVOLVE`,c:`--g6`}};
+const ML=[[`結構`,`Structure`],[`舊Model`,`Old Model`],[`舊Prediction`,`Old Prediction`],[`Error`,`預測誤差`],[`Model Update`,`模型更新`],[`槓桿`,`Leverage`],[`節點`,`Node`],[`能力`,`Capability`],[`智慧`,`Wisdom`],[`規律`,`Rule`],[`新Prediction`,`New Prediction`]];
+const T=[
+{g:`FOCUS`,zh:`上游思維`,en:`Upstream Thinking`,q:`問題真正從哪裡開始？`,qe:`Where does the problem really begin?`,
+b:`不要只處理症狀。\n往上找到Generator。\n症狀→模式→結構→生成機制。\n例：\n孩子考差，不只補考卷。\n往上找單字、閱讀、記憶、注意力、學習策略的Bottleneck。`,
+o:`出事再處理`,oe:`React after things go wrong`,nw:`找問題生成器`,ne:`Find the generator of the problem`,f:`預防問題、減少反覆救火`,fe:`Prevent problems; stop firefighting`,
+x:`每天睡過頭→不是每天狂設鬧鐘，而是往上找「太晚睡、手機放床邊」。`,
+s:`結果←模式←結構←生成器|問題發生再處理|只要把這次問題解掉就好了|同樣問題一直重複|不要只修結果，要修改生成問題的結構|Generator|原因、制度、環境、習慣、流程|根因分析、預防、系統設計|最高級的解題，是減少未來需要解的題|反覆出現的問題，背後通常存在穩定生成結構|Generator改變→問題發生率應下降`,
+sp:`河水混濁時，別只忙著撈水；走到源頭，你會發現一次清理，勝過一生擦拭。`,se:`When the river runs muddy, don't just keep bailing — walk to the source. One cleanup there outlasts a lifetime of wiping.`},
+{g:`FOCUS`,zh:`槓桿思維`,en:`Leverage Thinking`,q:`改哪一個變數，能用最小成本產生最大改變？`,qe:`Which variable, changed at the lowest cost, creates the biggest shift?`,
+b:`不是做最多。\n而是找到高影響節點。\n100個問題≠100個都值得處理。\n找到20%關鍵變數，可能改變80%的Output。`,
+o:`每件事都同樣用力`,oe:`Push equally hard on everything`,nw:`找最小投入、最大產出的點`,ne:`Find the point of least input, greatest output`,f:`效率最大化（提高效率、節省時間資源）`,fe:`Maximum efficiency; save time and resources`,
+x:`英文閱讀一直錯→不是再做100篇，而是先補最卡的核心單字與長句解析。`,
+s:`Input→關鍵變數→放大→Output|努力越多，成果越多|每件事情都多做一點就會進步|非常忙，成果卻有限|不同變數的影響力不相等|高影響、低成本節點|20%關鍵任務、核心技能、關鍵人物|優先排序、資源配置|不是更努力，而是在正確的位置努力|系統中的影響力通常不是平均分布|資源集中高槓桿點→Output顯著增加`,
+sp:`你不需要把整座山搬走，只需要找到那塊一推就動的石頭。溫柔地用力，放在對的地方。`,se:`You don't have to move the whole mountain — just find the stone that moves when pushed. Use gentle force, in the right place.`},
+{g:`SEE`,zh:`系統思維`,en:`Systems Thinking`,q:`這件事放進整個系統後會發生什麼？`,qe:`What happens when this is placed inside the whole system?`,
+b:`不要只看A→B。\n要看：\nA→B→C→D→反過來影響A。\n健康不是單一營養素。\n學習不是單一教材。\n家庭不是單一個人。\n企業不是單一產品。\n人生不是單一決策。\n真正的世界是Network。`,
+o:`頭痛醫頭、腳痛醫腳`,oe:`Treat only where it hurts`,nw:`看整體結構與相互影響`,ne:`See the whole structure and its interactions`,f:`避免局部改善、整體惡化`,fe:`Avoid local fixes that worsen the whole`,
+x:`白天沒精神→不只喝咖啡，而是一起看睡眠、運動、飲食、壓力、用藥與作息。`,
+s:`Node↔Relation↔Feedback Loop|A造成B|改A就一定只改B|改了一個地方，其他地方也跟著變|世界是互相連動的Network|關係與Feedback Loop|人、環境、制度、資源、時間|全局分析、因果網路建模|不要只看點，要看點與點之間的關係|局部改變可能產生整體連鎖反應|改關鍵關係→多個Output一起改變`,
+sp:`你不是一個孤單的點，而是一張溫柔相連的網。照顧好一條線，整張網都會亮起來。`,se:`You are not a lonely dot but a gently woven web. Tend one thread well, and the whole web lights up.`},
+{g:`EVOLVE`,zh:`回饋思維`,en:`Feedback Thinking`,q:`我怎麼知道自己正在變好？`,qe:`How do I know I'm actually getting better?`,
+b:`沒有Feedback，就只能靠感覺。\nAction\n→Result\n→Feedback\n→Correction\n→New Action。\n所有成長系統都必須縮短Feedback Loop。`,
+o:`做了就算了`,oe:`Once done, it's done`,nw:`做完一定看結果`,ne:`Always check the result after acting`,f:`知道方法到底有沒有效（快速修正、避免盲目努力）`,fe:`Know if the method works; correct fast`,
+x:`開始每天走路→記錄步數、體力、睡眠，一兩週後再調整。`,
+s:`Action→Result→Feedback→Correction|做完就是完成|努力自然會產生進步|做很多卻不知道有沒有變好|沒有Feedback就沒有有效校正|Feedback速度|指標、測量、回饋、再測|自我監控、修正|Reality才是最後的老師|回饋越快，學習循環通常越快|縮短Feedback Loop→修正速度提升`,
+sp:`別害怕看見結果。每一次誠實的回頭看，都是生命在輕聲告訴你：往這邊走，會更好。`,se:`Don't fear looking at results. Every honest look back is life whispering: this way is better.`},
+{g:`SEE`,zh:`預測思維`,en:`Prediction Thinking`,q:`如果我的Model是對的，接下來應該發生什麼？`,qe:`If my model is right, what should happen next?`,
+b:`不要只會事後解釋。\n要事前Prediction。\n我預測：\n如果A成立→B應該出現。\n結果B沒有出現。\n這不是失敗。\n這是Prediction Error。`,
+o:`事情發生再說`,oe:`Wait and see`,nw:`先說出預期結果`,ne:`State the expected outcome first`,f:`提高預測與判斷能力`,fe:`Sharper prediction and judgment`,
+x:`預測「今晚11點睡，明早精神會比較好」→隔天實際驗證。`,
+s:`Model→Prediction→Reality→Error|事情發生後再解釋|我的理解應該沒問題|Reality與預期不同|先預測，才能知道模型準不準|可驗證Prediction|假說、時間、指標、結果|前瞻、推理、預測|不能產生預測的Model，很難被真正檢驗|Prediction Error提供模型更新資訊|模型越準→預測誤差應逐步下降`,
+sp:`勇敢地先說出你的預期吧。猜錯不丟臉，那只是世界送你的一封更新通知。`,se:`Be brave enough to say your expectation first. Guessing wrong isn't shameful — it's an update notice from the world.`},
+{g:`EVOLVE`,zh:`反證思維`,en:`Falsification Thinking`,q:`什麼證據出現，我願意承認自己可能錯了？`,qe:`What evidence would make me admit I might be wrong?`,
+b:`低階思維：\n一直找支持自己的證據。\n高階思維：\n主動尋找能推翻自己的證據。\n不是問：\n「怎麼證明我是對的？」\n而是問：\n「我要怎麼知道自己其實錯了？」\n這是防止自己被舊Model綁架的重要能力。`,
+o:`只找證明自己對的資料`,oe:`Only seek proof that I'm right`,nw:`主動找可能證明自己錯的證據`,ne:`Actively seek evidence that I might be wrong`,f:`降低確認偏誤`,fe:`Less confirmation bias`,
+x:`覺得「孩子就是懶」→主動檢查是否其實是不會、太難、睡眠不足或不知道怎麼開始。`,
+s:`Hypothesis→Test→Possible Rejection|我要證明自己是對的|支持我的資料越多，我越正確|忽略反例造成錯判|主動尋找可能推翻自己的Evidence|反例|假說、證據、反證條件|批判思考、去偏誤|真正強的信念必須承受被推翻的測試|只找支持證據會放大確認偏誤|主動找反例→錯誤Model更早被淘汰`,
+sp:`願意承認「我可能錯了」的人，心裡住著最大的自由。謙卑不是軟弱，是讓光照進來的窗。`,se:`Those willing to say "I might be wrong" hold the greatest freedom. Humility isn't weakness; it's a window that lets the light in.`},
+{g:`SEE`,zh:`機率思維`,en:`Probabilistic Thinking`,q:`不是「會不會」，而是「機率是多少」。`,qe:`Not "will it or won't it," but "how likely is it?"`,
+b:`世界很少只有：\nYES／NO。\n更接近：\n10%／40%／70%／90%。\n健康如此。\n投資如此。\n教育如此。\n人際如此。\n人生如此。\n成熟不是追求100%確定。\n而是在不確定中做出較好的選擇。`,
+o:`一定會／一定不會（非黑即白）`,oe:`Always / never — black or white`,nw:`思考機率與風險`,ne:`Think in probabilities and risks`,f:`面對不確定更理性`,fe:`More rational under uncertainty`,
+x:`不是說「運動就一定不會生病」，而是理解規律運動可降低多種健康風險，但不能把風險降成零。`,
+s:`Evidence→Probability→Decision|一定會／一定不會|世界應該給我確定答案|現實充滿例外|用機率而不是絕對值思考|機率×後果|風險、收益、不確定性|風險判斷|不確定不代表不能決策|好的決策不保證每次都有好結果|提高高品質決策比例→長期結果改善`,
+sp:`人生不會給你百分之百的保證，但你永遠可以讓好結果的機率，每天再多一點點。`,se:`Life won't give you a 100% guarantee, but you can nudge the odds of a good outcome a little higher every day.`},
+{g:`SEE`,zh:`貝葉斯思維`,en:`Bayesian Thinking`,q:`新證據進來之後，我要不要改變原本的相信程度？`,qe:`When new evidence arrives, should I change how strongly I believe?`,
+b:`舊Model＋New Evidence→New Probability。\n不是：\n「我以前相信，所以永遠相信。」\n而是：\nEvidence改變→Probability更新。\n這就是認知真正的流動性。`,
+o:`第一次認定後就不改`,oe:`Once decided, never change`,nw:`新證據進來就更新判斷`,ne:`Update the judgment when new evidence arrives`,f:`避免被舊印象綁架（保持認知流動性）`,fe:`Freedom from stale impressions`,
+x:`原本認為某學生不用功→後來發現他每天練習卻仍考差→更新成「可能是學習策略出了問題」。`,
+s:`Prior＋New Evidence→Posterior|我以前認為如此，所以就是如此|舊判斷應持續成立|新Evidence與舊信念衝突|依證據強度重新調整相信程度|高品質新證據|先驗、Evidence、可信度|動態更新|成熟不是沒有立場，而是立場可以被證據校正|資訊改變→合理信念也應改變|證據越強→更新幅度越大`,
+sp:`像水一樣活著吧。遇到新的河道，就溫柔地轉彎；堅持的是流動，不是舊路。`,se:`Live like water. Meet a new channel and turn gently — what you hold on to is the flow, not the old path.`},
+{g:`SEE`,zh:`二階思維`,en:`Second-order Thinking`,q:`然後呢？`,qe:`And then what?`,
+b:`一階：\n做這件事會得到什麼？\n二階：\n得到這個結果之後，又會造成什麼？\n例如：\n手機讓孩子安靜。\n一階結果＝安靜。\n二階可能是＝更依賴手機。\n三階可能是＝注意力與作息受到影響。\n不要只看第一步的好處。\n要追蹤後面的連鎖反應。`,
+o:`只看第一個結果`,oe:`Look only at the first result`,nw:`繼續問「然後呢？」`,ne:`Keep asking "and then what?"`,f:`看見後續連鎖效應`,fe:`See the chain reactions ahead`,
+x:`小孩吵鬧→立刻給手機→現在安靜了；但再問：長期會不會形成「吵鬧＝得到手機」？`,
+s:`Action→Result1→Result2→Result3|第一個結果好就是好決策|立即利益等於總利益|後續副作用出現|每個Action都有後續效應|Second-order Effect|短期、長期、副作用、適應|長程推演|不要只問「會怎樣」，還要問「然後呢？」|短期解法可能成為長期問題|納入二階效應→決策後悔率下降`,
+sp:`每一個今天的選擇，都是寫給未來自己的信。多問一句「然後呢？」，是對未來最深的溫柔。`,se:`Every choice today is a letter to your future self. Asking "and then?" is the deepest kindness to who you'll become.`},
+{g:`SEE`,zh:`時間尺度思維`,en:`Time-Horizon Thinking`,q:`今天有效，三年後還有效嗎？`,qe:`It works today — will it still work in three years?`,
+b:`短期最佳解≠長期最佳解。\n今天舒服。\n可能交換明天的痛苦。\n今天困難。\n可能交換未來的能力。\n所以決策至少要看：\n今天→一年→五年→十年。`,
+o:`只看今天舒不舒服`,oe:`Only ask whether today feels comfortable`,nw:`同時看今天、1年、5年、10年`,ne:`See today, 1, 5 and 10 years at once`,f:`避免短期利益交換長期代價`,fe:`Don't trade long-term cost for short-term gain`,
+x:`今天不運動比較舒服→但把選擇放到10年尺度，答案可能完全不同。`,
+s:`Now→1Y→5Y→10Y|現在舒服最重要|今天的最佳解就是最佳解|短期利益累積成長期代價|不同時間尺度有不同最適策略|長期趨勢|今天、年度、十年|延遲滿足、長期規劃|時間會放大今天的小決定|短期最佳≠長期最佳|長期尺度納入決策→可持續性提高`,
+sp:`今天的辛苦，是寄給十年後自己的禮物；請相信，那個你會笑著拆開它。`,se:`Today's effort is a gift mailed to yourself ten years ahead — trust that you'll open it smiling.`},
+{g:`DECIDE`,zh:`複利思維`,en:`Compounding Thinking`,q:`什麼東西每天增加1%，長期會產生巨大差異？`,qe:`What, growing 1% a day, makes a huge difference over time?`,
+b:`知識會複利。\n能力會複利。\n信任會複利。\n品牌會複利。\n健康習慣會複利。\n資產會複利。\n壞習慣同樣會負複利。\n真正重要的不是：\n今天差多少？\n而是：\n這個差異乘上十年會變多少？`,
+o:`一天做一點沒差`,oe:`A little each day doesn't matter`,nw:`小差異×長時間＝巨大差距`,ne:`Small differences × long time = huge gaps`,f:`累積健康、知識、財富與能力（與信任）`,fe:`Accumulate health, knowledge, wealth, skill and trust`,
+x:`每天背10個單字看似很少→一年理論上累積3650次單字學習機會，再透過複習留下真正記憶。`,
+s:`小差異×重複×時間|今天少做一次沒差|微小行動沒有意義|多年後差距巨大|重複的小差異會被時間放大|頻率＋持續時間|習慣、能力、資產、健康|持續性|人生的大差距常由小差異長期累積|正複利與負複利都存在|高品質小行動持續→長期巨大差距`,
+sp:`不要小看今天那一點點進步。滴水穿石，靠的不是力氣，而是不放棄。`,se:`Never underestimate today's tiny progress. Water wears through stone not by force, but by never giving up.`},
+{g:`DECIDE`,zh:`機會成本思維`,en:`Opportunity Cost Thinking`,q:`我選擇A，等於放棄了什麼B？`,qe:`If I choose A, what B am I giving up?`,
+b:`所有YES背後都有一個NO。\n時間給手機，就不能同時給閱讀。\n錢拿去消費，就不能同時投資。\n注意力給抱怨，就不能同時拿去解決問題。\n人生最大的成本常常不是花掉的錢。\n而是被排除的另一條路。`,
+o:`只看我得到什麼`,oe:`Only see what I gain`,nw:`同時看我因此放棄什麼`,ne:`Also see what I give up`,f:`提高選擇品質（資源配置品質）`,fe:`Better choices and resource allocation`,
+x:`晚上滑手機3小時不只是花3小時→同時放棄睡眠、閱讀、運動或家人互動。`,
+s:`Choose A→Lose B|只計算得到的東西|只要A有好處就值得做|忽略被放棄的更高價值選項|每個YES同時也是對其他選項的NO|最佳替代方案|時間、金錢、注意力|取捨|真正成本包含你放棄的可能性|資源有限→選擇必然產生機會成本|比較替代方案→資源配置改善`,
+sp:`你的時間是最珍貴的禮物。每一次說「好」，都請確認它值得你放下的那一切。`,se:`Your time is your most precious gift. Make sure each "yes" is worth everything you set down for it.`},
+{g:`FOCUS`,zh:`邊際思維`,en:`Marginal Thinking`,q:`再投入一單位，還值得嗎？`,qe:`Is one more unit still worth it?`,
+b:`第一小時讀書可能很有效。\n第十個小時未必如此。\n第一種營養素可能補足缺口。\n第20種不代表效益繼續線性增加。\n不是問：\n「這東西有沒有用？」\n而是：\n「再增加一單位，增加多少效益？」`,
+o:`有效就越多越好`,oe:`If it works, more is better`,nw:`再增加一單位還值得嗎？`,ne:`Ask whether one more unit is still worth it`,f:`避免過度投入`,fe:`Avoid over-investing`,
+x:`讀書第1小時很有效→疲累後第6小時效率很低→可能休息比硬撐更划算。`,
+s:`投入N→新增效益Δ|越多越好|第10單位和第1單位一樣有效|投入增加但收益下降|看新增一單位帶來多少新增價值|Marginal Return|投入量、收益、飽和點|停止、加碼判斷|有效不代表無限增加都有效|很多活動存在邊際效益遞減|超過最佳區間→新增收益下降`,
+sp:`懂得適可而止，也是一種智慧。休息不是放棄，是為了讓下一步走得更遠。`,se:`Knowing when enough is enough is wisdom too. Rest isn't quitting — it lets your next step go farther.`},
+{g:`FOCUS`,zh:`瓶頸思維`,en:`Bottleneck Thinking`,q:`現在真正卡住整個系統的是什麼？`,qe:`What is truly choking the whole system right now?`,
+b:`一個系統的Output，常被最窄的地方限制。\n學生不是教材不夠。\n可能是單字量不足。\n企業不是曝光不足。\n可能是轉換率。\n健康不是補充品不夠。\n可能是睡眠完全失序。\n不要一直增加Input。\n先找Bottleneck。`,
+o:`哪裡都補`,oe:`Patch everywhere`,nw:`先找最卡住整個系統的地方`,ne:`First find what's choking the system`,f:`最快提高Output`,fe:`Fastest output gains`,
+x:`英文閱讀差→真正瓶頸若是核心單字不足，就先處理單字，而不是一直買新教材。`,
+s:`System Output≈最受限制環節|全部一起補|平均改善即可提升整體|其他地方變強，Output仍卡住|先找限制整體產出的Bottleneck|最窄節點|技能、流程、資源、時間|診斷、聚焦|系統速度常受最慢關鍵環節限制|瓶頸未解除，其他投入容易浪費|解除主要瓶頸→Output明顯提升`,
+sp:`當你覺得怎麼努力都沒用時，別急著責怪自己。也許只是瓶口太窄，輕輕鬆開它，一切就流動了。`,se:`When effort seems useless, don't blame yourself yet. Maybe the bottle's neck is just too narrow — loosen it, and everything flows.`},
+{g:`DECIDE`,zh:`約束思維`,en:`Constraint Thinking`,q:`我不能改變什麼？我真正能改什麼？`,qe:`What can't I change? What can I truly change?`,
+b:`時間有限。\n金錢有限。\n體力有限。\n制度有限。\n別人的選擇有限。\n真正的High Agency不是幻想沒有Constraint。\n而是：\n在Constraint裡找到最大自由度。`,
+o:`沒有理想條件就不能做（抱怨限制）`,oe:`Can't act without ideal conditions`,nw:`接受限制，再重新設計`,ne:`Accept the limits, then redesign`,f:`增加可行性`,fe:`More real-world feasibility`,
+x:`每天沒有1小時運動→那就拆成早中晚各10分鐘。`,
+s:`Goal＋Constraint→Feasible Solution|條件不好所以沒辦法|必須等完美條件|完美條件一直不來|把限制當設計條件|Constraint內的自由度|時間、錢、規則、能力|現實解題|自由不是沒有限制，而是在限制中仍能創造選項|Constraint清楚後，解法反而更聚焦|重新設計→即使受限仍可前進`,
+sp:`花不會等到完美的土壤才綻放。在有限的空間裡開花，才是最動人的美。`,se:`Flowers don't wait for perfect soil. Blooming within limited space is the most moving beauty of all.`},
+{g:`DECIDE`,zh:`控制圈思維`,en:`Controllability Thinking`,q:`這件事情到底是不是我的Control Variable？`,qe:`Is this really a variable I control?`,
+b:`我的行動→可控。\n我的準備→可控。\n我的界線→可控。\n別人的想法→不可直接控制。\n別人的人格→不可直接控制。\n真正的自由不是控制所有人。\n而是把能量集中到真正可調的Variable。`,
+o:`一直想改變別人`,oe:`Keep trying to change others`,nw:`集中處理自己可控的Variable`,ne:`Focus on the variables I control`,f:`減少內耗、增加Agency`,fe:`Less inner drain, more agency`,
+x:`不能控制孩子一定認真→可以控制環境、資源、規則、溝通與自己的界線。`,
+s:`可控／可影響／不可控|所有事情我都要改|只要更努力就能控制別人|大量內耗卻改不了Reality|把資源集中在可控Variable|自己的Action|行為、準備、界線、環境|自我管理|影響力不是控制所有人|資源投入不可控變數→內耗增加|注意力回到可控圈→有效行動增加`,
+sp:`放下你無法掌控的，擁抱你能改變的。心安了，力量就回來了。`,se:`Release what you can't control; embrace what you can change. When the heart settles, strength returns.`},
+{g:`DECIDE`,zh:`選擇權思維`,en:`Optionality Thinking`,q:`這個決定會增加還是減少我未來的選擇？`,qe:`Does this decision add to or shrink my future choices?`,
+b:`好決策不一定立即得到最大報酬。\n有時真正重要的是：\n不要太早把自己鎖死。\n健康＝保存未來選擇。\n存款＝保存未來選擇。\n能力＝保存未來選擇。\n關係＝保存未來選擇。\n學習＝保存未來選擇。\n自由可以理解成：\n未來仍然有Options。`,
+o:`只追求現在最爽的答案`,oe:`Chase whatever feels best right now`,nw:`增加未來可選擇的Options`,ne:`Grow future options`,f:`增加自由度與適應力`,fe:`More freedom and adaptability`,
+x:`年輕時累積英文、AI、溝通與專業能力→未來換工作時選擇更多。`,
+s:`Action→Future Options|現在報酬最大就最好|立即利益代表最佳決策|後來發現自己被鎖死|好決策也要保存未來選擇權|Optionality|能力、現金、健康、關係|保留彈性|自由＝未來仍有選擇|不可預測環境中，Options本身有價值|選擇權越多→適應變化能力越強`,
+sp:`給未來的自己多留幾扇門吧。真正的自由，是無論風往哪裡吹，你都還有路可走。`,se:`Leave a few more doors open for your future self. True freedom is having a path no matter which way the wind blows.`},
+{g:`DECIDE`,zh:`可逆性思維`,en:`Reversibility Thinking`,q:`如果做錯了，回得來嗎？`,qe:`If I'm wrong, can I come back?`,
+b:`可逆決策→快速實驗。\n不可逆決策→提高證據門檻。\n換一個APP→高度可逆。\n重大手術→低可逆。\n借巨額債務→低可逆。\n因此不是每個決定都值得花同樣時間。`,
+o:`所有決策都想很久（都同樣慎重）`,oe:`Deliberate equally long over every decision`,nw:`可逆的快試；不可逆的慎選`,ne:`Try reversible ones fast; choose irreversible ones carefully`,f:`該快時快、該慢時慢`,fe:`Fast when you can, slow when you must`,
+x:`換讀書APP可以先試一週；重大財務承諾則需要更完整評估。`,
+s:`Decision→Reversible／Irreversible|每個決策都同樣處理|所有事情都值得長時間分析|小事耗時，大事草率|可逆快試；不可逆提高證據門檻|錯誤成本|退出成本、恢復成本|決策速度管理|決策速度應與不可逆程度匹配|錯了容易回頭→可以增加實驗速度|分類決策→速度與安全同時改善`,
+sp:`能回頭的路，就放膽去走；回不了頭的路，就慢慢想清楚。勇敢與謹慎，本來就可以同行。`,se:`Walk boldly on roads you can return from; think slowly about roads you can't. Courage and caution can travel together.`},
+{g:`PROTECT`,zh:`安全邊際思維`,en:`Margin of Safety`,q:`如果事情比預期糟30%，我還撐得住嗎？`,qe:`If things turn out 30% worse than expected, can I still hold?`,
+b:`不要把人生設計在極限上。\n財務留現金。\n健康留體力。\n行程留空間。\n企業留現金流。\n關係留修復空間。\n韌性來自Buffer。`,
+o:`把錢、時間、體力全部用滿`,oe:`Use up all money, time and energy`,nw:`永遠保留Buffer`,ne:`Always keep a buffer`,f:`增加抗風險能力`,fe:`Stronger risk resilience`,
+x:`月收入5萬元，不把5萬元全部安排成固定支出，保留緊急預備空間。`,
+s:`Resource−Need＝Buffer|剛剛好最好|Reality會按照計畫走|小意外就讓整個系統崩潰|為不確定性留下Buffer|餘裕|現金、時間、體力、容量|風險承受|不要把人生設計在極限上|波動不可避免→Buffer吸收波動|意外發生→系統仍可運作`,
+sp:`給生活留一點留白吧。那些空出來的地方，會在風雨來時，成為接住你的溫柔。`,se:`Leave some blank space in your life. When storms come, that space becomes the softness that catches you.`},
+{g:`PROTECT`,zh:`反脆弱思維`,en:`Antifragile Thinking`,q:`壓力來了，我只是恢復，還是能因此升級？`,qe:`When stress comes, do I just recover — or upgrade?`,
+b:`脆弱：\n壓力→破壞。\n韌性：\n壓力→恢復原狀。\n反脆弱：\n壓力→取得資訊→調整結構→變得更強。\n所以壓力最有價值的部分是：\n它暴露了系統弱點。`,
+o:`遇到錯誤＝我很失敗（壓力＝傷害）`,oe:`An error = I'm a failure`,nw:`錯誤＝系統弱點被揭露`,ne:`An error = a weakness revealed`,f:`把壓力轉成能力`,fe:`Turn pressure into capability`,
+x:`模擬考錯30題→不是只難過，而是把30題分類，找出3個最大弱點來升級。`,
+s:`Stress→Error→Adaptation→Stronger|壓力都是壞事|最好完全沒有波動|無法避免壓力|適量壓力可提供弱點資訊與適應刺激|可恢復的小壓力|挑戰、恢復、更新|適應、復原、升級|不要浪費一次挫折|可承受壓力＋恢復＋更新→可能增加適應能力|適度挑戰後→下一輪處理能力提升`,
+sp:`風會吹熄蠟燭，卻能讓火焰更旺。願你成為那團火，每一次挫折都讓你燒得更亮。`,se:`Wind snuffs out a candle but feeds a fire. May you be the fire — every setback making you burn brighter.`},
+{g:`PROTECT`,zh:`冗餘思維`,en:`Redundancy Thinking`,q:`如果唯一的支柱倒掉怎麼辦？`,qe:`What if the only pillar falls?`,
+b:`只有一個收入來源。\n只有一個照顧者。\n只有一份資料。\n只有一種獲客管道。\n只有一個重要合作夥伴。\n都形成Single Point of Failure。\n高韌性系統需要Backup。`,
+o:`只有一條路（一套方案）`,oe:`Only one path`,nw:`重要系統一定有Backup`,ne:`Every critical system has a backup`,f:`避免單點故障`,fe:`No single point of failure`,
+x:`重要資料不能只存在一台電腦→建立雲端＋本機備份。`,
+s:`Primary＋Backup|一套系統就夠|主要節點永遠不會失效|單點故障導致全部停擺|重要功能需要備援|Backup|資料、收入、照顧者、設備|韌性|效率之外還要考慮生存|單點故障風險越高→冗餘價值越高|主要節點失效→系統仍能運作`,
+sp:`別把整顆心只放在一個籃子裡。多一個支點，人生就多一分安穩。`,se:`Don't put your whole heart in one basket. One more support point, one more measure of peace.`},
+{g:`SEE`,zh:`網路思維`,en:`Network Thinking`,q:`這個節點改變，會影響哪些其他節點？`,qe:`If this node changes, which other nodes are affected?`,
+b:`世界不是清單。\n世界是Network。\n一個好老師可能改變30個學生。\n30個學生可能影響30個家庭。\n一套APP可能把老師的方法複製給1000個學生。\n所以不要只計算個人努力。\n也要計算Network Effect。`,
+o:`只看單一個人`,oe:`See only the individual`,nw:`看節點、連結與擴散`,ne:`See nodes, links and spread`,f:`放大影響力（找到網路槓桿）`,fe:`Amplified influence`,
+x:`老師教會一位英文小老師→小老師再協助5位同學→知識透過Network擴散。`,
+s:`Node↔Connection↔Network Effect|個體能力決定全部|一個人的影響只停在一個人|影響會透過關係擴散|連結品質本身就是資產|Hub節點|人、群體、平台、資訊流|連結、擴散|有時最重要的不是增加節點，而是建立關鍵連結|高連結節點具有更大的擴散效應|改變Hub→Network產生更大連鎖變化`,
+sp:`你點亮的一盞燈，會照亮另一個人的路，而那個人又會點亮更多燈。善意，從來不會只停在一個人身上。`,se:`The lamp you light shows someone else the way, and they light more lamps. Kindness never stops at one person.`},
+{g:`DECIDE`,zh:`博弈思維`,en:`Game Theory Thinking`,q:`我採取這個策略之後，別人會怎麼反應？`,qe:`Once I adopt this strategy, how will others respond?`,
+b:`世界不是只有你在Decision。\n你改策略。\n對方也會改。\n老師訂規則→學生適應。\n公司降價→競爭者回應。\n父母控制孩子→孩子發展反策略。\n真正的策略必須包含：\nAction→Other's Response→My Next Action。`,
+o:`只想「我要怎麼做」`,oe:`Only think "what will I do"`,nw:`同時預測「對方會怎麼回應」`,ne:`Also predict "how will they respond"`,f:`提升策略、協商能力`,fe:`Better strategy and negotiation`,
+x:`家長越嚴格沒收手機→孩子可能發展藏手機策略→制度設計必須考慮對方的反應。`,
+s:`My Action→Other Response→My Next Action|只規劃自己的行動|別人不會改變策略|對方會適應、反制、合作|把他人的策略反應納入模型|Incentive＋Response|玩家、利益、資訊、策略|談判、合作、策略|你不是在真空中做決策|規則改變→玩家行為也會改變|預測對方回應→策略成功率提高`,
+sp:`站在對方的位置想一想，你會發現，最好的策略往往不是贏過別人，而是一起走得更遠。`,se:`Stand in the other person's shoes and you'll find the best strategy often isn't beating them, but going farther together.`},
+{g:`ACT`,zh:`誘因思維`,en:`Incentive Thinking`,q:`這個制度正在獎勵什麼行為？`,qe:`What behavior is this system actually rewarding?`,
+b:`嘴巴說什麼不一定重要。\n系統獎勵什麼才重要。\n如果偷懶沒有成本。\n偷懶就可能增加。\n如果進步立刻得到Feedback。\n進步行為比較容易維持。\n想改變Behavior，不能只講道理。\n要檢查Incentive Structure。`,
+o:`一直叫人「要努力」（一直講道理）`,oe:`Keep telling people to "try harder"`,nw:`研究什麼行為正在被獎勵`,ne:`Study which behaviors are being rewarded`,f:`讓好行為更容易持續`,fe:`Good behaviors last longer`,
+x:`學生完成每日練習→立即看到進度、回饋與成就→比每天說「你要認真」更具體。`,
+s:`Reward/Cost→Behavior|講道理就能改變人|知道正確就會做到|知道卻仍然不做|行為會受到獎勵、成本與摩擦影響|Incentive|獎勵、成本、即時回饋|制度設計|不要只聽系統說什麼，要看它獎勵什麼|被獎勵的行為通常更容易重複|改變誘因→行為分布改變`,
+sp:`與其一再責備，不如為每一個小小的進步鼓掌。被看見的努力，會自己長出翅膀。`,se:`Rather than scolding again, applaud each small step forward. Effort that is seen grows its own wings.`},
+{g:`ACT`,zh:`環境設計思維`,en:`Environment Design`,q:`能不能不要靠意志力？`,qe:`Can I stop relying on willpower?`,
+b:`想少滑手機。\n不要只說：\n我要自律。\n可以改成：\n手機離開書桌。\n關閉通知。\n增加取得摩擦。\n讓好行為變容易。\n讓壞行為變困難。\nEnvironment往往比Willpower穩定。`,
+o:`完全靠自制力`,oe:`Rely entirely on self-control`,nw:`讓好行為容易、壞行為困難`,ne:`Make good behavior easy, bad behavior hard`,f:`降低自律成本`,fe:`Lower cost of discipline`,
+x:`想早睡→不是一直提醒自己不要滑手機，而是睡前把手機放到房間外充電。`,
+s:`Environment→Cue→Behavior|全靠意志力|只要夠自律就能做到|疲累時意志力失效|直接修改Cue與摩擦力|環境|手機、食物、桌面、提醒、動線|行為設計|讓正確行為成為最容易的選項|低摩擦行為更容易被執行|環境重新設計→好行為發生率提高`,
+sp:`別再跟自己硬碰硬了。對自己溫柔一點，把好習慣放在伸手可及的地方。`,se:`Stop fighting yourself so hard. Be gentle — place good habits within easy reach.`},
+{g:`ACT`,zh:`身份思維`,en:`Identity Thinking`,q:`我正在成為什麼樣的人？`,qe:`Who am I becoming?`,
+b:`行動不只是產生結果。\n也在強化Identity。\n我今天運動一次。\n不只是消耗熱量。\n也是在告訴大腦：\n「我是會管理身體的人。」\nIdentity→Decision→Action→Evidence→Identity。\n這也是一個Feedback Loop。`,
+o:`我要完成這件事情`,oe:`I must finish this task`,nw:`我要成為這種人（能持續做到的人）`,ne:`I'm becoming someone who keeps doing it`,f:`讓行動更穩定`,fe:`Steadier, lasting behavior`,
+x:`「我要讀30分鐘」升級成「我是每天會主動學習的人」。`,
+s:`Identity→Decision→Action→Evidence→Identity|我要完成任務|靠短期目標就能維持|目標結束後行為消失|建立支持長期行為的Identity|自我敘事|我是誰、我重視什麼、我怎麼行動|一致性、自律|每個Action也在投票決定你成為誰|身份與行為相互強化|Identity穩定→行為更容易持續`,
+sp:`你今天做的每一件小事，都是為「想成為的自己」投下的一票。慢慢來，你正在成為那個人。`,se:`Every small thing you do today is a vote for the person you want to become. Take your time — you're becoming them.`},
+{g:`SEE`,zh:`第一原理思維`,en:`First Principles Thinking`,q:`如果把既有做法全部拿掉，這件事情最基本的真實條件是什麼？`,qe:`Strip away existing methods — what are the most basic true conditions?`,
+b:`不要問：\n「大家以前怎麼做？」\n先問：\n「真正要達成的Outcome是什麼？」\n再從零重新組裝方法。\n這能避免被歷史路徑綁架。`,
+o:`別人都這樣做`,oe:`Everyone does it this way`,nw:`回到底層目的重新設計`,ne:`Return to the core purpose and redesign`,f:`突破慣例、增加創新`,fe:`Break conventions, innovate`,
+x:`英文作業的目的如果是「學會英文」，就不一定非得抄10遍；可重新設計成檢索＋造句＋間隔複習。`,
+s:`Problem→拆假設→基本事實→重組|以前怎麼做就繼續做|傳統方法就是必要方法|環境改變後舊方法失效|回到不可再拆的核心條件|底層假設|目的、必要條件、限制|創新、重構|方法可以改，目的與基本限制要先看清|打破錯誤假設→解法空間擴大|從底層重組→可能產生全新解法`,
+sp:`別被「一直都是這樣」困住。回到初心問一句「我真正想要的是什麼？」，新的路就會浮現。`,se:`Don't be trapped by "it's always been this way." Return to your heart and ask what you truly want — a new path will appear.`},
+{g:`FOCUS`,zh:`逆向思維`,en:`Inversion Thinking`,q:`不要只問「怎麼成功？」，也問「怎麼一定會失敗？」`,qe:`Don't just ask "how do I succeed?" — ask "how would I surely fail?"`,
+b:`想讓學生英文變好。\n反過來問：\n怎樣一定學不好？\n不複習。\n沒有Feedback。\n只看答案。\n不做檢索。\n錯誤不分類。\n沒有Retest。\n把這些失敗生成器逐一移除，成功機率自然上升。`,
+o:`怎樣才能成功？（只研究成功）`,oe:`How can I succeed?`,nw:`什麼事情會讓我一定失敗？`,ne:`What would guarantee my failure?`,f:`提前移除失敗因子`,fe:`Remove failure factors in advance`,
+x:`想考好英文→先列出最容易失敗的模式：不複習、不訂正、不睡覺、考前才讀→逐一移除。`,
+s:`Goal←Remove Failure Modes|只研究成功|多做成功因素就夠|致命失敗因子仍存在|同時研究「怎樣一定失敗」|Failure Mode|錯誤、風險、禁區|風險排除|避免愚蠢，有時比追求卓越更重要|移除重大失敗因子可大幅提高生存率|Failure Modes下降→成功空間增加`,
+sp:`有時候，成功不是多做了什麼，而是勇敢地停止了那些讓你受傷的事。`,se:`Sometimes success isn't doing more — it's bravely stopping what keeps hurting you.`},
+{g:`FOCUS`,zh:`80/20思維`,en:`Pareto Thinking`,q:`哪20%的原因正在產生80%的結果？`,qe:`Which 20% of causes produce 80% of results?`,
+b:`不是所有學生錯題同等重要。\n不是所有客戶同等重要。\n不是所有工作同等重要。\n不是所有問題同等重要。\n找到少數高影響變數。\n再把資源集中。`,
+o:`所有事情同等重要（平均分配資源）`,oe:`Everything matters equally`,nw:`少數因素通常產生大量結果`,ne:`A few factors usually drive most results`,f:`集中資源、聚焦高價值工作`,fe:`Concentrate resources on high-value work`,
+x:`錯100題→先找反覆出現最多的3種錯誤，而不是平均處理100題。`,
+s:`少數Input→多數Output|所有事情一樣重要|平均投入最公平有效|大量低價值工作消耗資源|辨識高貢獻少數|Top 20%|關鍵客戶、錯誤、任務、技能|聚焦|重要性並非平均分布|許多系統存在高度不均衡貢獻|集中高貢獻項目→產出提升`,
+sp:`你不必對每件事都全力以赴。把心力留給真正重要的少數，你會活得更輕盈，也更有力量。`,se:`You needn't give everything to everything. Save your heart for the vital few, and you'll live lighter and stronger.`},
+{g:`ACT`,zh:`實驗思維`,en:`Experimental Thinking`,q:`我能不能先做一個小型Probe？`,qe:`Can I run a small probe first?`,
+b:`不要：\n想三個月→一次押全部。\n而是：\nHypothesis\n→Small Experiment\n→Data\n→Update\n→Scale。\n高不確定世界裡，小實驗往往比大計畫更有價值。`,
+o:`一定要確定才開始（想清楚才開始）`,oe:`Must be certain before starting`,nw:`不知道就做低成本小實驗`,ne:`When unsure, run a cheap small experiment`,f:`快速取得真實Data、降低試錯成本`,fe:`Get real data fast; cheaper trial and error`,
+x:`不知道早上還是晚上讀書效率高→各測一週→比較正確率、完成率與精神。`,
+s:`Hypothesis→Probe→Data→Update|想清楚才能開始|分析越久越不會錯|很多未知只能透過Reality取得|用低成本實驗購買資訊|Small Probe|假說、變數、指標|探索、驗證|不知道時，不一定需要爭論；可以設計實驗|低成本可逆實驗能降低不確定性|小試取得Data→下一步更精準`,
+sp:`不確定的時候，就輕輕試一下吧。人生不是考試，是一場可以慢慢探索的實驗。`,se:`When unsure, just try lightly. Life isn't an exam — it's an experiment you can explore slowly.`},
+{g:`ACT`,zh:`最小行動思維`,en:`Minimum Action Thinking`,q:`下一個最小、可執行、可測量的Action是什麼？`,qe:`What's the next smallest, doable, measurable action?`,
+b:`「我要變健康」不是Action。\n「晚餐後走15分鐘」才是Action。\n「我要英文變好」不是Action。\n「今天做10題並分類錯誤」才是Action。\n抽象目標必須壓縮成Behavior。`,
+o:`我要徹底改變人生（想得很大卻不開始）`,oe:`I'll completely change my life`,nw:`下一步最小可行Action是什麼？`,ne:`What's the next minimum viable action?`,f:`降低啟動阻力`,fe:`Lower starting friction`,
+x:`「我要變健康」→今天晚餐後先走15分鐘。`,
+s:`Goal→Minimum Action→Momentum|改變必須很巨大|準備完整才能開始|目標太大導致拖延|把行動縮到現在就能做|啟動點|第一步、時間、摩擦|啟動、執行|開始往往比完美計畫更重要|啟動成本越低→行動機率越高|Minimum Action完成→Momentum增加`,
+sp:`千里之行，始於足下。今天只要邁出一小步，你就已經不是昨天的你了。`,se:`A journey of a thousand miles begins with a single step. Take one small step today, and you're no longer yesterday's you.`},
+{g:`ACT`,zh:`迭代思維`,en:`Iteration Thinking`,q:`不是一次做到完美，而是每輪都比上一輪更準。`,qe:`Not perfect at once — just more accurate each round.`,
+b:`V1\n→Feedback\n→V2\n→Feedback\n→V3。\n真正強大的產品、學生、企業與人生，都不是一次設計完成。\n而是不斷Iteration。`,
+o:`第一次就必須完美`,oe:`Must be perfect the first time`,nw:`先做V1，再用Feedback升級`,ne:`Ship V1, then upgrade with feedback`,f:`快速進步（快速進化）`,fe:`Rapid progress`,
+x:`第一次做APP不用追求完美→先讓核心功能可用→收使用者回饋→做V2。`,
+s:`V1→Feedback→V2→V3|一次完成完美版本|第一次就應該正確|Reality一定暴露未知問題|先做可用版本，再持續修正|Iteration Speed|版本、回饋、修正|快速進化|完美不是起點，是多輪更新的結果|高品質Feedback＋快速迭代→模型快速進步|每輪修正→Vn優於Vn−1`,
+sp:`允許自己不完美地開始。每一個更好的版本，都藏在你願意繼續修改的勇氣裡。`,se:`Allow yourself to begin imperfectly. Every better version hides in your courage to keep revising.`},
+{g:`EVOLVE`,zh:`Model Update思維`,en:`Model Update Thinking`,q:`新的Evidence出現後，我願不願意改？`,qe:`When new evidence appears, am I willing to change?`,
+b:`這可能是整套母體最重要的一個。\n因為：\n上游找錯了→要更新。\n槓桿找錯了→要更新。\n預測錯了→要更新。\n策略錯了→要更新。\n信念錯了→要更新。\n真正危險的不是Model錯。\n所有Model都可能錯。\n真正危險的是：\nModel不能更新。`,
+o:`我以前就是這樣認為（錯了仍守住舊觀念）`,oe:`That's what I've always believed`,nw:`Reality不同，就更新Model（Prediction Error就是更新訊號）`,ne:`If reality differs, update the model`,f:`避免重複同樣錯誤、避免被舊模型綁架`,fe:`Stop repeating the same mistakes`,
+x:`原本認為「做越多題越好」→發現學生大量重複犯同類錯誤→更新成「錯誤分類＋針對練習＋再測」。`,
+s:`Model→Prediction→Error→Update|改變觀點等於承認失敗|舊經驗永遠適用|世界改變、模型失配|錯誤是更新資料|Prediction Error|信念、權重、Evidence|認知彈性、學習|最危險的不是Model錯，而是Model不能改|環境持續變化→固定模型必然逐漸失配|更新速度提高→適應力提高`,
+sp:`改變想法不是認輸，而是長大。昨天的答案，不必綁住今天的你。`,se:`Changing your mind isn't losing — it's growing. Yesterday's answer need not bind today's you.`},
+{g:`PROTECT`,zh:`熵管理思維`,en:`Entropy Management`,q:`如果我什麼都不做，這個系統會不會自然變亂？`,qe:`If I do nothing, will this system drift into disorder?`,
+b:`房子不整理→亂。\n身體不維護→功能可能下降。\n關係不維護→連結可能減弱。\n知識不更新→過時。\n組織不治理→流程容易增加摩擦。\n很多系統不是維持原狀。\n而是需要持續投入能量才能維持秩序。\n所以人生不是只做「成長」。\n還必須做Maintenance。`,
+o:`沒有壞就不用管`,oe:`If it isn't broken, leave it`,nw:`系統需要持續維護`,ne:`Systems need ongoing maintenance`,f:`避免慢性失序`,fe:`Prevent slow decay`,
+x:`房間不是等亂到不能走才整理→每天5分鐘Reset，降低未來整理成本。`,
+s:`Order→時間/擾動→Disorder→Maintenance|沒壞就不用管|系統會自然維持原狀|環境、健康、關係、流程逐漸失序|秩序需要持續維護|Routine Maintenance|整理、保養、更新、修復|維護|不要等崩壞才開始整理|缺乏維護的複雜系統容易累積失序|持續小維護→大修需求下降`,
+sp:`花園需要每天澆水，心也是。每天五分鐘的整理，是你對生活最溫柔的照顧。`,se:`A garden needs daily watering, and so does the heart. Five minutes of tidying a day is your gentlest care for life.`},
+{g:`EVOLVE`,zh:`能力資本思維`,en:`Capability Thinking`,q:`這件事情最後有沒有留下可重複使用的能力？`,qe:`Did this leave behind a reusable capability?`,
+b:`替孩子解題一次。\n留下的是答案。\n教孩子學會解題。\n留下的是Capability。\n幫人處理一次問題。\n問題消失。\n讓他學會處理問題。\n能力留下。\n真正高價值的投資是：\nAction→Capability。`,
+o:`有人幫我解決就好`,oe:`Someone solving it for me is enough`,nw:`每次問題都留下可重複使用的能力`,ne:`Every problem leaves a reusable skill`,f:`越活越有能力`,fe:`More capable with every year`,
+x:`孩子不會做報告→不是父母替他做，而是教他搜尋、判斷、整理、表達。`,
+s:`Problem→Learning→Capability→Future Problems|有人幫我解決就好|這次問題消失就結束|下一次仍然不會|每次解題都要留下Capability|Skill|知識、方法、工具、練習|自我解題|最好的幫助不是代替，而是增加能力|Capability可跨時間重複產生價值|能力累積→未來解題成本下降`,
+sp:`給人魚，不如教人釣魚。每一次跌倒後學會的本事，都是誰也拿不走的財富。`,se:`Teach someone to fish rather than handing them a fish. Every skill learned after a fall is wealth no one can take away.`},
+{g:`SEE`,zh:`知識壓縮思維`,en:`Compression Thinking`,q:`100個案例背後能不能壓縮成一條Rule？`,qe:`Can 100 cases be compressed into one rule?`,
+b:`初學者記案例。\n進階者看到Pattern。\n高手找到Mechanism。\n更高階的人把Mechanism壓縮成可遷移的Model。\n真正的智慧不是知道最多。\n而是：\n用更少規則解釋更多現象，同時知道規則的適用邊界。`,
+o:`記住100個答案`,oe:`Memorize 100 answers`,nw:`找出100個案例背後的共同Rule（Mechanism）`,ne:`Find the common rule behind 100 cases`,f:`形成智慧與可遷移模型`,fe:`Wisdom and transferable models`,
+x:`做100題閱讀後，不只記答案→壓縮成「轉折後常是作者真正重點」等可遷移規則。`,
+s:`Cases→Pattern→Mechanism→Rule|知道越多案例越厲害|記憶答案就能應付新題|換情境就不會|從案例抽取Pattern與Mechanism|共同規律|差異、共通點、因果機制|抽象化、建模|智慧是把大量資訊壓縮成可遷移規律|更好的模型能用較少規則解釋較多現象，但仍需知道邊界|掌握Mechanism→陌生案例也能推理`,
+sp:`走過的路再多，若能化成一句懂得，心就輕了。智慧，是把繁雜活成簡單。`,se:`However many roads you've walked, once distilled into one understanding, the heart grows light. Wisdom turns complexity into simplicity.`},
+{g:`EVOLVE`,zh:`遷移思維`,en:`Transfer Thinking`,q:`我在A領域學到的智慧，可以搬到B領域嗎？`,qe:`Can wisdom from field A move to field B?`,
+b:`Feedback Loop可以用在：\n健康。\n教育。\n商業。\n家庭。\n投資。\nAPP。\nModel Update也一樣。\n真正掌握一個概念，不是會背定義。\n而是可以跨情境Transfer。`,
+o:`一個知識只能用在一個地方`,oe:`Knowledge works in only one place`,nw:`同一Model跨情境使用`,ne:`Use the same model across contexts`,f:`一份學習，多次回報`,fe:`Learn once, benefit many times`,
+x:`學生學會「Prediction→Feedback→Update」後，不只用在英文，也能用在運動、時間管理與人際互動。`,
+s:`Model A→New Context B|學什麼只能用在哪裡|換題型就重新學|知識彼此孤立|抽取底層結構後跨情境使用|共同Structure|Pattern、Mechanism、Context|Transfer|真正學會＝換情境仍會用|表面不同的問題可能共享相同底層結構|掌握底層模型→跨領域解題速度提高`,
+sp:`你在某處學會的溫柔與堅持，會悄悄陪你走進每一個新的地方。所學從不白費。`,se:`The gentleness and grit you learned somewhere will quietly follow you into every new place. Nothing learned is wasted.`},
+{g:`EVOLVE`,zh:`Agency思維`,en:`Agency Thinking`,q:`在現在的限制裡，我還能做什麼？`,qe:`Within today's limits, what can I still do?`,
+b:`低Agency：\n誰害我變成這樣？\n高Agency：\n有哪些因素不是我造成的，但現在有哪些Variable仍然可以由我處理？\nHigh Agency不是認為：\n一切都是我的責任。\n而是：\n即使世界不完全可控，我仍持續尋找可行動空間。`,
+o:`等環境、老師、父母、別人改變`,oe:`Wait for circumstances or others to change`,nw:`現在還有哪些Variable是我能動的？`,ne:`Which variables can I still move now?`,f:`增加主動權與自由度`,fe:`More initiative and freedom`,
+x:`不能控制考題難度→可以控制準備、睡眠、練習、錯題分析與考試策略。`,
+s:`Constraint→Controllable Variable→Action|等環境變好|別人不改，我就沒辦法|等待沒有產生改變|即使限制存在，仍尋找可動節點|可控Action|自己、資源、技能、界線|主動性、創造力|不能控制全部，不等於什麼都不能做|可控變數永遠比抱怨不可控變數更能產生Feedback|Agency增加→有效Action增加`,
+sp:`就算世界下著雨，你仍然可以選擇撐傘、選擇前進。你永遠比自己想像的更有力量。`,se:`Even when the world is raining, you can still choose an umbrella and walk on. You are always stronger than you think.`},
+{g:`PROTECT`,zh:`邊界思維`,en:`Boundary Thinking`,q:`什麼是我的責任？什麼不是？`,qe:`What is my responsibility, and what isn't?`,
+b:`幫助別人≠替別人活。\n愛孩子≠控制孩子。\n照顧父母≠犧牲自己的整個人生。\n沒有Boundary的利他，很容易把兩個系統一起拖垮。\n好的邊界是：\n我承擔我的部分。\n你承擔你的部分。\n可以合作。\n不能吞併。`,
+o:`愛一個人＝替他承擔全部`,oe:`Loving someone = carrying everything for them`,nw:`我的責任我承擔；你的責任你承擔`,ne:`I carry mine; you carry yours`,f:`降低耗竭與關係糾纏、保護能量`,fe:`Less burnout and entanglement`,
+x:`可以提供孩子資源與陪伴，但不能替孩子讀書、考試、承擔每一次選擇的後果。`,
+s:`Self Responsibility｜Other Responsibility｜Shared Zone|愛＝全部替別人承擔|我做越多，關係越好|耗竭、依賴、衝突增加|合作不等於責任混淆|Boundary|責任、時間、金錢、情緒、決策權|拒絕、協商、合作|真正的幫助不能以摧毀自己的系統為代價|責任邊界模糊→依賴與衝突成本容易增加|邊界清楚→合作品質提升`,
+sp:`好好愛自己，才有力氣好好愛別人。溫柔的界線，是給彼此最長久的守護。`,se:`Love yourself well, and you'll have the strength to love others well. Gentle boundaries are the longest-lasting protection for both.`},
+{g:`EVOLVE`,zh:`生成思維`,en:`Generative Thinking`,q:`我不是只消耗世界，我能創造什麼新價值？`,qe:`I don't just consume the world — what new value can I create?`,
+b:`消費者：\n使用既有資源。\n解題者：\n處理既有問題。\n創造者：\n產生新的工具、知識、系統與可能性。\n最高階的High Agency逐漸從：\n「世界可以給我什麼？」\n走向：\n「我能生成什麼？」`,
+o:`世界能給我什麼？（等世界給我答案）`,oe:`What can the world give me?`,nw:`我能創造什麼？`,ne:`What can I create?`,f:`從消費者→解題者→創造者`,fe:`From consumer → solver → creator`,
+x:`發現學生總犯相同錯誤→不只抱怨，而是自己做一套錯題診斷APP解決問題。`,
+s:`Need/Problem→Creation→Value→Feedback|世界能給我什麼？|資源必須由別人提供|等待造成被動|我也可以生成工具、知識、服務與解法|Creation|問題、需求、能力、工具、使用者|創造、創新、價值生成|最高階Agency不是爭奪既有答案，而是創造新的可能|高價值創造通常源自真實問題＋能力＋反覆Feedback|創造有效解法→自己與他人的Options一起增加`,
+sp:`你不只是這個世界的旅人，也是它的創作者。你親手種下的每一顆種子，都會在某處開成花。`,se:`You're not just a traveler in this world, but one of its creators. Every seed you plant will bloom somewhere.`}
+];
+const G8=[
+{k:`SEE`,zh:`看見`,m:[3,22,10],core:`系統思維＋網路思維＋時間尺度思維`,d:`看見整個系統，而不是一個事件。`,on:`看事件→看系統`,eff:`看得更完整`,act:`不要只看事件→看整個系統。`,x:`孩子考差→先看睡眠、方法、基礎、注意力、練習與情緒。`,sp:`退一步，才看得見整片森林。`,se:`Step back, and you'll see the whole forest.`},
+{k:`TRACE`,zh:`上溯`,m:[1,27,28],core:`上游思維＋第一原理＋逆向思維`,d:`找到問題真正的Generator。`,on:`治症狀→找Generator`,eff:`解決根源`,act:`不要只治症狀→找Generator。`,x:`每天遲到→往上找晚睡、交通、準備流程。`,sp:`找到源頭，心就不再慌。`,se:`Find the source, and the heart stops panicking.`},
+{k:`FOCUS`,zh:`聚焦`,m:[2,29,14,13],core:`槓桿思維＋80/20＋瓶頸思維＋邊際思維`,d:`找到最值得改的地方。`,on:`到處用力→集中關鍵點`,eff:`效率最大化`,act:`不要平均用力→找Bottleneck＋Leverage Point。`,x:`英文最卡單字→先攻單字。`,sp:`把力氣用在對的地方，你會發現自己其實很有力量。`,se:`Put your strength in the right place — you're stronger than you thought.`},
+{k:`DECIDE`,zh:`決策`,m:[7,8,12,18,17,23],core:`機率＋貝葉斯＋機會成本＋可逆性＋選擇權＋博弈`,d:`在不確定世界裡選Action。`,on:`憑感覺→依證據決策`,eff:`提升決策品質`,act:`不要憑感覺→看Evidence＋Probability＋Cost＋Risk。`,x:`買東西前不只問「喜不喜歡」，也問機會成本。`,sp:`不必等到完全確定，也能做出好的選擇。`,se:`You needn't wait for certainty to choose well.`},
+{k:`PROTECT`,zh:`防守`,m:[19,21,15,39,34],core:`安全邊際＋冗餘＋約束＋邊界＋熵管理`,d:`不要讓一次錯誤摧毀整個系統。`,on:`出事才救→提前建Buffer`,eff:`增加韌性`,act:`不要把人生押滿→留Buffer＋Backup＋Boundary。`,x:`錢留預備金、資料做備份、時間不排滿。`,sp:`替自己留一點餘裕，是最深的自我疼惜。`,se:`Leaving yourself some margin is the deepest self-compassion.`},
+{k:`ACT`,zh:`行動`,m:[31,25,30,32],core:`最小行動＋環境設計＋實驗＋迭代`,d:`不要停在理解。讓Reality產生Data。`,on:`想很多→快速測試`,eff:`把認知轉成Reality`,act:`不要等完美→Minimum Action＋Experiment。`,x:`想運動→今天先走15分鐘。`,sp:`想一千次，不如溫柔地做一次。`,se:`Better to gently do it once than think it over a thousand times.`},
+{k:`LEARN`,zh:`學習`,m:[4,5,6,33],core:`Feedback＋Prediction＋反證＋Prediction Error＋Model Update`,d:`把錯誤轉成更準確的模型。`,on:`證明自己對→利用錯誤升級`,eff:`提升預測精度`,act:`不要怕錯→Prediction→Feedback→Error→Model Update。`,x:`考錯→分類錯誤→針對練習→再測。`,sp:`每一次錯誤，都是生命寄來的禮物。`,se:`Every mistake is a gift that life sends you.`},
+{k:`EVOLVE`,zh:`進化`,m:[11,20,35,37,38,40],core:`複利＋反脆弱＋能力資本＋遷移＋Agency＋生成思維`,d:`讓今天的行動不只解決今天，而是增加明天的能力。`,on:`解決一次→能力永久留下`,eff:`持續增加自由度`,act:`不要只解決今天→每次都留下Capability。`,x:`這次有人幫我做→下次我自己會做。`,sp:`今天的你，正在為明天的自由鋪路。`,se:`Today's you is paving the road to tomorrow's freedom.`}
+];
+const G6D=[
+{k:`SEE`,t:`SEE｜認知・系統思維`,en:`Cognition & Systems`,q:`我到底看見了什麼？`,fn:`從「單一事件」升級成「結構、關係、機率、時間」`,m:[3,5,7,8,9,10,22,27,36],o:`看到事件→立刻下結論`,n:`Event→Pattern→Structure→Mechanism→Prediction`,c:`觀察｜理解｜建模｜推理｜預測｜抽象化`,w:`不要只問「發生什麼？」\n要問：「我用什麼Model理解它？」`,r:`① 看懂｜世界到底怎麼運作？`,fw:`SEE讓你不再「看錯」。`},
+{k:`FOCUS`,t:`TRACE & FOCUS｜診斷・槓桿思維`,en:`Diagnosis & Leverage`,q:`真正的問題在哪裡？`,fn:`找到Generator、Bottleneck與Leverage Point`,m:[1,2,13,14,28,29],o:`哪裡痛→處理哪裡\n哪裡有問題→哪裡加倍努力`,n:`Symptom→Generator→Bottleneck→Leverage Point`,c:`診斷｜根因分析｜聚焦｜優先排序｜資源配置`,w:`不是所有問題都值得同樣用力。\n找到真正的關鍵節點，比增加努力更重要。`,r:`② 找準｜Generator在哪？Bottleneck在哪？Leverage在哪？`,fw:`FOCUS讓你不再「用錯力」。`},
+{k:`DECIDE`,t:`DECIDE｜決策・策略思維`,en:`Decision & Strategy`,q:`現在到底應該選什麼？`,fn:`在不確定世界裡做較好的選擇`,m:[11,12,15,16,17,18,23],o:`喜歡→就做\n害怕→不做\n別人怎麼做→我就怎麼做`,n:`Options→Probability→Cost→Constraint→Second-order Effect→Optionality→Decision`,c:`比較｜取捨｜策略｜協商｜長期規劃`,w:`好的Decision不是保證結果正確。\n而是在當下資訊與限制下，做出合理選擇，同時保留更新空間。`,r:`③ 選對｜哪個Option現在最合理？`,fw:`DECIDE讓你不再「選錯方向」。`},
+{k:`ACT`,t:`ACT｜行動・行為設計思維`,en:`Action & Behavior Design`,q:`怎麼真正做出來？`,fn:`把「知道」轉成「做到」`,m:[24,25,26,30,31,32],o:`知道→應該做到\n意志力→撐到底\n完美→才開始`,n:`Environment→Incentive→Minimum Action→Experiment→Feedback→Iteration`,c:`啟動｜執行｜習慣｜實驗｜迭代`,w:`不要一直要求自己更有意志力。\n重新設計環境，降低正確行動的摩擦力。`,r:`④ 做到｜最小可行Action是什麼？`,fw:`ACT讓你不再「只懂不做」。`},
+{k:`PROTECT`,t:`PROTECT｜風險・韌性思維`,en:`Risk & Resilience`,q:`如果事情不如預期，我撐得住嗎？`,fn:`避免一次Error摧毀整個System`,m:[19,20,21,34,39],o:`最佳情況應該會發生\n→所以資源全部押滿`,n:`Error一定會發生→Buffer→Backup→Boundary→Maintenance→Adaptation`,c:`風險管理｜恢復力｜界線｜維護｜抗壓`,w:`真正強大的系統，不是永遠不出錯。\n而是：出錯了不會死，而且能從錯誤中變強。`,r:`⑤ 撐住｜如果Prediction錯了，系統會不會崩？`,fw:`PROTECT讓你不會「一次錯誤就出局」。`},
+{k:`EVOLVE`,t:`LEARN & EVOLVE｜學習・智慧生成思維`,en:`Learning & Wisdom Generation`,q:`這次經驗最後留下了什麼？`,fn:`把Error轉成Data，把Data轉成Capability`,m:[4,6,33,35,37,38,40],o:`錯誤＝失敗\n問題解決＝結束`,n:`Prediction→Reality→Error→Feedback→Model Update→Retest→Capability→Transfer→Generation`,c:`反思｜更新｜學習｜遷移｜創造｜High Agency`,w:`真正重要的不是「這次問題有沒有解決」。\n而是：「這次問題有沒有讓下一次的我更強？」`,r:`⑥ 升級｜Error能不能變成下一輪Capability？`,fw:`EVOLVE讓你「每次錯誤都比以前更強」。`}
+];
+
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const pad=n=>String(n).padStart(2,'0');
+const gc=k=>`var(${G6[k].c})`;
+const flowHTML=arr=>arr.map(s=>`<span class="s">${esc(s)}</span>`).join('<span class="a">→</span>');
+const mbtn=ns=>'<div class="mb">'+ns.map(n=>`<button data-go="${n}">${pad(n)} ${esc(T[n-1].zh)}</button>`).join('')+'</div>';
+
+// 40 cards
+$('#cards').innerHTML=T.map((t,i)=>{const n=i+1,s=t.s.split('|');
+return `<details class="card it" id="t${n}" data-g="${t.g}"><summary>
+<div class="hd"><span class="num" style="background:${gc(t.g)}">${pad(n)}</span><div>
+<div class="nm">${esc(t.zh)} <span class="enn">${esc(t.en)}</span><button class="spk" title="朗讀英文 Read aloud" data-say="${esc(t.en+'. '+t.qe+' '+t.se).replace(/"/g,'&quot;')}">🔊</button></div>
+<div class="q"><span class="zh">核心問題：${esc(t.q)}</span> <span class="en">${esc(t.qe)}</span></div></div>
+<span class="gb" style="background:${gc(t.g)}">${G6[t.g].en} ${G6[t.g].zh}</span></div>
+<div class="soup"><span class="zh"><span class="lbl">心靈雞湯</span>${esc(t.sp)}</span><span class="en">${esc(t.se)}</span></div>
+</summary><div class="bd">
+<h4>說明 Insight</h4><div class="pre">${esc(t.b)}</div>
+<h4>舊Model → 新Model → 功效 → 生活例子</h4>
+<div class="onf"><div><b>舊 Old</b><span class="zh">${esc(t.o)}</span><span class="en">${esc(t.oe)}</span></div>
+<div><b>新 New</b><span class="zh">${esc(t.nw)}</span><span class="en">${esc(t.ne)}</span></div>
+<div><b>功效 Effect</b><span class="zh">${esc(t.f)}</span><span class="en">${esc(t.fe)}</span></div></div>
+<div class="ex"><b>例：</b>${esc(t.x)}</div>
+<h4>完整母體 Full Matrix</h4>
+<table class="mx">${s.map((v,j)=>`<tr${j===3||j===4||j===8?' class="hl"':''}><td>${ML[j][0]}<br>${ML[j][1]}</td><td>${esc(v)}</td></tr>`).join('')}</table>
+<h4>臉書貼文＋圖卡 Facebook Post</h4>
+<div class="fb"><canvas class="fbc" data-n="${n}" width="1080" height="1350"></canvas>
+<div><textarea class="fbt" data-n="${n}"></textarea>
+<div class="tools" style="margin:0"><button class="btn" data-copy="${n}">複製貼文</button><button class="btn" data-dl="${n}">下載圖卡 PNG</button></div></div></div>
+</div></details>`}).join('');
+
+// Facebook post + image card
+const GH={SEE:'#3b82c4',FOCUS:'#c0703a',DECIDE:'#7b5cc4',ACT:'#2e9d6a',PROTECT:'#c24b5a',EVOLVE:'#b8891c'};
+const FF='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+function fbText(n){const t=T[n-1],s=t.s.split('|');
+return `【思維${pad(n)}｜${t.zh} ${t.en}】
+
+${t.sp}
+
+💡 核心問題：${t.q}
+
+❌ 舊Model：${t.o}
+✅ 新Model：${t.nw}
+🎯 功效：${t.f}
+
+📌 生活例子：
+${t.x}
+
+🌱 智慧：${s[8]}
+📐 規律：${s[9]}
+
+${t.se}
+
+#人生思維母體 #LifeOS #${t.zh.replace(/[\/\s]/g,'')} #${t.en.replace(/[^A-Za-z]/g,'')} #${G6[t.g].zh} #心靈雞湯 #自我成長`}
+function wrap(c,text,maxW){const tk=text.match(/[A-Za-z0-9%'’".,!?\-]+|\s+|[\s\S]/g)||[],L=[];let cur='';
+  for(const w of tk){
+    if(cur&&c.measureText(cur+w).width>maxW&&!'，。、；：？！」』）…'.includes(w)){L.push(cur.trimEnd());cur=w.trim()?w:''}
+    else cur+=w}
+  if(cur.trim())L.push(cur);return L}
+function drawCard(cv,n){const t=T[n-1],c=cv.getContext('2d'),W=1080,H=1350,col=GH[t.g];cv.width=W;cv.height=H;
+  const txt=(s,x,y,size,color,weight,maxW,lh)=>{c.font=`${weight} ${size}px ${FF}`;c.fillStyle=color;const L=wrap(c,s,maxW);L.forEach((l,i)=>c.fillText(l,x,y+i*lh));return y+L.length*lh};
+  const rr=(x,y,w,h,r)=>{c.beginPath();c.roundRect?c.roundRect(x,y,w,h,r):c.rect(x,y,w,h)};
+  const row=(lb,s,pill,color,wt,y,k)=>{c.fillStyle=pill;rr(60,y,84*k,58*k,14*k);c.fill();
+    c.font=`700 ${30*k}px ${FF}`;c.fillStyle='#fff';c.textAlign='center';c.fillText(lb,60+42*k,y+13*k);c.textAlign='left';
+    const e=txt(s,60+84*k+24*k,y+6*k,38*k,color,wt,860,54*k);return Math.max(y+58*k,e)+20*k};
+  function paint(k){c.textAlign='left';c.textBaseline='top';
+    c.fillStyle='#faf7f2';c.fillRect(0,0,W,H);c.fillStyle=col;c.fillRect(0,0,W,320);
+    txt(`思維 ${pad(n)} ／ 40`,80,60,30,'rgba(255,255,255,.88)','600',600,40);
+    c.textAlign='right';txt(`${G6[t.g].en}｜${G6[t.g].zh}`,1000,60,30,'rgba(255,255,255,.88)','600',700,40);c.textAlign='left';
+    txt(t.zh,80,112,96,'#fff','800',940,110);txt(t.en,80,236,40,'rgba(255,255,255,.92)','400',940,50);
+    let y=362;
+    y=txt('核心問題',80,y,28*k,col,'700',920,44*k);
+    y=txt(t.q,80,y,46*k,'#2b2622','700',920,64*k)+30*k;
+    c.font=`500 ${44*k}px ${FF}`;const L1=wrap(c,t.sp,820);c.font=`italic 400 ${27*k}px ${FF}`;const L2=wrap(c,t.se,820);
+    const bh=40*k+L1.length*66*k+16*k+L2.length*40*k+30*k;
+    c.fillStyle='#fff1d6';rr(60,y,960,bh,24);c.fill();c.fillStyle=col;c.fillRect(60,y+24,8,bh-48);
+    let yy=y+40*k;yy=txt(t.sp,110,yy,44*k,'#2b2622','500',820,66*k)+16*k;txt(t.se,110,yy,27*k,'#7a7068','italic 400',820,40*k);
+    y+=bh+36*k;
+    y=row('舊',t.o,'#a39990','#7a7068','400',y,k);y=row('新',t.nw,col,'#2b2622','700',y,k);y=row('效',t.f,'#2b2622','#2b2622','400',y,k);
+    c.fillStyle='#e8e0d6';c.fillRect(80,1262,920,2);
+    txt('人生思維母體 LifeOS',80,1284,30,col,'700',600,40);
+    c.textAlign='right';txt('看→找→選→做→守→升',1000,1286,28,'#7a7068','400',600,40);c.textAlign='left';
+    return y}
+  for(const k of [1,.92,.84,.76,.68,.6])if(paint(k)<=1250)break;
+}
+function fillFb(d){const cv=d.querySelector('.fbc');if(!cv||cv._done)return;cv._done=1;const n=+cv.dataset.n;drawCard(cv,n);d.querySelector('.fbt').value=fbText(n)}
+document.addEventListener('toggle',e=>{if(e.target.open&&e.target.classList&&e.target.classList.contains('card'))fillFb(e.target)},true);
+function save(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}
+function dlCard(n){const cv=document.createElement('canvas');drawCard(cv,n);cv.toBlob(b=>save(b,`${pad(n)}_${T[n-1].zh.replace('/','-')}_圖卡.png`),'image/png')}
+function copyText(s,btn){const ok=()=>{const o=btn.textContent;btn.textContent='已複製 ✓';setTimeout(()=>btn.textContent=o,1500)};
+  const fb=()=>{const ta=document.createElement('textarea');ta.value=s;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();ok()};
+  navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(s).then(ok,fb):fb()}
+// Facebook tab: all 40 posts with image cards
+$('#fbList').innerHTML=T.map((t,i)=>{const n=i+1;return `<div class="sec it"><h3><span style="color:${gc(t.g)}">${pad(n)}</span> ${esc(t.zh)} <span class="enn">${esc(t.en)}</span></h3>
+<div class="fb"><canvas class="fbc fbi" data-n="${n}" width="540" height="675"></canvas>
+<div><textarea class="fbt" data-n="${n}" style="height:300px">${esc(fbText(n))}</textarea>
+<div class="tools" style="margin:0"><button class="btn" data-copy="${n}">複製貼文</button><button class="btn" data-dl="${n}">下載圖卡 PNG</button><button class="btn spk2" data-say="${esc(t.en+'. '+t.qe+' '+t.se).replace(/"/g,'&quot;')}">🔊 英文朗讀</button></div></div></div></div>`}).join('');
+const shared=document.createElement('canvas');
+let fbDrawn=false;
+function drawFbTab(){if(fbDrawn)return;fbDrawn=true;$$('.fbi').forEach(p=>{drawCard(shared,+p.dataset.n);p.getContext('2d').drawImage(shared,0,0,540,675)})}
+document.addEventListener('click',e=>{const c=e.target.closest('[data-copy]'),d=e.target.closest('[data-dl]');
+  if(c){const ta=c.closest('.fb').querySelector('.fbt');copyText(ta.value||fbText(+c.dataset.copy),c)}
+  if(d)dlCard(+d.dataset.dl)});
+
+// table
+$('#tbody').innerHTML=T.map((t,i)=>`<tr class="itr" data-g="${t.g}" data-go="${i+1}"><td>${pad(i+1)}</td><td><b>${esc(t.zh)}</b><span class="en">${esc(t.en)}</span></td><td>${esc(t.o)}<span class="en">${esc(t.oe)}</span></td><td>${esc(t.nw)}<span class="en">${esc(t.ne)}</span></td><td>${esc(t.f)}<span class="en">${esc(t.fe)}</span></td></tr>`).join('');
+
+// group chips
+let grp='ALL';
+$('#gchips').innerHTML=`<button class="chip on" data-k="ALL">全部 All 40</button>`+Object.entries(G6).map(([k,v])=>`<button class="chip" data-k="${k}" style="border-color:var(${v.c})">${v.en} ${v.zh}</button>`).join('');
+$('#gchips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;grp=b.dataset.k;$$('#gchips .chip').forEach(c=>c.classList.toggle('on',c===b));apply()};
+
+// 8
+$('#g8').innerHTML=G8.map((g,i)=>`<div class="sec it"><h3>${'①②③④⑤⑥⑦⑧'[i]} ${g.k}｜${g.zh}</h3>
+<div class="kv"><b>核心思維</b><span>${esc(g.core)}</span><b>說明</b><span>${esc(g.d)}</span><b>舊 → 新</b><span>${esc(g.on)}</span><b>最終功效</b><span>${esc(g.eff)}</span><b>記住這個動作</b><span>${esc(g.act)}</span><b>例子</b><span>${esc(g.x)}</span></div>
+${mbtn(g.m)}
+<div class="soup"><span class="zh"><span class="lbl">心靈雞湯</span>${esc(g.sp)}</span><span class="en">${esc(g.se)}</span></div></div>`).join('');
+
+// 6
+$('#g6').innerHTML=G6D.map(g=>`<div class="sec it"><h3 style="color:${gc(g.k)}">${esc(g.t)} <span class="enn">${esc(g.en)}</span></h3>
+<div class="kv"><b>核心</b><span>${esc(g.q)}</span><b>功能</b><span>${esc(g.fn)}</span><b>舊Model</b><span class="pre">${esc(g.o)}</span><b>新Model</b><span><div class="flow">${flowHTML(g.n.split('→'))}</div></span><b>帶出能力</b><span>${esc(g.c)}</span><b>核心智慧</b><span class="pre">${esc(g.w)}</span><b>一眼記住</b><span>${esc(g.r)}</span></div>
+${mbtn(g.m)}
+<div class="soup"><span class="lbl">最終智慧</span>${esc(g.fw)}</div></div>`).join('');
+
+// static flows
+$$('[data-f]').forEach(el=>{el.classList.add('flow');el.innerHTML=flowHTML(el.dataset.f.split(','))});
+$$('[data-v]').forEach(el=>{el.innerHTML=el.dataset.v.split(';').map(s=>{const p=s.split('｜');return `<li>${p.length>1?`<b>${esc(p[0])}</b>${esc(p.slice(1).join('｜'))}`:esc(s)}</li>`}).join('')});
+$$('[data-p]').forEach(el=>{el.innerHTML=el.dataset.p.split(';').map(s=>{const [a,b]=s.split('>');return `<span class="o">${esc(a)}</span><span class="a">→</span><span>${esc(b)}</span>`}).join('')});
+
+// tabs
+let cur='t40';
+function showTab(id){cur=id;if(id==='tfb')drawFbTab();$$('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===id));$$('.panel').forEach(p=>p.classList.toggle('on',p.id===id));window.scrollTo(0,0)}
+$('#tabs').onclick=e=>{const b=e.target.closest('button');if(b)showTab(b.dataset.t)};
+
+// search
+function apply(){
+  const terms=$('#q').value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  $$('.panel').forEach(p=>{
+    let n=0;
+    p.querySelectorAll('.it,.itr').forEach(el=>{
+      const txt=el._s||(el._s=el.textContent.toLowerCase());
+      let ok=terms.every(w=>txt.includes(w));
+      if(el.dataset.g&&grp!=='ALL'&&el.dataset.g!==grp)ok=false;
+      el.hidden=!ok;
+      if(ok&&el.classList.contains('it'))n++;
+      if(ok&&terms.length&&el.tagName==='DETAILS')el.open=true;
+    });
+    p.querySelector('.empty').style.display=n?'none':'block';
+    const c=$(`#tabs button[data-t="${p.id}"] .cnt`);c.textContent=terms.length?n:'';
+  });
+}
+$('#q').addEventListener('input',apply);
+
+// view
+$('#vCard').onclick=()=>{$('#cards').style.display='';$('#tblWrap').style.display='none'};
+$('#vTbl').onclick=()=>{$('#cards').style.display='none';$('#tblWrap').style.display=''};
+$('#openAll').onclick=()=>$$('#cards details:not([hidden])').forEach(d=>d.open=true);
+$('#closeAll').onclick=()=>$$('#cards details').forEach(d=>d.open=false);
+$('#dlAllImg').onclick=()=>T.forEach((_,i)=>setTimeout(()=>dlCard(i+1),i*350));
+$('#dlAllTxt').onclick=()=>save(new Blob(['﻿'+T.map((_,i)=>fbText(i+1)).join('\r\n\r\n━━━━━━━━━━━━\r\n\r\n').replace(/\r?\n/g,'\r\n')],{type:'text/plain;charset=utf-8'}),'40大思維_臉書貼文.txt');
+
+// go to a thinking
+function goTo(n){
+  showTab('t40');$('#vCard').click();
+  const el=$('#t'+n);
+  if(el.hidden){$('#q').value='';grp='ALL';$$('#gchips .chip').forEach(c=>c.classList.toggle('on',c.dataset.k==='ALL'));apply()}
+  el.open=true;el.scrollIntoView({behavior:'smooth',block:'start'});
+  el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)goTo(+b.dataset.go)});
+$('#rnd').onclick=()=>goTo(1+Math.floor(Math.random()*40));
+
+// today
+const d=new Date(),doy=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5),ti=doy%40,tt=T[ti];
+$('#today').innerHTML=`<div class="lb">今日心靈雞湯 · TODAY'S THOUGHT — ${pad(ti+1)} ${esc(tt.zh)} ${esc(tt.en)}</div><div class="t zh">${esc(tt.sp)}</div><div class="e en">${esc(tt.se)}</div>`;
+$('#today').onclick=()=>goTo(ti+1);
+
+// English read-aloud (browser built-in speech, no API)
+let enVoice=null;
+function pickVoice(){const v=speechSynthesis.getVoices().filter(x=>/^en/i.test(x.lang));enVoice=v.find(x=>/en-US/i.test(x.lang)&&/Google|Natural|Aria|Jenny|Zira/i.test(x.name))||v.find(x=>/en-US/i.test(x.lang))||v[0]||null}
+function speak(s){if(!('speechSynthesis' in window)){alert('這個瀏覽器不支援語音朗讀');return}
+  speechSynthesis.cancel();if(!enVoice)pickVoice();
+  const u=new SpeechSynthesisUtterance(s.replace(/→/g,' to ').replace(/[｜|]/g,', '));u.lang='en-US';u.rate=.9;if(enVoice)u.voice=enVoice;speechSynthesis.speak(u)}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-say]'),en=b?null:e.target.closest('.en,.enn');
+  if(!b&&(!en||en.closest('.tbl')))return;
+  e.preventDefault();e.stopPropagation();speak(b?b.dataset.say:en.textContent)},true);
+
+// language
+function setLang(l){document.body.className='lang-'+l;$$('#lang button').forEach(b=>b.classList.toggle('on',b.dataset.l===l));try{localStorage.setItem('lifeos-lang',l)}catch(e){}}
+$('#lang').onclick=e=>{const b=e.target.closest('button');if(b)setLang(b.dataset.l)};
+try{const l=localStorage.getItem('lifeos-lang');if(l)setLang(l)}catch(e){}
+apply();
+</script>
+</body>
+</html>
