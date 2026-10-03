@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>中譯英｜類型錯誤診斷</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#22252a;--sub:#6a7078;--line:#dedbd3;--acc:#2f6f5e;--accbg:#e6f1ed;--warn:#a2542a;--warnbg:#f8ece3}
+@media(prefers-color-scheme:dark){:root{--bg:#17191c;--card:#22252a;--ink:#e8e6e1;--sub:#9aa0a8;--line:#383c43;--acc:#7cc4ae;--accbg:#24372f;--warn:#e0a47c;--warnbg:#3a2c22}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+main{max-width:980px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:18px 0 6px}h3{font-size:15px;margin:14px 0 4px}
+.sub{color:var(--sub);font-size:13px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0}
+input,select,textarea,button{font:inherit;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+textarea{width:100%;resize:vertical}
+#q{flex:1;min-width:180px}
+button{cursor:pointer}button:hover{border-color:var(--acc)}
+button.pri{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:600}
+button.sm{padding:3px 8px;font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0}
+.wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;color:var(--sub);font-weight:600}
+td.n{font-variant-numeric:tabular-nums}
+.tag{display:inline-block;background:var(--accbg);color:var(--acc);border-radius:6px;padding:1px 8px;font-size:13px;margin:1px 4px 1px 0}
+.tag.w{background:var(--warnbg);color:var(--warn)}
+.note{background:var(--warnbg);color:var(--warn);border-radius:8px;padding:8px 12px;font-size:13px;margin:10px 0}
+.msg{background:var(--accbg);border-radius:10px;padding:12px 14px;margin:10px 0}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--bg);color:var(--ink);width:min(760px,94vw);max-height:90vh;padding:0}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.dh{position:sticky;top:0;background:var(--bg);display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.db{padding:6px 16px 18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+label{display:block;font-size:13px;color:var(--sub)}label>*{width:100%;margin-top:2px;color:var(--ink)}
+.cat{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;margin:6px 0;padding:10px 12px}
+details{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:8px 12px;margin:6px 0}
+summary{cursor:pointer;font-weight:600}
+.ex{font-size:14px;margin:6px 0 0}.ex b{color:var(--acc)}
+.rec{border-top:1px solid var(--line);padding:10px 0}
+.empty{text-align:center;color:var(--sub);padding:30px 10px}
+ol{padding-left:22px;margin:6px 0}
+dt{font-weight:600;margin-top:8px}dd{margin:0;color:var(--sub);font-size:14px}
+</style>
+</head>
+<body>
+<main>
+<h1>中譯英｜類型錯誤診斷</h1>
+<div class="sub">彙整期間內的未通過檢查點，依解題能力分類，並對照再測結果。資料只存在這台電腦的瀏覽器。</div>
+
+<div class="bar">
+  <input id="q" type="search" placeholder="搜尋學生、題目、譯文、備註…">
+  <input id="from" type="date" title="期間起日"> <span class="sub">至</span> <input id="to" type="date" title="期間迄日">
+</div>
+<div class="bar">
+  <button class="pri" id="bAdd">＋ 新增未通過紀錄</button>
+  <button id="bHelp">使用說明</button>
+  <button id="bExp">匯出備份</button>
+  <button id="bImp">匯入備份</button>
+  <input id="file" type="file" accept=".json" hidden>
+</div>
+
+<div class="card wrap">
+  <table>
+    <thead><tr><th>學生</th><th>未通過檢查點</th><th>主要錯誤類型</th><th>再測次數</th><th>再測正確率</th><th></th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <div id="empty" class="empty" hidden></div>
+</div>
+<div class="note">這是錯題分類報表，不是對學生能力或人格的定論。單次答錯只能視為訊號；請點進實際題目核對證據，再決定補強內容。</div>
+</main>
+
+<dialog id="dAdd"><form id="fAdd">
+  <div class="dh"><b>新增未通過紀錄</b><button type="button" data-close>關閉</button></div>
+  <div class="db">
+    <div class="grid">
+      <label>學生<input name="student" list="stu" required></label>
+      <label>作答日期<input name="date" type="date" required></label>
+    </div>
+    <datalist id="stu"></datalist>
+    <label>中文原題<textarea name="zh" rows="2" required></textarea></label>
+    <label>學生譯文<textarea name="ans" rows="2"></textarea></label>
+    <div class="grid">
+      <label>錯誤類型（第一層能力）<select name="cat" id="selCat"></select></label>
+      <label>細類（沒有證據就留「未細分」）<select name="sub" id="selSub"></select></label>
+    </div>
+    <label>備註／證據<textarea name="note" rows="2"></textarea></label>
+    <div class="bar"><button class="pri">儲存</button></div>
+  </div>
+</form></dialog>
+
+<dialog id="dView"><div class="dh"><b id="vTitle"></b><span><button id="vBack" hidden>← 返回能力列表</button> <button data-close>關閉</button></span></div><div class="db" id="vBody"></div></dialog>
+
+<dialog id="dHelp"><div class="dh"><b>診斷報表使用說明</b><button data-close>關閉</button></div><div class="db" id="hBody"></div></dialog>
+
+<script>
+const CATS=[
+ {n:'語意單位與完整達意',d:'翻譯漏掉主體、動作、條件、範圍或重要細節，導致原意不完整或改變。',s:[
+  {n:'語意遺漏',zh:'只有提前登記的學生能參加。',en:'Only students who register in advance can join.',why:'Students can join 漏掉 only 與提前登記條件。',dо:'切分主體、動作、條件、時間、範圍後逐項核對。'},
+  {n:'範圍與原意偏移',zh:'有些人不喜歡這規定。',en:'Some people dislike this rule.',why:'some 不等於 all；不喜歡不等於不能遵守。',dо:'比較否定、量詞與情態強度。'}]},
+ {n:'句型骨架與英文語序',d:'未先建立可成立的英文主句，或直接沿用中文語序造成句構不完整。',s:[
+  {n:'主句骨架不完整',zh:'因為下雨，比賽取消。',en:'Because it rained, the game was cancelled.',why:'Because it rained. 是從屬片段，缺主句。',dо:'先找主詞與限定動詞，再補修飾子句。'},
+  {n:'中文語序直搬',zh:'我昨天買的書很有用。',en:'The book I bought yesterday is useful.',why:'主詞核心是 book，主句動詞為 is。',dо:'先立 The book is useful，再加修飾。'}]},
+ {n:'時態語態與動詞形式',d:'時間、主被動、主詞動詞一致或動詞形式未能反映中文原意。',s:[
+  {n:'時間與時態',zh:'她在這裡工作三年了。',en:'She has worked here for three years.',why:'持續到現在不同於過去已結束的事件。',dо:'先畫時間線再選時態。'},
+  {n:'語態與動詞一致',zh:'這些信昨天寄出了。',en:'These letters were sent yesterday.',why:'letters 為複數受事，需 were sent。',dо:'核對施事、受事與主詞單複數。'}]},
+ {n:'精準用字與固定搭配',d:'用字大致相近但不符合情境、可數性、介系詞或自然固定搭配。',s:[
+  {n:'情境用字與近義',zh:'他借給我一本書。',en:'He lent me a book.',why:'lend 是借出，borrow 是借入。',dо:'先確認動作方向再選字。'},
+  {n:'固定搭配與介系詞',zh:'她留意這個差異。',en:'She paid attention to the difference.',why:'pay attention to 是完整詞塊，介系詞不能任意替換。',dо:'連同介系詞一起記錄自然搭配。'}]},
+ {n:'子句關係與連接',d:'條件、因果、讓步、目的、比較或平行關係未以正確結構連接。',s:[
+  {n:'條件因果連接',zh:'如果需要幫忙，請告訴我。',en:'If you need help, please tell me.',why:'If 是條件，不是已知原因 because。',dо:'先命名兩個中文語意單位的關係。'},
+  {n:'子句與平行結構',zh:'她喜歡閱讀和游泳。',en:'She enjoys reading and swimming.',why:'and 兩邊保持相同結構，不寫 reading and to swim。',dо:'圈出連接兩端，核對詞性與角色。'}]},
+ {n:'拼字大小寫與標點',d:'句中拼字、句首大寫或句末標點未符合完整英文句子的書寫規範。',s:[
+  {n:'拼字與詞形校訂',zh:'',en:'We received the message yesterday.',why:'receive 的拼字及過去式 received 都要檢查。',dо:'逐字核對拼字與所需詞形。'},
+  {n:'大小寫與標點',zh:'',en:'My brother lives in Taipei.',why:'句首 My、專名 Taipei 要大寫，句末要標點。',dо:'逐句校訂，書寫正確仍不代表譯意正確。'}]},
+ {n:'尚待確認',d:'該筆答錯已有紀錄，但現有證據不足以可靠指定錯誤原因，需要新題探測。',s:[]}
+];
+const TBC=6, K='zh2en_diag_v1', RT={p:'通過',f:'未通過',w:'待老師複核'};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+let recs=[];try{recs=JSON.parse(localStorage.getItem(K))||[]}catch(e){}
+let view={student:null,cat:null};
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(recs))}catch(e){alert('無法儲存到瀏覽器，請先匯出備份。')}};
+
+function inPeriod(){
+  const a=$('#from').value,b=$('#to').value;
+  return recs.filter(r=>(!a||r.date>=a)&&(!b||r.date<=b));
+}
+function retestStat(list){
+  let n=0,p=0,f=0,w=0;
+  list.forEach(r=>(r.retests||[]).forEach(t=>{n++;t.r==='p'?p++:t.r==='f'?f++:w++}));
+  return {n,w,rate:p+f?Math.round(p/(p+f)*100)+'%':'—'};
+}
+function render(){
+  const q=$('#q').value.trim().toLowerCase(), by={};
+  inPeriod().forEach(r=>(by[r.student]=by[r.student]||[]).push(r));
+  const names=Object.keys(by).filter(s=>!q||s.toLowerCase().includes(q)||by[s].some(r=>(r.zh+' '+r.ans+' '+r.note).toLowerCase().includes(q)))
+    .sort((a,b)=>by[b].length-by[a].length||a.localeCompare(b,'zh-Hant'));
+  $('#rows').innerHTML=names.map(s=>{
+    const cnt=Array(7).fill(0);by[s].forEach(r=>cnt[r.cat]++);
+    const mx=Math.max(...cnt), st=retestStat(by[s]);
+    const main=cnt.map((c,i)=>c===mx?`<span class="tag${i===TBC?' w':''}">${CATS[i].n}</span>`:'').join('');
+    return `<tr><td><b>${esc(s)}</b></td><td class="n">${by[s].length}</td><td>${main}</td><td class="n">${st.n}${st.w?` <span class="sub">（${st.w} 待複核）</span>`:''}</td><td class="n">${st.rate}</td><td><button class="sm" data-view="${esc(s)}">查看紀錄</button></td></tr>`;
+  }).join('');
+  const e=$('#empty');e.hidden=names.length>0;
+  e.textContent=recs.length?'這個期間或搜尋條件下沒有紀錄。':'還沒有紀錄。按「＋ 新增未通過紀錄」開始。';
+  $('#stu').innerHTML=[...new Set(recs.map(r=>r.student))].map(s=>`<option value="${esc(s)}">`).join('');
+}
+function subHtml(x){
+  return `<details><summary>${x.n}</summary>
+   <div class="sub">原創教學示例（不是新題考試）</div>
+   <div class="ex">${x.zh?esc(x.zh)+' → ':''}<b>${esc(x.en)}</b></div>
+   <div class="ex">判斷與中文說明：${esc(x.why)}</div>
+   <div class="ex">現在練什麼：${esc(x.dо)}</div></details>`;
+}
+function renderView(){
+  const list=inPeriod().filter(r=>r.student===view.student);
+  $('#vBack').hidden=view.cat===null;
+  if(view.cat===null){
+    $('#vTitle').textContent=view.student+'｜查看紀錄';
+    $('#vBody').innerHTML='<p class="sub">依第一層能力進入細類學習目錄與原題、再測。</p>'+CATS.map((c,i)=>{
+      const l=list.filter(r=>r.cat===i);if(i===TBC&&!l.length)return'';
+      const st=retestStat(l);
+      return `<button class="cat" data-cat="${i}"><span><b>${c.n}</b><br><span class="sub">${c.d}</span></span><span class="n" style="white-space:nowrap">${l.length} 筆<br><span class="sub">再測 ${st.n}｜${st.rate}</span></span></button>`;
+    }).join('');
+    return;
+  }
+  const c=CATS[view.cat], l=list.filter(r=>r.cat===view.cat).sort((a,b)=>b.date.localeCompare(a.date));
+  $('#vTitle').textContent=view.student+'｜'+c.n;
+  $('#vBody').innerHTML=`<p class="sub">${c.d}</p>`+
+   (c.s.length?`<h3>細類學習目錄</h3><div class="sub">細類是補強參考，不是把紀錄直接判成這種錯因；目錄歸屬不代表唯一因果。</div>${c.s.map(subHtml).join('')}`:'')+
+   `<h3>原題與再測（${l.length} 筆）</h3>`+
+   (l.length?l.map(r=>`<div class="rec">
+     <div class="sub">${r.date}　<span class="tag${r.sub<0?' w':''}">${r.sub<0?(r.cat===TBC?'尚待確認':'能力訊號／未細分'):c.s[r.sub].n}</span></div>
+     <div>${esc(r.zh)}</div>
+     ${r.ans?`<div>學生譯文：${esc(r.ans)}</div>`:''}
+     ${r.note?`<div class="sub">備註：${esc(r.note)}</div>`:''}
+     <div>${(r.retests||[]).map(t=>`<span class="tag${t.r==='p'?'':' w'}">${t.d} 再測${RT[t.r]}</span>`).join('')}</div>
+     <div class="bar" style="margin:6px 0 0"><span class="sub">記錄換題再測：</span>
+      <button class="sm" data-rt="p" data-id="${r.id}">通過</button>
+      <button class="sm" data-rt="f" data-id="${r.id}">未通過</button>
+      <button class="sm" data-rt="w" data-id="${r.id}">待老師複核</button>
+      <button class="sm" data-del="${r.id}">刪除此筆</button></div>
+    </div>`).join(''):'<div class="empty">這個能力在期間內沒有紀錄。</div>');
+}
+function fillSub(){
+  const c=CATS[+$('#selCat').value];
+  $('#selSub').innerHTML='<option value="-1">未細分</option>'+c.s.map((x,i)=>`<option value="${i}">${x.n}</option>`).join('');
+}
+$('#selCat').innerHTML=CATS.map((c,i)=>`<option value="${i}">${c.n}</option>`).join('');
+$('#selCat').onchange=fillSub;fillSub();
+
+$('#hBody').innerHTML=`
+<div class="msg"><b>想跟你說</b><br>錯一題，不代表你英文不好。找到卡住的地方，就有下一步可以試。腦中知道中文意思，英文卻寫不出來，先別急著把整句擦掉。把已經寫出的部分留下，先看看誰做了什麼，再補少掉的意思；不同的寫法可以請老師一起看。<br><b>可以先這樣做：</b>先找出「誰、做什麼」。寫完後，對照中文，看看有沒有漏掉意思。</div>
+<h2>報表目的</h2>
+<p>彙整選定期間內中譯英的未通過檢查點，依解題所需能力分類，並對照換題再測是否通過，協助學生優先補強，也供老師輔導參考。</p>
+<h2>欄位定義</h2>
+<dl>
+<dt>未通過檢查點</dt><dd>期間內記錄為未通過的總筆數。</dd>
+<dt>主要錯誤類型</dt><dd>第一層保留六個能力；查看紀錄內展開細類學習目錄、原題與再測。沒有細因證據的紀錄標示「能力訊號／未細分」，不自動確診。</dd>
+<dt>再測次數與正確率</dt><dd>正確率＝通過 ÷（通過＋未通過）。標為「待老師複核」的再測只算次數，不計入正確率。</dd>
+<dt>查看紀錄</dt><dd>依第一層能力進入第二層學習目錄，再看原題與再測。每筆紀錄獨立保存，不把相同答案合併。</dd>
+</dl>
+<h2>第二層細類學習目錄</h2>
+<p class="sub">各細類是補強參考，不是把舊紀錄直接判成這種錯因；各類可能互相影響，目錄歸屬不代表唯一因果。內容為教學展開，待老師審閱。</p>
+${CATS.slice(0,6).map(c=>`<h3>${c.n}｜${c.s.length} 個細類</h3>${c.s.map(subHtml).join('')}`).join('')}
+<h2>全部錯誤類型定義</h2>
+<dl>${CATS.map(c=>`<dt>${c.n}</dt><dd>${c.d}</dd>`).join('')}</dl>
+<h2>如何判讀</h2>
+<ol><li>先看未通過檢查點較多的學生。</li><li>再看是否有同一錯誤類型反覆出現。</li><li>一定要點進實際題目核對證據，再決定補強內容。</li></ol>
+<h2>重要限制</h2>
+<p>這是錯題分類報表，不等於異常事件，也不是對學生能力或人格的定論。單次答錯只能視為訊號；需要不同題目的後續探測與再次作答，才能提高診斷可信度。無法對應的資料統一歸為「尚待確認」。</p>
+<p>分類與再測結果屬人工紀錄，不是正式學測分數；合理譯法仍應由老師複核。</p>`;
+
+$('#q').oninput=render;$('#from').onchange=render;$('#to').onchange=render;
+$('#bHelp').onclick=()=>$('#dHelp').showModal();
+$('#bAdd').onclick=()=>{const f=$('#fAdd');f.reset();f.date.value=today();fillSub();$('#dAdd').showModal()};
+$('#fAdd').onsubmit=e=>{
+  e.preventDefault();const f=e.target;
+  recs.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),student:f.student.value.trim(),date:f.date.value,zh:f.zh.value.trim(),ans:f.ans.value.trim(),cat:+f.cat.value,sub:+f.sub.value,note:f.note.value.trim(),retests:[]});
+  save();render();$('#dAdd').close();
+};
+$('#vBack').onclick=()=>{view.cat=null;renderView()};
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.hasAttribute('data-close'))return t.closest('dialog').close();
+  if(t.dataset.view){view={student:t.dataset.view,cat:null};renderView();$('#dView').showModal()}
+  else if(t.dataset.cat){view.cat=+t.dataset.cat;renderView()}
+  else if(t.dataset.rt){const r=recs.find(x=>x.id===t.dataset.id);(r.retests=r.retests||[]).push({d:today(),r:t.dataset.rt});save();renderView();render()}
+  else if(t.dataset.del){if(!confirm('確定刪除這筆紀錄？刪除後無法復原。'))return;recs=recs.filter(x=>x.id!==t.dataset.del);save();renderView();render()}
+});
+$('#bExp').onclick=()=>{
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(recs,null,1)],{type:'application/json'}));
+  a.download='中譯英診斷備份_'+today()+'.json';a.click();URL.revokeObjectURL(a.href);
+};
+$('#bImp').onclick=()=>$('#file').click();
+$('#file').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  f.text().then(t=>{
+    const arr=JSON.parse(t);if(!Array.isArray(arr))throw 0;
+    const ids=new Set(recs.map(r=>r.id));let n=0;
+    arr.forEach(r=>{if(r&&r.id&&r.student&&r.date&&CATS[r.cat]&&!ids.has(r.id)){recs.push(r);n++}});
+    save();render();alert('已匯入 '+n+' 筆（重複的已略過）。');
+  }).catch(()=>alert('這個檔案不是有效的備份檔。')).finally(()=>e.target.value='');
+};
+render();
+</script>
+</body>
+</html>

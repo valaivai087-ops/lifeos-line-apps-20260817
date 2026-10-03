@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>篇章結構解題秘笈</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1d2330;--mute:#6b7280;--line:#e3e6eb;--acc:#2f5bd3;--acc-soft:#e8eefc;--ok:#1f8a4c;--ok-soft:#e3f4ea;--bad:#c2410c;--bad-soft:#fdecdf;--warn:#9a6700;--warn-soft:#fdf3d7;--gray-soft:#eef0f3}
+@media (prefers-color-scheme:dark){:root{--bg:#14171c;--card:#1d2128;--ink:#e6e8ec;--mute:#9aa3af;--line:#2d333c;--acc:#7ea0ff;--acc-soft:#23304d;--ok:#5cc98a;--ok-soft:#1c3327;--bad:#f59a63;--bad-soft:#3a2518;--warn:#e6c35c;--warn-soft:#352d15;--gray-soft:#262b33}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 "Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+header{padding:16px 20px 4px;max-width:980px;margin:0 auto}
+h1{font-size:20px;margin:0}h2{font-size:17px;margin:0 0 8px}h3{font-size:16px;margin:18px 0 8px;color:var(--mute)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:5px 12px}
+button:hover{border-color:var(--acc)}button.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:5px 8px}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px 40px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0 12px}
+.bar input[type=search]{flex:1;min-width:200px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:12px;flex-wrap:wrap}
+.tabs button{border:none;border-bottom:2px solid transparent;border-radius:0;background:none;padding:6px 12px;color:var(--mute)}
+.tabs button.on{border-bottom-color:var(--acc);color:var(--ink);font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.chip{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12.5px;background:var(--acc-soft);color:var(--acc);margin:2px 3px 2px 0;border:none}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}.chip.bad{background:var(--bad-soft);color:var(--bad)}.chip.gray{background:var(--gray-soft);color:var(--ink)}
+.chip.gray i{font-style:normal;color:var(--mute);margin-left:4px}
+button.chip{cursor:pointer}
+.mute{color:var(--mute);font-size:13px}
+.en{font-family:Georgia,"Times New Roman",serif;font-size:16px;line-height:1.9}
+.ex{background:var(--gray-soft);border-radius:8px;padding:8px 10px;margin:6px 0}
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:8px 12px;border-radius:0 8px 8px 0;font-size:13.5px;margin:8px 0}
+.plist{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.plist button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.gap{font-family:inherit;font-size:14px;padding:1px 4px;margin:0 3px;border:2px solid var(--acc);border-radius:6px;font-weight:600}
+.gap.ok{border-color:var(--ok);background:var(--ok-soft)}.gap.bad{border-color:var(--bad);background:var(--bad-soft)}
+.opt{display:flex;gap:8px;padding:6px 8px;border-radius:8px}
+.opt b{flex:none}.opt.used{opacity:.45}
+.sol{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.sol.ok{border-left:4px solid var(--ok)}.sol.bad{border-left:4px solid var(--bad)}
+ul.li{padding-left:20px;margin:6px 0}ul.li li{margin-bottom:3px}
+mark{color:inherit;border-radius:4px;padding:0 2px}
+.c1{background:rgba(47,91,211,.2)}.c2{background:rgba(31,138,76,.22)}.c3{background:rgba(194,65,12,.22)}
+.c4{background:rgba(154,103,0,.25)}.c5{background:rgba(147,51,234,.2)}.c6{background:rgba(8,145,178,.22)}.c7{background:rgba(219,39,119,.2)}.c8{background:rgba(100,116,139,.28)}
+textarea{width:100%;min-height:150px;resize:vertical}
+.empty{text-align:center;color:var(--mute);padding:24px}
+@media (max-width:640px){header,.wrap{padding-left:16px;padding-right:16px}}
+</style>
+</head>
+<body>
+<header><h1>篇章結構｜解題秘笈</h1></header>
+<div class="wrap">
+  <div class="bar">
+    <input type="search" id="q" placeholder="搜尋秘笈、線索詞、題目…（例：however、代名詞、陷阱、實驗）" oninput="render()">
+    <label class="mute"><input type="checkbox" id="showHl" onchange="render()"> 練習題標出線索詞</label>
+  </div>
+  <div class="tabs" id="tabs">
+    <button data-t="tips" class="on">解題秘笈</button>
+    <button data-t="paper">學習卷解題</button>
+    <button data-t="solve">解題練習</button>
+    <button data-t="scan">線索掃描（貼自己的題目）</button>
+  </div>
+  <div id="view"></div>
+</div>
+
+<script>
+/* ================= 秘笈資料 =================
+   k:代號 n:名稱 c:標色 r:口訣 w:詞表(字=中文|…) l:條列 ex:例句 y:怎麼用 */
+const GROUPS=[
+{g:'解題流程',items:[
+ {k:'steps',n:'解題五步驟',r:'主旨 → 選項 → 前後 → 先易 → 重讀。',l:[
+  `① 抓主旨：讀全文第一句和每段首句，用一句中文說出「這篇在講什麼」。`,
+  `② 先看選項：把每個選項的線索詞圈起來（代名詞、this/such、轉折詞、順序詞、the＋名詞）。`,
+  `③ 前後都要接：每個空格讀「前一句＋後一句」，兩邊都接得上才算對。`,
+  `④ 先填最有把握的：線索最明顯的先填，劃掉用過的選項。`,
+  `⑤ 整篇重讀：確認多出來的選項真的無處可放（偏題或接不上）。`],
+  y:`最重要的一條是第 ③ 步。只看前一句、不看後一句，是最常見的失分原因。`},
+ {k:'time',n:'時間分配',r:'一篇 5～6 分鐘：1 分鐘看選項，3 分鐘填，1 分鐘重讀。',l:[
+  `先花 1 分鐘讀選項、圈線索，比直接讀文章快。`,
+  `卡住超過 40 秒就先跳過，填完其他格再回來，選項變少會容易很多。`,
+  `最後 1 分鐘一定要整篇順讀一次，這一步最常抓到錯。`],y:`篇章結構一格錯常會連帶錯第二格（互換），所以檢查的報酬很高。`},
+ {k:'marks',n:'劃記方法',r:'代名詞畫圈、轉折詞畫三角、順序詞畫底線、the＋名詞畫方框。',l:[
+  `○ 代名詞／指示詞：畫圈後拉箭頭到它指的名詞。`,
+  `△ 轉折／對比詞：提醒自己前後語氣要相反。`,
+  `＿ 順序／時間詞：在旁邊寫 1、2、3 排時間線。`,
+  `□ the＋名詞、another、the other：往前找第一次出現的地方。`,
+  `＋／－：在句子旁標正面或負面語氣。`],y:`劃記的目的是把「感覺通順」變成「看得見的證據」。`},
+ {k:'final',n:'交卷前檢查清單',r:'每格問三件事：指誰？接前？接後？',l:[
+  `每個代名詞都找得到它指的名詞嗎？單複數對嗎？`,
+  `每個轉折詞前後的語氣真的相反嗎？`,
+  `First／Second、one／the other 有成對嗎？`,
+  `有沒有同一個選項用了兩次？`,
+  `多出來的選項，說得出它為什麼不能放嗎？`],y:`說不出多餘選項為什麼錯，通常代表有某一格填錯了。`}
+]},
+{g:'線索詞大全',items:[
+ {k:'ref',n:'代名詞',c:'c1',r:'看到代名詞，往前一句找它代替的名詞；單複數、人或物都要對得上。',
+  w:'he=他|she=她|it=它／這件事|they=他們／它們|him|her|them|his|its|their|himself|herself|itself|themselves',
+  ex:`Several volunteers repaired the chairs. They finished before noon.`,y:`They 是複數的人 → 指 volunteers。選項開頭是 They／It／He 時，前一句一定要有對應的名詞。注意 it 也可以指「前面整件事」，they 也可以指東西。`},
+ {k:'dem',n:'指示詞',c:'c2',r:'this／these／such＋名詞 是在「概括前一句」。',
+  w:'this=這|these=這些|those=那些|such=這樣的|the former=前者|the latter=後者|the same=同樣的|both=兩者都|neither=兩者都不',
+  l:[`常見的「概括名詞」：this problem、this idea、this finding、this change、this method、this belief、this trend、this practice、this discovery、this approach、these results、such success。`],
+  ex:`Rain damaged the roof. This problem delayed the exhibition.`,y:`This problem 把「屋頂受損」包成一個詞。反過來用：空格後面出現 These tools，空格裡就必須先介紹工具。`},
+ {k:'art',n:'定冠詞／新舊資訊',c:'c2',r:'第一次出現用 a／an，之後才用 the。another、the other 表示前面已經有一個。',
+  w:'another=另一個|the other=（兩者中）另一個|the others=其餘的|others=其他的|the rest=其餘|half=一半',
+  ex:`A mobile library visits the village. The vehicle carries two thousand books.`,y:`先有 a mobile library，才能說 the vehicle。看到 The other half，就往前找 Half；看到 Another reason，前面一定已經講過一個 reason。`},
+ {k:'contrast',n:'轉折',c:'c3',r:'轉折詞前後「語氣相反」：前面好，後面壞；前面以為，後面其實。',
+  w:'however=然而|but=但是|yet=然而|nevertheless=儘管如此|nonetheless=儘管如此|still=仍然|instead=反而|rather=相反地|on the contrary=相反地|unfortunately=不幸地|fortunately=幸好|surprisingly=令人驚訝地',
+  ex:`The scheme saves energy. However, its equipment is expensive.`,y:`However 之後是缺點，所以前一句一定是優點。Instead 前面通常是否定句（沒有做 A，而是做 B）。`},
+ {k:'concede',n:'讓步',c:'c3',r:'「雖然 A，但 B」：重點永遠在 B。',
+  w:'although=雖然|though=雖然|even though=即使|even if=就算|despite=儘管|in spite of=儘管|regardless of=不論|no matter=無論|admittedly=誠然',
+  ex:`Although the machine was expensive, the farmers decided to buy it.`,y:`讓步句自己就帶轉折，下一句會順著 B（買了之後怎樣）講下去，不會回頭講 A。`},
+ {k:'versus',n:'對比',c:'c3',r:'兩個對象並排比較：一邊這樣，另一邊那樣。',
+  w:'on the other hand=另一方面|on the one hand=一方面|in contrast=相對地|by contrast=相對地|whereas=而|while=而／當|unlike=不像|compared with=與…相比|conversely=反過來說',
+  ex:`A strong dance attracts many bees. A weak dance, on the other hand, attracts little attention.`,y:`看到 on the other hand，空格要找「另一面」：強↔弱、城市↔鄉村、大人↔小孩、過去↔現在。`},
+ {k:'cause',n:'原因',c:'c4',r:'because 後面是原因；先確認「誰造成誰」。',
+  w:'because=因為|because of=因為|since=因為／自從|due to=由於|owing to=由於|thanks to=多虧|as a result of=由於|the reason=原因|result from=起因於|caused by=由…造成',
+  ex:`The bus was late because of the heavy rain.`,y:`用中文說一次「因為…所以…」。原因和結果對調後不通，就是放錯了。`},
+ {k:'effect',n:'結果',c:'c4',r:'As a result／Therefore 開頭的句子是「結果」，前一句必須是能導致它的原因。',
+  w:'therefore=因此|thus=因此|hence=因此|as a result=結果|consequently=因此|as a consequence=結果|for this reason=因此|that is why=這就是為什麼|accordingly=於是|lead to=導致|leads to=導致|led to=導致|result in=造成|in turn=進而',
+  ex:`The road was flooded. Therefore, the bus used another route.`,y:`淹水（因）→ 改道（果），順序不能倒。干擾選項很愛用 Therefore 接一個「推不出來」的結論。`},
+ {k:'example',n:'舉例',c:'c5',r:'For example 的前一句一定是「總論／主張」；例子不會跑在主張前面。',
+  w:'for example=例如|for instance=例如|such as=像是|including=包括|in particular=尤其|especially=特別是|specifically=具體來說|a case in point=一個好例子|one example=一個例子',
+  ex:`Exercise can improve sleep. For example, a short walk may help people relax.`,y:`散步助放鬆是「運動改善睡眠」的具體例子。前一句若沒有可被舉例的主張，這個選項就不能放。`},
+ {k:'restate',n:'換句話說',c:'c5',r:'前後兩句「意思相同」，後句比較白話或比較精確。',
+  w:'in other words=換句話說|that is=也就是|that is to say=也就是說|namely=即|to put it simply=簡單說|this means=這表示|put differently=換個說法',
+  ex:`The plant is dormant in winter. In other words, it stops growing until spring.`,y:`檢查方法：把兩句都翻成中文，意思要幾乎一樣。若後句是新資訊，就不是換句話說。`},
+ {k:'add',n:'遞進／補充',c:'c6',r:'In addition／Also 表示「同方向再加一點」，前面一定已經有第一點。',
+  w:'in addition=此外|moreover=再者|furthermore=而且|besides=此外|also=也|what is more=更甚者|additionally=另外|as well=也|not only=不只|on top of that=除此之外|apart from=除了',
+  ex:`Wet soil makes the roof heavy. In addition, the plants need regular care.`,y:`兩句都是缺點，方向相同。前一句是優點，後一句用 In addition 接缺點就不通。`},
+ {k:'similar',n:'類比／相似',c:'c6',r:'前面講 A 怎樣，後面說 B 也一樣。',
+  w:'similarly=同樣地|likewise=同樣地|in the same way=同樣地|just as=正如|equally=同樣',
+  ex:`Birds use the stars to find their way. Similarly, some insects rely on the moon.`,y:`Similarly 前後是「不同對象、相同做法」。找兩句共同的動作或特徵。`},
+ {k:'order',n:'時間順序',c:'c7',r:'把事件排成時間線，先發生的先寫。',
+  w:'at first=起初|then=然後|later=後來|afterward=之後|afterwards=之後|meanwhile=同時|eventually=最終|finally=最後|soon=不久|at last=終於|in the end=最後|since then=從那時起|until=直到|by then=到那時|nowadays=如今|today=今日|recently=最近|in the past=過去|originally=原本|before long=不久|gradually=漸漸地|within=在…之內',
+  ex:`At first, customers were not impressed. Then a blogger wrote about the bakery.`,y:`At first 幾乎一定搭配後面的轉機（Then／Later／Eventually）。看到「Ten years later」「Within a week」這種時間片語，直接放上時間線。`},
+ {k:'list',n:'步驟／列舉',c:'c7',r:'看到 Second 就去找 First；看到 Finally 就放最後。',
+  w:'first=第一|second=第二|third=第三|firstly=首先|secondly=其次|next=接著|last=最後|lastly=最後|to begin with=首先|first of all=首先|after that=在那之後|once=一旦',
+  ex:`First, dry the seeds. Next, place them in an envelope.`,y:`先乾燥才能封存。過程類文章（實驗、作法、動物行為）幾乎都靠順序詞定位。`},
+ {k:'cond',n:'條件',c:'c8',r:'if 句給條件，後面要有「會怎樣」。',
+  w:'if=如果|unless=除非|otherwise=否則|as long as=只要|in case=以防|provided that=只要',
+  ex:`Water the plant every day. Otherwise, its leaves will turn yellow.`,y:`Otherwise 前面是建議或要求，後面是「不照做的壞結果」。`},
+ {k:'purpose',n:'目的',c:'c8',r:'「為了…」後面接做法，或做法後面接目的。',
+  w:'in order to=為了|so that=以便|so as to=為了|to this end=為此|for this purpose=為此|aim to=旨在',
+  ex:`The city wanted cleaner air. To this end, it banned old trucks from downtown.`,y:`To find out／To solve this problem／To change their minds 開頭的句子，前一句一定先講了那個疑問、問題或想法。`},
+ {k:'emph',n:'強調／加強',c:'c8',r:'把前面的話說得更重，方向不變。',
+  w:'in fact=事實上|indeed=的確|actually=其實|above all=最重要的是|most importantly=最重要的是|even=甚至|certainly=當然|of course=當然',
+  ex:`The village is small. In fact, it has only one street.`,y:`Even 把範圍推得更遠（連…都）。注意 in fact／actually 有時帶轉折（其實不是那樣），要看前後語氣。`},
+ {k:'sum',n:'總結',c:'c8',r:'總結句放段尾或文末，內容是前面的濃縮，不會有新細節。',
+  w:'in short=簡言之|in conclusion=總之|to sum up=總之|in summary=總之|overall=整體而言|all in all=總而言之|in brief=簡言之|after all=畢竟',
+  ex:`In short, a green roof cools the building and saves energy.`,y:`帶總結詞的選項優先考慮最後一格；放在文章中段幾乎都是錯的。`}
+]},
+{g:'隱形線索',items:[
+ {k:'lex',n:'同義鏈（換字不換意）',r:'前後句常用「不同的字講同一件事」。把選項裡的關鍵詞和空格前後的詞配對。',
+  ex:`The town built a cycle path. The new route connects two schools.`,y:`route＝cycle path。沒有任何連接詞時，同義鏈就是主要線索。配對表見下方「同義配對表」。`},
+ {k:'hyper',n:'上下位詞',r:'先講具體的，再用大類別稱呼它；或先講大類，再舉具體的。',
+  l:[`bus → the vehicle`,`dogs and cats → these animals`,`Taipei → the city`,`a hammer and a saw → these tools`,`rice and sweet potatoes → the crops`,`a violin → the instrument`,`measles → the disease`],
+  ex:`She plays the violin every evening. The instrument once belonged to her grandmother.`,y:`看到 the＋大類名詞（the animal、the device、the disease），往前找它的具體名稱。`},
+ {k:'num',n:'數量預告',r:'前面說「兩種」「三個」，後面就要數得出來。',
+  l:[`two ways／two types → First… Second…`,`three reasons → One… Another… The third…`,`Half of them… → The other half…`,`Some… → Others…`,`both → 前面必須剛好有兩個`,`these two effects → 前面必須各有一句講一個效果`],
+  ex:`A green roof works in two ways. First, the soil blocks sunlight. Second, the plants cool the air.`,y:`數一數就知道缺哪一個。只看到 First 沒看到 Second，空格八成就是 Second。`},
+ {k:'qa',n:'問句與回答',r:'問句後面要有回答；回答前面要有問題。',
+  ex:`Do people think better on their feet? Many writers have claimed that their best ideas came during walks.`,y:`空格在問句後 → 找回答或背景。選項本身是問句 → 後一句必須在回答它。To find out 的前面一定有疑問。`},
+ {k:'tense',n:'時態與時間點',r:'過去的事用過去式，現在的事用現在式；時態突然改變就是分界線。',
+  l:[`used to… → now／today…`,`In the past… → Nowadays…`,`had＋過去分詞 → 比故事主線更早發生`,`will／plan to → 通常在文末（未來展望）`],
+  ex:`Farmers used to burn the straw. Today, they sell it to paper factories.`,y:`選項的時態要和空格前後一致。全文過去式的故事裡，現在式的選項多半是評論或結尾。`},
+ {k:'tone',n:'正負語氣',r:'在句子旁標＋／－，同號直接接，異號要有轉折詞。',
+  l:[`正面：benefit、advantage、success、improve、popular、effective、welcome`,`負面：problem、risk、drawback、cost、damage、fail、complain、decline、criticism`],
+  ex:`Green roofs are not without problems, though. The extra weight requires a stronger structure.`,y:`前句說「有問題」→ 空格要是負面內容。沒有轉折詞卻語氣反過來，就是放錯了。`},
+ {k:'subst',n:'替代與省略',r:'do so、did the same、one 都在代替前面說過的動作或東西。',
+  l:[`do so／did so → 代替前面的動作`,`did the same → 前面有人先做了這件事`,`one／ones → 代替前面的可數名詞`,`So do they／Neither did he → 前句有相同的情況`,`did this → 前面有具體任務`],
+  ex:`Half of the volunteers did this while walking. The other half did the same task while sitting.`,y:`did this 的 this 是「前一句交代的任務」。前面沒有任務可指，選項就放不進去。`},
+ {k:'name',n:'人名與稱呼',r:'第一次用全名加身分，之後才用姓氏、he／she 或 the scientist。',
+  ex:`Dr. Amy Lin, a marine biologist, has studied coral for twenty years. Lin believes the reef can recover.`,y:`選項只寫 Lin 或 the researcher → 前面必須已經正式介紹過這個人。`},
+ {k:'quote',n:'引述',r:'引號裡的話需要有人說；說話的人要先登場。',
+  ex:`"We never expected so many visitors," said the owner.`,y:`引述通常用來「支持前一句的說法」。前一句若和引述內容無關，就不是這格。`},
+ {k:'comp',n:'比較級',r:'more、better、even、less 需要一個「比較的對象」，它在前面。',
+  l:[`even more heat → 前面已經有 heat`,`a better solution → 前面有一個不夠好的做法`,`far fewer → 前面有一個數量`,`the most important → 前面已列出好幾項`],
+  ex:`People turn on their air conditioners longer, which produces even more heat.`,y:`看到比較級就問：「比誰？」答案一定在前一句。`}
+]},
+{g:'句子功能',items:[
+ {k:'f-topic',n:'主題句',r:'講得最「大」的一句：只說方向，不給細節。',l:[`長相：沒有代名詞開頭、沒有連接詞、內容概括。`,`位置：段首（最常見）。`],ex:`A green roof works in two ways.`,y:`空格在段首，後面是一串細節 → 選最概括的選項。`},
+ {k:'f-support',n:'解釋句',r:'把主題句說清楚：為什麼、怎麼做到。',l:[`長相：常有 because、by＋Ving、this means。`,`位置：主題句之後。`],ex:`The human brain cannot truly focus on two tasks at once. Instead, it switches back and forth between them.`,y:`空格前是一句「斷言」，空格通常是它的解釋。`},
+ {k:'f-example',n:'例證句',r:'具體的人、地、數字、實驗。',l:[`長相：For example、In one study、專有名詞、數字。`,`位置：主張或解釋之後。`],ex:`In one experiment, students who used their phones scored much lower.`,y:`例證後面常跟一句「這說明了什麼」（This suggests…）。`},
+ {k:'f-turn',n:'轉折句',r:'把文章帶到另一面：缺點、例外、新發現。',l:[`長相：However、But、Yet、though 放句尾。`,`位置：段中或下一段開頭。`],ex:`Adults, however, were slow to accept the service at first.`,y:`轉折句後面的內容會順著新方向走，空格要跟新方向一致。`},
+ {k:'f-bridge',n:'過渡句',r:'前半句回顧上文，後半句預告下文。',l:[`長相：Besides…、Apart from…、With this success…、此類「承上啟下」的句型。`,`位置：段尾或段首。`],ex:`Fortunately, the habit can be changed.`,y:`空格在兩段交界 → 選一句同時碰到上段主題和下段主題的選項。`},
+ {k:'f-end',n:'結論句',r:'收束、評價、展望未來；不會有新細節。',l:[`長相：In short、Clearly、will／plan to、Scientists say this shows…`,`位置：全文或段落最後。`],ex:`The team now plans to add a second bus next spring.`,y:`最後一格常是結果、啟示或未來計畫。`}
+]},
+{g:'空格位置',items:[
+ {k:'pos',n:'段首空格',r:'段首 → 主題句，或承接上一段。',ex:`[空格] It is a bus filled with more than two thousand books.`,y:`後句用 It 說明細節，所以空格要負責「第一次介紹」這個東西。段首空格主要靠「後一句」來解。`},
+ {k:'pos-first',n:'全文第一格',r:'通常在開場之後：帶出主題或提出問題。',y:`前面只有一兩句背景，線索少，所以更要看後一句；後一句的代名詞、指示詞幾乎就是答案。`},
+ {k:'pos-mid',n:'段中空格',r:'段中 → 解釋、舉例或第二點；前後都有線索，最好拿分。',y:`把前一句和後一句都讀完再選。前後出現成對的詞（First／…／Finally、Some／…／Others）時，空格就是中間缺的那一塊。`},
+ {k:'pos-end',n:'段尾空格',r:'段尾 → 小結，或替下一段鋪路。',y:`同時讀「本段前一句」和「下一段第一句」。下一段若突然講新東西，段尾空格常負責先提到它。`},
+ {k:'pos-last',n:'全文最後一格',r:'結果、啟示、建議或未來展望。',y:`帶 In short、Today、Now、will 的選項優先考慮。最後一格後面沒有句子，只能靠前一句和全文主旨。`},
+ {k:'pos-two',n:'連續兩格',r:'兩格之間仍有一句話時，那一句就是橋。',y:`先確定兩格中「線索比較硬」的一格（有代名詞或順序詞），另一格自然就出來。`}
+]},
+{g:'文章結構模板',items:[
+ {k:'s-problem',n:'問題—解決型',r:'問題 → 原因 → 解決方法 → 成效 → 展望。',l:[`常考空格：第一次提出解決方法（To solve this problem…）、成效（As a result…）。`,`關鍵詞：problem、solution、solve、tackle、address。`],y:`行動圖書館那篇就是這一型。`},
+ {k:'s-cause',n:'現象—原因—影響型',r:'現象 → 為什麼 → 造成什麼 → 怎麼辦。',l:[`常考空格：因果鏈中間的一環。`,`關鍵詞：because、lead to、as a result、this cycle。`],y:`因果鏈像骨牌，缺的那一張要能被前一張推倒、又能推倒後一張。`},
+ {k:'s-time',n:'時間敘事型',r:'過去 → 轉折事件 → 後來 → 現在。',l:[`常考空格：轉折事件、最後結果。`,`關鍵詞：年份、ago、later、at first、then、today。`],y:`直接在旁邊畫時間線，把每個選項的時間點標上去。`},
+ {k:'s-process',n:'過程說明型',r:'步驟一 → 步驟二 → … → 完成。',l:[`常考空格：中間步驟、最後一步。`,`關鍵詞：first、next、once、after、finally。`],y:`每一步都是下一步的必要條件（先找到地點才會跳舞，先同意才會起飛）。`},
+ {k:'s-compare',n:'比較對比型',r:'A 怎樣 → B 怎樣 → 相同或不同。',l:[`常考空格：切換對象的那一句。`,`關鍵詞：while、whereas、unlike、on the other hand、both。`],y:`把文章分成 A 區和 B 區，選項講誰就放誰那一區。`},
+ {k:'s-claim',n:'主張—論據型',r:'主張 → 理由一 → 理由二 → 反方意見 → 回應 → 結論。',l:[`常考空格：第二個理由（In addition）、反方意見（However, critics…）。`,`關鍵詞：believe、argue、critics、supporters。`],y:`反方意見出現後，作者通常會再轉回來（Still／Nevertheless）。`},
+ {k:'s-study',n:'研究實驗型',r:'疑問 → 實驗設計 → 結果 → 解釋 → 建議。',l:[`常考空格：分組方式（Half… The other half…）、結果（The results…）、意義（This suggests…）。`,`關鍵詞：researchers、experiment、volunteers、found、results、suggest。`],y:`順序固定：先做實驗才有結果，先有結果才有建議。`},
+ {k:'s-bio',n:'人物故事型',r:'出身 → 困難 → 轉捩點 → 成就 → 影響。',l:[`常考空格：困難、轉捩點。`,`關鍵詞：born、grew up、decided、despite、finally、is remembered。`],y:`人名第一次出現一定是全名；用 he／she 的選項不會在最前面。`},
+ {k:'s-myth',n:'迷思—事實型',r:'多數人以為 → 其實不然 → 證據 → 正確觀念。',l:[`常考空格：「大家以為」那一句（在 however 之前）。`,`關鍵詞：many people believe、it is often said、however、in fact、research shows。`],y:`一心多用那篇就是這一型。`},
+ {k:'s-list',n:'分類列舉型',r:'總說有幾類 → 第一類 → 第二類 → 第三類 → 小結。',l:[`常考空格：某一類的開頭句。`,`關鍵詞：types、kinds、one、another、the third。`],y:`每一類的寫法通常平行（名稱 → 特徵 → 例子），照樣套就知道缺什麼。`}
+]},
+{g:'干擾選項',items:[
+ {k:'trap',n:'同主題但偏題',r:'都講蜜蜂，卻在講蜂蜜價格。',ex:`Honey has been used as medicine for thousands of years.`,y:`用了文章裡的關鍵字，但談的是另一件事。回頭看你寫的那句中文主旨，對不上就刪。`},
+ {k:'trap-ref',n:'代名詞沒有對象',r:'選項裡的 they／it／this，放進去之後找不到指誰。',y:`每放一個選項，就用實際名詞把代名詞替換掉讀一次，不通就是錯。`},
+ {k:'trap-logic',n:'連接詞方向錯',r:'該轉折的地方用 Therefore，該舉例的地方用 However。',ex:`Therefore, most people prefer to live in the countryside.`,y:`內容看起來相關，但連接詞要求的關係（因果、轉折、舉例）在前後文不成立。`},
+ {k:'trap-order',n:'時間順序錯',r:'結果跑到原因前面，後來的事跑到前面。',y:`把選項的時間點（later、finally、within a week）標上時間線，位置不對就排除。`},
+ {k:'trap-half',n:'只接前不接後',r:'跟前一句很順，但後一句接不下去。',y:`最常見的陷阱。放進去後一定要連後一句一起讀。`},
+ {k:'trap-early',n:'新資訊太早出現',r:'選項提到的東西，文章後面才正式介紹。',y:`選項裡有 the＋名詞，而那個名詞在空格之後才第一次出現 → 位置太早。`},
+ {k:'trap-repeat',n:'重複已說過的話',r:'選項內容和前一句幾乎一樣，沒有推進。',y:`除非有 In other words，不然文章不會原地踏步。`},
+ {k:'trap-extreme',n:'過度推論',r:'all、never、always、most people 這類絕對說法。',y:`文章只說「有些城市」，選項變成「所有人」→ 推太遠。`},
+ {k:'trap-tone',n:'語氣相反',r:'前後都在講優點，選項卻沒有轉折詞就講缺點。',y:`標＋／－就能抓到。`},
+ {k:'trap-swap',n:'兩格都放得進去',r:'局部通順不等於答案；每個選項只能用一次。',y:`比較哪一格的證據更「硬」（代名詞、順序詞＞語意通順），硬的那格優先，另一格換別的選項。`}
+]},
+{g:'同義配對表',items:[
+ {k:'p-change',n:'增減與變化',r:'數字的變化常換成概括名詞。',w:'increase ↔ rise / grow / climb / double=增加|decrease ↔ drop / fall / decline / shrink=減少|change ↔ shift / transformation=改變|expand ↔ add / extend / spread=擴大|improve ↔ get better / progress=進步|this trend=前面講的增減趨勢'},
+ {k:'p-problem',n:'問題與解決',r:'problem 很少重複同一個字。',w:'problem ↔ difficulty / challenge / issue / trouble=問題|solution ↔ answer / method / way / approach=方法|solve ↔ deal with / tackle / address=解決|cost ↔ expensive / price / spend=花費|risk ↔ danger / threat=風險|drawback ↔ disadvantage / weakness=缺點'},
+ {k:'p-good',n:'好處與成果',r:'「成功」會換成具體數字，數字也會換成「成功」。',w:'benefit ↔ advantage / gain=好處|success ↔ achievement / doubled / popular=成功|effective ↔ work well / useful=有效|popular ↔ well-received / line up / crowded=受歡迎|help ↔ support / assist / aid=幫助|important ↔ key / vital / essential=重要'},
+ {k:'p-study',n:'研究與發現',r:'實驗文章的固定換字。',w:'study ↔ research / experiment / survey=研究|researchers ↔ scientists / the team / experts=研究者|volunteers ↔ participants / subjects=受試者|find ↔ discover / show / reveal=發現|results ↔ findings / data / evidence=結果|suggest ↔ indicate / imply=顯示'},
+ {k:'p-think',n:'想法與意見',r:'「改變想法」前面要先有「想法」。',w:'think ↔ believe / consider / assume=認為|idea ↔ view / opinion / belief / mind=看法|complain ↔ not impressed / criticize=抱怨|agree ↔ support / accept=同意|doubt ↔ question / be unsure=懷疑|claim ↔ say / argue=主張'},
+ {k:'p-people',n:'人與群體',r:'同一群人會換好幾個稱呼。',w:'children ↔ kids / young readers / students=孩子|adults ↔ parents / grown-ups=大人|people ↔ residents / locals / the public=民眾|customers ↔ buyers / visitors / shoppers=顧客|owner ↔ the baker / the founder=老闆|farmers ↔ growers=農民'},
+ {k:'p-place',n:'地點與事物',r:'具體 ↔ 概括。',w:'place ↔ site / location / spot / area=地點|home ↔ nest / shelter / house=家|city ↔ town / urban area=城市|program ↔ project / service / plan / scheme=計畫|device ↔ machine / tool / equipment=設備|bread ↔ loaf / the product=麵包'},
+ {k:'p-act',n:'動作',r:'動詞也會換。',w:'start ↔ begin / launch / set up / open=開始|stop ↔ quit / give up / end=停止|use ↔ apply / rely on / adopt=使用|make ↔ produce / create / build=製造|choose ↔ decide / pick / select=選擇|leave ↔ take off / move away / depart=離開|arrive ↔ reach / get to=抵達'}
+]},
+{g:'卡住急救',items:[
+ {k:'sos-two',n:'剩兩個選項分不出來',r:'比「硬線索」的數量。',l:[`把兩個選項分別放進去，各自數有幾個線索對得上（代名詞、順序詞、同義詞）。`,`線索多的留下；一樣多就看後一句。`,`還是一樣 → 選和全文主旨較近的。`]},
+ {k:'sos-blank',n:'某一格完全沒頭緒',r:'先跳過，用刪去法回來。',l:[`先把其他格填完，剩下的選項只有兩個。`,`把兩個都放進去順讀，通常一個明顯怪。`]},
+ {k:'sos-vocab',n:'單字看不懂',r:'不靠單字，靠骨架。',l:[`只看代名詞、連接詞、the＋名詞和時態，這些不需要難單字。`,`用＋／－判斷句子是好事還是壞事。`]},
+ {k:'sos-chain',n:'發現有一格填錯',r:'錯一格通常是「互換」。',l:[`找出最不確定的兩格，把答案對調再讀一次。`,`或者把多餘選項換進最不確定的那一格試試。`]},
+ {k:'sos-nolink',n:'選項沒有任何連接詞',r:'改找同義鏈、上下位詞和句子功能。',l:[`找選項裡的關鍵名詞，看它在文章哪裡出現或被換字。`,`問自己：這句是主題句、例子、還是結論？再對照空格位置。`]}
+]}
+];
+const TIPS=GROUPS.flatMap(g=>g.items.map(t=>({...t,g:g.g,ws:(t.w||'').split('|').filter(Boolean).map(x=>x.split('='))})));
+const tipOf=k=>TIPS.find(t=>t.k===k);
+
+/* ================= 練習題（原創） ================= */
+const P=[
+ {id:'p1',t:'行動圖書館',lv:'基礎',
+  text:`In many mountain villages, the nearest library is hours away. [1] It is a bus filled with more than two thousand books, and it visits a different village each weekday. When the bus arrives, children are usually the first to climb on board. [2] Some of them even help the driver carry boxes of new arrivals. Adults, however, were slow to accept the service at first. [3] To change their minds, the librarians began bringing farming guides and health magazines. As a result, the number of adult readers has doubled within a year. [4] The team now plans to add a second bus next spring.`,
+  opts:{A:`Many of them thought the books were only for students.`,B:`To solve this problem, the county started a mobile library three years ago.`,C:`They rush to the shelves of comic books and picture stories.`,D:`Such success has encouraged the county to expand the program.`,E:`The bus driver, for example, used to be a history teacher.`},
+  sol:{1:{a:'B',tip:'dem',hint:`後一句用 It 開頭，空格要先介紹「它」。`,pre:`this problem ＝ 前句「圖書館在好幾小時之外」。`,post:`後句 It is a bus → 空格必須先出現單數的 a mobile library。`},
+       2:{a:'C',tip:'ref',hint:`前句主角是 children，找 They。`,pre:`They ＝ children（最先上車的人）。`,post:`後句 Some of them 繼續講這群孩子。`},
+       3:{a:'A',tip:'ref',hint:`後句「改變他們的想法」→ 空格要有「想法」。`,pre:`前句主角換成 Adults，them ＝ adults。`,post:`後句 To change their minds → 空格要說出他們原本怎麼想（thought…）。`},
+       4:{a:'D',tip:'lex',hint:`前句是好結果，後句是擴大計畫。`,pre:`Such success 概括「成人讀者一年內加倍」。`,post:`expand the program ＝ 後句 add a second bus。`}},
+  extra:{k:'E',tip:'trap-logic',why:`for example 前面需要一個可被舉例的主張；司機以前的職業也和主旨（行動圖書館的成效）無關。`}},
+ {id:'p2',t:'城市綠屋頂',lv:'中等',
+  text:`Summer in big cities is getting hotter every year. Concrete roofs absorb sunlight during the day and release the heat at night. [1] Covering roofs with plants is one way to break this cycle. A green roof works in two ways. First, the soil and leaves block sunlight before it reaches the building. [2] Together, these two effects can lower the temperature of a roof by as much as thirty degrees. Green roofs are not without problems, though. [3] In addition, the plants need regular watering and care. Still, many city governments believe the benefits outweigh the costs. [4] Building owners there can get back up to half of what they spend.`,
+  opts:{A:`Second, the plants cool the air as water evaporates from their leaves.`,B:`As a result, people turn on their air conditioners longer, which produces even more heat.`,C:`Some cities, such as Taipei, now offer money to support such projects.`,D:`The extra weight of wet soil requires a stronger and more expensive structure.`,E:`Therefore, most people prefer to live in the countryside.`},
+  sol:{1:{a:'B',tip:'effect',hint:`後句說 this cycle，空格要補成一個「循環」。`,pre:`前句：屋頂夜裡放熱（因）→ As a result 開更久冷氣（果）。`,post:`後句 this cycle：熱 → 冷氣 → 更熱，空格要有 even more heat 才成循環。`},
+       2:{a:'A',tip:'num',hint:`前面有 two ways 和 First。`,pre:`前句 First… → 找 Second。`,post:`後句 these two effects → 空格必須提供第二個效果。`},
+       3:{a:'D',tip:'add',hint:`前句說有 problems；後句 In addition 是第二個問題。`,pre:`前句 not without problems → 空格是第一個問題（重、貴）。`,post:`後句 In addition 再加一個問題（要澆水照顧），方向相同。`},
+       4:{a:'C',tip:'lex',hint:`後句的 there 指哪裡？`,pre:`前句 city governments 認為利大於弊 → 所以出錢支持。`,post:`後句 there ＝ 這些城市；get back… what they spend ＝ offer money。`}},
+  extra:{k:'E',tip:'trap-extreme',why:`Therefore 需要前因；全文講綠屋頂降溫，沒有任何句子能推出「大多數人想住鄉下」。`}},
+ {id:'p3',t:'蜜蜂如何選新家',lv:'中等',
+  text:`Each spring, a crowded honeybee colony splits in two, and thousands of bees leave with the old queen. They gather on a tree branch and wait. [1] These scouts fly off in all directions to look for a hollow tree or another safe space. When a scout finds a promising place, she returns and performs a dance to describe it. [2] A weak dance, on the other hand, attracts little attention. Other scouts then visit the advertised sites and judge for themselves. [3] Gradually, support gathers around one location. Once enough scouts agree, the whole group takes off together. [4] Scientists say this process shows how a group can make wise decisions without a leader.`,
+  opts:{A:`The better the site, the longer and more energetic her dance is.`,B:`Meanwhile, a few hundred of the oldest bees act as scouts.`,C:`If they like what they see, they come back and dance for it as well.`,D:`Within minutes, the bees arrive at their new home.`,E:`Honey has been used as medicine for thousands of years.`},
+  sol:{1:{a:'B',tip:'dem',hint:`後句 These scouts 第一次出現在哪？`,pre:`前句大家在樹枝上等 → Meanwhile 同時有一群蜂出動。`,post:`後句 These scouts → 空格必須先介紹 scouts。`},
+       2:{a:'A',tip:'versus',hint:`後句有 on the other hand。`,pre:`前句 she… performs a dance → her dance 接得上。`,post:`後句 A weak dance, on the other hand → 空格要是「強的舞」作對比。`},
+       3:{a:'C',tip:'ref',hint:`前句主詞是 Other scouts。`,pre:`they ＝ other scouts；visit the sites → like what they see。`,post:`後句 support gathers → 因為更多蜂回來一起跳舞（as well）。`},
+       4:{a:'D',tip:'s-process',hint:`時間線：起飛之後呢？`,pre:`前句 takes off together → 下一步是 arrive。`,post:`後句 this process 做總結，空格應是過程的最後一步。`}},
+  extra:{k:'E',tip:'trap',why:`都跟蜜蜂有關，但全文講「選新家的過程」，蜂蜜當藥是另一個主題。`}},
+ {id:'p4',t:'一心多用',lv:'進階',
+  text:`Many students believe they can study well while checking messages and listening to videos. [1] Research, however, tells a different story. The human brain cannot truly focus on two demanding tasks at once. [2] Each switch takes only a fraction of a second, but the cost adds up. In one experiment, students who used their phones during a lecture scored much lower on a test afterward. [3] This suggests that multitasking can hurt everyone in the room. Fortunately, the habit can be changed. [4] After a few weeks, many students find that they finish their homework faster than before.`,
+  opts:{A:`Instead, it switches quickly back and forth between them.`,B:`They call this multitasking and consider it a useful skill.`,C:`Even classmates sitting near them, who could see their screens, did worse.`,D:`One simple method is to put the phone in another room while studying.`,E:`For instance, smartphones are becoming cheaper every year.`},
+  sol:{1:{a:'B',tip:'s-myth',hint:`後句 however → 空格是學生的「正面看法」。`,pre:`They ＝ students；this ＝ 邊讀書邊看訊息這件事。`,post:`後句 Research, however, tells a different story → 空格要和研究結果相反（a useful skill）。`},
+       2:{a:'A',tip:'contrast',hint:`後句 Each switch 從哪來？`,pre:`it ＝ the brain；them ＝ two tasks；cannot focus → Instead 改成切換。`,post:`後句 Each switch → 空格必須有 switches。`},
+       3:{a:'C',tip:'emph',hint:`後句說 everyone in the room。`,pre:`them ＝ 用手機的學生；Even 把影響擴大到旁邊的人。`,post:`後句 This suggests… hurt everyone → 空格要提到「別人也受害」。`},
+       4:{a:'D',tip:'f-bridge',hint:`前句說習慣可以改，後句說幾週後的成果。`,pre:`前句 the habit can be changed → 空格給方法（One simple method）。`,post:`後句 After a few weeks… faster → 是執行這個方法之後的結果。`}},
+  extra:{k:'E',tip:'trap',why:`For instance 前面沒有「手機變便宜」可對應的主張；手機價格也不是本文主旨（分心的代價）。`}},
+ {id:'p5',t:'小鎮麵包店',lv:'基礎',
+  text:`When Mr. Lin opened his bakery thirty years ago, the town had more than a dozen shops like his. [1] Supermarkets were selling cheaper bread, and young people were moving to the city. Most owners simply gave up. Mr. Lin, however, chose a different path. [2] He replaced white flour with local rice and sweet potatoes grown by nearby farmers. At first, customers were not impressed. [3] Then a travel blogger tasted the sweet potato loaf and wrote about it online. [4] Today, visitors line up outside the bakery every weekend, and the farmers have a steady buyer for their crops.`,
+  opts:{A:`Instead of lowering his prices, he decided to make bread that no supermarket could offer.`,B:`Within a week, orders began arriving from all over the island.`,C:`Ten years later, only three of them were still open.`,D:`Many complained that the new bread was too heavy and not sweet enough.`,E:`Baking, in other words, requires very accurate measurements.`},
+  sol:{1:{a:'C',tip:'order',hint:`前句有 a dozen shops，找 them。`,pre:`them ＝ shops；thirty years ago → Ten years later 接上時間線。`,post:`後句（超市、年輕人外移）在解釋為什麼只剩三家。`},
+       2:{a:'A',tip:'f-support',hint:`前句 a different path，是什麼路？`,pre:`前句「選了不同的路」→ 空格說明是哪條路。`,post:`後句 He replaced white flour… 是「超市做不出的麵包」的具體做法。`},
+       3:{a:'D',tip:'lex',hint:`前句 not impressed 的同義說法。`,pre:`not impressed ＝ complained；Many ＝ customers。`,post:`後句 Then… 是轉機，所以空格還停留在負面。`},
+       4:{a:'B',tip:'order',hint:`部落客寫了文章之後呢？`,pre:`wrote about it online → Within a week 訂單湧入。`,post:`後句 Today 是最後的結果，時間線：一週內 → 今天。`}},
+  extra:{k:'E',tip:'trap',why:`in other words 前面要有一句意思相同的話；「烘焙需要精準測量」和麵包店的故事無關。`}},
+ {id:'p6',t:'走路與創意',lv:'中等',
+  text:`Do people think better on their feet? [1] To find out, a group of researchers designed a simple experiment. They asked volunteers to come up with new uses for everyday objects, such as a brick or a paper clip. [2] The other half did the same task while sitting at a desk. The results were clear. [3] Interestingly, it did not matter whether they walked outdoors or on a machine facing a blank wall. [4] The researchers therefore suggest taking a short walk before a meeting that needs fresh ideas.`,
+  opts:{A:`Half of the volunteers did this while walking.`,B:`Walkers produced far more ideas than sitters.`,C:`Many writers and inventors have claimed that their best ideas came during walks.`,D:`In both cases, the act of walking itself seemed to make the difference.`,E:`However, walking is not as popular as it used to be.`},
+  sol:{1:{a:'C',tip:'qa',hint:`空格前是問句，後句是 To find out。`,pre:`問句「站著想比較好嗎？」→ 空格給背景：很多人這樣說。`,post:`後句 To find out → 前面只有「說法」，還沒證實，所以要做實驗。`},
+       2:{a:'A',tip:'art',hint:`後句 The other half。`,pre:`did this ＝ 前句的任務（想新用途）。`,post:`後句 The other half → 空格必須有 Half。`},
+       3:{a:'B',tip:'s-study',hint:`前句 The results were clear。`,pre:`「結果很清楚」→ 空格就是結果。`,post:`後句 they walked → they ＝ Walkers。`},
+       4:{a:'D',tip:'dem',hint:`both 指哪兩個？`,pre:`both cases ＝ 戶外走、跑步機上走。`,post:`後句 therefore suggest taking a short walk → 因為關鍵是「走路本身」。`}},
+  extra:{k:'E',tip:'trap-logic',why:`However 需要前面有相反的內容；「走路不流行」和實驗結果無關，後面也接不上建議。`}}
+];
+
+/* ================= 學習卷解題（只放解題，不放原文，請對照考卷） ================= */
+const PAPERS=[
+ {t:'龍騰 英文1 學習卷 第7回（Lesson 5）',q:'V. 篇章結構 31–34',topic:'塑膠袋與紙袋的比較',st:'s-compare',
+  flow:['第一段：結帳時拿到紙袋，大家反應不同 → 帶出「兩種袋子」的比較。','第二段：環境面（分解、對海洋生物的影響）。','第三段：成本面與耐重。','第四段：各有利弊 → 結論。'],
+  sol:[
+   {n:31,a:'C',tip:'f-bridge',pre:'前面連續兩句 Some…，講的是不同人的不同反應；(C) 用一句話把這些反應概括起來。',post:'後一句有 also different，「也不同」代表空格裡要先出現一次「不同」，(C) 開頭正好是 Different。'},
+   {n:32,a:'E',tip:'versus',pre:'整段先說兩種袋子都會分解，接著只講塑膠袋的壞處（分解慢、害死海洋生物）。',post:'段尾還缺「紙袋那一邊」。(E) 用 By contrast 切到紙袋，also 呼應段首的 Both，not harmful 對比前面的死亡。'},
+   {n:33,a:'D',tip:'effect',pre:'前一句說塑膠袋「比較省錢」，這是主張；(D) 給出兩種袋子的實際成本數字，是它的證據。',post:'後一句是 Therefore 開頭的結果（塑膠袋用得多），前面必須有原因，便宜就是原因。'},
+   {n:34,a:'B',tip:'pos-last',pre:'前一句說兩者各有利弊（總結前文）。',post:'全文最後一格，後面沒有句子。(B) 用 However 提出第三條路（自備袋子），是收尾的建議句。'}],
+  extra:{k:'A',tip:'trap-half',why:'(A) 的 Others 看起來能接第 31 格前面的 Some…，但它談的是「提把」，全文沒有這個主題；而且第 31 格的後一句要談「選這個或那個的結果」，(A) 接不下去。典型的「只接前、不接後」。'}},
+ {t:'龍騰 英文2 學習卷 第2回',q:'V. 篇章結構 31–34',topic:'壓力如何影響感官，以及兩個紓壓方法',st:'s-problem',
+  flow:[`第一段：壓力改變感官（現象＋原因）。`,`第二段：兩個方法（深呼吸、休息）。`,`第三段：總結並鼓勵。`],
+  sol:[
+   {n:31,a:'C',tip:'dem',pre:`前一句說壓力會改變我們看、聽、感覺的方式；(C) 解釋原因：身體會釋放化學物質。`,post:`後一句用 These chemicals 開頭，空格裡必須先出現 chemicals。`},
+   {n:32,a:'E',tip:'f-topic',pre:`段首空格。上一段全是壞處，(E) 用 Fortunately 轉向「有辦法」。`,post:`後一句 One effective method… 開始講第一個方法，前面需要一句主題句宣告「有方法」。`},
+   {n:33,a:'A',tip:'art',pre:`前面已經講完第一個方法（深呼吸）；(A) 的 Another 需要前面先有一個。`,post:`後一句說「離開造成壓力的事」，正是在說明 (A) 的短暫休息。`},
+   {n:34,a:'D',tip:'sum',pre:`前一句說我們有簡單的工具；(D) 把兩個方法各重述一次。`,post:`後一句的 these strategies 指回 (D) 裡的兩個方法。`}],
+  extra:{k:'B',tip:'trap-half',why:`(B) 講味覺也會改變，看似能放第一段，但第 31 格後面是 These chemicals，味覺接不上；其他三格都在講方法與總結。`}},
+ {t:'龍騰 英文2 學習卷 第6回',q:'V. 篇章結構 31–34',topic:'二戰時拯救猶太人的 Wallenberg',st:'s-bio',
+  flow:[`第一段：人物總評。`,`第二段：到匈牙利發保護文件。`,`第三段：文件以外的行動。`,`第四段：影響與啟示。`],
+  sol:[
+   {n:31,a:'A',tip:'dem',pre:`前一句說許多猶太人面臨危險；(A) 的 those in danger 直接呼應。`,post:`後一句 These protective passes 需要空格先提到文件（documents → passes，換字不換意）。`},
+   {n:32,a:'C',tip:'f-bridge',pre:`段首空格。(C) 的 paperwork 回顧上一段的文件，however 帶出「不只如此」。`,post:`後一句 First… 開始列舉文件以外的行動，正需要這句過渡。`},
+   {n:33,a:'D',tip:'pos-end',pre:`前一句是跳上火車這一件勇敢的事；(D) 用 Many of his actions 把單一事件擴大成整體評價。`,post:`段尾空格，負責替這一段收尾（冒險 → 許多人獲救）。`},
+   {n:34,a:'B',tip:'f-end',pre:`前一句說他的行動帶來光與希望；(B) 用 thus 做結論：一個人也能造成改變。`,post:`後一句 His story also…，also 表示前面已經有一句講「他留給後人的意義」。`}],
+  extra:{k:'E',tip:'trap',why:`(E) 講政治影響力與和平條約，全文沒有這個主題；同樣在講他，卻偏題。`}},
+ {t:'龍騰 英文2 學習卷 第8回',q:'V. 篇章結構 31–34',topic:'聽障男孩 Aiden 的科展報告',st:'s-time',
+  flow:[`背景：聽障、被排擠。`,`興趣：觀星。`,`事件：科展被嘲笑仍努力準備。`,`結果：報告成功，同學改觀。`,`啟示。`],
+  sol:[
+   {n:31,a:'A',tip:'contrast',pre:`前一句說他戴助聽器；(A) 用 However 轉到同學不理解，his impairment 指回聽障。`,post:`段尾空格，交代「被排擠」這個困境，後面的嘲笑才有來由。`},
+   {n:32,a:'D',tip:'lex',pre:`前一句說他喜歡觀星；(D) 的 stars、night sky 是同一條詞彙鏈。`,post:`後一句說他在宇宙之美中找到安慰，延續同一畫面。`},
+   {n:33,a:'B',tip:'emph',pre:`前一句說嘲笑並沒有讓他退縮；(B) 用 In fact 加強：他反而很努力。`,post:`後一句 He used diagrams… 是努力的具體做法，He 就是 (B) 的 Aiden。`},
+   {n:34,a:'E',tip:'ref',pre:`前一句是同學們上前提問；(E) 的 They 就是這些同學。`,post:`後一句說這個專題教會他們看見限制以外的東西，和 (E) 的「聽障不代表智力」呼應。`}],
+  extra:{k:'C',tip:'trap',why:`(C) 是談同理心的大道理，像結論句；但最後一段沒有空格，放進故事中間任何一格都會打斷情節。`}},
+ {t:'龍騰 英文2 學習卷 第12回',q:'V. 篇章結構 31–34',topic:'交換學生的 Mardi Gras 體驗',st:'s-time',
+  flow:[`開場：交換學生生活。`,`白天：遊行與花車。`,`晚上：小吃與國王蛋糕。`,`回顧：不只是派對。`],
+  sol:[
+   {n:31,a:'D',tip:'pos-end',pre:`前一句說目前為止都很開心；(D) 用 However 預告「最精彩的還沒來」。`,post:`下一段開頭直接寫節慶名稱逼近，所以這個名稱必須在空格裡先登場。`},
+   {n:32,a:'C',tip:'ref',pre:`前一句出現複數的 floats；(C) 的 Some… others… 就是在分別描述這些花車。`,post:`後一句 The people on the floats 繼續同一個對象。`},
+   {n:33,a:'B',tip:'lex',pre:`前一句說其中一塊蛋糕裡藏了小人偶；(B) 的 the finder 就是找到它的人。`,post:`段尾空格，補上這個習俗的說法，替蛋糕的話題收尾。`},
+   {n:34,a:'E',tip:'contrast',pre:`前一句說這不只是派對；(E) 回答「那是什麼」：是一種傳統。`,post:`後一句 However, no matter where we were from… 需要前面先分出兩種人（當地人、遊客）。`}],
+  extra:{k:'A',tip:'trap-repeat',why:`(A) 的「夜幕降臨」和第三段第一句的日落意思重複，而且那個位置沒有空格。`}},
+ {t:'龍騰 英文2 進階卷 第2回',q:'IV. 篇章結構 31–34',topic:'睡眠問題的原因與改善方法',st:'s-cause',
+  flow:[`現象：兩成的人有睡眠問題。`,`原因：螢幕藍光、睡前食物。`,`方法：三個步驟。`,`結語。`],
+  sol:[
+   {n:31,a:'D',tip:'dem',pre:`前一句說約兩成的人有睡眠問題；(D) 的 They 就是這些人，並具體說出兩種問題。`,post:`後一句 such sleep problems 概括的正是 (D) 講的兩種情況。`},
+   {n:32,a:'A',tip:'num',pre:`前一句是主題句 Various factors；(A) 的 One of them 從中拿出第一個。`,post:`後面講生理時鐘與螢幕藍光，都是在解釋 (A) 的電子設備。`},
+   {n:33,a:'B',tip:'example',pre:`前一句說另一個因素是睡前吃的食物（總論）；(B) 用 For example 舉辣的食物。`,post:`後一句 Such discomfort 指 (B) 的胃不舒服；再後面 Additionally 繼續講辣食。`},
+   {n:34,a:'E',tip:'list',pre:`前一句說試試這些訣竅；(E) 以 First 開頭給第一個。`,post:`後面依序是 Next… Finally…，少的就是 First。`}],
+  extra:{k:'C',tip:'trap-half',why:`(C) 也是一個「方法」，但建議段的 First／Next／Finally 已經排滿，而且聽音樂沒有對應前一段提到的任何原因。`}},
+ {t:'龍騰 英文2 進階卷 第6回',q:'IV. 篇章結構 31–34',topic:'Steve Jobs 的起落',st:'s-bio',
+  flow:[`年輕創業成功。`,`1980 年代受挫、被解僱。`,`東山再起、重回公司。`,`後人的評價。`],
+  sol:[
+   {n:31,a:'E',tip:'ref',pre:`前一句說兩人開始一起組電腦；(E) 的 they 就是這兩個人，電腦大受歡迎、公司成立。`,post:`後一句說他不到二十二歲就很富有，前面必須先有「成功」。`},
+   {n:32,a:'A',tip:'lex',pre:`前一句說他是完美主義者、常和員工激烈爭論；(A) 的 demanding 和 complaints 與之呼應。`,post:`後一句 Finally 被解僱，是一連串壞事的最後一步。`},
+   {n:33,a:'B',tip:'effect',pre:`前一句說公司的產品正在失敗；(B) 的 on the decline 是同義說法。`,post:`後一句 As a result 買下新公司（新技術）並重新僱用他（新領導），正好對應 (B) 的兩個需求。`},
+   {n:34,a:'C',tip:'order',pre:`前一句列出他回歸後的一系列產品。`,post:`(C) 帶有 2000 年代與 2011 年，是時間線的終點；下一段 To this day 轉到現在。`}],
+  extra:{k:'D',tip:'trap-tone',why:`(D) 是正面評價（激勵員工），若放第 32 格，前面是爭吵、後面是被解僱，語氣相反。`}},
+ {t:'龍騰 英文2 進階卷 第8回',q:'IV. 篇章結構 31–34',topic:'Danny 與 Johnny 的友誼',st:'s-time',
+  flow:[`初識：一顆糖。`,`祕密：眨眼的原因。`,`裂痕：同學的眼光。`,`和好：挺身而出。`],
+  sol:[
+   {n:31,a:'B',tip:'name',pre:`前面只稱呼他 the guy；(B) 第一次給出名字。`,post:`下一段直接用這個名字，所以名字必須在空格裡先介紹。`},
+   {n:32,a:'C',tip:'art',pre:`前一句說他決定問眨眼的事；(C) 的 the question 指的就是這一問。`,post:`後一句 He then explained 的 He 是 Danny，和 (C) 的主詞一致。`},
+   {n:33,a:'E',tip:'ref',pre:`前一句出現 some of his classmates；(E) 的 They 就是這群同學。`,post:`後一句 their gaze 呼應 (E) 的異樣眼光。`},
+   {n:34,a:'A',tip:'cause',pre:`前一句說朋友替他說話（因）；(A) 是結果：他很感動，也有了勇氣。`,post:`後一句說兩人打敗了壞人，表示他也站出來了。`}],
+  extra:{k:'D',tip:'trap-ref',why:`(D) 的 They 找不到對象，全文也沒有提過運動校隊。`}},
+ {t:'龍騰 英文2 進階卷 第12回',q:'IV. 篇章結構 31–34',topic:'巴西嘉年華遊記',st:'s-time',
+  flow:[`抵達。`,`第一天：街頭派對。`,`第二天：森巴大遊行（其實是比賽）。`,`感想。`],
+  sol:[
+   {n:31,a:'A',tip:'lex',pre:`前一句說朋友帶我到街頭派對的地點；(A) 是第一眼的反應：人好多。`,post:`後一句朋友解釋這個派對吸引多達兩萬人，正是在回應 (A) 的驚訝。`},
+   {n:32,a:'B',tip:'num',pre:`前一句是 Some… 穿便服；(B) 以 Others… 接另一種穿著。`,post:`後一句 There were also… 再補第三種，三句平行。`},
+   {n:33,a:'E',tip:'hyper',pre:`前一句說我們坐在會場裡面；(E) 用 stadium 這個大類名詞稱呼它。`,post:`後一句大家為表演者歡呼，對應 (E) 的觀眾與表演者人數。`},
+   {n:34,a:'D',tip:'f-support',pre:`前一句說這其實是一場比賽；(D) 說明比賽怎麼評分（judged）。`,post:`後一句回到作者自己的感受，替這段收尾。`}],
+  extra:{k:'C',tip:'trap-tone',why:`(C) 講在海灘安靜休息、遠離人群，和整篇熱鬧的嘉年華氣氛相反，也沒有任何一格的前後文提到休息。`}},
+ {t:'龍騰 英文5 學習卷 第4回',q:'V. 篇章結構 31–34',topic:'法國巴黎與德州巴黎',st:'s-compare',
+  flow:[`引子：巴黎不只一個。`,`差異：人口、歷史。`,`差異：地形、氣候。`,`共同點：都有鐵塔。`,`結語。`],
+  sol:[
+   {n:31,a:'B',tip:'dem',pre:`前一句賣關子：另一個國家裡還有一個巴黎；(B) 用 This is… 揭曉答案。`,post:`後一句的 it（人口約三萬）指的就是 (B) 介紹的小鎮。`},
+   {n:32,a:'D',tip:'add',pre:`前一句說兩地的地形與氣候差很多；(D) 給第一個氣候數據（氣溫）。`,post:`後一句 It also… 講雨量，also 表示前面已經有一項氣候比較。`},
+   {n:33,a:'A',tip:'lex',pre:`前一句說兩地都有鐵塔；(A) 的 the Texan version 指德州那一座，並說它更小、更新。`,post:`後一句給出兩座塔的高度，就是「更小」的證據。`},
+   {n:34,a:'C',tip:'contrast',pre:`前一句說它是原版的複製品；(C) 用 however 指出複製品和原版不同的地方。`,post:`後一句講德州那座的建造年份，繼續談這個模型。`}],
+  extra:{k:'E',tip:'trap',why:`(E) 比較兩地對遊客的態度，全文沒有談過這件事；用了相同的地名，卻是另一個話題。`}},
+ {t:'龍騰 英文5 學習卷 第7回',q:'V. 篇章結構 31–34',topic:'可能被淹沒的邁阿密與不受影響的房市',st:'s-cause',
+  flow:[`邁阿密的吸引力。`,`威脅一：地勢低。`,`威脅二：風暴變多。`,`轉折：房市照樣熱。`,`兩個原因。`,`結語。`],
+  sol:[
+   {n:31,a:'C',tip:'effect',pre:`前一句給主因：大部分地區只比海平面高一點；(C) 用 Consequently 說出後果。`,post:`下一段以 Another concern 開頭，表示這一段是第一個隱憂，到空格結束。`},
+   {n:32,a:'B',tip:'concede',pre:`前兩段都是可怕的預測；(B) 的 such frightening predictions 把它們概括起來，Despite 轉向相反的現實。`,post:`後一句說豪宅照蓋、價格照高，是 (B)「房市沒受影響」的證據。`},
+   {n:33,a:'E',tip:'effect',pre:`前一句 Firstly：不用繳所得稅（因）；(E) 的 therefore 帶出結果：吸引外州富人。`,post:`後一句點名幾個東岸城市的買家，是 (E) 的具體化。`},
+   {n:34,a:'A',tip:'num',pre:`前面說有 two main reasons，已經講了 Firstly；(A) 是 The second reason。`,post:`後一句引述業者的話：客戶只想享受現在，和 (A) 的「沒想那麼遠」同義。`}],
+  extra:{k:'D',tip:'trap-tone',why:`(D) 說屋主急著賣房，和文章的重點「房市沒受影響」正好相反。`}},
+ {t:'龍騰 英文5 學習卷 第8回',q:'V. 篇章結構 31–34',topic:'1965 年 Selma 遊行',st:'s-time',
+  flow:[`1963–64：一連串進展。`,`1965：問題仍在。`,`第一次遊行遭攻擊。`,`第二次中止。`,`第三次成功抵達。`,`結果：通過法案。`],
+  sol:[
+   {n:31,a:'B',tip:'contrast',pre:`前面連續三件好事；(B) 小結：情況似乎朝好的方向走。`,post:`後一句 However 轉到 1965 年又得上街，前面需要一句樂觀的話才有轉折。`},
+   {n:32,a:'A',tip:'effect',pre:`前一句說州長讓選民登記幾乎不可能（因）；(A) 用 As a result 給出數字結果。`,post:`後一句的 this unfair and illegal situation 指回這個結果。`},
+   {n:33,a:'E',tip:'dem',pre:`前一句是警察攻擊、多人受傷；(E) 的 This 指整個事件，並給它一個名稱。`,post:`段尾空格，替這一天收尾；下一段從兩天後開始。`},
+   {n:34,a:'D',tip:'art',pre:`前一句說抵達州議會時有數萬支持者在等；(D) 的 the crowd、the building 指回它們。`,post:`段尾空格；下一段談遊行造成的影響。`}],
+  extra:{k:'C',tip:'trap-tone',why:`(C) 說遊行沒有帶來任何法律上的改變，但最後一段明說促成了法案通過，內容相反。`}},
+ {t:'龍騰 英文5 進階卷 第4回',q:'IV. 篇章結構 31–34',topic:'實體購物與網路購物的比較',st:'s-compare',
+  flow:[`引子：現在「去購物」有兩種意思。`,`相同點：商品、逛的方式、價格。`,`不同點：便利 ↔ 無法實際檢視。`,`結語。`],
+  sol:[
+   {n:31,a:'C',tip:'f-topic',pre:`段首空格。(C) 是全文的主題句：有些地方相似，有些地方很不同。`,post:`後一句先講相同點（兩邊賣的商品多半一樣），順序和 (C) 一致。`},
+   {n:32,a:'B',tip:'similar',pre:`前一句描述在實體店慢慢逛；(B) 用 Similarly 說線上也是一頁一頁逛。`,post:`後一句 Both settings… 需要前面已經各講過一邊。`},
+   {n:33,a:'D',tip:'f-topic',pre:`段首空格。上一段講相同點，(D) 轉到最大的不同：舒適與方便。`,post:`後一句說天氣不好時能在家裡買，是在說明這個不同。`},
+   {n:34,a:'A',tip:'contrast',pre:`前面都是網購的優點；(A) 用 However 提出主要缺點：無法實際檢視商品。`,post:`後面一連串問句（觸感、好不好用、做工）都是「需要親手檢視」的例子。`}],
+  extra:{k:'E',tip:'trap-tone',why:`(E) 說網購便宜很多，但文章明說兩邊價格差不多，內容相反。`}},
+ {t:'龍騰 英文5 進階卷 第7回',q:'IV. 篇章結構 31–34',topic:'孟加拉的水資源危機',st:'s-problem',
+  flow:[`總說：困難很多。`,`危機一：地下水汙染。`,`危機二：沿海地下水含鹽。`,`政府回應慢。`,`結語。`],
+  sol:[
+   {n:31,a:'A',tip:'add',pre:`前一句說人口密度壓迫經濟發展（第一個困難）；(A) 用 In addition 再加一個：地勢平、常淹水。`,post:`後面繼續列氣候與觀光，再以 Worse still 推到環境危機，整段是一路往上加。`},
+   {n:32,a:'C',tip:'f-support',pre:`前一句是主題句：一大危機是地下水汙染；(C) 說明飲用水來源與汙染比例。`,post:`後一句具體列出重金屬，是更細的說明。`},
+   {n:33,a:'B',tip:'f-bridge',pre:`段首空格。(B) 的 If this wasn’t bad enough 回顧上一段的汙染，再帶出新問題：含鹽量高。`,post:`後一句 This is a result of… 解釋含鹽的成因，This 指 (B) 的情況。`},
+   {n:34,a:'E',tip:'f-support',pre:`前一句說政府官員回應很慢；(E) 給證據：設了單位，民眾卻不知道有任何計畫。`,post:`段尾空格，替「政府」這一段收尾。`}],
+  extra:{k:'D',tip:'trap',why:`(D) 提議擴大觀光業來解決問題，但文章只說觀光業發展不起來，沒有任何一格在討論解決方案的選擇。`}},
+ {t:'龍騰 英文5 進階卷 第8回',q:'IV. 篇章結構 31–34',topic:'邱吉爾 1940 年的演說',st:'s-time',
+  flow:[`背景：1940 年夏天的危局。`,`演說的任務。`,`演說引文（兩段）。`,`結果與評價。`],
+  sol:[
+   {n:31,a:'E',tip:'add',pre:`前面已有兩個壞消息；(E) 用 In addition 再加一個：盟軍剛受重創、正在撤退。`,post:`後一句 Thus… 說首相必須鼓舞士氣，前面的壞消息就是原因。`},
+   {n:32,a:'B',tip:'pos-end',pre:`前一句提到他六月四日對全國的演說；(B) 的 His speech 指回它，並說出後來的名稱。`,post:`段尾空格，後面緊接著就是演說引文。`},
+   {n:33,a:'A',tip:'quote',pre:`這一格在引號裡面，要選第一人稱、演說口吻的句子，只有 (A) 符合。`,post:`(A) 結尾的「不會動搖」和後一句 We shall go on to the end 一氣呵成。`},
+   {n:34,a:'D',tip:'dem',pre:`引文結束、回到敘述；(D) 引用演說裡的話，並說最後戰勝了。`,post:`後一句 that remarkable victory 指回 (D) 的戰勝。`}],
+  extra:{k:'C',tip:'trap-extreme',why:`(C) 說演說讓另一個國家「立刻」參戰，文章沒有這個資訊，屬於過度推論。`}}
+];
+
+/* 精簡格式：[卷名, 主題, 結構, [[題號,答案,秘笈,往前接,往後接]×4], [多餘選項,秘笈,原因]] */
+const PX=[
+['龍騰 英文1 學習卷 第2回','寫給 Ron（遊戲機）的告別信','s-time',[
+ [31,'E','contrast',`前面說很難開口；(E) 先講感情：你在我心中很特別、我們一起經歷很多。`,`後一句 However 轉到「必須分開」，前面要先有一句正面的話才轉得過去。`],
+ [32,'D','add',`前一句說因為你，我在學校變得受歡迎；(D) 接著說交到新朋友。`,`後一句 Also, you showed me… 的 Also 表示前面已經列過一項好處。`],
+ [33,'A','contrast',`前一句說一開始一切都很完美；(A) 用 However, over time 轉到變質。`,`後面是想當第一、玩到半夜、成績下滑，都是 (A)「變得貪心」的後果。`],
+ [34,'C','pos-last',`最後一段的第一句，直接說出結論：我們需要保持距離。`,`後一句說會永遠珍惜回憶，是道別的收尾。`]],
+ ['B','trap',`(B) 提到校外教學，全信沒有這件事；用問句打斷了信的情緒走向。`]],
+['龍騰 英文1 學習卷 第8回','底特律精神雕像','s-list',[
+ [31,'B','name',`前一句說城市因新地標充滿希望；(B) 說當地人替雕像取了綽號。`,`下一段一開頭就用這個名稱稱呼雕像，所以名稱要在空格先出現。`],
+ [32,'A','order',`前一句說它先在挪威製作、花了四年；(A) 的 then 接下一步：橫越大西洋運到目的地。`,`後一句開始描述銅像的尺寸與外觀，表示它已經到了。`],
+ [33,'C','f-topic',`段首空格。(C) 是主題句：雕像由幾個部分組成，各有意義。`,`後面依序說明巨人、左手、右手各代表什麼。`],
+ [34,'D','pos-end',`前面分別講完各部分的象徵；(D) 的牌匾把這些意義 bring… all together。`,`段尾空格，負責總結這一段。`]],
+ ['E','trap',`(E) 說靈感來自古代神話，文章沒有提過創作靈感的來源。`]],
+['龍騰 英文1 學習卷 第12回','Apple 的三個行銷策略','s-list',[
+ [31,'A','restate',`前一句給出全球裝置數量；(A) 用 This means 把數字換成白話：你身邊一定有人在用。`,`段尾空格；下一段轉去問「為什麼這麼成功」。`],
+ [32,'C','qa',`前面連續兩個問句；(C) 回答：關鍵在行銷策略，第一個就是「簡單」。`,`後面的兩字標語和極簡商標，都是「簡單」的例子。`],
+ [33,'E','f-example',`前一句說第二個策略是打造涵蓋生活各面向的產品系統；(E) 列出具體產品。`,`後一句 One further marketing strategy 開始第三個策略。`],
+ [34,'B','emph',`前一句描述實體店的外觀；(B) 用 More importantly 加上更重要的一點：店員。`,`段尾空格，替「購物體驗」這個策略收尾。`]],
+ ['D','trap-half',`(D) 的 This simple design 看似能接商標那一句，但那個位置沒有空格；放進任何一格，前後都對不上。`]],
+['龍騰 英文1 進階卷 第2回','寫給 Teddy（電視）的告別信','s-time',[
+ [31,'E','contrast',`前一句說我們一起經歷了很多；(E) 用 However 說出來意：該暫時分開了。`,`段尾空格；下一段回顧過去的好。`],
+ [32,'B','num',`前一句預告 two main roles：老師和好朋友；(B) 以 As a teacher 開始講第一個。`,`後一句說年紀漸長後主題變深，延續「教我東西」。`],
+ [33,'A','pos-mid',`前一句是 When I was sad… 你逗我開心；(A) 是同一句型的另一個例子。`,`後一句 Without a doubt 總結你的重要性。`],
+ [34,'C','f-example',`前一句說這段關係也有負面影響；(C) 給第一個：視力變差。`,`後面接著犧牲睡眠、朋友抱怨；最後一段又提到要照顧眼睛，前後呼應。`]],
+ ['D','trap-tone',`(D) 說今天會成為美好回憶，像慶祝的語氣，和整封告別信不合。`]],
+['龍騰 英文1 進階卷 第6回','導盲犬與導聾犬','s-list',[
+ [31,'E','dem',`前一句說狗是人類最好的朋友；(E) 用 However, did you know… 帶出「靠狗協助生活的人」。`,`後一句 these dogs 需要空格先提到這類狗。`],
+ [32,'D','ref',`前一句說導盲犬帶領盲人安全行動；(D) 的 them 就是盲人，並列出具體幫助。`,`後一句分別說明人和狗的角色。`],
+ [33,'C','contrast',`前一句說牠們讓聽障者知道有特定聲音；(C) 說明方式：不是吠叫，而是輕碰主人。`,`後一句 Once their owners notice them 接的正是「被碰到之後」。`],
+ [34,'A','f-bridge',`前一句總結兩種狗都確保主人安全；(A) 說牠們的價值不只安全。`,`後一句講陪伴與獨立生活，就是「安全以外」的價值。`]],
+ ['B','trap',`(B) 講工作犬穿的背心，全文沒有談外觀或裝備。`]],
+['龍騰 英文1 進階卷 第8回','俄羅斯的戰爭紀念雕像','s-list',[
+ [31,'A','art',`前面描述 1967 年那天的獻花、鳴槍、點火；(A) 說明那天是什麼日子：紀念園區開幕。`,`下一段用 The memorial complex 開頭，所以它要先在空格出現。`],
+ [32,'C','ref',`前一句介紹山頂的雕像與名稱；(C) 描述雕像的樣子：一位持劍的女性。`,`後一句 Her face… 的 Her 需要前面先出現這位女性。`],
+ [33,'D','add',`段首空格。(D) 說明姿勢與表情代表的第一層意義：號召人民保衛國家。`,`後一句 Moreover, the statue reminds… 是第二層意義，前面要先有第一層。`],
+ [34,'B','f-example',`前一句說兩百級階梯代表戰役的兩百天；(B) 再給一個數字：基座下長眠的士兵。`,`段尾空格，兩個數字都在說明「戰爭的代價」。`]],
+ ['E','trap',`(E) 講美麗花園和寧靜氣氛、吸引觀光客，和「紀念戰爭犧牲」的主旨不合。`]],
+['龍騰 英文1 進階卷 第12回','商店的三種定價手法','s-list',[
+ [31,'E','cause',`前一句說超支不全是你的錯；(E) 用 This is because 給原因：商店用了定價手法。`,`下一段 One of the… tactics 開始逐一介紹，tactics 要先在空格出現。`],
+ [32,'B','example',`前一句說把價格尾數定成 .99（總論）；(B) 用 For example 舉實際價格。`,`後一句 When customers see… 用的就是 (B) 那個數字。`],
+ [33,'D','ref',`前面說把貴的商品放在較便宜的旁邊；(D) 的 they 是顧客，the two products 指這兩樣。`,`段尾空格，說出這個手法的效果。`],
+ [34,'A','dem',`前一句是第三個手法：限時降價；(A) 的 This technique 指回它。`,`後一句 To avoid missing out… 的 they 是 (A) 裡的顧客。`]],
+ ['C','trap',`(C) 講重新擺放商品，不是「定價」手法；而且三個手法已經用 One／Another／A third 排滿。`]],
+['龍騰 英文3 學習卷 第2回','故事接龍：小孩與大人的差別','s-compare',[
+ [31,'D','add',`前一句說小孩會搶在別人講完前插話；(D) 說場面因此失控。`,`後一句 What’s more 再加一個狀況（意見不合），前面要先有第一個。`],
+ [32,'B','dem',`前面是孩子們喊叫反對；(B) 的 such conflicts 把這些概括起來，However 轉回正面。`,`後面講魔法、機器人，是「想像力奔放」的例子。`],
+ [33,'E','versus',`前一句說大人和小孩相反；(E) 的 They 是大人：耐心等、點頭聽。`,`後一句 Unlike kids… 繼續對比。`],
+ [34,'C','dem',`前一句說有人加入離題內容時大人覺得有趣；(C) 的 This 指這種情況，並說不常發生。`,`後一句說雖然沒有魔法角色，大人靠幽默同樣玩得開心。`]],
+ ['A','trap',`(A) 談故事的長度，全文沒有比較過長短。`]],
+['龍騰 英文3 學習卷 第6回','農曆新年的由來與習俗','s-time',[
+ [31,'D','order',`段首空格。(D) 交代起源的朝代與年代。`,`後一句 At that time 需要前面先有一個時間點。`],
+ [32,'B','art',`前面是第一種說法（祭祀神明與祖先）；(B) 的 In another legend 是第二種，並帶出一隻怪獸。`,`後一句 This monster’s name… 指回 (B) 的怪獸。`],
+ [33,'A','lex',`前一句說日期每年都不同；(A) 給出大致範圍，並說大家會放假。`,`下一段 However, instead of resting 呼應 (A) 的放假。`],
+ [34,'E','add',`前一句說要大掃除；(E) 用 Also 再加習俗：年夜飯、紅包。`,`後一句 This annual event… reconnect 呼應家人團聚。`]],
+ ['C','trap-repeat',`(C) 說後來加入了許多新習俗，和第二段最後一句意思重複。`]],
+['龍騰 英文3 學習卷 第8回','隱形人的故事','s-time',[
+ [31,'D','ref',`前面描述神祕男子包得密不透風、話很少；(D) 說村民好奇，但他從不回答。`,`後一句 It was not until… 說直到錢用完他才變得暴力，表示之前相安無事。`],
+ [32,'C','name',`前一句說他被流浪漢背叛；(C) 說他又氣又冷，去找舊識 Kemp。`,`下一段開頭他就在對 Kemp 說故事，這個人名要先在空格登場。`],
+ [33,'A','pos-mid',`前一句說隱形成了詛咒；(A) 是第一個例子：吃東西會露出胃裡的食物。`,`後一句是同句型的第二個例子（He could not… without…），兩句平行。`],
+ [34,'B','order',`前一句說村民追著他跑；(B) 說他拚命逃卻逃不掉。`,`下一段 At last, they caught him 是下一步。`]],
+ ['E','trap-order',`(E) 描寫清晨村民聚在街燈下低語，時間和場景對不上任何一格的前後文。`]],
+['龍騰 英文3 學習卷 第12回','動物觀光對海豚的傷害','s-cause',[
+ [31,'B','contrast',`前一句列出觸摸、餵食等互動；(B) 的 these seemingly innocent interactions 指回它們，Yet 轉到嚴重後果。`,`後一句 One impacted group… 開始講受害的動物。`],
+ [32,'D','order',`前一句說海豚被帶離棲地、接受訓練；(D) 的 Then 接下一步：獨居或被放進不同群體。`,`後一句 What’s more 再加一項傷害。`],
+ [33,'E','emph',`前面是表演造成的身體傷害；(E) 用 Worse still 推到更糟：被丟入的異物毒害。`,`後一句把各種傷害合起來，說可能導致更高的死亡率。`],
+ [34,'A','effect',`前面說船靠太近或太久會干擾休息、覓食與繁殖（因）；(A) 用 Therefore 得出結論：限制時間。`,`段尾空格，替這一段收尾。`]],
+ ['C','trap',`(C) 稱讚海豚聰明，和「受到傷害」的主旨無關。`]],
+['龍騰 英文3 進階卷 第2回','記憶翻牌遊戲：小孩不輸大人','s-study',[
+ [31,'D','order',`前面說明規則（翻兩張、配對可保留）；(D) 用 In the end 說怎樣算贏。`,`後一句 In order to win 接著講贏的條件。`],
+ [32,'A','contrast',`前一句說大家容易假設大人比較強；(A) 用 However 說研究顯示不一定。`,`(A) 提到 two studies；下一段就從第一個研究講起。`],
+ [33,'E','versus',`前面是第一個研究的各項結果；(E) 是研究者的結論：大人整體最好，因為策略有效率。`,`後一句 The younger children, however… 是對比的另一邊。`],
+ [34,'B','sum',`最後一段的第一句。(B) 用 These studies… confirm 總結兩個研究。`,`後一句補充：孩子雖沒贏過大人，記憶方面表現不錯。`]],
+ ['C','trap-logic',`(C) 用 In other words，但前面沒有任何一句在講「預測對手」，沒有東西可以換句話說。`]],
+['龍騰 英文3 進階卷 第6回','長洲太平清醮（包山節）','s-time',[
+ [31,'D','f-topic',`段首空格。(D) 交代節慶的起源：海盜與疾病。`,`後一句 For protection… 需要前面先有威脅。`],
+ [32,'B','num',`前一句說節慶共五天；(B) 說前三天吃素。`,`後一句 During this period 指回這段時間。`],
+ [33,'A','contrast',`前一句說樂隊和舞獅不是主要看點；(A) 用 Instead 說主角是孩子。`,`後一句 these children 需要前面先出現 children。`],
+ [34,'C','f-bridge',`段首空格。(C) 說樂趣不止於此，帶出搶包子比賽。`,`後一句 Participants must climb… 說明比賽方式。`]],
+ ['E','trap-half',`(E) 看似在描寫「飄」在空中的孩子，但那一句後面已經說明原理，那裡也沒有空格。`]],
+['龍騰 英文3 進階卷 第8回','時光機器的故事','s-time',[
+ [31,'B','add',`前一句說他急著分享新發明；(B) 的 also 再加一件事：他打算去遙遠的未來。`,`後一句是朋友們的反應。`],
+ [32,'E','name',`前面只介紹了第一個種族；(E) 用 Later 帶出另一個種族的名稱。`,`下一段 They were pale… lived underground 描述的正是這個新種族。`],
+ [33,'A','order',`前一句說他找回了時光機；(A) 說他回到機器裡，前往更遠的未來。`,`後一句 There, he witnessed… 的 There 指那個更遠的未來。`],
+ [34,'D','pos-end',`前一句說有人尊重、有人懷疑；(D) 說大家整晚熱烈討論。`,`段尾空格；下一段跳到幾天後。`]],
+ ['C','trap',`(C) 說抵達後由村長帶他參觀，但文中這個種族既不聰明也不好奇，沒有這段情節。`]],
+['龍騰 英文3 進階卷 第12回','犀牛角與盜獵','s-cause',[
+ [31,'B','qa',`前一句給出數量銳減的數字；(B) 用問句問：誰該為 this decline 負責？`,`下一段 In reality, hunters… 就是回答。`],
+ [32,'E','add',`前面講藥用（一個原因）；(E) 用 What’s more 再加一個：地位象徵。they 指犀牛角。`,`後一句 Thus… 被買來送禮，是「地位象徵」的結果。`],
+ [33,'C','cause',`前一句說買賣快速增加；(C) 說因為需求高，盜獵成了大生意。`,`後一句 And since… 繼續因果鏈：越稀少、價格越高。`],
+ [34,'A','comp',`最後一段的第一句。(A) 說想到犀牛可能消失令人難過。`,`後一句 But it’s even more heartbreaking… 的比較級需要前面先有一句「難過」。`]],
+ ['D','trap-repeat',`(D) 泛論許多野生動物瀕危，和全文最後一句意思重複；放在前面又太早。`]],
+['龍騰 英文4 學習卷 第2回','秘魯偏鄉的行動教室計畫','s-problem',[
+ [31,'E','dem',`前一句列出兩種到達方式；(E) 的 Either way 指回這兩種，結論是與世隔絕。`,`下一段的 this（造成教育受限）指的就是「與世隔絕」。`],
+ [32,'D','add',`前一句說學校只有一間、上學路遠；(D) 再加一個困境：資源少、幾乎沒有網路。`,`後一句 As a result 給出結果：只有一成孩子讀得懂。`],
+ [33,'A','effect',`前一句說師生能學到需要的科技技能；(A) 用 Thus 說結果：能善用並維修設備。they 指師生。`,`後一句 Finally… 第三個目標。`],
+ [34,'B','lex',`最後一段前面描述設備箱的內容；(B) 總評：計畫帶來很大的改變。`,`後一句說當地學生更願意上學，是「改變」的具體內容。`]],
+ ['C','trap-tone',`(C) 說計畫幫學生搬到都市，和文章相反：計畫是把資源帶進偏鄉。`]],
+['龍騰 英文4 學習卷 第6回','大溪地的 Heiva 節','s-process',[
+ [31,'C','name',`前一句只說有個特別的慶典；(C) 給出名稱。`,`後文直接用這個名稱，所以要先在空格介紹。`],
+ [32,'B','art',`前一句說用土窯加熱石頭；(B) 說石頭夠熱後排成一條路。`,`後一句 cross the fiery path 的 the path 需要前面先出現。`],
+ [33,'E','dem',`前一句介紹主要活動：歌舞比賽；(E) 的 These 指比賽，並說可長達兩週。`,`後一句 During this time 指回這兩週。`],
+ [34,'D','hyper',`前一句提到摔角、獨木舟等運動；(D) 用 These physically demanding competitions 概括它們。`,`後一句說它們是圓滿結束節慶的方式。`]],
+ ['A','trap',`(A) 講溫泉，全文沒有提過。`]],
+['龍騰 英文4 學習卷 第8回','用降落傘送三明治','s-process',[
+ [31,'B','art',`前一句說朋友們有個創新點子（an idea）；(B) 用 The idea was to… 說明內容。`,`段尾空格；下一段開始講流程。`],
+ [32,'E','list',`前面是 First of all：上網下單；(E) 是 The next step：先付款。`,`後一句 Once… received a payment 接的就是付款。`],
+ [33,'C','dem',`前一句說團隊開始做三明治；(C) 用 In addition 加一件事：寄時間和地圖給顧客。`,`後一句 this map、the specified time 指回 (C)。`],
+ [34,'A','purpose',`最後一段第一句。(A) 以 To complete the process 收尾：接住、打開、享用、回收。`,`後一句是整篇的感想。`]],
+ ['D','trap-tone',`(D) 說顧客搭熱氣球到空中接，和文章相反：是包裹掛著降落傘飄下來。`]],
+['龍騰 英文4 學習卷 第12回','馬丘比丘的過度觀光','s-problem',[
+ [31,'C','add',`前一句說遊客帶動全國觀光業；(C) 用 Also 再加一個好處：附近城鎮也受益。`,`段尾空格；下一段用 however 轉到壞處。`],
+ [32,'D','dem',`前一句說遊客多到過猶不及；(D) 點出「過度觀光的影響」。`,`後一句 Among these are… 的 these 指 (D) 的 effects。`],
+ [33,'A','f-topic',`段首空格。(A) 用 Fortunately 轉向：政府正在採取措施。`,`後一句 The first of these solutions 需要前面先提到措施。`],
+ [34,'E','f-end',`最後一段第一句。(E) 的 all these regulations 概括上一段，並說成效仍待觀察。`,`後一句 We can only hope that it does 接的就是這個不確定。`]],
+ ['B','trap',`(B) 說有些遊客改去其他景點，文章沒有談這個現象。`]],
+['龍騰 英文4 進階卷 第2回','印度的火車月臺學校','s-bio',[
+ [31,'E','subst',`前面描述月臺上的窮孩子；(E) 說她知道 these children 應該在學校。`,`後一句 why they were not 省略了 in school，前面必須先有這個說法。`],
+ [32,'A','subst',`前一句說孩子付不起學費、也不能放棄收入；(A) 得出想法：把教育帶到他們身邊。`,`後一句 that is precisely what she did 指的就是 (A)。`],
+ [33,'B','contrast',`前一句說她的目標不是複製公立學校的課程；(B) 用 Instead 說她真正想教的。`,`段尾空格，替課程這一段收尾。`],
+ [34,'D','f-support',`前一句說計畫的成功很快顯現；(D) 給證據：學生、志工、車站都變多。`,`後一句說她辭去正職全心投入。`]],
+ ['C','trap',`(C) 說她還提供醫療和救護車服務，文章沒有提到。`]],
+['龍騰 英文4 進階卷 第6回','因紐特人的 Toonik Tyme 節','s-time',[
+ [31,'D','ref',`前一句介紹這個族群；(D) 的 They 指他們，說傳統上以漁獵為生。`,`後一句說當地太冷無法農耕，補充了漁獵的原因。`],
+ [32,'A','pos',`段首空格。上一段結尾才提到「有個節慶」，(A) 正式介紹它。`,`後一句說它自某年起每年四月舉行。`],
+ [33,'C','order',`前一句是 11 日星期四的開幕；(C) 是 12 日星期五。`,`後一句是 13 日星期六，照日期排就對了。`],
+ [34,'B','art',`段首空格。上一段列完前幾天的活動，(B) 用 Other highlights 補充其他的。`,`後一句講閉幕週末的活動。`]],
+ ['E','trap-tone',`(E) 說節慶是為了吸引觀光、提振經濟，和文章說法不同：是為了分享生活的喜悅與艱辛。`]],
+['龍騰 英文4 進階卷 第8回','UPS 的包裹追蹤與運送','s-cause',[
+ [31,'E','effect',`前一句說傳統郵政應付不了；(E) 用 consequently 說快遞公司因此壯大。`,`後一句 these companies 指回 (E) 提到的公司。`],
+ [32,'A','add',`前一句給每日遞送量；(A) 用 In addition 加上：效率極高。it 指這家公司。`,`後一句給準時率，是效率的證據。`],
+ [33,'D','order',`前一句說寄件時先貼上條碼；(D) 用 then 說沿途每一步都掃描。`,`後一句 The related data 指掃描得到的資料。`],
+ [34,'C','f-bridge',`段首空格。(C) 前半回顧追蹤系統，後半帶出新主題：運送距離。`,`這一段後面都在講短程與長程的運送方式。`]],
+ ['B','trap',`(B) 講折扣碼和優惠券，和物流流程無關。`]],
+['龍騰 英文4 進階卷 第12回','墾丁的過度發展','s-problem',[
+ [31,'C','f-example',`前一句說高鐵通車讓過度發展達到高峰；(C) 給出那一年的遊客數。`,`後一句評論「這個數字相當龐大」，前面要先有數字。`],
+ [32,'E','add',`前面列了住宿、餐飲的亂象；(E) 用 And 再加海灘的亂象。`,`後一句講廢棄物被丟進海裡，延續海灘與垃圾。`],
+ [33,'D','name',`段首空格。(D) 介紹一位長期觀察者和他主張的解方。`,`後一句以 He said 開頭，這個人要先登場。`],
+ [34,'B','lex',`最後一段第一句。(B) 的 Recent data 說越來越多遊客也這麼想。`,`後一句給出遊客數下滑的數據，就是 (B) 的 data。`]],
+ ['A','trap',`(A) 列出浮潛、潛水等活動，像旅遊介紹，和「過度發展」的主旨無關。`]]
+];
+PX.forEach(x=>PAPERS.push({t:x[0],q:(x[0].includes('進階')?'IV':'V')+'. 篇章結構 31–34',topic:x[1],st:x[2],flow:[],sol:x[3].map(s=>({n:s[0],a:s[1],tip:s[2],pre:s[3],post:s[4]})),extra:{k:x[4][0],tip:x[4][1],why:x[4][2]}}));
+PAPERS.sort((a,b)=>a.t.localeCompare(b.t,'zh-Hant',{numeric:true}));
+
+/* ================= 工具 ================= */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const W={};TIPS.filter(t=>t.c).forEach(t=>t.ws.forEach(x=>W[x[0]]=t));
+const RX=new RegExp('\\b('+Object.keys(W).sort((a,b)=>b.length-a.length).join('|')+')\\b','gi');
+function hl(text,count){let out='',i=0;text.replace(RX,(m,g,pos)=>{const t=W[m.toLowerCase()];
+  out+=esc(text.slice(i,pos))+'<mark class="'+t.c+'" title="'+t.n+'">'+esc(m)+'</mark>';i=pos+m.length;if(count)count[t.k]=(count[t.k]||0)+1;return m});
+  return out+esc(text.slice(i))}
+const show=s=>$('showHl').checked?hl(s):esc(s);
+const LEG=[['c1','代名詞'],['c2','指示／冠詞'],['c3','轉折對比'],['c4','因果'],['c5','舉例說明'],['c6','補充類比'],['c7','順序'],['c8','條件目的強調總結']];
+const legend=()=>LEG.map(x=>'<mark class="'+x[0]+'">'+x[1]+'</mark>').join(' ');
+const KEY='lifeos_discourse_solve_v1';
+let DONE={};try{DONE=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
+let tab='tips',grp='',bk='',cur='p1',ANS={},CHK={},HINT={},SCAN='';
+
+/* ================= 秘笈 ================= */
+function card(t){return'<div class="card" id="tip-'+t.k+'"><h2>'+(t.c?'<mark class="'+t.c+'">'+esc(t.n)+'</mark>':esc(t.n))+' <span class="chip">'+t.g+'</span></h2>'
+  +'<div><b>口訣：</b>'+esc(t.r)+'</div>'
+  +(t.ws.length?'<div style="margin-top:6px">'+t.ws.map(x=>'<span class="chip gray">'+esc(x[0])+(x[1]?'<i>'+esc(x[1])+'</i>':'')+'</span>').join('')+'</div>':'')
+  +(t.l?'<ul class="li">'+t.l.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'')
+  +(t.ex?'<div class="ex en" style="font-size:15px">'+hl(t.ex)+'</div>':'')
+  +(t.y?'<div><b>怎麼用：</b>'+esc(t.y)+'</div>':'')+'</div>'}
+function tipText(t){return(t.g+t.n+t.r+(t.w||'')+(t.l||[]).join(' ')+(t.ex||'')+(t.y||'')).toLowerCase()}
+function renderTips(){
+  const q=$('q').value.trim().toLowerCase();
+  const hit=TIPS.filter(t=>(!grp||t.g===grp)&&(!q||q.split(/\s+/).every(w=>tipText(t).includes(w))));
+  const nav='<div class="plist"><button class="'+(grp?'':'on')+'" onclick="grp=\'\';render()">全部 '+TIPS.length+'</button>'
+    +GROUPS.map(g=>'<button class="'+(grp===g.g?'on':'')+'" onclick="grp=\''+g.g+'\';render()">'+g.g+' '+g.items.length+'</button>').join('')+'</div>';
+  let body='';GROUPS.forEach(g=>{const c=hit.filter(t=>t.g===g.g);if(c.length)body+='<h3>'+g.g+'（'+c.length+'）</h3>'+c.map(card).join('')});
+  return nav+(body||'<div class="card empty">沒有符合的秘笈</div>');
+}
+const tipBtn=k=>'<button class="chip" onclick="goTip(\''+k+'\')">秘笈：'+tipOf(k).n+'</button>';
+function goTip(k){$('q').value='';grp='';setTab('tips');const el=$('tip-'+k);if(el)el.scrollIntoView({block:'center'})}
+
+/* ================= 解題練習 ================= */
+function renderSolve(){
+  const q=$('q').value.trim().toLowerCase();
+  const list=P.filter(p=>!q||(p.t+p.lv+p.text+Object.values(p.opts).join(' ')+Object.values(p.sol).map(s=>tipOf(s.tip).n).join(' ')).toLowerCase().includes(q));
+  if(!list.length)return'<div class="card empty">沒有符合的題目</div>';
+  if(!list.some(p=>p.id===cur))cur=list[0].id;
+  const p=P.find(x=>x.id===cur),ans=ANS[cur]||(ANS[cur]={}),chk=CHK[cur],hint=HINT[cur];
+  const btns=list.map(x=>'<button class="'+(x.id===cur?'on':'')+'" onclick="cur=\''+x.id+'\';render()">'+esc(x.t)+'・'+x.lv+(DONE[x.id]?'・'+DONE[x.id]:'')+'</button>').join('');
+  const body=p.text.split(/\[(\d)\]/).map((seg,i)=>{
+    if(i%2===0)return show(seg);
+    const s=p.sol[seg],v=ans[seg]||'',cls=chk?(v===s.a?'ok':'bad'):'';
+    return'<select class="gap '+cls+'" '+(chk?'disabled':'')+' onchange="ANS[cur]['+seg+']=this.value;render()"><option value="">('+seg+')</option>'
+      +Object.keys(p.opts).map(k=>'<option '+(k===v?'selected':'')+'>'+k+'</option>').join('')+'</select>'+(chk&&v!==s.a?'<b style="color:var(--ok)">'+s.a+'</b>':'')}).join('');
+  const used=Object.values(ans);
+  const opts=Object.keys(p.opts).map(k=>'<div class="opt '+(used.includes(k)?'used':'')+'"><b>('+k+')</b><span>'+show(p.opts[k])+'</span></div>').join('');
+  let html='<div class="plist">'+btns+'</div><div class="card"><h2>'+esc(p.t)+' <span class="chip gray">'+p.lv+'</span> <span class="chip gray">4 格・5 選項（1 個多餘）</span></h2>'
+   +($('showHl').checked?'<p class="mute">'+legend()+'</p>':'')
+   +'<p class="en">'+body+'</p><div class="en" style="font-size:15px;line-height:1.6">'+opts+'</div><div class="bar" style="margin-bottom:0">'
+   +(chk?'<button class="pri" onclick="retry()">重做一次</button>':'<button class="pri" onclick="check()">對答案＋看解題</button><button onclick="HINT[cur]=!HINT[cur];render()">'+(hint?'收起提示':'給我提示')+'</button>')
+   +'</div></div>';
+  if(hint&&!chk)html+='<div class="card"><h2>提示（不給答案）</h2>'+Object.keys(p.sol).map(n=>'<div>第 '+n+' 格：'+esc(p.sol[n].hint)+' '+tipBtn(p.sol[n].tip)+'</div>').join('')+'</div>';
+  if(chk){const ok=Object.keys(p.sol).filter(n=>ans[n]===p.sol[n].a).length;
+    html+='<div class="card"><h2>解題過程 <span class="chip '+(ok===4?'ok':'bad')+'">答對 '+ok+' / 4</span></h2>'
+    +Object.keys(p.sol).map(n=>{const s=p.sol[n],r=ans[n]===s.a;return'<div class="sol '+(r?'ok':'bad')+'"><b>第 '+n+' 格 → ('+s.a+')</b> '+(r?'<span class="chip ok">答對</span>':'<span class="chip bad">你選 '+(ans[n]||'未作答')+'</span>')+' '+tipBtn(s.tip)
+      +'<div class="en" style="font-size:15px">'+hl(p.opts[s.a])+'</div><div><b>往前接：</b>'+esc(s.pre)+'</div><div><b>往後接：</b>'+esc(s.post)+'</div></div>'}).join('')
+    +'<div class="sol"><b>多餘選項 ('+p.extra.k+')</b> '+tipBtn(p.extra.tip)+'<div class="en" style="font-size:15px">'+hl(p.opts[p.extra.k])+'</div><div><b>為什麼放不進去：</b>'+esc(p.extra.why)+'</div></div></div>'}
+  return html;
+}
+function check(){const p=P.find(x=>x.id===cur),a=ANS[cur]||{};CHK[cur]=true;
+  DONE[cur]=Object.keys(p.sol).filter(n=>a[n]===p.sol[n].a).length+'/4';try{localStorage.setItem(KEY,JSON.stringify(DONE))}catch(e){}render()}
+function retry(){ANS[cur]={};CHK[cur]=false;HINT[cur]=false;render()}
+
+/* ================= 學習卷解題 ================= */
+function renderPaper(){
+  const q=$('q').value.trim().toLowerCase();
+  const books=['英文1','英文2','英文3','英文4','英文5'];
+  const nav='<div class="plist"><button class="'+(bk?'':'on')+'" onclick="bk=\'\';render()">全部 '+PAPERS.length+'</button>'
+    +books.map(b=>'<button class="'+(bk===b?'on':'')+'" onclick="bk=\''+b+'\';render()">'+b+' '+PAPERS.filter(p=>p.t.includes(b)).length+'</button>').join('')+'</div>';
+  const list=PAPERS.filter(p=>(!bk||p.t.includes(bk))&&(!q||JSON.stringify(p).toLowerCase().includes(q)));
+  if(!list.length)return nav+'<div class="card empty">沒有符合的考卷</div>';
+  return nav+'<div class="note">這裡只放解題過程，不放考卷原文（出版社教材不可翻印）。請拿著自己的考卷對照閱讀。</div>'+list.map(p=>
+   '<div class="card"><h2>'+esc(p.t)+' <span class="chip gray">'+esc(p.q)+'</span></h2><div><b>主題：</b>'+esc(p.topic)+'　<b>文章結構：</b>'+tipBtn(p.st)+'</div>'
+   +(p.flow.length?'<ul class="li">'+p.flow.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<div style="height:8px"></div>')
+   +p.sol.map(s=>'<div class="sol ok"><b>第 '+s.n+' 題 → ('+s.a+')</b> '+tipBtn(s.tip)+'<div><b>往前接：</b>'+esc(s.pre)+'</div><div><b>往後接：</b>'+esc(s.post)+'</div></div>').join('')
+   +'<div class="sol bad"><b>多餘選項 ('+p.extra.k+')</b> '+tipBtn(p.extra.tip)+'<div><b>為什麼放不進去：</b>'+esc(p.extra.why)+'</div></div></div>').join('');
+}
+
+/* ================= 線索掃描 ================= */
+function renderScan(){
+  let res='';
+  if(SCAN.trim()){const cnt={};const h=hl(SCAN,cnt).replace(/\n/g,'<br>');
+    const found=TIPS.filter(t=>cnt[t.k]);
+    res='<div class="card"><h2>掃描結果</h2><p class="mute">'+legend()+'</p><p class="en">'+h+'</p></div><div class="card"><h2>這題該用的秘笈</h2>'
+    +(found.length?found.map(t=>'<div class="sol"><mark class="'+t.c+'">'+t.n+'</mark> <span class="mute">出現 '+cnt[t.k]+' 次</span> '+tipBtn(t.k)+'<div>'+esc(t.r)+'</div></div>').join(''):'<div class="empty">沒有找到明顯線索詞，請改用「隱形線索」和「空格位置」判斷。</div>')
+    +'<div class="note">掃描只幫你把線索詞標出來，不會給答案。接下來照「解題五步驟」：每格看前一句＋後一句，先填最確定的。</div></div>'}
+  return'<div class="card"><h2>貼上自己的題目</h2><p class="mute">把文章和選項一起貼上，會自動標出代名詞、轉折詞、順序詞等線索。不連網、不用 AI。</p>'
+   +'<textarea id="scanIn" class="en" placeholder="把英文文章和 (A)(B)(C)(D)(E) 選項貼在這裡…">'+esc(SCAN)+'</textarea>'
+   +'<div class="bar" style="margin-bottom:0"><button class="pri" onclick="SCAN=$(\'scanIn\').value;render()">標出線索</button><button onclick="SCAN=\'\';render()">清除</button></div></div>'+res;
+}
+
+/* ================= 初始化 ================= */
+function render(){const s=$('scanIn');if(s&&tab==='scan'&&document.activeElement===$('q'))SCAN=s.value;
+  $('view').innerHTML=tab==='solve'?renderSolve():tab==='scan'?renderScan():tab==='paper'?renderPaper():renderTips()}
+function setTab(t){tab=t;[].forEach.call($('tabs').children,b=>b.classList.toggle('on',b.dataset.t===t));render()}
+$('tabs').onclick=e=>{const b=e.target.closest('button');if(b)setTab(b.dataset.t)};
+if(['solve','scan','paper'].includes(location.hash.slice(1)))setTab(location.hash.slice(1));else render();
+</script>
+</body>
+</html>

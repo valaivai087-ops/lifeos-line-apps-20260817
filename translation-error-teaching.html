@@ -1,0 +1,1151 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>中譯英｜錯誤診斷教學</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#22252a;--sub:#6a7078;--line:#dedbd3;--acc:#2f6f5e;--accbg:#e6f1ed;--bad:#b0442c;--badbg:#f9e9e4}
+@media(prefers-color-scheme:dark){:root{--bg:#17191c;--card:#22252a;--ink:#e8e6e1;--sub:#9aa0a8;--line:#383c43;--acc:#7cc4ae;--accbg:#24372f;--bad:#eb9a85;--badbg:#3d2822}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:18px 16px 60px}
+h1{font-size:22px;margin:0}h2{font-size:19px;margin:20px 0 6px}h3{font-size:16px;margin:16px 0 6px}
+.sub{color:var(--sub);font-size:14px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+input,button{font:inherit;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+#q{flex:1;min-width:160px}
+button{cursor:pointer;text-align:left}button:hover:not(:disabled){border-color:var(--acc)}
+button.pri{background:var(--acc);border-color:var(--acc);color:var(--bg);font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0}
+.msg{background:var(--accbg);border-radius:12px;padding:12px 14px;margin:10px 0}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;margin:6px 0}
+.tag{display:inline-block;border-radius:6px;padding:0 8px;font-size:13px;white-space:nowrap;background:var(--accbg);color:var(--acc)}
+.tag.b{background:var(--badbg);color:var(--bad)}
+.zh{font-weight:600}
+.no{color:var(--bad)}.ok{color:var(--acc);font-weight:600}
+.en{font-family:Georgia,"Times New Roman",serif}
+.opt{display:block;width:100%;margin:6px 0}
+.opt.right{background:var(--accbg);border-color:var(--acc)}
+.opt.wrong{background:var(--badbg);border-color:var(--bad)}
+.why{margin-top:8px;padding:8px 12px;border-left:3px solid var(--acc);background:var(--accbg);border-radius:0 8px 8px 0;font-size:15px}
+ol{padding-left:22px;margin:6px 0}
+</style>
+</head>
+<body>
+<main>
+<div class="bar">
+  <h1 style="flex:1">中譯英｜錯誤診斷教學</h1>
+  <button id="lib">秘笈庫</button>
+  <button id="home">回首頁</button>
+</div>
+<input id="q" type="search" placeholder="搜尋課程、秘笈庫…（例如：because、時態、借）" style="width:100%">
+<div id="app"></div>
+</main>
+
+<script>
+// ex: [中文, 常見錯誤, 正確, 說明]　q: [中文, 正確, 錯1, 錯2, 說明]
+const A=[
+{n:'語意單位與完整達意',d:'中文的每個意思，英文裡都要找得到，而且不能變多或變少。',s:[
+ {n:'語意遺漏',c:'一句中文裡有好幾個「意思小塊」：誰、做什麼、條件、時間、地點、數量、範圍。漏掉任何一塊，原意就不完整。',
+  st:['把中文切成小塊，每塊畫一條底線。','寫完英文後，一塊一塊對照打勾。','沒打到勾的那一塊，補回句子裡。'],
+  ex:[['只有提前登記的學生能參加。','Students can join.','Only students who register in advance can join.','漏掉「只有」(only) 和「提前登記」這個條件。'],
+      ['他每天早上在公園慢跑半小時。','He jogs in the park.','He jogs in the park for half an hour every morning.','漏掉「半小時」和「每天早上」。']],
+  q:[['我上週在圖書館借了三本小說。','I borrowed three novels from the library last week.','I borrowed novels from the library.','I borrowed three novels last week.','數量（三本）、地點（圖書館）、時間（上週）三塊都要在。'],
+     ['如果明天不下雨，我們就去爬山。','If it doesn\'t rain tomorrow, we will go hiking.','We will go hiking tomorrow.','If it doesn\'t rain, we will go hiking.','「如果不下雨」是條件，「明天」是時間，兩塊都不能少。'],
+     ['她幾乎每個週末都去探望祖母。','She visits her grandmother almost every weekend.','She visits her grandmother every weekend.','She visits her grandmother.','「幾乎」(almost) 很小，但少了它意思就變成「每個週末都去」。']]},
+ {n:'範圍與原意偏移',c:'量詞（some / most / all）、否定（not / seldom / never）、語氣強弱（may / should / must）一換，意思就變了。',
+  st:['圈出中文裡的量詞、否定詞、語氣詞。','找強度相同的英文字。','問自己：我有沒有說得比原文更多或更少？'],
+  ex:[['有些人不喜歡這規定。','People can\'t follow this rule.','Some people dislike this rule.','「有些人」是 some，不是全部；「不喜歡」不等於「不能遵守」。'],
+      ['你應該早點睡。','You must go to bed early.','You should go to bed early.','「應該」是建議 (should)，must 變成強制命令。']],
+  q:[['大多數學生都通過了考試。','Most students passed the exam.','All students passed the exam.','Some students passed the exam.','「大多數」是 most，比 some 多、比 all 少。'],
+     ['他很少遲到。','He is seldom late.','He is never late.','He is sometimes late.','「很少」是 seldom；never 是「從不」，sometimes 是「有時」。'],
+     ['明天可能會下雨。','It may rain tomorrow.','It will rain tomorrow.','It must rain tomorrow.','「可能」是 may；will 太肯定，must 是「一定」。']]}]},
+{n:'句型骨架與英文語序',d:'英文句子要先有「主詞＋動詞」的骨架，再照英文的順序加上修飾。',s:[
+ {n:'主句骨架不完整',c:'每個英文句子至少要有一個主句：主詞＋動詞。Because / Although / When 開頭的子句不能單獨成句，後面一定要接主句。',
+  st:['先找「誰」（主詞）和「做什麼／是什麼」（動詞）。','確認主句有動詞（is / was / 一般動詞）。','再把 because、when 這類子句掛上去。'],
+  ex:[['因為下雨，比賽取消。','Because it rained. The game cancelled.','Because it rained, the game was cancelled.','Because it rained. 只是片段，不能用句點切開；主句也缺 was。'],
+      ['住在隔壁的男孩是我同學。','The boy who lives next door my classmate.','The boy who lives next door is my classmate.','中文的「是」不能省，主句動詞 is 不見了。']],
+  q:[['雖然他很累，他還是完成了作業。','Although he was tired, he finished his homework.','Although he was tired. He finished his homework.','Although he tired, finished his homework.','Although 子句不能單獨成句；子句和主句都要有主詞和動詞。'],
+     ['這裡有很多學生。','There are many students here.','Here have many students.','Many students here.','「有」表示存在時用 There is / are，不是 have；句子一定要有動詞。'],
+     ['當我到家時，媽媽正在煮飯。','When I got home, my mother was cooking.','When I got home. My mother was cooking.','When I got home, my mother cooking.','When 子句要用逗號接主句；主句需要 was 才完整。']]},
+ {n:'中文語序直搬',c:'中文把修飾語放在名詞前面（我昨天買的「書」），英文常放在名詞後面（the book I bought yesterday）。時間、地點也多放句尾。',
+  st:['先寫最短的主句，例如 The book is useful.','再把「哪一個」的修飾放到名詞後面。','時間、地點放句尾：地點在前，時間在後。'],
+  ex:[['我昨天買的書很有用。','I yesterday bought book is very useful.','The book I bought yesterday is useful.','主詞核心是 book，主句動詞是 is；「我昨天買的」放在 book 後面。'],
+      ['我非常喜歡這部電影。','I very like this movie.','I like this movie very much.','very 不能直接修飾動詞，要用 very much 放句尾。']],
+  q:[['桌上的那支筆是我的。','The pen on the desk is mine.','On the desk the pen is mine.','The on the desk pen is mine.','「桌上的」放在 pen 後面：the pen on the desk。'],
+     ['我昨天在學校遇到他。','I met him at school yesterday.','I yesterday at school met him.','I met yesterday him at school.','英文順序：主詞＋動詞＋受詞＋地點＋時間。'],
+     ['戴眼鏡的女孩是我妹妹。','The girl wearing glasses is my sister.','The wearing glasses girl is my sister.','Wearing glasses the girl is my sister.','較長的修飾語放在名詞後面：the girl wearing glasses。']]}]},
+{n:'時態語態與動詞形式',d:'動詞要說清楚「什麼時候發生」、「誰做、誰被做」，並且配合主詞。',s:[
+ {n:'時間與時態',c:'中文靠「了、過、正在、已經」表示時間，英文要靠動詞變化。過去某個時間點用過去式；從過去持續到現在用現在完成式。',
+  st:['畫一條時間線，標出事情發生在哪裡。','找時間詞：yesterday → 過去式；since / for…到現在 → 完成式。','檢查動詞形式有沒有跟著改。'],
+  ex:[['她在這裡工作三年了。','She worked here for three years.','She has worked here for three years.','「三年了」表示到現在還在做；用過去式會變成「以前做過三年，現在沒有了」。'],
+      ['我昨天看了那部電影。','I have seen that movie yesterday.','I saw that movie yesterday.','有明確的過去時間 yesterday，用過去式，不用完成式。']],
+  q:[['我從 2020 年就住在台北。','I have lived in Taipei since 2020.','I lived in Taipei since 2020.','I live in Taipei since 2020.','since＋起點，持續到現在，用現在完成式。'],
+     ['他上週去了日本。','He went to Japan last week.','He has gone to Japan last week.','He goes to Japan last week.','last week 是明確的過去時間，用過去式 went。'],
+     ['你打電話來的時候，我正在洗澡。','I was taking a shower when you called.','I took a shower when you called.','I am taking a shower when you called.','過去某一刻「正在」做的事，用過去進行式 was taking。']]},
+ {n:'語態與動詞一致',c:'主詞是「被做」的一方時，要用被動（be＋過去分詞）。另外，動詞要配合主詞單複數：第三人稱單數現在式加 s。',
+  st:['問：主詞是做動作的人，還是被做的東西？','被做 → be 動詞＋過去分詞。','再看主詞單複數，選 is / are、was / were，或動詞加 s。'],
+  ex:[['這些信昨天寄出了。','These letters sent yesterday.','These letters were sent yesterday.','信不會自己寄，是「被寄」；letters 是複數，用 were sent。'],
+      ['班上每個人都喜歡她。','Everyone in the class like her.','Everyone in the class likes her.','everyone 當單數看，動詞要加 s。']],
+  q:[['這座橋建於 1990 年。','This bridge was built in 1990.','This bridge built in 1990.','This bridge was build in 1990.','橋是「被建」：was＋過去分詞 built。'],
+     ['我哥哥每天騎腳踏車上學。','My brother rides a bike to school every day.','My brother ride a bike to school every day.','My brother is ride a bike to school every day.','my brother 是第三人稱單數，動詞加 s；不需要多加 is。'],
+     ['這些窗戶每週清洗一次。','These windows are cleaned once a week.','These windows is cleaned once a week.','These windows clean once a week.','窗戶是「被清洗」，而且是複數：are cleaned。']]}]},
+{n:'精準用字與固定搭配',d:'意思相近的字用法不同；有些字要和固定的介系詞一起記。',s:[
+ {n:'情境用字與近義',c:'中文一個字，英文可能有好幾個對應，要看方向和情境。例如「借」：借出是 lend，借入是 borrow。',
+  st:['先想清楚動作的方向或情境。','回想這個英文字平常跟什麼一起出現。','不確定時查例句，不只查中文翻譯。'],
+  ex:[['他借給我一本書。','He borrowed me a book.','He lent me a book.','他是把書「借出去」的人，用 lend（過去式 lent）。'],
+      ['請看黑板。','Please see the blackboard.','Please look at the blackboard.','see 是「看到」，刻意去看要用 look at。']],
+  q:[['我可以跟你借一支筆嗎？','May I borrow a pen from you?','May I lend a pen from you?','May I rent a pen from you?','我是「借入」的人，用 borrow；rent 是付錢租。'],
+     ['他告訴我一個故事。','He told me a story.','He said me a story.','He spoke me a story.','「告訴某人某事」用 tell＋人＋事；say 後面不直接接人。'],
+     ['我昨晚看了一部電影。','I watched a movie last night.','I looked a movie last night.','I read a movie last night.','看電影用 watch（或 see）；look 要加 at，read 是讀文字。']]},
+ {n:'固定搭配與介系詞',c:'很多動詞、形容詞後面的介系詞是固定的，不能照中文猜。要把整塊一起背：pay attention to、be interested in、be good at。',
+  st:['學新字時，連後面的介系詞一起抄下來。','寫完句子，檢查動詞／形容詞後面的介系詞。','把常錯的搭配整理成自己的清單。'],
+  ex:[['她留意這個差異。','She paid attention on the difference.','She paid attention to the difference.','pay attention to 是一整塊，to 不能換。'],
+      ['我對音樂有興趣。','I am interested about music.','I am interested in music.','be interested in 是固定搭配。']],
+  q:[['他擅長數學。','He is good at math.','He is good on math.','He is good with math.','「擅長某科目」是 be good at。'],
+     ['我們正在等公車。','We are waiting for the bus.','We are waiting the bus.','We are waiting to the bus.','wait 後面要加 for 才能接等待的對象。'],
+     ['這取決於天氣。','It depends on the weather.','It depends of the weather.','It depends the weather.','depend on 是固定搭配。']]}]},
+{n:'子句關係與連接',d:'兩個意思之間是條件、因果、轉折還是並列，要用對連接詞，結構也要對齊。',s:[
+ {n:'條件因果連接',c:'先分清楚兩句話的關係：如果 (if)、因為 (because)、雖然 (although)、除非 (unless)、為了 (to / in order to)。英文的 because 和 so、although 和 but 不能同時用。',
+  st:['說出兩個小句之間的關係是什麼。','選一個對應的連接詞。','檢查有沒有重複用（because…so、although…but）。'],
+  ex:[['如果需要幫忙，請告訴我。','Because you need help, please tell me.','If you need help, please tell me.','「如果」是還不確定的條件 (if)，不是已經發生的原因 (because)。'],
+      ['雖然很貴，我還是買了。','Although it was expensive, but I bought it.','Although it was expensive, I bought it.','although 和 but 只能留一個。']],
+  q:[['因為他生病了，所以沒來上學。','Because he was sick, he didn\'t come to school.','Because he was sick, so he didn\'t come to school.','If he was sick, he didn\'t come to school.','because 和 so 只能用一個；這是原因，不是條件。'],
+     ['除非你努力，否則不會成功。','Unless you work hard, you will not succeed.','Unless you don\'t work hard, you will not succeed.','Because you work hard, you will not succeed.','unless 本身就有「如果不」的意思，後面不再加 not。'],
+     ['他存錢是為了買一台新電腦。','He saves money in order to buy a new computer.','He saves money because buy a new computer.','He saves money, so buying a new computer.','「為了」表示目的，用 to / in order to＋原形動詞。']]},
+ {n:'子句與平行結構',c:'and / or 連接的東西要同一種形式（都是 -ing、都是形容詞…）。另外，問句放進句子裡當子句時，要改回「主詞＋動詞」的直述順序。',
+  st:['圈出 and / or 的左右兩邊。','確認兩邊詞性、形式相同。','句中的 where / what 子句：主詞在前，動詞在後。'],
+  ex:[['她喜歡閱讀和游泳。','She enjoys reading and to swim.','She enjoys reading and swimming.','and 兩邊要一樣：reading and swimming。'],
+      ['我不知道他住在哪裡。','I don\'t know where does he live.','I don\'t know where he lives.','子句裡不用問句順序：where he lives。']],
+  q:[['他又高又壯。','He is tall and strong.','He is tall and strength.','He is tall and has strong.','and 兩邊都用形容詞：tall and strong。'],
+     ['你能告訴我車站在哪裡嗎？','Can you tell me where the station is?','Can you tell me where is the station?','Can you tell me the station is where?','間接問句用直述順序：where the station is。'],
+     ['我的興趣是唱歌、跳舞和畫畫。','My hobbies are singing, dancing, and drawing.','My hobbies are singing, dancing, and to draw.','My hobbies are sing, dancing, and drawing.','三個並列項目都用 -ing。']]}]},
+{n:'拼字大小寫與標點',d:'句子寫對之後，最後一步是校對拼字、大小寫和標點。',s:[
+ {n:'拼字與詞形校訂',c:'拼字要逐字檢查；詞形也要對：名詞複數加 s，修飾動詞要用副詞（-ly），不是形容詞。',
+  st:['寫完後一個字一個字慢慢讀。','檢查複數、過去式的字尾。','修飾動詞的字，確認是副詞。'],
+  ex:[['我們昨天收到訊息。','We recieved the mesage yesterday.','We received the message yesterday.','receive 是 e 在 i 前；message 有兩個 s。'],
+      ['她歌唱得很美。','She sings beautiful.','She sings beautifully.','修飾動詞 sings 要用副詞 beautifully。']],
+  q:[['我有兩個朋友。','I have two friends.','I have two freinds.','I have two friend.','friend 是 i 在 e 前；兩個要加 s。'],
+     ['他小心地開車。','He drives carefully.','He drives careful.','He drives carefuly.','修飾動詞用副詞；careful＋ly＝carefully（兩個 l）。'],
+     ['這是必要的。','It is necessary.','It is neccessary.','It is necesary.','necessary：一個 c、兩個 s。']]},
+ {n:'大小寫與標點',c:'句首、人名、地名、星期、月份、I 都要大寫。句尾要有句點或問號。英文沒有頓號「、」，用逗號。',
+  st:['看句首第一個字母。','找專有名詞、星期、月份。','看句尾標點；問句用問號。'],
+  ex:[['我哥哥住在台北。','my brother lives in taipei','My brother lives in Taipei.','句首 My、地名 Taipei 要大寫，句末要有句點。'],
+      ['你星期一有空嗎？','Are you free on monday.','Are you free on Monday?','星期要大寫；問句用問號。']],
+  q:[['我星期五要去日本。','I am going to Japan on Friday.','I am going to japan on friday.','i am going to Japan on Friday','國名、星期、I 都要大寫，句尾要句點。'],
+     ['你叫什麼名字？','What is your name?','What is your name.','what is your name?','句首大寫，問句用問號。'],
+     ['我喜歡蘋果、香蕉和橘子。','I like apples, bananas, and oranges.','I like apples bananas and oranges.','I like apples、bananas and oranges.','英文列舉用逗號分開，沒有頓號。']]}]}
+];
+const SUBS=[];A.forEach((a,i)=>a.s.forEach((s,j)=>SUBS.push(Object.assign(s,{id:i+'-'+j,a:i}))));
+// 秘笈庫：[英文／重點, 中文, 例句或提醒]
+const LIB={
+'片語':[
+ ['pay attention to','注意、留意','Please pay attention to the teacher.'],
+ ['be interested in','對…有興趣','She is interested in science.'],
+ ['be good at','擅長','He is good at drawing.'],
+ ['depend on','取決於、依賴','It depends on the weather.'],
+ ['look forward to + Ving','期待','I look forward to seeing you.（to 後面接 Ving）'],
+ ['take care of','照顧','She takes care of her little brother.'],
+ ['be afraid of','害怕','He is afraid of dogs.'],
+ ['be famous for','以…聞名','Taiwan is famous for its night markets.'],
+ ['be different from','和…不同','My idea is different from yours.'],
+ ['get used to + Ving','習慣於','I got used to getting up early.'],
+ ['give up','放棄','Don\'t give up.'],
+ ['look for','尋找','I am looking for my keys.'],
+ ['wait for','等待','We are waiting for the bus.'],
+ ['be proud of','以…為榮','His parents are proud of him.'],
+ ['be responsible for','對…負責','You are responsible for your own work.'],
+ ['take part in','參加（活動）','Many students took part in the contest.'],
+ ['instead of','而不是、代替','I walked instead of taking the bus.'],
+ ['thanks to','多虧、由於','Thanks to your help, we finished on time.'],
+ ['run out of','用完','We ran out of milk.'],
+ ['come up with','想出','She came up with a good idea.'],
+ ['deal with','處理','How do you deal with stress?'],
+ ['be worried about','擔心','I am worried about the exam.'],
+ ['on time / in time','準時 / 及時','The train left on time. We arrived in time to see it.'],
+ ['as soon as possible','盡快','Please reply as soon as possible.']],
+'單字':[
+ ['borrow / lend','借入 / 借出','I borrowed a book from him. He lent me a book.'],
+ ['bring / take','帶來 / 帶去','Bring it here. Take it there.'],
+ ['say / tell','說（內容）/ 告訴（人）','He said hello. He told me the truth.'],
+ ['speak / talk','說（語言）/ 交談','She speaks English. We talked about the trip.'],
+ ['see / look at / watch','看到 / 刻意看 / 觀看（會動的）','I saw a bird. Look at the board. We watched a movie.'],
+ ['hear / listen to','聽到 / 專心聽','I heard a noise. I listen to music.'],
+ ['spend / cost / take','人花 / 物花錢 / 事花時間','I spent $100. It cost $100. It took two hours.'],
+ ['rise / raise','自己上升 / 舉起、提高','The sun rises. Raise your hand.'],
+ ['affect / effect','影響（動詞）/ 影響（名詞）','Sleep affects health. It has an effect on health.'],
+ ['win / beat','贏（比賽）/ 打敗（對手）','We won the game. We beat them.'],
+ ['wear / put on','穿著（狀態）/ 穿上（動作）','She wears glasses. Put on your coat.'],
+ ['job / work','工作（可數）/ 工作（不可數）','I have a job. I have a lot of work.'],
+ ['fun / funny','有趣好玩 / 好笑','The trip was fun. The joke was funny.'],
+ ['bored / boring','（人）感到無聊 / （事物）令人無聊','I am bored. The class is boring.'],
+ ['hard / hardly','努力地 / 幾乎不','He works hard. He hardly works.'],
+ ['late / lately','晚、遲 / 最近','He came late. I have been busy lately.'],
+ ['join / attend','加入（社團）/ 出席（會議、課）','Join the club. Attend the meeting.'],
+ ['remember / remind','記得 / 提醒','Remember to call. Remind me to call.'],
+ ['fit / suit','尺寸合身 / 樣式適合','The shoes fit me. The color suits you.'],
+ ['price / cost','價格 / 成本、花費','The price is high. The cost of living is rising.']],
+'句型':[
+ ['There is / are + 名詞 + 地點','某處有…','There are many students here.（不用 have）'],
+ ['It is + 形容詞 + to V','做…是…的','It is important to sleep well.'],
+ ['too + 形容詞 + to V','太…而不能','He is too tired to study.'],
+ ['so + 形容詞 + that + 句子','如此…以致於','She was so tired that she fell asleep.'],
+ ['not only A but also B','不但…而且','He is not only smart but also kind.'],
+ ['either A or B / neither A nor B','不是…就是 / 既不…也不','You can either stay or leave.'],
+ ['as + 形容詞 + as','和…一樣','He is as tall as his father.'],
+ ['The + 比較級…, the + 比較級…','越…越…','The more you practice, the better you get.'],
+ ['人 + spend + 時間／錢 + Ving','花時間／錢做…','I spent two hours doing homework.'],
+ ['It takes + 人 + 時間 + to V','做…花某人多久','It took me two hours to finish it.'],
+ ['make / let + 人 + 原形動詞','使／讓某人做…','My mom made me clean the room.'],
+ ['used to + 原形動詞','過去常常（現在不了）','I used to live in Tainan.'],
+ ['would rather A than B','寧願…也不','I would rather walk than take a taxi.'],
+ ['If + 現在式, 主詞 + will…','如果…就會','If it rains, we will stay home.'],
+ ['Although + 句子, 句子','雖然…（不加 but）','Although it rained, we went out.'],
+ ['…so that + 句子','以便、為了','Speak louder so that everyone can hear you.'],
+ ['名詞 + who / which / that + 子句','…的（人／物）','The book that I bought is useful.'],
+ ['I don\'t know + 疑問詞 + 主詞 + 動詞','間接問句（直述順序）','I don\'t know where he lives.'],
+ ['比較級 + than','比…更','This bag is cheaper than that one.'],
+ ['one of the + 最高級 + 複數名詞','最…之一','It is one of the best movies.']],
+'文法':[
+ ['第三人稱單數現在式加 s','he / she / it / 單數名詞','She likes tea. My brother plays tennis.'],
+ ['過去式 vs 現在完成式','有明確過去時間用過去式；持續到現在用完成式','I saw it yesterday. I have lived here since 2020.'],
+ ['進行式：be + Ving','正在做','I am reading. I was reading when you called.'],
+ ['被動：be + 過去分詞','主詞是「被做」的一方','The bridge was built in 1990.'],
+ ['助動詞後接原形動詞','can / will / should / must / may','She can swim.（不是 swims）'],
+ ['動名詞或不定詞','enjoy / finish / mind + Ving；want / decide / hope + to V','I enjoy reading. I want to read.'],
+ ['可數與不可數名詞','不可數不加 s、不用 a','advice, information, homework, furniture, money'],
+ ['冠詞 a / an / the','第一次提到用 a / an；指定的用 the','I saw a dog. The dog was big.'],
+ ['時間介系詞 in / on / at','in 月份年份；on 星期日期；at 時刻','in May, on Monday, at 7:00'],
+ ['形容詞 vs 副詞','形容詞修飾名詞；副詞修飾動詞','a careful driver / He drives carefully.'],
+ ['everyone / each / every 當單數','動詞用單數','Everyone likes her.'],
+ ['because 和 so、although 和 but 不並用','只留一個連接詞','Because it rained, we stayed home.'],
+ ['-ed / -ing 情緒形容詞','人的感受用 -ed；事物特性用 -ing','I am excited. The game is exciting.'],
+ ['頻率副詞位置','be 動詞後、一般動詞前','He is always late. He always comes late.'],
+ ['if / when 子句用現在式表未來','子句不用 will','If it rains tomorrow, we will stay home.'],
+ ['複數名詞','一個以上要加 s / es；注意不規則','two boxes, three children, many people']]
+};
+// 擴充內容：每行「英文／重點|中文|例句或提醒」
+const MORE={
+'片語':`look after|照顧|She looks after her grandmother.
+look up|查閱|Look up the word in the dictionary.
+look down on|看不起|Don't look down on others.
+look up to|尊敬|I look up to my teacher.
+look into|調查|The police are looking into the case.
+turn on / turn off|打開 / 關掉（電器）|Turn off the light, please.
+turn up / turn down|調大 / 調小；turn down 也指拒絕|He turned down the offer.
+turn in|繳交|Turn in your homework by Friday.
+turn out|結果是|The news turned out to be true.
+put off|延後|Don't put off your work.
+put up with|忍受|I can't put up with the noise.
+put away|收好|Put away your toys.
+put out|撲滅|They put out the fire.
+take off|脫下；起飛|The plane took off on time.
+take place|發生、舉行|The meeting took place on Monday.
+take up|開始從事；佔用|He took up swimming.
+take over|接管|She took over the business.
+take advantage of|利用|Take advantage of this chance.
+take … for granted|視…為理所當然|Don't take your health for granted.
+get along with|與…相處|I get along well with my classmates.
+get over|克服、康復|She got over her cold.
+get rid of|擺脫、除去|Get rid of bad habits.
+get in touch with|與…聯絡|Get in touch with me soon.
+get on / get off|上 / 下（公車、火車）|Get off at the next stop.
+give in|屈服、讓步|He finally gave in.
+give away|贈送；洩漏|She gave away her old clothes.
+give back|歸還|Give the book back to me.
+hand in|繳交|Hand in the report tomorrow.
+hand out|分發|The teacher handed out the papers.
+make up|編造；和好；組成|He made up an excuse.
+make up for|彌補|I will make up for the lost time.
+make up one's mind|下定決心|She made up her mind to study abroad.
+make sure|確定|Make sure the door is locked.
+make a decision|做決定|We must make a decision today.
+make progress|進步|You are making progress.
+make fun of|取笑|Don't make fun of him.
+make sense|有道理|That makes sense.
+make use of|利用|Make good use of your time.
+break down|故障；崩潰|My car broke down.
+break out|爆發|A fire broke out last night.
+break up|分手；解散|They broke up last year.
+bring up|養育；提出|She was brought up by her aunt.
+bring about|導致|The change brought about many problems.
+call off|取消|The game was called off.
+carry out|執行|We carried out the plan.
+catch up with|趕上|Run faster to catch up with them.
+keep up with|跟上|I can't keep up with the class.
+come across|偶然遇到|I came across an old friend.
+come true|實現|My dream came true.
+figure out|弄清楚、想出|I can't figure out the answer.
+find out|查明、發現|Find out what happened.
+fill in / fill out|填寫|Fill out this form.
+go on|繼續；發生|What is going on?
+go through|經歷|She went through a hard time.
+grow up|長大|I grew up in Tainan.
+hold on|等一下；堅持|Hold on a second.
+pick up|撿起；接（人）|I will pick you up at six.
+point out|指出|He pointed out my mistake.
+set up|建立、設立|They set up a company.
+set off|出發|We set off early.
+show up|出現|He didn't show up.
+show off|炫耀|He likes to show off.
+stand for|代表|What does UN stand for?
+stay up|熬夜|Don't stay up late.
+try on|試穿|Can I try on this jacket?
+work out|運動；順利解決|Things will work out.
+work on|致力於|I am working on my report.
+rely on|依賴|You can rely on me.
+focus on|專注於|Focus on your goal.
+insist on|堅持|He insisted on paying.
+agree with|同意（人）|I agree with you.
+belong to|屬於|This bag belongs to me.
+lead to|導致|Stress can lead to illness.
+result in / result from|導致 / 起因於|The accident resulted from carelessness.
+contribute to|促成、貢獻|Exercise contributes to good health.
+suffer from|受…之苦|He suffers from headaches.
+recover from|從…恢復|She recovered from the illness.
+prevent … from + Ving|阻止…做|The rain prevented us from going out.
+succeed in + Ving|成功做到|He succeeded in passing the exam.
+apologize to 人 for 事|為某事向某人道歉|I apologized to her for being late.
+thank 人 for 事|為某事感謝某人|Thank you for helping me.
+remind 人 of 事|使某人想起|This song reminds me of my childhood.
+provide 人 with 物|提供|The school provides students with lunch.
+compare A with B|比較|Compare your answer with mine.
+prefer A to B|喜歡 A 勝過 B|I prefer tea to coffee.
+be full of / be filled with|充滿|The room is full of people.
+be tired of|厭倦|I am tired of waiting.
+be fond of|喜歡|She is fond of music.
+be aware of|意識到|Be aware of the danger.
+be capable of|有能力|She is capable of doing it.
+be used to + Ving|習慣於|I am used to getting up early.
+be similar to|與…相似|Your bag is similar to mine.
+be familiar with|熟悉|I am familiar with this area.
+be satisfied with|對…滿意|I am satisfied with the result.
+be busy + Ving|忙著|She is busy cooking.
+be late for|遲到|Don't be late for school.
+be ready for|準備好|Are you ready for the test?
+be known as / be known for|以…身分聞名 / 因…聞名|He is known as a great singer.
+be made of / be made from|由…製成（看得出原料 / 看不出原料）|The table is made of wood. Paper is made from wood.
+be absent from|缺席|He was absent from school.
+be angry with 人 / about 事|生氣|She is angry with me.
+be surprised at|對…驚訝|I was surprised at the news.
+be excited about|對…興奮|We are excited about the trip.
+be strict with|對…嚴格|Our teacher is strict with us.
+according to|根據|According to the report, prices are rising.
+because of|因為（後面接名詞）|We stayed home because of the rain.
+in spite of / despite|儘管（後面接名詞）|In spite of the rain, we went out.
+in addition to|除了…還有|In addition to English, she speaks French.
+as well as|以及|He plays the piano as well as the guitar.
+in front of|在…前面|There is a tree in front of the house.
+in case of|萬一|In case of fire, use the stairs.
+in charge of|負責|She is in charge of the project.
+in favor of|贊成|I am in favor of the plan.
+in fact|事實上|In fact, I have never been there.
+in general|一般來說|In general, children like games.
+in other words|換句話說|In other words, he failed.
+in a hurry|匆忙|She left in a hurry.
+in the end / at last|最後 / 終於|In the end, we won.
+at least / at most|至少 / 最多|It takes at least an hour.
+at first|起初|At first, I didn't like it.
+at the same time|同時|They arrived at the same time.
+all of a sudden|突然|All of a sudden, it began to rain.
+by accident / on purpose|偶然 / 故意|I broke it by accident.
+by the way|順便一提|By the way, where is Tom?
+by oneself|獨自|She did it by herself.
+on the other hand|另一方面|On the other hand, it is expensive.
+on one's way to|在去…的路上|I am on my way to school.
+for example / for instance|例如|For example, you can walk to school.
+from now on|從現在起|From now on, I will study harder.
+so far|到目前為止|So far, so good.
+no longer|不再|He no longer lives here.
+more and more|越來越多|More and more people use smartphones.
+a variety of|各式各樣的|The store sells a variety of goods.
+plenty of|很多（可數、不可數皆可）|We have plenty of time.
+a number of / the number of|許多（複數動詞）/ …的數量（單數動詞）|A number of students are absent. The number of students is 30.`,
+'單字':`accept / except|接受 / 除了|I accept your gift. Everyone came except Tom.
+advice / advise|建議（名詞，不可數）/ 建議（動詞）|He gave me some advice. He advised me to rest.
+alone / lonely|獨自 / 寂寞|She lives alone, but she is not lonely.
+already / yet|已經（肯定句）/ 還（否定、疑問句）|I have already eaten. I haven't eaten yet.
+also / too / either|也（句中）/ 也（句尾）/ 也不（否定句尾）|I don't like it, either.
+among / between|三者以上之間 / 兩者之間|between you and me; among the students
+arrive / reach / get to|到達|We arrived at the station. We reached the station.（reach 不加介系詞）
+ask / ask for|問 / 要求|Ask a question. Ask for help.
+beside / besides|在旁邊 / 除…之外還有|Sit beside me. Besides English, I study Japanese.
+big / large / great|大（口語）/ 大（尺寸、數量）/ 偉大|a large number; a great leader
+close / turn off|關（門窗）/ 關（電器）|Close the door. Turn off the TV.
+open / turn on|開（門窗）/ 開（電器）|Open the window. Turn on the light.
+clothes / cloth / clothing|衣服（複數）/ 布 / 衣物（不可數）|These clothes are new.
+dead / die / death|死的（形容詞）/ 死（動詞）/ 死亡（名詞）|He died in 2010. He has been dead for years.
+during / for / while|在…期間＋名詞 / 持續＋時間長度 / 當…＋句子|during the summer; for two weeks; while I was sleeping
+every day / everyday|每天（副詞）/ 日常的（形容詞）|I run every day. everyday life
+few / a few|幾乎沒有 / 有一些（可數）|I have a few friends.
+little / a little|幾乎沒有 / 有一些（不可數）|I have little money.
+many / much / a lot of|可數 / 不可數 / 皆可|many books; much water; a lot of time
+some / any|肯定句 / 否定與疑問句|I have some money. I don't have any money.
+other / another / the other / others|其他的 / 另一個 / （兩者中）另一個 / 其他的人或物|One is red; the other is blue.
+find / find out|找到（東西）/ 查出（事實）|I found my key. I found out the truth.
+forget / leave|忘記 / 把東西留在某處|I left my umbrella on the bus.（有地點時用 leave）
+hope / wish|希望（可能實現）/ 但願（與事實相反）|I hope you can come. I wish I were taller.
+house / home|房子 / 家|go home（不加 to）
+interested / interesting|（人）感興趣 / （事物）有趣|I am interested in the interesting story.
+know / meet|認識（狀態）/ 認識（初次見面）|I met him in 2020. I have known him for years.
+learn / study|學會 / 研讀|I study English every day. I learned to swim.
+live / life / alive|住、活（動詞）/ 生活、生命（名詞）/ 活著的（形容詞）|He lives a happy life.
+lose / loose|失去（動詞）/ 鬆的（形容詞）|I lost my wallet. The shirt is loose.
+maybe / may be|也許（副詞）/ 可能是（助動詞＋be）|Maybe he is sick. He may be sick.
+passed / past|pass 的過去式 / 過去（名詞、形容詞、介系詞）|He passed the test. in the past
+play + 球類／樂器|球類不加 the；樂器加 the|play basketball; play the piano
+problem / question|待解決的問題 / 提問的問題|solve a problem; answer a question
+quiet / quite|安靜的 / 相當|Be quiet. It is quite cold.
+sometimes / sometime / some time|有時 / 某個時候 / 一段時間|I sometimes walk to school.
+sound / voice / noise|聲音 / 人的嗓音 / 噪音|She has a sweet voice.
+stop to V / stop Ving|停下來去做 / 停止做|He stopped to rest. He stopped smoking.
+remember to V / remember Ving|記得要去做 / 記得做過|Remember to lock the door.
+forget to V / forget Ving|忘了去做 / 忘記做過|I forgot to bring my book.
+try to V / try Ving|努力做 / 試試看|Try to sleep. Try adding some salt.
+than / then|比 / 然後|taller than me; and then we left
+their / there / they're|他們的 / 那裡 / they are|Their house is over there.
+its / it's|它的 / it is|It's a cat. Its tail is long.
+your / you're|你的 / you are|You're late. Your bag is here.
+who's / whose|who is / 誰的|Whose book is this?
+to / too / two|到 / 也、太 / 二|It is too hot to go out.
+trip / travel / journey|旅行（可數，短程）/ 旅行（動詞或不可數）/ 旅程（較長）|We took a trip to Kenting.
+weather / whether|天氣 / 是否|I don't know whether he will come.
+want / would like|想要 / 想要（較客氣）|I would like a cup of tea.
+discuss|討論（後面不加 about）|We discussed the problem.
+marry|結婚（marry 人，不加 with）|She married a doctor. She is married to a doctor.
+enter|進入（不加 into）|He entered the room.
+contact|聯絡（不加 with）|Please contact me.
+mention|提到（不加 about）|He mentioned the plan.
+suggest / recommend|建議（接 Ving 或 that 子句，不接「人 to V」）|I suggest going by train.
+hope 的用法|不接「人 to V」|I hope that you will come.（不寫 I hope you to come）
+open the light ✗|開燈|turn on the light
+eat medicine ✗|吃藥|take medicine
+big rain ✗|大雨|heavy rain
+make homework ✗|寫功課|do homework
+make a photo ✗|拍照|take a photo / take a picture
+learn knowledge ✗|學知識|gain knowledge / acquire knowledge
+The price is expensive. ✗|價格很貴|The price is high.（東西才用 expensive）
+My body is healthy. ✗|我身體健康|I am healthy.
+crowded traffic ✗|交通擁擠|heavy traffic
+do / make|做（活動、工作）/ 製造、產生|do homework, do the dishes; make a mistake, make a plan
+have / take 的搭配|固定用法要整組記|have a meeting, have a cold; take a shower, take a test, take a break
+strong / heavy 的搭配|風、咖啡用 strong；雨、交通用 heavy|strong wind, strong coffee; heavy rain, heavy traffic
+catch / miss|趕上 / 錯過（車）|I missed the bus.
+by + 交通工具|搭…（不加冠詞）|by bus, by train；走路是 on foot
+population|人口多少用 large / small|Taiwan has a large population.
+increase / decrease|增加 / 減少|The price increased by 10%.
+improve|改善、進步|My English has improved.
+protect / prevent|保護 / 預防|protect the environment; prevent accidents
+cause / reason|起因 / 理由|the cause of the fire; the reason for my absence
+chance / opportunity|機會|a chance to learn
+experience|經驗（不可數）/ 經歷（可數）|She has a lot of experience.
+habit / custom|個人習慣 / 社會風俗|a good habit; a local custom
+effect / influence / impact|影響（名詞，後面接 on）|TV has a great influence on children.`,
+'句型':`主詞 + be + 形容詞／名詞|中文沒有「是」時，英文也要有 be 動詞|She is busy.（不寫 She busy）
+主詞 + 動詞 + 人 + 物|給／告訴某人某物|He gave me a book. = He gave a book to me.
+It is + 形容詞 + for 人 + to V|對某人來說做…是…的|It is hard for me to get up early.
+It is + 形容詞 + of 人 + to V|某人做…真是…（形容人的特質）|It is kind of you to help me.
+It is + 形容詞 + that + 句子|…是…的|It is true that he passed.
+It is said / believed that…|據說／一般相信|It is said that he is rich.
+It seems that…|似乎|It seems that she is tired.
+It is … that …（強調句）|就是…|It was Tom that broke the window.
+It is time (for 人) to V|該是…的時候了|It is time to go home.
+find / think + it + 形容詞 + to V|覺得做…很…|I find it hard to learn math.
+形容詞 + enough + to V|夠…可以|He is old enough to drive.
+such + (a/an) + 形容詞 + 名詞 + that|如此…以致於|It was such a hot day that we stayed home.
+so + 助動詞 + 主詞|…也是|I like tea. So does she.
+neither + 助動詞 + 主詞|…也不|I can't swim. Neither can he.
+both A and B|兩者都（複數動詞）|Both Tom and Mary are here.
+A as well as B|A 以及 B（動詞跟 A）|Tom as well as his brothers is here.
+not … until …|直到…才|I didn't sleep until midnight.
+as soon as|一…就|As soon as he arrived, it began to rain.
+no sooner … than|一…就（較正式）|No sooner had I left than it rained.
+once + 句子|一旦|Once you start, you can't stop.
+while / whereas|然而（對比）|I like tea, while he likes coffee.
+even though / even if|即使|Even if it rains, I will go.
+no matter + 疑問詞|無論|No matter what happens, I will help you.
+whether … or not|無論是否|Whether you like it or not, you must go.
+as long as|只要|You can stay as long as you are quiet.
+in case + 句子|以防萬一|Take an umbrella in case it rains.
+so as to / in order to + V|為了|He got up early so as to catch the bus.
+in order that + 句子|為了|I spoke slowly in order that he could understand.
+because + 句子 / because of + 名詞|因為|because it rained / because of the rain
+due to / owing to + 名詞|由於|The game was cancelled due to the rain.
+The reason why … is that …|…的原因是|The reason why he was late is that he missed the bus.
+That is why + 結果 / That is because + 原因|那就是為什麼 / 那是因為|He was sick. That is why he was absent.
+倍數 + as + 形容詞 + as|是…的幾倍|This room is twice as big as mine.
+比較級 + and + 比較級|越來越|It is getting colder and colder.
+比較級 + than any other + 單數名詞|比任何其他的都|He is taller than any other boy in his class.
+No other + 單數名詞 + is + 比較級 + than|沒有其他…比…更|No other city in Taiwan is bigger than Taipei.
+the + 最高級 + 名詞 + 主詞 + have ever + 過去分詞|曾…過最…的|It is the best movie I have ever seen.
+prefer to V rather than V|寧願…而不|I prefer to stay rather than go.
+had better + 原形動詞|最好|You had better go now.
+would like to + V|想要|I would like to go.
+be going to + V|打算、將要|I am going to visit her.
+be about to + V|正要|The train is about to leave.
+be supposed to + V|應該|You are supposed to be here at eight.
+be able to + V|能夠|She was able to finish it.
+be willing to + V|願意|I am willing to help.
+be likely to + V|可能|It is likely to rain.
+have to + V / don't have to|必須 / 不必|You don't have to come.
+have + 人 + 原形動詞 / have + 物 + 過去分詞|叫某人做 / 讓某物被…|I had my hair cut.
+get + 人 + to V|讓某人做|I got him to help me.
+help + 人 + (to) V|幫某人做|She helped me carry the bag.
+see / hear / watch + 人 + V 或 Ving|看到／聽到某人做|I saw him cross the street.
+keep + 人／物 + Ving|讓…一直|He kept me waiting.
+keep / stop / prevent + 人 + from + Ving|阻止|The noise kept me from sleeping.
+have trouble / difficulty + Ving|做…有困難|I have trouble sleeping.
+have fun / a good time + Ving|做…很愉快|We had fun playing games.
+be worth + Ving|值得|The book is worth reading.
+can't help + Ving|忍不住|I can't help laughing.
+feel like + Ving|想要|I feel like eating pizza.
+It is no use + Ving|…是沒用的|It is no use crying.
+What + (a/an) + 形容詞 + 名詞！|多麼…的…啊|What a beautiful day!
+How + 形容詞／副詞 + 主詞 + 動詞！|多麼…啊|How beautiful she is!
+祈使句, and / or + 句子|…就會 / 否則|Hurry up, or you will be late.
+附加問句|…，不是嗎？|You are a student, aren't you?
+疑問詞 + to V|該…|I don't know what to do.
+what 引導名詞子句|…的東西／事|What he said is true.
+whether / if 子句|是否|I wonder whether he will come.
+that 名詞子句|…這件事|I believe that he is honest.
+the fact that + 句子|…這個事實|The fact that he lied surprised me.
+關係副詞 where / when / why|…的地方／時候／原因|This is the place where I was born.
+逗號 + which / who（補述用法）|補充說明|My father, who is a doctor, works hard.
+分詞構句|…著／…之後（兩句主詞相同）|Walking along the street, I met Tom.
+with + 名詞 + 分詞|伴隨著|He sat there with his eyes closed.
+假設語氣（與現在事實相反）|If + 過去式, 主詞 + would + V|If I were you, I would go.
+假設語氣（與過去事實相反）|If + had + 過去分詞, 主詞 + would have + 過去分詞|If I had studied, I would have passed.
+wish + 過去式|但願|I wish I had more time.
+as if + 過去式|好像|He talks as if he knew everything.
+Without…, 主詞 + would…|要不是|Without your help, I would have failed.
+Never / Only / Not until 開頭的倒裝|助動詞放主詞前|Never have I seen such a thing.
+Here / There + 動詞 + 主詞|…來了|Here comes the bus.
+used to V / be used to Ving|過去常 / 習慣於|I used to swim. I am used to swimming.
+not … at all|一點也不|I don't like it at all.
+not A but B|不是…而是|He is not a teacher but a doctor.
+not all / not always（部分否定）|不是全部／不一定|Not all students like math.
+some … others …|有些…有些…|Some like tea; others like coffee.
+one … the other …|一個…另一個…（共兩個）|I have two pens. One is red; the other is blue.
+On the one hand…; on the other hand…|一方面…另一方面|On the one hand, it is cheap; on the other hand, it is slow.
+as far as I know|就我所知|As far as I know, he is single.
+When it comes to + 名詞／Ving|說到|When it comes to cooking, she is the best.
+There is no doubt that|毫無疑問|There is no doubt that he will win.
+play an important role in|在…扮演重要角色|Technology plays an important role in our lives.
+With the development of…|隨著…的發展|With the development of technology, life is easier.`,
+'文法':`五大句型|S+V；S+V+C；S+V+O；S+V+O+O；S+V+O+C|Birds fly. She is kind. I like tea. He gave me a pen. We call him Tom.
+一個句子只有一個主要動詞|兩個動詞之間要有連接詞、to，或改成 Ving|I like to swim.（不寫 I like swim）
+be 動詞與一般動詞不並用|有一般動詞就不再加 be（進行式、被動除外）|I like it.（不寫 I am like it）
+否定句|be 動詞後加 not；一般動詞用 don't / doesn't / didn't + 原形|He doesn't like it.
+疑問句|be 動詞或助動詞移到主詞前|Does he like it? Is he a student?
+現在簡單式|習慣、事實、真理|The sun rises in the east.
+過去簡單式|過去某時發生並結束|I visited her last week.
+未來式|will + V / be going to + V|I will call you tomorrow.
+現在完成式 have + 過去分詞|經驗、持續、剛完成|I have been to Japan twice.
+have been to / have gone to|去過（已回來）/ 去了（還沒回來）|He has gone to Japan.
+since / for|since + 起點；for + 一段時間|since 2020; for three years
+過去完成式 had + 過去分詞|過去某時之前已發生|When I arrived, the train had left.
+現在完成進行式 have been + Ving|一直在做|I have been waiting for an hour.
+不用進行式的動詞|know, like, want, have（擁有）, belong 等狀態動詞|I know him.（不寫 I am knowing him）
+瞬間動詞不與 for 連用|die, leave, arrive, buy 等|He has been dead for two years.（不寫 has died for two years）
+各時態的被動|am/is/are + p.p.；was/were + p.p.；will be + p.p.；have been + p.p.|The work has been done.
+不能用被動的動詞|happen, occur, take place, appear, belong|An accident happened.（不寫 was happened）
+使役／感官動詞改被動要加 to|原本的原形動詞前補 to|He was made to clean the room.
+can / could|能力、許可、可能|Could you help me?
+must / have to|必須；must not 是「禁止」，don't have to 是「不必」|You must not smoke here.
+should / ought to|應該|You should see a doctor.
+may / might|可能；許可|He might be late.
+助動詞 + have + 過去分詞|對過去的推測或後悔|He must have forgotten. I should have studied.
+名詞複數規則|加 s；s/x/ch/sh 結尾加 es；子音+y 改 ies；f/fe 改 ves|boxes, cities, knives
+不規則複數|man–men, child–children, foot–feet, tooth–teeth, mouse–mice；sheep, fish, deer 不變|two children
+people / police / news|people, police 用複數動詞；news 用單數動詞|The police are coming. The news is good.
+所有格|人用 's；無生命的東西多用 of|Tom's book; the door of the room
+a / an 的選擇|看發音，不看字母|an hour, a university, an umbrella
+不加冠詞的情況|三餐、球類、學科、語言、by + 交通工具|have lunch, play tennis, by bus
+加 the 的情況|獨一無二、樂器、最高級、序數、河海山脈|the sun, the piano, the best
+代名詞的格|主格 I；受格 me；所有格 my；所有代名詞 mine；反身 myself|This book is mine.
+介系詞後用受格|人稱順序把自己放後面|between you and me
+it 當虛主詞|代替後面的 to V 或 that 子句|It is easy to say.
+that / those 代替前面的名詞|比較句中避免重複|The weather here is hotter than that of Taipei.
+one / it|同類的任一個 / 同一個|I lost my pen. I need to buy one.
+形容詞順序|數量→評價→大小→新舊→顏色→產地→材質→名詞|a beautiful small old wooden box
+something / anyone + 形容詞|形容詞放後面|something important
+比較級變化|短字加 er / est；長字用 more / most；good–better–best, bad–worse–worst|more beautiful
+比較級的修飾語|much / far / a lot / even + 比較級（不用 very）|much better
+比較對象要一致|東西比東西、人比人|My bag is bigger than yours.（不寫 than you）
+副詞位置|方式副詞放動詞或受詞後；地點在時間前|He speaks English well.
+too / enough 的位置|too 放形容詞前；enough 放形容詞後、名詞前|big enough; enough money
+地點介系詞 in / on / at|in 大空間內；on 表面上；at 某一點|in Taipei, on the table, at the station
+其他時間介系詞|by 在…之前；until 直到；within 在…之內；during 在…期間|Finish it by Friday.
+方向介系詞|to 到；into 進入；from 從；through 穿過；across 橫越；along 沿著|walk across the street
+this / last / next / every 前不加介系詞|today, tomorrow, yesterday 也一樣|I will see you next Monday.（不寫 on next Monday）
+home / here / there / abroad 前不加 to|這些字本身是副詞|go home, come here, study abroad
+對等連接詞|and, but, or, so 連接對等的字、片語、句子|I was tired, so I went to bed.
+兩個句子不能只用逗號連接|要加連接詞，或改用句點|It rained, so we stayed home.
+連接副詞|however, therefore, moreover：前面用句點或分號，後面加逗號|It rained; however, we went out.
+關係代名詞|人用 who；物用 which；人物皆可用 that；所有格用 whose|the girl whose father is a doctor
+關係代名詞省略|當受詞時可省略|the book (that) I bought
+只用 that 的情況|先行詞有最高級、序數、the only、all|the best movie that I have seen
+介系詞 + whom / which|介系詞可移到關係代名詞前|the house in which I live
+子句當主詞用單數動詞|名詞子句、動名詞當主詞都算單數|What he said is true. Reading books is fun.
+間接引述的時態|主要動詞是過去式時，子句時態往前推|He said that he was tired.
+就近原則|either…or、neither…nor、not only…but also 的動詞看靠近的主詞|Either you or he is wrong.
+插入語不影響動詞|with, as well as, together with 不改變主詞單複數|The teacher, with his students, is coming.
+不定詞的否定|not 放在 to 前面|He told me not to go.
+接 Ving 的動詞|enjoy, finish, mind, keep, practice, avoid, consider, suggest, give up|I finished reading.
+接 to V 的動詞|want, hope, decide, plan, agree, refuse, learn, promise, expect|She decided to leave.
+Ving 和 to V 皆可的動詞|like, love, hate, begin, start, continue|It began to rain. / It began raining.
+介系詞後接 Ving|介系詞後面的動詞要改成 Ving|Thank you for coming. He left without saying goodbye.
+現在分詞 vs 過去分詞|Ving 表主動或進行；過去分詞表被動或完成|a sleeping baby; a broken window
+分詞片語修飾名詞|放在名詞後面|the man standing there; the book written by him
+There is / are 的一致|動詞看後面最靠近的名詞|There is a book and two pens.
+hundred / thousand|前面有數字不加 s；hundreds of 表「數百」|two hundred people; hundreds of people
+分數與百分比當主詞|動詞看 of 後面的名詞|Half of the students are here.
+日期寫法|月份大寫；日期用序數|on May 5th, 2024
+逗號用法|列舉、連接詞前、從屬子句在前時|When I got home, I took a rest.
+撇號用法|縮寫與所有格|don't; Tom's; the students' books
+引號與標點|引述句的句點、逗號放在引號內|He said, "I am tired."
+大寫規則|句首、I、專有名詞、星期、月份、語言、國籍|English, Monday, October`,
+'翻譯秘訣':`先找主詞和動詞|中文常省略主詞，英文一定要補|下雨了。→ It is raining.
+「有」的兩種譯法|擁有用 have；存在用 there is / are|桌上有一本書。→ There is a book on the desk.
+「是…的」不一定用 be|看整句的意思|我是昨天來的。→ I came yesterday.
+中文無主詞句|補上 we / you / people，或改成被動|必須保護環境。→ We must protect the environment.
+「把」字句|直接用「動詞＋受詞」|我把門關上了。→ I closed the door.
+「被、受到、遭到、由」|用被動|這本書是他寫的。→ This book was written by him.
+沒有「被」字的被動|中文常省略「被」|作業寫完了。→ The homework has been done.
+「了」不等於過去式|要看時間和意思|我吃飽了。→ I am full.
+「會」的多種意思|能力 can；未來 will；可能 may|我會游泳。→ I can swim.
+「要」的多種意思|想要 want；將要 be going to；必須 have to|我要走了。→ I have to go.
+「讓」的多種意思|使役 make / let；允許 allow|這讓我很開心。→ This makes me happy.
+「很」不一定是 very|中文的「很」常常只是順口|她很忙。→ She is busy.
+很長的「…的」放名詞後|用關係子句、分詞或介系詞片語|我昨天遇到的人 → the person I met yesterday
+「…的時候」|when / while + 句子，或 during + 名詞|我小的時候 → when I was little
+「越來越」|比較級 and 比較級|天氣越來越熱。→ It is getting hotter and hotter.
+「越…越…」|the + 比較級, the + 比較級|越早越好。→ The sooner, the better.
+「一…就」|as soon as|我一到家就打給你。→ I will call you as soon as I get home.
+「不但…而且」|not only … but also|他不但會唱歌而且會跳舞。→ He can not only sing but also dance.
+「雖然…但是」「因為…所以」|英文只留一個連接詞|雖然很晚，他仍繼續工作。→ Although it was late, he kept working.
+「對…來說」|for + 人|對我來說這很難。→ It is hard for me.
+「隨著」|as + 句子；with + 名詞|隨著時間過去 → as time goes by
+「透過、藉由」|by + Ving；through + 名詞|藉由閱讀 → by reading
+「為了」|to V / in order to V；for + 名詞|為了保持健康 → to stay healthy
+「關於」|about / on|一本關於歷史的書 → a book about history
+「大約」「幾乎」|about / around；almost / nearly|大約一百人 → about one hundred people
+「不得不」「忍不住」|have to；can't help + Ving|我忍不住笑了。→ I couldn't help laughing.
+「覺得」|看法用 think；感受用 feel|我覺得他是對的。→ I think he is right.
+「希望」「祝」|hope + 子句；wish + 人 + 名詞|祝你好運。→ I wish you good luck.
+「認識」|第一次認識用 meet；認識很久用 know|我去年認識他。→ I met him last year.
+「玩」不一定是 play|出去玩用 have fun / hang out；去某地玩用 visit|我去日本玩。→ I visited Japan.
+「人」的譯法|泛指用 people；某一個人用 person|很多人 → many people
+「大家」|everyone（動詞用單數）|大家都知道。→ Everyone knows.
+「自己」|反身代名詞，或 one's own|這是我自己做的。→ I made it myself.
+「沒有」的譯法|過去沒做 didn't；不擁有 don't have；不存在 there is no|我沒有去。→ I didn't go.
+「還沒」|haven't + 過去分詞 + yet|我還沒吃。→ I haven't eaten yet.
+「已經…了」|have already + 過去分詞|我已經做完了。→ I have already finished.
+「曾經」「從未」|have ever / have never + 過去分詞|我從未去過那裡。→ I have never been there.
+「正在」|be + Ving|他正在睡覺。→ He is sleeping.
+「快要」|be about to|電影快開始了。→ The movie is about to start.
+「可能」|may / might；It is possible that|他可能生病了。→ He may be sick.
+「好像」「似乎」|seem；It seems that|他好像很累。→ He seems tired.
+「據說」|It is said that|據說他很有錢。→ It is said that he is rich.
+「值得」|be worth + Ving|這部電影值得一看。→ The movie is worth watching.
+「花（時間／錢）」|人用 spend；事情用 It takes；東西用 cost|我花了兩小時。→ It took me two hours.
+「影響」|動詞 affect；名詞 have an effect on|天氣影響心情。→ Weather affects our mood.
+「導致」「造成」|cause / lead to / result in|抽菸導致疾病。→ Smoking causes disease.
+「由於」|because of / due to + 名詞|由於颱風 → because of the typhoon
+「除了」的兩種意思|besides（還有）；except（不包括）|除了他，大家都來了。→ Everyone came except him.
+「…之一」|one of the + 複數名詞|我最好的朋友之一 → one of my best friends
+「第一次」|This is the first time + 完成式|這是我第一次來這裡。→ This is the first time I have been here.
+「每隔」|every other day；every two weeks|每隔一天 → every other day
+數字：萬與億|一萬 ten thousand；十萬 one hundred thousand；一億 one hundred million|兩萬人 → twenty thousand people
+成語不要逐字翻|把意思翻出來就好|人山人海 → It was very crowded.
+不重複主詞|中文說「我哥哥他…」，英文只留一個主詞|My brother is a doctor.
+長句先拆再接|先寫成兩三個短句，再用連接詞接起來|先求正確，再求漂亮。
+寫完的檢查順序|① 意思有沒有漏 ② 主詞和動詞 ③ 時態 ④ 單複數和冠詞 ⑤ 拼字、大小寫、標點|每次都照同一個順序檢查。`
+};
+const MORE2={
+'片語':`look like|看起來像|She looks like her mother.
+look around|環顧四周|He looked around the room.
+look out / watch out|小心|Look out! A car is coming.
+hear from|收到…的消息|I haven't heard from him for months.
+hear of|聽說過|I have never heard of that singer.
+think of|想到；認為|What do you think of the plan?
+think over|仔細考慮|Let me think it over.
+dream of|夢想|She dreams of becoming a pilot.
+care about|在乎|He cares about his family.
+laugh at|嘲笑|Don't laugh at others.
+knock on|敲|Someone is knocking on the door.
+leave for|出發前往|He left for Tokyo this morning.
+go + Ving|去從事（活動）|go shopping, go swimming, go hiking
+go for a walk|去散步|Let's go for a walk.
+go on a trip|去旅行|We went on a trip to Hualien.
+go ahead|請便、進行|Go ahead and ask.
+go by|（時間）過去|Time goes by quickly.
+go out|外出；熄滅|The lights went out.
+go back|回去|I went back to my hometown.
+come from|來自|She comes from Canada.
+come out|出版；出現|The book came out last year.
+come back|回來|When will you come back?
+take a look at|看一看|Take a look at this picture.
+take a rest / take a break|休息|Let's take a break.
+take a walk|散步|We took a walk after dinner.
+take turns|輪流|We take turns cooking.
+take notes|做筆記|Take notes in class.
+take action|採取行動|We must take action now.
+take one's time|慢慢來|Take your time.
+take part in|參加|He took part in the race.
+do one's best|盡力|I will do my best.
+do well in|在…表現好|She does well in math.
+do harm to / do good to|對…有害 / 有益|Smoking does harm to your health.
+do 人 a favor|幫某人一個忙|Could you do me a favor?
+keep in mind|記住|Keep this rule in mind.
+keep a diary|寫日記|She keeps a diary in English.
+keep in touch|保持聯絡|Let's keep in touch.
+keep an eye on|留意、看顧|Keep an eye on your bag.
+keep … away from|使…遠離|Keep children away from fire.
+keep on + Ving|持續|He kept on talking.
+lose weight / put on weight|減重 / 變胖|I want to lose weight.
+lose one's temper|發脾氣|He lost his temper.
+fall asleep|睡著|I fell asleep in class.
+fall in love with|愛上|He fell in love with her.
+fall behind|落後|Don't fall behind in your studies.
+catch a cold|感冒|I caught a cold last week.
+give a speech|演講|She gave a speech at school.
+give 人 a hand|幫忙|Can you give me a hand?
+have a good time|玩得愉快|We had a good time at the party.
+have nothing to do with|與…無關|It has nothing to do with me.
+have … in common|有共同點|We have a lot in common.
+pay for|付…的錢|I paid for the meal.
+pay back|還錢|I will pay you back tomorrow.
+spend … on|把（錢、時間）花在|He spends a lot of money on books.
+make a living|謀生|He makes a living by teaching.
+make friends with|與…交朋友|It is easy to make friends with her.
+make a mistake|犯錯|Everyone makes mistakes.
+make money|賺錢|He wants to make more money.
+make a difference|有影響、有差別|Your help makes a difference.
+make an effort|努力|Make an effort to speak English.
+make room for|讓出空間給|Please make room for the old lady.
+play a joke on|開…的玩笑|They played a joke on me.
+shake hands with|與…握手|He shook hands with me.
+say hello to|向…問好|Say hello to your parents for me.
+be born in|出生於|I was born in 2008.
+be made up of|由…組成|The team is made up of ten players.
+be covered with|被…覆蓋|The mountain is covered with snow.
+be crowded with|擠滿|The street is crowded with people.
+be located in|位於|The school is located in Taichung.
+be based on|根據|The movie is based on a true story.
+be related to|與…有關|Health is related to diet.
+be faced with|面臨|We are faced with many problems.
+be in trouble|有麻煩|He is in trouble.
+be in danger|有危險|The animals are in danger.
+be on a diet|節食|She is on a diet.
+be out of order|故障|The machine is out of order.
+be in a good mood|心情好|He is in a good mood today.
+in public|公開、當眾|Don't shout in public.
+in person|親自|I want to thank her in person.
+in advance|事先|Please tell me in advance.
+in need|有需要的|We should help people in need.
+in the long run|長遠來看|It will save money in the long run.
+in recent years|近年來（常接現在完成式）|In recent years, prices have risen.
+at the moment / at present|目前|He is busy at the moment.
+at once / right away|立刻|Come here at once.
+on sale|特價中；出售中|The shoes are on sale.
+on fire|著火|The house is on fire.
+on duty|值班|Who is on duty today?
+on average|平均而言|On average, I sleep seven hours.
+on the whole|整體而言|On the whole, the trip was great.
+out of date / up to date|過時 / 最新|The map is out of date.
+out of control|失控|The fire was out of control.
+out of the question|不可能|Going out now is out of the question.
+up to you|由你決定|It is up to you.
+once in a while / now and then|偶爾|I eat out once in a while.
+day and night|日以繼夜|They worked day and night.
+little by little / step by step|逐漸地 / 一步一步|Little by little, he got better.
+one by one|一個接一個|They came in one by one.
+face to face|面對面|We talked face to face.
+sooner or later|遲早|You will know sooner or later.
+more or less|或多或少|I more or less agree.
+as usual|像平常一樣|He got up at six as usual.
+as a result of|由於|As a result of the storm, flights were cancelled.
+with pleasure|樂意|I will help you with pleasure.
+to one's surprise|令某人驚訝的是|To my surprise, he won.`,
+'單字':`environment|環境|We should protect the environment.
+pollution|污染（不可數）|Air pollution is a serious problem.
+global warming|全球暖化|Global warming affects everyone.
+climate change|氣候變遷|Climate change is getting worse.
+recycle|回收|We recycle paper and bottles.
+energy|能源、精力（不可數）|We should save energy.
+natural resources|自然資源|Water is an important natural resource.
+endangered species|瀕危物種|We must protect endangered species.
+waste|浪費（動詞、名詞）|Don't waste food.
+plastic|塑膠|Use fewer plastic bags.
+technology|科技|Technology changes our lives.
+the Internet|網路（加 the，on the Internet）|I found it on the Internet.
+social media|社群媒體|Many teenagers use social media.
+artificial intelligence (AI)|人工智慧|AI is changing many jobs.
+device|裝置|a mobile device
+online|線上（形容詞、副詞）|I take online classes. I shop online.
+convenient|方便的（主詞通常是事物）|It is convenient to shop online.
+information|資訊（不可數）|a piece of information
+health|健康（名詞）/ healthy（形容詞）|Exercise is good for your health.
+exercise|運動（名詞、動詞）|I exercise three times a week.
+diet|飲食|a balanced diet
+nutrition|營養|Children need good nutrition.
+disease / illness|疾病|heart disease
+stress / pressure|壓力|Students are under a lot of pressure.
+mental health|心理健康|Mental health is as important as physical health.
+treatment|治療|He is receiving treatment.
+education|教育|Education is important.
+knowledge|知識（不可數）|Reading gives us knowledge.
+skill / ability|技能 / 能力|the ability to solve problems
+creativity|創造力|Art helps develop creativity.
+competition / cooperation|競爭 / 合作|Cooperation is better than competition.
+responsibility|責任|It is our responsibility to help.
+confidence|自信|She speaks with confidence.
+society|社會（泛指時不加 the）|Society is changing fast.
+economy|經濟|The economy is growing.
+government|政府|The government made a new policy.
+policy|政策|a new policy
+tourism / tourist|觀光業 / 觀光客|Tourism is important to Taiwan.
+culture / tradition|文化 / 傳統|Chinese New Year is a tradition.
+generation|世代|the younger generation
+the elderly|老年人（複數動詞）|The elderly need more care.
+low birth rate|低出生率|Taiwan has a low birth rate.
+aging society|高齡化社會|We live in an aging society.
+anxious / nervous|焦慮 / 緊張|I am nervous about the test.
+embarrassed|尷尬的|I felt embarrassed.
+disappointed|失望的|She was disappointed with the result.
+grateful|感激的|I am grateful for your help.
+confused|困惑的|I am confused about the rule.
+relieved|鬆一口氣的|I was relieved to hear that.
+achieve|達成|She achieved her goal.
+develop|發展、培養|develop a habit
+provide|提供|The hotel provides free breakfast.
+reduce|減少|Reduce waste.
+encourage|鼓勵（encourage 人 to V）|My teacher encouraged me to try.
+support|支持|My parents support me.
+avoid|避免（接 Ving）|Avoid eating too much sugar.
+require|需要、要求|The job requires patience.
+allow|允許（allow 人 to V）|My parents allow me to go out.
+consider|考慮（接 Ving）|I am considering moving.
+realize|了解、意識到|I realized my mistake.
+notice|注意到|I noticed a change.
+attract|吸引|The festival attracts many tourists.
+replace|取代|Machines will replace some workers.
+survive|存活|Few animals can survive here.
+promote|促進、推廣|promote local culture
+benefit|好處（名詞）；使受益（動詞）|Exercise benefits everyone.
+popular|受歡迎的（be popular with / among）|The game is popular among students.
+common|常見的|a common mistake
+serious|嚴重的；認真的|a serious problem
+important / necessary|重要的 / 必要的|It is necessary to rest.
+possible / impossible|可能的 / 不可能的|It is possible to finish today.
+available|可取得的、有空的|Tickets are available online.
+various|各種的|various kinds of food
+local|當地的|local food
+traditional / modern|傳統的 / 現代的|traditional culture
+public / private|公共的 / 私人的|public transportation
+gradually|逐漸地|Prices gradually went up.
+recently|最近（常接完成式或過去式）|I have been busy recently.
+especially|尤其|I like fruit, especially mangoes.
+actually|其實|Actually, I don't know.`,
+'不規則動詞':`三態怎麼用|原形 – 過去式 – 過去分詞|過去式用在過去的事；過去分詞用在完成式（have + p.p.）和被動（be + p.p.）
+規則動詞加 ed|直接加 ed；e 結尾加 d；子音+y 改 ied；短母音+單子音重複字尾|worked, liked, studied, stopped
+be – was / were – been|是|
+become – became – become|變成|
+begin – began – begun|開始|
+bite – bit – bitten|咬|
+blow – blew – blown|吹|
+break – broke – broken|打破|
+bring – brought – brought|帶來|
+build – built – built|建造|
+buy – bought – bought|買|
+catch – caught – caught|抓住、趕上|
+choose – chose – chosen|選擇|
+come – came – come|來|
+cost – cost – cost|花費|
+cut – cut – cut|切|
+do – did – done|做|
+draw – drew – drawn|畫|
+drink – drank – drunk|喝|
+drive – drove – driven|開車|
+eat – ate – eaten|吃|
+fall – fell – fallen|掉落|
+feed – fed – fed|餵|
+feel – felt – felt|感覺|
+fight – fought – fought|打架、對抗|
+find – found – found|找到|
+fly – flew – flown|飛|
+forget – forgot – forgotten|忘記|
+forgive – forgave – forgiven|原諒|
+freeze – froze – frozen|結冰|
+get – got – got / gotten|得到|
+give – gave – given|給|
+go – went – gone|去|
+grow – grew – grown|成長|
+hang – hung – hung|掛|
+have – had – had|有|
+hear – heard – heard|聽到|
+hide – hid – hidden|藏|
+hit – hit – hit|打|
+hold – held – held|握；舉辦|
+hurt – hurt – hurt|傷害|
+keep – kept – kept|保持|
+know – knew – known|知道|
+lay – laid – laid|放置；下蛋|
+lead – led – led|帶領|
+leave – left – left|離開；遺留|
+lend – lent – lent|借出|
+let – let – let|讓|
+lie – lay – lain|躺|「說謊」是規則動詞：lie – lied – lied
+lose – lost – lost|失去|
+make – made – made|做|
+mean – meant – meant|意思是|
+meet – met – met|遇見|
+pay – paid – paid|付|
+put – put – put|放|
+read – read – read|讀|三態拼法相同，過去式和過去分詞唸成 red 的音
+ride – rode – ridden|騎|
+ring – rang – rung|響|
+rise – rose – risen|上升|
+run – ran – run|跑|
+say – said – said|說|
+see – saw – seen|看見|
+sell – sold – sold|賣|
+send – sent – sent|寄|
+set – set – set|設定|
+shake – shook – shaken|搖|
+shine – shone – shone|照耀|
+shoot – shot – shot|射|
+show – showed – shown|展示|
+shut – shut – shut|關|
+sing – sang – sung|唱|
+sit – sat – sat|坐|
+sleep – slept – slept|睡|
+speak – spoke – spoken|說|
+spend – spent – spent|花|
+spread – spread – spread|散播|
+stand – stood – stood|站|
+steal – stole – stolen|偷|
+stick – stuck – stuck|黏；卡住|
+sweep – swept – swept|掃|
+swim – swam – swum|游泳|
+take – took – taken|拿|
+teach – taught – taught|教|
+tear – tore – torn|撕|
+tell – told – told|告訴|
+think – thought – thought|想|
+throw – threw – thrown|丟|
+understand – understood – understood|了解|
+wake – woke – woken|醒|
+wear – wore – worn|穿|
+win – won – won|贏|
+write – wrote – written|寫|`,
+'連接轉折':`First / First of all|首先|First of all, we should save water.
+Second / Next / Then|其次、接著|Next, turn off the lights.
+Finally / Last but not least|最後|Finally, we reached the top.
+In addition / Moreover / Besides|此外|In addition, it is cheap.
+However|然而（後面加逗號）|It was late. However, he kept working.
+Nevertheless|儘管如此|It rained. Nevertheless, we went out.
+On the contrary|相反地|He is not lazy. On the contrary, he works hard.
+In contrast|相較之下|In contrast, his brother is quiet.
+Instead|反而、取而代之|I didn't go out. Instead, I stayed home.
+Otherwise|否則|Hurry up. Otherwise, you will be late.
+Therefore / Thus|因此|He was sick. Therefore, he stayed home.
+As a result|結果|It rained hard. As a result, the game was cancelled.
+For this reason|因為這個原因|For this reason, I can't agree.
+For example / For instance|例如（後面接句子）|For example, you can take the bus.
+such as|例如（後面接名詞，不加 etc.）|I like fruit, such as apples and bananas.
+In fact / Actually|事實上|In fact, I have never met him.
+In other words / That is to say|換句話說|In other words, we lost.
+In my opinion|我認為|In my opinion, it is a good idea.
+As far as I am concerned|就我而言|As far as I am concerned, it is too expensive.
+Generally speaking / In general|一般而言|Generally speaking, cats are quiet.
+To be honest|老實說|To be honest, I don't like it.
+In short / To sum up / In conclusion|總之|In short, we need more time.
+Above all|最重要的是|Above all, be honest.
+After all|畢竟|Don't blame him. After all, he is a child.
+At the same time / Meanwhile|同時|Meanwhile, the others were waiting.
+Since then|從那時起（接完成式）|Since then, we have been friends.
+Afterwards / Later|之後|We had dinner. Afterwards, we went home.
+Nowadays|現今（接現在式）|Nowadays, most people have smartphones.
+In the past|過去（接過去式）|In the past, people wrote letters.
+Similarly / Likewise|同樣地|Similarly, children need rest.
+Fortunately / Unfortunately|幸運地 / 不幸地|Unfortunately, we missed the train.
+To my surprise|令我驚訝的是|To my surprise, he agreed.
+Needless to say|不用說|Needless to say, she was angry.
+As we all know|眾所周知|As we all know, the earth is round.
+Not to mention|更不用說|He can't ride a bike, not to mention drive a car.
+Even so|即使如此|It is expensive. Even so, I want it.
+In that case|那樣的話|In that case, I will go with you.
+Anyway|無論如何|Anyway, thank you.
+As for|至於|As for me, I prefer tea.
+Speaking of|說到|Speaking of food, I am hungry.
+Now that|既然|Now that you are here, let's start.
+On the whole|整體而言|On the whole, I am satisfied.
+What is more|更重要的是、而且|It is cheap. What is more, it is good.
+What is worse|更糟的是|I was late. What is worse, I forgot my homework.
+As long as / Only if|只要 / 只有在|As long as you try, you will learn.
+The same is true of|…也是如此|The same is true of adults.`,
+'翻譯秘訣':`「近年來」|in recent years，動詞常用現在完成式|近年來物價上漲。→ In recent years, prices have risen.
+「越來越受歡迎」|become more and more popular|Online shopping is becoming more and more popular.
+「受…歡迎」|be popular with / among|這首歌很受年輕人歡迎。→ The song is popular among young people.
+「隨著…的普及」|with the popularity of|With the popularity of smartphones, people read less.
+「使…成為可能」|make it possible to V|科技使在家工作成為可能。→ Technology makes it possible to work from home.
+「…的數量」|the number of + 複數名詞（單數動詞）|觀光客的數量增加了。→ The number of tourists has increased.
+「在…方面」|in terms of；in|在價格方面 → in terms of price
+「是否」|whether|我不知道他是否會來。→ I don't know whether he will come.
+「所謂的」|so-called|所謂的專家 → the so-called experts
+「養成習慣」|develop / form a habit of + Ving|養成閱讀的習慣 → develop a habit of reading
+「造成傷害」|do harm to；cause damage to|Plastic does harm to the ocean.
+「面臨」|face；be faced with|我們面臨很多挑戰。→ We face many challenges.
+「採取措施」|take measures / take action|The government should take action.
+「提高意識」|raise awareness of|提高環保意識 → raise awareness of environmental protection
+「適應」|adapt to；get used to|適應新環境 → adapt to a new environment
+「有助於」|help (to) V；be helpful to|閱讀有助於學習。→ Reading helps us learn.
+「與…有關」|be related to；have something to do with|這和天氣有關。→ It is related to the weather.
+「越來越少」|可數 fewer and fewer；不可數 less and less|越來越少人寫信。→ Fewer and fewer people write letters.
+「大幅」「逐漸」|greatly / significantly；gradually|價格大幅上漲。→ Prices have risen greatly.
+「佔」|account for；make up|女性佔一半。→ Women make up half.
+「平均」|on average；the average + 名詞|平均每人 → on average, each person
+「根據統計／研究」|according to statistics / a study|According to a study, sleep helps memory.
+「扮演重要角色」|play an important role in|Parents play an important role in education.
+「對…有好處／壞處」|be good / bad for|蔬菜對健康有好處。→ Vegetables are good for your health.
+「代替」|instead of + 名詞／Ving|走路代替開車 → walk instead of driving
+「而不是」|rather than；instead of|選擇品質而不是價格 → choose quality rather than price
+「以…聞名」|be famous for|台灣以美食聞名。→ Taiwan is famous for its food.
+「位於」|be located in / on / at|這家店位於市中心。→ The shop is located in the city center.
+「舉辦」「舉行」|hold；take place|比賽在週六舉行。→ The game will take place on Saturday.
+「感到」＋情緒|feel + 形容詞（人用 -ed）|我感到失望。→ I feel disappointed.
+「令人…的」|用 -ing 形容詞|令人興奮的消息 → exciting news
+主詞太長時|用 It 當虛主詞，把長的放後面|每天運動很重要。→ It is important to exercise every day.
+中文一串動詞|分清主要動詞，其餘用 to V、Ving 或 and|他走過去打開門。→ He walked over and opened the door.
+「例如…等等」|such as A, B, and C（不再加 etc.）|水果，例如蘋果和香蕉 → fruit, such as apples and bananas
+「們」和複數|中文沒有「們」，英文名詞也要看是不是複數|很多學生 → many students
+「一個」不要漏|單數可數名詞前要有 a / an / the|他是老師。→ He is a teacher.
+時間地點的位置|可放句首加逗號，或放句尾|在台灣，夏天很熱。→ In Taiwan, summer is hot.
+「去年／下週／每天」|前面不加 in / on / at|我去年去了日本。→ I went to Japan last year.
+「在…歲時」|at the age of；when + 主詞 + was|在十歲時 → at the age of ten
+「…年前」「…年後」|… ago（從現在算）；… later（從過去某時算）|三年前 → three years ago
+「直到…才」|not … until|我直到昨天才知道。→ I didn't know until yesterday.
+「連…都」|even|連小孩都知道。→ Even children know it.
+「只有…才」|only|只有努力才能成功。→ Only hard work leads to success.
+「再也不」|not … anymore；no longer|我再也不怕了。→ I am not afraid anymore.
+「差一點」|almost / nearly|我差一點遲到。→ I was almost late.`
+};
+[MORE,MORE2].forEach(M=>Object.keys(M).forEach(k=>{LIB[k]=LIB[k]||[];M[k].split('\n').forEach(l=>{const p=l.split('|');if(p.length>1)LIB[k].push(p)})}));
+let tab='片語';
+function libCard(e,rm,tg){return `<div class="card"><div class="item" style="margin:0"><b class="en">${esc(e[0])}</b><span>${tg?`<span class="tag">${tg}</span> `:''}${rm!==undefined?`<button data-rm="${rm}" style="padding:2px 8px;font-size:13px">刪除</button>`:''}</span></div><div>${esc(e[1])}</div>${e[2]?`<div class="en sub">${esc(e[2])}</div>`:''}</div>`}
+function libAll(t){return LIB[t].map(e=>({e})).concat(st.mine.map((m,i)=>({e:[m.a,m.b,m.c],i,t:m.t})).filter(x=>x.t===t))}
+function lib(){
+  quiz=null;
+  app.innerHTML=`<h2>秘笈庫</h2>
+  <div class="bar">${Object.keys(LIB).map(t=>`<button data-tab="${t}"${t===tab?' class="pri"':''}>${t}（${libAll(t).length}）</button>`).join('')}</div>
+  ${libAll(tab).map(x=>libCard(x.e,x.i)).join('')}
+  <form id="add" class="card"><b>加入自己的${tab}</b>
+   <div class="bar"><input name="a" placeholder="英文／重點" required style="flex:1;min-width:140px"><input name="b" placeholder="中文意思" required style="flex:1;min-width:140px"></div>
+   <input name="c" placeholder="例句或提醒（可不填）" style="width:100%">
+   <div class="bar"><button class="pri">加入</button></div></form>`;
+}
+const K='zh2en_teach_v1',$=s=>document.querySelector(s),app=$('#app');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let st={weak:[],done:[],mine:[]};try{st=Object.assign(st,JSON.parse(localStorage.getItem(K)))}catch(e){}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(st))}catch(e){}};
+let quiz=null;
+
+function badge(s){return st.weak.includes(s.id)?'<span class="tag b">建議先學</span>':st.done.includes(s.id)?'<span class="tag">已練習</span>':''}
+function subBtn(s){return `<button class="item" data-sub="${s.id}"><span><b>${s.n}</b><br><span class="sub">${A[s.a].n}</span></span>${badge(s)}</button>`}
+function qHtml(s,q,no){
+  return `<div class="card q" data-sub="${s.id}"><div class="sub">${no}</div><div class="zh">${esc(q[0])}</div><div class="sub">哪一句英文最正確？</div>
+  ${shuf([1,2,3]).map(k=>`<button class="opt en" data-ok="${k===1?1:0}">${esc(q[k])}</button>`).join('')}
+  <div class="why" hidden>${esc(q[4])}</div></div>`;
+}
+
+function home(){
+  quiz=null;
+  app.innerHTML=`
+  <div class="msg"><b>想跟你說</b><br>錯一題，不代表你英文不好。找到卡住的地方，就有下一步可以試。腦中知道中文意思、英文卻寫不出來時，先別把整句擦掉：留下已經寫出的部分，先找出「誰、做什麼」，再對照中文補上少掉的意思。</div>
+  <div class="card"><h3 style="margin-top:0">第一步：找出卡在哪裡</h3>
+   <div class="sub">12 題選擇題，每種錯誤類型一題，做完會告訴你建議先學哪幾課。</div>
+   <div class="bar"><button class="pri" id="start">開始診斷</button>${st.weak.length?`<span class="sub">上次診斷：建議先學 ${st.weak.length} 課</span>`:''}</div></div>
+  <h2>第二步：一課一課學</h2>
+  ${A.map(a=>`<h3>${a.n}</h3><div class="sub">${a.d}</div>${a.s.map(s=>`<button class="item" data-sub="${s.id}"><b>${s.n}</b>${badge(s)}</button>`).join('')}`).join('')}`;
+}
+function search(t){
+  quiz=null;t=t.toLowerCase();
+  const hit=SUBS.filter(s=>JSON.stringify([s.n,s.c,s.st,s.ex,s.q,A[s.a].n]).toLowerCase().includes(t));
+  const lh=[];Object.keys(LIB).forEach(k=>libAll(k).forEach(x=>{if(x.e.join(' ').toLowerCase().includes(t))lh.push(libCard(x.e,undefined,k))}));
+  app.innerHTML=`<h2>課程（${hit.length}）</h2>`+(hit.map(subBtn).join('')||'<p class="sub">沒有相關課程。</p>')+
+   `<h2>秘笈庫（${lh.length}）</h2>`+(lh.join('')||'<p class="sub">秘笈庫裡沒有相關內容。</p>');
+}
+function lesson(id){
+  quiz=null;const s=SUBS.find(x=>x.id===id);
+  app.innerHTML=`<div class="sub" style="margin-top:14px">${A[s.a].n}</div><h2 style="margin-top:0">${s.n}</h2>
+  <div class="card"><b>這是什麼錯？</b><br>${s.c}</div>
+  <div class="card"><b>可以這樣做</b><ol>${s.st.map(x=>`<li>${x}</li>`).join('')}</ol></div>
+  <h3>看例子</h3>
+  ${s.ex.map(e=>`<div class="card"><div class="zh">${esc(e[0])}</div><div class="en no">✗ ${esc(e[1])}</div><div class="en ok">✓ ${esc(e[2])}</div><div class="sub">${esc(e[3])}</div></div>`).join('')}
+  <h3>換你練習</h3>
+  ${s.q.map((q,i)=>qHtml(s,q,'練習 '+(i+1)+' / '+s.q.length)).join('')}
+  <div id="fin"></div>`;
+  scrollTo(0,0);
+}
+function startQuiz(){
+  quiz={list:shuf(SUBS.map(s=>({s,q:s.q[Math.floor(Math.random()*s.q.length)]}))),i:0,miss:[]};showQuiz();
+}
+function showQuiz(){
+  const x=quiz.list[quiz.i];
+  app.innerHTML=`<h2>診斷測驗</h2>${qHtml(x.s,x.q,'第 '+(quiz.i+1)+' 題 / 共 '+quiz.list.length+' 題')}<div id="fin"></div>`;
+  scrollTo(0,0);
+}
+function result(){
+  const miss=quiz.miss;st.weak=miss.slice();save();
+  app.innerHTML=`<h2>診斷結果</h2>
+  <div class="msg">答對 <b>${quiz.list.length-miss.length}</b> / ${quiz.list.length} 題。${miss.length?'下面是這次沒通過的類型，建議從第一個開始學。':'這次全部通過，可以挑有興趣的課再練習。'}</div>
+  ${A.map((a,i)=>{const m=a.s.filter(s=>miss.includes(s.id)).length;return `<div class="item"><span>${a.n}</span><span class="tag${m?' b':''}">${a.s.length-m} / ${a.s.length}</span></div>`}).join('')}
+  ${miss.length?'<h3>建議先學</h3>'+miss.map(id=>subBtn(SUBS.find(s=>s.id===id))).join(''):''}
+  <p class="sub">每種類型只考一題，答錯一次只是一個訊號，不代表你這方面一定不好。學完課程後換題再測，結果會更可靠；不同的合理寫法可以請老師一起看。</p>
+  <div class="bar"><button class="pri" id="start">再測一次</button></div>`;
+  quiz=null;scrollTo(0,0);
+}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t)return;
+  if(t.id==='home'){$('#q').value='';return home()}
+  if(t.id==='start')return startQuiz();
+  if(t.id==='lib'){$('#q').value='';return lib()}
+  if(t.dataset.tab){tab=t.dataset.tab;return lib()}
+  if(t.dataset.rm){if(confirm('確定刪除這一筆？')){st.mine.splice(+t.dataset.rm,1);save();lib()}return}
+  if(t.id==='next'){quiz.i++;return quiz.i<quiz.list.length?showQuiz():result()}
+  if(t.dataset.sub)return lesson(t.dataset.sub);
+  if(t.classList.contains('opt')){
+    const box=t.closest('.q'),ok=t.dataset.ok==='1',id=box.dataset.sub;
+    box.querySelectorAll('.opt').forEach(b=>{b.disabled=true;if(b.dataset.ok==='1')b.classList.add('right')});
+    if(!ok)t.classList.add('wrong');
+    box.dataset.r=ok?1:0;
+    const w=box.querySelector('.why');w.hidden=false;w.innerHTML=(ok?'<b>答對了。</b>':'<b>這題先記下來。</b>')+w.innerHTML;
+    if(quiz){
+      if(!ok)quiz.miss.push(id);
+      $('#fin').innerHTML=`<div class="bar"><button class="pri" id="next">${quiz.i+1<quiz.list.length?'下一題':'看診斷結果'}</button></div>`;
+    }else{
+      const all=[...document.querySelectorAll('.q')];
+      if(all.every(b=>b.dataset.r)){
+        const good=all.every(b=>b.dataset.r==='1');
+        if(!st.done.includes(id))st.done.push(id);
+        if(good)st.weak=st.weak.filter(x=>x!==id);
+        save();
+        $('#fin').innerHTML=`<div class="msg">${good?'三題都答對，這一課完成了。':'有幾題沒過沒關係，回頭再看一次例子，下次再練。'}</div><div class="bar"><button data-sub="${id}">再練一次</button></div>`;
+      }
+    }
+  }
+});
+document.addEventListener('submit',e=>{
+  e.preventDefault();const f=e.target;
+  st.mine.push({t:tab,a:f.a.value.trim(),b:f.b.value.trim(),c:f.c.value.trim()});save();lib();
+});
+$('#q').oninput=e=>{const t=e.target.value.trim();t?search(t):home()};
+home();
+</script>
+</body>
+</html>
