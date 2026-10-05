@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High Agency OS | 生成型OS vs防禦型OS</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --navy: #1A2B5F;
+            --gold: #C9960C;
+            --teal: #0A7A72;
+            --white: #FFFFFF;
+            --light-gray: #F5F5F5;
+        }
+        
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang SC', sans-serif;
+            background: var(--white);
+            color: var(--navy);
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: var(--navy);
+            color: var(--white);
+            overflow-y: auto;
+            padding: 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+        }
+        
+        .sidebar h1 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--gold);
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 10px;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--gold);
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+            font-size: 14px;
+            border-radius: 4px;
+        }
+        
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .nav-section {
+            margin-bottom: 20px;
+        }
+        
+        .nav-section-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--teal);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .nav-item {
+            padding: 8px 12px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .nav-item:hover {
+            background: rgba(201, 150, 12, 0.3);
+            color: var(--gold);
+        }
+        
+        .nav-item.active {
+            background: var(--gold);
+            color: var(--navy);
+            font-weight: bold;
+        }
+        
+        .main {
+            margin-left: 280px;
+            flex: 1;
+            padding: 40px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--teal);
+            padding-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            color: var(--navy);
+        }
+        
+        .header .subtitle {
+            font-size: 14px;
+            color: var(--teal);
+            font-weight: bold;
+        }
+        
+        .items-grid {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        
+        .item {
+            background: var(--light-gray);
+            border-left: 4px solid var(--teal);
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 4px;
+        }
+        
+        .item:hover {
+            background: #EBEBEB;
+            transform: translateX(4px);
+        }
+        
+        .item.expanded {
+            background: #E8F4F8;
+            border-left-color: var(--gold);
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .item-num {
+            font-size: 12px;
+            background: var(--navy);
+            color: var(--white);
+            padding: 2px 8px;
+            border-radius: 3px;
+            margin-right: 8px;
+        }
+        
+        .item-old {
+            font-size: 16px;
+            color: #D32F2F;
+            font-weight: bold;
+        }
+        
+        .item-content {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--teal);
+        }
+        
+        .item.expanded .item-content {
+            display: block;
+        }
+        
+        .content-pair {
+            margin-bottom: 16px;
+            padding: 12px;
+            background: var(--white);
+            border-radius: 4px;
+        }
+        
+        .lang-label {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        
+        .item-new {
+            font-size: 16px;
+            color: #0A7A72;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .bilingual-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .lang-col {
+            padding: 12px;
+            background: rgba(0,0,0,0.02);
+            border-radius: 4px;
+        }
+        
+        .lang-col h4 {
+            font-size: 12px;
+            color: var(--teal);
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        
+        .lang-col .old-text {
+            color: #D32F2F;
+            font-size: 15px;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .lang-col .new-text {
+            color: var(--teal);
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        
+        .tts-btn {
+            background: var(--gold);
+            color: var(--navy);
+            border: none;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin-left: 8px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .tts-btn:hover {
+            background: #B8860B;
+            transform: scale(1.05);
+        }
+        
+        .tts-btn.playing {
+            background: var(--teal);
+            color: var(--white);
+        }
+        
+        .toggle-icon {
+            color: var(--teal);
+            font-weight: bold;
+            font-size: 18px;
+            user-select: none;
+        }
+        
+        .item.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--gold);
+        }
+        
+        .stat-card .label {
+            font-size: 12px;
+            margin-top: 6px;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--teal);
+            background: var(--white);
+            color: var(--teal);
+            cursor: pointer;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn:hover {
+            background: var(--teal);
+            color: var(--white);
+        }
+        
+        .filter-btn.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--navy);
+        }
+        
+        @media (max-width: 900px) {
+            .bilingual-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                width: 240px;
+            }
+            
+            .main {
+                margin-left: 240px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+                padding: 15px;
+            }
+            
+            .sidebar h1 {
+                font-size: 16px;
+            }
+            
+            .main {
+                margin-left: 200px;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .hidden { display: none !important; }
+        
+        .scroll-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--teal);
+            color: var(--white);
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        
+        .scroll-hint.show { opacity: 1; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>目錄 Index</h1>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜尋 Search...">
+            </div>
+            <div id="navContainer"></div>
+        </div>
+        
+        <div class="main">
+            <div class="header">
+                <div>
+                    <h1 id="sectionTitle">High Agency OS</h1>
+                    <div class="subtitle">防禦型 Defensive vs 生成型 Generative</div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="stat-card" style="width: 150px; background: linear-gradient(135deg, var(--gold), var(--teal));">
+                        <div class="number" id="itemCount">400</div>
+                        <div class="label">Total Items</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="number">4</div>
+                    <div class="label">Groups 組別</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">100×4</div>
+                    <div class="label">Contrasts 對比句</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">中文+English</div>
+                    <div class="label">Bilingual 雙語</div>
+                </div>
+            </div>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterGroup('all')">All Groups</button>
+                <button class="filter-btn" onclick="filterGroup('group1')">Group 1-100</button>
+                <button class="filter-btn" onclick="filterGroup('group2')">Group 101-200</button>
+                <button class="filter-btn" onclick="filterGroup('group3')">Group 201-300</button>
+                <button class="filter-btn" onclick="filterGroup('group4')">教育 Education 301-400</button>
+            </div>
+            
+            <div id="contentArea" class="items-grid"></div>
+        </div>
+    </div>
+    
+    <div class="scroll-hint" id="scrollHint">Click item to expand / 點擊展開</div>
+    
+    <script>
+const CONTRASTS = {
+1: ["避免犯錯","快速發現錯誤並更新","Avoid making mistakes","Quickly discover and update errors"],
+2: ["不要失敗","提高每次測試的資訊量","Don't fail","Increase information from each test"],
+3: ["一定要成功","建立可重複成功的系統","Must succeed","Build systems for repeatable success"],
+4: ["不要丟臉","讓真實能力持續提高","Avoid embarrassment","Continuously improve real capability"],
+5: ["證明自己是對的","提高模型與現實的吻合度","Prove yourself right","Improve alignment between model and reality"],
+6: ["不要被否定","從否定中辨認有效資訊","Avoid negation","Extract valid information from rejection"],
+7: ["不要被批評","提高接收高品質回饋的能力","Avoid criticism","Improve ability to receive quality feedback"],
+8: ["不能讓人失望","建立清楚邊界與可靠承諾","Can't disappoint people","Establish clear boundaries and reliable commitments"],
+9: ["一定要被喜歡","建立真實而穩定的關係","Must be liked","Build authentic and stable relationships"],
+10: ["讓所有人滿意","對真正重要的人與目標負責","Satisfy everyone","Take responsibility for what truly matters"],
+11: ["不要被討厭","保持真實與尊重","Avoid being disliked","Maintain authenticity and respect"],
+12: ["不要發生衝突","提高衝突後的修復能力","Avoid conflict","Improve ability to repair after conflict"],
+13: ["不要讓對方生氣","提高資訊傳遞的真實度","Keep others from getting angry","Increase truth in communication"],
+14: ["我要贏過對方","我要解決共同問題","I want to beat others","I want to solve common problems"],
+15: ["我要證明對方錯","我要找到哪個模型更接近現實","I want to prove others wrong","I want to find which model fits reality better"],
+16: ["不能被拒絕","提高找到真正匹配關係的效率","Can't be rejected","Improve efficiency of finding truly matched relationships"],
+17: ["不能失去任何人","建立有流動性、有邊界的關係網","Can't lose anyone","Build relationships with fluidity and boundaries"],
+18: ["抓住關係","提高關係品質","Hold onto relationships","Improve relationship quality"],
+19: ["控制對方","提高自己的可控制能力","Control others","Improve my own controllability"],
+20: ["猜對方在想什麼","直接取得資訊並確認","Guess what others are thinking","Directly obtain and confirm information"],
+21: ["不要孤單","建立與自己相處及連結他人的能力","Avoid loneliness","Build ability to be with myself and connect with others"],
+22: ["一定要有人陪","建立自主性後再進入關係","Must always have company","Establish autonomy before entering relationships"],
+23: ["維持表面和平","建立可以處理真實差異的關係","Maintain surface peace","Build relationships that handle real differences"],
+24: ["忍耐就是愛","愛包含尊重、界線、修復與共同成長","Endurance is love","Love includes respect, boundaries, repair, and growth"],
+25: ["永遠不要分開","讓關係持續具有共同價值","Never separate","Keep relationships having continuous shared value"],
+26: ["不要痛苦","提高處理痛苦的能力","Avoid suffering","Improve ability to process suffering"],
+27: ["不要焦慮","提高處理不確定性的能力","Avoid anxiety","Improve ability to handle uncertainty"],
+28: ["不要害怕","提高辨識風險與行動的能力","Avoid fear","Improve ability to identify risk and act"],
+29: ["不要難過","提高情緒整合與恢復能力","Avoid sadness","Improve emotional integration and recovery"],
+30: ["不要生氣","讀懂憤怒背後的需求、界線與威脅訊號","Avoid anger","Understand needs, boundaries and threats behind anger"],
+31: ["壓掉負面情緒","把情緒轉成系統資料","Suppress negative emotion","Convert emotion into system data"],
+32: ["永遠保持正能量","保持接觸現實的能力","Always stay positive","Maintain ability to contact reality"],
+33: ["趕快舒服","增加長期穩定度","Hurry to comfort","Increase long-term stability"],
+34: ["逃離壓力","建立適量壓力下仍能運作的能力","Escape stress","Build ability to function under appropriate pressure"],
+35: ["不要有問題","建立問題出現後可以更新的系統","Don't have problems","Build systems that update when problems appear"],
+36: ["把問題消滅","找出生成問題的機制","Eliminate problems","Find the mechanism generating problems"],
+37: ["恢復原狀","利用問題讓系統升級","Restore to original state","Use problems to upgrade systems"],
+38: ["不要出事","提高系統韌性","Don't let things happen","Increase system resilience"],
+39: ["預測所有事情","即使預測錯誤也能快速修正","Predict everything","Quickly correct even when predictions are wrong"],
+40: ["控制所有變數","找到真正可控制的Priority Node","Control all variables","Find truly controllable Priority Nodes"],
+41: ["一定要完美","持續迭代","Must be perfect","Continue iterating"],
+42: ["一次做到最好","快速產生第一版再更新","Get it perfect first time","Quickly generate v1 then update"],
+43: ["準備好了才開始","開始之後取得真實回饋","Only start when ready","Get real feedback after starting"],
+44: ["不能交出不完美作品","用真實市場校準作品","Can't submit imperfect work","Calibrate work with real market"],
+45: ["不能改變計畫","讓計畫跟著證據更新","Can't change plans","Let plans update with evidence"],
+46: ["照計畫就是成功","達成真正目標才是成功","Following plan equals success","Achieving real goals equals success"],
+47: ["不要改來改去","提高更新速度","Don't keep changing things","Increase update speed"],
+48: ["找到永遠正確的方法","建立持續校準的方法","Find the eternally correct method","Build continuously calibrated methods"],
+49: ["追求確定答案","管理機率與不確定性","Pursue certain answers","Manage probability and uncertainty"],
+50: ["不要出現Prediction Error","主動尋找Prediction Error","Don't get prediction wrong","Actively seek prediction errors"],
+51: ["學習是不要考差","學習是生成能力","Learning is not failing exams","Learning is generating capability"],
+52: ["讀書是為了分數","分數是能力模型的一部分回饋","Reading is for grades","Grades are partial feedback on capability models"],
+53: ["背完就好","能提取、遷移與應用才算形成能力","Memorizing is enough","Can extract, transfer and apply equals forming capability"],
+54: ["不要寫錯","利用錯題定位能力缺口","Don't write wrong","Use wrong answers to locate capability gaps"],
+55: ["不要被老師罵","建立自主學習控制器","Avoid teacher criticism","Build autonomous learning controller"],
+56: ["完成作業","利用作業形成神經迴路","Complete assignments","Use assignments to form neural pathways"],
+57: ["記住答案","理解答案如何生成","Remember answers","Understand how answers are generated"],
+58: ["刷更多題","提高每一道錯題的更新價值","Do more problems","Increase update value of each wrong problem"],
+59: ["讀更久","提高單位時間的有效學習量","Read longer","Increase effective learning per unit time"],
+60: ["跟別人比較排名","追蹤自己的能力節點是否成長","Compare rankings with others","Track if own capability nodes grow"],
+61: ["手機不能被沒收","保護自己的注意力主權","Phone can't be taken away","Protect own attention sovereignty"],
+62: ["我要隨時娛樂","建立延遲滿足能力","I want constant entertainment","Build delayed gratification ability"],
+63: ["無聊很痛苦","恢復大腦承受低刺激環境的能力","Boredom is painful","Restore brain's ability to handle low-stimulus environments"],
+64: ["我要一直有刺激","建立深度專注能力","I want constant stimulation","Build deep focus ability"],
+65: ["資訊越多越好","提高資訊品質與訊噪比","More information is better","Increase information quality and signal-to-noise ratio"],
+66: ["什麼都要知道","知道什麼值得注意","Need to know everything","Know what's worth noticing"],
+67: ["把時間塞滿","把時間配置到高槓桿節點","Fill all time","Allocate time to high-leverage nodes"],
+68: ["每天很忙","每天產生真正重要的輸出","Very busy every day","Generate truly important output daily"],
+69: ["事情全部做完","先完成最重要的事情","Complete all tasks","Complete most important things first"],
+70: ["提高工時","提高單位時間價值","Increase work hours","Increase value per unit time"],
+71: ["賺錢是為了不要窮","賺錢是提高價值創造與選擇權","Make money to avoid poverty","Make money to increase value creation and choices"],
+72: ["錢越多越安全","建立現金流、資產、能力與風險緩衝","More money is safer","Build cashflow, assets, capabilities and risk buffers"],
+73: ["不敢花錢","提高資源配置品質","Afraid to spend money","Improve resource allocation quality"],
+74: ["什麼都省","減少低價值支出並增加高價值投資","Save on everything","Reduce low-value spending and increase high-value investment"],
+75: ["追求最高收入","提高可持續自由現金流","Pursue highest income","Increase sustainable free cashflow"],
+76: ["賺快錢","建立可以複利的價值系統","Make money fast","Build compounding value systems"],
+77: ["不能錯過任何商機","集中資源在高勝率機會","Can't miss any opportunity","Concentrate resources on high-probability opportunities"],
+78: ["客人越多越好","提高客戶匹配度與終身價值","More customers is better","Increase customer fit and lifetime value"],
+79: ["產品越多越好","提高每個產品真正解決問題的能力","More products is better","Improve each product's problem-solving ability"],
+80: ["一直推銷","持續創造值得交換的價值","Keep selling","Continuously create value worth trading"],
+81: ["健康＝不要生病","健康＝提高調節、恢復與適應能力","Health = avoid illness","Health = improve regulation, recovery and adaptation"],
+82: ["不能有任何症狀","提高辨識身體訊號的能力","Can't have any symptoms","Improve ability to read body signals"],
+83: ["找到一個神奇方法","建立多變數健康管理系統","Find one magic method","Build multi-variable health management system"],
+84: ["控制所有疾病風險","管理可控制風險並接受不可控變數","Control all disease risk","Manage controllable risk and accept uncontrollable variables"],
+85: ["身體不能老","提高健康壽命與功能保存","Body can't age","Improve healthspan and function preservation"],
+86: ["每天逼自己運動","建立可以持續數年的活動系統","Force exercise daily","Build activity system sustainable for years"],
+87: ["睡眠不能浪費時間","把睡眠視為能力恢復機制","Sleep wastes time","View sleep as capability recovery mechanism"],
+88: ["累了繼續撐","讀懂資源耗竭訊號並重新配置","Push through when tired","Read exhaustion signals and reconfigure resources"],
+89: ["追求短期體重數字","改善長期代謝與生活結構","Pursue short-term weight numbers","Improve long-term metabolism and life structure"],
+90: ["健康全部靠意志力","設計讓健康行為容易發生的環境","Health depends on willpower","Design environments where healthy behavior is easy"],
+91: ["人生不能走錯路","建立走錯後快速重新導航的能力","Can't make wrong life choices","Build ability to quickly re-navigate after wrong choices"],
+92: ["一定要找到正確人生","持續生成更適合自己的生命路徑","Must find correct life","Continuously generate better-fit life paths"],
+93: ["不能浪費任何時間","讓時間流向真正重要的價值","Can't waste any time","Direct time toward truly important value"],
+94: ["一定要成為別人眼中的成功者","建立自己的目標函數","Must be successful in others' eyes","Build own objective function"],
+95: ["人生要證明自己","人生要持續生成價值","Life is proving yourself","Life is continuously generating value"],
+96: ["使命不能失敗","讓使命本身可以隨現實更新","Mission can't fail","Let mission update with reality"],
+97: ["我要改變所有人","提高自己真正能影響的範圍","I want to change everyone","Expand range I can truly influence"],
+98: ["留下名聲","留下能繼續產生價值的結構","Leave a name","Leave structures that continue generating value"],
+99: ["不要死得沒有意義","讓有限生命持續生成真實價值","Don't die meaninglessly","Let limited life continuously generate real value"],
+100: ["人生目標＝避免崩潰","人生目標＝建立一個即使遭遇擾動，仍能恢復、學習、更新、生成的生命系統","Life goal = avoid collapse","Life goal = build a system that recovers, learns, updates and generates even with disturbance"],
+101: ["不要讓別人看不起我","建立不依賴外界評價的能力感","Don't let others look down on me","Build capability sense independent of external evaluation"],
+102: ["我要顯得很厲害","我要真的解決問題","Want to seem impressive","Actually solve problems"],
+103: ["不能讓別人超過我","讓別人的優勢成為我的學習資料","Can't let others surpass me","Use others' advantages as learning data"],
+104: ["別人成功代表我輸了","別人成功證明某條路徑可能存在","Others' success means I lost","Others' success proves paths might exist"],
+105: ["隱藏自己的不足","精準定位能力缺口","Hide own shortcomings","Precisely locate capability gaps"],
+106: ["假裝自己知道","快速辨認自己不知道什麼","Pretend to know","Quickly identify what I don't know"],
+107: ["維護聰明形象","持續提高學習速度","Maintain smart image","Continuously increase learning speed"],
+108: ["問題最好不要被看見","問題越早暴露，修正成本越低","Best if problems stay hidden","Earlier problems exposed, lower correction cost"],
+109: ["不能承認不知道","不知道就是搜尋的起點","Can't admit not knowing","Not knowing is the search starting point"],
+110: ["避免被比較","把比較轉成校準資料","Avoid being compared","Convert comparison into calibration data"],
+111: ["一定要有答案","先提出可以測試的假設","Must have answers","Propose testable hypotheses first"],
+112: ["我要一次想清楚","讓思考與現實反覆迭代","Need to think it through once","Let thinking and reality iterate"],
+113: ["先確定才行動","用小行動取得確定性","Only act when certain","Get certainty through small actions"],
+114: ["沒有把握就不要做","控制試錯成本後開始測試","Don't do without confidence","Test after controlling trial cost"],
+115: ["未知代表危險","未知代表資訊缺口","Unknown means danger","Unknown means information gap"],
+116: ["意外代表失控","意外暴露模型沒有納入的變數","Surprise means loss of control","Surprise exposes variables model missed"],
+117: ["變化破壞計畫","變化提供重新配置資源的訊號","Change breaks plans","Change signals resource reconfiguration"],
+118: ["環境應該配合我","模型必須持續適應環境","Environment should fit me","Model must continuously adapt to environment"],
+119: ["事情不照預期就是不好","不照預期就是Prediction Error","Not meeting expectations is bad","Not meeting expectations is Prediction Error"],
+120: ["世界必須可以預測","自己必須具備重新預測的能力","World must be predictable","Self must have re-prediction ability"],
+121: ["我要消除所有風險","我要提高風險承受與恢復能力","Eliminate all risk","Increase risk tolerance and recovery ability"],
+122: ["安全＝沒有變化","安全＝有能力適應變化","Safety = no change","Safety = ability to adapt to change"],
+123: ["穩定＝永遠維持原樣","穩定＝擾動後仍能恢復","Stability = maintain unchanged","Stability = recovery after disturbance"],
+124: ["控制越多越安全","韌性越高越不需要過度控制","More control is safer","Higher resilience needs less control"],
+125: ["最好不要有意外","預留緩衝讓意外不致摧毀系統","Best if no surprises","Reserve buffers so surprises don't destroy system"],
+126: ["資源全部用滿最有效率","保留冗餘才能承受未知擾動","100% resource use is most efficient","Keep redundancy to handle unknown disturbance"],
+127: ["行程排滿才沒有浪費","留白讓系統保有調節空間","Full schedule wastes nothing","Whitespace lets system adjust"],
+128: ["庫存越少效率越高","適當緩衝可以降低斷裂風險","Lower inventory is more efficient","Right buffers reduce breakage risk"],
+129: ["能力剛好夠用即可","建立能力餘裕才能處理突發事件","Just enough capability is fine","Build capability surplus to handle emergencies"],
+130: ["只準備最好情境","同時建立Plan B與恢復路徑","Plan only for best case","Build Plan B and recovery paths"],
+131: ["別人不同意就是反對我","不同意可能只是模型不同","Disagreement means opposition to me","Disagreement might just be different models"],
+132: ["意見不同就是關係不好","差異可以提高共同模型精度","Different opinions mean bad relationship","Differences can improve shared model precision"],
+133: ["我要說服對方","我要理解雙方模型差在哪裡","I need to convince them","I need to understand where our models differ"],
+134: ["聲音最大的人贏","證據品質最高的模型留下","Loudest voice wins","Highest evidence quality model prevails"],
+135: ["對方情緒大就是他有理","情緒強度與事實正確度分開處理","Strong emotion means they're right","Handle emotion intensity and factual correctness separately"],
+136: ["我要馬上回應","先降低資訊失真再回應","Must respond immediately","Reduce information distortion before responding"],
+137: ["爭論的目的是勝利","討論的目的是降低共同Prediction Error","Argument purpose is victory","Discussion purpose is reduce shared Prediction Error"],
+138: ["不同立場必須選邊","拆解不同立場背後的變數與目標函數","Different positions mean pick sides","Unpack variables and objective functions behind positions"],
+139: ["妥協就是輸","重新設計可以增加總價值的結構","Compromise is losing","Redesign structures that increase total value"],
+140: ["關係靠忍耐維持","關係靠可更新的互動機制維持","Relationships maintained by endurance","Relationships maintained by updatable interaction mechanisms"],
+141: ["孩子聽話就是教育成功","孩子能自我調節才是能力形成","Child obedience equals education success","Child self-regulation equals capability formation"],
+142: ["學生安靜就是學會了","學生能輸出、遷移、應用才代表形成能力","Student quiet equals learned","Student output, transfer, apply equals formed ability"],
+143: ["老師講完就是教完","學生模型更新才算教學完成","Teacher explaining equals teaching done","Student model update equals teaching done"],
+144: ["給更多答案","提高學生自己生成答案的能力","Give more answers","Increase student's ability to generate answers"],
+145: ["幫學生避免所有挫折","讓學生在可承受範圍內學習處理挫折","Protect students from all frustration","Let students learn handling frustration within tolerance"],
+146: ["替孩子解決問題","教孩子建立問題解決演算法","Solve problems for children","Teach children problem-solving algorithms"],
+147: ["一直提醒才不會犯錯","建立不需要提醒也能運作的系統","Reminders prevent mistakes","Build systems that work without reminders"],
+148: ["靠老師控制手機","讓學生形成注意力自主管理能力","Teacher controls phones","Students form autonomous attention management"],
+149: ["規則的目的是服從","規則的目的是保護更高價值目標","Rules purpose is obedience","Rules purpose is protect higher value goals"],
+150: ["處罰讓人不敢犯錯","回饋讓人理解行為與結果的關係","Punishment prevents mistakes","Feedback shows behavior-result relationships"],
+151: ["記很多知識","建立可以調用知識的結構","Remember lots of knowledge","Build structures to access knowledge"],
+152: ["知道越多越厲害","能把知識轉成行動才產生價值","Knowing more is impressive","Converting knowledge to action creates value"],
+153: ["收藏很多資料","建立可搜尋、可連結、可輸出的知識庫","Collect lots of data","Build searchable, linkable, exportable knowledge base"],
+154: ["不停輸入","輸入→整理→輸出→測試→更新","Keep inputting","Input→organize→output→test→update"],
+155: ["學過就是會了","陌生情境仍能使用才是真會","Learning equals mastery","Using in new situations equals mastery"],
+156: ["理解就等於能力","理解需要經過提取與應用才能變成能力","Understanding equals ability","Understanding becomes ability through retrieval and application"],
+157: ["重複看答案","主動回憶提高神經路徑強度","Repeat reviewing answers","Active recall strengthens neural pathways"],
+158: ["錯題趕快看答案","先診斷自己在哪個推理節點出錯","Quickly see answer for wrong questions","First diagnose where reasoning went wrong"],
+159: ["追求題量","追求每題帶來的模型更新量","Pursue problem quantity","Pursue model update per problem"],
+160: ["把弱點藏起來","把弱點變成下一個Priority Node","Hide weaknesses","Make weaknesses next Priority Node"],
+161: ["AI幫我完成工作","AI幫我提高認知與生成速度","AI completes work for me","AI increases my cognitive and generation speed"],
+162: ["AI替我想","AI幫我暴露自己沒想到的變數","AI thinks for me","AI exposes variables I didn't think of"],
+163: ["AI給答案","AI提供假設空間","AI gives answers","AI provides hypothesis space"],
+164: ["AI說的就是對的","AI輸出仍需要現實與證據校準","AI is always right","AI output needs reality and evidence calibration"],
+165: ["使用AI減少思考","使用AI增加可測試的思考","AI reduces my thinking","AI increases testable thinking"],
+166: ["Prompt是命令","Prompt是模型、變數與目標函數的介面","Prompt is command","Prompt is interface of model, variables and objective function"],
+167: ["APP提供資訊","APP建立使用者能力","App provides information","App builds user capability"],
+168: ["APP告訴你答案","APP讓你診斷自己的瓶頸","App tells you answers","App lets you diagnose your bottlenecks"],
+169: ["資料庫是資料倉庫","資料庫是生成新產品的母體","Database is data storage","Database is matrix for generating new products"],
+170: ["內容越多越有價值","降低使用者從問題到能力的路徑才有價值","More content is more value","Lower user path from problem to capability creates value"],
+171: ["做更多產品","建立可以持續生成產品的母體系統","Make more products","Build matrix system for continuous product generation"],
+172: ["每次重新寫內容","建立模組化內容重新組合","Rewrite content each time","Build modular content for recombination"],
+173: ["靠自己一直工作","讓系統在沒有自己介入時仍能運作","Keep working myself","System works without my intervention"],
+174: ["收入依賴工時","讓知識、系統與資產產生複利","Income depends on hours","Knowledge, systems and assets compound"],
+175: ["客戶需要一直問我","讓客戶逐漸具備自己判斷的能力","Customers ask me constantly","Customers gradually develop own judgment"],
+176: ["服務讓人依賴","服務讓人逐漸自主","Service creates dependence","Service creates gradual autonomy"],
+177: ["我的價值來自不可取代","我的價值來自能創造更高階系統","My value from irreplaceability","My value from creating higher-order systems"],
+178: ["知識藏起來才值錢","真正值錢的是結構、診斷與能力形成路徑","Hidden knowledge is valuable","Real value is structure, diagnosis and capability formation paths"],
+179: ["競爭者拿走我的市場","持續創新提高自己所在價值網路的容量","Competitors take my market","Continuous innovation increases my value network capacity"],
+180: ["守住既有產品","建立自我淘汰與持續更新機制","Protect existing products","Build self-elimination and continuous update mechanisms"],
+181: ["人生就是找到自己","人生也是持續生成自己","Life is finding yourself","Life is also continuously generating yourself"],
+182: ["人格就是我","人格是長期形成但仍可調整的模式集合","Personality is me","Personality is long-formed but adjustable pattern set"],
+183: ["過去決定我是誰","過去提供初始條件，不必成為永久邊界","Past determines who I am","Past provides initial condition, not permanent boundary"],
+184: ["我的故事不能改","事件不能改，但模型與下一步可以更新","My story can't change","Events unchangeable, but model and next step updatable"],
+185: ["我就是沒自信","目前的預測模型對失敗機率估得很高","I just lack confidence","Current prediction model estimates failure probability high"],
+186: ["我就是拖延的人","目前的任務啟動機制存在摩擦","I'm just a procrastinator","Current task launch mechanism has friction"],
+187: ["我就是沒毅力","目前環境與回饋設計不足以支持持續行動","I just lack willpower","Current environment and feedback don't support sustained action"],
+188: ["我天生不會","目前尚未找到有效能力形成路徑","I'm naturally incapable","Haven't found effective capability formation path yet"],
+189: ["這就是我的命","先拆出哪些變數不可控、哪些仍可更新","This is my fate","First identify which variables are uncontrollable and which can update"],
+190: ["我沒有選擇","先搜尋尚未被模型看見的選項","I have no choice","First search options the model hasn't seen"],
+191: ["自由＝沒有任何限制","自由＝擁有更多高品質選擇","Freedom = no restrictions","Freedom = more high-quality choices"],
+192: ["自由＝想做什麼就做什麼","自由＝不被短期衝動綁架","Freedom = do anything I want","Freedom = not hijacked by short-term impulses"],
+193: ["紀律剝奪自由","紀律保護未來選擇權","Discipline removes freedom","Discipline protects future choices"],
+194: ["限制都是壓迫","好的限制降低熵增並保護核心資源","All limits are oppression","Good limits reduce entropy and protect core resources"],
+195: ["選擇越多越自由","有能力判斷什麼值得選才是真自由","More choices equal freedom","Ability to judge what's worth choosing is real freedom"],
+196: ["什麼都保留才安全","放棄低價值選項才能集中資源","Keep everything for safety","Abandon low-value options to concentrate resources"],
+197: ["不能失去","系統具備失去之後重新生成的能力","Can't lose anything","System has ability to regenerate after loss"],
+198: ["不能改變自己","不讓昨天的模型永久控制今天的選擇","Can't change myself","Don't let yesterday's model permanently control today's choices"],
+199: ["自由來自外界沒有阻力","自由來自內部模型具有流動性","Freedom from outside removing resistance","Freedom from internal model fluidity"],
+200: ["我要建立一個永遠不出問題的人生","我要建立一套問題出現後仍能診斷、修正、恢復、重組、繼續生成的人生OS","Build a life with no problems","Build a life OS that diagnoses, corrects, recovers, regroups and regenerates when problems appear"],
+};
+
+// 第三組 201-300
+Object.assign(CONTRASTS, {
+201: ["主管不能被質疑","讓團隊敢說出我沒看見的問題","A leader must not be questioned","Let the team voice problems I cannot see"],
+202: ["事情我自己做最快","培養別人也能做好的能力","Doing it myself is fastest","Grow others so they can do it well too"],
+203: ["不能讓部屬犯錯","設計犯錯成本低、學習量高的任務","Never let staff make mistakes","Design tasks with low error cost and high learning"],
+204: ["會議要有結論才算成功","會議要讓下一步行動變清楚","A meeting must reach a conclusion","A meeting must make the next action clear"],
+205: ["不能在同事面前示弱","說出需要協助的地方，讓資源流進來","Never show weakness to colleagues","Name where I need help so resources flow in"],
+206: ["加班代表認真","產出價值代表認真","Overtime means dedication","Output value means dedication"],
+207: ["升遷證明我有價值","能力成長才是可攜帶的價值","Promotion proves my worth","Growing capability is the value I carry with me"],
+208: ["不要得罪任何人","用尊重的方式說出必要的真話","Never offend anyone","Say necessary truths with respect"],
+209: ["照主管說的做就不會錯","理解目標之後提出更好的做法","Just do what the boss says","Understand the goal, then propose a better way"],
+210: ["工作只是為了薪水","工作同時在生成能力、信用與選擇權","Work is only for the paycheck","Work also generates skill, credibility and options"],
+211: ["一定要選到最好的選項","選一個夠好、可以修正的選項","Must pick the best option","Pick a good-enough option that can be corrected"],
+212: ["決定了就不能後悔","決定之後持續用新資訊調整","Once decided, no regrets allowed","Keep adjusting the decision with new information"],
+213: ["多想一下再決定","設定期限，用小實驗取得答案","Think a bit more before deciding","Set a deadline and get answers by small experiments"],
+214: ["聽大家的意見最安全","蒐集意見，但由自己的目標函數決定","Following everyone is safest","Gather opinions, decide by my own objective function"],
+215: ["選錯就全毀了","多數決定可以回頭，分清可逆與不可逆","One wrong choice ruins everything","Most decisions are reversible; tell which are not"],
+216: ["我要等到沒有風險","把風險縮小到承受得起就出發","Wait until there is no risk","Shrink the risk to what I can bear, then go"],
+217: ["直覺告訴我不行","把直覺當假設，再用事實檢查","My gut says no","Treat intuition as a hypothesis and check it with facts"],
+218: ["已經投入這麼多，不能放棄","只看未來的成本與效益","Too much invested to quit","Look only at future costs and benefits"],
+219: ["別人都這樣選","別人的條件不等於我的條件","Everyone else chooses this","Their conditions are not my conditions"],
+220: ["做決定是為了不被罵","做決定是為了靠近真正的目標","Decide so nobody blames me","Decide to move toward the real goal"],
+221: ["我要一次改掉所有壞習慣","一次只改一個最小的行為","Fix all bad habits at once","Change one tiny behavior at a time"],
+222: ["等有動力再開始","先開始兩分鐘，動力會跟上","Start when motivated","Start for two minutes and motivation follows"],
+223: ["破功一次就前功盡棄","中斷之後多快回來才是重點","One slip ruins everything","What matters is how fast I return"],
+224: ["靠意志力撐下去","把環境設計成不需要撐","Push through with willpower","Design the environment so no pushing is needed"],
+225: ["目標要訂得很大才有用","目標要小到今天就能做","Goals must be huge to matter","Goals must be small enough to do today"],
+226: ["每天都要做到一百分","每天都出現，比一百分重要","Score 100 every day","Showing up daily beats a perfect score"],
+227: ["我沒有時間","我還沒有把它排進優先順序","I have no time","I have not made it a priority yet"],
+228: ["計畫寫得越詳細越好","計畫寫到能開始第一步就好","The more detailed the plan the better","Plan just enough to take the first step"],
+229: ["我就是三分鐘熱度","目前的回饋來得太慢，需要更快的小獎勵","I always lose interest quickly","Feedback is too slow; I need quicker small rewards"],
+230: ["做完才算數","每前進一小步都算數","Only finishing counts","Every small step forward counts"],
+231: ["孩子不能輸在起跑點","孩子需要的是跑得久的能力","My child must not fall behind at the start","A child needs the ability to keep running"],
+232: ["我是為你好","我說出擔心，也聽你的判斷","It is for your own good","I share my worry and listen to your judgment"],
+233: ["孩子不能頂嘴","孩子正在練習表達不同意見","Children must not talk back","The child is practicing how to disagree"],
+234: ["成績好就是好孩子","成績只是孩子的一小部分資料","Good grades mean a good child","Grades are a small part of the data about a child"],
+235: ["父母不能在孩子面前認錯","認錯示範了如何修正","Parents must never admit fault to children","Admitting fault models how to correct"],
+236: ["孩子的問題要馬上解決","先陪孩子把問題看清楚","Solve the child's problem immediately","First help the child see the problem clearly"],
+237: ["家裡不能吵架","家裡要有吵完能修復的方法","There must be no arguing at home","A home needs ways to repair after arguing"],
+238: ["孝順就是聽話","孝順是尊重，也包含誠實的界線","Filial piety means obedience","Filial piety is respect, including honest boundaries"],
+239: ["我要當完美的父母","我要當會修正的父母","I must be a perfect parent","I will be a parent who corrects course"],
+240: ["孩子長大就會懂","現在就用孩子聽得懂的方式說明","They will understand when they grow up","Explain now in words the child can understand"],
+241: ["說出來會破壞氣氛","不說出來會慢慢破壞關係","Speaking up ruins the mood","Staying silent slowly ruins the relationship"],
+242: ["他應該懂我的意思","我把需要說成具體的請求","They should know what I mean","I turn my need into a concrete request"],
+243: ["我要把話講得很漂亮","我要把話講得讓人聽得懂","I must speak beautifully","I must speak so people understand"],
+244: ["沉默就是同意","沉默只是還沒有取得資訊","Silence means agreement","Silence only means I have no information yet"],
+245: ["拒絕別人很自私","清楚的拒絕讓承諾更可靠","Saying no is selfish","A clear no makes my yes reliable"],
+246: ["道歉代表我輸了","道歉代表我重視修復","Apologizing means I lost","Apologizing means I value repair"],
+247: ["我要先讓對方理解我","我先確認自己理解了對方","Others must understand me first","First confirm that I understand them"],
+248: ["講道理就能解決","先處理情緒，道理才進得去","Reasoning will solve it","Handle emotion first so reason can get in"],
+249: ["問問題顯得我很笨","問問題讓我更快變強","Asking questions makes me look stupid","Asking questions makes me stronger faster"],
+250: ["被誤會一定要解釋清楚","有些誤會交給時間與行為說明","Every misunderstanding must be explained","Let time and actions explain some of them"],
+251: ["作品要夠好才能發表","發表之後才知道哪裡要變好","Publish only when it is good enough","Publishing shows what needs to improve"],
+252: ["沒有靈感就不能寫","每天寫，靈感才會出現","No inspiration, no writing","Write daily and inspiration shows up"],
+253: ["我要寫出沒人寫過的東西","我要寫出自己真實走過的東西","Write what no one has written","Write what I have truly lived"],
+254: ["按讚數代表價值","有沒有幫到一個人才是價值","Likes equal value","Helping one person is the value"],
+255: ["內容要討好所有人","內容只需要對準真正需要的人","Content must please everyone","Content only needs to reach those who need it"],
+256: ["被批評代表我不行","批評裡有下一版的線索","Criticism means I am not good","Criticism holds clues for the next version"],
+257: ["別人已經做過了","同一件事，我有自己的角度","Someone has already done it","I have my own angle on the same thing"],
+258: ["我不是專家不能分享","分享我比昨天多懂的那一步","I am not an expert so I cannot share","Share the one step I know beyond yesterday"],
+259: ["一篇沒人看就放棄","累積一百篇再看結果","Quit when one post gets no views","Judge the result after one hundred posts"],
+260: ["創作要等有空再做","創作要先排進行事曆","Create when there is free time","Put creating on the calendar first"],
+261: ["休息是偷懶","休息是恢復產能","Rest is laziness","Rest restores capacity"],
+262: ["所有事情都很重要","真正重要的只有少數幾件","Everything is important","Only a few things truly matter"],
+263: ["馬上回訊息才有禮貌","在固定時段專心回覆","Polite people reply instantly","Reply with focus at set times"],
+264: ["一心多用比較有效率","一次一件做完比較快","Multitasking is efficient","One thing at a time finishes faster"],
+265: ["累了喝咖啡就好","累是身體提醒我要調整節奏","Coffee fixes tiredness","Tiredness tells me to adjust my pace"],
+266: ["時間不夠是因為事情太多","時間不夠是因為沒有刪減","No time because of too many tasks","No time because nothing was cut"],
+267: ["把今天塞滿才充實","留下空白才有思考的空間","A packed day is a full day","Blank space leaves room to think"],
+268: ["別人的請求不能拒絕","先保護自己最重要的時段","I cannot refuse requests","Protect my most important hours first"],
+269: ["忙完這陣子就好了","現在就設計一個忙得下去的節奏","It will be fine after this busy period","Design a sustainable pace now"],
+270: ["時間要用來追趕","時間要用來建立","Time is for catching up","Time is for building"],
+271: ["老了就沒有用","年紀帶來可以傳承的經驗","Old age is useless","Age brings experience worth passing on"],
+272: ["不能麻煩別人照顧","接受照顧也是一種能力","I must not trouble others to care for me","Accepting care is also an ability"],
+273: ["照顧者不能喊累","照顧者先被照顧，照顧才走得久","Caregivers must not say they are tired","Caregivers need care for the care to last"],
+274: ["失去就什麼都沒了","失去之後，留下的仍然可以繼續生長","Loss leaves nothing","What remains after loss can still grow"],
+275: ["悲傷要趕快走出來","悲傷需要時間被好好經過","Get over grief quickly","Grief needs time to be lived through"],
+276: ["生病是我的錯","生病是身體給的訊號，不是判決","Illness is my fault","Illness is a signal from the body, not a verdict"],
+277: ["不能讓家人擔心","讓家人知道實情，才能一起面對","Never let family worry","Tell family the truth so we can face it together"],
+278: ["退休就是結束","退休是重新配置時間的開始","Retirement is the end","Retirement begins a new allocation of time"],
+279: ["一個人終老很可憐","建立自己的連結網，獨處也能安穩","Growing old alone is pitiful","Build my own connections and solitude feels steady"],
+280: ["不談死亡比較吉利","談清楚了，活著的人才安心","Not talking about death is luckier","Talking it through gives the living peace"],
+281: ["別人的生活都比我好","我看到的只是別人剪輯過的片段","Everyone lives better than me","I only see their edited highlights"],
+282: ["錯過訊息就會落伍","真正重要的訊息會再出現","Missing news leaves me behind","Truly important news comes around again"],
+283: ["要跟上每一個潮流","選擇與自己方向有關的潮流","Follow every trend","Choose trends related to my direction"],
+284: ["滑手機是在放鬆","滑完更累，代表那不是休息","Scrolling is relaxing","Feeling more tired after means it was not rest"],
+285: ["朋友越多越好","能說真話的朋友幾個就夠","The more friends the better","A few friends I can be honest with are enough"],
+286: ["被已讀不回就是被討厭","對方可能只是在忙","Left on read means I am disliked","They may simply be busy"],
+287: ["網路上要維持形象","網路上也可以真實而有界線","Keep up an image online","Be real online, with boundaries"],
+288: ["看到酸言就要回擊","把注意力留給值得的人","Strike back at every hater","Save my attention for those who deserve it"],
+289: ["資訊看越多越安心","看完能行動的資訊才有用","More information feels safer","Only information I can act on is useful"],
+290: ["追蹤數代表影響力","真正的影響力是有人因此改變","Followers equal influence","Real influence is someone changing because of it"],
+291: ["要找到熱情才開始","做著做著，熱情才長出來","Find passion before starting","Passion grows while doing"],
+292: ["人生要有標準答案","人生是一題可以一直修改的申論題","Life must have a standard answer","Life is an essay I can keep revising"],
+293: ["幸福是沒有煩惱","幸福是有能力處理煩惱","Happiness is having no worries","Happiness is being able to handle worries"],
+294: ["成功之後才能快樂","在過程中就練習快樂","Be happy after success","Practice happiness along the way"],
+295: ["我要對得起所有人的期待","我先對得起自己認定的價值","Live up to everyone's expectations","First live up to the values I choose"],
+296: ["平凡就是失敗","把平凡的日子過好就是一種完成","Being ordinary is failure","Living ordinary days well is an achievement"],
+297: ["遺憾越少越好","有遺憾代表我真的在乎過","The fewer regrets the better","Regret shows I truly cared"],
+298: ["我來不及了","從今天開始，就是最早的時候","It is too late for me","Starting today is the earliest possible time"],
+299: ["我要成為更好的別人","我要成為更完整的自己","Become a better someone else","Become a more complete me"],
+300: ["人生是一場不能輸的比賽","人生是一套每天都能更新、持續生成的系統","Life is a race I cannot lose","Life is a system I can update daily and keep generating"],
+});
+
+// 第四組 301-400：教育（教學、班級、評量、學習、動機、家長、親師、讀寫、AI、教育目的）
+Object.assign(CONTRASTS, {
+301: ["教完進度就是完成教學","學生學會才是完成教學","Covering the syllabus means teaching is done","Teaching is done when students have learned"],
+302: ["老師要知道所有答案","老師示範如何找答案","A teacher must know every answer","A teacher models how to find answers"],
+303: ["上課安靜才是好課堂","有思考的聲音才是好課堂","A quiet class is a good class","A class with the sound of thinking is a good class"],
+304: ["講得越清楚學生就越會","學生自己說得出來才是會","The clearer I explain the more they learn","They have learned when they can explain it themselves"],
+305: ["學生問太多很麻煩","學生的問題是教學最好的地圖","Too many student questions are a bother","Student questions are the best map for teaching"],
+306: ["教材要全部教完","核心概念教透比全部教完重要","All material must be covered","Teaching core ideas deeply beats covering everything"],
+307: ["學生不懂是他不用心","學生不懂是提醒我換一種教法","Not understanding means not trying","Not understanding tells me to teach another way"],
+308: ["好老師不能出錯","好老師示範如何面對出錯","A good teacher never makes mistakes","A good teacher models how to face mistakes"],
+309: ["我這樣教了二十年","每一屆學生都值得更新過的教法","I have taught this way for twenty years","Every class deserves an updated approach"],
+310: ["教學是把知識給學生","教學是幫學生長出自己的能力","Teaching is giving knowledge to students","Teaching is helping students grow their own ability"],
+311: ["班級要靠老師管","班級要靠制度與學生一起運作","The teacher must control the class","The class runs on systems and students together"],
+312: ["處罰才有效","讓學生看見行為與結果的關係才有效","Only punishment works","Seeing the link between action and result works"],
+313: ["聽話的學生是好學生","能為自己負責的學生是好學生","Obedient students are good students","Students who take responsibility are good students"],
+314: ["一個人犯錯全班受罰","誰的行為就由誰學習負責","One misbehaves and all are punished","Each person learns to own their own behavior"],
+315: ["幹部就是幫老師做事","幹部是在練習領導與服務","Class officers just do chores for the teacher","Class officers are practicing leadership and service"],
+316: ["規則越多越好管","規則少而清楚才做得到","More rules make control easier","Few clear rules can actually be followed"],
+317: ["學生吵架要馬上判對錯","先讓雙方說完再一起找方法","Judge who is right immediately","Let both sides finish and then find a way together"],
+318: ["問題學生要隔離","行為背後的需求要被看見","Problem students should be isolated","The need behind the behavior should be seen"],
+319: ["老師不在就會亂","老師不在也能運作才是好班級","Chaos when the teacher is away","A good class runs even without the teacher"],
+320: ["班級榮譽是拿第一名","班級榮譽是每個人都比昨天進步","Class honor means first place","Class honor means everyone improving on yesterday"],
+321: ["分數代表一個人的能力","分數只是某一天某一種能力的快照","A score is a person's ability","A score is a snapshot of one ability on one day"],
+322: ["考不好就是失敗","考不好是告訴我哪裡還沒學會","A bad exam is failure","A bad exam tells me what I have not learned yet"],
+323: ["考試是用來排名的","考試是用來找出下一步要學什麼","Exams are for ranking","Exams are for finding what to learn next"],
+324: ["一百分才算好","比上次進步就是好","Only 100 is good","Better than last time is good"],
+325: ["訂正就是抄正確答案","訂正是找出自己哪一步想錯了","Correction means copying the right answer","Correction means finding which step went wrong"],
+326: ["成績單是給爸媽看的","成績單是給自己調整方向的","The report card is for parents","The report card is for adjusting my own direction"],
+327: ["不會的題目先跳過","不會的題目是最值得花時間的地方","Skip what I cannot do","What I cannot do deserves the most time"],
+328: ["作業是老師的要求","作業是幫自己練習的機會","Homework is the teacher's demand","Homework is my chance to practice"],
+329: ["評量越多壓力越大","小而頻繁的檢核讓壓力變小","More tests mean more stress","Small frequent checks reduce stress"],
+330: ["只有考試會考的才重要","帶得走的能力才重要","Only what is tested matters","The ability I carry with me matters"],
+331: ["讀書就是一直看一直背","讀書是理解、回想、應用的循環","Studying is reading and memorizing repeatedly","Studying is a cycle of understanding, recalling and applying"],
+332: ["畫滿重點就是讀過了","蓋起書說得出來才是讀過了","Highlighting means I studied","Being able to say it with the book closed means I studied"],
+333: ["考前衝刺最有效","分散在每一天最有效","Cramming before exams works best","Spreading it across days works best"],
+334: ["我學得慢就是笨","學得慢只是需要不同的路徑","Learning slowly means I am dumb","Learning slowly just needs a different path"],
+335: ["筆記要抄得很漂亮","筆記要自己看得懂、用得上","Notes must look beautiful","Notes must be understandable and usable to me"],
+336: ["不會就等老師講","不會就先自己試著查與想","Wait for the teacher when stuck","Try to look it up and think first when stuck"],
+337: ["一次要讀很久才有用","短時間專注比長時間分心有用","Long sessions are what count","Short focus beats long distraction"],
+338: ["這科我天生不行","這科我還沒找到適合的方法","I am naturally bad at this subject","I have not found the right method for this subject yet"],
+339: ["學過的東西忘了就是白學","忘了再想起來，記憶會更牢","Forgetting means it was wasted","Recalling after forgetting makes memory stronger"],
+340: ["學習是學生時代的事","學習是一輩子都在用的能力","Learning belongs to school years","Learning is an ability used for life"],
+341: ["沒有獎勵就不想學","看見自己進步就是最好的獎勵","No reward, no learning","Seeing my own progress is the best reward"],
+342: ["讀書是為了爸媽","讀書是為了讓自己有更多選擇","I study for my parents","I study to give myself more choices"],
+343: ["有興趣才學得好","學出一點成果，興趣才會長出來","I learn well only with interest","Interest grows after some results"],
+344: ["被逼才會讀","自己訂的目標才走得久","I study only when forced","Goals I set myself last longer"],
+345: ["怕被笑所以不舉手","舉手是讓自己學得更快的方法","I do not raise my hand for fear of being laughed at","Raising my hand is how I learn faster"],
+346: ["失敗一次就不想再試","每一次嘗試都讓下一次更準","One failure and I stop trying","Every attempt makes the next one more accurate"],
+347: ["別人都比我厲害","我只需要比昨天的自己前進一步","Everyone is better than me","I only need one step beyond yesterday"],
+348: ["目標太遠所以放棄","把目標切成今天做得到的一小步","The goal is too far so I give up","Cut the goal into a step I can do today"],
+349: ["學這個有什麼用","先找到它和我生活的一個連結","What is the use of learning this","First find one link between it and my life"],
+350: ["努力了沒結果就是白費","努力會先變成能力，再變成結果","Effort without results is wasted","Effort becomes ability first and results later"],
+351: ["孩子成績好我才有面子","孩子過得好比我有面子重要","My child's grades give me face","My child doing well matters more than my face"],
+352: ["我小時候也是這樣被打大的","我可以給孩子比我當年更好的方式","I was raised with spanking too","I can give my child a better way than I had"],
+353: ["孩子不能輸給別人","孩子只需要成為他自己","My child must not lose to others","My child only needs to become who they are"],
+354: ["幫孩子安排好一切","留一些讓孩子自己決定","Arrange everything for my child","Leave some decisions to the child"],
+355: ["孩子犯錯要嚴厲處罰","孩子犯錯是教他修正的時機","Mistakes deserve harsh punishment","A mistake is the moment to teach correction"],
+356: ["補習越多越安心","留時間消化比多補一科重要","More cram classes feel safer","Time to digest matters more than one more class"],
+357: ["玩就是浪費時間","玩也是孩子學習的方式","Play is a waste of time","Play is also how children learn"],
+358: ["孩子哭就是不乖","孩子哭是在告訴我他需要幫忙","A crying child is misbehaving","A crying child is telling me they need help"],
+359: ["我說的話孩子要馬上做到","孩子需要時間練習才做得到","My child must do what I say at once","Children need time and practice to do it"],
+360: ["愛孩子就是替他擋掉困難","愛孩子是陪他學會面對困難","Loving a child means removing difficulties","Loving a child means being with them as they learn to face difficulty"],
+361: ["孩子的事交給學校就好","家庭和學校一起才教得好","Leave my child to the school","Home and school teach well together"],
+362: ["老師找我一定是壞事","老師聯絡我是一起幫孩子的機會","A call from the teacher is bad news","Contact from the teacher is a chance to help together"],
+363: ["家長不懂教育","家長最懂自己的孩子","Parents do not understand education","Parents know their own child best"],
+364: ["老師應該照我的方式教","我說出需求，也尊重老師的專業","The teacher should teach my way","I state my needs and respect the teacher's expertise"],
+365: ["孩子在學校的問題是老師的責任","孩子的成長是大家共同的責任","Problems at school are the teacher's job","A child's growth is a shared responsibility"],
+366: ["有意見就在群組裡說","重要的事直接和老師當面談","Raise complaints in the group chat","Talk about important matters with the teacher directly"],
+367: ["孩子說的一定是真的","孩子說的是他看到的那一面","Whatever my child says is true","My child tells the side they saw"],
+368: ["不要讓老師知道家裡的事","適度說明讓老師更能幫上忙","Keep family matters from the teacher","Sharing what is relevant helps the teacher help"],
+369: ["親師會議只是聽報告","親師會議是對齊目標的時間","Parent-teacher meetings are just reports","Parent-teacher meetings are for aligning goals"],
+370: ["意見不同就是不尊重我","意見不同讓我們看見孩子更完整的樣子","Disagreement means disrespect","Disagreement shows us a fuller picture of the child"],
+371: ["閱讀是為了考試","閱讀是為了看見更大的世界","Reading is for exams","Reading is for seeing a bigger world"],
+372: ["書要從頭讀到尾","帶著問題去讀更有收穫","Books must be read cover to cover","Reading with a question gains more"],
+373: ["看不懂就是程度差","看不懂是遇到了可以長大的地方","Not understanding means poor level","Not understanding marks where I can grow"],
+374: ["作文要寫得很華麗","作文要把想法說清楚","Essays must be ornate","Essays must make ideas clear"],
+375: ["我沒有東西可以寫","從今天發生的一件小事開始寫","I have nothing to write","Start from one small thing that happened today"],
+376: ["上台說話很可怕","上台是把想法送給別人的機會","Speaking on stage is scary","The stage is a chance to give ideas to others"],
+377: ["說錯話會被笑","說出來才知道哪裡可以更好","I will be laughed at for saying it wrong","Saying it shows where it can be better"],
+378: ["背佳句就能寫好作文","有自己的觀察才寫得動人","Memorized quotes make good essays","My own observations make writing moving"],
+379: ["討論就是要說服別人","討論是讓想法變得更完整","Discussion is about convincing others","Discussion makes ideas more complete"],
+380: ["安靜聽就是好學生","能提出好問題更是好學生","Listening quietly makes a good student","Asking good questions makes an even better one"],
+381: ["用AI寫作業比較快","用AI幫我看見自己哪裡不懂","AI does my homework faster","AI helps me see what I do not understand"],
+382: ["AI會了我就不用學","AI越強，我越需要判斷的能力","If AI knows it I need not learn","The stronger AI gets the more I need judgment"],
+383: ["上網查到的都是對的","查到之後還要比對與求證","Everything found online is right","After finding it, compare and verify"],
+384: ["禁止學生用手機最安全","教學生管理自己的注意力最長久","Banning phones is safest","Teaching attention management lasts longest"],
+385: ["科技會讓學生變笨","用對方式，科技讓學生想得更深","Technology makes students dumber","Used well, technology deepens thinking"],
+386: ["影片看過就學會了","看完自己做一次才學會","Watching the video means I learned it","I learn it by doing it once myself"],
+387: ["複製貼上就是完成報告","用自己的話說出來才是完成","Copy and paste finishes the report","Saying it in my own words finishes it"],
+388: ["老師不需要懂AI","老師懂AI才能教學生善用它","Teachers need not understand AI","Teachers who understand AI can teach its good use"],
+389: ["線上學習不如實體","設計得好，兩種都能學會","Online learning is worse than in person","Designed well, both can work"],
+390: ["資料找越多報告越好","整理出自己的觀點報告才好","More sources make a better report","A report is good when it has my own view"],
+391: ["教育是為了考上好學校","教育是為了長出面對未來的能力","Education is for getting into a good school","Education is for growing the ability to face the future"],
+392: ["好學生就是成績好","好學生是持續學習的人","A good student has good grades","A good student keeps learning"],
+393: ["每個孩子都要一樣優秀","每個孩子都有自己的節奏與強項","Every child must excel the same way","Every child has their own pace and strengths"],
+394: ["學校教的才是知識","生活裡到處都是學習","Only school teaches knowledge","Learning is everywhere in life"],
+395: ["輸在起跑點就完了","人生是長跑，重新出發永遠來得及","Falling behind at the start is the end","Life is a long run and restarting is always possible"],
+396: ["教育是老師的工作","教育是整個社會一起做的事","Education is the teacher's job","Education is something a whole society does together"],
+397: ["孩子要照大人的期待長大","孩子要長成他自己能負責的樣子","Children should grow as adults expect","Children should grow into someone they can answer for"],
+398: ["犯錯的孩子是壞孩子","犯錯的孩子是正在學習的孩子","A child who errs is a bad child","A child who errs is a child who is learning"],
+399: ["學歷決定一生","持續學習的能力決定一生","Credentials decide a life","The ability to keep learning decides a life"],
+400: ["教育的目標是不要輸","教育的目標是讓每個人都能自己學習、修正、持續生成","The goal of education is not to lose","The goal of education is for everyone to learn, correct and keep generating on their own"],
+});
+
+let currentFilter = 'all';
+let expandedItems = new Set();
+
+function getGroup(num) {
+    if (num <= 100) return 'group1';
+    if (num <= 200) return 'group2';
+    if (num <= 300) return 'group3';
+    return 'group4';
+}
+
+function renderNav() {
+    const nav = document.getElementById('navContainer');
+    nav.innerHTML = '';
+    
+    const groups = [
+        {title: '第一組 Group 1', range: [1, 100], filter: 'group1'},
+        {title: '第二組 Group 2', range: [101, 200], filter: 'group2'},
+        {title: '第三組 Group 3', range: [201, 300], filter: 'group3'},
+        {title: '第四組 教育 Education', range: [301, 400], filter: 'group4'}
+    ];
+    
+    groups.forEach(group => {
+        const section = document.createElement('div');
+        section.className = 'nav-section';
+        
+        const title = document.createElement('div');
+        title.className = 'nav-section-title';
+        title.textContent = group.title;
+        section.appendChild(title);
+        
+        for (let i = group.range[0]; i <= group.range[1]; i += 10) {
+            const item = document.createElement('div');
+            item.className = 'nav-item';
+            item.textContent = `#${i}-${Math.min(i+9, group.range[1])}`;
+            item.onclick = () => {
+                filterGroup(group.filter);
+                const elem = document.querySelector(`[data-item="${i}"]`);
+                if (elem) elem.scrollIntoView({behavior: 'smooth'});
+            };
+            section.appendChild(item);
+        }
+        
+        nav.appendChild(section);
+    });
+}
+
+function toggleItem(num) {
+    const item = document.querySelector(`[data-item="${num}"]`);
+    if (expandedItems.has(num)) {
+        expandedItems.delete(num);
+        item.classList.remove('expanded');
+    } else {
+        expandedItems.add(num);
+        item.classList.add('expanded');
+    }
+}
+
+function renderItems() {
+    const container = document.getElementById('contentArea');
+    container.innerHTML = '';
+    
+    for (let i = 1; i <= 400; i++) {
+        const groupKey = getGroup(i);
+        if (currentFilter !== 'all' && currentFilter !== groupKey) continue;
+        
+        const [oldZh, newZh, oldEn, newEn] = CONTRASTS[i];
+        const item = document.createElement('div');
+        item.className = 'item' + (expandedItems.has(i) ? ' expanded' : '');
+        item.setAttribute('data-item', i);
+        item.onclick = () => toggleItem(i);
+        
+        item.innerHTML = `
+            <div class="item-header">
+                <div style="display: flex; align-items: center; flex: 1;">
+                    <span class="item-num">${i}</span>
+                    <span class="item-old">${oldZh}</span>
+                </div>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="item-content">
+                <div class="content-pair">
+                    <div class="lang-label">中文 Chinese</div>
+                    <div class="lang-col">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div style="flex: 1;">
+                                <div class="old-text">舊: ${oldZh}</div>
+                                <div class="new-text">新: ${newZh}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="content-pair">
+                    <div class="lang-label">English 英文 <button class="tts-btn" data-t="${oldEn} becomes ${newEn}" onclick="speakText(this.dataset.t, event)">🔊</button></div>
+                    <div class="lang-col">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div style="flex: 1;">
+                                <div class="old-text">Old: ${oldEn}</div>
+                                <div class="new-text">New: ${newEn}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(item);
+    }
+}
+
+function filterGroup(group) {
+    currentFilter = group;
+    expandedItems.clear();
+    renderItems();
+    
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    document.getElementById('contentArea').scrollIntoView({behavior: 'smooth'});
+}
+
+function speakText(text, event) {
+    event.stopPropagation();
+    const btn = event.target;
+    
+    if ('speechSynthesis' in window) {
+        speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        
+        btn.classList.add('playing');
+        utterance.onend = () => btn.classList.remove('playing');
+        
+        speechSynthesis.speak(utterance);
+    }
+}
+
+// Search functionality
+document.getElementById('searchInput').addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    const items = document.querySelectorAll('[data-item]');
+    
+    items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.classList.toggle('hidden', !text.includes(query));
+    });
+});
+
+// Init
+renderNav();
+renderItems();
+
+// Show scroll hint on load
+setTimeout(() => {
+    document.getElementById('scrollHint').classList.add('show');
+    setTimeout(() => {
+        document.getElementById('scrollHint').classList.remove('show');
+    }, 3000);
+}, 500);
+    </script>
+<script>
+// 痛點資料來源：CONTRASTS（防禦型 → 生成型）
+window.HAS_CFG = {
+    tag: '生成型OS',
+    lead: '這個念頭看起來在保護你，其實讓你越來越不敢動。',
+    load: function () {
+        var out = [];
+        Object.keys(CONTRASTS).forEach(function (k) {
+            var c = CONTRASTS[k], i = Number(k), from = Math.floor((i - 1) / 10) * 10 + 1;
+            out.push({ cat: (i > 300 ? '教育 ' : '') + '#' + from + '-' + (from + 9), pain: c[0], wisdom: c[1], skill: '生成型思維', skillEn: 'Generative Thinking', pEn: c[2], wEn: c[3], en: c[2] + ' → ' + c[3] });
+        });
+        return out;
+    }
+};
+</script>
+
+<!-- HAS-STUDIO：痛點吸引 → 智慧能力 → 生成（臉書貼文＋心靈雞湯圖文） -->
+<style>
+#hasFab{position:fixed;right:22px;bottom:22px;z-index:9998;border:none;cursor:pointer;padding:14px 22px;border-radius:40px;font:bold 15px 'Microsoft JhengHei',sans-serif;color:#1A2B5F;background:linear-gradient(135deg,#F3C94B,#C9960C);box-shadow:0 6px 20px rgba(26,43,95,.35)}
+#hasFab:hover{transform:translateY(-2px)}
+#hasWrap{display:none;position:fixed;inset:0;z-index:9999;background:#F4F6FB;color:#1A2B5F;font:15px/1.6 'Microsoft JhengHei','PingFang TC',sans-serif;flex-direction:column}
+#hasWrap.on{display:flex}
+#hasWrap *{box-sizing:border-box;margin:0;padding:0}
+#hasWrap button,#hasWrap input,#hasWrap select,#hasWrap textarea{font-family:inherit}
+.has-top{background:linear-gradient(135deg,#1A2B5F,#0D1B3E);color:#fff;padding:12px 18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.has-top h2{font-size:17px;color:#F3C94B;white-space:nowrap}
+.has-search{flex:1;min-width:180px;padding:9px 14px;border-radius:22px;border:none;font-size:15px;outline:none}
+.has-top select{padding:8px 10px;border-radius:8px;border:none;font-size:14px;max-width:190px}
+.has-x{background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer}
+.has-body{flex:1;display:grid;grid-template-columns:340px 1fr;min-height:0}
+.has-list{overflow-y:auto;background:#fff;border-right:1px solid #DDE2EE;padding:10px}
+.has-count{font-size:12px;color:#7A86A8;padding:2px 6px 8px}
+.has-row{display:block;width:100%;text-align:left;background:#F7F8FC;border:1px solid transparent;border-left:4px solid #D32F2F;border-radius:6px;padding:9px 11px;margin-bottom:7px;cursor:pointer;color:inherit}
+.has-row:hover{border-color:#C9960C}
+.has-row.on{background:#FFF7DD;border-color:#C9960C;border-left-color:#C9960C}
+.has-row b{display:block;font-size:14px;color:#B3261E}
+.has-row span{display:block;font-size:12.5px;color:#0A7A72;margin-top:2px}
+.has-row i{font-style:normal;font-size:11px;color:#7A86A8}
+.has-work{overflow-y:auto;padding:18px 22px}
+.has-step{background:#fff;border-radius:10px;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(26,43,95,.06)}
+.has-step h3{font-size:13px;letter-spacing:1px;margin-bottom:8px}
+.has-s1{border-left:5px solid #D32F2F}.has-s1 h3{color:#D32F2F}
+.has-s2{border-left:5px solid #0A7A72}.has-s2 h3{color:#0A7A72}
+.has-s3{border-left:5px solid #C9960C}.has-s3 h3{color:#C9960C}
+.has-pain{font-size:22px;font-weight:bold;color:#B3261E}
+.has-note{font-size:13px;color:#7A86A8;margin-top:4px}
+.has-wis{font-size:20px;font-weight:bold;color:#0A7A72}
+.has-skill{display:inline-block;margin-top:8px;background:#C9960C;color:#1A2B5F;font-size:13px;font-weight:bold;border-radius:14px;padding:3px 12px}
+.has-gen{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.has-gen h4{font-size:15px;margin-bottom:8px}
+.has-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.has-chip{border:1.5px solid #0A7A72;background:#fff;color:#0A7A72;border-radius:16px;padding:4px 12px;font-size:13px;font-weight:bold;cursor:pointer}
+.has-chip.on{background:#0A7A72;color:#fff}
+.has-post{width:100%;height:380px;border:1px solid #DDE2EE;border-radius:8px;padding:12px;font-size:15px;line-height:1.7;resize:vertical}
+.has-btn{border:none;border-radius:8px;padding:10px 18px;font-size:14px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#1A2B5F,#0D1B3E);color:#fff;margin-top:8px}
+.has-btn.gold{background:linear-gradient(135deg,#F3C94B,#C9960C);color:#1A2B5F}
+#hasCanvas{width:100%;max-width:360px;height:auto;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.2);display:block}
+.has-sign{width:100%;padding:7px 10px;border:1px solid #DDE2EE;border-radius:6px;font-size:13px;margin-bottom:8px}
+.has-empty{text-align:center;color:#7A86A8;padding:60px 10px}
+@media(max-width:900px){.has-body{grid-template-columns:1fr;grid-template-rows:38vh 1fr}.has-list{border-right:none;border-bottom:1px solid #DDE2EE}.has-gen{grid-template-columns:1fr}.has-top h2{font-size:15px}}
+</style>
+
+<button id="hasFab" type="button">✨ 痛點 → 智慧 → 生成</button>
+
+<div id="hasWrap">
+  <div class="has-top">
+    <h2>✨ 痛點吸引 → 智慧能力 → 生成</h2>
+    <input id="hasQ" class="has-search" type="search" placeholder="🔍 搜尋痛點、智慧、能力…">
+    <select id="hasCat"></select>
+    <button class="has-x" id="hasRand" type="button">🎲 隨機</button>
+    <button class="has-x" id="hasClose" type="button">✕ 關閉</button>
+  </div>
+  <div class="has-body">
+    <div class="has-list">
+      <div class="has-count" id="hasCount"></div>
+      <div id="hasList"></div>
+    </div>
+    <div class="has-work">
+      <div class="has-empty" id="hasEmpty">👈 從左邊選一個痛點，或按「🎲 隨機」</div>
+      <div id="hasMain" style="display:none">
+        <div class="has-step has-s1">
+          <h3>① 痛點吸引</h3>
+          <div class="has-pain" id="hasPain"></div>
+          <div class="has-note" id="hasNote"></div>
+        </div>
+        <div class="has-step has-s2">
+          <h3>② 智慧能力</h3>
+          <div class="has-wis" id="hasWis"></div>
+          <div class="has-note" id="hasEn"></div>
+          <span class="has-skill" id="hasSkill"></span>
+        </div>
+        <div class="has-step has-s3">
+          <h3>③ 生成</h3>
+          <div class="has-gen">
+            <div>
+              <h4>📘 臉書貼文</h4>
+              <div class="has-chips" id="hasStyles"></div>
+              <textarea class="has-post" id="hasPost"></textarea>
+              <button class="has-btn" id="hasCopy" type="button">📋 複製貼文</button>
+            </div>
+            <div>
+              <h4>🍲 心靈雞湯圖文</h4>
+              <div class="has-chips" id="hasThemes"></div>
+              <div class="has-chips" id="hasSizes"></div>
+              <input class="has-sign" id="hasSign" type="text" placeholder="圖片署名">
+              <canvas id="hasCanvas" width="1080" height="1350"></canvas>
+              <button class="has-btn gold" id="hasDl" type="button">⬇️ 下載圖片 PNG</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+    var CFG = window.HAS_CFG || {};
+    var DATA = [], VIEW = [], cur = null, style = 0, theme = 0, size = 0, loaded = false;
+    var $ = function (id) { return document.getElementById(id); };
+    var STYLES = ['雙語金句排句', '故事共鳴', '新舊對比', '提問互動'];
+    // 排比句庫：[中文三句, 英文三句]，依痛點文字固定輪替
+    var PARALLEL = [
+        [['不是你不夠努力，是方法還沒更新；', '不是你不夠聰明，是路徑還沒找到；', '不是你不夠好，是你還沒看見新的選擇。'],
+         ['It is not that you lack effort; the method has not been updated.', 'It is not that you lack talent; the path has not been found.', 'It is not that you are not enough; you have not yet seen a new choice.']],
+        [['換一個想法，就換一種情緒；', '換一種說法，就換一段關係；', '換一個做法，就換一種人生。'],
+         ['Change one thought, and you change a feeling;', 'change one sentence, and you change a relationship;', 'change one action, and you change a life.']],
+        [['痛，是提醒，不是懲罰；', '錯，是資料，不是判決；', '慢，是節奏，不是失敗。'],
+         ['Pain is a reminder, not a punishment;', 'a mistake is data, not a verdict;', 'slow is a rhythm, not a failure.']],
+        [['今天改一句話，', '明天改一個習慣，', '有一天，你會改寫自己的故事。'],
+         ['Change one sentence today,', 'one habit tomorrow,', 'and one day you will rewrite your own story.']]
+    ];
+    var THEMES = [
+        { n: '深藍金', bg: ['#1A2B5F', '#0D1B3E'], fg: '#FFFFFF', ac: '#E8B923', mu: 'rgba(255,255,255,.6)' },
+        { n: '青綠', bg: ['#0A7A72', '#064B46'], fg: '#FFFFFF', ac: '#FFE08A', mu: 'rgba(255,255,255,.65)' },
+        { n: '暖米', bg: ['#FBF3E4', '#F1DFC0'], fg: '#1A2B5F', ac: '#B07D05', mu: 'rgba(26,43,95,.55)' },
+        { n: '墨黑', bg: ['#1B1B1F', '#000000'], fg: '#F5F5F5', ac: '#C9960C', mu: 'rgba(255,255,255,.55)' }
+    ];
+    var SIZES = [{ n: '直式 4:5', w: 1080, h: 1350 }, { n: '方形 1:1', w: 1080, h: 1080 }];
+    var FONT = '"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+
+    function sign() {
+        return $('hasSign').value.trim() || CFG.sign || '王欣蓉 Anne Wang';
+    }
+
+    function buildPost(it, s) {
+        var skill = it.skill || '一種可以練出來的能力';
+        var tips = (it.tips && it.tips.length) ? '\n\n📌 可以從這幾件小事開始：\n' + it.tips.map(function (t) { return '・' + t; }).join('\n') : '';
+        var en = it.en ? '\n\n🌍 ' + it.en : '';
+        var tail = '\n\n— ' + sign() + '\n#HighAgency #' + (CFG.tag || '人生智慧') + ' #心靈雞湯 #每日一句';
+        if (s === 0) {
+            var hash = 0;
+            for (var i = 0; i < it.pain.length; i++) hash += it.pain.charCodeAt(i);
+            var par = PARALLEL[hash % PARALLEL.length];
+            return '✨ 今日金句｜Golden Line\n「' + it.wisdom + '」' + (it.wEn ? '\n“' + it.wEn + '”' : '') +
+                '\n\n你是不是也常卡在這裡？\n「' + it.pain + '」' + (it.pEn ? '\nDo you get stuck here too?\n“' + it.pEn + '”' : '') +
+                '\n\n' + par[0].join('\n') + '\n\n' + par[1].join('\n') +
+                '\n\n從今天起——\n少一點「' + it.pain + '」，\n多一點「' + it.wisdom + '」。\nStarting today: a little less of the old line, a little more of the new one.' +
+                '\n\n🔑 能力｜Skill：' + skill + (it.skillEn ? '｜' + it.skillEn : '') +
+                '\n\n— ' + sign() + '\n#HighAgency #' + (CFG.tag || '人生智慧') + ' #心靈雞湯 #金句 #雙語 #DailyQuote';
+        }
+        if (s === 2) {
+            return '❌ 舊版本：' + it.pain + '\n✅ 新版本：' + it.wisdom +
+                '\n\n兩句話之間的距離，就是「' + skill + '」。\n\n舊版本讓人卡在原地，\n新版本讓事情可以往下走。' + tips +
+                '\n\n先存起來，下次卡住的時候拿出來看。' + en + tail;
+        }
+        if (s === 3) {
+            return '如果今天只能改變一件事，你會選哪一件？\n\n很多人卡在：\n「' + it.pain + '」\n\n換個角度，可以是：\n「' + it.wisdom + '」\n\n這不是天分，是練得出來的「' + skill + '」。' + tips +
+                en + '\n\n💬 這句話你想送給誰？留言或標記他。' + tail;
+        }
+        return '你是不是也這樣？\n\n「' + it.pain + '」\n\n' + (CFG.lead ? CFG.lead + '\n' : '') +
+            '其實，不是你不夠好，\n只是還在用舊的方式，面對同一件事。\n\n💡 換一個版本試試看：\n' + it.wisdom +
+            '\n\n🔑 這在練的能力是：' + skill + tips +
+            '\n\n今天只要練一次就好。\n不求完美，只求比昨天更靠近真實一點。' + en +
+            '\n\n👉 你最常卡在哪裡？留言告訴我。' + tail;
+    }
+
+    function wrap(x, text, maxW) {
+        var tokens = String(text).match(/[A-Za-z0-9'’.%\-]+|\s+|./gsu) || [], lines = [], line = '';
+        tokens.forEach(function (t) {
+            var hang = /^[，。！？、；：」』）】…]$/.test(t);
+            if (!hang && line && x.measureText(line + t).width > maxW) {
+                lines.push(line.replace(/\s+$/, ''));
+                line = t.replace(/^\s+/, '');
+            } else {
+                line += t;
+            }
+        });
+        if (line) lines.push(line);
+        return lines;
+    }
+
+    // 由大到小找出能塞進 maxH 的字級
+    function fit(x, text, maxW, maxH, start, min, weight) {
+        for (var s = start; s >= min; s -= 4) {
+            x.font = weight + ' ' + s + 'px ' + FONT;
+            var lines = wrap(x, text, maxW);
+            if (lines.length * s * 1.45 <= maxH || s - 4 < min) return { size: s, lines: lines };
+        }
+    }
+
+    function pill(x, px, py, w, h) {
+        var r = h / 2;
+        x.beginPath();
+        x.moveTo(px + r, py);
+        x.arcTo(px + w, py, px + w, py + h, r);
+        x.arcTo(px + w, py + h, px, py + h, r);
+        x.arcTo(px, py + h, px, py, r);
+        x.arcTo(px, py, px + w, py, r);
+        x.closePath();
+        x.fill();
+    }
+
+    function draw() {
+        var c = $('hasCanvas'), S = SIZES[size], T = THEMES[theme], x = c.getContext('2d');
+        c.width = S.w; c.height = S.h;
+        var g = x.createLinearGradient(0, 0, S.w, S.h);
+        g.addColorStop(0, T.bg[0]); g.addColorStop(1, T.bg[1]);
+        x.fillStyle = g; x.fillRect(0, 0, S.w, S.h);
+        x.globalAlpha = .08; x.fillStyle = T.ac;
+        x.beginPath(); x.arc(S.w - 120, 140, 260, 0, 7); x.fill();
+        x.beginPath(); x.arc(90, S.h - 90, 180, 0, 7); x.fill();
+        x.globalAlpha = 1;
+        x.strokeStyle = T.ac; x.lineWidth = 4; x.strokeRect(40, 40, S.w - 80, S.h - 80);
+        if (!cur) return;
+
+        var pad = 110, W = S.w - pad * 2, y = 130, footY = S.h - 150;
+        x.textBaseline = 'top'; x.textAlign = 'left';
+        if (cur.skill) {
+            x.font = 'bold 34px ' + FONT;
+            var label = wrap(x, cur.skill, W - 56)[0];
+            x.fillStyle = T.ac; pill(x, pad, y, x.measureText(label).width + 56, 64);
+            x.fillStyle = T.bg[0]; x.fillText(label, pad + 28, y + 13);
+        }
+        y += 120;
+
+        x.fillStyle = T.mu;
+        var p = fit(x, '「' + cur.pain + '」', W, S.h * 0.2, 50, 30, 'normal');
+        p.lines.forEach(function (l) { x.fillText(l, pad, y); y += p.size * 1.45; });
+
+        y += 30; x.fillStyle = T.ac; x.fillRect(pad, y, 90, 6); y += 50;
+
+        var enLines = [], enSize = 34;
+        if (cur.wEn) { x.font = 'italic ' + enSize + 'px ' + FONT; enLines = wrap(x, cur.wEn, W).slice(0, 4); }
+        var enH = enLines.length ? enLines.length * enSize * 1.4 + 24 : 0;
+        var w = fit(x, cur.wisdom, W, footY - y - 30 - enH, 84, 36, 'bold');
+        x.fillStyle = T.fg;
+        w.lines.forEach(function (l) { x.fillText(l, pad, y); y += w.size * 1.45; });
+        if (enLines.length) {
+            y += 24; x.font = 'italic ' + enSize + 'px ' + FONT; x.fillStyle = T.ac;
+            enLines.forEach(function (l) { x.fillText(l, pad, y); y += enSize * 1.4; });
+        }
+
+        x.font = '30px ' + FONT; x.fillStyle = T.mu; x.fillText(sign(), pad, footY + 20);
+        x.textAlign = 'right'; x.fillStyle = T.ac; x.font = 'bold 30px ' + FONT;
+        x.fillText('High Agency', S.w - pad, footY + 20);
+    }
+
+    function chips(boxId, names, get, set) {
+        var box = $(boxId);
+        box.innerHTML = '';
+        names.forEach(function (n, i) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'has-chip' + (i === get() ? ' on' : '');
+            b.textContent = n;
+            b.onclick = function () { set(i); chips(boxId, names, get, set); };
+            box.appendChild(b);
+        });
+    }
+
+    function select(it) {
+        cur = it;
+        $('hasEmpty').style.display = 'none';
+        $('hasMain').style.display = 'block';
+        $('hasPain').textContent = '「' + it.pain + '」';
+        $('hasNote').textContent = [it.cat, it.note].filter(Boolean).join('｜');
+        $('hasWis').textContent = it.wisdom;
+        $('hasEn').textContent = it.wEn || it.en || '';
+        $('hasSkill').textContent = '🎯 ' + (it.skill || '能力');
+        $('hasPost').value = buildPost(it, style);
+        draw();
+        renderList();
+    }
+
+    function renderList() {
+        var q = $('hasQ').value.trim().toLowerCase(), cat = $('hasCat').value, box = $('hasList');
+        VIEW = DATA.filter(function (it) {
+            if (cat && it.cat !== cat) return false;
+            return !q || [it.pain, it.wisdom, it.skill, it.cat, it.en, it.pEn, it.wEn].join(' ').toLowerCase().indexOf(q) > -1;
+        });
+        $('hasCount').textContent = '共 ' + VIEW.length + ' 則（全部 ' + DATA.length + ' 則）';
+        box.innerHTML = '';
+        VIEW.forEach(function (it) {
+            var b = document.createElement('button'), t = document.createElement('b'), s = document.createElement('span'), k = document.createElement('i');
+            b.type = 'button';
+            b.className = 'has-row' + (it === cur ? ' on' : '');
+            t.textContent = it.pain; s.textContent = '→ ' + it.wisdom; k.textContent = [it.cat, it.skill].filter(Boolean).join('・');
+            b.appendChild(t); b.appendChild(s); b.appendChild(k);
+            b.onclick = function () { select(it); };
+            box.appendChild(b);
+        });
+    }
+
+    function load() {
+        if (loaded) return;
+        loaded = true;
+        try { DATA = (CFG.load ? CFG.load() : []) || []; } catch (e) { DATA = []; console.error(e); }
+        var cats = [], sel = $('hasCat');
+        DATA.forEach(function (it) { if (it.cat && cats.indexOf(it.cat) < 0) cats.push(it.cat); });
+        sel.innerHTML = '';
+        [''].concat(cats).forEach(function (c) {
+            var o = document.createElement('option');
+            o.value = c; o.textContent = c || '全部分類';
+            sel.appendChild(o);
+        });
+        try { $('hasSign').value = localStorage.getItem('has_sign') || ''; } catch (e) {}
+        chips('hasStyles', STYLES, function () { return style; }, function (i) { style = i; if (cur) $('hasPost').value = buildPost(cur, style); });
+        chips('hasThemes', THEMES.map(function (t) { return t.n; }), function () { return theme; }, function (i) { theme = i; draw(); });
+        chips('hasSizes', SIZES.map(function (s) { return s.n; }), function () { return size; }, function (i) { size = i; draw(); });
+        renderList();
+        draw();
+    }
+
+    function toggle(on) {
+        $('hasWrap').classList.toggle('on', on);
+        document.body.style.overflow = on ? 'hidden' : '';
+        if (on) { load(); $('hasQ').focus(); }
+    }
+
+    $('hasFab').onclick = function () { toggle(true); };
+    $('hasClose').onclick = function () { toggle(false); };
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') toggle(false); });
+    $('hasQ').oninput = renderList;
+    $('hasCat').onchange = renderList;
+    $('hasRand').onclick = function () {
+        var pool = VIEW.length ? VIEW : DATA;
+        if (pool.length) select(pool[Math.floor(Math.random() * pool.length)]);
+    };
+    $('hasSign').oninput = function () {
+        try { localStorage.setItem('has_sign', $('hasSign').value); } catch (e) {}
+        if (cur) $('hasPost').value = buildPost(cur, style);
+        draw();
+    };
+    $('hasCopy').onclick = function () {
+        var ta = $('hasPost'), btn = $('hasCopy');
+        var done = function () { btn.textContent = '✅ 已複製'; setTimeout(function () { btn.textContent = '📋 複製貼文'; }, 1500); };
+        var fallback = function () { ta.select(); document.execCommand('copy'); done(); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(done, fallback);
+        else fallback();
+    };
+    $('hasDl').onclick = function () {
+        if (!cur) return;
+        $('hasCanvas').toBlob(function (blob) {
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = '心靈雞湯_' + (cur.skill || '圖文').replace(/[\\/:*?"<>|\s#]/g, '') + '_' + Date.now() + '.png';
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+        });
+    };
+})();
+</script>
+
+</body>
+</html>
