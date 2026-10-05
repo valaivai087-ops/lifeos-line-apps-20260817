@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>癌友生命模型系統｜十大模型 × 精準修復</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050810;--s1:#07101A;--s2:#0A1522;--card:#0D1C2C;--bdr:#122035;--bdr2:#1A2E44;
+  --txt:#D5E5F5;--dim:#486078;--dim2:#2E4060;
+  --gold:#C89030;--gold2:#A07020;--gg:rgba(200,144,48,.1);
+  --teal:#00B898;--teal2:#009070;--gt:rgba(0,184,152,.09);
+  --rose:#E05070;--violet:#8060D0;
+  /* 10 model colors */
+  --m1:#00C8A0; /* 穩態 teal */
+  --m2:#FF9030; /* 能量 orange */
+  --m3:#A060E8; /* 熵增 violet */
+  --m4:#30C060; /* 適應 green */
+  --m5:#40A8E8; /* 恢復 blue */
+  --m6:#F07080; /* 壓力 rose */
+  --m7:#60D0A0; /* 免疫 mint */
+  --m8:#FFB030; /* 修復 amber */
+  --m9:#B08FF0; /* 演化 lavender */
+  --m10:#50C8C0; /* 生態 cyan */
+  --neg:#607AD8;--hyd:#30C8C0;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--txt);font-family:'Noto Sans TC','Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;z-index:300;background:rgba(5,8,16,.96);backdrop-filter:blur(18px);border-bottom:1px solid var(--bdr);padding:0 16px;display:flex;align-items:center;height:56px;gap:0;}
+.brand{font-size:16px;font-weight:900;color:var(--teal);letter-spacing:.5px;flex-shrink:0;margin-right:14px;white-space:nowrap;}
+.brand em{color:var(--txt);font-size:14px;font-style:normal;font-weight:300;}
+.nav{display:flex;flex:1;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nb{flex:none;padding:0 11px;height:56px;font-size:13px;font-weight:600;border:none;background:none;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap;font-family:inherit;}
+.nb.on{color:var(--teal);border-bottom-color:var(--teal);}
+.nb:hover:not(.on){color:var(--txt);}
+.buy-top{flex-shrink:0;margin-left:8px;padding:9px 15px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:15px;font-weight:700;border:none;border-radius:7px;cursor:pointer;font-family:inherit;text-decoration:none;display:flex;align-items:center;gap:4px;transition:.15s;white-space:nowrap;}
+.buy-top:hover{opacity:.87;transform:translateY(-1px);}
+
+/* ── PAGES ── */
+.pg{display:none;} .pg.on{display:block;}
+.wrap{max-width:960px;margin:0 auto;padding:24px 18px;}
+
+/* ── ATOMS ── */
+.sec-h{font-size:clamp(22px,4vw,32px);font-weight:900;letter-spacing:-1px;margin-bottom:5px;}
+.sec-s{font-size:16px;color:var(--dim);margin-bottom:20px;font-weight:300;}
+.divider{border:none;border-top:1px solid var(--bdr);margin:40px 0;}
+.teal{color:var(--teal);} .gold{color:var(--gold);}
+
+/* BUY BANNER */
+.bb{background:linear-gradient(135deg,rgba(200,144,48,.1),rgba(200,144,48,.04));border:1px solid rgba(200,144,48,.22);border-radius:16px;padding:26px;text-align:center;max-width:660px;margin:0 auto;}
+.bb-h{font-size:clamp(16px,3.5vw,22px);font-weight:900;color:var(--gold);margin-bottom:5px;}
+.bb-p{font-size:16px;color:var(--dim);line-height:1.8;margin-bottom:18px;}
+.bb-a{display:inline-flex;align-items:center;gap:6px;padding:12px 28px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:15px;font-weight:700;border-radius:9px;text-decoration:none;transition:.2s;}
+.bb-a:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(200,144,48,.26);}
+.bb-note{font-size:12px;color:var(--dim);margin-top:8px;}
+
+/* ── HERO ── */
+.hero{min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:52px 16px;text-align:center;position:relative;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.1;pointer-events:none;}
+.oa{width:580px;height:580px;background:var(--m1);top:-200px;left:-160px;}
+.ob{width:380px;height:380px;background:var(--gold);bottom:-80px;right:-80px;}
+.oc{width:320px;height:320px;background:var(--violet);top:45%;left:52%;transform:translate(-50%,-50%);}
+.hero-tag{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--teal);text-transform:uppercase;margin-bottom:14px;}
+.hero-h1{font-size:clamp(36px,8vw,84px);font-weight:900;line-height:.95;letter-spacing:-3px;margin-bottom:13px;background:linear-gradient(140deg,var(--txt) 20%,var(--teal) 85%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-p{font-size:clamp(15px,2.5vw,18px);color:var(--dim);max-width:480px;margin:0 auto 28px;line-height:1.95;font-weight:300;}
+.cancer-eq{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:28px;max-width:560px;margin-left:auto;margin-right:auto;}
+.ceq-item{padding:6px 14px;border-radius:20px;font-size:16px;font-weight:700;border:1px solid rgba(0,184,152,.3);background:rgba(0,184,152,.07);color:var(--teal);}
+.ceq-plus{color:var(--dim);font-size:20px;display:flex;align-items:center;}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-t{padding:12px 26px;background:linear-gradient(135deg,var(--teal),var(--teal2));color:#020A08;font-size:15px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block;transition:.2s;}
+.btn-t:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,184,152,.2);}
+.btn-g{padding:12px 26px;background:transparent;color:var(--gold);font-size:15px;font-weight:700;border:1.5px solid rgba(200,144,48,.35);border-radius:10px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block;transition:.2s;}
+.btn-g:hover{border-color:var(--gold);background:var(--gg);}
+
+/* ── DIAGNOSIS ── */
+.d-intro{background:var(--card);border:1px solid var(--bdr2);border-radius:14px;padding:18px;text-align:center;margin-bottom:20px;}
+.d-intro h2{font-size:20px;font-weight:900;color:var(--teal);margin-bottom:4px;}
+.d-intro p{font-size:16px;color:var(--dim);line-height:1.7;}
+.d-step{display:flex;align-items:center;gap:9px;margin-bottom:14px;}
+.d-n{width:30px;height:30px;border-radius:50%;background:var(--teal);color:#020A08;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.d-lbl{font-size:16px;font-weight:700;}
+.d-sub{font-size:13px;color:var(--dim);margin-top:1px;}
+.sym-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:7px;margin-bottom:20px;}
+.sym-btn{background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 11px;font-size:16px;cursor:pointer;color:var(--txt);font-family:inherit;transition:.18s;text-align:left;}
+.sym-btn:hover{border-color:var(--teal);background:var(--gt);}
+.sym-btn.sel{border-color:var(--teal);background:var(--gt);color:var(--teal);}
+.sy-icon{font-size:20px;display:block;margin-bottom:4px;}
+.sy-name{font-size:16px;font-weight:600;display:block;}
+.sy-mod{font-size:12px;color:var(--dim);display:block;margin-top:1px;}
+.sym-btn.sel .sy-mod{color:var(--teal);opacity:.7;}
+.run-btn{display:block;margin:0 auto;padding:11px 24px;background:linear-gradient(135deg,var(--teal),var(--teal2));color:#020A08;font-size:15px;font-weight:700;border:none;border-radius:9px;cursor:pointer;font-family:inherit;transition:.2s;}
+.run-btn:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(0,184,152,.18);}
+.rst-btn{display:block;margin:8px auto 0;padding:8px 17px;background:transparent;color:var(--dim);font-size:13px;border:1px solid var(--bdr);border-radius:7px;cursor:pointer;font-family:inherit;}
+.rst-btn:hover{color:var(--txt);border-color:var(--bdr2);}
+.d-result{display:none;} .d-result.show{display:block;}
+.mod-score-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin-bottom:20px;}
+.msg{background:var(--card);border:1.5px solid var(--bdr);border-radius:12px;padding:13px;transition:.2s;}
+.msg.hit{border-width:2px;}
+.msg-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.msg-ico{font-size:20px;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.msg-name{font-size:15px;font-weight:700;}
+.msg-pct{font-size:12px;margin-top:1px;}
+.msg-bar-bg{height:4px;background:var(--bdr);border-radius:3px;margin-bottom:7px;}
+.msg-bar{height:100%;border-radius:3px;transition:.6s;}
+.msg-syms{display:flex;flex-wrap:wrap;gap:3px;}
+.msg-sym-tag{font-size:12px;padding:3px 8px;border-radius:4px;font-weight:600;}
+.rec-h{font-size:15px;font-weight:700;color:var(--gold);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--bdr);}
+.rec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin-bottom:18px;}
+.rec-card{background:var(--card);border:1px solid var(--bdr2);border-radius:12px;padding:13px;}
+.rc-mod{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;}
+.rc-name{font-size:16px;font-weight:700;margin-bottom:4px;}
+.rc-mech{font-size:15px;font-weight:700;color:var(--teal);margin-bottom:3px;}
+.rc-why{font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:9px;}
+.rc-buy{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:15px;font-weight:700;border-radius:6px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:.14s;}
+.rc-buy:hover{opacity:.84;transform:translateY(-1px);}
+
+/* ── MODELS PAGE ── */
+.mod-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.mod-tab{padding:6px 13px;border-radius:18px;border:1px solid var(--bdr);background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:var(--dim);transition:.16s;font-family:inherit;white-space:nowrap;}
+.mod-tab.on{color:#040200;border-color:transparent;font-weight:700;}
+.mod-content{display:none;} .mod-content.on{display:block;}
+.mod-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;}
+.mod-icon-big{font-size:28px;width:54px;height:54px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.mod-num{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px;opacity:.7;}
+.mod-h1{font-size:24px;font-weight:900;letter-spacing:-1px;margin-bottom:2px;}
+.mod-eng{font-size:12px;font-weight:600;letter-spacing:1px;margin-bottom:4px;opacity:.6;}
+.mod-q{font-size:14px;padding:8px 14px;border-radius:7px;border-left:2px solid;line-height:1.6;font-style:italic;display:inline-block;margin-bottom:4px;}
+.mod-body{background:var(--card);border:1px solid var(--bdr2);border-radius:13px;padding:16px;margin-bottom:14px;}
+.mod-body-t{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;}
+.mod-body-b{font-size:16px;color:var(--dim);line-height:1.9;}
+.mod-body-b b{color:var(--txt);}
+.mod-body-b .hl{color:var(--teal);}
+.mod-body-b .warn{color:var(--rose);}
+.chain-box{background:var(--s2);border-radius:10px;padding:12px 16px;margin:8px 0;font-size:12px;line-height:2.2;text-align:center;color:var(--dim);}
+.chain-box b{color:var(--txt);}
+.chain-box .arr{color:var(--teal);}
+.nt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin-bottom:14px;}
+.nt-card{background:var(--card);border:1px solid var(--bdr2);border-radius:11px;padding:12px 14px;border-left:3px solid;}
+.nt-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;}
+.nt-name{font-size:15px;font-weight:700;}
+.nt-mech{font-size:12px;font-weight:700;padding:3px 9px;border-radius:5px;white-space:nowrap;}
+.nt-detail{font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:8px;}
+.nt-buy{display:inline-flex;align-items:center;gap:4px;padding:5px 11px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:12px;font-weight:700;border-radius:6px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;}
+.nt-buy:hover{opacity:.84;}
+.tech-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.tech-card{border-radius:11px;padding:13px;}
+.tech-neg{background:rgba(96,122,216,.08);border:1px solid rgba(96,122,216,.2);}
+.tech-hyd{background:rgba(48,200,192,.08);border:1px solid rgba(48,200,192,.2);}
+.tech-t{font-size:16px;font-weight:700;margin-bottom:7px;}
+.tech-flow{font-size:13px;color:var(--dim);line-height:1.9;}
+.tech-flow b{color:var(--txt);}
+.tech-flow .arr{color:var(--teal);}
+.tech-buy{display:inline-flex;align-items:center;gap:4px;margin-top:8px;padding:5px 11px;background:linear-gradient(135deg,var(--teal),var(--teal2));color:#020A08;font-size:12px;font-weight:700;border-radius:6px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;}
+.tech-buy:hover{opacity:.84;}
+
+/* ── PHILOSOPHY ── */
+.formula-box{background:linear-gradient(135deg,rgba(0,184,152,.07),rgba(200,144,48,.04));border:1px solid rgba(0,184,152,.16);border-radius:13px;padding:16px;text-align:center;font-size:15px;line-height:2.6;color:var(--dim);margin-bottom:16px;}
+.formula-box b{color:var(--txt);font-size:16px;}
+.formula-box .eq{color:var(--gold);font-size:16px;font-weight:900;}
+.phil-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.lcard{background:var(--card);border:1px solid var(--bdr2);border-radius:13px;padding:16px;}
+.lc-t{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--teal);margin-bottom:7px;}
+.lc-b{font-size:16px;color:var(--dim);line-height:1.9;}
+.lc-b b{color:var(--txt);} .lc-b .hl{color:var(--teal);} .lc-b .warn{color:var(--rose);}
+.flow-chain{display:flex;flex-direction:column;align-items:center;gap:0;max-width:300px;margin:12px auto;}
+.fc-n{width:100%;background:var(--s2);border:1px solid var(--bdr2);border-radius:9px;padding:9px 14px;font-size:15px;text-align:center;font-weight:600;}
+.fc-a{color:var(--teal);opacity:.4;text-align:center;font-size:16px;padding:2px 0;}
+
+/* ── FLASHCARD ── */
+.fcmeta{display:flex;gap:12px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:10px 13px;margin-bottom:12px;align-items:center;}
+.fcm-i{display:flex;flex-direction:column;align-items:center;}
+.fcm-l{font-size:11px;color:var(--dim);}
+.fcm-v{font-size:20px;font-weight:700;color:var(--teal);}
+.mla{margin-left:auto;display:flex;gap:6px;}
+.pbar-w{height:3px;background:var(--bdr);border-radius:2px;margin-bottom:10px;}
+.pbar-f{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal2));border-radius:2px;transition:.3s;}
+.fcwrap{perspective:1100px;max-width:480px;margin:0 auto;}
+.fc{width:100%;height:310px;position:relative;transform-style:preserve-3d;transition:.52s cubic-bezier(.4,0,.2,1);cursor:pointer;}
+.fc.flip{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;border-radius:16px;padding:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;backface-visibility:hidden;text-align:center;border:1px solid var(--bdr2);}
+.front{background:var(--card);}
+.back{background:linear-gradient(135deg,var(--card),#0C1E32);transform:rotateY(180deg);}
+.fc-eye{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.fc-big{font-size:38px;font-weight:900;letter-spacing:-1.5px;margin-bottom:8px;}
+.fc-hint{font-size:13px;color:var(--dim);}
+.fc-zh{font-size:19px;font-weight:700;color:var(--teal);margin-bottom:9px;}
+.fc-detail{font-size:13px;color:var(--dim);line-height:1.6;max-width:320px;}
+.fc-btns{display:none;gap:9px;justify-content:center;margin-top:12px;}
+.fc-tap{font-size:12px;color:var(--dim);text-align:center;margin-top:7px;}
+.btn{padding:11px 20px;border-radius:8px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:.17s;}
+.btn-ok{background:rgba(0,184,152,.14);color:var(--teal);border:1px solid rgba(0,184,152,.3);}
+.btn-ok:hover{background:rgba(0,184,152,.26);}
+.btn-bad{background:rgba(224,80,112,.12);color:var(--rose);border:1px solid rgba(224,80,112,.28);}
+.btn-bad:hover{background:rgba(224,80,112,.24);}
+.btn-ghost{background:var(--card);color:var(--dim);border:1px solid var(--bdr);}
+.btn-ghost:hover{border-color:var(--bdr2);color:var(--txt);}
+.ctr-txt{font-size:13px;color:var(--dim);text-align:center;margin-bottom:9px;}
+.result-box{text-align:center;padding:30px;background:var(--card);border-radius:14px;border:1px solid var(--bdr2);}
+.r-stars{font-size:26px;letter-spacing:4px;margin-bottom:5px;}
+.r-score{font-size:54px;font-weight:900;color:var(--teal);}
+.r-msg{font-size:16px;color:var(--dim);margin-bottom:14px;}
+
+/* ── QUIZ ── */
+.q-type{font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--teal);text-transform:uppercase;margin-bottom:7px;display:inline-block;}
+.q-q{font-size:18px;font-weight:700;margin-bottom:16px;line-height:1.5;}
+.q-opts{display:grid;gap:7px;}
+.qopt{background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:11px 14px;font-size:16px;cursor:pointer;text-align:left;color:var(--txt);font-family:inherit;transition:.17s;line-height:1.4;}
+.qopt:hover:not(:disabled){border-color:var(--teal);background:var(--gt);}
+.qopt.ok{border-color:var(--teal);background:var(--gt);color:var(--teal);}
+.qopt.bad{border-color:var(--rose);background:rgba(224,80,112,.1);color:var(--rose);}
+.q-exp{background:var(--card);border:1px solid var(--bdr2);border-radius:10px;padding:11px;margin-top:9px;font-size:16px;line-height:1.7;display:none;color:var(--dim);}
+.q-exp.show{display:block;}
+.q-exp b{color:var(--teal);}
+.q-next-w{text-align:center;margin-top:9px;display:none;}
+.combo{display:none;position:fixed;top:58px;right:12px;background:var(--teal);color:#020A08;font-weight:800;font-size:12px;border-radius:8px;padding:6px 12px;z-index:600;animation:cpop .4s ease;}
+@keyframes cpop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.2)}100%{opacity:1;transform:scale(1)}}
+
+/* total formula flow */
+.total-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0;}
+.tf-item{background:var(--card);border-radius:10px;padding:9px 6px;text-align:center;border:1px solid var(--bdr);}
+.tf-icon{font-size:20px;margin-bottom:3px;}
+.tf-name{font-size:12px;font-weight:700;}
+
+/* ── SOUP 心靈雞湯 ── */
+.soup-today{background:linear-gradient(135deg,rgba(0,184,152,.09),rgba(200,144,48,.05));border:1px solid rgba(0,184,152,.2);border-radius:16px;padding:28px 22px;text-align:center;margin-bottom:20px;}
+.soup-eye{font-size:12px;font-weight:700;letter-spacing:2px;color:var(--gold);margin-bottom:12px;}
+.soup-q{font-size:clamp(19px,3.6vw,26px);font-weight:700;line-height:1.75;margin-bottom:10px;}
+.soup-tag{font-size:12px;font-weight:700;color:var(--teal);margin-bottom:16px;}
+.soup-acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.soup-search{width:100%;padding:12px 15px;background:var(--card);border:1.5px solid var(--bdr2);border-radius:10px;color:var(--txt);font-size:16px;font-family:inherit;margin-bottom:10px;outline:none;}
+.soup-search:focus{border-color:var(--teal);}
+.soup-search::placeholder{color:var(--dim);}
+.soup-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.soup-chip{padding:6px 13px;border-radius:18px;border:1px solid var(--bdr);background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:var(--dim);font-family:inherit;transition:.16s;}
+.soup-chip.on{background:var(--teal);color:#020A08;border-color:transparent;}
+.soup-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;}
+.soup-card{background:var(--card);border:1px solid var(--bdr2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;}
+.soup-card-top{display:flex;justify-content:space-between;align-items:center;}
+.soup-card-tag{font-size:12px;font-weight:700;color:var(--teal);}
+.soup-card-q{font-size:16px;line-height:1.8;}
+.soup-fav{background:none;border:none;cursor:pointer;font-size:18px;color:var(--dim);font-family:inherit;line-height:1;}
+.soup-fav.on{color:var(--rose);}
+.soup-empty{color:var(--dim);font-size:15px;text-align:center;padding:26px;grid-column:1/-1;}
+.home-soup{background:var(--card);border:1px solid var(--bdr2);border-left:3px solid var(--gold);border-radius:12px;padding:14px 16px;margin-top:20px;cursor:pointer;transition:.2s;}
+.home-soup:hover{border-color:var(--gold);}
+.home-soup-t{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--gold);margin-bottom:5px;}
+.home-soup-q{font-size:16px;line-height:1.8;}
+
+@media(max-width:600px){
+  .phil-grid{grid-template-columns:1fr;}
+  .tech-row{grid-template-columns:1fr;}
+  .sym-grid{grid-template-columns:repeat(2,1fr);}
+  .total-flow{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">癌友<em>生命模型</em></div>
+  <nav class="nav">
+    <button class="nb on" onclick="gp('home',this)">🌟 首頁</button>
+    <button class="nb" onclick="gp('diag',this)">🩺 狀態診斷</button>
+    <button class="nb" onclick="gp('models',this)">🔬 十大模型</button>
+    <button class="nb" onclick="gp('phil',this)">📖 高維視角</button>
+    <button class="nb" onclick="gp('soup',this)">🍵 心靈雞湯</button>
+    <button class="nb" onclick="gp('flash',this)">🃏 閃卡</button>
+    <button class="nb" onclick="gp('quiz',this)">🧠 測驗</button>
+  </nav>
+  <a class="buy-top" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 訂購</a>
+</div>
+
+<div id="comboBadge" class="combo"></div>
+
+<!-- ════════ HOME ════════ -->
+<div class="pg on" id="pg-home">
+<div class="hero">
+  <div class="orb oa"></div><div class="orb ob"></div><div class="orb oc"></div>
+  <div style="position:relative;z-index:1">
+    <div class="hero-tag">癌友生命模型 1~10</div>
+    <h1 class="hero-h1">不只是<br>殺癌細胞</h1>
+    <p class="hero-p">癌症是整個<b style="color:var(--teal)">生命系統失衡</b>的結果。<br>真正的問題不是「如何殺癌」，<br>而是「生命系統為何允許它持續存在？」</p>
+    <div class="cancer-eq">
+      <span class="ceq-item">基因</span><span class="ceq-plus">＋</span>
+      <span class="ceq-item">代謝</span><span class="ceq-plus">＋</span>
+      <span class="ceq-item">免疫</span><span class="ceq-plus">＋</span>
+      <span class="ceq-item">發炎</span><span class="ceq-plus">＋</span>
+      <span class="ceq-item">環境</span><span class="ceq-plus">＋</span>
+      <span class="ceq-item">心理</span><span class="ceq-plus">＋</span>
+      <span class="ceq-item">時間</span>
+    </div>
+    <div class="hero-btns">
+      <button class="btn-t" onclick="gp('diag',document.querySelectorAll('.nb')[1])">🩺 診斷我的生命系統</button>
+      <a class="btn-g" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">查看團購商品 →</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" style="padding-top:0">
+  <div class="sec-h" style="text-align:center;margin-bottom:14px;">十大模型<span class="teal">總覽</span></div>
+  <div class="total-flow" id="homeModels"></div>
+
+  <div class="home-soup" onclick="gp('soup',document.querySelectorAll('.nb')[4])">
+    <div class="home-soup-t">🍵 今日心靈雞湯</div>
+    <div class="home-soup-q" id="homeSoupQ"></div>
+  </div>
+
+  <div class="formula-box" style="margin-top:24px">
+    <b>傳統問題</b><span class="eq">：</span><span style="color:var(--dim)">如何消滅癌症？</span><br>
+    <b>高維問題</b><span class="eq">：</span><b>如何提升整個生命系統的穩態、恢復力、適應力與修復力？</b>
+  </div>
+
+  <div style="margin-top:24px">
+    <div class="bb">
+      <div class="bb-h">🛒 癌友精準補充支持</div>
+      <div class="bb-p">冠貞生技 × 大鳥工作坊精選<br>每款對應生命模型節點，支持你的系統修復之路</div>
+      <a class="bb-a" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">前往 7-ELEVEN 賣貨便訂購 →</a>
+      <div class="bb-note">可透過 LINE 群詢問個人化補充建議</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════ DIAGNOSIS ════════ -->
+<div class="pg" id="pg-diag">
+<div class="wrap">
+  <div class="d-intro">
+    <h2>🩺 生命系統狀態診斷</h2>
+    <p>選擇你目前正在經歷的狀況 → 系統定位需要強化的模型 → 給出精準補充建議</p>
+  </div>
+  <div class="d-step">
+    <div class="d-n">1</div>
+    <div><div class="d-lbl">選擇你的狀況（可多選）</div><div class="d-sub">每個狀況對應生命系統的某個失衡訊號</div></div>
+  </div>
+  <div class="sym-grid" id="symGrid"></div>
+  <div style="text-align:center;margin-bottom:18px">
+    <button class="run-btn" onclick="runDiag()">🔍 分析我的生命系統狀態</button>
+    <button class="rst-btn" onclick="resetDiag()">重新選擇</button>
+  </div>
+  <div class="d-result" id="diagResult">
+    <div class="d-step" style="margin-top:6px">
+      <div class="d-n">2</div>
+      <div><div class="d-lbl">你的生命模型分析</div><div class="d-sub">分數越高 = 越需要優先強化的模型</div></div>
+    </div>
+    <div class="mod-score-grid" id="modScoreGrid"></div>
+    <div class="rec-h">💊 針對你的狀況：精準補充建議（機制說明）</div>
+    <div class="rec-grid" id="recGrid"></div>
+    <div class="bb" style="margin-top:20px">
+      <div class="bb-h">找到你的系統弱點了嗎？</div>
+      <div class="bb-p">補充材料 + 提升修復條件 → 生命系統才能真正強化</div>
+      <a class="bb-a" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 立即前往訂購</a>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════ MODELS ════════ -->
+<div class="pg" id="pg-models">
+<div class="wrap">
+  <div class="sec-h">十大生命<span class="teal">模型</span></div>
+  <div class="sec-s">點擊模型標籤查看詳細機制、癌友視角與對應補充策略</div>
+  <div class="mod-tabs" id="modTabs"></div>
+  <div id="modContents"></div>
+</div>
+</div>
+
+<!-- ════════ PHILOSOPHY ════════ -->
+<div class="pg" id="pg-phil">
+<div class="wrap">
+  <div class="sec-h">高維<span class="teal">視角</span></div>
+  <div class="sec-s">從系統論看癌症，才能找到真正的出路</div>
+
+  <div class="formula-box">
+    <b>癌症</b> <span class="eq">≠</span> <span style="color:var(--dim)">細胞的單一錯誤</span><br>
+    <b>癌症</b> <span class="eq">=</span> <b>整個生命系統失衡後呈現的結果</b>
+  </div>
+
+  <div class="sec-h" style="font-size:17px;margin-bottom:12px;">十大模型<span class="gold">總公式流程</span></div>
+  <div class="flow-chain">
+    <div class="fc-n" style="color:var(--m1)">① 穩態 — 基礎平衡</div><div class="fc-a">↓</div>
+    <div class="fc-n" style="color:var(--m2)">② 能量 — ATP供給</div><div class="fc-a">↓</div>
+    <div class="fc-n" style="color:var(--m3)">③ 抗熵 — 降低混亂</div><div class="fc-a">↓</div>
+    <div class="fc-n" style="color:var(--m4)">④ 適應 — 提升彈性</div><div class="fc-a">↓</div>
+    <div class="fc-n" style="color:var(--m5)">⑤ 恢復 — 重返平衡</div><div class="fc-a">↓</div>
+    <div class="fc-n" style="color:var(--m6)">⑥ 抗壓 — 安全感</div><div class="fc-a">↓</div>
+    <div class="fc-n" style="color:var(--m7)">⑦ 免疫 — 精準防禦</div><div class="fc-a">↓</div>
+    <div class="fc-n" style="color:var(--m8)">⑧ 修復 — 材料+能量+時間</div><div class="fc-a">↓</div>
+    <div class="fc-n" style="color:var(--m9)">⑨ 演化 — 系統重組</div><div class="fc-a">↓</div>
+    <div class="fc-n" style="color:var(--m10);border-color:rgba(80,200,192,.4)">⑩ 生態 — 整體支持</div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="phil-grid">
+    <div class="lcard">
+      <div class="lc-t">🔬 系統論核心</div>
+      <div class="lc-b">
+        <b>低維問題</b>：如何消滅癌細胞？<br>
+        <b class="hl">高維問題</b>：生命系統為何允許它持續存在？<br><br>
+        癌症不只是<b>細胞問題</b><br>
+        而是<span class="hl">整個生命系統失衡</span>的結果<br><br>
+        <span class="warn">無法只用單點治療解決</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <div class="lc-t">🌱 演化視角</div>
+      <div class="lc-b">
+        <b>低維：</b>為什麼是我？<br>
+        <b class="hl">高維：</b>這個事件要我更新什麼？<br><br>
+        每一次危機都是系統重組的機會：<br>
+        · 更新飲食與作息<br>
+        · 重整關係與價值觀<br>
+        · 建立更深的生態支持
+      </div>
+    </div>
+    <div class="lcard">
+      <div class="lc-t">⚡ 負離子的角色</div>
+      <div class="lc-b">
+        <b>不是直接抗癌</b><br>
+        而是優化<span class="hl">修復環境</span>：<br><br>
+        負離子 → 副交感↑ → 皮質醇↓<br>
+        → 免疫失調↓ → 睡眠改善<br>
+        → 循環提升 → 修復加速<br><br>
+        安全感 = 修復環境
+      </div>
+    </div>
+    <div class="lcard">
+      <div class="lc-t">💧 氫氧水的角色</div>
+      <div class="lc-b">
+        <b>不是治療</b><br>
+        而是<span class="hl">降低系統噪音</span>：<br><br>
+        氫分子 → 選擇性清除羥自由基<br>
+        → 氧化壓力↓ → 粒線體受保護<br>
+        → ATP效率↑ → 修復能力提升<br><br>
+        減少熵增 = 讓修復更有效
+      </div>
+    </div>
+  </div>
+
+  <div class="lcard" style="margin-bottom:20px">
+    <div class="lc-t">🌍 生態模型的核心</div>
+    <div class="lc-b">
+      健康不是個人能力。而是<b>生態系統的品質</b>。<br><br>
+      真正影響恢復的不只是藥物，還包括：<br>
+      · <b>家庭支持</b>：有人照顧、有人傾聽<br>
+      · <b>社群支持</b>：不孤單、有同伴（像我們這樣的群）<br>
+      · <b>睡眠環境</b>：暗、安靜、涼爽<br>
+      · <b>飲食環境</b>：低炎症、高營養密度<br>
+      · <b>心理環境</b>：安全感 = 修復開關
+    </div>
+  </div>
+
+  <div class="bb">
+    <div class="bb-h">修復條件，從這裡建立</div>
+    <div class="bb-p">你在創造修復條件，不是在治療<br>正確的材料 + 正確的環境 + 時間 = 生命系統重建</div>
+    <a class="bb-a" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 7-ELEVEN 賣貨便 立即訂購</a>
+  </div>
+</div>
+</div>
+
+<!-- ════════ SOUP ════════ -->
+<div class="pg" id="pg-soup">
+<div class="wrap">
+  <div class="sec-h">心靈<span class="teal">雞湯</span></div>
+  <div class="sec-s">安全感 = 修復環境。給今天的自己一句溫柔的話</div>
+
+  <div class="soup-today">
+    <div class="soup-eye" id="soupEye">🍵 今日一句</div>
+    <div class="soup-q" id="soupQ"></div>
+    <div class="soup-tag" id="soupTag"></div>
+    <div class="soup-acts">
+      <button class="btn btn-ok" onclick="nextSoup()">🔀 換一句</button>
+      <button class="btn btn-ghost" id="soupFavBtn" onclick="toggleFav(soupCur)">♡ 收藏</button>
+      <button class="btn btn-ghost" id="soupCopyBtn" onclick="copySoup()">📋 複製</button>
+    </div>
+  </div>
+
+  <input class="soup-search" id="soupSearch" type="search" placeholder="🔍 搜尋雞湯（例如：睡、害怕、陪伴）" oninput="renderSoupList()">
+  <div class="soup-chips" id="soupChips"></div>
+  <div class="soup-list" id="soupList"></div>
+</div>
+</div>
+
+<!-- ════════ FLASH ════════ -->
+<div class="pg" id="pg-flash">
+<div class="wrap" style="max-width:560px">
+  <div class="sec-h">閃卡<span class="teal">練習</span></div>
+  <div class="sec-s">十大生命模型 × 癌友視角</div>
+  <div class="fcmeta">
+    <div class="fcm-i"><div class="fcm-l">已看</div><div class="fcm-v" id="fcSeen">0</div></div>
+    <div class="fcm-i"><div class="fcm-l">✅</div><div class="fcm-v" id="fcOK">0</div></div>
+    <div class="fcm-i"><div class="fcm-l">❌</div><div class="fcm-v" id="fcNG">0</div></div>
+    <div class="mla"><button class="btn btn-ghost" onclick="startFC()">🔀</button></div>
+  </div>
+  <div class="pbar-w"><div class="pbar-f" id="fcBar"></div></div>
+  <div class="ctr-txt" id="fcCtr"></div>
+  <div class="fcwrap">
+    <div class="fc" id="fcCard" onclick="flipFC()">
+      <div class="face front">
+        <div class="fc-eye" id="fcEye"></div>
+        <div class="fc-big" id="fcBig"></div>
+        <div class="fc-hint">點擊翻面</div>
+      </div>
+      <div class="face back">
+        <div class="fc-eye" id="fcEye2"></div>
+        <div class="fc-zh" id="fcZh"></div>
+        <div class="fc-detail" id="fcDetail"></div>
+      </div>
+    </div>
+  </div>
+  <div class="fc-tap">翻面後 ✅ / ❌</div>
+  <div class="fc-btns" id="fcBtns">
+    <button class="btn btn-bad" onclick="markFC(false)">❌ 再看</button>
+    <button class="btn btn-ghost" onclick="skipFC()">⏭</button>
+    <button class="btn btn-ok" onclick="markFC(true)">✅ 記得</button>
+  </div>
+  <div id="fcResult" style="display:none;margin-top:20px">
+    <div class="result-box">
+      <div class="r-stars" id="rStars"></div>
+      <div class="r-score" id="rScore"></div>
+      <div class="r-msg" id="rMsg"></div>
+      <button class="btn btn-ok" onclick="startFC()" style="margin-top:12px;padding:9px 20px">再來一輪</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════ QUIZ ════════ -->
+<div class="pg" id="pg-quiz">
+<div class="wrap" style="max-width:600px">
+  <div class="sec-h">系統<span class="teal">測驗</span></div>
+  <div class="sec-s">驗證你對十大生命模型的理解</div>
+  <div class="fcmeta">
+    <div class="fcm-i"><div class="fcm-l">第</div><div class="fcm-v" id="qN">1</div></div>
+    <div class="fcm-i"><div class="fcm-l">✅</div><div class="fcm-v" id="qC">0</div></div>
+    <div class="fcm-i"><div class="fcm-l">❌</div><div class="fcm-v" id="qW">0</div></div>
+    <div class="mla"><button class="btn btn-ghost" onclick="startQuiz()">重開</button></div>
+  </div>
+  <div class="pbar-w"><div class="pbar-f" id="qBar"></div></div>
+  <div id="quizArea">
+    <div class="q-type" id="qType">模型題</div>
+    <div class="q-q" id="qQ"></div>
+    <div class="q-opts" id="qOpts"></div>
+    <div class="q-exp" id="qExp"></div>
+    <div class="q-next-w" id="qNext"><button class="btn btn-ok" style="padding:9px 18px" onclick="nextQ()">下一題 →</button></div>
+  </div>
+  <div id="quizResult" style="display:none;margin-top:20px">
+    <div class="result-box">
+      <div class="r-stars" id="qStars"></div>
+      <div class="r-score" id="qScore"></div>
+      <div class="r-msg" id="qMsg"></div>
+      <button class="btn btn-ok" onclick="startQuiz()" style="margin-top:12px;padding:9px 20px">再測一次</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const BUY='https://myship.7-11.com.tw/general/detail/GM2407210007294';
+
+// ════════════════════════════════════
+// 10 MODELS DATA
+// ════════════════════════════════════
+const MODELS=[
+{id:'m1',num:'①',icon:'🌊',name:'穩態模型',eng:'HOMEOSTASIS',color:'var(--m1)',
+ q:'為何健康？',
+ essence:'健康不是沒有癌細胞。正常人體每天都產生異常細胞，但被<b>免疫、修復、凋亡</b>三大系統清除。癌症出現代表穩態能力下降。',
+ cancer:'長期發炎 + 長期失眠 + 長期高血糖 + 長期壓力 → <b class="warn">穩態被打破</b> → 異常細胞無法被及時清除',
+ goal:'提升穩態能力',
+ neg:'副交感活化 → 自律神經穩定 → 發炎訊號↓ → 穩態能力提升',
+ hyd:'降低氧化壓力 → 全身炎症標記↓ → 穩態系統負擔降低',
+ nutrients:[
+   {n:'丁酸鈉',mech:'腸道屏障修復',d:'短鏈脂肪酸直接修復腸壁緊密連結蛋白，腸漏修復 = 全身慢性炎症的根本改善，穩態基礎'},
+   {n:'酶菌醣體',mech:'免疫調節平衡',d:'益生菌+益生質+植化素三合一，Th1/Th2平衡，讓免疫系統「校準」而非過激或過弱'},
+   {n:'Omega-3（亞麻仁油）',mech:'系統性抗發炎',d:'EPA抑制花生四烯酸代謝，降低PGE2和LTB4等促炎物質，全身慢性發炎↓'},
+   {n:'維生素D3',mech:'免疫調節主控',d:'D3受體遍布免疫細胞，調節T細胞分化，降低自體免疫風險，維持免疫穩態'},
+   {n:'鎂（甘胺酸鎂）',mech:'神經肌肉穩定',d:'參與300+酶反應，ATP活化必需，降低神經過度興奮，直接影響睡眠和壓力穩態'},
+ ],
+ syms:['全身倦怠','長期失眠','反覆感冒','炎症標記高','血糖不穩']},
+
+{id:'m2',num:'②',icon:'⚡',name:'能量模型',eng:'ENERGY',color:'var(--m2)',
+ q:'為何有動力？',
+ essence:'生命是能量系統。沒有ATP：<b>無法修復、無法解毒、無法免疫</b>。所有系統都依賴能量運作。',
+ cancer:'癌友常見：疲勞、腦霧、虛弱 → 本質是<b class="warn">粒線體功能下降</b>。治療過程本身也大量消耗ATP。',
+ goal:'提升細胞能量供應',
+ neg:'提升氧利用率 → 細胞有氧代謝效率↑ → ATP生成增加',
+ hyd:'減少粒線體氧化壓力 → 電子傳遞鏈效率↑ → ATP生成更穩定',
+ nutrients:[
+   {n:'粒線寶（硫辛酸+CoQ10）',mech:'粒線體保護+能量',d:'硫辛酸是粒線體抗氧化防線，CoQ10是電子傳遞鏈必需輔酶，兩者協同保護粒線體、提升ATP'},
+   {n:'CoQ10',mech:'ATP生成核心輔酶',d:'95%的ATP生成需要CoQ10，化療後往往大幅消耗，補充可恢復心臟和全身能量代謝'},
+   {n:'B群（全譜）',mech:'代謝輔酶完整鏈',d:'B1 B2 B3 B5全是三羧酸循環輔酶，任一缺乏都阻斷ATP生成路徑，B3更可生成NAD+'},
+   {n:'鎂',mech:'ATP活化必需',d:'每個ATP分子在體內以Mg-ATP形式存在，缺鎂=所有能量代謝打折，常被忽略卻極關鍵'},
+   {n:'NMN（+ B3腸寶）',mech:'NAD+生成補充',d:'NAD+是細胞能量代謝的核心輔酶，癌症和化療使其大量消耗，NMN直接提升NAD+濃度'},
+ ],
+ syms:['嚴重疲勞','腦霧','治療後恢復慢','下午無力','虛弱感']},
+
+{id:'m3',num:'③',icon:'🌪️',name:'熵增模型',eng:'ENTROPY',color:'var(--m3)',
+ q:'為何衰退？',
+ essence:'宇宙趨勢：秩序→混亂。生命的本質是<b>持續降熵</b>——維持秩序對抗自然衰退。',
+ cancer:'癌細胞 = 細胞秩序失控。DNA損傷 + 慢性發炎 + 氧化壓力 → <b class="warn">細胞控制系統失靈</b>。',
+ goal:'降低氧化壓力，降低系統熵',
+ neg:'交感神經↓ → 皮質醇↓ → 氧化壓力↓ → 系統熵降低',
+ hyd:'選擇性清除羥自由基 → DNA氧化損傷↓ → 細胞秩序維持',
+ nutrients:[
+   {n:'美寶（EGCG）',mech:'NF-κB抑制+抗氧化',d:'茶多酚最強成分，抑制NF-κB轉錄因子（慢性發炎總開關），同時清除自由基，降低DNA損傷率'},
+   {n:'NAC',mech:'麩胱甘肽前驅物',d:'GSH是細胞最重要的抗氧化物，補NAC=讓細胞自製最強降熵武器，化療期間保護正常細胞'},
+   {n:'王牌（槲皮素）',mech:'多靶點抗氧化',d:'抑制多種促癌信號路徑（PI3K、Akt），穩定細胞膜，清除自由基，是天然降熵劑'},
+   {n:'憂遁草',mech:'肝臟抗氧化解毒',d:'強效天然抗氧化，活化肝臟Nrf2路徑，誘導解毒酵素群，清除化療代謝毒素'},
+   {n:'薑黃素',mech:'發炎信號阻斷',d:'同時抑制NF-κB、Wnt、Hedgehog等致癌信號，降低慢性發炎，是最廣譜的降熵補充'},
+ ],
+ syms:['氧化壓力症狀','慢性發炎','化療副作用重','細胞修復差','DNA損傷感']},
+
+{id:'m4',num:'④',icon:'🌱',name:'適應模型',eng:'ADAPTATION',color:'var(--m4)',
+ q:'為何存活？',
+ essence:'不是最強者生存，而是<b>最能適應者生存</b>。適應力 > 意志力。',
+ cancer:'癌細胞本身是高度適應系統，會耐藥、會轉移。患者需要<b>同步提升適應力</b>：飲食調整、作息調整、情緒調整。',
+ goal:'提升整體適應彈性',
+ neg:'自律神經穩定 → 身體感知環境變化更精準 → 適應能力提升',
+ hyd:'降低系統噪音 → 身體資源不浪費在對抗自由基 → 適應力增加',
+ nutrients:[
+   {n:'酶菌醣體',mech:'腸道菌相適應',d:'多元菌相 = 更強的環境適應能力，腸道生態系統多樣性直接影響全身適應性'},
+   {n:'Omega-3',mech:'細胞膜流動性',d:'EPA/DHA增加細胞膜流動性，讓細胞受器能更靈活感應環境信號，提升細胞層面的適應力'},
+   {n:'鎂',mech:'神經可塑性',d:'神經可塑性（學習、適應）需要鎂，缺鎂使神經系統僵硬，無法靈活應對壓力和變化'},
+   {n:'B群',mech:'代謝彈性支持',d:'B群確保代謝系統在不同能源底物間切換的能力，飲食改變時的代謝適應關鍵'},
+ ],
+ syms:['難以改變習慣','飲食調整困難','情緒調適困難','抗壓能力差','環境敏感']},
+
+{id:'m5',num:'⑤',icon:'🔄',name:'恢復力模型',eng:'RESILIENCE',color:'var(--m5)',
+ q:'為何復原？',
+ essence:'恢復力 = 受到衝擊後，<b>回到平衡的能力</b>。同樣治療，有人快有人慢，差異來自底層恢復力。',
+ cancer:'睡眠 + 營養 + 心理 + 運動 → 形成恢復力。<b>化療後的恢復速度</b>直接決定下次治療是否能如期進行。',
+ goal:'加速恢復，縮短恢復期',
+ neg:'深度睡眠延長 → 修復窗口最大化 → 恢復加速',
+ hyd:'氧化壓力↓ → 治療後炎症期縮短 → 恢復更快',
+ nutrients:[
+   {n:'青春方（DHEA前驅物）',mech:'荷爾蒙恢復',d:'治療消耗大量荷爾蒙前驅物，補充青春方幫助HPA軸恢復平衡，整體恢復力提升'},
+   {n:'甘胺酸鎂',mech:'深睡恢復',d:'甘胺酸降低核心體溫（深睡必需），鎂抑制神經過度激發，雙重提升深睡品質=最強恢復窗口'},
+   {n:'GABA',mech:'神經系統放鬆',d:'主要抑制性神經傳導物質，降低治療後的神經焦慮狀態，啟動副交感=修復模式'},
+   {n:'丁酸鈉',mech:'腸道恢復基礎',d:'治療後腸道屏障受損，丁酸鈉直接修復，腸道好=吸收力恢復=全身恢復加速'},
+   {n:'神經營養素（B群+B12）',mech:'神經修復',d:'化療會損傷周邊神經，B12+B6+B1神經修復三劍客，縮短神經病變恢復時間'},
+ ],
+ syms:['治療後恢復極慢','睡眠品質差','化療後精神低迷','恢復期特別長','神經麻木']},
+
+{id:'m6',num:'⑥',icon:'🌀',name:'壓力模型',eng:'STRESS',color:'var(--m6)',
+ q:'壓力如何作用？',
+ essence:'壓力：短期有利，<b>長期有害</b>。安全感 = 修復環境。',
+ cancer:'癌友長期：恐懼 + 焦慮 + 無助 → <b class="warn">皮質醇長期升高</b> → 破壞睡眠、免疫、修復。身體無法在威脅感中完整修復。',
+ goal:'建立安全感，降低皮質醇',
+ neg:'副交感活化 → 皮質醇↓ → 恐懼感降低 → 免疫修復開啟',
+ hyd:'全身氧化壓力↓ → 壓力激素產生的氧化損傷減少',
+ nutrients:[
+   {n:'甘胺酸鎂（+ GABA）',mech:'皮質醇調節',d:'鎂抑制HPA軸過度活化，直接降低皮質醇分泌。GABA降低杏仁核恐懼信號。癌友焦慮首選'},
+   {n:'茶胺酸（L-Theanine）',mech:'α腦波促進',d:'促進α腦波（放鬆清醒狀態），降低皮質醇峰值，不嗜睡的鎮靜，白天使用理想'},
+   {n:'退黑激素（褪黑素）',mech:'睡眠節律修復',d:'化療和恐懼常破壞晝夜節律，低劑量褪黑素修復睡眠節律，恢復修復窗口'},
+   {n:'B群（B5 泛酸）',mech:'腎上腺支持',d:'B5是腎上腺皮質醇合成的輔酶，長期壓力消耗大量B5，補充防止「腎上腺疲勞」'},
+ ],
+ syms:['長期焦慮恐懼','睡眠品質極差','情緒不穩定','皮質醇感覺高','無助感']},
+
+{id:'m7',num:'⑦',icon:'🛡️',name:'免疫模型',eng:'IMMUNE',color:'var(--m7)',
+ q:'如何防禦？',
+ essence:'免疫：識別異常 + 清除異常。問題不一定是<b>太弱</b>，有時是<b>失衡</b>——慢性發炎 + T細胞耗竭。',
+ cancer:'癌友免疫狀態複雜：化療殺傷免疫細胞 + 腫瘤免疫逃逸 + T細胞耗竭。需要<b>精準調節，不是單純增強</b>。',
+ goal:'精準免疫調節，避免過激和過弱',
+ neg:'皮質醇↓ → 免疫細胞活性恢復 → NK細胞功能↑',
+ hyd:'慢性發炎↓ → 免疫系統不被長期消耗 → 精準度提升',
+ nutrients:[
+   {n:'酶菌醣體（Beta葡聚醣）',mech:'免疫精準調節',d:'訓練巨噬細胞和NK細胞的識別精度，Th1/Th2平衡，避免過激發炎或過弱防禦'},
+   {n:'維生素D3',mech:'免疫主控基因',d:'D3調節1000+基因，其中大量是免疫基因。缺D3=免疫系統「失去指揮官」，NK細胞功能大幅下降'},
+   {n:'鋅+硒+蝦紅素',mech:'免疫微量元素三合一',d:'鋅是免疫細胞增殖必需礦物質，硒活化麩胱甘肽酶保護免疫細胞，蝦紅素清除免疫細胞自由基'},
+   {n:'蜂膠',mech:'天然廣譜調節',d:'含豐富類黃酮和萜類，廣譜抗菌同時調節免疫強度，有助於防止化療後機會性感染'},
+   {n:'靈芝孢子粉',mech:'NK活化+免疫記憶',d:'三萜類+多醣體直接活化NK細胞（自然殺手），提升腫瘤免疫監視能力，不過激的精準強化'},
+ ],
+ syms:['化療後免疫低','反覆感染','免疫相關副作用','NK細胞活性低','發炎標記持續高']},
+
+{id:'m8',num:'⑧',icon:'🔧',name:'修復模型',eng:'REPAIR',color:'var(--m8)',
+ q:'如何再生？',
+ essence:'人體每秒都在修復。修復三元素：<b>材料 + 能量 + 時間</b>，缺一不可。',
+ cancer:'癌友修復能力下降時：傷口慢、疲勞久、恢復差。化療和手術造成大量修復需求，材料供給是關鍵瓶頸。',
+ goal:'提供足夠的修復材料和能量',
+ neg:'循環改善 → 修復材料運送加速 → 局部修復加快',
+ hyd:'修復期氧化壓力↓ → 修復細胞不被破壞 → 再生品質提升',
+ nutrients:[
+   {n:'優質蛋白質',mech:'組織修復原料',d:'所有修復都需要胺基酸，癌友蛋白質需求是正常人1.5倍，缺乏=肌肉流失+修復停滯'},
+   {n:'維生素C（高劑量）',mech:'膠原生成必需輔因子',d:'膠原蛋白合成必需輔因子，同時是傷口癒合和白血球功能必需，化療後特別重要'},
+   {n:'鋅',mech:'修復酵素核心',d:'超過200種修復相關酶需要鋅作輔因子，缺鋅=傷口癒合停滯、免疫修復失效'},
+   {n:'透明質酸鈉',mech:'組織基質修復',d:'細胞外基質的重要成分，吸引修復細胞聚集，幫助手術和放療後組織修復和潤滑'},
+   {n:'王牌（複合抗氧化）',mech:'修復環境保護',d:'修復過程產生大量自由基，抗氧化保護確保修復不被干擾，提升修復效率'},
+ ],
+ syms:['傷口癒合慢','手術後恢復差','放化療副作用重','肌肉流失','組織修復困難']},
+
+{id:'m9',num:'⑨',icon:'🦋',name:'演化模型',eng:'EVOLUTION',color:'var(--m9)',
+ q:'如何進化？',
+ essence:'每一次危機，都是一次系統重組的機會。',
+ cancer:'低維：為什麼是我？<br><b class="hl">高維：這個事件要我更新什麼？</b><br>可能更新：飲食、關係、作息、價值觀。',
+ goal:'從危機中提取系統升級',
+ neg:'神經系統穩定 → 高階思維（前額葉）功能提升 → 更能整合學習和成長',
+ hyd:'身體負擔↓ → 心理清明度↑ → 更能從高維視角看待處境',
+ nutrients:[
+   {n:'Omega-3（DHA）',mech:'大腦神經可塑性',d:'DHA是大腦前額葉的主要結構脂肪，補充DHA提升認知彈性和學習整合能力，支持演化思維'},
+   {n:'B群（B12+葉酸）',mech:'神經甲基化',d:'甲基化反應控制基因表現（表觀遺傳學），B12+葉酸優化DNA甲基化 = 支持系統層面的演化'},
+   {n:'鎂',mech:'神經可塑性',d:'海馬迴神經可塑性需要鎂，鎂提升記憶整合和學習能力，支持「用新視角更新舊模型」'},
+ ],
+ syms:['認知霧化','無法思考未來','困在負面情緒','找不到意義感','思維僵化']},
+
+{id:'m10',num:'⑩',icon:'🌍',name:'生態模型',eng:'ECOLOGY',color:'var(--m10)',
+ q:'如何共存？',
+ essence:'生命不是孤立個體，而是人+環境+微生物+家庭+社群共同構成。<b>健康是生態系統品質</b>。',
+ cancer:'真正影響恢復的不只是藥物，還有家庭支持、社群、睡眠環境、飲食環境、心理環境。<b class="hl">你不孤單</b>。',
+ goal:'建立支持性生態系統',
+ neg:'環境負離子濃度↑ → 室內空氣品質↑ → 睡眠環境改善 → 修復生態優化',
+ hyd:'每天飲用氫氧水 → 建立日常抗氧化習慣 → 形成長期生態支持',
+ nutrients:[
+   {n:'孢子益生菌',mech:'腸道生態系統',d:'腸道菌相多樣性 = 健康生態系統的縮影，重建菌相多樣性直接影響全身免疫和心理狀態'},
+   {n:'酶菌醣體',mech:'腸道-大腦-免疫軸',d:'腸道菌相平衡影響神經傳導物質合成（90%血清素在腸道），直接影響情緒和社交連結'},
+   {n:'維生素D3',mech:'陽光替代物',d:'D3被稱為「陽光荷爾蒙」，台灣癌友常因在室內而缺乏，補充D3改善情緒、免疫和睡眠的生態'},
+ ],
+ syms:['感到孤立無援','家庭支持不足','睡眠環境差','社群歸屬感低','生活環境品質差']},
+];
+
+// SYMPTOMS for diagnosis
+const ALL_SYMS=[
+  {icon:'😮‍💨',name:'嚴重疲勞',mods:['m2','m1']},
+  {icon:'🌫️',name:'腦霧',mods:['m2','m3']},
+  {icon:'😴',name:'嚴重失眠',mods:['m6','m5']},
+  {icon:'😰',name:'焦慮恐懼',mods:['m6']},
+  {icon:'🤢',name:'化療副作用',mods:['m3','m8']},
+  {icon:'🩹',name:'傷口癒合慢',mods:['m8','m2']},
+  {icon:'🌡️',name:'反覆感染',mods:['m7']},
+  {icon:'🔥',name:'慢性發炎',mods:['m1','m3']},
+  {icon:'💪',name:'肌肉流失',mods:['m8','m2']},
+  {icon:'🧠',name:'認知下降',mods:['m9','m2']},
+  {icon:'🥶',name:'治療後極虛',mods:['m5','m2']},
+  {icon:'😢',name:'情緒崩潰',mods:['m6','m9']},
+  {icon:'💩',name:'腸道問題',mods:['m1','m10']},
+  {icon:'🩸',name:'免疫低下',mods:['m7']},
+  {icon:'🌙',name:'修復極慢',mods:['m5','m8']},
+  {icon:'❓',name:'找不到意義',mods:['m9','m10']},
+  {icon:'🏠',name:'環境支持不足',mods:['m10']},
+  {icon:'💊',name:'解毒能力差',mods:['m3']},
+  {icon:'😵',name:'噁心嘔吐',mods:['m2','m8']},
+  {icon:'🦴',name:'骨髓抑制',mods:['m7','m2']},
+];
+
+// FLASHCARDS
+const FC_CARDS=[
+  {eye:'模型一',big:'穩態',zh:'健康不是沒有癌細胞',detail:'每天產生異常細胞但被清除。癌症=穩態能力下降。丁酸鈉+酶菌醣體+Omega-3+D3+鎂提升穩態'},
+  {eye:'模型二',big:'能量',zh:'沒有ATP，一切停擺',detail:'粒線體功能下降=疲勞腦霧虛弱。粒線寶+CoQ10+B群+鎂+NMN提升細胞能量供應'},
+  {eye:'模型三',big:'抗熵',zh:'生命本質是持續降熵',detail:'癌細胞=細胞秩序失控。NAC+美寶+王牌+薑黃素降低氧化壓力，恢復細胞秩序'},
+  {eye:'模型四',big:'適應',zh:'適應力大於意志力',detail:'癌細胞是高度適應系統。患者需同步提升：飲食調整+作息調整+情緒調整，全方位適應'},
+  {eye:'模型五',big:'恢復力',zh:'衝擊後回到平衡的能力',detail:'化療後恢復速度決定下次治療是否如期。甘胺酸鎂+GABA深睡恢復是最強槓桿'},
+  {eye:'模型六',big:'壓力',zh:'安全感 = 修復環境',detail:'長期恐懼焦慮=皮質醇升高=破壞睡眠免疫修復。身體無法在威脅感中完整修復'},
+  {eye:'模型七',big:'免疫',zh:'問題不一定是太弱，而是失衡',detail:'T細胞耗竭+腫瘤免疫逃逸。需要精準調節而非單純增強。D3+酶菌醣體+靈芝孢子粉'},
+  {eye:'模型八',big:'修復',zh:'材料 + 能量 + 時間，缺一不可',detail:'癌友蛋白質需求是正常人1.5倍。維生素C是膠原合成必需輔因子。鋅是修復酵素核心'},
+  {eye:'模型九',big:'演化',zh:'危機是系統重組的機會',detail:'低維：為什麼是我？高維：這要我更新什麼？DHA支持大腦認知彈性，支持演化視角'},
+  {eye:'模型十',big:'生態',zh:'健康是生態系統品質，不是個人能力',detail:'家庭+社群+環境+微生物共同構成。你不孤單。社群支持是恢復力最被低估的因素'},
+  {eye:'黑科技',big:'負離子',zh:'優化修復環境',detail:'副交感活化→皮質醇↓→免疫修復→安全感。對模型一六七都有間接支持作用'},
+  {eye:'黑科技',big:'氫氧水',zh:'降低系統熵，保護粒線體',detail:'選擇性清除羥自由基→DNA損傷↓→粒線體保護→修復更有效。對模型二三八都有支持'},
+  {eye:'高維',big:'高維問題',zh:'生命系統為何允許癌細胞存在？',detail:'不只問「如何殺癌」，更重要是「如何提升整個生命系統的穩態、恢復力、適應力」'},
+];
+
+// QUIZ
+const QUIZ=[
+  {type:'模型題',q:'「穩態模型」的核心洞見是？',opts:['消滅所有癌細胞','正常人體每天產生異常細胞，但被清除。癌症=穩態能力下降，而非突然出現','癌症是基因突變問題','只需要強化免疫系統'],ans:1,exp:'穩態模型告訴我們：健康不是沒有癌細胞，而是身體有能力持續清除它們。提升穩態能力比單純殺癌更根本。'},
+  {type:'機制題',q:'癌友疲勞的根本原因是？',opts:['睡眠不夠','心理壓力','粒線體功能下降導致ATP供給不足，無法支撐修復、解毒、免疫的能量需求','貧血'],ans:2,exp:'能量模型核心：沒有ATP一切停擺。粒線寶+CoQ10+B群+鎂是最直接的能量補充策略，NMN補充NAD+更進一步。'},
+  {type:'機制題',q:'「熵增模型」解釋癌症是？',opts:['免疫攻擊','細胞秩序失控——DNA損傷+慢性發炎+氧化壓力共同導致細胞控制系統失靈','基因遺傳','病毒感染'],ans:1,exp:'熵增=秩序走向混亂。癌細胞是極度無序的細胞。NAC→GSH和美寶（EGCG）是降低細胞熵最重要的策略。'},
+  {type:'模型題',q:'為什麼說「安全感 = 修復環境」？',opts:['心情好比較健康','長期恐懼焦慮使皮質醇升高，直接破壞睡眠、免疫和修復，身體在威脅感中無法完整修復','放鬆就不會感覺痛','心理可以治療癌症'],ans:1,exp:'壓力模型：皮質醇是修復的最大阻礙。皮質醇高=NK細胞功能下降+睡眠破壞+修復停止。負離子可通過副交感活化降低皮質醇。'},
+  {type:'機制題',q:'化療後免疫恢復，哪個策略最科學？',opts:['大量服用各種補品增強免疫','精準調節而非增強——D3+酶菌醣體（Beta葡聚醣）+靈芝孢子粉平衡Th1/Th2，避免過激','完全不需要補充','只吃蔬菜水果'],ans:1,exp:'免疫模型：問題不是太弱，而是失衡。化療後需要精準調節：D3是免疫主控、Beta葡聚醣訓練精度、靈芝活化NK細胞但不過激。'},
+  {type:'機制題',q:'修復三元素是？',opts:['藥物+手術+放療','材料（蛋白質+維生素C+鋅）+ 能量（ATP）+ 時間，三者缺一不可','休息+運動+飲食','意志力+正念+信念'],ans:1,exp:'修復模型：蛋白質是組織原料（癌友需求1.5倍），維生素C是膠原合成必需輔因子，鋅是修復酵素核心。沒有能量=有材料也無法修復。'},
+  {type:'模型題',q:'「演化模型」的高維問題是？',opts:['為什麼是我？','我要怎麼治好？','這個事件要我更新什麼？從危機中找到系統升級的方向','誰是對的醫生？'],ans:2,exp:'演化模型：每次危機都是系統重組機會。低維困在「為什麼」，高維問「要我更新什麼」——飲食、關係、作息、價值觀。DHA支持大腦認知彈性。'},
+  {type:'機制題',q:'氫氧水對癌友的主要作用是？',opts:['直接殺死癌細胞','補充礦物質','選擇性清除羥自由基→降低DNA氧化損傷→粒線體保護→修復能力提升','提升免疫力'],ans:2,exp:'氫氧水不是治療，而是「降低系統噪音」。選擇性清除最毒的羥自由基，保護粒線體和DNA。降低熵增速度，讓修復更有效。'},
+  {type:'模型題',q:'「生態模型」強調的核心是？',opts:['個人意志力最重要','藥物治療為主','健康是生態系統品質——家庭支持+社群+環境+微生物共同構成，你不孤單','基因決定一切'],ans:2,exp:'生態模型：真正影響恢復的不只藥物。社群支持是恢復力最被低估的因素。你參與這個群，就是在建立生態支持系統。'},
+  {type:'高維題',q:'「高維問題」是？',opts:['如何消滅癌細胞？','哪種化療最有效？','如何提升整個生命系統的穩態、恢復力、適應力與修復力？','哪個醫院最好？'],ans:2,exp:'系統論觀點：癌症不只是細胞問題，是生命系統失衡的結果。問對問題才能找到真正的答案。十大模型提供了完整的視角框架。'},
+];
+
+// SOUP 心靈雞湯
+const SOUP=[
+  {t:'安定',q:'今天不需要打贏什麼，只需要好好呼吸、好好吃飯、好好睡覺。'},
+  {t:'安定',q:'身體不是戰場，是你要回去的家。'},
+  {t:'安定',q:'慢下來不是落後，是讓修復跟得上你。'},
+  {t:'安定',q:'把今天過成今天就好，明天的事，交給明天的你。'},
+  {t:'安定',q:'一次深呼吸，就是對身體說一次：這裡很安全。'},
+  {t:'安定',q:'報告上的數字只是一個時間點，不是你的全部。'},
+  {t:'接納',q:'害怕是正常的，害怕的時候還願意往前走，那就叫勇敢。'},
+  {t:'接納',q:'想哭就哭，眼淚不是軟弱，是身體在卸下太重的東西。'},
+  {t:'接納',q:'你不必時時刻刻都正向，誠實比堅強更有力量。'},
+  {t:'接納',q:'生病不是你的錯，也不是懲罰，它只是發生了。'},
+  {t:'接納',q:'今天狀況不好也沒關係，壞日子同樣算是走過的一天。'},
+  {t:'接納',q:'允許自己累，是照顧自己的第一步。'},
+  {t:'休息',q:'休息不是偷懶，是修復正在進行中。'},
+  {t:'休息',q:'睡一場好覺，是你今天能給身體最好的禮物。'},
+  {t:'休息',q:'什麼都不做的時候，身體正在為你做很多事。'},
+  {t:'休息',q:'能量有限的日子，就只把它花在最重要的人和事上。'},
+  {t:'休息',q:'躺著曬一點太陽，也是一種前進。'},
+  {t:'休息',q:'說「我今天不行」不丟臉，那是在保護自己。'},
+  {t:'力量',q:'你已經撐過了每一個以為撐不過的日子。'},
+  {t:'力量',q:'小小的一步也是一步：多喝一口水、多走十公尺、多吃一口飯。'},
+  {t:'力量',q:'堅強不是不倒下，而是倒下後願意再給自己一次機會。'},
+  {t:'力量',q:'身體每一秒都在為你努力，它從來沒有放棄過你。'},
+  {t:'力量',q:'不是最強的人活下來，是最能調整的人。你正在調整。'},
+  {t:'力量',q:'今天能起床，就已經是一場勝利。'},
+  {t:'陪伴',q:'你不孤單，這條路上有人走在你前面，也有人走在你身邊。'},
+  {t:'陪伴',q:'開口說「我需要幫忙」，是給愛你的人一個機會。'},
+  {t:'陪伴',q:'被照顧不是虧欠，是讓愛有地方可以去。'},
+  {t:'陪伴',q:'有人願意聽你說話，就是一帖很好的藥引。'},
+  {t:'陪伴',q:'家人也在害怕，一個擁抱，同時修復兩個人。'},
+  {t:'陪伴',q:'把心事說出來，重量就分出去一半。'},
+  {t:'轉化',q:'與其問「為什麼是我」，不如問「這件事要我更新什麼」。'},
+  {t:'轉化',q:'這場病讓你停下來，也讓你看見什麼才真的重要。'},
+  {t:'轉化',q:'危機拆掉的，常常是早就不適合你的生活方式。'},
+  {t:'轉化',q:'你不是回到從前的自己，而是長成一個更懂得愛自己的人。'},
+  {t:'轉化',q:'學會拒絕、學會休息、學會求助，都是這段路給你的新能力。'},
+  {t:'轉化',q:'過去的習慣帶你來到這裡，新的選擇會帶你去別的地方。'},
+  {t:'希望',q:'再長的夜，天也會亮；先睡一覺，等光來。'},
+  {t:'希望',q:'希望不是保證會好，而是相信今天值得好好過。'},
+  {t:'希望',q:'種子在土裡的時候，看起來也像什麼都沒發生。'},
+  {t:'希望',q:'今天有一件小事讓你笑了，那就是好的一天。'},
+  {t:'希望',q:'你正在為自己創造修復的條件，剩下的，交給時間。'},
+  {t:'希望',q:'還能感受到風、陽光和一杯熱茶的溫度，生命就還在款待你。'},
+];
+const SOUP_CATS=['全部','❤ 收藏',...new Set(SOUP.map(s=>s.t))];
+let soupCur=0,soupCat='全部';
+function getFavs(){try{return JSON.parse(localStorage.getItem('soupFav'))||[];}catch(e){return [];}}
+function setFavs(a){try{localStorage.setItem('soupFav',JSON.stringify(a));}catch(e){}}
+function todaySoup(){const d=new Date();return Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5)%SOUP.length;}
+function initSoup(){
+  document.getElementById('homeSoupQ').textContent=SOUP[todaySoup()].q;
+  showSoup(todaySoup());renderSoupChips();renderSoupList();
+}
+function showSoup(i){
+  soupCur=i;const s=SOUP[i],fav=getFavs().includes(s.q);
+  document.getElementById('soupEye').textContent=i===todaySoup()?'🍵 今日一句':'🍵 給你的一句';
+  document.getElementById('soupQ').textContent=s.q;
+  document.getElementById('soupTag').textContent='# '+s.t;
+  document.getElementById('soupFavBtn').textContent=fav?'❤ 已收藏':'♡ 收藏';
+}
+function nextSoup(){let i;do{i=Math.floor(Math.random()*SOUP.length);}while(i===soupCur);showSoup(i);}
+function toggleFav(i){
+  const q=SOUP[i].q,f=getFavs(),k=f.indexOf(q);
+  if(k>=0)f.splice(k,1);else f.push(q);
+  setFavs(f);showSoup(soupCur);renderSoupList();
+}
+function copySoup(){
+  const b=document.getElementById('soupCopyBtn'),txt=SOUP[soupCur].q;
+  const done=()=>{b.textContent='✅ 已複製';setTimeout(()=>b.textContent='📋 複製',1400);};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done).catch(()=>{});
+  else{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){}ta.remove();}
+}
+function renderSoupChips(){
+  document.getElementById('soupChips').innerHTML=SOUP_CATS.map(c=>`
+    <button class="soup-chip${c===soupCat?' on':''}" onclick="soupCat='${c}';renderSoupChips();renderSoupList()">${c}</button>`).join('');
+}
+function renderSoupList(){
+  const kw=document.getElementById('soupSearch').value.trim(),favs=getFavs();
+  const list=SOUP.map((s,i)=>({...s,i})).filter(s=>
+    (soupCat==='全部'||(soupCat==='❤ 收藏'?favs.includes(s.q):s.t===soupCat))&&
+    (!kw||s.q.includes(kw)||s.t.includes(kw)));
+  document.getElementById('soupList').innerHTML=list.length?list.map(s=>`
+    <div class="soup-card">
+      <div class="soup-card-top">
+        <span class="soup-card-tag"># ${s.t}</span>
+        <button class="soup-fav${favs.includes(s.q)?' on':''}" onclick="toggleFav(${s.i})">${favs.includes(s.q)?'❤':'♡'}</button>
+      </div>
+      <div class="soup-card-q">${s.q}</div>
+    </div>`).join(''):`<div class="soup-empty">${soupCat==='❤ 收藏'&&!kw?'還沒有收藏，點 ♡ 把喜歡的句子留下來':'找不到符合的句子，換個關鍵字試試'}</div>`;
+}
+
+// ════════════════════════════
+// STATE & INIT
+// ════════════════════════════
+let selSyms=new Set();
+let fcWords=[],fcIdx=0,fcOK=0,fcNG=0,fcFlipped=false;
+let qData=[],qIdx=0,qC=0,qW=0,qAnsed=false,comboN=0,comboT=null;
+let curMod='m1';
+
+window.onload=()=>{
+  renderHomeModels();renderSymGrid();renderModTabs();renderModContents();
+  startFC();startQuiz();initSoup();
+};
+
+function gp(id,btn){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+}
+
+// HOME CHIPS
+function renderHomeModels(){
+  document.getElementById('homeModels').innerHTML=MODELS.map(m=>`
+    <div class="tf-item" onclick="gp('models',document.querySelectorAll('.nb')[2]);switchMod('${m.id}')"
+         style="cursor:pointer;border-color:${m.color.replace('var(','').replace(')','').trim()}33;transition:.2s"
+         onmouseover="this.style.borderColor='${m.color.replace('var(','').replace(')','').trim()}88'"
+         onmouseout="this.style.borderColor='${m.color.replace('var(','').replace(')','').trim()}33'">
+      <div class="tf-icon">${m.icon}</div>
+      <div class="tf-name" style="color:${m.color}">${m.num} ${m.name.replace('模型','')}</div>
+    </div>`).join('');
+}
+
+// SYMPTOMS
+function renderSymGrid(){
+  document.getElementById('symGrid').innerHTML=ALL_SYMS.map(s=>`
+    <button class="sym-btn" onclick="toggleSym('${s.name}',this)">
+      <span class="sy-icon">${s.icon}</span>
+      <span class="sy-name">${s.name}</span>
+      <span class="sy-mod">${s.mods.map(id=>MODELS.find(m=>m.id===id)?.name).join(' + ')}</span>
+    </button>`).join('');
+}
+function toggleSym(name,el){if(selSyms.has(name)){selSyms.delete(name);el.classList.remove('sel');}else{selSyms.add(name);el.classList.add('sel');}}
+function runDiag(){
+  if(!selSyms.size){alert('請先選擇至少一個狀況');return;}
+  const scores={};MODELS.forEach(m=>scores[m.id]=0);
+  selSyms.forEach(sym=>{const s=ALL_SYMS.find(x=>x.name===sym);if(s)s.mods.forEach(id=>scores[id]=(scores[id]||0)+1);});
+  const maxS=Math.max(...Object.values(scores));
+  const sorted=MODELS.map(m=>({...m,score:scores[m.id]||0})).sort((a,b)=>b.score-a.score);
+  document.getElementById('modScoreGrid').innerHTML=sorted.map(m=>{
+    const pct=maxS>0?Math.round(m.score/maxS*100):0;const hit=m.score>0;
+    return `<div class="msg${hit?' hit':''}" style="border-color:${hit?m.color.replace('var(','').replace(')','').trim()+'55':'var(--bdr)'};opacity:${hit?1:.4}">
+      <div class="msg-top">
+        <div class="msg-ico" style="background:${m.color.replace('var(','').replace(')','').trim()}18">${m.icon}</div>
+        <div><div class="msg-name" style="color:${hit?m.color:'var(--dim)'}">${m.name}</div>
+        <div class="msg-pct" style="color:${hit?m.color:'var(--dim)'}">${hit?`需強化 ${pct}%`:'目前正常'}</div></div>
+      </div>
+      <div class="msg-bar-bg"><div class="msg-bar" style="background:${m.color};width:${pct}%"></div></div>
+      <div class="msg-syms">${[...selSyms].filter(sym=>{const sm=ALL_SYMS.find(x=>x.name===sym);return sm&&sm.mods.includes(m.id);}).map(sym=>`<span class="msg-sym-tag" style="background:${m.color.replace('var(','').replace(')','').trim()}18;color:${m.color}">${sym}</span>`).join('')}</div>
+    </div>`;
+  }).join('');
+  const top=sorted.filter(m=>m.score>0).slice(0,3);
+  document.getElementById('recGrid').innerHTML=top.flatMap(m=>m.nutrients.slice(0,2).map(n=>`
+    <div class="rec-card">
+      <div class="rc-mod" style="color:${m.color}">${m.icon} ${m.name}</div>
+      <div class="rc-name">${n.n}</div>
+      <div class="rc-mech">${n.mech}</div>
+      <div class="rc-why">${n.d}</div>
+      <a class="rc-buy" href="${BUY}" target="_blank">🛒 訂購</a>
+    </div>`)).join('');
+  document.getElementById('diagResult').classList.add('show');
+  setTimeout(()=>document.getElementById('diagResult').scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+function resetDiag(){selSyms.clear();document.querySelectorAll('.sym-btn').forEach(b=>b.classList.remove('sel'));document.getElementById('diagResult').classList.remove('show');}
+
+// MODEL TABS
+function renderModTabs(){
+  document.getElementById('modTabs').innerHTML=MODELS.map(m=>`
+    <button class="mod-tab${m.id===curMod?' on':''}" id="mt-${m.id}"
+      onclick="switchMod('${m.id}')"
+      style="${m.id===curMod?`background:${m.color};color:#040200`:''}">${m.num} ${m.name.replace('模型','')}</button>`).join('');
+}
+function switchMod(id){
+  curMod=id;
+  document.querySelectorAll('.mod-tab').forEach(t=>{t.classList.remove('on');t.style.background='';t.style.color='';});
+  document.querySelectorAll('.mod-content').forEach(c=>c.classList.remove('on'));
+  const m=MODELS.find(x=>x.id===id);
+  const tab=document.getElementById('mt-'+id);
+  if(tab){tab.classList.add('on');tab.style.background=m.color;tab.style.color='#040200';}
+  document.getElementById('mc-'+id).classList.add('on');
+}
+function renderModContents(){
+  document.getElementById('modContents').innerHTML=MODELS.map(m=>`
+    <div class="mod-content${m.id===curMod?' on':''}" id="mc-${m.id}">
+      <div class="mod-header">
+        <div class="mod-icon-big" style="background:${m.color}18">${m.icon}</div>
+        <div>
+          <div class="mod-num" style="color:${m.color}">${m.num} ${m.eng}</div>
+          <div class="mod-h1" style="color:${m.color}">${m.name}</div>
+          <div class="mod-q" style="color:${m.color};border-color:${m.color}50;background:${m.color}08">核心問題：${m.q}</div>
+        </div>
+      </div>
+      <div class="mod-body">
+        <div class="mod-body-t">本質</div>
+        <div class="mod-body-b">${m.essence}</div>
+      </div>
+      <div class="mod-body">
+        <div class="mod-body-t">癌友視角</div>
+        <div class="mod-body-b">${m.cancer}</div>
+      </div>
+      ${m.nutrients.length?`
+      <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:9px">💊 對應補充 × 機制說明</div>
+      <div class="nt-grid">
+        ${m.nutrients.map(n=>`<div class="nt-card" style="border-left-color:${m.color}">
+          <div class="nt-top">
+            <span class="nt-name">${n.n}</span>
+            <span class="nt-mech" style="background:${m.color}18;color:${m.color}">${n.mech}</span>
+          </div>
+          <div class="nt-detail">${n.d}</div>
+          <a class="nt-buy" href="${BUY}" target="_blank">🛒 訂購</a>
+        </div>`).join('')}
+      </div>`:''}
+      <div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:8px">⚡ 黑科技對應</div>
+      <div class="tech-row">
+        <div class="tech-card tech-neg">
+          <div class="tech-t" style="color:var(--neg)">🌬️ 負離子機</div>
+          <div class="tech-flow">${m.neg.split('→').map((p,i)=>i===0?`<b>${p.trim()}</b>`:`<span class="arr">→</span> ${p.trim()}`).join(' ')}</div>
+          <a class="tech-buy" href="${BUY}" target="_blank">🛒 查看負離子機</a>
+        </div>
+        <div class="tech-card tech-hyd">
+          <div class="tech-t" style="color:var(--hyd)">💧 氫氧水</div>
+          <div class="tech-flow">${m.hyd.split('→').map((p,i)=>i===0?`<b>${p.trim()}</b>`:`<span class="arr">→</span> ${p.trim()}`).join(' ')}</div>
+          <a class="tech-buy" href="${BUY}" target="_blank">🛒 查看氫氧水</a>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// FLASHCARD
+function shuffle(a){return [...a].sort(()=>Math.random()-.5);}
+function startFC(){
+  fcWords=shuffle([...FC_CARDS]);fcIdx=0;fcOK=0;fcNG=0;fcFlipped=false;
+  document.getElementById('fcResult').style.display='none';
+  document.getElementById('fcCard').style.display='';
+  document.getElementById('fcBtns').style.display='none';
+  document.getElementById('fcCard').classList.remove('flip');renderFC();
+}
+function renderFC(){
+  if(fcIdx>=fcWords.length){showFCR();return;}
+  const c=fcWords[fcIdx];
+  document.getElementById('fcBar').style.width=(fcIdx/fcWords.length*100)+'%';
+  document.getElementById('fcCtr').textContent=`第 ${fcIdx+1} / ${fcWords.length} 張`;
+  document.getElementById('fcSeen').textContent=fcIdx;
+  document.getElementById('fcOK').textContent=fcOK;
+  document.getElementById('fcNG').textContent=fcNG;
+  ['fcEye','fcEye2'].forEach(id=>document.getElementById(id).textContent=c.eye);
+  document.getElementById('fcBig').textContent=c.big;
+  document.getElementById('fcZh').textContent=c.zh;
+  document.getElementById('fcDetail').textContent=c.detail;
+  document.getElementById('fcCard').classList.remove('flip');
+  fcFlipped=false;document.getElementById('fcBtns').style.display='none';
+}
+function flipFC(){document.getElementById('fcCard').classList.toggle('flip');fcFlipped=!fcFlipped;document.getElementById('fcBtns').style.display=fcFlipped?'flex':'none';}
+function markFC(ok){if(ok)fcOK++;else{fcNG++;fcWords.push(fcWords[fcIdx]);}fcIdx++;renderFC();}
+function skipFC(){fcIdx++;renderFC();}
+function showFCR(){
+  document.getElementById('fcResult').style.display='block';document.getElementById('fcCard').style.display='none';
+  const pct=fcOK/(fcOK+fcNG)*100||0;
+  document.getElementById('rStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('rScore').textContent=`記住 ${fcOK} 個`;
+  document.getElementById('rMsg').textContent=pct>=90?'十大生命模型全掌握！🎉':pct>=70?'很好！繼續鞏固。':'多看幾遍，系統觀越來越清晰。';
+}
+
+// QUIZ
+function startQuiz(){
+  qData=shuffle([...QUIZ]);qIdx=0;qC=0;qW=0;qAnsed=false;comboN=0;
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('quizArea').style.display='';renderQ();
+}
+function renderQ(){
+  if(qIdx>=qData.length){showQR();return;}
+  qAnsed=false;
+  const q=qData[qIdx];
+  document.getElementById('qN').textContent=qIdx+1;
+  document.getElementById('qC').textContent=qC;
+  document.getElementById('qW').textContent=qW;
+  document.getElementById('qBar').style.width=(qIdx/qData.length*100)+'%';
+  document.getElementById('qType').textContent=q.type;
+  document.getElementById('qQ').textContent=q.q;
+  document.getElementById('qExp').classList.remove('show');
+  document.getElementById('qNext').style.display='none';
+  document.getElementById('qOpts').innerHTML=q.opts.map((o,i)=>`
+    <button class="qopt" onclick="ansQ(this,${i},${q.ans},'${q.exp.replace(/'/g,"\\'")}')">${o}</button>`).join('');
+}
+function ansQ(btn,chosen,ans,exp){
+  if(qAnsed)return;qAnsed=true;
+  const ok=chosen===ans;
+  document.querySelectorAll('.qopt').forEach((b,i)=>{b.disabled=true;if(i===chosen)b.classList.add(ok?'ok':'bad');else if(i===ans)b.classList.add('ok');});
+  if(ok){qC++;comboN++;showCombo();}else{qW++;comboN=0;}
+  const e=document.getElementById('qExp');
+  e.innerHTML=`<b>${ok?'✅ 正確！':'❌ 解析：'}</b> ${exp}`;e.classList.add('show');
+  document.getElementById('qNext').style.display='block';
+}
+function nextQ(){qIdx++;renderQ();}
+function showCombo(){
+  if(comboN<3)return;
+  const b=document.getElementById('comboBadge');b.textContent=`🔥 ${comboN}連！`;b.style.display='block';
+  clearTimeout(comboT);comboT=setTimeout(()=>b.style.display='none',1400);
+}
+function showQR(){
+  document.getElementById('quizResult').style.display='block';document.getElementById('quizArea').style.display='none';
+  const pct=qC/(qC+qW)*100||0;
+  document.getElementById('qStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('qScore').textContent=`${qC}/${qC+qW}`;
+  document.getElementById('qMsg').textContent=pct>=90?'生命模型全制霸！🎉':pct>=70?'很棒！繼續深化。':'多複習十大模型，系統思維會越來越強。';
+}
+</script>
+</body>
+</html>
