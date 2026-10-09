@@ -1,0 +1,1556 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>情緒溯源</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--ink:#22252b;--sub:#6a707c;--line:#e2e0d8;--acc:#b4532a;--acc2:#2f6f6a;--soft:#f3e9e2;--ok:#2e7d4f;--bad:#b3352f}
+@media(prefers-color-scheme:dark){:root{--bg:#17191d;--card:#20242a;--ink:#e8e6e1;--sub:#9aa1ad;--line:#333941;--acc:#e58a5c;--acc2:#6fc2ba;--soft:#2c2622;--ok:#6fcf97;--bad:#ef7d76}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 "Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px}
+.top{display:flex;gap:12px;align-items:center;max-width:1100px;margin:0 auto}
+h1{font-size:18px;margin:0;white-space:nowrap}
+h1 small{font-weight:400;color:var(--sub);font-size:12px;margin-left:6px}
+#q{flex:1;min-width:0;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}
+nav{display:flex;gap:4px;max-width:1100px;margin:8px auto 0;overflow-x:auto}
+nav button{border:0;background:none;color:var(--sub);padding:6px 12px;border-radius:8px;font:inherit;cursor:pointer;white-space:nowrap}
+nav button.on{background:var(--acc);color:#fff}
+main{max-width:1100px;margin:0 auto;padding:16px}
+h2{font-size:17px;margin:22px 0 8px}
+h2:first-child{margin-top:0}
+h3{font-size:15px;margin:0 0 4px}
+p{margin:6px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px}
+.grid .card{margin:0}
+.sub{color:var(--sub);font-size:13px}
+.chain{display:flex;flex-wrap:wrap;gap:4px 2px;align-items:center}
+.chain span{background:var(--soft);border-radius:6px;padding:1px 8px;font-size:13px}
+.chain i{color:var(--acc);font-style:normal;font-size:12px}
+.tag{display:inline-block;font-size:12px;padding:0 8px;border-radius:20px;background:var(--soft);color:var(--acc);margin-right:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:2px 12px;font:inherit;font-size:13px;cursor:pointer}
+.chip.on{background:var(--acc2);border-color:var(--acc2);color:#fff}
+dl{margin:6px 0 0;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:14px}
+dt{color:var(--sub);white-space:nowrap}
+dd{margin:0}
+.num{color:var(--acc);font-weight:700;margin-right:6px;font-variant-numeric:tabular-nums}
+.btn{border:1px solid var(--acc);background:var(--acc);color:#fff;border-radius:8px;padding:6px 14px;font:inherit;cursor:pointer}
+.btn.ghost{background:none;color:var(--acc)}
+.btn.sm{padding:2px 10px;font-size:13px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+details{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:8px}
+summary{cursor:pointer;padding:10px 14px;font-weight:700}
+summary .sub{font-weight:400;margin-left:8px}
+.ab{display:flex;gap:8px;padding:6px 14px;border-top:1px solid var(--line);align-items:flex-start}
+.ab input{margin-top:7px}
+.ab.done .t{color:var(--sub)}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:6px 0 12px}
+.bar b{display:block;height:100%;background:var(--acc2)}
+label.f{display:block;margin:14px 0 4px;font-weight:700}
+label.f small{font-weight:400;color:var(--sub);margin-left:6px}
+textarea,select,input[type=text]{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:58px;resize:vertical}
+.hint{font-size:13px;color:var(--sub);margin:0 0 4px}
+.two{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start}
+.side{position:sticky;top:110px}
+@media(max-width:800px){.two{grid-template-columns:1fr}.side{position:static}}
+mark{background:#ffe08a;color:#222;border-radius:2px}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+.rate{display:flex;gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.rate:first-of-type{border:0}
+.rate .l{flex:1}
+.rate label{font-size:13px;cursor:pointer}
+blockquote{margin:8px 0;padding:6px 14px;border-left:3px solid var(--acc);background:var(--soft);border-radius:0 8px 8px 0}
+a{color:var(--acc2)}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:6px 16px;border-radius:20px;opacity:0;transition:.3s;pointer-events:none}
+#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <h1>情緒溯源<small>Emotion Debugging</small></h1>
+    <input id="q" type="search" placeholder="搜尋情緒、能力、紀錄…（例：羞恥、Prediction、界線）" oninput="setQ(this.value)">
+  </div>
+  <nav id="nav"></nav>
+</header>
+<main id="main"></main>
+<div id="toast"></div>
+
+<script>
+/* ================= 資料 ================= */
+// [中文, 英文, 源頭, 核心落差, 舊模型, 更新方向, 補充]
+const EMO=[
+['焦慮','Anxiety','系統預測「未來可能出問題」，但無法精準估計何時、如何發生。','Prediction的不確定性過高。','不知道會發生什麼，所以一定很危險。','把模糊威脅拆成可驗證的小預測。','焦慮研究特別強調不確定性、威脅預期以及威脅模型未能適當更新。'],
+['恐懼','Fear','系統預測「威脅即將發生，而且我可能無法應付」。','Safety Prediction安全預測被破壞。','危險來了，我沒有能力。','辨認真實威脅、發生機率與自己的應對能力。'],
+['憤怒','Anger','Reality嚴重偏離「事情應該如此」的高權重模型。','Expectation／Fairness／Boundary被違反。','他不應該這樣。','分辨「界線真的被侵犯」與「Reality沒有服從我的模型」。'],
+['悲傷','Sadness','系統判定某個高價值的人、關係、身分、機會或未來已經失去。','Expected Future與Available Future之間出現巨大差距。','原本存在的未來，現在不存在了。','重新建立失去之後仍可生成的新未來。'],
+['失望','Disappointment','Reality低於原本期待。','Expected Outcome > Actual Outcome。','我以為會更好。','重新校準Prediction，而不是否定整個Reality。'],
+['挫折','Frustration','目標存在，但目前策略反覆無法降低與目標的距離。','Goal－Current State長期無法縮小。','我一直做，為什麼還沒有用？','不要只增加努力，先更換Strategy。'],
+['無助','Helplessness','系統預測「不管我做什麼，結果都不會改變」。','Action→Outcome的控制感崩解。','我的行動沒有用。','尋找最小仍可控制的變數。'],
+['絕望','Hopelessness','系統不只認為現在很差，而且預測未來也沒有改善路徑。','Future Model失去可行路徑。','以後都會這樣。','不要一次證明人生會變好，只找一條可以被Reality驗證的小路徑。'],
+['羞恥','Shame','負面事件被模型從「我做錯事情」升級成「我這個人有問題」。','Ideal Self－Perceived Self。','不是事情失敗，是我很差。','把Identity與Event重新拆開。','羞恥與罪惡感都是複雜的自我意識情緒，但兩者涉及不同的社會認知與神經處理，不宜視為同一盞燈。'],
+['罪惡感','Guilt','自己的行為偏離內在價值或道德標準。','Actual Behavior－Moral Model。','我做了不符合自己價值的事。','Repair修復、道歉、補償、改變下一次行為。'],
+['尷尬','Embarrassment','系統偵測到自己的表現偏離群體期待，而且正在被別人觀察。','Presented Self－Expected Social Self。','大家都看到我出錯了。','重新估計別人的注意力與事件真正的重要程度。'],
+['嫉妒','Jealousy','系統預測重要關係或資源可能被第三者取代。','Expected Security－Perceived Relational Threat。','我可能失去這個重要位置。','檢查真正威脅、依附安全與關係證據。'],
+['羨慕','Envy','比較系統發現「別人擁有我重視、但目前沒有的東西」。','Desired State－Current State。','他有，我沒有。','把比較訊號轉成「我真正重視什麼」的資訊。'],
+['孤獨','Loneliness','實際連結低於系統需要的連結。','Desired Connection－Perceived Connection。','沒有人真正理解我。','區分「沒有人」與「目前缺少足夠高品質連結」。'],
+['被拒絕感','Rejection','系統原本預測「我會被接納」，Reality卻出現排除訊號。','Expected Belonging－Actual Response。','他不要我＝我沒有價值。','把對方的選擇與自己的整體價值拆開。'],
+['委屈','Grievance','系統判斷自己的投入、善意或犧牲沒有得到應有回報。','Expected Reciprocity－Actual Reciprocity。','我付出這麼多，你怎麼可以這樣？','重新檢查交換規則、界線與未說出口的期待。'],
+['怨恨','Resentment','長期未修復的不公平Prediction Error被持續保存。','Fairness Model長期與Reality不符。','這筆帳還沒有被修復。','修復、重談規則、建立界線或退出失衡交換。'],
+['後悔','Regret','現在的自己重新模擬過去，生成「另一個選擇可能更好」的反事實世界。','Actual Outcome－Counterfactual Outcome。','如果當時選另一條路就好了。','把Counterfactual轉成下一次Decision Rule。'],
+['自責','Self-blame','系統把負面結果過度歸因給自己。','Responsibility Model失真。','都是我的錯。','重新分配自己、他人、環境與隨機性的因果權重。'],
+['自卑','Inferiority','自我模型長期預測「我的能力或價值低於比較群體」。','Ideal／Social Standard－Self Model。','別人比我好，所以我比較差。','從Identity Ranking轉向Specific Skill Gap。'],
+['不安','Insecurity','系統無法確定重要資源、關係、能力或身分是否穩定。','需要穩定，但模型的Confidence太低。','它隨時可能消失。','找出真正不穩定的是哪個Node。'],
+['擔心','Worry','系統反覆模擬未來負面Scenario，希望藉由思考提高控制力。','Unknown Future＋High Importance。','再想一下，也許就能避免危險。','區分可以Action的問題與目前不可控制的不確定性。'],
+['煩躁','Irritation','大量小型Prediction Error持續累積，系統調節容量下降。','小干擾很多＋可用資源不足。','怎麼什麼都不順？','先降低負荷，再處理事件。'],
+['厭惡','Disgust','系統把某刺激表徵為污染、有害、排斥或需要保持距離。','刺激與Safety／Purity Model衝突。','我要離它遠一點。','先分辨生物性危險、學習形成的厭惡與價值判斷。'],
+['失落','Sense of Loss','原本存在於World Model中的重要可能性突然消失。','Expected Possibility－Current Possibility。','我以為我還擁有那個未來。','允許舊模型退場，再重新生成可能性空間。'],
+['空虛','Emptiness','系統仍在運作，但高權重Goal／Meaning／Connection不足。','Activity存在，但Meaning不足。','我每天都在做事，卻不知道為什麼。','不是塞更多刺激，而是重建Value→Goal→Action的連結。'],
+['無聊','Boredom','目前環境提供的資訊量、挑戰度或新奇度低於系統需要。','Prediction太容易、Difference Information太少。','沒有值得注意的新東西。','提高挑戰、探索或重新設定任務。'],
+['壓力','Stress','系統預測環境要求可能超過目前可調度資源。','Demand > Perceived Capacity。','事情太多，我可能處理不了。','降低Demand、增加Capacity、提高控制度或重新排序權重。'],
+['內疚／虧欠','Indebtedness','交換模型偵測「別人給我的多於我目前回饋的」。','Received Value > Returned Value。','我欠他。','確認是真實責任、健康互惠，還是被操控形成的虧欠感。'],
+['痛苦','Distress','高權重需求、價值、身分或安全模型與Reality產生巨大而持續的落差，同時系統暫時找不到降低誤差的方法。','High Prediction Error＋High Precision＋Low Perceived Control。','Reality一定要改，我才能好起來。','同時檢查Reality、Representation、Prediction、Weight與Action，而不是只攻擊情緒。']
+].map((a,i)=>({i:i+1,n:a[0],e:a[1],s:a[2],g:a[3],o:a[4],u:a[5],x:a[6]||''}));
+
+const GAPS=[
+['Threat Gap','威脅落差',['焦慮','恐懼','擔心','不安']],
+['Goal Gap','目標落差',['挫折','失望','煩躁']],
+['Loss Gap','失去落差',['悲傷','失落','孤獨','絕望']],
+['Social Gap','社會連結落差',['被拒絕感','尷尬','嫉妒']],
+['Self Gap','自我模型落差',['羞恥','自卑','自責']],
+['Moral Gap','價值落差',['罪惡感','內疚／虧欠']],
+['Fairness Gap','公平交換落差',['憤怒','委屈','怨恨']],
+['Meaning／Control Gap','意義與控制落差',['空虛','無助','壓力','無聊']]
+].map((a,i)=>({i:i+1,en:a[0],zh:a[1],emo:a[2]}));
+EMO.forEach(e=>{const g=GAPS.find(g=>g.emo.includes(e.n));e.gap=g?g.i:0});
+
+const NODES=[
+['Prediction','我原本預測什麼？'],
+['Representation','我把這件事情表徵成什麼？'],
+['Value／Need','什麼對我很重要？'],
+['Precision／Weight','我給這個訊號多大的可信度與權重？'],
+['World Model','我相信自己、別人與世界應該如何運作？']];
+
+const CHAIN_GEN='Reality現實→Sensory/Input輸入→Representation表徵：「我把這件事看成什麼？」→World Model世界模型：「世界應該怎麼運作？」→Prediction預測：「接下來應該發生什麼？」→Reality Feedback現實回饋→Difference差異→Prediction Error預測誤差→Value／Need判定：「這個差異對我重要嗎？」→Emotion Signal情緒警示→Attention注意力重新配置→Action Tendency行動傾向→Model Update模型更新，或舊模型持續維持';
+const CHAIN_TRACE='Emotion→Body State→Trigger→Attention→Representation→Meaning→Prediction→Prediction Error→Need→Value→Rule→Belief→World Model→Identity Model→Past Learning→Action Tendency→Feedback→Model Update→Retest';
+const CHAIN_SHORT='情緒→Difference→Prediction→Representation→World Model→Evidence→Model Update→Retest';
+const CHAIN_TRAIN='Emotion→Body→Trigger→Fact→Representation→Prediction→Prediction Error→Need／Value→Old Model→Second Model→Experiment→Feedback→Model Update→Retest';
+const CHAIN_FINAL='Trigger→Body State→Attention→Representation→Meaning→Prediction→Reality→Prediction Error→Need／Value→Emotion→Action Tendency→Behavior→Feedback→Evidence→Alternative Representation→Model Update→New Prediction→Retest→Calibration→Capability→Freedom';
+
+const LEVELS=[
+['初階','我很生氣，所以一定是你錯。'],
+['進階','我很生氣，所以我的系統偵測到重要落差。'],
+['再進階','到底是哪一個Prediction與Reality不一致？'],
+['高階','這個Prediction又是哪個Representation、Rule與World Model生成的？'],
+['更高階','我的模型有多少Evidence？還有哪些Alternative Models？'],
+['成熟','設計一個小實驗，讓Reality決定哪個模型比較準。'],
+['自由','即使情緒很強，我仍然保留更新Representation、Prediction與Action的能力。']];
+
+const ABIL=`
+#SIGNAL｜先讀懂燈號
+情緒辨識能力｜我現在到底是生氣、害怕、羞恥、失望，還是混合情緒？
+情緒命名能力｜把「我很不舒服」提高解析度成精準詞彙。
+情緒強度辨識｜現在是2分、5分還是9分？
+情緒混合辨識｜表面是憤怒，底下是否同時有害怕與受傷？
+主次情緒辨識｜哪一個是第一情緒？哪一個是後來生成的第二情緒？
+情緒時間辨識｜它是剛剛生成，還是已經累積三天？
+情緒頻率辨識｜這個訊號偶爾出現，還是每天重複？
+情緒持續度辨識｜刺激消失後，系統多久才能回到Baseline？
+情緒情境辨識｜它只在特定人、地方、時間或任務出現嗎？
+情緒比例辨識｜現在的反應強度與事件本身是否大致匹配？
+#BODY｜先排除身體狀態
+身體訊號辨識｜心跳、胸悶、胃縮、肩頸緊、發熱、顫抖在哪裡？
+疲勞辨識｜我是真的生氣，還是睡眠不足讓神經系統容錯率下降？
+飢餓辨識｜低能量是否正在放大威脅訊號？
+睡眠辨識｜今天的World Model是否被睡眠不足扭曲？
+疼痛辨識｜慢性疼痛是否正在提高負面訊號權重？
+刺激負荷辨識｜聲音、訊息、人群、工作是否已超過系統容量？
+生理喚醒辨識｜這是心理威脅，還是身體先進入高喚醒狀態？
+恢復能力辨識｜真正問題可能不是刺激太大，而是Recovery太慢。
+#TRIGGER｜找到觸發點
+事件辨識｜情緒出現前30秒發生了什麼？
+人物辨識｜是哪一類人最容易觸發這個反應？
+語句辨識｜對方究竟說了哪一句話？
+表情辨識｜是不是一個眼神就啟動了舊模型？
+場景辨識｜哪些環境會讓同一模式反覆出現？
+記憶觸發辨識｜現在的事件是否只是按到過去經驗的按鈕？
+象徵觸發辨識｜真正刺激我的不是事件，而是事件「代表了什麼」？
+#FACT｜把Reality與Story拆開
+事實分離能力｜攝影機真正拍得到什麼？
+推論辨識能力｜哪些內容其實是我推測的？
+評價辨識能力｜「他很自私」是Fact還是Judgment？
+讀心辨識能力｜「他就是看不起我」有多少Evidence？
+意圖辨識能力｜我是不是把結果直接推論成對方的意圖？
+因果辨識能力｜A發生在B之前，不代表A就是B的唯一原因。
+證據辨識能力｜支持我的解釋有哪些證據？
+反證搜尋能力｜什麼Evidence會證明我的解釋可能不完整？
+未知辨識能力｜哪些地方其實應該標記Unknown？
+#ATTENTION｜檢查注意力如何選擇Reality
+注意力偏差辨識｜我是不是只看到負面訊號？
+威脅放大辨識｜系統是不是正在優先掃描危險？
+確認偏誤辨識｜我是不是只收集支持舊模型的Evidence？
+負面過濾辨識｜十件好事加一件壞事，我是否只記得壞事？
+顯著性辨識｜這件事情真的重要，還是只是非常刺眼？
+注意力黏著辨識｜事件已經結束，大腦是否仍反覆Replay？
+#REPRESENTATION｜找到真正的情緒生成器
+表徵辨識｜我把這件事情「看成什麼」？
+替代表徵生成｜除了第一個解釋，還有哪些可能？
+第二解釋能力｜強迫自己至少產生第二種Representation。
+第三解釋能力｜再生成一個與前兩者不同的模型。
+表徵機率化｜不是「他討厭我」，而是「目前我估計有40%可能」。
+表徵尺度調整｜這是一件壞事，還是「整個人生完了」？
+局部化能力｜把「全部」縮回「這一次」。
+暫時化能力｜把「永遠」改成「目前」。
+狀態化能力｜把「我是失敗者」改成「我目前這項能力不足」。
+#MEANING｜追蹤事件被賦予的意義
+意義辨識｜這件事情對我代表什麼？
+象徵辨識｜58分只是58分，還是被我翻譯成「我很笨」？
+關係意義辨識｜他沒回訊息，被我翻譯成忙、拒絕還是不愛我？
+身分意義辨識｜一次失敗是否被升級成Identity Judgment？
+未來意義辨識｜一次挫折是否被外推成「未來都會如此」？
+價值意義辨識｜為什麼這件事情對我特別重要？
+#PREDICTION｜找到原始預測
+預測辨識｜我原本預期什麼會發生？
+隱性預測辨識｜我嘴巴沒說，但心裡是不是認定事情應該如此？
+結果預測辨識｜我預測結果應該是什麼？
+他人行為預測｜我認為別人「應該」怎麼做？
+關係預測辨識｜我認為愛我的人應該怎麼表現？
+自我預測辨識｜我認為自己應該做到什麼程度？
+控制預測辨識｜我是不是預測「只要努力，就一定能控制結果」？
+公平預測辨識｜我是不是預測「付出就應該得到等量回報」？
+安全預測辨識｜我是不是預測「世界應該讓我一直感到安全」？
+確定性預測辨識｜我是不是要求Reality必須可預測？
+#PREDICTION ERROR｜精準定位落差
+落差辨識｜Prediction與Reality到底差在哪裡？
+落差大小辨識｜Difference究竟多大？
+落差方向辨識｜Reality比預期差，還是只是與預期不同？
+落差來源辨識｜是Reality改變，還是Prediction本來就錯？
+模型失效辨識｜這是一次例外，還是舊模型已經失效？
+權重錯置辨識｜問題是預測錯，還是我把這個預測看得太重要？
+可更新性辨識｜哪一個Node只要更新，整個情緒系統就會改變？
+#NEED｜找到情緒守護的需求
+安全需求辨識｜我需要的是Safety嗎？
+連結需求辨識｜我需要的是Connection嗎？
+尊重需求辨識｜我需要的是Respect嗎？
+自主需求辨識｜我需要的是Autonomy嗎？
+公平需求辨識｜我需要的是Fairness嗎？
+能力需求辨識｜我需要的是Competence嗎？
+歸屬需求辨識｜我需要的是Belonging嗎？
+休息需求辨識｜我其實只是需要Recovery嗎？
+確定性需求辨識｜我是不是不能忍受Unknown？
+控制需求辨識｜我是不是需要掌握結果才安心？
+#VALUE｜情緒正在保護什麼
+價值辨識｜如果我完全不在乎，為什麼還會有情緒？
+價值排序｜這件事情到底在我的Value Hierarchy排第幾？
+價值衝突辨識｜我要自由，又想被所有人認同嗎？
+短長期價值辨識｜現在舒服與長期成長是否衝突？
+他人價值分離｜這真的是我的價值，還是別人教我的？
+過期價值辨識｜十年前重要的東西現在還需要最高權重嗎？
+#RULE｜找到腦中的「應該」
+規則辨識｜我腦中有哪些「一定、必須、應該」？
+關係規則辨識｜「愛我就應該懂我」是真的嗎？
+成功規則辨識｜「努力就不能失敗」是真的嗎？
+好人規則辨識｜「好人不能拒絕別人」是真的嗎？
+教師規則辨識｜「好老師一定要讓所有學生進步」是真的嗎？
+父母規則辨識｜「好父母一定要讓孩子少走彎路」是真的嗎？
+完美規則辨識｜「只有做到100分才算成功」是真的嗎？
+#BELIEF｜找到深層信念
+自我信念辨識｜我相信自己是誰？
+他人信念辨識｜我相信別人基本上可靠還是不可靠？
+世界信念辨識｜我相信世界基本上安全還是危險？
+能力信念辨識｜我相信能力固定還是可以學習？
+失敗信念辨識｜失敗代表資訊，還是代表我沒有價值？
+拒絕信念辨識｜被拒絕代表不匹配，還是代表我不值得？
+衝突信念辨識｜衝突代表關係破裂，還是系統需要重新協商？
+#WORLD MODEL｜追到世界模型
+世界模型辨識｜我認為「世界本來就應該怎麼運作」？
+人性模型辨識｜我預設人應該善良、公平、理性嗎？
+交換模型辨識｜我是否相信付出一定得到回報？
+愛情模型辨識｜我認為真正的愛應該永遠不變嗎？
+家庭模型辨識｜我認為家人就一定要互相理解嗎？
+成功模型辨識｜我是不是把成功建模成線性上升？
+人生模型辨識｜我是不是認為人生「不應該出錯」？
+#IDENTITY｜檢查情緒是否黏上身分
+事件身分分離｜「我失敗了」≠「我是失敗者」。
+狀態身分分離｜「我現在焦慮」≠「我是焦慮的人」。
+能力身分分離｜「我現在不會」≠「我沒有能力」。
+關係身分分離｜「有人不喜歡我」≠「我不值得被愛」。
+角色身分分離｜老師、媽媽、伴侶只是Role，不是全部的Self。
+版本辨識｜這是現在的我，還是十年前形成的Self Model？
+#PAST LEARNING｜找到舊模型來源
+原生學習辨識｜這個反應最早在哪裡學會？
+過去創傷辨識｜現在的Reality是否被過去經驗放大？
+家庭規則辨識｜「不能犯錯」「不能拒絕」是誰教我的？
+學校規則辨識｜成績是否曾被綁定價值？
+文化模型辨識｜哪些「應該」其實來自文化？
+成功經驗辨識｜某個曾經有效的策略是否已經過期？
+舊環境辨識｜以前保護我的Model，在現在是否反而限制我？
+#PRECISION｜檢查大腦把什麼看得太真
+確信度辨識｜我有多確定自己的解釋？
+證據比例辨識｜90%的確信有90%的Evidence嗎？
+訊號權重辨識｜為什麼這一句話比其他100句更重要？
+來源可信度辨識｜提供訊號的人真的值得這麼高的權重嗎？
+負面訊號權重辨識｜為什麼一個批評可以蓋過十個肯定？
+舊模型權重辨識｜是不是因為這個信念存在太久，所以我誤以為它是真的？
+#CONTROL｜辨識可控與不可控
+控制圈辨識｜什麼是我可以改變的？
+影響圈辨識｜什麼只能提高機率？
+不可控辨識｜什麼完全不是我的控制變數？
+責任邊界辨識｜哪部分是我的責任？哪部分不是？
+他人控制辨識｜我是不是企圖控制另一個人的內在狀態？
+結果控制辨識｜我能控制Process，但不一定能控制Outcome。
+#ACTION TENDENCY｜看情緒準備叫你做什麼
+戰鬥傾向辨識｜憤怒是不是叫我攻擊？
+逃跑傾向辨識｜焦慮是不是叫我逃避？
+僵住傾向辨識｜恐懼是不是讓我停止行動？
+討好傾向辨識｜害怕失去關係是不是叫我犧牲界線？
+控制傾向辨識｜不安是不是叫我控制別人？
+反芻傾向辨識｜大腦是不是誤把「一直想」當成「正在解決」？
+衝動辨識｜情緒訊號是否正在直接接管Behavior？
+#PATTERN｜不要只看單次事件
+重複模式辨識｜這件事情以前發生過幾次？
+跨情境模式辨識｜不同人是否都會觸發同一情緒？
+循環辨識｜我的行動是否反而製造下一輪情緒？
+關係循環辨識｜焦慮→追問→對方退開→更焦慮。
+逃避循環辨識｜害怕→不做→能力不增→更害怕。
+完美循環辨識｜怕失敗→拖延→時間不足→表現下降→更怕失敗。
+憤怒循環辨識｜感到不被尊重→攻擊→對方防衛→更感到不被尊重。
+#FUNCTION｜問情緒在替系統做什麼
+保護功能辨識｜這個情緒試圖保護我免於什麼？
+資訊功能辨識｜它正在告訴我什麼Difference？
+動員功能辨識｜它正在準備什麼Action？
+社會功能辨識｜它是否在傳達界線或求助？
+學習功能辨識｜它正在要求哪個Model Update？
+成本辨識｜這個保護機制現在的副作用是什麼？
+過期功能辨識｜以前有用的保護策略現在還需要嗎？
+#ALTERNATIVE MODEL｜建立第二個世界
+第二表徵能力｜除了「他故意的」，還可能是什麼？
+第二因果能力｜除了我的錯，還有哪些Variables？
+第二未來能力｜除了最壞結果，還有哪些Future States？
+第二策略能力｜除了逃避，還有哪些Action？
+第二身分能力｜除了「我不行」，能不能表徵成「我還沒學會」？
+機率思考能力｜把絕對語言轉成Probability。
+多模型並存能力｜暫時允許A、B、C三個解釋共同存在。
+#MODEL UPDATE｜真正的情緒智慧
+證據更新能力｜Evidence改變時，我願不願意改Prediction？
+局部更新能力｜不必推翻整個人生，只更新錯誤Node。
+權重更新能力｜不是刪掉信念，而是降低過高Precision。
+規則更新能力｜把「一定」改成「通常」。
+身分更新能力｜把固定Identity改成Current State。
+策略更新能力｜結果不好時，先更新Strategy，不先攻擊Self。
+世界模型更新｜Reality反覆反證時，願意重寫World Model。
+更新速度能力｜Prediction Error出現後多久能修正？
+#EXPERIMENT｜不要只靠想
+最小實驗設計｜怎樣用最低成本測試我的解釋？
+可反駁預測｜什麼結果出現，我願意承認自己猜錯？
+行為實驗｜不要猜「大家會拒絕我」，實際提出一次小請求。
+關係實驗｜不要猜對方不在乎，提出一個清楚需求再觀察。
+能力實驗｜不要說「我英文不好」，換一題測Specific Skill。
+時間實驗｜今天的情緒結論，睡一晚後還成立嗎？
+情境實驗｜換人、換地點、換時間後，情緒是否改變？
+#FEEDBACK｜重新向Reality取樣
+結果回饋能力｜實驗真正發生了什麼？
+預測命中率辨識｜我原來的Prediction準不準？
+誤差方向辨識｜我是高估危險還是低估能力？
+策略有效性辨識｜新的Action有沒有降低問題？
+副作用辨識｜短期有效是否造成長期成本？
+跨時間驗證｜一天有效還是一個月都有效？
+跨情境驗證｜只在A情境有效，還是能Generalize？
+#META｜觀察「正在產生情緒的自己」
+去中心化能力｜我有一個想法，不代表我就是那個想法。
+情緒觀察能力｜我正在經驗憤怒，而不是「我就是憤怒」。
+模型觀察能力｜我正在使用一個World Model，而不是Reality本身就是如此。
+不確定性容忍｜我可以暫時不知道答案。
+認知流動性｜新Evidence出現時，我可以移動。
+自我修正能力｜發現錯誤不是失敗，而是Calibration成功。
+模型謙遜能力｜任何重要判斷都替Reality保留推翻自己的權利。
+#｜高階情緒溯源七問
+現在是哪一盞Emotion警示燈亮了？
+它在保護哪個Need／Value？
+我把Reality表徵成了什麼？
+我原本偷偷Prediction了什麼？
+Reality究竟違反了哪個Prediction？
+哪個World Model讓這個Prediction看起來理所當然？
+什麼Evidence會讓我願意更新它？
+#｜30秒情緒Compiler
+Emotion｜我現在感受到＿＿。
+Fact｜攝影機真正拍到的是＿＿。
+Story｜我腦中正在解釋成＿＿。
+Prediction｜我原本以為＿＿。
+Difference｜Reality實際上卻是＿＿。
+Need｜所以我的＿＿需求正在亮燈。
+Old Model｜背後舊模型可能是＿＿。
+Alternative｜至少還有另一種解釋＿＿。
+Evidence｜我要再取得的證據是＿＿。
+Action｜現在最小可控行動是＿＿。
+Retest｜做完後，我重新觀察＿＿。
+Update｜若Reality不支持舊模型，我把模型更新成＿＿。
+`;
+const LAYERS=[];(()=>{let n=0;ABIL.trim().split('\n').forEach(l=>{l=l.trim();if(!l)return;
+  if(l[0]==='#'){const p=l.slice(1).split('｜');LAYERS.push({i:LAYERS.length+1,en:p[0],zh:p[1],items:[]})}
+  else{const p=l.indexOf('｜');LAYERS[LAYERS.length-1].items.push({n:++n,t:p<0?'':l.slice(0,p),d:p<0?l:l.slice(p+1)})}})})();
+const TOTAL=LAYERS.reduce((s,l)=>s+l.items.length,0);
+const CN=['一','二','三','四','五','六','七','八','九','十','十一','十二','十三','十四','十五','十六','十七','十八','十九','二十','二十一','二十二','二十三','二十四','二十五','二十六','二十七','二十八'];
+
+// 溯源訓練步驟
+const STEPS=[
+['body','Body｜身體狀態','先排除身體：哪裡有感覺？睡眠、飢餓、疲勞、疼痛、刺激負荷如何？','例：胸悶、肩頸緊；昨晚只睡5小時'],
+['trigger','Trigger｜觸發點','情緒出現前30秒發生了什麼？哪個人、哪句話、哪個表情？','例：主管在會議上說「這份要重做」'],
+['fact','Fact｜事實（Reality）','攝影機真正拍得到什麼？不含推論、評價、讀心。','例：他說了一句話，沒有看我，會議隨即結束'],
+['story','Representation｜第一表徵（Story）','我腦中把這件事解釋成什麼？它對我代表什麼？','例：他覺得我能力很差'],
+['pred','Prediction｜原始預測','我原本（偷偷）以為什麼應該發生？','例：我以為認真做就會被肯定'],
+['error','Prediction Error｜落差定位','Reality實際上卻是什麼？差在哪、差多大？是Reality變了，還是Prediction本來就錯？','例：認真做了仍被退件；落差在「努力＝肯定」'],
+['value','Need／Value｜情緒守護的東西','如果我完全不在乎，為什麼還會有情緒？它在保護什麼？','例：我重視被認可為專業的人'],
+['old','Old Model｜舊模型','背後的規則（應該／必須）、信念、世界模型、身分模型是什麼？最早在哪裡學會？','例：「被退件＝我不夠好」；從小成績綁定價值'],
+['second','Second Model｜第二、第三表徵','至少再寫兩種不同解釋，並各給一個機率。','例：B. 需求改了（40%）　C. 他今天壓力大、對事不對人（30%）'],
+['falsify','可反駁條件','什麼Evidence出現，我願意承認第一個解釋猜錯？','例：如果他願意具體說明要改哪裡，就不是否定我這個人'],
+['exp','Experiment｜最小Reality實驗','用最低成本測試解釋：現在最小可控行動是什麼？','例：明天花5分鐘問他「最需要調整的是哪兩點？」'],
+['fb','Feedback｜現實回饋（實驗後回來填）','實驗真正發生了什麼？原本的Prediction準不準？高估危險還是低估能力？',''],
+['update','Model Update｜模型更新','若Reality不支持舊模型，我把模型更新成什麼？（局部更新、把「一定」改成「通常」）',''],
+['retest','Retest｜重新測試','下次同類情境我要重新觀察什麼？','']
+];
+const NEEDS=['安全 Safety','連結 Connection','尊重 Respect','自主 Autonomy','公平 Fairness','能力 Competence','歸屬 Belonging','休息 Recovery','確定性 Certainty','控制 Control'];
+const SCEN=['傳訊息給朋友，對方已讀六小時沒有回。','考卷發回來只有58分。','主管在會議上說「這份報告需要重做」。','另一半回家後一句話都沒說就進房間。','同事們去吃午餐，沒有找我。','我提出的建議在會議上沒有人回應。','孩子說「你根本不懂我」。','朋友在社群上貼出升遷、買房的消息。'];
+
+// Reality／Story 分離練習  F事實 I推論 J評價
+const DRILL=[
+['他已讀我的訊息三小時，還沒有回覆。','F','攝影機（螢幕）拍得到。'],
+['他根本不在乎我。','I','讀心：對方的內在狀態沒有直接證據。'],
+['他很自私。','J','對人的評價，不是可觀察的事實。'],
+['考卷上寫著58分。','F','可觀察的數字。'],
+['我英文很爛。','J','把一次分數升級成整體評價。'],
+['主管開會時沒有看我。','F','可觀察的行為。'],
+['主管一定是對我不滿。','I','由行為推論內在狀態，應標記機率或Unknown。'],
+['她是故意讓我難堪的。','I','把結果直接推論成對方的意圖。'],
+['同事說：「這份報告需要重做。」','F','原句引述，攝影機錄得到。'],
+['以後都會這樣，不會好了。','I','把一次事件外推成未來，是預測不是事實。'],
+['他這樣做很沒禮貌。','J','依自己的規則做出的評價。'],
+['我昨晚睡了四個小時。','F','可觀察、可測量。']];
+const DL={F:'事實',I:'推論',J:'評價'};
+
+/* ================= 狀態 ================= */
+const KEY='emotionDebug.v1';
+let S={records:[],done:{},assess:[],draft:null};
+try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const blank=()=>({id:0,emo:'',mix:'',inten:5,conf:70,needs:[]});
+if(!S.draft)S.draft=blank();
+
+let tab='home',q='',gapF=0,drill={},rate={};
+const TABS=[['home','總覽'],['emo','30種情緒'],['abil','210項能力'],['trace','溯源訓練'],['drill','事實／故事練習'],['test','能力測驗'],['post','貼文圖卡'],['rec','我的紀錄']];
+
+/* ================= 工具 ================= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const hl=s=>{s=esc(s);if(!q)return s;const k=esc(q).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return s.replace(new RegExp(k,'gi'),m=>'<mark>'+m+'</mark>')};
+const has=(...a)=>a.join(' ').toLowerCase().includes(q.toLowerCase());
+const chain=s=>'<div class="chain">'+s.split('→').map(x=>'<span>'+esc(x)+'</span>').join('<i>→</i>')+'</div>';
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),1600)};
+const fmt=t=>{const d=new Date(t);return d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+function go(t){tab=t;q='';$('#q').value='';render();scrollTo(0,0)}
+function setQ(v){q=v.trim();render()}
+
+/* ================= 畫面 ================= */
+function emoCard(e){const g=GAPS[e.gap-1];
+  return `<div class="card"><h3><span class="num">${String(e.i).padStart(2,'0')}</span>${hl(e.n)} <span class="sub">${hl(e.e)}</span></h3>
+  <span class="tag">${g?'⑧①②③④⑤⑥⑦'[g.i%8]+' '+g.en+'｜'+g.zh:'未歸入8個Source Node'}</span>
+  <dl><dt>源頭</dt><dd>${hl(e.s)}</dd><dt>核心落差</dt><dd>${hl(e.g)}</dd><dt>舊模型</dt><dd>「${hl(e.o)}」</dd><dt>更新方向</dt><dd>${hl(e.u)}</dd></dl>
+  ${e.x?`<p class="sub">※ ${hl(e.x)}</p>`:''}
+  <p style="margin-top:10px"><button class="btn ghost sm" onclick="startTrace('${e.n}')">用這盞燈開始溯源</button></p></div>`}
+function abRow(a){return `<label class="ab ${S.done[a.n]?'done':''}"><input type="checkbox" ${S.done[a.n]?'checked':''} onchange="tog(${a.n},this)"><span class="t"><span class="num">${String(a.n).padStart(3,'0')}</span>${a.t?'<b>'+hl(a.t)+'</b>｜':''}${hl(a.d)}</span></label>`}
+function tog(n,el){if(el.checked)S.done[n]=1;else delete S.done[n];save();el.parentNode.classList.toggle('done',el.checked);const c=Object.keys(S.done).length;const p=$('#prog');if(p){p.textContent=c;$('#progb').style.width=c/TOTAL*100+'%'}}
+
+const V={};
+V.home=()=>`
+<h2>核心觀念｜情緒儀表板＝系統警示燈</h2>
+<div class="card">
+<p>最重要的觀念不是「負面情緒不好」，而是「情緒正在回報系統目前偵測到哪一種落差」。</p>
+<p>在預測處理框架裡，大腦會持續產生Prediction，Reality與Prediction不一致時產生Prediction Error，再依訊號可信度與重要性決定要不要更新模型。</p>
+<p>所以不要只問：「我要怎麼讓這個情緒消失？」</p>
+<blockquote>更高槓桿的問題是：「這盞燈背後，是哪個Prediction、Representation、Need、Value或World Model正在與Reality發生落差？」</blockquote>
+<p class="sub"><b>科學邊界：</b>Prediction Error不是每種情緒唯一的「底層原因」，情緒是身體狀態、過去經驗、情境、概念、注意力與預測共同建構的結果；不同神經狀態甚至可能生成相似情緒。Prediction Error的功能不是宣判「你錯了」，而是提供可用來更新模型的Difference Information；情緒經驗本身則是分散、動態且受情境影響的建構過程。<br>
+參考：<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9074371/" target="_blank" rel="noopener">PMC9074371</a>・<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4329228/" target="_blank" rel="noopener">PMC4329228</a>・<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4276319/" target="_blank" rel="noopener">PMC4276319</a>・<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10136704/" target="_blank" rel="noopener">PMC10136704</a></p>
+</div>
+
+<h2>總生成鏈</h2><div class="card">${chain(CHAIN_GEN)}</div>
+
+<h2>30種Dashboard Signal → 8種Difference → 5個核心Node</h2>
+<div class="card"><p>不是「30種情緒＝30個問題」，而是「30種情緒＝30種Dashboard Signal」。Dashboard Signal往上追，可以壓縮成8種Difference；8種Difference再往上追，可以壓縮成5個核心Node。</p></div>
+<div class="grid">${GAPS.map(g=>`<div class="card"><h3><span class="num">${'①②③④⑤⑥⑦⑧'[g.i-1]}</span>${g.en}</h3><div class="sub">${g.zh}</div><div class="chips">${g.emo.map(n=>`<button class="chip" onclick="showEmo('${n}')">${n}</button>`).join('')}</div></div>`).join('')}</div>
+<p class="sub">原文的8個Source Node未列入：${EMO.filter(e=>!e.gap).map(e=>e.n).join('、')}（仍可在「30種情緒」查看）。</p>
+<div class="card" style="margin-top:12px"><h3>5個核心Node</h3>
+${NODES.map((n,i)=>`<p><span class="num">${'①②③④⑤'[i]}</span><b>${n[0]}</b>｜${n[1]}</p>`).join('')}</div>
+
+<h2>情緒溯源能力</h2>
+<div class="card">
+<p>真正值得訓練的能力不是「情緒控制」，而是「情緒溯源能力」。</p>
+${chain(CHAIN_SHORT)}
+<p style="margin-top:10px"><b>核心定義｜</b>情緒溯源能力＝Emotion出現後，不急著相信、不急著壓制、不急著行動，而是沿著生成鏈逆向追蹤訊號來源。</p>
+<p><b>核心鏈｜</b></p>${chain(CHAIN_TRACE)}
+<p style="margin-top:10px">真正的情緒成熟，不是情緒越來越少，而是情緒出現後，越來越快找到它從哪裡生成。</p>
+</div>
+
+<h2>範例｜考卷只有58分</h2>
+<div class="card">
+<p><b>舊系統</b></p>${chain('58分→「我英文很爛」→羞恥→逃避')}
+<p style="margin-top:10px"><b>新系統</b></p>${chain('58分→情緒亮燈→「哪個Prediction錯了？」→「我以為背過等於會做」→Evidence顯示換句子就不會→Model Update：「真正學會＝換題＋隔天仍能答對」→重新練習→Retest')}
+</div>
+
+<h2>最高階能力不是Emotion Control，而是Emotion Debugging</h2>
+<div class="card">${LEVELS.map(l=>`<p><span class="tag">${l[0]}</span>${l[1]}</p>`).join('')}</div>
+
+<h2>訓練鏈（本APP的練習流程）</h2>
+<div class="card">${chain(CHAIN_TRAIN)}
+<p class="sub" style="margin-top:8px">最終目標不是「情緒變少」，而是逐步形成「情緒一出現→自動開始Debug→產生第二模型→向Reality取樣→更新模型」的能力。</p>
+<p><button class="btn" onclick="go('trace')">開始一次溯源</button></p></div>
+
+<h2>最終總公式</h2><div class="card">${chain(CHAIN_FINAL)}</div>
+
+<div class="card">
+<p>情緒不是最後答案。情緒比較像「請打開系統紀錄」的通知。</p>
+<p>情緒不是命令。情緒不是Reality。情緒甚至不是錯誤。<br>情緒是系統對「目前狀態＋目前模型＋目前Reality」所產生的一組高資訊量訊號。</p>
+<blockquote>不要砸掉警示燈。不要跪拜警示燈。讀懂警示燈。<br>沿著線路向上Debug。最後修改真正需要修改的Node。</blockquote>
+<p>真正的智慧不是把儀表板的燈拔掉，而是沿著燈號往上追，找到產生誤差的模型。</p>
+<p>真正的自由也不是永遠沒有負面情緒，而是：情緒出現時，我不再自動被舊模型接管，而有能力產生第二個Representation、第二個Prediction與第二條Action Path。</p>
+<p><b>成長</b>＝Prediction Accuracy提高。<br><b>智慧</b>＝知道什麼時候不相信自己的第一個Representation。<br><b>韌性</b>＝Prediction Error出現後仍然可以重新建模。<br><b>自由</b>＝舊模型啟動時，我仍然有能力選擇不讓它直接變成下一個行為。</p>
+</div>`;
+
+V.emo=()=>`<h2>30種負面情緒的源頭</h2>
+<div class="chips"><button class="chip ${!gapF?'on':''}" onclick="gapF=0;render()">全部</button>${GAPS.map(g=>`<button class="chip ${gapF===g.i?'on':''}" onclick="gapF=${g.i};render()">${g.zh}</button>`).join('')}</div>
+<div class="grid">${EMO.filter(e=>!gapF||e.gap===gapF).map(emoCard).join('')}</div>`;
+
+V.abil=()=>{const c=Object.keys(S.done).length;return `<h2>情緒溯源能力 MAX｜28層・${TOTAL}項</h2>
+<p class="sub">從「我有情緒」升級成「我能讀懂系統」。練習過的項目可以打勾。已練習 <b id="prog">${c}</b>／${TOTAL}</p>
+<div class="bar"><b id="progb" style="width:${c/TOTAL*100}%"></b></div>
+${LAYERS.map(l=>`<details ${l.i>26?'open':''}><summary>第${CN[l.i-1]}層${l.en?'｜'+l.en:''}<span class="sub">${l.zh}・${l.items[0].n}–${l.items[l.items.length-1].n}</span></summary>${l.items.map(abRow).join('')}</details>`).join('')}`};
+
+V.trace=()=>{const d=S.draft;return `<h2>溯源訓練｜${d.id?'編輯紀錄':'新的一次Debug'}</h2>
+${chain(CHAIN_TRAIN)}
+<div class="two" style="margin-top:12px"><div class="card">
+<label class="f" style="margin-top:0">Emotion｜現在是哪一盞警示燈亮了？</label>
+<select onchange="setD('emo',this.value);hint()"><option value="">— 選擇情緒 —</option>${EMO.map(e=>`<option ${d.emo===e.n?'selected':''}>${e.n}</option>`).join('')}</select>
+<label class="f">混合情緒<small>表面情緒底下還有什麼？哪個是第一情緒？</small></label>
+<input type="text" value="${esc(d.mix)}" oninput="setD('mix',this.value)" placeholder="例：表面是憤怒，底下有害怕與受傷">
+<label class="f">強度 <span id="iv">${d.inten}</span>／10</label>
+<input type="range" min="0" max="10" value="${d.inten}" style="width:100%" oninput="setD('inten',+this.value);$('#iv').textContent=this.value">
+${STEPS.map(s=>`<label class="f">${s[1]}</label><p class="hint">${s[2]}</p><textarea placeholder="${esc(s[3])}" oninput="setD('${s[0]}',this.value)">${esc(d[s[0]])}</textarea>${
+  s[0]==='story'?`<p class="hint" style="margin-top:6px">我對這個解釋的確信度 <b id="cv">${d.conf}</b>%（90%的確信有90%的Evidence嗎？）</p><input type="range" min="0" max="100" step="5" value="${d.conf}" style="width:100%" oninput="setD('conf',+this.value);$('#cv').textContent=this.value">`:
+  s[0]==='error'?`<label class="f">Need｜哪個需求正在亮燈？<small>可複選</small></label><div class="chips">${NEEDS.map(n=>`<button class="chip ${d.needs.includes(n)?'on':''}" onclick="togNeed('${n}',this)">${n}</button>`).join('')}</div>`:''}`).join('')}
+<div class="row" style="margin-top:16px"><button class="btn" onclick="saveRec()">儲存紀錄</button><button class="btn ghost" onclick="newRec()">清空，開新的一筆</button><button class="btn ghost" onclick="scen()">給我一個練習情境</button></div>
+<p class="sub">不必一次填完：先填到Experiment並儲存，做完實驗後再從「我的紀錄」打開，補上Feedback、Model Update與Retest。</p>
+</div>
+<div class="side"><div class="card" id="hint"></div>
+<div class="card"><h3>高階情緒溯源七問</h3>${LAYERS[26].items.map(a=>`<p class="sub" style="margin:2px 0">${a.d}</p>`).join('')}</div></div></div>`};
+function hintHTML(){const e=EMO.find(e=>e.n===S.draft.emo);if(!e)return '<h3>溯源地圖</h3><p class="sub">選擇情緒後，這裡會顯示它的源頭、核心落差、常見舊模型與更新方向。</p>';
+  const g=GAPS[e.gap-1];return `<h3>${e.n} <span class="sub">${e.e}</span></h3>${g?`<span class="tag">${g.en}｜${g.zh}</span>`:''}<dl><dt>源頭</dt><dd>${e.s}</dd><dt>落差</dt><dd>${e.g}</dd><dt>舊模型</dt><dd>「${e.o}」</dd><dt>更新</dt><dd>${e.u}</dd></dl>`}
+function hint(){const h=$('#hint');if(h)h.innerHTML=hintHTML()}
+function setD(k,v){S.draft[k]=v;save()}
+function togNeed(n,el){const a=S.draft.needs,i=a.indexOf(n);i<0?a.push(n):a.splice(i,1);el.classList.toggle('on');save()}
+function startTrace(n){S.draft=blank();S.draft.emo=n;save();go('trace')}
+function newRec(){S.draft=blank();save();render();scrollTo(0,0)}
+function scen(){const s=SCEN[Math.floor(Math.random()*SCEN.length)];S.draft=blank();S.draft.trigger='（練習情境）'+s;save();render();toast('已帶入練習情境')}
+function saveRec(){const d=S.draft;if(!d.emo&&!d.trigger&&!d.fact){toast('至少選一個情緒或寫下觸發點');return}
+  const now=Date.now();if(!d.id){d.id=now;d.created=now}d.updated=now;
+  const i=S.records.findIndex(r=>r.id===d.id);const c=JSON.parse(JSON.stringify(d));i<0?S.records.push(c):S.records[i]=c;save();toast('已儲存')}
+function openRec(id){const r=S.records.find(r=>r.id===id);if(!r)return;S.draft=JSON.parse(JSON.stringify(r));if(!S.draft.needs)S.draft.needs=[];save();go('trace')}
+function delRec(id){if(!confirm('確定刪除這筆紀錄？'))return;S.records=S.records.filter(r=>r.id!==id);if(S.draft.id===id)S.draft=blank();save();render()}
+
+V.drill=()=>{const done=Object.keys(drill).length,right=DRILL.filter((x,i)=>drill[i]===x[1]).length;
+return `<h2>Reality／Story 分離練習</h2>
+<p class="sub">判斷每一句是「事實」（攝影機拍得到）、「推論」（我猜測的原因、意圖、未來）還是「評價」（好壞判斷）。${done?`已作答 ${done}／${DRILL.length}，答對 <b>${right}</b>。`:''} ${done?'<button class="btn ghost sm" onclick="drill={};render()">重來</button>':''}</p>
+${DRILL.map((x,i)=>{const a=drill[i];return `<div class="card"><p>「${x[0]}」</p><div class="row">${['F','I','J'].map(k=>`<button class="chip ${a===k?'on':''}" ${a?'disabled':''} onclick="drill[${i}]='${k}';render()">${DL[k]}</button>`).join('')}
+${a?`<span class="${a===x[1]?'ok':'bad'}">${a===x[1]?'✓ 正確':'✗ 這是「'+DL[x[1]]+'」'}｜${x[2]}</span>`:''}</div></div>`}).join('')}`};
+
+V.test=()=>{const L=LAYERS.slice(0,26),n=Object.keys(rate).length;
+let res='';if(n===26){const avg=(L.reduce((s,l)=>s+rate[l.i],0)/26).toFixed(1);const weak=[...L].sort((a,b)=>rate[a.i]-rate[b.i]).slice(0,3);
+  res=`<div class="card"><h3>結果｜平均 ${avg}／5</h3><p>目前最值得先練的三層：</p>${weak.map(l=>`<p><span class="tag">${rate[l.i]}分</span>第${CN[l.i-1]}層｜${l.en}｜${l.zh}</p>`).join('')}<div class="row"><button class="btn" onclick="saveAssess()">存下這次結果</button><button class="btn ghost" onclick="go('abil')">去看能力清單</button></div></div>`}
+return `<h2>情緒溯源能力測驗（自評）</h2>
+<p class="sub">回想最近兩週情緒出現的時候，對每一層能力打分：1＝幾乎做不到　3＝事後想得到　5＝情緒當下就能自動做到。已填 ${n}／26。</p>
+<div class="card">${L.map(l=>`<div class="rate"><div class="l"><b>${l.en}</b>｜${l.zh}<div class="sub">${l.items[0].d}</div></div>${[1,2,3,4,5].map(v=>`<label><input type="radio" name="r${l.i}" ${rate[l.i]===v?'checked':''} onchange="rate[${l.i}]=${v};if(Object.keys(rate).length>=26)render()"> ${v}</label>`).join('')}</div>`).join('')}</div>
+${res}
+${S.assess.length?`<h2>歷次結果</h2><div class="card">${S.assess.slice().reverse().map(a=>`<p><span class="tag">${fmt(a.t)}</span>平均 <b>${a.avg}</b>・最弱：${a.weak.join('、')}</p>`).join('')}</div>`:''}`};
+function saveAssess(){const L=LAYERS.slice(0,26);const avg=(L.reduce((s,l)=>s+rate[l.i],0)/26).toFixed(1);const weak=[...L].sort((a,b)=>rate[a.i]-rate[b.i]).slice(0,3).map(l=>l.en);
+  S.assess.push({t:Date.now(),avg,weak,scores:Object.assign({},rate)});save();rate={};render();toast('已存下結果')}
+
+function recCard(r){const st=r.update?'<span class="tag" style="color:var(--ok)">已更新模型</span>':r.exp?'<span class="tag">待回饋</span>':'<span class="tag">進行中</span>';
+  return `<div class="card"><div class="row"><b>${hl(r.emo||'（未選情緒）')}</b><span class="sub">強度 ${r.inten}・${fmt(r.created||r.id)}</span>${st}<span style="flex:1"></span><button class="btn ghost sm" onclick="openRec(${r.id})">打開</button><button class="btn ghost sm" onclick="delRec(${r.id})">刪除</button></div>
+  ${r.trigger?`<p><span class="sub">觸發</span>　${hl(r.trigger)}</p>`:''}${r.story?`<p><span class="sub">第一表徵</span>　${hl(r.story)}（${r.conf}%）</p>`:''}${r.second?`<p><span class="sub">第二模型</span>　${hl(r.second)}</p>`:''}${r.update?`<p><span class="sub">Model Update</span>　${hl(r.update)}</p>`:''}</div>`}
+V.rec=()=>{const R=S.records.slice().sort((a,b)=>b.id-a.id);const cnt={};R.forEach(r=>{if(r.emo)cnt[r.emo]=(cnt[r.emo]||0)+1});
+const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,5);
+return `<h2>我的Model Update紀錄</h2>
+<div class="row" style="margin-bottom:12px"><button class="btn" onclick="go('trace')">＋ 新的溯源</button><button class="btn ghost" onclick="exportJSON()">匯出JSON</button><button class="btn ghost" onclick="$('#imp').click()">匯入JSON</button><input id="imp" type="file" accept=".json,application/json" hidden onchange="importJSON(this)"></div>
+${R.length?`<p class="sub">共 ${R.length} 筆・已完成模型更新 ${R.filter(r=>r.update).length} 筆${top.length?'・最常亮的燈：'+top.map(t=>t[0]+'×'+t[1]).join('、'):''}</p>${R.map(recCard).join('')}`:'<div class="card sub">還沒有紀錄。資料只保存在這台電腦的這個瀏覽器裡，建議定期匯出JSON備份。</div>'}`};
+function exportJSON(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({app:'情緒溯源',exported:new Date().toISOString(),records:S.records,assess:S.assess,done:S.done},null,2)],{type:'application/json'}));
+  a.download='情緒溯源紀錄_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)}
+function importJSON(el){const f=el.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);let n=0;
+  (d.records||[]).forEach(r=>{if(r&&r.id&&!S.records.some(x=>x.id===r.id)){S.records.push(r);n++}});
+  (d.assess||[]).forEach(a=>{if(a&&a.t&&!S.assess.some(x=>x.t===a.t))S.assess.push(a)});Object.assign(S.done,d.done||{});save();render();toast('已匯入 '+n+' 筆紀錄')}catch(e){alert('這個檔案不是有效的情緒溯源JSON。')}};rd.readAsText(f);el.value=''}
+
+/* ================= 貼文圖卡（30情緒＋28層） ================= */
+// [痛點開場, 金句]
+const EH=[
+['事情還沒發生，你已經在腦中失敗了一百次。','焦慮不是預言，是一個還沒被驗證的預測。'],
+['你不是膽小，是你的系統在喊：「我怕我接不住。」','勇氣不是不怕，是看清楚威脅有多大、自己有多少。'],
+['「他怎麼可以這樣！」這句話，你今天說了幾次？','憤怒告訴你界線在哪裡，但不負責告訴你對方錯在哪裡。'],
+['有些眼淚，不是為了過去，是為了那個再也不會來的未來。','悲傷不是軟弱，是你正在向一個重要的未來告別。'],
+['最累的不是結果不好，是那句「我以為會更好」。','失望不是世界欠你，是預測需要重新校準。'],
+['你已經很努力了，為什麼還是在原地？','卡住的時候，換方法比加倍用力更有用。'],
+['「反正我做什麼都沒用。」這句話正在偷走你的力氣。','找到一件還能控制的小事，控制感就從那裡長回來。'],
+['當你覺得「以後都會這樣」的時候，請先別相信這句話。','你不需要看見整條路，只需要一小段可以被驗證的路。'],
+['做錯一件事，為什麼你卻覺得是「我這個人」有問題？','事情失敗了，不等於你失敗了。'],
+['那件事過了很久，你卻還在心裡懲罰自己。','罪惡感要的不是懲罰，是修復。'],
+['那個出糗的瞬間，你重播了一百遍，別人其實早就忘了。','別人看你的時間，遠比你以為的短。'],
+['看到他對別人笑，你的心為什麼揪了一下？','嫉妒不是小氣，是你在乎的位置感覺不安全。'],
+['滑到別人的好消息，你按了讚，心卻沉了一下。','羨慕是一張地圖，標出你真正想要的東西。'],
+['身邊明明有人，為什麼還是覺得沒有人懂？','你缺的不是人，是一段夠深的連結。'],
+['他說了「不」，你卻聽成「你不夠好」。','被拒絕是不匹配，不是不值得。'],
+['你付出了那麼多，卻沒有人看見。','沒說出口的期待，對方沒有機會履行。'],
+['那筆舊帳，你記了多久？它讓你累了多久？','怨恨是一筆等待修復的帳，不是一輩子的刑期。'],
+['「如果當時……就好了。」這句話，你對自己說過幾次？','後悔的用處，是變成下一次的決策規則。'],
+['出了事，你第一個想到的總是：「都是我的錯。」','負責任，不等於把所有的原因都算在自己頭上。'],
+['你總覺得別人都比你好，所以把自己縮得很小。','你不是比較差，只是某一項技能還有差距。'],
+['明明現在沒事，你卻總覺得好的東西隨時會消失。','找出真正不穩的那一個點，其他的就不必一起搖晃。'],
+['你以為多想幾遍就會比較安全，結果只是更累。','能行動的就行動；不能控制的，想再多也不會變安全。'],
+['不是誰惹你，是你今天真的沒電了。','先替自己減負荷，再處理事情。'],
+['有些人事物，你就是一靠近就想躲。','先分清楚：是真的有害，還是我學來的排斥？'],
+['你以為那個未來還在，回頭才發現它已經不見了。','讓舊的可能性退場，新的才有地方長出來。'],
+['每天都很忙，卻不知道自己在忙什麼。','空虛不需要更多刺激，需要把行動接回你在乎的事。'],
+['什麼都提不起勁，不是你懶，是這裡沒有新東西了。','無聊是系統在說：我準備好接受更大的挑戰了。'],
+['事情一件一件壓上來，你覺得自己快要撐不住了。','壓力不是你不夠強，是要求暫時大過了資源。'],
+['別人對你好，你卻只覺得「我欠他」。','先分清楚：這是互惠，還是被綁住的虧欠。'],
+['你一直在等世界先改變，自己才能好起來。','痛的時候，不只攻擊情緒，也回頭檢查你的模型。']];
+const LH=[
+['你說「我心情不好」，但你知道那到底是什麼心情嗎？','說得出名字的情緒，才有辦法處理。'],
+['你以為你在生氣，其實你只是沒睡飽。','先照顧身體，再相信情緒下的結論。'],
+['每次都是同一種人、同一句話，讓你瞬間爆炸。','找到按鈕在哪裡，你就不必每次都被按。'],
+['讓你難過的，常常不是發生的事，而是你說給自己聽的故事。','把攝影機拍得到的，和腦袋編出來的，分開放。'],
+['十句讚美加一句批評，你整晚只記得那一句。','你看見的不是全部的現實，是注意力挑給你看的現實。'],
+['同一件事，有人笑笑就過了，你卻痛了三天。','讓你痛的不是事件，是你把它看成了什麼。'],
+['他只是沒回訊息，你卻讀成「他不愛我了」。','事件本身沒有意義，意義是你翻譯上去的。'],
+['你沒說出口的那句「本來就應該」，正是你受傷的地方。','每一次情緒背後，都有一個落空的預測。'],
+['現實沒有照你想的走，你就覺得整個世界都錯了。','落差不是在宣判你錯了，是在告訴你哪裡可以更新。'],
+['你吵的從來不是那件小事，是一個沒被看見的需要。','情緒是需求的守門人，先問它在守護什麼。'],
+['如果真的不在乎，你不會這麼難受。','會痛的地方，就是你最看重的地方。'],
+['「一定要」「必須」「應該」，這些字正在勒住你。','把「一定」改成「通常」，心就多了一點空間。'],
+['你不是遇到壞事，你是一直相信「我就是不夠好」。','信念存在很久，不代表它是真的。'],
+['你一直覺得人生「不應該這樣」，所以你一直在受苦。','世界沒有答應過要照你的模型運作。'],
+['一次失敗，你就替自己貼上「失敗者」的標籤。','「我現在不會」不等於「我沒有能力」。'],
+['你現在的反應，可能是十歲的你在替你做決定。','以前保護你的方法，現在可能正在限制你。'],
+['一句批評，為什麼可以蓋過一百句肯定？','不是每個聲音，都值得你給那麼高的權重。'],
+['你最累的地方，是一直想改變一個不歸你管的人。','把力氣放回能控制的過程，放下不能控制的結果。'],
+['話一出口你就後悔了，可是當下你根本停不下來。','情緒可以叫你行動，但你可以決定要不要照做。'],
+['為什麼換了人、換了地方，你還是遇到一樣的問題？','重複出現的不是運氣，是還沒被看見的循環。'],
+['你一直想趕走的那個情緒，其實一直在保護你。','先謝謝它保護過你，再問它現在還需不需要。'],
+['你認定「他就是故意的」，然後整個世界都變成敵人。','多一個解釋，就多一條路。'],
+['道理你都懂，可是下次還是一樣。','成長不是推翻整個人生，是更新那一個錯誤的節點。'],
+['你在腦中演了一百種結局，卻一次都沒有真的去問。','不要猜，去試一次，讓現實告訴你答案。'],
+['你害怕的事，後來真的發生了嗎？','回頭對答案，才知道是高估了危險，還是低估了自己。'],
+['你不是你的情緒，你是那個看見情緒的人。','我有一個想法，不代表我就是那個想法。'],
+['情緒一來就被帶走？把這七個問題存起來。','七個問題問完，你已經從情緒裡走出來一半了。'],
+['只要30秒，把一團亂的情緒整理成一句一句看得懂的話。','情緒不是要你馬上反應，是要你打開系統紀錄。']];
+const PAL=['#5c4033','#8c3b2a','#8a6a1f','#3d5a80','#6b4a7a','#4a4e8c','#35603f','#7a3b4f','#2f5d62'];
+const NUMC='①②③④⑤⑥⑦⑧⑨⑩⑪⑫';
+// 每組：英文開場／排比×3／英文排比×3／金句2、3／英文金句×3／（情緒）英文舊模型、英文更新方向
+const X2=`
+Nothing has happened yet, and you have already failed a hundred times in your head.
+你怕的不是明天，是不知道明天。
+你累的不是事情，是想像中的事情。
+你缺的不是答案，是一個可以驗證的小問題。
+It's not tomorrow you fear, but not knowing tomorrow.
+It's not the task that drains you, but the imagined one.
+You don't need the answer, just one small question you can test.
+模糊的威脅最大聲，拆小了就安靜。
+不確定，不等於危險。
+Anxiety is not a prophecy; it is a prediction not yet tested.
+Vague threats shout the loudest; break them down and they go quiet.
+Uncertain does not mean dangerous.
+"I don't know what will happen, so it must be dangerous."
+Break the vague threat into small predictions you can test.
+
+You are not a coward. Your system is shouting, "I'm afraid I can't handle this."
+看清楚威脅是什麼。
+看清楚它發生的機率。
+看清楚自己手上有什麼。
+See what the threat really is.
+See how likely it really is.
+See what you really have in your hands.
+恐懼會把影子放大，把自己縮小。
+害怕是提醒你準備，不是命令你逃跑。
+Courage is not the absence of fear; it is seeing clearly how big the threat is and how much you have.
+Fear enlarges the shadow and shrinks the self.
+Fear reminds you to prepare; it does not order you to run.
+"Danger is here and I can't cope."
+Name the real threat, its real odds, and your real ability to respond.
+
+"How could he do that!" How many times have you said it today?
+有時候，是界線真的被踩了。
+有時候，是期待悄悄落空了。
+有時候，只是現實沒有照我的劇本演。
+Sometimes a boundary really was crossed.
+Sometimes an expectation quietly fell through.
+Sometimes reality simply didn't follow my script.
+生氣之前先問：他違反的是約定，還是我的想像？
+守住界線需要力量，不需要用怒火燒自己。
+Anger shows you where your boundary is, not where the other person is wrong.
+Before the anger, ask: did he break an agreement, or my assumption?
+Holding a boundary takes strength; it doesn't require burning yourself.
+"He shouldn't be like this."
+Tell a real boundary violation apart from reality refusing to obey my model.
+
+Some tears are not for the past, but for a future that will never arrive.
+允許自己難過。
+允許自己想念。
+也允許自己，慢慢長出新的明天。
+Let yourself grieve.
+Let yourself miss it.
+And let yourself slowly grow a new tomorrow.
+會這麼痛，是因為曾經那麼重要。
+失去之後，未來不是沒有了，是要重新畫。
+Sadness is not weakness; it is saying goodbye to a future that mattered.
+It hurts this much because it mattered this much.
+After a loss the future is not gone; it needs to be redrawn.
+"The future I had no longer exists."
+Build a new future that is still possible after the loss.
+
+The hardest part is not the result. It's the words "I thought it would be better."
+期待可以有，但要校準。
+現實可以差，但不必全盤否定。
+落差可以痛，但可以拿來學。
+Keep your hopes, but calibrate them.
+Reality may fall short, but don't reject all of it.
+The gap may hurt, but you can learn from it.
+一次不如預期，不等於全部都不值得。
+調整期待不是放棄，是看得更準。
+Disappointment doesn't mean the world owes you; it means a prediction needs recalibrating.
+One letdown doesn't make everything worthless.
+Adjusting expectations isn't giving up; it's seeing more accurately.
+"I thought it would be better."
+Recalibrate the prediction instead of rejecting the whole reality.
+
+You've worked so hard. Why are you still in the same place?
+不是你不夠努力，是方法該換了。
+不是目標太遠，是路徑不對。
+不是你不行，是這條路不通。
+It's not that you lack effort; the method needs to change.
+It's not that the goal is too far; the route is wrong.
+It's not that you can't; this road is closed.
+同一道牆撞十次，牆不會變成門。
+先換策略，再談毅力。
+When you're stuck, changing the method beats doubling the effort.
+Hit the same wall ten times and it still won't become a door.
+Change the strategy first; talk about grit later.
+"I keep trying. Why isn't it working?"
+Don't just add effort; change the strategy first.
+
+"Nothing I do matters anyway." That sentence is stealing your strength.
+不能改變全部，就改變一小塊。
+不能決定結果，就決定下一步。
+不能控制別人，就照顧好自己。
+If you can't change everything, change one small piece.
+If you can't decide the outcome, decide the next step.
+If you can't control others, take care of yourself.
+無助是一個預測，不是一個事實。
+一個小小的「有用」，就能推翻「都沒用」。
+Find one small thing you can still control, and your sense of control grows back from there.
+Helplessness is a prediction, not a fact.
+One small "it worked" can overturn "nothing works."
+"My actions make no difference."
+Look for the smallest variable you can still control.
+
+When you feel "it will always be like this," please don't believe that sentence just yet.
+今天很黑，不代表永遠是夜。
+現在沒路，不代表以後沒路。
+看不見出口，不代表沒有出口。
+Today is dark; that doesn't mean it is night forever.
+No path now doesn't mean no path later.
+Not seeing the exit doesn't mean there isn't one.
+「永遠」是情緒說的，不是現實說的。
+先走一步能被證實的路，其他的以後再說。
+You don't need to see the whole road, only a short stretch you can verify.
+"Forever" is what the emotion says, not what reality says.
+Take one step that can be confirmed; the rest can wait.
+"It will always be this way."
+Don't try to prove life will get better all at once; find one small path reality can verify.
+
+You did one thing wrong. Why does it feel like you are what's wrong?
+我做錯了一件事，不是我是一個錯。
+我這次沒做好，不是我永遠做不好。
+我有缺點，不是我沒有價值。
+I made a mistake; I am not a mistake.
+I didn't do well this time; that is not "never."
+I have flaws; I am not worthless.
+把「我」和「這件事」分開放。
+羞恥想讓你躲起來，但你需要的是被看見。
+A failed event is not a failed person.
+Keep "me" and "this event" in separate places.
+Shame wants you to hide; what you need is to be seen.
+"It's not that the thing failed. I'm just bad."
+Separate identity from event again.
+
+It happened long ago, yet you are still punishing yourself inside.
+可以道歉的，去道歉。
+可以彌補的，去彌補。
+不能重來的，就讓下一次不一樣。
+Where you can apologize, apologize.
+Where you can make amends, make them.
+Where you can't redo it, make the next time different.
+會內疚，是因為你有在乎的價值。
+懲罰自己不會讓任何人好過，修復才會。
+Guilt asks for repair, not punishment.
+You feel guilty because you have values you care about.
+Punishing yourself helps no one; repair does.
+"I did something that goes against my values."
+Repair, apologize, make amends, and change what you do next time.
+
+You've replayed that awkward moment a hundred times. Everyone else forgot it long ago.
+你記得的是那三秒。
+別人記得的是那一整天。
+而大多數人，只記得他們自己。
+You remember those three seconds.
+Others remember their whole day.
+And most people only remember themselves.
+聚光燈沒有你想的那麼亮。
+會出糗，代表你有上場。
+People look at you for far less time than you think.
+The spotlight is not as bright as you imagine.
+If you slipped, it means you showed up.
+"Everyone saw me mess up."
+Re-estimate how much attention others paid and how much the event really matters.
+
+He smiled at someone else. Why did your heart tighten?
+先看證據，再下結論。
+先說需要，再談懷疑。
+先安頓自己，再回到關係。
+Evidence first, conclusions later.
+Needs first, suspicion later.
+Settle yourself first, then return to the relationship.
+抓得越緊，越感覺不到安全。
+安全感不是看住對方，是看清關係。
+Jealousy isn't pettiness; it's a place you care about feeling unsafe.
+The tighter you grip, the less safe you feel.
+Security doesn't come from watching the other person, but from seeing the relationship clearly.
+"I might lose this important place."
+Check the real threat, your attachment security, and the evidence in the relationship.
+
+You scrolled past someone's good news, hit "like," and felt your heart sink.
+他有的，不是從你這裡拿走的。
+你要的，不一定和他一樣。
+你的路，不必照他的地圖走。
+What they have was not taken from you.
+What you want may not be what they have.
+Your road doesn't have to follow their map.
+比較會刺痛，也會指路。
+把「為什麼不是我」換成「我真正要什麼」。
+Envy is a map marking what you truly want.
+Comparison stings, and it also points the way.
+Trade "why not me" for "what do I really want."
+"They have it. I don't."
+Turn the comparison signal into information about what I truly value.
+
+There are people all around you. Why does it still feel like no one understands?
+不是沒有人，是還沒有說出口。
+不是不被愛，是還沒有被聽懂。
+不是你奇怪，是連結還不夠深。
+It's not that there is no one; you haven't said it yet.
+It's not that you're unloved; you haven't been heard yet.
+It's not that you're strange; the connection isn't deep enough yet.
+孤獨不是你的身分，是一個訊號。
+一次真誠的對話，勝過一百個讚。
+You're not short of people; you're short of one deep-enough connection.
+Loneliness is not your identity; it is a signal.
+One honest conversation beats a hundred likes.
+"No one truly understands me."
+Tell "no one at all" apart from "not enough high-quality connection right now."
+
+They said "no." You heard "you're not good enough."
+他的「不」，是他的選擇。
+你的價值，是你的事實。
+這兩件事，不要綁在一起。
+Their "no" is their choice.
+Your worth is your fact.
+Don't tie the two together.
+一扇門關上，不代表你不配走進任何一扇門。
+被拒絕的是這次的請求，不是你整個人。
+Rejection means a mismatch, not unworthiness.
+One closed door doesn't mean you deserve no door.
+What was rejected was this request, not your whole self.
+"They don't want me, so I have no value."
+Separate the other person's choice from your overall worth.
+
+You gave so much, and no one seemed to see it.
+你以為他應該懂。
+他以為你是自願的。
+於是一個人越來越累，一個人什麼都不知道。
+You assumed they should understand.
+They assumed you were willing.
+So one grows more tired, and the other has no idea.
+委屈是提醒你：規則該拿出來談了。
+付出之前先問自己：我期待換到什麼？
+An unspoken expectation gives the other person no chance to meet it.
+Feeling wronged is a reminder: time to talk about the rules.
+Before giving, ask yourself: what do I expect in return?
+"I gave so much. How could you?"
+Re-examine the exchange rules, the boundaries, and the expectations never spoken.
+
+How long have you kept that old account? How long has it been wearing you down?
+能修復的，去談。
+不能修復的，立下界線。
+立不了界線的，學會離開。
+What can be repaired, talk it through.
+What can't be repaired, set a boundary.
+Where no boundary holds, learn to leave.
+抱著舊帳的人，利息都是自己在付。
+放下不是替對方開脫，是不再讓它佔用你的人生。
+Resentment is an account waiting for repair, not a life sentence.
+Whoever holds the old account pays the interest.
+Letting go isn't excusing them; it's refusing to let it occupy your life.
+"This debt has never been settled."
+Repair, renegotiate the rules, set boundaries, or leave the unbalanced exchange.
+
+"If only I had..." How many times have you told yourself that?
+當時的你，只有當時的資訊。
+現在的你，才有現在的答案。
+用現在的眼光審判過去的自己，並不公平。
+The you back then had only what was known then.
+The you now has what is known now.
+Judging your past self with today's eyes isn't fair.
+過去不能重選，但規則可以重寫。
+最好的後悔，是讓下一次做得不一樣。
+The use of regret is to become your next decision rule.
+The past can't be re-chosen, but the rule can be rewritten.
+The best regret makes the next time different.
+"If only I had taken the other path."
+Turn the counterfactual into a decision rule for next time.
+
+When something goes wrong, your first thought is always, "It's all my fault."
+有一部分是我的。
+有一部分是別人的。
+有一部分是環境與運氣的。
+Part of it is mine.
+Part of it belongs to others.
+Part of it belongs to circumstance and chance.
+把不屬於你的責任還回去，也是一種負責。
+自責很用力，但不等於在解決問題。
+Taking responsibility doesn't mean claiming every cause as your own.
+Handing back what isn't yours is also responsible.
+Self-blame is intense, but it is not the same as solving the problem.
+"It's all my fault."
+Redistribute the causal weight among myself, others, the environment, and randomness.
+
+You always feel everyone is better than you, so you make yourself small.
+不要問「我比誰差」。
+要問「我差在哪一項」。
+再問「這一項，怎麼練」。
+Don't ask "who am I worse than."
+Ask "which skill am I behind in."
+Then ask "how do I train that one."
+排名會讓你縮小，差距會讓你前進。
+你看見的是別人的成果，沒看見的是他的過程。
+You're not inferior; there is simply a gap in one specific skill.
+Rankings shrink you; gaps move you forward.
+You see others' results, not their process.
+"Others are better, so I'm worse."
+Shift from ranking your identity to naming a specific skill gap.
+
+Everything is fine right now, yet you feel the good things could vanish at any moment.
+是關係不穩，還是我不敢相信？
+是能力不夠，還是我看不見自己？
+是真的會失去，還是我習慣了害怕？
+Is the relationship unstable, or do I not dare to trust?
+Is my ability lacking, or can I not see myself?
+Will I really lose it, or am I just used to being afraid?
+不安不是直覺很準，是信心太低。
+抓得住的不是保證，是當下的證據。
+Find the one point that's truly unstable, and the rest need not shake with it.
+Insecurity isn't sharp intuition; it's low confidence.
+What you can hold isn't a guarantee, but the evidence of now.
+"It could disappear at any time."
+Find out which node is actually unstable.
+
+You thought thinking it over again would make you safer. It only made you more tired.
+能做的，寫下來去做。
+不能做的，寫下來放著。
+分不清的，先問：這一步在我手上嗎？
+What you can act on, write down and do.
+What you can't, write down and set aside.
+If you can't tell, ask: is this step in my hands?
+擔心看起來像在準備，其實是在原地繞圈。
+想一百遍，不如做一小步。
+Act where you can; where you can't, more thinking won't make you safer.
+Worry looks like preparing but is really circling in place.
+One small step beats a hundred rounds of thinking.
+"If I think a bit more, maybe I can prevent the danger."
+Separate problems you can act on from uncertainty you can't control right now.
+
+No one provoked you. You've simply run out of battery today.
+少一則訊息。
+少一件雜事。
+多一口氣，多一點空白。
+One less message.
+One less chore.
+One more breath, a little more blank space.
+小事變大，通常是容量變小。
+脾氣不好之前，常常是休息不夠。
+Lighten your load first, then deal with the issue.
+When small things feel big, your capacity has usually shrunk.
+Before the bad temper, there was usually too little rest.
+"Why is nothing going right?"
+Reduce the load first, then handle the event.
+
+Some people and things make you want to back away the moment you get close.
+有的是身體在保護你。
+有的是過去教會你的。
+有的是你的價值在說「不」。
+Some of it is your body protecting you.
+Some of it is what the past taught you.
+Some of it is your values saying "no."
+想遠離並不可恥，但值得弄清楚原因。
+厭惡畫出了你的邊界，也可能畫出了你的偏見。
+First ask: is it truly harmful, or an aversion I learned?
+Wanting distance is nothing to be ashamed of, but it is worth understanding.
+Disgust draws your boundary, and sometimes your bias.
+"I need to stay away from it."
+Tell biological danger, learned aversion, and value judgment apart.
+
+You thought that future was still there. You turned around and found it gone.
+謝謝它曾經存在。
+承認它已經離開。
+然後，替新的可能留一個位置。
+Thank it for having existed.
+Admit that it has left.
+Then leave a place for something new.
+空出來的地方不是洞，是空間。
+失落是告別的儀式，不是終點。
+Let the old possibility leave the stage so a new one has room to grow.
+The emptied place is not a hole; it is space.
+A sense of loss is a ritual of farewell, not the end.
+"I thought I still had that future."
+Allow the old model to retire, then regenerate the space of possibilities.
+
+You're busy every day, and you don't know what you're busy for.
+行程很滿，心卻很空。
+事情很多，意義卻很少。
+一直在做，卻沒有一件是為了自己在乎的事。
+A full schedule, an empty heart.
+Many tasks, little meaning.
+Always doing, yet nothing for what you care about.
+填不滿的不是時間，是意義。
+先問我在乎什麼，再問我要做什麼。
+Emptiness doesn't need more stimulation; it needs action reconnected to what you care about.
+What can't be filled is not time, but meaning.
+Ask what I care about before asking what I should do.
+"I do things every day and don't know why."
+Don't add stimulation; rebuild the link from value to goal to action.
+
+Nothing excites you. You're not lazy; there's just nothing new here.
+把難度調高一點。
+把範圍走遠一點。
+把問題問深一點。
+Turn the difficulty up a little.
+Walk a little farther out.
+Ask the question a little deeper.
+太容易的日子，也會讓人枯萎。
+無聊不是沒事做，是沒有值得學的事。
+Boredom is your system saying: I'm ready for a bigger challenge.
+Days that are too easy can wither a person too.
+Boredom isn't having nothing to do; it's having nothing worth learning.
+"There's nothing new worth noticing."
+Raise the challenge, explore, or redefine the task.
+
+One thing after another piles on, and you feel you're about to give way.
+可以減少的，刪掉。
+可以求助的，開口。
+可以延後的，排到明天。
+What can be cut, cut.
+Where help exists, ask.
+What can wait, move to tomorrow.
+你不需要變成超人，只需要重新排序。
+撐住不是唯一的選項，調整也是。
+Stress doesn't mean you're not strong enough; demand has temporarily outgrown resources.
+You don't need to be superhuman; you need to re-prioritize.
+Holding on is not the only option; adjusting is one too.
+"There's too much. I may not be able to handle it."
+Lower the demand, add capacity, increase control, or re-rank the priorities.
+
+Someone is kind to you, and all you feel is "I owe them."
+真心的給予，不會附帳單。
+健康的關係，不會一直算帳。
+讓你喘不過氣的恩情，值得停下來看一看。
+A sincere gift comes with no invoice.
+A healthy relationship doesn't keep a running bill.
+A kindness that leaves you breathless deserves a second look.
+接受善意，也是一種能力。
+感謝可以說出口，不必用一輩子還。
+First ask: is this reciprocity, or a debt that binds me?
+Receiving kindness is also a skill.
+Gratitude can be spoken; it needn't be repaid for a lifetime.
+"I owe them."
+Check whether it is real responsibility, healthy reciprocity, or indebtedness created by manipulation.
+
+You keep waiting for the world to change first so that you can feel better.
+看看現實，哪些真的能改。
+看看解釋，哪些只是其中一種。
+看看期待，哪些抓得太緊。
+Look at reality: what can really be changed.
+Look at your interpretation: which is only one of many.
+Look at your expectations: which are held too tightly.
+痛是真的，但「只能這樣」不一定是真的。
+你不必先不痛，才開始往前。
+When it hurts, don't only attack the emotion; go back and check your model.
+The pain is real; "this is the only way" may not be.
+You don't have to stop hurting before you start moving.
+"Reality must change before I can get better."
+Check reality, representation, prediction, weight, and action together instead of only attacking the emotion.
+
+You say "I feel bad." But do you know exactly which feeling it is?
+是生氣，還是受傷？
+是害怕，還是失望？
+是今天才有，還是累積了很久？
+Is it anger, or hurt?
+Is it fear, or disappointment?
+Did it start today, or has it been building for a long time?
+「不舒服」是模糊的，「委屈」才找得到出口。
+情緒的解析度越高，人就越不容易被淹沒。
+Only an emotion you can name is an emotion you can work with.
+"Uncomfortable" is vague; "wronged" has somewhere to go.
+The higher the resolution of your emotions, the harder it is to be flooded.
+
+You think you're angry. You may just be short on sleep.
+餓的時候，世界比較可惡。
+累的時候，問題比較巨大。
+痛的時候，人比較難相處。
+When you're hungry, the world looks meaner.
+When you're tired, problems look bigger.
+When you're in pain, people look harder to bear.
+很多心事，睡一覺就縮小一半。
+身體沒電的時候，不要替人生下結論。
+Take care of the body first, then trust the conclusion your emotion draws.
+Many troubles shrink by half after a night's sleep.
+Don't draw conclusions about life on an empty battery.
+
+The same kind of person, the same sentence, and you explode in an instant.
+是哪一句話？
+是哪一個眼神？
+是哪一段，其實早就發生過的記憶？
+Which sentence was it?
+Which look?
+Which memory that actually happened long ago?
+引爆你的常常不是現在，是過去。
+看得見引信，就來得及不爆。
+Find where the button is, and you won't have to be pushed every time.
+What sets you off is often not the present, but the past.
+If you can see the fuse, there's time not to explode.
+
+What hurts is often not what happened, but the story you tell yourself about it.
+事實是：他沒有回。
+推論是：他不在乎。
+評價是：他很自私。
+Fact: he didn't reply.
+Inference: he doesn't care.
+Judgment: he's selfish.
+不知道的地方，就誠實地寫上「不知道」。
+先有事實，才有資格下結論。
+Keep what the camera recorded apart from what the mind made up.
+Where you don't know, honestly write "unknown."
+Facts first; conclusions have to earn their place.
+
+Ten compliments and one criticism, and all night you remember only the one.
+你盯著缺口，就看不見完整。
+你盯著危險，就看不見安全。
+你盯著那一句，就聽不見其他九句。
+Stare at the gap and you miss the whole.
+Stare at the danger and you miss the safety.
+Stare at that one line and you can't hear the other nine.
+刺眼，不等於重要。
+注意力放在哪裡，世界就長成哪個樣子。
+What you see is not all of reality, only what attention picked for you.
+Glaring doesn't mean important.
+Where your attention goes, your world takes that shape.
+
+The same event: someone laughs it off, and you hurt for three days.
+把「全部」縮回「這一次」。
+把「永遠」改成「目前」。
+把「我就是這樣」改成「我現在是這樣」。
+Shrink "everything" back to "this time."
+Change "always" to "for now."
+Change "that's who I am" to "that's how I am right now."
+第一個解釋最快，但不一定最準。
+換一個看法不是自欺，是多一種可能。
+It's not the event that hurts; it's what you took it to be.
+The first interpretation is the fastest, not necessarily the most accurate.
+A second view is not self-deception; it's one more possibility.
+
+He just didn't reply, and you read it as "he doesn't love me anymore."
+58分，只是58分。
+沒回訊息，只是沒回訊息。
+一次失敗，只是一次失敗。
+58 points is just 58 points.
+No reply is just no reply.
+One failure is just one failure.
+小心那個自動翻譯的聲音。
+你可以重新翻譯一次。
+Events carry no meaning by themselves; meaning is your translation.
+Watch out for the voice that translates automatically.
+You can translate it again.
+
+The unspoken "it's supposed to be this way" is exactly where you got hurt.
+我以為努力就會成功。
+我以為付出就會被珍惜。
+我以為愛我的人就該懂我。
+I assumed effort meant success.
+I assumed giving meant being cherished.
+I assumed those who love me should just understand me.
+沒說出口的期待，最容易變成失望。
+找到「我以為」，就找到了情緒的源頭。
+Behind every emotion is a prediction that didn't come true.
+Unspoken expectations turn into disappointment most easily.
+Find the "I assumed," and you've found the source of the emotion.
+
+Reality didn't go the way you pictured, so the whole world feels wrong.
+差在哪裡？
+差了多少？
+是世界變了，還是我本來就猜錯了？
+Where is the gap?
+How big is it?
+Did the world change, or was my guess wrong from the start?
+落差是資訊，不是羞辱。
+看得越準，痛得越短。
+A gap is not a verdict that you are wrong; it shows you where to update.
+A gap is information, not humiliation.
+The more precisely you see it, the shorter it hurts.
+
+You were never arguing about that small thing, but about a need no one saw.
+有時候你要的是安全。
+有時候你要的是尊重。
+有時候你要的，只是好好休息。
+Sometimes what you need is safety.
+Sometimes it's respect.
+Sometimes all you need is real rest.
+說得出需要，就不必用脾氣表達。
+被看見的需要，才有機會被滿足。
+Emotion is the gatekeeper of need; ask what it is guarding.
+When you can name the need, you no longer have to express it through temper.
+Only a need that is seen has a chance to be met.
+
+If you truly didn't care, it wouldn't hurt this much.
+這是我的價值，還是別人給我的？
+這是現在的我要的，還是十年前的我要的？
+這件事，值得排在第一位嗎？
+Is this my value, or one handed to me?
+Is this what I want now, or what I wanted ten years ago?
+Does it deserve first place?
+情緒是價值的影子。
+看重的東西太多，就什麼都保護不了。
+Where it hurts is where you care the most.
+Emotion is the shadow of value.
+Value too many things and you can protect none of them.
+
+"Must." "Have to." "Should." These words are strangling you.
+好人，不一定不能拒絕。
+努力，不一定不會失敗。
+相愛，不一定什麼都懂。
+Good people may still say no.
+Hard work may still fail.
+Loving each other doesn't mean understanding everything.
+每一個「應該」，都值得問一句：誰說的？
+規則是用來幫你的，不是用來罰你的。
+Change "always" to "usually," and the heart gains a little room.
+Every "should" deserves one question: says who?
+Rules are there to help you, not to punish you.
+
+It's not that bad things keep happening. You keep believing "I'm just not good enough."
+失敗是資訊，不是判決。
+拒絕是不合，不是不配。
+衝突是協商，不是結束。
+Failure is information, not a verdict.
+Rejection is a mismatch, not unworthiness.
+Conflict is negotiation, not the end.
+你相信什麼，就會看見什麼。
+舊信念不必打倒，只要給它新的證據。
+A belief that has been around a long time is not thereby true.
+You see what you believe.
+An old belief needn't be defeated; just give it new evidence.
+
+You keep feeling life "shouldn't be this way," and so you keep suffering.
+人，不一定公平。
+付出，不一定有回報。
+成功，不一定是一條直線。
+People are not always fair.
+Giving is not always returned.
+Success is not always a straight line.
+你看到的不是世界，是你對世界的模型。
+地圖錯了就改地圖，不要罵路。
+The world never promised to run by your model.
+What you see is not the world, but your model of it.
+If the map is wrong, fix the map; don't curse the road.
+
+One failure, and you label yourself "a failure."
+我失敗了，不是我是失敗者。
+我現在焦慮，不是我是焦慮的人。
+有人不喜歡我，不是我不值得被愛。
+I failed; I am not a failure.
+I'm anxious now; I am not an anxious person.
+Someone dislikes me; I am not unlovable.
+標籤貼得很快，撕下來要練習。
+你是一個正在更新的版本，不是定稿。
+"I can't do it yet" is not "I have no ability."
+Labels stick fast; peeling them off takes practice.
+You are a version still updating, not the final draft.
+
+Your reaction today may be your ten-year-old self deciding for you.
+那時候不能犯錯，現在可以。
+那時候不能拒絕，現在可以。
+那時候沒有選擇，現在有了。
+Back then you couldn't make mistakes; now you can.
+Back then you couldn't say no; now you can.
+Back then you had no choice; now you do.
+舊反應不是你的錯，但更新是你的權利。
+謝謝小時候的自己，然後把方向盤拿回來。
+What protected you then may be limiting you now.
+The old reaction isn't your fault, but updating it is your right.
+Thank your younger self, then take back the wheel.
+
+Why can one criticism drown out a hundred words of praise?
+說這句話的人，了解我嗎？
+這句話，有證據嗎？
+這句話，值得我想三天嗎？
+Does the person who said it know me?
+Is there evidence for it?
+Is it worth three days of my thoughts?
+九成的確信，要有九成的證據。
+把音量調小不是否認，是校準。
+Not every voice deserves that much weight.
+Ninety percent certainty needs ninety percent evidence.
+Turning the volume down isn't denial; it's calibration.
+
+What exhausts you most is trying to change someone who isn't yours to manage.
+我能決定怎麼說，不能決定他怎麼聽。
+我能決定怎麼做，不能決定結果如何。
+我能決定我的界線，不能決定他的心。
+I decide how I say it, not how they hear it.
+I decide what I do, not how it turns out.
+I decide my boundaries, not their heart.
+分清楚你的和他的，心就輕了一半。
+放手不是放棄，是把力氣用在對的地方。
+Put your energy back into the process you control, and release the outcome you don't.
+Sort what's yours from what's theirs, and the heart is half as heavy.
+Letting go isn't giving up; it's spending strength in the right place.
+
+You regretted the words the moment they left your mouth, but you couldn't stop.
+憤怒叫你攻擊。
+焦慮叫你逃開。
+害怕失去，叫你委屈自己。
+Anger tells you to attack.
+Anxiety tells you to flee.
+Fear of loss tells you to give yourself up.
+在衝動和行動之間，留三秒。
+一直想，不等於在解決。
+Emotion can call you to act, but you decide whether to obey.
+Leave three seconds between the impulse and the action.
+Thinking about it endlessly is not solving it.
+
+Different people, different places. Why do you keep meeting the same problem?
+越焦慮越追問，越追問對方越退。
+越害怕越不做，越不做越害怕。
+越怕失敗越拖延，越拖延越失敗。
+The more anxious, the more you chase; the more you chase, the more they withdraw.
+The more afraid, the less you do; the less you do, the more afraid.
+The more you fear failing, the more you delay; the more you delay, the more you fail.
+看見循環，就已經站在循環外面一步。
+改掉其中一個環節，整個圈就會鬆開。
+What repeats is not luck, but a loop not yet seen.
+To see the loop is already to stand one step outside it.
+Change one link, and the whole circle loosens.
+
+The emotion you keep trying to drive away has been protecting you all along.
+它在提醒你什麼？
+它在保護你什麼？
+它現在的代價，又是什麼？
+What is it reminding you of?
+What is it protecting?
+And what does it cost you now?
+沒有多餘的情緒，只有還沒讀懂的訊號。
+過期的保護，可以溫柔地退役。
+Thank it for protecting you, then ask whether you still need it.
+There are no useless emotions, only signals not yet understood.
+Protection that has expired can be gently retired.
+
+You decided "he did it on purpose," and the whole world became your enemy.
+除了故意，還可能是疏忽。
+除了我的錯，還有別的原因。
+除了最壞的結果，還有很多種明天。
+Besides intent, it could be carelessness.
+Besides my fault, there are other causes.
+Besides the worst outcome, there are many kinds of tomorrow.
+不是「一定是」，而是「有幾成可能」。
+讓三個解釋同時存在，你就自由了一點。
+One more explanation is one more road.
+Not "it must be," but "how likely is it."
+Let three explanations exist at once, and you are a little freer.
+
+You understand all the reasoning, and next time it happens again.
+不必刪掉信念，只要降低音量。
+不必否定自己，只要修改策略。
+不必一次到位，只要比上次準一點。
+No need to delete the belief; just lower its volume.
+No need to reject yourself; just revise the strategy.
+No need to get it all at once; just be a little more accurate than last time.
+懂了不算，做出不同的下一步才算。
+願意修改，是最高級的自信。
+Growth is not overturning your whole life; it is updating the one faulty node.
+Understanding doesn't count until the next step is different.
+Willingness to revise is the highest form of confidence.
+
+You've played out a hundred endings in your head and never once actually asked.
+與其猜他會拒絕，不如提一次小請求。
+與其猜他不在乎，不如說一次真需要。
+與其說我不行，不如換一題再試。
+Rather than guess they'll refuse, make one small request.
+Rather than guess they don't care, state one real need.
+Rather than say I can't, try one more problem.
+腦內劇場不收門票，但很花人生。
+小實驗的成本，遠低於一輩子的猜測。
+Don't guess. Try once, and let reality give you the answer.
+The theater in your head sells no tickets, but it costs a lot of life.
+A small experiment costs far less than a lifetime of guessing.
+
+The thing you feared: did it actually happen?
+我猜對了嗎？
+我高估了什麼？
+我低估了什麼？
+Did I guess right?
+What did I overestimate?
+What did I underestimate?
+不對答案的人，會一直用同一個錯的公式。
+每一次回饋，都讓下一次的判斷更準一點。
+Check the answer, and you learn whether you overrated the danger or underrated yourself.
+Those who never check keep using the same wrong formula.
+Each round of feedback makes the next judgment a little more accurate.
+
+You are not your emotion. You are the one who sees it.
+我正在生氣，不是我就是憤怒。
+我有這個念頭，不是這就是事實。
+我用這個模型看世界，不是世界就是這樣。
+I am feeling anger; I am not anger.
+I have this thought; that doesn't make it fact.
+I see the world through this model; that doesn't make the world so.
+可以暫時不知道答案，是一種力量。
+發現自己錯了不是失敗，是校準成功。
+Having a thought does not mean I am that thought.
+Being able to not know for a while is a strength.
+Finding you were wrong is not failure; it is calibration succeeding.
+
+Swept away the moment emotion hits? Save these seven questions.
+不急著相信。
+不急著壓下去。
+不急著做什麼。
+No rush to believe it.
+No rush to push it down.
+No rush to do anything.
+問題問得準，情緒就鬆了。
+會提問的人，不容易被情緒綁架。
+By the end of seven questions, you are already halfway out of the emotion.
+Ask precisely, and the emotion loosens.
+Those who know how to ask are hard for emotion to hijack.
+
+Thirty seconds is enough to sort a tangle of emotion into sentences you can read.
+先寫事實，再寫故事。
+先寫預測，再寫落差。
+先寫需要，再寫下一步。
+Facts first, then the story.
+Prediction first, then the gap.
+Need first, then the next step.
+寫下來的情緒，就不再是整個你。
+三十秒的整理，省下三天的內耗。
+An emotion isn't asking for an instant reaction; it's asking you to open the system log.
+An emotion written down is no longer all of you.
+Thirty seconds of sorting saves three days of inner friction.
+`;
+const XB=X2.trim().split(/\n\s*\n/).map(b=>b.split('\n').map(s=>s.trim()));
+const CLOSE=[
+['情緒不是命令，情緒不是現實，情緒也不是錯誤。','Emotion is not a command, not reality, and not a mistake.'],
+['不要砸掉警示燈，也不要跪拜警示燈。讀懂它。',"Don't smash the warning light. Don't worship it. Read it."],
+['成長，是預測越來越準。','Growth is prediction becoming more accurate.'],
+['智慧，是知道什麼時候不相信自己的第一個解釋。','Wisdom is knowing when not to trust your first interpretation.'],
+['韌性，是落差出現之後，仍然可以重新建模。','Resilience is being able to rebuild the model after the gap appears.'],
+['自由，是舊模型啟動時，我仍然可以選擇下一個行為。','Freedom is still choosing the next action when the old model fires.']];
+const HEADS=['這盞燈在說什麼','往上追一層','打開系統紀錄'];
+const INTROS=['下次情緒來的時候，先停一下：','今天就練這三件事：','把這三句話存起來：'];
+const NOTE={e8:['如果這種感覺已經持續很久，請找一位你信任的人，或專業人員談一談。','If this feeling has lasted a long time, please talk to someone you trust or to a professional.']};
+NOTE.e30=NOTE.e8;
+const ITEMS_EN={27:['Which emotion warning light is on right now?','Which need or value is it protecting?','What have I taken reality to be?','What did I secretly predict?','Which prediction did reality actually violate?','Which world model makes that prediction seem obvious?','What evidence would make me willing to update it?'],
+28:['Emotion: Right now I feel ___.','Fact: What the camera actually recorded is ___.','Story: My mind is explaining it as ___.','Prediction: I had assumed ___.','Difference: But reality turned out to be ___.','Need: So my need for ___ is lighting up.','Old Model: The old model behind it may be ___.','Alternative: At least one other explanation is ___.','Evidence: The evidence I still need is ___.','Action: The smallest step I can control now is ___.','Retest: Afterwards, I will observe ___ again.',"Update: If reality doesn't support the old model, I update it to ___."]};
+const LAYER_EN={27:'Seven Questions',28:'30-Second Emotion Compiler'};
+const POSTS=[];
+const star=a=>a.map(g=>'✦ '+g);
+EMO.forEach((e,i)=>{const b=XB[i],c=CLOSE[i%6],id='e'+e.i,nt=NOTE[id];
+  const p={id,kind:'e',label:String(e.i).padStart(2,'0')+'｜'+e.n+' '+e.e,labelEn:String(e.i).padStart(2,'0')+' | '+e.e,hook:EH[i][0],hookEn:b[0],par:b.slice(1,4),parEn:b.slice(4,7),gold:[EH[i][1],b[7],b[8]],goldEn:b.slice(9,12),close:c,color:PAL[e.gap]};
+  p.text=[p.hook,p.hookEn,'',...p.par,'',`【${e.n} ${e.e}】${HEADS[i%3]}`,'源頭｜'+e.s,'落差｜'+e.g,'舊模型｜「'+e.o+'」','更新方向｜'+e.u,'',...star(p.gold),'',c[0],...(nt?['',nt[0]]:[]),'','———','',e.e,'',...p.parEn,'','Old model: '+b[12],'Update: '+b[13],'',...star(p.goldEn),'',c[1],...(nt?['',nt[1]]:[]),'',`#情緒溯源 #${e.n.replace('／','')} #${e.e.replace(/[^A-Za-z]/g,'')} #EmotionDebugging #讀懂警示燈`].join('\n');
+  POSTS.push(p)});
+LAYERS.forEach((l,i)=>{const b=XB[30+i],c=CLOSE[(i+3)%6],k=l.i===27?7:l.i===28?12:3,en=l.en||LAYER_EN[l.i];
+  const intro=l.i===27?'下次情緒來的時候，照順序問自己：':l.i===28?'下次情緒來的時候，照著填空：':INTROS[i%3];
+  const p={id:'l'+l.i,kind:'l',label:'第'+CN[i]+'層｜'+(l.en?l.en+'｜':'')+l.zh,labelEn:'Layer '+l.i+' | '+en,hook:LH[i][0],hookEn:b[0],par:b.slice(1,4),parEn:b.slice(4,7),gold:[LH[i][1],b[7],b[8]],goldEn:b.slice(9,12),close:c,color:PAL[1+i%8]};
+  const it=ITEMS_EN[l.i];
+  p.text=[p.hook,p.hookEn,'',...p.par,'',`【情緒溯源能力 第${CN[i]}層｜${l.zh}】`,intro,...l.items.slice(0,k).map((a,j)=>NUMC[j]+' '+(a.t?a.t+'｜':'')+a.d),'',...star(p.gold),'',c[0],'','———','','Emotion Tracing · Layer '+l.i+' | '+en,'',...p.parEn,...(it?['',...it.map((t,j)=>NUMC[j]+' '+t)]:[]),'',...star(p.goldEn),'',c[1],'',`#情緒溯源 #情緒溯源能力 #${en.replace(/[^A-Za-z]/g,'')} #EmotionDebugging #讀懂警示燈`].join('\n');
+  POSTS.push(p)});
+let cardMode='bi';
+function postThumb(p){return `<div class="card" style="background:${p.color};color:#fff;border:0;cursor:pointer" onclick="selPost('${p.id}')"><div style="font-size:12px;opacity:.8">${hl(p.label)}</div><div style="font-size:17px;font-weight:700;line-height:1.5;margin:6px 0 2px">${hl(p.hook)}</div><div style="font-size:12px;opacity:.8;line-height:1.4;margin-bottom:8px">${hl(p.hookEn)}</div>${p.gold.map(g=>`<div style="font-size:13px;color:#ffe9c7">✦ ${hl(g)}</div>`).join('')}</div>`}
+function wrapText(c,s,w){const tk=s.match(/[A-Za-z0-9'’]+|./g)||[],L=[];let cur='';
+  tk.forEach(t=>{if(c.measureText(cur+t).width>w&&cur&&!'，。？！、」』）：；….,;:!?"'.includes(t)){L.push(cur);cur=t===' '?'':t}else cur+=t});if(cur.trim())L.push(cur);return L}
+function drawCard(p){const cv=$('#cv');if(!cv)return;const c=cv.getContext('2d'),W=1080,H=1350,F='"Microsoft JhengHei","PingFang TC","Noto Sans TC","Segoe UI Symbol",sans-serif',m=cardMode;
+  c.fillStyle=p.color;c.fillRect(0,0,W,H);const g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(255,255,255,.10)');g.addColorStop(1,'rgba(0,0,0,.38)');c.fillStyle=g;c.fillRect(0,0,W,H);
+  c.strokeStyle='rgba(255,255,255,.35)';c.lineWidth=3;c.strokeRect(40,40,W-80,H-80);
+  const wh='#fff',cr='#ffe9c7',dim='rgba(255,255,255,.8)',crd='rgba(255,233,199,.82)';
+  c.textBaseline='top';c.fillStyle=dim;c.font='32px '+F;c.fillText('情緒溯源｜Emotion Debugging',90,90);
+  c.fillStyle=cr;c.font='bold 40px '+F;const ll=wrapText(c,m==='en'?p.labelEn:p.label,900);ll.forEach((l,i)=>c.fillText(l,90,150+i*54));
+  c.font='28px '+F;const fl=wrapText(c,p.close[m==='en'?1:0],900),fy=H-85-fl.length*40;
+  const y0=150+ll.length*54+40,avail=fy-40-y0;
+  // [文字, 字級, 粗體, 顏色, 段後距]；null＝分隔線
+  const B=[];
+  if(m!=='en')B.push([p.hook,66,1,wh,m==='bi'?12:44]);
+  if(m!=='zh')B.push([p.hookEn,m==='en'?58:30,m==='en',m==='en'?wh:dim,44]);
+  (m==='en'?p.parEn:p.par).forEach((t,i)=>B.push([t,m==='en'?36:40,0,wh,i<2?10:36]));
+  B.push(null);
+  p.gold.forEach((t,i)=>{if(m!=='en')B.push(['✦ '+t,38,0,cr,m==='bi'?4:20]);if(m!=='zh')B.push([(m==='en'?'✦ ':'')+p.goldEn[i],m==='en'?34:26,0,m==='en'?cr:crd,24])});
+  let s=1.05,lay,h;do{s-=.05;h=0;lay=B.map(b=>{if(!b){h+=56*s;return null}c.font=(b[2]?'bold ':'')+Math.round(b[1]*s)+'px '+F;const L=wrapText(c,b[0],900);h+=L.length*b[1]*s*1.4+b[4]*s;return L})}while(h>avail&&s>.5);
+  let y=y0+Math.max(0,(avail-h)/2);
+  B.forEach((b,i)=>{if(!b){c.fillStyle=cr;c.fillRect(90,y+10*s,120,5);y+=56*s;return}
+    c.font=(b[2]?'bold ':'')+Math.round(b[1]*s)+'px '+F;c.fillStyle=b[3];lay[i].forEach(l=>{c.fillText(l,90,y);y+=b[1]*s*1.4});y+=b[4]*s});
+  c.fillStyle=dim;c.font='28px '+F;fl.forEach((l,i)=>c.fillText(l,90,fy+i*40))}
+let postSel='',postF='';
+V.post=()=>{const p=POSTS.find(p=>p.id===postSel);
+return `<h2>臉書貼文＋圖卡｜30種情緒＋28層能力，共${POSTS.length}組</h2>
+<p class="sub">每組都有：痛點開場、三句排比、溯源內容、三句金句，中英雙語。點任何一張卡片，可以複製貼文、下載圖卡（1080×1350 PNG，可選雙語／中文／英文）。</p>
+${p?`<div class="card"><div class="row" style="align-items:flex-start;gap:16px"><div style="width:340px;max-width:100%"><canvas id="cv" width="1080" height="1350" style="width:100%;border-radius:8px"></canvas><div class="chips">${[['bi','雙語圖卡'],['zh','中文圖卡'],['en','English']].map(m=>`<button class="chip ${cardMode===m[0]?'on':''}" onclick="cardMode='${m[0]}';render()">${m[1]}</button>`).join('')}</div></div>
+<div style="flex:1;min-width:260px"><h3>${p.label}</h3><textarea id="ptx" style="min-height:480px;margin-top:6px">${esc(p.text)}</textarea>
+<div class="row" style="margin-top:8px"><button class="btn" onclick="copyPost()">複製貼文</button><button class="btn" onclick="dlCard()">下載圖卡</button><button class="btn ghost" onclick="stepPost(-1)">上一組</button><button class="btn ghost" onclick="stepPost(1)">下一組</button><button class="btn ghost" onclick="postSel='';render()">收起</button></div>
+<p class="sub">貼文可以先在這裡改字再複製（修改不會被保存）。</p></div></div></div>`:''}
+<div class="chips"><button class="chip ${!postF?'on':''}" onclick="postF='';render()">全部 ${POSTS.length}</button><button class="chip ${postF==='e'?'on':''}" onclick="postF='e';render()">30種情緒</button><button class="chip ${postF==='l'?'on':''}" onclick="postF='l';render()">28層能力</button></div>
+<div class="grid">${POSTS.filter(p=>!postF||p.kind===postF).map(postThumb).join('')}</div>`};
+function selPost(id){postSel=id;tab='post';q='';$('#q').value='';render();scrollTo(0,0)}
+function stepPost(d){const i=POSTS.findIndex(p=>p.id===postSel);postSel=POSTS[(i+d+POSTS.length)%POSTS.length].id;render()}
+function copyPost(){const t=$('#ptx');const ok=()=>toast('已複製貼文');
+  if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t.value).then(ok,()=>{t.select();document.execCommand('copy');ok()});else{t.select();document.execCommand('copy');ok()}}
+function dlCard(){const p=POSTS.find(p=>p.id===postSel);$('#cv').toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='圖卡_'+p.label.replace(/[｜／\s]+/g,'_')+'.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)})}
+
+function showEmo(n){$('#q').value=n;setQ(n)}
+function viewSearch(){const E=EMO.filter(e=>has(e.n,e.e,e.s,e.g,e.o,e.u,e.x,(GAPS[e.gap-1]||{}).en||'',(GAPS[e.gap-1]||{}).zh||''));
+  const A=[];LAYERS.forEach(l=>l.items.forEach(a=>{if(has(a.t,a.d,l.en,l.zh,String(a.n)))A.push([l,a])}));
+  const R=S.records.filter(r=>has(...Object.values(r).filter(v=>typeof v==='string')));
+  const P=POSTS.filter(p=>has(p.text));
+  if(!E.length&&!A.length&&!R.length&&!P.length)return `<div class="card sub">找不到「${esc(q)}」。</div>`;
+  let lay=0;return (E.length?`<h2>情緒（${E.length}）</h2><div class="grid">${E.map(emoCard).join('')}</div>`:'')+
+  (A.length?`<h2>能力（${A.length}）</h2><div class="card" style="padding:0">${A.map(([l,a])=>(l.i!==lay?(lay=l.i,`<div class="ab sub" style="border-top:${l===A[0][0]?0:''}"><b>第${CN[l.i-1]}層${l.en?'｜'+hl(l.en):''}｜${hl(l.zh)}</b></div>`):'')+abRow(a)).join('')}</div>`:'')+
+  (P.length?`<h2>貼文圖卡（${P.length}）</h2><div class="grid">${P.map(postThumb).join('')}</div>`:'')+
+  (R.length?`<h2>我的紀錄（${R.length}）</h2>${R.map(recCard).join('')}`:'')}
+
+function render(){$('#nav').innerHTML=TABS.map(t=>`<button class="${!q&&tab===t[0]?'on':''}" onclick="go('${t[0]}')">${t[1]}</button>`).join('');
+  $('#main').innerHTML=q?viewSearch():V[tab]();if(!q&&tab==='trace')hint();if(!q&&tab==='post'&&postSel)drawCard(POSTS.find(p=>p.id===postSel))}
+render();
+</script>
+</body>
+</html>

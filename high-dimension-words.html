@@ -1,0 +1,2634 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高維詞 - 提升思維維度的詞彙系統</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+      background: #ffffff;
+      color: #0D1B3E;
+      line-height: 1.8;
+    }
+
+    :root {
+      --navy: #0D1B3E;
+      --gold: #B8860B;
+      --teal: #006B7D;
+      --light-navy: #1A2B5F;
+      --light-gray: #F5F7FA;
+      --border-color: #E0E8F0;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+      border-bottom: 4px solid var(--gold);
+    }
+
+    .header h1 {
+      font-size: 2.4rem;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.95;
+      letter-spacing: 0.5px;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Microsoft JhengHei', sans-serif;
+      transition: border-color 0.3s;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    .category-filters {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.7rem 1.2rem;
+      border: 2px solid var(--border-color);
+      background: white;
+      color: var(--navy);
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.3s;
+      font-family: 'Microsoft JhengHei', sans-serif;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .filter-btn.active {
+      background: var(--navy);
+      color: var(--gold);
+      border-color: var(--navy);
+    }
+
+    /* Stats */
+    .stats {
+      background: var(--light-gray);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-around;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--gold);
+    }
+
+    .stat-label {
+      font-size: 0.95rem;
+      color: var(--light-navy);
+      margin-top: 0.3rem;
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 1.8rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: white;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.8rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 8px 24px rgba(13, 27, 62, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--gold);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-category {
+      display: inline-block;
+      background: var(--light-gray);
+      color: var(--teal);
+      padding: 0.4rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.5px;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: var(--navy);
+      margin-bottom: 0.3rem;
+    }
+
+    .card-title-en {
+      font-size: 1rem;
+      color: var(--teal);
+      font-style: italic;
+      margin-bottom: 0.8rem;
+      font-weight: 500;
+    }
+
+    .card-definition {
+      font-size: 0.95rem;
+      color: var(--light-navy);
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+    }
+
+    .card-definition-en {
+      font-size: 0.9rem;
+      color: #666;
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+
+    .card-toggle {
+      color: var(--gold);
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-top: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+    }
+
+    .toggle-icon {
+      transition: transform 0.3s;
+    }
+
+    .card.expanded .toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    /* Expanded Content */
+    .card-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease-out;
+    }
+
+    .card.expanded .card-content {
+      max-height: 1000px;
+    }
+
+    .content-section {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .section-title {
+      font-weight: 700;
+      color: var(--navy);
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .section-content {
+      font-size: 0.95rem;
+      color: var(--light-navy);
+      line-height: 1.7;
+      margin-bottom: 0.8rem;
+    }
+
+    .section-content-en {
+      font-size: 0.9rem;
+      color: #666;
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    .related-terms {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    .tag {
+      background: var(--light-navy);
+      color: white;
+      padding: 0.3rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .tag-en {
+      background: var(--teal);
+    }
+
+    .tts-btn {
+      background: var(--gold);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 0.8rem;
+      transition: all 0.3s;
+      font-family: 'Microsoft JhengHei', sans-serif;
+    }
+
+    .tts-btn:hover {
+      background: var(--navy);
+      transform: scale(1.05);
+    }
+
+    .tts-btn.playing {
+      animation: pulse 0.6s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--light-navy);
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .empty-state h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      background: var(--light-gray);
+      border-top: 2px solid var(--border-color);
+      margin-top: 3rem;
+      color: var(--light-navy);
+      font-size: 0.95rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header h1 {
+        font-size: 1.8rem;
+      }
+
+      .controls {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .search-box {
+        min-width: unset;
+      }
+
+      .category-filters {
+        justify-content: center;
+      }
+
+      .stats {
+        gap: 1rem;
+      }
+    }
+
+    /* Print Friendly */
+    @media print {
+      .controls, .header::after {
+        display: none;
+      }
+
+      .card {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>高維詞 📚</h1>
+    <p>提升思維維度的詞彙系統 | Elevate Your Thinking Vocabulary</p>
+  </div>
+
+  <div class="container">
+    <!-- Controls -->
+    <div class="controls">
+      <div class="search-box">
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="搜尋詞彙 / Search words..."
+          autocomplete="off"
+        >
+      </div>
+      <div class="category-filters" id="categoryFilters"></div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-number" id="totalCount">0</div>
+        <div class="stat-label">詞彙總數</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="displayCount">0</div>
+        <div class="stat-label">正在顯示</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="categoryCount">5</div>
+        <div class="stat-label">類別</div>
+      </div>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="cards-grid" id="cardsGrid"></div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+      <div class="empty-state-icon">🔍</div>
+      <h2>未找到符合的詞彙</h2>
+      <p>試試其他搜尋條件或類別</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>高維詞 © 2026 | 單擊卡片展開詳細內容 | Click cards to expand details</p>
+    <p>💡 英文發音已啟動 | English pronunciation enabled</p>
+  </div>
+
+  <script>
+    // Comprehensive vocabulary database
+    const vocabularyData = [
+      {
+        id: 1,
+        chinese: "元認知",
+        english: "Metacognition",
+        category: "認知",
+        definition: "對自己思考過程的認知和反思，包括了解自己知道什麼、不知道什麼",
+        definitionEn: "The ability to be aware of and reflect on one's own thinking processes, understanding what you know and what you don't know",
+        essence: "知道自己知道什麼。最高級的智力不是會想，而是知道自己如何想",
+        essenceEn: "Knowing that you know. The highest level of intelligence is not having ideas, but understanding how you think",
+        application: "在做重要決定前，先停下來檢視自己的假設。問自己：『我的思考邏輯是什麼？我基於什麼假設？我可能遺漏了什麼？』",
+        applicationEn: "Before making important decisions, pause to examine your assumptions. Ask yourself: 'What is my thinking logic? What assumptions am I making? What might I be missing?'",
+        relatedTerms: ["自我覺察", "批判性思維", "認知偏差", "反思能力"],
+        relatedTermsEn: ["Self-awareness", "Critical thinking", "Cognitive bias", "Reflective ability"]
+      },
+      {
+        id: 2,
+        chinese: "預測編碼",
+        english: "Predictive Coding",
+        category: "認知",
+        definition: "大腦不是被動地感知世界，而是主動地預測未來，然後比對實際情況來更新模型",
+        definitionEn: "The brain doesn't passively perceive the world but actively predicts what comes next, then updates its model based on actual outcomes",
+        essence: "預測是人類智能的核心。每一次的預測錯誤都是學習的機會",
+        essenceEn: "Prediction is the core of human intelligence. Every prediction error is a learning opportunity",
+        application: "設定具體預測（『如果我這樣做，會發生...』），然後驗證。記錄預測錯誤，因為這些錯誤最能改進你的模型",
+        applicationEn: "Make specific predictions ('If I do this, then... will happen'), then verify. Record prediction errors because they improve your mental models most",
+        relatedTerms: ["自由能", "貝葉斯推理", "學習", "適應"],
+        relatedTermsEn: ["Free energy", "Bayesian inference", "Learning", "Adaptation"]
+      },
+      {
+        id: 3,
+        chinese: "自由能",
+        english: "Free Energy",
+        category: "認知",
+        definition: "大腦最小化預測錯誤的傾向。錯誤越大，大腦需要付出越多的『自由能』來調整模型",
+        definitionEn: "The brain's tendency to minimize prediction errors. The larger the error, the more 'free energy' the brain must expend to adjust its models",
+        essence: "所有學習、成長、決策的根源都在於減少預測誤差。這是生命存在的根本目的",
+        essenceEn: "All learning, growth, and decision-making stem from reducing prediction error. This is the fundamental purpose of existence",
+        application: "刻意尋求高質量的反饋，即使它讓你不舒服。不舒服的感覺意味著大腦在更新模型，正在進行高效學習",
+        applicationEn: "Actively seek high-quality feedback, even if it makes you uncomfortable. Discomfort means your brain is updating its models—efficient learning is happening",
+        relatedTerms: ["預測編碼", "學習曲線", "適應能力", "反饋"],
+        relatedTermsEn: ["Predictive coding", "Learning curve", "Adaptability", "Feedback"]
+      },
+      {
+        id: 4,
+        chinese: "反事實思維",
+        english: "Counterfactual Thinking",
+        category: "決策",
+        definition: "想象『如果...會怎樣』的能力。通過想象不同的過去或未來來理解因果關係",
+        definitionEn: "The ability to imagine 'what if' scenarios. Understanding causality by imagining different pasts or futures",
+        essence: "最高級的決策者能在心中模擬多個未來，不需要真實試驗就能預見後果",
+        essenceEn: "The most sophisticated decision-makers can simulate multiple futures in their mind, predicting consequences without real experimentation",
+        application: "每做一個決定，都要構思三個反事實場景：最好的結果、最壞的結果、最可能的結果。這讓你的決策更具韌性",
+        applicationEn: "For every decision, construct three counterfactual scenarios: best case, worst case, most likely case. This makes your decisions more resilient",
+        relatedTerms: ["決策", "場景規劃", "風險評估", "因果思維"],
+        relatedTermsEn: ["Decision-making", "Scenario planning", "Risk assessment", "Causal reasoning"]
+      },
+      {
+        id: 5,
+        chinese: "系統思維",
+        english: "Systems Thinking",
+        category: "系統",
+        definition: "不只看單個元素，而是看它們如何相互作用、形成整體的思維方式",
+        definitionEn: "Viewing not just individual elements, but how they interact and form a whole",
+        essence: "所有重要的問題都是系統問題。解決問題必須理解系統結構，而非只是症狀",
+        essenceEn: "All significant problems are system problems. Solving them requires understanding system structure, not just symptoms",
+        application: "遇到問題時，先畫出系統圖：主要參與者、反饋迴路、時間延遲。通常發現問題不在你以為的地方",
+        applicationEn: "When facing a problem, first draw a system diagram: main actors, feedback loops, time delays. Often discover the problem isn't where you assumed",
+        relatedTerms: ["因果反饋", "系統結構", "複雜性", "整體論"],
+        relatedTermsEn: ["Causal feedback", "System structure", "Complexity", "Holism"]
+      },
+      {
+        id: 6,
+        chinese: "反饋迴路",
+        english: "Feedback Loop",
+        category: "系統",
+        definition: "一個動作的結果會影響該動作本身。正反饋放大變化，負反饋維持平衡",
+        definitionEn: "The result of an action influences the action itself. Positive feedback amplifies change, negative feedback maintains equilibrium",
+        essence: "系統的行為完全由反饋迴路決定。改變系統，必先改變反饋迴路",
+        essenceEn: "System behavior is entirely determined by feedback loops. To change a system, you must change its feedback loops",
+        application: "分析你的習慣：每個習慣背後都有反饋迴路。要改變習慣，需要改變反饋，而不是光靠意志力",
+        applicationEn: "Analyze your habits: every habit has a feedback loop behind it. To change habits, change the feedback, not just willpower",
+        relatedTerms: ["習慣迴路", "系統結構", "自我強化", "平衡機制"],
+        relatedTermsEn: ["Habit loop", "System structure", "Self-reinforcing", "Balancing mechanism"]
+      },
+      {
+        id: 7,
+        chinese: "心智模型",
+        english: "Mental Models",
+        category: "認知",
+        definition: "你對世界如何運作的內在表示。決定你如何感知、思考和行動",
+        definitionEn: "Your internal representation of how the world works. Determines how you perceive, think, and act",
+        essence: "你看到的世界不是世界本身，而是你的心智模型投射。改變模型，改變世界",
+        essenceEn: "The world you see isn't the world itself, but your mental model projected. Change the model, change the world",
+        application: "定期審視你對關鍵領域的模型。與不同領域的專家交流，吸收他們的模型，擴展你的認知邊界",
+        applicationEn: "Regularly audit your models in key domains. Exchange with experts across fields, absorb their models, expand your cognitive boundaries",
+        relatedTerms: ["認知框架", "詮釋", "偏見", "學習"],
+        relatedTermsEn: ["Cognitive framework", "Interpretation", "Bias", "Learning"]
+      },
+      {
+        id: 8,
+        chinese: "第一性原理",
+        english: "First Principles",
+        category: "決策",
+        definition: "從最基礎的事實開始推理，而不是依賴既有假設。一切的起點",
+        definitionEn: "Reasoning from the most basic facts rather than relying on existing assumptions. The starting point of everything",
+        essence: "專家的本質就是能夠回到第一性原理。大多數人只是在重複模式",
+        essenceEn: "The essence of expertise is the ability to return to first principles. Most people just repeat patterns",
+        application: "遇到複雜問題，問『為什麼這是真的？』三次。每一次都把一個假設分解為更基礎的事實",
+        applicationEn: "When facing complex problems, ask 'Why is this true?' three times. Each time, break down an assumption into more basic facts",
+        relatedTerms: ["基礎事實", "質疑假設", "創新", "根本原因分析"],
+        relatedTermsEn: ["Basic facts", "Question assumptions", "Innovation", "Root cause analysis"]
+      },
+      {
+        id: 9,
+        chinese: "高維思維",
+        english: "High-Dimensional Thinking",
+        category: "整合",
+        definition: "同時處理多個變數、關係和層面。能夠在多個維度上看待問題",
+        definitionEn: "Handling multiple variables, relationships, and dimensions simultaneously. Viewing problems across multiple axes",
+        essence: "低維思維看到線性因果，高維思維看到複雜系統。從低到高是人類思維進化的方向",
+        essenceEn: "Low-dimensional thinking sees linear causality; high-dimensional thinking sees complex systems. Evolution from low to high is human intellectual progress",
+        application: "練習同時考慮問題的多個維度：技術、人性、經濟、生態。用矩陣或多軸圖表來呈現複雜關係",
+        applicationEn: "Practice considering multiple dimensions of problems: technical, human, economic, ecological. Use matrices or multi-axis diagrams to represent complexity",
+        relatedTerms: ["複雜系統", "多元視角", "系統思維", "整合"],
+        relatedTermsEn: ["Complex systems", "Multiple perspectives", "Systems thinking", "Integration"]
+      },
+      {
+        id: 10,
+        chinese: "自適應",
+        english: "Adaptation",
+        category: "能力",
+        definition: "面對變化時，能夠調整策略、學習新方式以保持有效性",
+        definitionEn: "The ability to adjust strategies and learn new ways when facing change to maintain effectiveness",
+        essence: "不是最強的生存，而是最能適應的生存。適應能力是未來的競爭力",
+        essenceEn: "It's not the strongest that survive, but the most adaptable. Adaptability is future competitiveness",
+        application: "建立『學習迴圈』的習慣：做→反思→調整→再做。每週檢視一個正在進行的項目，問『什麼需要改變？』",
+        applicationEn: "Build the habit of 'learning loops': do→reflect→adjust→do again. Weekly review of ongoing projects, asking 'What needs to change?'",
+        relatedTerms: ["學習", "反思", "靈活性", "進化"],
+        relatedTermsEn: ["Learning", "Reflection", "Flexibility", "Evolution"]
+      },
+      {
+        id: 11,
+        chinese: "槓桿點",
+        english: "Leverage Point",
+        category: "系統",
+        definition: "系統中一個小的變化會產生大的結果的地方。最高效的改變點",
+        definitionEn: "A place in a system where a small change produces large results. The most efficient point for change",
+        essence: "99%的努力都用在了低槓桿的地方。識別槓桿點是效率的本質",
+        essenceEn: "99% of effort goes to low-leverage places. Identifying leverage points is the essence of efficiency",
+        application: "分析你想改變的系統，找出『槓桿點』。通常不是你最直觀想到的地方，而是需要深度思考",
+        applicationEn: "Analyze the system you want to change, find the 'leverage point'. Usually not what you intuitively think, but requires deep thinking",
+        relatedTerms: ["效率", "系統結構", "帕累托原則", "優先級"],
+        relatedTermsEn: ["Efficiency", "System structure", "Pareto principle", "Priorities"]
+      },
+      {
+        id: 12,
+        chinese: "延遲",
+        english: "Time Delay",
+        category: "系統",
+        definition: "行動與其結果之間存在時間差。這導致因果關係難以被察覺",
+        definitionEn: "Time gap between action and its result. This makes causality hard to perceive",
+        essence: "人類容易被近期結果迷惑，看不到遠期後果。這是大多數錯誤決策的根源",
+        essenceEn: "Humans are easily deceived by immediate results, missing long-term consequences. This is the root of most bad decisions",
+        application: "做決定時，詢問延遲：『這個決定的結果什麼時候才會顯現？』六個月後？一年後？十年後？",
+        applicationEn: "When deciding, ask about delay: 'When will this decision's results show?' In six months? A year? A decade?",
+        relatedTerms: ["因果關係", "遠見", "後果", "耐心"],
+        relatedTermsEn: ["Causality", "Foresight", "Consequences", "Patience"]
+      },
+      {
+        id: 13,
+        chinese: "反脆弱性",
+        english: "Antifragility",
+        category: "能力",
+        definition: "不只能承受壓力，而且會從壓力中成長。比韌性更高的狀態",
+        definitionEn: "Not just enduring stress, but growing from it. A state higher than resilience",
+        essence: "頂級表現者不是避免錯誤，而是把錯誤變成學習。這需要特殊的心態",
+        essenceEn: "Top performers don't avoid mistakes; they transform mistakes into learning. This requires special mindsets",
+        application: "設計『小失敗的機制』：定期進行低風險的實驗，從中學習。不要等大危機來臨",
+        applicationEn: "Design 'small failure mechanisms': conduct regular low-risk experiments, learn from them. Don't wait for big crises",
+        relatedTerms: ["韌性", "從失敗學習", "風險", "成長"],
+        relatedTermsEn: ["Resilience", "Learning from failure", "Risk", "Growth"]
+      },
+      {
+        id: 14,
+        chinese: "信息級差",
+        english: "Information Asymmetry",
+        category: "決策",
+        definition: "交易雙方掌握的信息量或質量不同。導致決策能力不對等",
+        definitionEn: "Different amounts or quality of information between transaction parties. Creates unequal decision-making power",
+        essence: "所有優勢都源自信息。控制信息才能控制局面。認識到自己的信息盲點是高級決策者",
+        essenceEn: "All advantages stem from information. Control information to control situations. Recognizing your information blind spots is mark of senior decision-makers",
+        application: "在每個決定前，問『我可能不知道什麼？』列出你的信息盲點，然後主動去填補",
+        applicationEn: "Before every decision, ask 'What might I not know?' List your information blind spots, then actively fill them",
+        relatedTerms: ["信息", "知識", "透明度", "決策優勢"],
+        relatedTermsEn: ["Information", "Knowledge", "Transparency", "Decision advantage"]
+      },
+      {
+        id: 15,
+        chinese: "逆向思維",
+        english: "Inversion",
+        category: "決策",
+        definition: "不是思考『如何成功』，而是『如何失敗』。從反面思考問題",
+        definitionEn: "Not thinking 'how to succeed' but 'how to fail'. Approaching problems from the opposite direction",
+        essence: "反向思維往往比正向思維更清晰、更有力。因為失敗的路徑比成功的路徑少",
+        essenceEn: "Inverted thinking is often clearer and more powerful than forward thinking. There are fewer paths to failure than success",
+        application: "規劃項目時，先列出『所有可能的失敗原因』，然後針對每一個設置防守。這比光想『怎樣成功』更有效",
+        applicationEn: "When planning projects, first list 'all possible failure reasons', then defend against each. More effective than just thinking 'how to succeed'",
+        relatedTerms: ["風險管理", "負面情景", "預防", "審慎"],
+        relatedTermsEn: ["Risk management", "Negative scenarios", "Prevention", "Prudence"]
+      },
+      {
+        id: 16,
+        chinese: "二階效應",
+        english: "Second-Order Effects",
+        category: "系統",
+        definition: "一個行動的直接結果會導致的後續結果。思考深度的體現",
+        definitionEn: "The consequences of an action's direct results. A mark of depth in thinking",
+        essence: "淺層思維只看一步。深層思維看三步、五步。二階思維是區分大師和新手的分界",
+        essenceEn: "Shallow thinking looks one step ahead. Deep thinking looks three, five steps. Second-order thinking is what separates masters from novices",
+        application: "每個決定，問自己：『直接結果是什麼？這個結果會導致什麼結果？然後呢？』",
+        applicationEn: "For each decision, ask yourself: 'What's the direct result? What will that result cause? Then what?'",
+        relatedTerms: ["深度思維", "遠見", "複雜性", "預見"],
+        relatedTermsEn: ["Depth thinking", "Foresight", "Complexity", "Anticipation"]
+      },
+      {
+        id: 17,
+        chinese: "認知邊界",
+        english: "Cognitive Boundaries",
+        category: "認知",
+        definition: "一個人當前能理解的最複雜程度。超過邊界就無法有效學習",
+        definitionEn: "The maximum complexity a person can currently understand. Beyond the boundary, effective learning cannot happen",
+        essence: "了解自己的認知邊界不是限制，而是智慧。明白什麼不可知，本身就是知",
+        essenceEn: "Understanding your cognitive boundaries isn't limitation but wisdom. Knowing what cannot be known is itself knowledge",
+        application: "當你開始覺得『學不懂』時，不要放棄。這可能是在擴展認知邊界。給自己足夠的時間和資源",
+        applicationEn: "When you start feeling 'unable to learn', don't give up. You might be expanding your cognitive boundaries. Give yourself time and resources",
+        relatedTerms: ["學習能力", "複雜性接受度", "成長", "謙虛"],
+        relatedTermsEn: ["Learning capacity", "Complexity tolerance", "Growth", "Humility"]
+      },
+      {
+        id: 18,
+        chinese: "因果思維",
+        english: "Causal Thinking",
+        category: "認知",
+        definition: "理解『為什麼』而不只是『是什麼』。找出原因，而不只是描述現象",
+        definitionEn: "Understanding 'why' not just 'what'. Finding causes, not just describing phenomena",
+        essence: "科學就是找因果。沒有因果思維，就沒有真正的理解，只有記憶",
+        essenceEn: "Science is finding causality. Without causal thinking, there's no true understanding, just memory",
+        application: "看新聞時，不要停在表面。問『為什麼會這樣？根本原因是什麼？如果改變這個原因會怎樣？』",
+        applicationEn: "When reading news, don't stop at the surface. Ask 'Why this way? What's the root cause? If we changed this, what would happen?'",
+        relatedTerms: ["根本原因", "分析", "理解", "解釋"],
+        relatedTermsEn: ["Root cause", "Analysis", "Understanding", "Explanation"]
+      },
+      {
+        id: 19,
+        chinese: "選擇架構",
+        english: "Choice Architecture",
+        category: "決策",
+        definition: "選項的呈現方式會影響人們的決策。設計選擇環境可以引導行為",
+        definitionEn: "How options are presented affects decisions. Designing choice environment can guide behavior",
+        essence: "人類不是理性決策者，而是受環境深刻影響的決策者。理解這一點就能改變世界",
+        essenceEn: "Humans aren't rational decision-makers but deeply influenced by environment. Understanding this can change the world",
+        application: "設計任何選擇場景時，問『預設選項是什麼？有多少選項？它們如何排列？』這些細節決定結果",
+        applicationEn: "When designing any choice scenario, ask 'What's the default? How many options? How are they arranged?' These details determine outcomes",
+        relatedTerms: ["行為設計", "預設值", "決策環境", "操縱"],
+        relatedTermsEn: ["Behavioral design", "Default", "Decision environment", "Influence"]
+      },
+      {
+        id: 20,
+        chinese: "路徑依賴",
+        english: "Path Dependency",
+        category: "系統",
+        definition: "歷史決定現在。過去的選擇限制了現在的選項。改變困難",
+        definitionEn: "History determines present. Past choices constrain present options. Change is difficult",
+        essence: "許多現象看起來是最優的，實際上只是歷史的結果。打破路徑依賴需要大的力量",
+        essenceEn: "Many phenomena look optimal but are actually historical results. Breaking path dependency requires great force",
+        application: "審視你的人生軌跡：哪些選擇鎖定了你的路？你真的無法改變嗎？如何打破這些鎖定？",
+        applicationEn: "Examine your life trajectory: which choices locked you in? Can you truly not change? How to break these locks?",
+        relatedTerms: ["歷史影響", "慣性", "轉折點", "重新選擇"],
+        relatedTermsEn: ["Historical impact", "Inertia", "Turning point", "Re-selection"]
+      },
+      {
+        id: 21,
+        chinese: "涌現",
+        english: "Emergence",
+        category: "系統",
+        definition: "複雜系統中產生的新性質，無法從單個部分推導出來",
+        definitionEn: "New properties in complex systems that cannot be deduced from individual parts",
+        essence: "整體大於部分之和。這就是為什麼人多了反而做不好事。涌現是創造的本質",
+        essenceEn: "The whole is greater than sum of parts. This is why more people sometimes accomplish less. Emergence is the essence of creation",
+        application: "組建團隊或設計系統時，注意『涌現』。不是招聘最強的人，而是招聘能產生最好涌現的組合",
+        applicationEn: "When building teams or designing systems, notice 'emergence'. Not recruiting strongest individuals but combinations that produce best emergence",
+        relatedTerms: ["複雜性", "協作", "集體智慧", "自組織"],
+        relatedTermsEn: ["Complexity", "Collaboration", "Collective intelligence", "Self-organization"]
+      },
+      {
+        id: 22,
+        chinese: "變量清單",
+        english: "Variable Inventory",
+        category: "決策",
+        definition: "在複雜情境中，系統地列出所有相關變數。防止遺漏重要因素",
+        definitionEn: "Systematically listing all relevant variables in complex situations. Prevents missing important factors",
+        essence: "許多錯誤決策源於遺漏關鍵變數。建立完整的變數清單是專業決策者的標配",
+        essenceEn: "Many bad decisions stem from missing critical variables. Complete variable inventory is standard for professional decision-makers",
+        application: "做重要決定時，列出所有相關的變數：經濟、技術、人性、政治、時間。每個變數如何變化？",
+        applicationEn: "For important decisions, list all relevant variables: economic, technical, human, political, temporal. How does each variable change?",
+        relatedTerms: ["系統分析", "完整性", "結構化思考", "情景分析"],
+        relatedTermsEn: ["Systems analysis", "Completeness", "Structured thinking", "Scenario analysis"]
+      },
+      {
+        id: 23,
+        chinese: "信息信噪比",
+        english: "Signal-to-Noise Ratio",
+        category: "認知",
+        definition: "有用信息與無用信息的比例。高比例的信息源更有價值",
+        definitionEn: "The ratio of useful to useless information. Higher ratios indicate more valuable sources",
+        essence: "在信息爆炸時代，篩選信息的能力比獲取信息的能力更重要",
+        essenceEn: "In the age of information explosion, the ability to filter information is more important than the ability to acquire it",
+        application: "評估任何信息源時，問『其中有多少百分比是我真正需要的？』定期清理低信噪比的信息源",
+        applicationEn: "When evaluating any information source, ask 'What percentage do I truly need?' Regularly prune low signal-to-noise sources",
+        relatedTerms: ["信息質量", "注意力", "過濾", "專注"],
+        relatedTermsEn: ["Information quality", "Attention", "Filtering", "Focus"]
+      },
+      {
+        id: 24,
+        chinese: "層級思維",
+        english: "Hierarchical Thinking",
+        category: "認知",
+        definition: "把複雜問題分解為不同層級。從不同高度看待同一個問題",
+        definitionEn: "Breaking complex problems into different levels. Viewing the same problem from different heights",
+        essence: "會看『森林』和『樹木』，但也要看『樹葉』。能在多個層級切換是智慧",
+        essenceEn: "Seeing both 'forest' and 'trees', but also 'leaves'. Switching between levels is wisdom",
+        application: "遇到問題，畫出層級圖：最高層的戰略、中層的戰術、底層的執行。三個層級都要考慮",
+        applicationEn: "When facing problems, draw a hierarchy: highest-level strategy, mid-level tactics, ground-level execution. Consider all three levels",
+        relatedTerms: ["系統層級", "抽象度", "細節", "平衡"],
+        relatedTermsEn: ["System levels", "Abstraction", "Detail", "Balance"]
+      },
+      {
+        id: 25,
+        chinese: "控制點",
+        english: "Locus of Control",
+        category: "能力",
+        definition: "一個人認為自己能控制多少。內控者相信自己的努力有用",
+        definitionEn: "How much a person believes they can control. Internal locus believes their effort matters",
+        essence: "相信自己能改變結果的人，確實會改變結果。心態決定行動，行動決定結果",
+        essenceEn: "People who believe they can change outcomes actually do. Mindset determines action, action determines outcome",
+        application: "對生活中的每個領域，問『我能控制多少？』不是所有事都能控制，但能控制的比你想像的多",
+        applicationEn: "For each area of life, ask 'How much can I control?' Not everything, but more than you think",
+        relatedTerms: ["自我效能", "決心", "主動性", "責任"],
+        relatedTermsEn: ["Self-efficacy", "Determination", "Agency", "Responsibility"]
+      },
+      {
+        id: 26,
+        chinese: "意圖與影響",
+        english: "Intent vs Impact",
+        category: "整合",
+        definition: "你的初衷很好，但實際影響可能不同。兩者的差距需要反思",
+        definitionEn: "Good intentions don't guarantee positive impact. The gap between them requires reflection",
+        essence: "高級人士的標誌是開始關注『影響』而不只是『意圖』。這需要謙虛和反思",
+        essenceEn: "Mark of advanced people: shifting focus to 'impact' not just 'intent'. Requires humility and reflection",
+        application: "定期問自己：『我想要的結果是什麼？實際結果是什麼？有差距嗎？為什麼？』",
+        applicationEn: "Regularly ask yourself: 'What result did I intend? What actually happened? Any gap? Why?'",
+        relatedTerms: ["結果", "負責任", "反思", "成長"],
+        relatedTermsEn: ["Outcomes", "Accountability", "Reflection", "Growth"]
+      },
+      {
+        id: 27,
+        chinese: "異質性",
+        english: "Heterogeneity",
+        category: "系統",
+        definition: "多樣性、差異性。異質的系統往往比同質系統更強大",
+        definitionEn: "Diversity, difference. Heterogeneous systems are often more robust than homogeneous ones",
+        essence: "不同的聲音、不同的背景、不同的想法能產生更好的決策。回聲室很舒服，但不會帶來進步",
+        essenceEn: "Different voices, backgrounds, ideas produce better decisions. Echo chambers are comfortable but don't create progress",
+        application: "有意建立異質的信息環境：讀對立的觀點、與不同背景的人交流、定期質疑自己的信念",
+        applicationEn: "Intentionally build heterogeneous information environment: read opposing views, engage with different backgrounds, regularly question your beliefs",
+        relatedTerms: ["多樣性", "獨立思考", "系統強度", "適應"],
+        relatedTermsEn: ["Diversity", "Independent thinking", "System strength", "Adaptation"]
+      },
+      {
+        id: 28,
+        chinese: "機會成本",
+        english: "Opportunity Cost",
+        category: "決策",
+        definition: "選擇了A就放棄了B。真正的成本是放棄的選項的價值",
+        definitionEn: "Choosing A means forgoing B. The true cost is the value of the foregone option",
+        essence: "最聰明的人往往在說『不』。因為他們在最大化機會成本，而不是絕對收益",
+        essenceEn: "Smartest people often say 'no'. They're maximizing for opportunity cost, not absolute gain",
+        application: "每次說『是』前，問『我放棄了什麼？』。高效人士通過說『不』而出色",
+        applicationEn: "Before every 'yes', ask 'What am I giving up?' Highly effective people excel by saying 'no'",
+        relatedTerms: ["優先級", "取捨", "決策", "時間管理"],
+        relatedTermsEn: ["Priorities", "Tradeoffs", "Decision", "Time management"]
+      },
+      {
+        id: 29,
+        chinese: "規模經濟",
+        english: "Economies of Scale",
+        category: "系統",
+        definition: "生產規模越大，單位成本越低。非線性的增長",
+        definitionEn: "Larger production scales lower per-unit costs. Non-linear growth",
+        essence: "小的變化在大規模下會被放大。這就是為什麼大公司能壓低成本。但也容易出現系統性風險",
+        essenceEn: "Small changes amplify at scale. This is why big companies lower costs. But systematic risks also multiply",
+        application: "設計任何系統時，考慮規模：現在的設計能否支撐10倍的增長？需要預先設計可擴展性",
+        applicationEn: "When designing systems, consider scale: can current design support 10x growth? Design scalability upfront",
+        relatedTerms: ["增長", "效率", "系統設計", "風險"],
+        relatedTermsEn: ["Growth", "Efficiency", "System design", "Risk"]
+      },
+      {
+        id: 30,
+        chinese: "約束理論",
+        english: "Theory of Constraints",
+        category: "系統",
+        definition: "任何系統的效率由最弱的環節決定。改進非瓶頸環節是浪費",
+        definitionEn: "System efficiency determined by its weakest link. Improving non-bottleneck elements is waste",
+        essence: "找到瓶頸，集中所有力量改進瓶頸，是做事的最高效率",
+        essenceEn: "Finding bottlenecks and concentrating all force on improving them is maximum efficiency",
+        application: "審視你的工作或項目：瓶頸在哪裡？是時間？資源？人力？還是技能？找到瓶頸，就找到了槓桿點",
+        applicationEn: "Review your work or project: where's the bottleneck? Time? Resources? People? Skills? Find it, find your leverage point",
+        relatedTerms: ["瓶頸", "優化", "槓桿", "效率"],
+        relatedTermsEn: ["Bottleneck", "Optimization", "Leverage", "Efficiency"]
+      },
+      {
+        id: 31,
+        chinese: "非線性",
+        english: "Non-linearity",
+        category: "系統",
+        definition: "輸入與輸出不成正比。小的改變可能引發巨大結果，或巨大投入毫無效果",
+        definitionEn: "Input and output are not proportional. Small changes can produce massive results, or huge effort yields nothing",
+        essence: "世界大多是非線性的。線性思維會導致系統性失敗。掌握非線性是超越他人的關鍵",
+        essenceEn: "Most of the world is non-linear. Linear thinking causes systematic failures. Mastering non-linearity is the key to outpace others",
+        application: "別期望『多投入就多產出』。尋找『拐點』：那個改變規則的臨界點。在拐點前後的策略完全不同",
+        applicationEn: "Don't expect 'more input = more output'. Find 'inflection points': the critical thresholds that change rules. Strategy before and after is completely different",
+        relatedTerms: ["指數增長", "臨界點", "複雜性", "非線性動力"],
+        relatedTermsEn: ["Exponential growth", "Inflection point", "Complexity", "Non-linear dynamics"]
+      },
+      {
+        id: 32,
+        chinese: "指數思維",
+        english: "Exponential Thinking",
+        category: "認知",
+        definition: "思維從線性增長轉變為指數增長。認識到複利的力量",
+        definitionEn: "Shift thinking from linear growth to exponential growth. Recognizing the power of compounding",
+        essence: "複利是宇宙最強大的力量。每個領域的頂級表現者都是在某個地方發現了指數曲線",
+        essenceEn: "Compounding is the universe's most powerful force. Every top performer found an exponential curve somewhere",
+        application: "找到你的『複利點』：每天進步1%，一年後會提升37倍。但前提是找到正確的複利軸",
+        applicationEn: "Find your 'compound point': 1% daily improvement = 37x improvement in a year. But only if you find the right axis",
+        relatedTerms: ["複利", "增長", "時間", "持續改進"],
+        relatedTermsEn: ["Compounding", "Growth", "Time", "Continuous improvement"]
+      },
+      {
+        id: 33,
+        chinese: "反向激勵",
+        english: "Perverse Incentive",
+        category: "系統",
+        definition: "激勵措施導致與預期相反的結果。設計者沒有預見到的後果",
+        definitionEn: "Incentive structures produce opposite of intended results. Unintended consequences by designers",
+        essence: "大多數失敗來自『反向激勵』而非無能。理解激勵比理解能力更重要",
+        essenceEn: "Most failures come from 'perverse incentives', not incompetence. Understanding incentives is more important than understanding ability",
+        application: "設計任何系統，先問『這個激勵會導致什麼行為？』然後問『有沒有反向的可能？』",
+        applicationEn: "When designing systems, ask 'What behavior will this incentive create?' Then ask 'What if it backfires?'",
+        relatedTerms: ["激勵", "系統設計", "後果", "動機"],
+        relatedTermsEn: ["Incentive", "System design", "Consequences", "Motivation"]
+      },
+      {
+        id: 34,
+        chinese: "邊際效應遞減",
+        english: "Diminishing Returns",
+        category: "系統",
+        definition: "投入越多，增加的收益越少。所有好事都有上限",
+        definitionEn: "More input produces less additional gain. All good things have limits",
+        essence: "知道何時停止比知道何時開始更珍貴。大多數人在邊際效應變負時還在投入",
+        essenceEn: "Knowing when to stop is more valuable than knowing when to start. Most continue even when returns turn negative",
+        application: "監控任何努力的邊際效應。當效應開始遞減時，轉向新的領域而非加倍投入",
+        applicationEn: "Monitor marginal returns of any effort. When they start diminishing, pivot to new domains instead of doubling down",
+        relatedTerms: ["效率", "投資", "優化", "轉換"],
+        relatedTermsEn: ["Efficiency", "Investment", "Optimization", "Pivot"]
+      },
+      {
+        id: 35,
+        chinese: "最小可行性",
+        english: "Minimum Viability",
+        category: "決策",
+        definition: "以最小投入達到預定目標。不追求完美，而是追求足夠好",
+        definitionEn: "Achieving intended goals with minimum investment. Pursuing 'good enough' not perfection",
+        essence: "完美是卓越的敵人。許多人死在『等我準備好』的路上。最小可行性允許你邊走邊學",
+        essenceEn: "Perfect is the enemy of great. Many die waiting to be 'ready'. Minimum viability lets you learn while doing",
+        application: "任何新項目：定義最小可行版本、推出、收集反饋、迭代。別在未推出前就完善",
+        applicationEn: "Any new project: define MVP, launch, gather feedback, iterate. Don't perfect before launch",
+        relatedTerms: ["MVP", "快速原型", "迭代", "行動"],
+        relatedTermsEn: ["MVP", "Rapid prototyping", "Iteration", "Action"]
+      },
+      {
+        id: 36,
+        chinese: "信號與噪聲",
+        english: "Signal and Noise",
+        category: "認知",
+        definition: "真實的信息被海量噪聲淹沒。區分兩者是關鍵技能",
+        definitionEn: "Real information drowned in noise. Distinguishing them is key skill",
+        essence: "高手不是信息多，而是噪聲少。專注力的本質就是高信噪比",
+        essenceEn: "Experts have low noise, not high information. Attention is essentially high signal-to-noise ratio",
+        application: "定期檢查你的信息來源：有多少是『信號』（你需要的）？多少是『噪聲』（你不需要的）？",
+        applicationEn: "Regularly audit information sources: what percent is 'signal' (what you need) vs. 'noise' (what you don't)?",
+        relatedTerms: ["注意力", "過濾", "專注", "質量"],
+        relatedTermsEn: ["Attention", "Filtering", "Focus", "Quality"]
+      },
+      {
+        id: 37,
+        chinese: "時間偏差",
+        english: "Time Bias",
+        category: "認知",
+        definition: "人類傾向於高估近期的重要性，低估遠期的影響",
+        definitionEn: "Humans overweight near-term importance and underweight long-term impact",
+        essence: "你今天的小決定決定了十年後的人生。但你的大腦想要立即獎勵。這個衝突決定了生活質量",
+        essenceEn: "Today's small decisions determine your life in ten years. But your brain wants immediate reward. This conflict determines life quality",
+        application: "做重要決定時，強制自己『想象十年後』。這能校正你的時間偏差",
+        applicationEn: "When deciding importantly, force yourself to 'imagine ten years later'. This corrects your time bias",
+        relatedTerms: ["時間視角", "遠見", "延遲滿足", "長期思維"],
+        relatedTermsEn: ["Time perspective", "Foresight", "Delayed gratification", "Long-term thinking"]
+      },
+      {
+        id: 38,
+        chinese: "生存偏差",
+        english: "Survivorship Bias",
+        category: "認知",
+        definition: "只看到倖存者，看不到失敗者。導致對成功的誤解",
+        definitionEn: "Only see survivors, not failures. Leads to misunderstanding of success",
+        essence: "每個成功者背後有一百個你沒看到的失敗者。學習生存者的方式往往是危險的",
+        essenceEn: "Behind every success are hundreds of failures you don't see. Learning from survivors is often dangerous",
+        application: "研究任何成功時，問『有多少人用同樣方式卻失敗了？』這才是真實的成功率",
+        applicationEn: "When studying any success, ask 'How many people used the same method and failed?' That's the real success rate",
+        relatedTerms: ["統計偏差", "樣本偏差", "歸納", "因果謬誤"],
+        relatedTermsEn: ["Statistical bias", "Sample bias", "Induction", "Causal fallacy"]
+      },
+      {
+        id: 39,
+        chinese: "安全邊際",
+        english: "Margin of Safety",
+        category: "決策",
+        definition: "在預期和實際之間保留緩衝區。不要把所有賭注壓在一個預測上",
+        definitionEn: "Keep buffer between expectation and reality. Don't bet everything on one forecast",
+        essence: "最安全的決策者看起來很保守，但他們活得最久。安全邊際是長期成功的護城河",
+        essenceEn: "The safest decision-makers look conservative but live longest. Margin of safety is the moat of long-term success",
+        application: "任何計畫，加入30%的冗餘。時間上多留30%、資源上多預留30%。這不是浪費，是智慧",
+        applicationEn: "Any plan: add 30% redundancy. Extra 30% time, extra 30% resources. Not waste, but wisdom",
+        relatedTerms: ["風險管理", "保守", "緩衝", "長期思維"],
+        relatedTermsEn: ["Risk management", "Conservatism", "Buffer", "Long-term thinking"]
+      },
+      {
+        id: 40,
+        chinese: "從零到一",
+        english: "Zero to One",
+        category: "決策",
+        definition: "創造全新的東西。不是從一到十（改進）而是無中生有",
+        definitionEn: "Creating something entirely new. Not improving one to ten, but creating from nothing",
+        essence: "改進是複製，創造是創新。世界需要的是『從零到一』的人，不是『從一到十』的人",
+        essenceEn: "Improving is copying; creating is innovating. The world needs 'zero to one' people, not 'one to ten' people",
+        application: "問自己：『我在做什麼是全新的？』如果答案是『沒有』，你只是在複製",
+        applicationEn: "Ask yourself: 'What am I doing that's entirely new?' If answer is 'nothing', you're just copying",
+        relatedTerms: ["創新", "原創", "獨特", "企業家精神"],
+        relatedTermsEn: ["Innovation", "Originality", "Uniqueness", "Entrepreneurship"]
+      },
+      {
+        id: 41,
+        chinese: "路徑開創",
+        english: "Path Creation",
+        category: "能力",
+        definition: "不是在既有路上跑得快，而是開闢全新的路",
+        definitionEn: "Not running fast on existing paths, but creating entirely new ones",
+        essence: "追隨者永遠跑不過開創者。最高的競爭優勢不是速度，而是方向",
+        essenceEn: "Followers can never outrun creators. The highest competitive advantage isn't speed but direction",
+        application: "每個領域都有『空白地帶』。尋找無人涉足的角落，那就是你的機會",
+        applicationEn: "Every field has 'white space'. Find untouched corners—that's your opportunity",
+        relatedTerms: ["創新", "領導力", "競爭優勢", "獨特性"],
+        relatedTermsEn: ["Innovation", "Leadership", "Competitive advantage", "Uniqueness"]
+      },
+      {
+        id: 42,
+        chinese: "多學科思維",
+        english: "Multidisciplinary Thinking",
+        category: "認知",
+        definition: "跨越學科邊界，整合不同領域的知識來看待問題",
+        definitionEn: "Cross disciplinary boundaries, integrate knowledge from different fields to view problems",
+        essence: "偉大的想法往往來自『學科之間的空隙』。懂多門學科的人看到連接，其他人只看到孤立",
+        essenceEn: "Great ideas often come from 'gaps between disciplines'. Multi-disciplined people see connections; others see isolation",
+        application: "學習與自己領域無關的東西：藝術、生物、經濟、心理學。尋找意想不到的連接",
+        applicationEn: "Study things unrelated to your field: art, biology, economics, psychology. Find unexpected connections",
+        relatedTerms: ["跨域", "連接", "綜合", "創意"],
+        relatedTermsEn: ["Cross-domain", "Connection", "Synthesis", "Creativity"]
+      },
+      {
+        id: 43,
+        chinese: "深度工作",
+        english: "Deep Work",
+        category: "能力",
+        definition: "在無干擾狀態下全心投入複雜工作。產生最高價值的工作方式",
+        definitionEn: "Fully engaging in complex work without distractions. The highest-value work mode",
+        essence: "膚淺工作很容易，深度工作很難。但膚淺工作讓人忙碌，深度工作讓人傑出",
+        essenceEn: "Shallow work is easy, deep work is hard. But shallow work keeps you busy; deep work makes you exceptional",
+        application: "為深度工作預留時間。關閉所有通知。進入『心流狀態』。這是超越他人的最簡單方式",
+        applicationEn: "Reserve time for deep work. Close all notifications. Enter 'flow state'. Simplest way to outpace others",
+        relatedTerms: ["心流", "專注", "生產力", "卓越"],
+        relatedTermsEn: ["Flow", "Focus", "Productivity", "Excellence"]
+      },
+      {
+        id: 44,
+        chinese: "心流",
+        english: "Flow State",
+        category: "能力",
+        definition: "完全沉浸在活動中，時間消失，達到最高表現",
+        definitionEn: "Complete immersion in activity, time disappears, peak performance achieved",
+        essence: "心流是幸福和卓越的共同源頭。進入心流的能力決定了人生質量",
+        essenceEn: "Flow is the common source of happiness and excellence. Ability to enter flow determines life quality",
+        application: "創造條件進入心流：清楚的目標、即時反饋、挑戰與技能的平衡。定期進入心流",
+        applicationEn: "Create conditions for flow: clear goals, immediate feedback, balance of challenge and skill. Enter flow regularly",
+        relatedTerms: ["沉浸", "內在動機", "幸福", "表現"],
+        relatedTermsEn: ["Immersion", "Intrinsic motivation", "Happiness", "Performance"]
+      },
+      {
+        id: 45,
+        chinese: "內在動機",
+        english: "Intrinsic Motivation",
+        category: "能力",
+        definition: "因為內在渴望而行動，不是為了外部獎勵。更持久、更深入",
+        definitionEn: "Acting from inner desire, not external reward. More durable, more profound",
+        essence: "外在激勵最多維持一時，內在激勵維持一生。區分兩者決定了職業成就",
+        essenceEn: "External motivation lasts temporarily; intrinsic lasts lifetime. Distinguishing them determines career success",
+        application: "審視你做的事：哪些是『應該做』（外在動機）？哪些是『想做』（內在動機）？逐漸轉移",
+        applicationEn: "Audit what you do: which are 'should do' (external) vs. 'want to do' (intrinsic)? Gradually shift",
+        relatedTerms: ["動機", "自主", "使命", "幸福"],
+        relatedTermsEn: ["Motivation", "Autonomy", "Purpose", "Happiness"]
+      },
+      {
+        id: 46,
+        chinese: "複雜性",
+        english: "Complexity",
+        category: "系統",
+        definition: "系統中有太多變數，相互作用無法完全預測",
+        definitionEn: "Too many variables in system; interactions cannot be fully predicted",
+        essence: "現實充滿複雜性。精簡模型很舒服，但容易失敗。接納複雜性是成熟的開始",
+        essenceEn: "Reality is full of complexity. Simplified models are comfortable but fail. Accepting complexity is beginning of maturity",
+        application: "遇到問題時，先問『這有多複雜？』如果答案是『非常複雜』，用複雜的方法而非簡單的",
+        applicationEn: "When facing problems, first ask 'How complex is this?' If very complex, use complex methods, not simple ones",
+        relatedTerms: ["複雜系統", "自適應", "混沌", "非線性"],
+        relatedTermsEn: ["Complex systems", "Adaptation", "Chaos", "Non-linearity"]
+      },
+      {
+        id: 47,
+        chinese: "脆弱性",
+        english: "Fragility",
+        category: "系統",
+        definition: "系統對壓力很敏感。壓力導致失敗。追求穩定和控制",
+        definitionEn: "System sensitive to stress. Stress causes failure. Pursues stability and control",
+        essence: "脆弱的人試圖控制。有彈性的人試圖適應。反脆弱的人試圖從壓力中獲益",
+        essenceEn: "Fragile people try to control. Resilient people adapt. Antifragile people benefit from stress",
+        application: "檢查你的人生系統：哪些地方很脆弱？哪些依賴某個單點？開始分散風險",
+        applicationEn: "Audit your life systems: what's fragile? What depends on single point? Start diversifying risk",
+        relatedTerms: ["韌性", "反脆弱", "風險", "多樣化"],
+        relatedTermsEn: ["Resilience", "Antifragility", "Risk", "Diversification"]
+      },
+      {
+        id: 48,
+        chinese: "網絡效應",
+        english: "Network Effects",
+        category: "系統",
+        definition: "用戶越多，產品越有價值。形成正反饋的業務模式",
+        definitionEn: "More users make product more valuable. Business model with positive feedback",
+        essence: "網絡效應是最強大的護城河。掌握它的人贏家通吃",
+        essenceEn: "Network effects are most powerful moats. Those who master them win all",
+        application: "思考你的工作或產品：能否創造網絡效應？不能的話，如何吸引第一批用戶？",
+        applicationEn: "Think about your work or product: can you create network effects? If not, how to attract first users?",
+        relatedTerms: ["社群", "平台", "增長", "護城河"],
+        relatedTermsEn: ["Community", "Platform", "Growth", "Moat"]
+      },
+      {
+        id: 49,
+        chinese: "賦能",
+        english: "Empowerment",
+        category: "能力",
+        definition: "給予他人做出決定和行動的能力。不是給魚，而是教釣魚",
+        definitionEn: "Giving others ability to decide and act. Teaching fishing, not giving fish",
+        essence: "最高級的領導是『自己最後不需要』。賦能他人的人創造出持續增長",
+        essenceEn: "Highest leadership is becoming unnecessary. Those who empower others create lasting growth",
+        application: "在任何角色上，問『我如何能讓他人更有能力？』而不是『我如何做得更好？』",
+        applicationEn: "In any role, ask 'How can I make others more capable?' not 'How can I do better?'",
+        relatedTerms: ["委託", "領導力", "發展", "授權"],
+        relatedTermsEn: ["Delegation", "Leadership", "Development", "Empowerment"]
+      },
+      {
+        id: 50,
+        chinese: "知識存檔",
+        english: "Knowledge Repository",
+        category: "認知",
+        definition: "系統地記錄和組織知識。讓過去的學習成為未來的資產",
+        definitionEn: "Systematically recording and organizing knowledge. Making past learning future assets",
+        essence: "知識不使用就會遺忘。建立個人知識庫是『複利最好的方式』",
+        essenceEn: "Unused knowledge is forgotten. Building personal knowledge repository is 'best way to compound'",
+        application: "開始建立你的知識庫：記錄洞見、案例、原則。定期回顧和連接。這會成為你的競爭優勢",
+        applicationEn: "Start building your knowledge repository: record insights, cases, principles. Review and connect regularly. This becomes your advantage",
+        relatedTerms: ["學習", "記錄", "系統化", "組織"],
+        relatedTermsEn: ["Learning", "Recording", "Organization", "System"]
+      },
+      {
+        id: 51,
+        chinese: "現金流",
+        english: "Cash Flow",
+        category: "財富",
+        definition: "金錢進出的流動。收入減去支出的淨額。企業和個人的生命線",
+        definitionEn: "Movement of money in and out. Net income minus expenses. Lifeline of businesses and individuals",
+        essence: "企業不是死於無利潤，而是死於無現金。現金流是最真實的財務狀態",
+        essenceEn: "Businesses don't die from lack of profit but lack of cash flow. Cash flow is most real financial state",
+        application: "追蹤你的個人現金流：每月進來多少？支出多少？有結餘嗎？改善現金流是財務自由的第一步",
+        applicationEn: "Track personal cash flow: how much monthly income? Expenses? Surplus? Improving cash flow is first step to financial freedom",
+        relatedTerms: ["收入", "支出", "儲蓄", "流動性"],
+        relatedTermsEn: ["Income", "Expenses", "Savings", "Liquidity"]
+      },
+      {
+        id: 52,
+        chinese: "複利",
+        english: "Compounding",
+        category: "財富",
+        definition: "利息生利息。小的增長被不斷放大。時間越長效果越驚人",
+        definitionEn: "Interest earning interest. Small growth amplified continuously. More dramatic over time",
+        essence: "複利是宇宙最強大的力量。巴菲特說『人生就是複利』。你的複利軸在哪？",
+        essenceEn: "Compounding is universe's strongest force. Buffett says 'life is compounding'. What's your compound axis?",
+        application: "越早開始投資，複利時間越長。20歲存1萬元，比30歲存10萬元更有利。時間勝過金額",
+        applicationEn: "Earlier investment = longer compounding. Investing 10k at 20 beats 100k at 30. Time beats amount",
+        relatedTerms: ["投資", "時間", "增長", "資本"],
+        relatedTermsEn: ["Investment", "Time", "Growth", "Capital"]
+      },
+      {
+        id: 53,
+        chinese: "通脹與購買力",
+        english: "Inflation & Purchasing Power",
+        category: "財富",
+        definition: "物價上升導致金錢的購買力下降。同樣的錢買不到之前的東西",
+        definitionEn: "Rising prices reduce purchasing power of money. Same money buys less than before",
+        essence: "通脹是隱形稅。你的儲蓄如果不能跑過通脹，就在貶值。大多數人沒意識到這點",
+        essenceEn: "Inflation is invisible tax. Savings that don't outpace inflation are depreciating. Most don't realize this",
+        application: "計算實際收益率，不是名義收益率。銀行給你3%利息，但通脹5%，你其實在虧",
+        applicationEn: "Calculate real returns, not nominal. Bank gives 3% but inflation is 5%—you're actually losing",
+        relatedTerms: ["購買力", "實際收益", "儲蓄", "貨幣"],
+        relatedTermsEn: ["Purchasing power", "Real returns", "Savings", "Currency"]
+      },
+      {
+        id: 54,
+        chinese: "資產與負債",
+        english: "Assets vs Liabilities",
+        category: "財富",
+        definition: "資產是為你賺錢的。負債是讓你花錢的。區分兩者是財富的基礎",
+        definitionEn: "Assets earn money for you. Liabilities cost you money. Distinguishing them is foundation of wealth",
+        essence: "富人買資產。窮人買負債（但認為是資產）。一個房子是資產還是負債，取決於它是否為你賺錢",
+        essenceEn: "Rich buy assets. Poor buy liabilities (thinking they're assets). Whether a house is asset depends on if it earns for you",
+        application: "列出你擁有的所有東西。標記為『資產』或『負債』。然後問『我如何能增加資產？減少負債？』",
+        applicationEn: "List all you own. Mark as 'asset' or 'liability'. Ask 'How do I increase assets? Decrease liabilities?'",
+        relatedTerms: ["投資", "負債", "淨值", "財務狀況"],
+        relatedTermsEn: ["Investment", "Debt", "Net worth", "Financial status"]
+      },
+      {
+        id: 55,
+        chinese: "被動收入",
+        english: "Passive Income",
+        category: "財富",
+        definition: "不需要持續工作就能獲得的收入。股息、房租、版稅、投資收益",
+        definitionEn: "Income without continuous work. Dividends, rent, royalties, investment returns",
+        essence: "被動收入是財務自由的通道。不是『不工作』而是『讓錢為你工作』",
+        essenceEn: "Passive income is path to financial freedom. Not 'not working' but 'let money work for you'",
+        application: "規劃你的被動收入：投資股票、房地產、創作內容、建立系統。多條渠道分散風險",
+        applicationEn: "Plan passive income: stocks, real estate, content, systems. Multiple channels diversify risk",
+        relatedTerms: ["投資", "財務自由", "租金", "股息"],
+        relatedTermsEn: ["Investment", "Financial freedom", "Rent", "Dividends"]
+      },
+      {
+        id: 56,
+        chinese: "投資思維",
+        english: "Investment Mindset",
+        category: "財富",
+        definition: "把生活中的一切視為投資決策。每個決定都有機會成本和回報率",
+        definitionEn: "Viewing everything in life as investment decisions. Every choice has opportunity cost and ROI",
+        essence: "投資思維的人看到複利，消費思維的人只看到即時滿足。這個差異決定了財務人生",
+        essenceEn: "Investment mindset sees compounding; consumer mindset sees instant gratification. This difference determines financial life",
+        application: "問任何決定：『這個投資的回報率是多少？』選擇高回報的決定。不只是金錢，也包括時間、精力",
+        applicationEn: "Ask of any decision: 'What's the ROI?' Choose high-return decisions. Not just money, but time, energy",
+        relatedTerms: ["決策", "回報", "機會成本", "長期思維"],
+        relatedTermsEn: ["Decision", "Returns", "Opportunity cost", "Long-term thinking"]
+      },
+      {
+        id: 57,
+        chinese: "風險承受度",
+        english: "Risk Tolerance",
+        category: "財富",
+        definition: "你願意承受多大的潛在損失來換取更高的回報。個人差異很大",
+        definitionEn: "How much potential loss you'll accept for higher returns. Varies greatly by individual",
+        essence: "沒有完美的投資方案，只有適合你的方案。了解自己的風險承受度是成熟投資者的開始",
+        essenceEn: "No perfect investment, only right one for you. Understanding risk tolerance is start of mature investor",
+        application: "評估自己：壞的一年虧損30%，你能睡得著覺嗎？如果能，可以高風險投資。如果不能，選擇穩健",
+        applicationEn: "Assess yourself: can you sleep well if down 30% one year? Yes = higher risk possible. No = conservative choices",
+        relatedTerms: ["投資", "風險", "回報", "心理"],
+        relatedTermsEn: ["Investment", "Risk", "Returns", "Psychology"]
+      },
+      {
+        id: 58,
+        chinese: "多元化投資",
+        english: "Diversification",
+        category: "財富",
+        definition: "把雞蛋放在不同籃子裡。不同資產類別表現不同時發揮作用",
+        definitionEn: "Don't put all eggs in one basket. Different asset classes perform differently",
+        essence: "多元化是免費的保險。它不能讓你大賺，但能讓你不大虧。這很重要",
+        essenceEn: "Diversification is free insurance. Won't let you make big gains but prevents big losses. Valuable",
+        application: "不要把所有錢投在一個股票。分散到股票、債券、房地產、商品。也分散地理和行業",
+        applicationEn: "Don't invest all in one stock. Spread to stocks, bonds, real estate, commodities. Also geographic and sector spread",
+        relatedTerms: ["投資", "風險", "資產", "平衡"],
+        relatedTermsEn: ["Investment", "Risk", "Assets", "Balance"]
+      },
+      {
+        id: 59,
+        chinese: "時間價值",
+        english: "Time Value of Money",
+        category: "財富",
+        definition: "一筆錢現在擁有比未來擁有更值錢。因為現在可以投資、生利息",
+        definitionEn: "Money now is worth more than money later. Because now you can invest and earn interest",
+        essence: "這是所有財務決策的基礎。理解時間價值，就理解為什麼早投資那麼重要",
+        essenceEn: "Foundation of all financial decisions. Understanding time value explains why early investment is critical",
+        application: "延遲一年支出可能帶來年化10%的收益。相反，提前消費失去10%的複利。量化這些差異",
+        applicationEn: "Delaying expense one year may generate 10% annual return. Early consumption loses 10% compounding. Quantify these",
+        relatedTerms: ["複利", "時間", "折現率", "投資"],
+        relatedTermsEn: ["Compounding", "Time", "Discount rate", "Investment"]
+      },
+      {
+        id: 60,
+        chinese: "稅務效率",
+        english: "Tax Efficiency",
+        category: "財富",
+        definition: "最小化稅務負擔。許多財富流向稅款，大多人沒優化",
+        definitionEn: "Minimizing tax burden. Much wealth flows to taxes; most don't optimize",
+        essence: "稅是最大的支出。學習基本稅務知識能保護你的財富。『知法『不是違法，是智慧",
+        essenceEn: "Taxes are largest expense. Learning basic tax knowledge protects wealth. Tax optimization is wisdom",
+        application: "了解你的邊際稅率。用『遞延稅賬戶』（如養老金）。出售虧損的投資來抵消收益（稅損收割）",
+        applicationEn: "Know your marginal tax rate. Use tax-deferred accounts. Sell losing investments to offset gains (tax-loss harvesting)",
+        relatedTerms: ["稅務", "財務", "法律", "優化"],
+        relatedTermsEn: ["Taxation", "Finance", "Law", "Optimization"]
+      },
+      {
+        id: 61,
+        chinese: "債務結構",
+        english: "Debt Structure",
+        category: "財富",
+        definition: "債務的組合方式。高利率？低利率？長期？短期？結構決定你的財務命運",
+        definitionEn: "How debt is structured. High interest? Low? Long-term? Short-term? Structure determines financial fate",
+        essence: "不是『有沒有債務』而是『債務結構好不好』。聰明人用『好債』投資。笨人用『壞債』消費",
+        essenceEn: "Not 'have debt or not' but 'is debt structure good'. Smart use 'good debt' to invest. Foolish use 'bad debt' to consume",
+        application: "評估你的所有債務：利率多少？用途是什麼？能否通過重新融資降低利率？用債務投資而非消費",
+        applicationEn: "Audit all debt: rates? Purposes? Refinance possibility? Use debt to invest, not consume",
+        relatedTerms: ["債務", "利率", "借貸", "財務"],
+        relatedTermsEn: ["Debt", "Interest rates", "Borrowing", "Finance"]
+      },
+      {
+        id: 62,
+        chinese: "財務自由",
+        english: "Financial Freedom",
+        category: "財富",
+        definition: "被動收入超過支出。不再需要為金錢工作",
+        definitionEn: "Passive income exceeds expenses. No longer need to work for money",
+        essence: "財務自由是人生最大的自由。一旦達到，時間、精力都是你的。這改變一切",
+        essenceEn: "Financial freedom is greatest freedom. Once achieved, time and energy are yours. It changes everything",
+        application: "計算你的財務自由數字：年支出 ÷ 0.04 = 需要的資產。如果需要100萬年支出，需要2500萬資產",
+        applicationEn: "Calculate your FI number: annual expenses ÷ 0.04 = needed assets. 100k annual = 2.5M assets needed",
+        relatedTerms: ["被動收入", "財富", "自由", "獨立"],
+        relatedTermsEn: ["Passive income", "Wealth", "Freedom", "Independence"]
+      },
+      {
+        id: 63,
+        chinese: "邊際稅率",
+        english: "Marginal Tax Rate",
+        category: "財富",
+        definition: "下一筆收入要繳多少稅。不是平均稅率，而是邊際稅率決定你的決策",
+        definitionEn: "How much tax on next dollar earned. Marginal, not average rate, determines decisions",
+        essence: "許多人搞混了平均稅率和邊際稅率。理解邊際稅率會改變你的財務決策",
+        essenceEn: "Many confuse average and marginal tax rates. Understanding marginal changes financial decisions",
+        application: "賺額外的1000元，有多少被稅拿走？這決定了『是否值得加班』。計算你的邊際稅率",
+        applicationEn: "Earn extra 1000—how much goes to taxes? Determines 'worth overtime'. Calculate your marginal rate",
+        relatedTerms: ["稅務", "收入", "效率", "決策"],
+        relatedTermsEn: ["Taxation", "Income", "Efficiency", "Decision"]
+      },
+      {
+        id: 64,
+        chinese: "資本配置",
+        english: "Capital Allocation",
+        category: "財富",
+        definition: "怎樣分配有限的資本（金錢）以獲得最高回報。最難的決策",
+        definitionEn: "Allocating limited capital to highest returns. Most difficult decision",
+        essence: "資本配置能力決定了投資者的等級。業餘者亂投，專業人士精準配置",
+        essenceEn: "Capital allocation ability determines investor tier. Amateurs scatter; professionals allocate precisely",
+        application: "有100萬，怎樣分配？50%股票？30%房地產？20%現金？根據你的目標和風險承受度調整",
+        applicationEn: "Have 1M—how allocate? 50% stocks? 30% real estate? 20% cash? Adjust by goals and risk",
+        relatedTerms: ["投資", "策略", "回報", "風險"],
+        relatedTermsEn: ["Investment", "Strategy", "Returns", "Risk"]
+      },
+      {
+        id: 65,
+        chinese: "流動性",
+        english: "Liquidity",
+        category: "財富",
+        definition: "資產能多快轉換成現金。現金最流動，房地產最不流動",
+        definitionEn: "How quickly asset converts to cash. Cash most liquid; real estate least",
+        essence: "流動性高很舒服，但回報低。流動性低回報高，但緊急時困難。需要平衡",
+        essenceEn: "High liquidity comfortable but low returns. Low liquidity high returns but tight in emergencies. Need balance",
+        application: "保持『緊急基金』3-6個月支出額在現金賬戶。剩下的投入低流動性的高回報資產",
+        applicationEn: "Keep emergency fund (3-6 months expenses) in cash. Rest in less-liquid high-return assets",
+        relatedTerms: ["現金", "資產", "風險", "準備"],
+        relatedTermsEn: ["Cash", "Assets", "Risk", "Reserve"]
+      },
+      {
+        id: 66,
+        chinese: "恆定性",
+        english: "Homeostasis",
+        category: "健康",
+        definition: "身體維持內部穩定的能力。溫度、pH值、血糖等在特定範圍",
+        definitionEn: "Body's ability to maintain internal stability. Temperature, pH, blood sugar within ranges",
+        essence: "生命就是恆定性的維持。大多數疾病源於恆定性破壞。健康就是恆定性很好",
+        essenceEn: "Life is maintaining homeostasis. Most disease from disrupted homeostasis. Health is excellent homeostasis",
+        application: "支持你的恆定性：規律作息、穩定飲食、適度壓力、充足睡眠。小的干擾，身體能自我調整",
+        applicationEn: "Support homeostasis: regular sleep, stable diet, managed stress, enough sleep. Small disruptions auto-adjust",
+        relatedTerms: ["健康", "穩定", "調節", "平衡"],
+        relatedTermsEn: ["Health", "Stability", "Regulation", "Balance"]
+      },
+      {
+        id: 67,
+        chinese: "應激反應",
+        english: "Stress Response",
+        category: "健康",
+        definition: "面對壓力時身體的反應。短期激活生存機制，長期導致問題",
+        definitionEn: "Body's response to stress. Short-term activates survival; long-term causes problems",
+        essence: "急性壓力能激發潛能。慢性壓力摧毀健康。現代人大多死於『長期低度應激』",
+        essenceEn: "Acute stress activates potential. Chronic stress destroys health. Moderns die from 'chronic low-grade stress'",
+        application: "監控你的壓力水平。定期『關閉』應激反應：冥想、運動、深呼吸。允許身體恢復",
+        applicationEn: "Monitor stress levels. Regularly 'turn off' stress response: meditate, exercise, breathe. Allow recovery",
+        relatedTerms: ["壓力", "健康", "恢復", "心理"],
+        relatedTermsEn: ["Stress", "Health", "Recovery", "Psychology"]
+      },
+      {
+        id: 68,
+        chinese: "循環節律",
+        english: "Circadian Rhythm",
+        category: "健康",
+        definition: "身體的24小時週期。影響睡眠、激素、消化、精力",
+        definitionEn: "Body's 24-hour cycle. Affects sleep, hormones, digestion, energy",
+        essence: "破壞循環節律（熬夜、倒班）會長期損害健康。尊重節律是高效能的前提",
+        essenceEn: "Disrupting rhythm (late nights, shifts) damages long-term health. Respecting rhythm precedes high performance",
+        application: "調整生活與循環節律一致：固定睡眠時間、晨日光照、傍晚避免藍光。身體會回報你",
+        applicationEn: "Align life with rhythm: fixed sleep time, morning light, avoid blue light evening. Body rewards you",
+        relatedTerms: ["睡眠", "健康", "時間", "激素"],
+        relatedTermsEn: ["Sleep", "Health", "Time", "Hormones"]
+      },
+      {
+        id: 69,
+        chinese: "免疫系統",
+        english: "Immune System",
+        category: "健康",
+        definition: "身體防禦外來侵害的系統。分為先天免疫和適應免疫",
+        definitionEn: "Body's defense system against invaders. Innate and adaptive immunity",
+        essence: "免疫是最好的醫生。支持免疫遠比壓制症狀更聰明。大多數人忽視了這一點",
+        essenceEn: "Immunity is best doctor. Supporting immunity smarter than suppressing symptoms. Most ignore this",
+        application: "支持免疫：充足睡眠、運動、壓力管理、營養、社交。這些『無聊』的事最有效",
+        applicationEn: "Support immunity: sleep, exercise, stress management, nutrition, connection. 'Boring' things most effective",
+        relatedTerms: ["健康", "防禦", "營養", "習慣"],
+        relatedTermsEn: ["Health", "Defense", "Nutrition", "Habits"]
+      },
+      {
+        id: 70,
+        chinese: "微生物群系",
+        english: "Microbiome",
+        category: "健康",
+        definition: "體內的細菌集合。影響消化、免疫、心理、代謝",
+        definitionEn: "Collection of bacteria in body. Affects digestion, immunity, psychology, metabolism",
+        essence: "你的腸道微生物決定了你吃的食物能否被利用。同樣的食物，不同人不同效果",
+        essenceEn: "Your gut microbiome determines if food is utilized. Same food, different people, different results",
+        application: "支持微生物群系：多纖維、發酵食品、抗生素慎用、多樣化飲食。你的微生物健康決定你健康",
+        applicationEn: "Support microbiome: fiber, fermented food, antibiotics careful, diverse diet. Your microbe health = your health",
+        relatedTerms: ["腸道", "消化", "菌群", "飲食"],
+        relatedTermsEn: ["Gut", "Digestion", "Bacteria", "Diet"]
+      },
+      {
+        id: 71,
+        chinese: "激素失衡",
+        english: "Hormonal Imbalance",
+        category: "健康",
+        definition: "激素水平不正常。導致疲勞、情緒、代謝問題",
+        definitionEn: "Abnormal hormone levels. Causes fatigue, mood, metabolic issues",
+        essence: "許多『心理問題』實際是激素問題。許多『代謝問題』其實是激素問題。找根源很重要",
+        essenceEn: "Many 'psychology issues' are actually hormonal. Many 'metabolism issues' are hormonal. Finding root matters",
+        application: "監控你的能量、心情、睡眠。這些是激素的信號。必要時做激素檢查。不要光吃藥，找原因",
+        applicationEn: "Monitor energy, mood, sleep—signals of hormones. Test when needed. Don't just medicate; find cause",
+        relatedTerms: ["激素", "健康", "疲勞", "情緒"],
+        relatedTermsEn: ["Hormones", "Health", "Fatigue", "Mood"]
+      },
+      {
+        id: 72,
+        chinese: "炎症",
+        english: "Inflammation",
+        category: "健康",
+        definition: "身體的防禦反應。急性炎症有益，慢性炎症有害",
+        definitionEn: "Body's defense response. Acute helpful; chronic harmful",
+        essence: "大多數現代疾病都與慢性炎症有關。不是單純『吃藥』，而是『改變生活方式』能消除",
+        essenceEn: "Most modern diseases linked to chronic inflammation. Not 'just medication' but 'lifestyle change' eliminates it",
+        application: "減少炎症源：加工食品、糖、壓力、缺乏運動。增加抗炎：Omega-3、蔬菜、運動、睡眠",
+        applicationEn: "Reduce inflammation sources: processed food, sugar, stress, sedentary. Add anti-inflammatory: Omega-3, veggies, exercise, sleep",
+        relatedTerms: ["健康", "疾病", "飲食", "生活方式"],
+        relatedTermsEn: ["Health", "Disease", "Diet", "Lifestyle"]
+      },
+      {
+        id: 73,
+        chinese: "代謝適應",
+        english: "Metabolic Adaptation",
+        category: "健康",
+        definition: "身體對環境變化的適應。節食導致代謝下降，運動導致代謝上升",
+        definitionEn: "Body's adaptation to environmental changes. Dieting lowers metabolism; exercise raises it",
+        essence: "『卡路里進卡路里出』太簡單了。身體會適應。激進節食會降低代謝，成為惡性循環",
+        essenceEn: "'Calories in calories out' too simple. Body adapts. Extreme dieting lowers metabolism—vicious cycle",
+        application: "避免激進節食。選擇逐漸改變加運動。這樣身體適應而非『反抗』。代謝提升比節食更可持續",
+        applicationEn: "Avoid extreme dieting. Gradual change plus exercise. Body adapts not 'resists'. Metabolism boost more sustainable than dieting",
+        relatedTerms: ["代謝", "飲食", "運動", "健康"],
+        relatedTermsEn: ["Metabolism", "Diet", "Exercise", "Health"]
+      },
+      {
+        id: 74,
+        chinese: "生物利用度",
+        english: "Bioavailability",
+        category: "健康",
+        definition: "營養或藥物能被身體吸收的比例。進去不等於被用上",
+        definitionEn: "Percentage of nutrient/drug body can absorb. Ingesting ≠ using",
+        essence: "吃對了和吃夠了不同。同樣的營養，不同形式、不同時間吸收率完全不同",
+        essenceEn: "Right nutrients ≠ enough nutrients. Same nutrient, different forms/times, absorption varies completely",
+        application: "了解食物組合能提高吸收：脂溶性維生素需要脂肪、礦物質需要適當pH、補充劑選擇高生物利用度的",
+        applicationEn: "Learn food pairing increases absorption: fat-soluble vitamins need fat, minerals need pH, choose bioavailable supplements",
+        relatedTerms: ["營養", "吸收", "飲食", "健康"],
+        relatedTermsEn: ["Nutrition", "Absorption", "Diet", "Health"]
+      },
+      {
+        id: 75,
+        chinese: "遺傳與環境",
+        english: "Genetics vs Environment",
+        category: "健康",
+        definition: "你的表型是遺傳和環境的產物。通常是環境起90%的作用",
+        definitionEn: "Your phenotype is genetics × environment. Usually environment accounts for 90%",
+        essence: "『基因決定』是藉口。大多數情況，你能控制的環境決定了健康。這很好，因為環境可改變",
+        essenceEn: "'Genes determine' is excuse. Most times, environmental factors you control decide health. Good because environment changes",
+        application: "停止抱怨基因。開始改變能控制的：飲食、運動、睡眠、壓力、社交。這些能翻轉很多『遺傳』問題",
+        applicationEn: "Stop blaming genes. Change what you control: diet, exercise, sleep, stress, connection. These flip many 'genetic' issues",
+        relatedTerms: ["基因", "環境", "表現型", "控制"],
+        relatedTermsEn: ["Genes", "Environment", "Phenotype", "Control"]
+      },
+      {
+        id: 76,
+        chinese: "細胞再生",
+        english: "Cellular Regeneration",
+        category: "健康",
+        definition: "身體持續更新細胞。不同組織再生速率不同。年齡越大再生越慢",
+        definitionEn: "Body continuously updates cells. Different tissues regenerate at different rates. Slower with age",
+        essence: "你一年後不是同一個人，因為大部分細胞被替換了。支持再生就是支持年輕",
+        essenceEn: "You're not same person after a year—cells replaced. Supporting regeneration means supporting youth",
+        application: "優先再生：充足蛋白、睡眠、運動（特別是阻力訓練）、抗氧化劑。這些支持細胞自我更新",
+        applicationEn: "Prioritize regeneration: protein, sleep, exercise (especially resistance), antioxidants. These support cellular renewal",
+        relatedTerms: ["年齡", "健康", "運動", "營養"],
+        relatedTermsEn: ["Aging", "Health", "Exercise", "Nutrition"]
+      },
+      {
+        id: 77,
+        chinese: "端粒",
+        english: "Telomeres",
+        category: "健康",
+        definition: "保護染色體的『帽子』。每次細胞分裂端粒變短。端粒短代表衰老加速",
+        definitionEn: "Chromosome 'caps'. Shorten each cell division. Short telomeres signal accelerated aging",
+        essence: "端粒長度是『生物年齡』的指標。好消息：特定生活方式能延長端粒",
+        essenceEn: "Telomere length indicates 'biological age'. Good news: specific lifestyle extends telomeres",
+        application: "延長端粒：運動、冥想、健康飲食、充足睡眠、壓力管理。這些有實驗支持能減緩衰老速度",
+        applicationEn: "Extend telomeres: exercise, meditation, healthy diet, sleep, stress management. Experimental support for slowing aging",
+        relatedTerms: ["衰老", "健康", "長壽", "年齡"],
+        relatedTermsEn: ["Aging", "Health", "Longevity", "Age"]
+      },
+      {
+        id: 78,
+        chinese: "線粒體",
+        english: "Mitochondria",
+        category: "健康",
+        definition: "細胞的『發電廠』。產生ATP能量。線粒體功能決定精力",
+        definitionEn: "Cell's 'powerhouse'. Produces ATP energy. Mitochondrial function determines energy",
+        essence: "如果感到持續疲勞，可能是線粒體功能下降。大多數人可以通過運動恢復線粒體",
+        essenceEn: "Persistent fatigue might be mitochondrial dysfunction. Most can recover through exercise",
+        application: "優化線粒體：高強度間歇運動、充足睡眠、健康脂肪、適度禁食。這些直接改善線粒體功能",
+        applicationEn: "Optimize mitochondria: HIIT, sleep, healthy fats, intermittent fasting. Directly improve mitochondrial function",
+        relatedTerms: ["能量", "疲勞", "運動", "健康"],
+        relatedTermsEn: ["Energy", "Fatigue", "Exercise", "Health"]
+      },
+      {
+        id: 79,
+        chinese: "脂肪脂質",
+        english: "Lipid Profile",
+        category: "健康",
+        definition: "血液中的脂肪水平。包括膽固醇、三酸甘油脂等。不只看總量，看比例",
+        definitionEn: "Blood fat levels. Includes cholesterol, triglycerides. Don't just look at totals; ratios matter",
+        essence: "『膽固醇高就不好』太片面。比例和模式才重要。A/B脂蛋白比例比總膽固醇更預測健康",
+        essenceEn: "'High cholesterol bad' oversimplified. Ratios and patterns matter. ApoB/ApoA ratio more predictive than total",
+        application: "要求完整的脂肪檢查，不只是總膽固醇。了解你的LDL、HDL、三酸甘油脂比例。通過飲食和運動優化",
+        applicationEn: "Request complete lipid panel, not just total. Know your LDL, HDL, triglyceride ratios. Optimize via diet and exercise",
+        relatedTerms: ["心臟", "血液", "健康", "檢查"],
+        relatedTermsEn: ["Heart", "Blood", "Health", "Testing"]
+      },
+      {
+        id: 80,
+        chinese: "神經可塑性",
+        english: "Neuroplasticity",
+        category: "健康",
+        definition: "大腦改變自身結構和功能的能力。不是固定的，可以重新塑造",
+        definitionEn: "Brain's ability to change structure and function. Not fixed; can be reshaped",
+        essence: "『我的腦子不適合...』是藉口。大腦驚人地可塑。反覆練習能改變大腦迴路",
+        essenceEn: "'My brain isn't suited for...' is excuse. Brain is remarkably plastic. Repetition changes neural circuits",
+        application: "學習新技能、改變習慣、恢復受損功能—都通過刺激神經可塑性。持續練習，大腦會改變",
+        applicationEn: "Learning, habit change, recovery—all through neuroplasticity. Consistent practice rewires brain",
+        relatedTerms: ["學習", "大腦", "習慣", "成長"],
+        relatedTermsEn: ["Learning", "Brain", "Habits", "Growth"]
+      },
+      {
+        id: 81,
+        chinese: "商業模式",
+        english: "Business Model",
+        category: "組織",
+        definition: "企業如何創造、傳遞、獲取價值。不同的架構導致完全不同的結果",
+        definitionEn: "How business creates, delivers, captures value. Different structures yield vastly different results",
+        essence: "同樣的產品，不同商業模式能成功也能失敗。模式決定了企業的命運",
+        essenceEn: "Same product, different models—success or failure. Model determines destiny",
+        application: "分析你的商業：怎樣賺錢？有沒有更好的模式？轉向高利潤、可擴展的模式",
+        applicationEn: "Analyze your business: how do you earn? Better models? Shift to high-margin, scalable ones",
+        relatedTerms: ["商業", "營收", "利潤", "策略"],
+        relatedTermsEn: ["Business", "Revenue", "Profit", "Strategy"]
+      },
+      {
+        id: 82,
+        chinese: "獲客成本",
+        english: "Customer Acquisition Cost (CAC)",
+        category: "組織",
+        definition: "獲得一個客戶花多少錢。包括市場、銷售成本。決定商業能否持續",
+        definitionEn: "Cost to acquire one customer. Includes marketing and sales. Determines business sustainability",
+        essence: "CAC決定了一切。如果CAC太高，無論再努力也不能盈利。關鍵是降低CAC",
+        essenceEn: "CAC determines everything. If too high, no profit possible. Key is lowering it",
+        application: "計算你的CAC。分析『哪個渠道最便宜？』投入資源在低成本渠道，淘汰高成本的",
+        applicationEn: "Calculate your CAC. Analyze 'which channel cheapest?' Invest in low-cost, eliminate expensive",
+        relatedTerms: ["行銷", "成本", "銷售", "效率"],
+        relatedTermsEn: ["Marketing", "Cost", "Sales", "Efficiency"]
+      },
+      {
+        id: 83,
+        chinese: "客戶生命週期價值",
+        english: "Customer Lifetime Value (LTV)",
+        category: "組織",
+        definition: "一個客戶會為你帶來的總收入。留住現有客戶遠比獲新客更划算",
+        definitionEn: "Total revenue one customer generates. Retaining existing beats acquiring new",
+        essence: "LTV/CAC比例決定商業模式好不好。如果比例小於3，很難可持續。大於5就很健康",
+        essenceEn: "LTV/CAC ratio determines model quality. Below 3 = unsustainable. Above 5 = healthy",
+        application: "提高LTV：改善客戶體驗、提供附加值、建立習慣。讓客戶用得越久越好",
+        applicationEn: "Improve LTV: enhance experience, add value, build habits. Longer customer lifetime better",
+        relatedTerms: ["客戶", "留存", "價值", "長期"],
+        relatedTermsEn: ["Customer", "Retention", "Value", "Long-term"]
+      },
+      {
+        id: 84,
+        chinese: "護城河",
+        english: "Moat",
+        category: "組織",
+        definition: "保護企業競爭優勢的『堡壘』。品牌、專利、網絡效應、切換成本",
+        definitionEn: "Business 'fortress' protecting competitive advantage. Brand, patents, network effects, switching costs",
+        essence: "沒有護城河的企業遲早被超越。最強的護城河不是產品，而是『競對做不了的事』",
+        essenceEn: "Businesses without moats eventually displaced. Strongest moat isn't product but 'what competitors can't do'",
+        application: "建立護城河：打造品牌、創建網絡效應、提高切換成本。這些是長期優勢",
+        applicationEn: "Build moats: create brand, network effects, switching costs. These are durable advantages",
+        relatedTerms: ["競爭", "優勢", "品牌", "長期"],
+        relatedTermsEn: ["Competition", "Advantage", "Brand", "Long-term"]
+      },
+      {
+        id: 85,
+        chinese: "競爭優勢",
+        english: "Competitive Advantage",
+        category: "組織",
+        definition: "相比競對，能做得更好或成本更低的能力",
+        definitionEn: "Ability to outperform or underprice competitors",
+        essence: "短期優勢容易被複製。持久優勢來自『系統』而非『功能』。建立系統才能長期領先",
+        essenceEn: "Short-term advantage easily copied. Durable advantage from 'system' not 'feature'. Build systems for lasting lead",
+        application: "分析你的優勢：產品好？還是服務好？還是成本低？還是品牌強？把最強的優勢當護城河來保護",
+        applicationEn: "Analyze advantage: better product? Service? Lower cost? Stronger brand? Protect strongest advantage as moat",
+        relatedTerms: ["競爭", "戰略", "優勢", "差異"],
+        relatedTermsEn: ["Competition", "Strategy", "Advantage", "Differentiation"]
+      },
+      {
+        id: 86,
+        chinese: "市場定位",
+        english: "Market Positioning",
+        category: "組織",
+        definition: "在客戶心目中占據的位置。『我們是什麼』和『我們與誰不同』",
+        definitionEn: "Your place in customer minds. 'What we are' and 'how different'",
+        essence: "定位決定了品牌命運。模糊的定位導致模糊的品牌。清晰的定位吸引特定客戶",
+        essenceEn: "Positioning determines brand fate. Fuzzy positioning = fuzzy brand. Clear positioning attracts specific customers",
+        application: "定義你的定位：『對於【目標客戶】，我們是【類別】中最【不同之處】的』。記住，定位是在客戶心中，不是廣告",
+        applicationEn: "Define position: 'For [target], we're most [difference] in [category]'. Remember: position in minds, not ads",
+        relatedTerms: ["品牌", "行銷", "客戶", "定位"],
+        relatedTermsEn: ["Brand", "Marketing", "Customer", "Positioning"]
+      },
+      {
+        id: 87,
+        chinese: "規模化",
+        english: "Scaling",
+        category: "組織",
+        definition: "不是線性增長，而是用系統和自動化以指數增長收入",
+        definitionEn: "Not linear growth but exponential through systems and automation",
+        essence: "小企業靠個人，大企業靠系統。規模化的本質是『用系統替代人力』",
+        essenceEn: "Small companies rely on people; big ones on systems. Scaling means 'systems replace people'",
+        application: "識別可規模化的部分：哪些工作能自動化？哪些能標準化？建立流程和系統，讓增長無需相應增加人力",
+        applicationEn: "Identify scalable parts: what automates? What standardizes? Build processes so growth doesn't require proportional people",
+        relatedTerms: ["成長", "系統", "效率", "自動化"],
+        relatedTermsEn: ["Growth", "Systems", "Efficiency", "Automation"]
+      },
+      {
+        id: 88,
+        chinese: "組織文化",
+        english: "Organizational Culture",
+        category: "組織",
+        definition: "『我們怎麼做事』。價值觀、行為、信念的總和。很難改變但影響深遠",
+        definitionEn: "'How we do things'. Sum of values, behaviors, beliefs. Hard to change; deeply influential",
+        essence: "文化是軟實力，最難衡量但最有價值。好文化能吸引人才、激勵創新。壞文化會毀滅一切",
+        essenceEn: "Culture is soft power—hardest to measure but most valuable. Good culture attracts talent, drives innovation. Bad culture ruins everything",
+        application: "定義組織文化：『我們相信什麼？』『怎樣對待彼此？』『如何決策？』有意培養，而不是任其自然",
+        applicationEn: "Define culture: 'What do we believe?' 'How treat each other?' 'How decide?' Cultivate intentionally, not drift",
+        relatedTerms: ["價值觀", "團隊", "領導", "信念"],
+        relatedTermsEn: ["Values", "Team", "Leadership", "Beliefs"]
+      },
+      {
+        id: 89,
+        chinese: "委託與信任",
+        english: "Delegation & Trust",
+        category: "組織",
+        definition: "把工作交給他人。基於信任而非控制。管理者的最難課題",
+        definitionEn: "Entrust work to others. Based on trust not control. Manager's toughest lesson",
+        essence: "不能委託的領導只能管理小團隊。懂得委託的領導能擴展影響。這是區分『經理』和『領導』的分界",
+        essenceEn: "Untrustworthy delegates manage only small teams. Those who delegate extend reach. Separates 'managers' from 'leaders'",
+        application: "開始委託：明確任務、給予自主、提供支持、信任結果。不要微管理。讓人失敗，從失敗學習",
+        applicationEn: "Start delegating: clear tasks, autonomy, support, trust results. No micromanagement. Let people fail, learn",
+        relatedTerms: ["領導", "授權", "信任", "團隊"],
+        relatedTermsEn: ["Leadership", "Empowerment", "Trust", "Team"]
+      },
+      {
+        id: 90,
+        chinese: "績效管理",
+        english: "Performance Management",
+        category: "組織",
+        definition: "設定目標、監測進度、提供反饋、調整方向。持續改進的循環",
+        definitionEn: "Set goals, track progress, give feedback, adjust direction. Continuous improvement cycle",
+        essence: "好的績效管理不是『打分』，而是『發展』。目的是幫助人成長，不是懲罰",
+        essenceEn: "Good performance management isn't 'grading' but 'developing'. Purpose is growth, not punishment",
+        application: "建立反饋文化：經常溝通進度、坦率對話優劣、共同制訂改進計畫。不要等年終評估",
+        applicationEn: "Build feedback culture: frequent progress talks, frank about strengths/weaknesses, co-create improvement plans. Not annual only",
+        relatedTerms: ["反饋", "目標", "發展", "溝通"],
+        relatedTermsEn: ["Feedback", "Goals", "Development", "Communication"]
+      },
+      {
+        id: 91,
+        chinese: "創新流程",
+        english: "Innovation Process",
+        category: "組織",
+        definition: "系統地產生、測試、落實新想法。不是靠『靈光乍現』而是靠流程",
+        definitionEn: "Systematically generating, testing, implementing ideas. Not inspiration but process",
+        essence: "創新不是天才的事。有流程的組織比沒流程的組織創新10倍。流程化是競爭優勢",
+        essenceEn: "Innovation isn't genius work. Process-based organizations innovate 10x more. Process is competitive advantage",
+        application: "建立創新流程：設立『實驗文化』、鼓勵快速失敗、獎勵新想法、定期審視最佳實踐",
+        applicationEn: "Build innovation process: 'experiment culture', fast failure, reward ideas, regular best practice review",
+        relatedTerms: ["創新", "實驗", "改進", "成長"],
+        relatedTermsEn: ["Innovation", "Experimentation", "Improvement", "Growth"]
+      },
+      {
+        id: 92,
+        chinese: "戰略執行",
+        english: "Strategic Execution",
+        category: "組織",
+        definition: "把策略變成現實。『知道』和『做到』之間有巨大鴻溝",
+        definitionEn: "Turning strategy into reality. Huge gap between 'knowing' and 'doing'",
+        essence: "99%的企業失敗不是因為策略不好，而是執行不力。好執行勝過完美策略",
+        essenceEn: "99% business failures aren't bad strategy but poor execution. Good execution beats perfect strategy",
+        application: "執行：明確目標→分解任務→分配責任→定期檢查→調整方向。貫穿整個組織",
+        applicationEn: "Execute: clear goals→break tasks→assign responsibility→regular check→adjust. Throughout organization",
+        relatedTerms: ["策略", "目標", "責任", "問責"],
+        relatedTermsEn: ["Strategy", "Goals", "Accountability", "Responsibility"]
+      },
+      {
+        id: 93,
+        chinese: "利益相關者",
+        english: "Stakeholders",
+        category: "組織",
+        definition: "所有受公司決策影響的人。員工、客戶、投資者、社區、環境",
+        definitionEn: "All affected by company decisions. Employees, customers, investors, communities, environment",
+        essence: "只關注『股東利潤』的時代過了。現在『利益相關者資本主義』成為趨勢。考慮所有相關者才能長期成功",
+        essenceEn: "Era of 'shareholder only' profit over. 'Stakeholder capitalism' trending. Considering all equals long-term success",
+        application: "在決策時，問『這對所有利益相關者有何影響？』平衡不同利益。長期看，這能建立信任和可持續性",
+        applicationEn: "When deciding, ask 'How affects all stakeholders?' Balance interests. Long-term builds trust and sustainability",
+        relatedTerms: ["責任", "倫理", "信任", "永續"],
+        relatedTermsEn: ["Responsibility", "Ethics", "Trust", "Sustainability"]
+      },
+      {
+        id: 94,
+        chinese: "供應鏈",
+        english: "Supply Chain",
+        category: "組織",
+        definition: "從原料到客戶手中的整個過程。任何環節失敗都會影響企業",
+        definitionEn: "Entire process from raw material to customer. Any break affects business",
+        essence: "供應鏈的強度決定於最弱的環節。優化供應鏈是降低成本、改善品質的關鍵",
+        essenceEn: "Supply chain strength determined by weakest link. Optimizing is key to cost reduction and quality",
+        application: "審視供應鏈：哪些環節最脆弱？哪些最昂貴？有沒有單點依賴？建立多元化、有彈性的供應鏈",
+        applicationEn: "Audit supply chain: weakest links? Most expensive? Single points of failure? Build diverse, resilient chains",
+        relatedTerms: ["營運", "成本", "品質", "風險"],
+        relatedTermsEn: ["Operations", "Cost", "Quality", "Risk"]
+      },
+      {
+        id: 95,
+        chinese: "商業週期",
+        english: "Business Cycle",
+        category: "組織",
+        definition: "企業經過擴張、衰退、衰退、恢復的循環。大多企業不認識自己在哪個階段",
+        definitionEn: "Business goes through expansion, peak, contraction, recovery cycles. Most don't know their stage",
+        essence: "不同階段需要不同策略。擴張期要快速增長；衰退期要控制成本。錯誤的策略會加速衰退",
+        essenceEn: "Different stages need different strategies. Expansion needs growth; contraction needs cost control. Wrong strategy accelerates decline",
+        application: "判斷你的企業在哪個階段。對應階段採用策略：擴張期→投資增長；成熟期→優化效率；衰退期→控制成本",
+        applicationEn: "Identify your business stage. Apply stage strategy: expansion→invest growth; mature→optimize efficiency; decline→control costs",
+        relatedTerms: ["成長", "策略", "時間", "適應"],
+        relatedTermsEn: ["Growth", "Strategy", "Timing", "Adaptation"]
+      },
+      {
+        id: 96,
+        chinese: "創意過程",
+        english: "Creative Process",
+        category: "藝術",
+        definition: "從想法到作品的過程。通常包括準備、醞釀、靈光乍現、檢驗",
+        definitionEn: "Process from idea to work. Usually: preparation, incubation, illumination, verification",
+        essence: "創意不是隨機的靈感，而是有規律的過程。理解過程的人能持續創新",
+        essenceEn: "Creativity isn't random inspiration but patterned process. Those understanding it create consistently",
+        application: "建立自己的創意流程：積累材料→深度思考→休息→回顧→精煉。不要等待靈感，用流程生成靈感",
+        applicationEn: "Build your process: gather material→deep thinking→rest→review→refine. Don't wait for inspiration; generate it with process",
+        relatedTerms: ["創意", "藝術", "想法", "執行"],
+        relatedTermsEn: ["Creativity", "Art", "Ideas", "Execution"]
+      },
+      {
+        id: 97,
+        chinese: "約束激發創意",
+        english: "Constraints Drive Creativity",
+        category: "藝術",
+        definition: "限制會推動創意。無限制反而容易陷入平庸。最好的藝術來自有限制",
+        definitionEn: "Limits drive creativity. Unlimited often leads to mediocrity. Best art comes from constraints",
+        essence: "『我沒有資源』常被當藉口。其實沒有資源時最容易創新。莎士比亞最傑作是在限制最多的時期寫的",
+        essenceEn: "'No resources' often excuse. Actually limitations breed innovation. Shakespeare's masterpieces written under constraint",
+        application: "給自己設限：時間限制、預算限制、工具限制。這些限制會激發你找到創意解決方案",
+        applicationEn: "Set constraints: time limits, budget limits, tool limits. These drive creative solutions",
+        relatedTerms: ["創意", "限制", "創新", "資源"],
+        relatedTermsEn: ["Creativity", "Constraints", "Innovation", "Resources"]
+      },
+      {
+        id: 98,
+        chinese: "敢於不同",
+        english: "Dare to Be Different",
+        category: "藝術",
+        definition: "區別於主流的勇氣。創意的前提是『不跟風』",
+        definitionEn: "Courage to differ from mainstream. Prerequisite of creativity is 'not following trends'",
+        essence: "所有偉大的藝術在開始時都被認為『古怪』。敢於不同是創意的價格",
+        essenceEn: "All great art initially seemed 'weird'. Daring to differ is price of creativity",
+        application: "問自己：『我在模仿誰？』然後停止。找到『只有你能做的東西』。這就是你的聲音",
+        applicationEn: "Ask: 'Who am I imitating?' Stop. Find 'what only you can do'. That's your voice",
+        relatedTerms: ["獨特", "聲音", "勇氣", "原創"],
+        relatedTermsEn: ["Uniqueness", "Voice", "Courage", "Originality"]
+      },
+      {
+        id: 99,
+        chinese: "審美品味",
+        english: "Aesthetic Taste",
+        category: "藝術",
+        definition: "對美的辨別能力。高級品味通常來自大量接觸優秀作品",
+        definitionEn: "Ability to discern beauty. Refined taste comes from exposure to excellent works",
+        essence: "品味不是天生的，而是培養的。大量接觸優秀作品能提升審美。『品味』決定了作品的上限",
+        essenceEn: "Taste isn't innate but cultivated. Exposure to excellence elevates aesthetics. 'Taste' determines ceiling of work",
+        application: "浸淫在優秀作品中：音樂、視覺藝術、文學、建築。研究為什麼某些作品傑出。品味會潛移默化提升",
+        applicationEn: "Immerse in excellent works: music, art, literature, architecture. Study why masterpieces work. Taste evolves naturally",
+        relatedTerms: ["品味", "美感", "靈感", "提升"],
+        relatedTermsEn: ["Taste", "Aesthetics", "Inspiration", "Elevation"]
+      },
+      {
+        id: 100,
+        chinese: "風格一致性",
+        english: "Stylistic Consistency",
+        category: "藝術",
+        definition: "作品中可識別的個人風格。識別度是長期創意成功的標誌",
+        definitionEn: "Recognizable personal style across works. Recognizability marks long-term creative success",
+        essence: "大師級創意人都有『簽名風格』。這不是限制，而是清晰。清晰的風格能讓人『一眼識別』",
+        essenceEn: "Master creators have 'signature style'. Not limitation but clarity. Clear style enables 'instant recognition'",
+        application: "找到你的風格：你經常重複什麼？你的『視覺語言』是什麼？深化而非多樣化。越專越深越有力",
+        applicationEn: "Find your style: what repeat? What's your 'visual language'? Deepen not diversify. Deeper and focused = powerful",
+        relatedTerms: ["風格", "聲音", "認知", "品牌"],
+        relatedTermsEn: ["Style", "Voice", "Recognition", "Brand"]
+      },
+      {
+        id: 101,
+        chinese: "隱喻思維",
+        english: "Metaphorical Thinking",
+        category: "藝術",
+        definition: "用比喻連接看似無關的概念。創意的核心工具",
+        definitionEn: "Connect seemingly unrelated concepts through analogy. Core creative tool",
+        essence: "創意就是『舊概念的新組合』。隱喻是創意組合的最高形式",
+        essenceEn: "Creativity is 'new combinations of old concepts'. Metaphor is highest form",
+        application: "練習隱喻：『這個問題像什麼？』『另一個領域怎麼解決相似問題？』連接看似無關的領域",
+        applicationEn: "Practice metaphor: 'What's this problem like?' 'How other fields solve similar?' Connect unrelated domains",
+        relatedTerms: ["創意", "比喻", "連接", "想像"],
+        relatedTermsEn: ["Creativity", "Analogy", "Connection", "Imagination"]
+      },
+      {
+        id: 102,
+        chinese: "拼貼/混搭",
+        english: "Mashup/Remix",
+        category: "藝術",
+        definition: "把不同元素組合成新作品。大多數創新都是這樣產生的",
+        definitionEn: "Combining different elements into new work. Most innovation this way",
+        essence: "沒有真正『全新』的想法。所有創意都是已存在元素的新組合。學會混搭就是學會創新",
+        essenceEn: "No truly 'new' ideas. All creativity is recombination. Mastering mashup is mastering innovation",
+        application: "尋找『組合機會』：A領域的解決方案能用在B領域嗎？不同藝術形式的特色能結合嗎？",
+        applicationEn: "Find 'combination opportunities': solution from field A fit field B? Combine art form characteristics?",
+        relatedTerms: ["組合", "創新", "混合", "融合"],
+        relatedTermsEn: ["Combination", "Innovation", "Blending", "Fusion"]
+      },
+      {
+        id: 103,
+        chinese: "原始靈感",
+        english: "Source Material",
+        category: "藝術",
+        definition: "創意的『養料』。大量接觸、記錄、思考才能有好創意",
+        definitionEn: "'Fuel' for creativity. Heavy consumption, recording, thinking precedes good ideas",
+        essence: "『我沒靈感』通常表示『我接觸的東西不夠多』。大量攝取是小流量輸出的前提",
+        essenceEn: "'No inspiration' usually means 'not consuming enough'. Heavy intake precedes good output",
+        application: "建立『靈感收集系統』：記錄看到的有趣東西、對話片段、視覺、概念。定期回顧連接",
+        applicationEn: "Build 'inspiration collection system': record interesting things, conversations, visuals, concepts. Regularly connect",
+        relatedTerms: ["靈感", "輸入", "消費", "記錄"],
+        relatedTermsEn: ["Inspiration", "Input", "Consumption", "Recording"]
+      },
+      {
+        id: 104,
+        chinese: "反覆疊代",
+        english: "Iterative Refinement",
+        category: "藝術",
+        definition: "重複修改、改進。第一稿很少是最好的。偉大作品來自多次迭代",
+        definitionEn: "Repeated revision and improvement. First draft rarely best. Masterpieces from iterations",
+        essence: "完美主義是創意殺手，但『迭代』是創意救星。允許自己做『不完美的第一版』，然後反覆完善",
+        essenceEn: "Perfectionism kills creativity; iteration saves it. Allow 'imperfect first version' then iterate relentlessly",
+        application: "做出『版本1』並分享。收集反饋。做『版本2』。重複。每次都更好。不要等完美才發布",
+        applicationEn: "Make 'version 1' and share. Gather feedback. Make 'version 2'. Repeat. Better each time. Don't wait for perfect",
+        relatedTerms: ["改進", "反饋", "完善", "發展"],
+        relatedTermsEn: ["Improvement", "Feedback", "Refinement", "Development"]
+      },
+      {
+        id: 105,
+        chinese: "簡化的力量",
+        english: "Power of Simplicity",
+        category: "藝術",
+        definition: "移除所有非必要的元素。簡單不等於簡陋；而是『最少且必要』",
+        definitionEn: "Remove all non-essential elements. Simple ≠ crude; 'least and necessary'",
+        essence: "複雜很容易。簡單很難。偉大的藝術都是『簡單得複雜』",
+        essenceEn: "Complexity easy. Simplicity hard. Great art is 'complex simplicity'",
+        application: "檢視你的作品：有沒有能刪除的元素？什麼是『非必要』的？移除它。看剩下什麼",
+        applicationEn: "Review work: any elements removable? What's 'non-essential'? Remove it. See what remains",
+        relatedTerms: ["簡潔", "清晰", "精煉", "本質"],
+        relatedTermsEn: ["Clarity", "Essence", "Refinement", "Core"]
+      },
+      {
+        id: 106,
+        chinese: "講故事能力",
+        english: "Storytelling",
+        category: "藝術",
+        definition: "用敘事引起情感共鳴。人類用故事傳遞信息、價值、意義",
+        definitionEn: "Using narrative to evoke emotion. Humans transmit information, values, meaning through story",
+        essence: "『光有數據』無法改變人。故事才能。大師級溝通者都是『故事高手』",
+        essenceEn: "'Data alone' won't change people. Stories do. Master communicators are 'story masters'",
+        application: "練習講故事：問題→為什麼重要→努力→結果→教訓。把乾燥信息變成能記住的故事",
+        applicationEn: "Practice storytelling: problem→why matters→effort→result→lesson. Transform dry info into memorable story",
+        relatedTerms: ["故事", "溝通", "情感", "連接"],
+        relatedTermsEn: ["Story", "Communication", "Emotion", "Connection"]
+      },
+      {
+        id: 107,
+        chinese: "情感共鳴",
+        english: "Emotional Resonance",
+        category: "藝術",
+        definition: "作品能觸動觀眾的情感。偉大藝術的共同特色",
+        definitionEn: "Work touches audience emotion. Common trait of great art",
+        essence: "技術完美的作品很多。能『感動人』的作品很少。情感共鳴才是藝術的靈魂",
+        essenceEn: "Technically perfect works abundant. 'Moving people' rare. Emotional resonance is soul of art",
+        application: "問自己：『我想通過這個作品引起什麼情感？』圍繞這個情感來設計、製作、呈現",
+        applicationEn: "Ask: 'What emotion want to evoke?' Design, make, present around this feeling",
+        relatedTerms: ["情感", "藝術", "連接", "靈魂"],
+        relatedTermsEn: ["Emotion", "Art", "Connection", "Soul"]
+      },
+      {
+        id: 108,
+        chinese: "觀眾意識",
+        english: "Audience Awareness",
+        category: "藝術",
+        definition: "理解你的觀眾。為特定觀眾創作遠比『為所有人』更有力",
+        definitionEn: "Understand your audience. Creating for specific audience more powerful than 'for everyone'",
+        essence: "『為所有人創作』經常意味著『為沒人創作』。深度理解特定觀眾能製造共鳴",
+        essenceEn: "'For everyone' often means 'for no one'. Deep audience understanding creates resonance",
+        application: "定義你的理想觀眾：他們是誰？關心什麼？痛點是什麼？圍繞他們來設計作品",
+        applicationEn: "Define ideal audience: who? What matter? Pain points? Design work around them",
+        relatedTerms: ["觀眾", "目標", "理解", "連接"],
+        relatedTermsEn: ["Audience", "Target", "Understanding", "Connection"]
+      },
+      {
+        id: 109,
+        chinese: "冒險精神",
+        english: "Courage to Experiment",
+        category: "藝術",
+        definition: "嘗試新的、未知的、可能失敗的東西。創意沒有冒險就沒有突破",
+        definitionEn: "Try new, unknown, possibly failing things. Creativity without risk has no breakthrough",
+        essence: "安全的藝術是無聊的藝術。突破都來自『敢冒險』的人。允許自己『美麗地失敗』",
+        essenceEn: "Safe art is boring art. Breakthroughs from 'daring'. Allow yourself to 'fail beautifully'",
+        application: "每個項目投入『冒險預算』：嘗試一個未試過的技術、風格、主題。失敗也沒關係；學習最重要",
+        applicationEn: "Budget 'experiment time' per project: try untested technique, style, theme. Failure okay; learning matters",
+        relatedTerms: ["冒險", "實驗", "失敗", "成長"],
+        relatedTermsEn: ["Risk", "Experiment", "Failure", "Growth"]
+      },
+      {
+        id: 110,
+        chinese: "美學與功能",
+        english: "Aesthetics & Function",
+        category: "藝術",
+        definition: "好設計兼顧美與用。不是『美』優於『用』，也不是相反。完美平衡",
+        definitionEn: "Good design balances beauty and usefulness. Neither trumps other. Perfect balance",
+        essence: "『設計』的本質就是『美與用的統一』。美無用是裝飾；用無美是工程。設計是兩者的結合",
+        essenceEn: "Design's essence is 'unity of beauty and function'. Beauty without use = decoration. Function without beauty = engineering. Design = both",
+        application: "評估任何設計：漂亮嗎？好用嗎？最好的設計兩者都做到。如果必須取捨，考慮對象期望",
+        applicationEn: "Evaluate design: beautiful? Useful? Best design excels at both. If trade-off, consider what audience values",
+        relatedTerms: ["設計", "美感", "功能", "平衡"],
+        relatedTermsEn: ["Design", "Beauty", "Function", "Balance"]
+      }
+    ];
+
+    // State management
+    let filteredData = [...vocabularyData];
+    let activeCategory = 'all';
+
+    // Initialize
+    function init() {
+      renderCategoryFilters();
+      updateStats();
+      renderCards();
+    }
+
+    // Render category filters
+    function renderCategoryFilters() {
+      const filterContainer = document.getElementById('categoryFilters');
+      const categories = ['all', ...new Set(vocabularyData.map(item => item.category))];
+      
+      filterContainer.innerHTML = categories.map(cat => `
+        <button class="filter-btn ${cat === 'all' ? 'active' : ''}" onclick="filterByCategory('${cat}')">
+          ${cat === 'all' ? '所有類別' : cat}
+        </button>
+      `).join('');
+    }
+
+    // Filter by category
+    window.filterByCategory = function(category) {
+      activeCategory = category;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.includes(category === 'all' ? '所有' : category));
+      });
+      
+      if (category === 'all') {
+        filteredData = [...vocabularyData];
+      } else {
+        filteredData = vocabularyData.filter(item => item.category === category);
+      }
+      
+      const searchValue = document.getElementById('searchInput').value;
+      if (searchValue) {
+        filteredData = filteredData.filter(item => 
+          item.chinese.includes(searchValue) || 
+          item.english.toLowerCase().includes(searchValue.toLowerCase())
+        );
+      }
+      
+      updateStats();
+      renderCards();
+    };
+
+    // Search
+    document.getElementById('searchInput')?.addEventListener('input', function(e) {
+      const value = e.target.value.toLowerCase();
+      
+      if (activeCategory === 'all') {
+        filteredData = vocabularyData.filter(item =>
+          item.chinese.includes(value) ||
+          item.english.toLowerCase().includes(value) ||
+          item.definition.includes(value)
+        );
+      } else {
+        filteredData = vocabularyData
+          .filter(item => item.category === activeCategory)
+          .filter(item =>
+            item.chinese.includes(value) ||
+            item.english.toLowerCase().includes(value) ||
+            item.definition.includes(value)
+          );
+      }
+      
+      updateStats();
+      renderCards();
+    });
+
+    // Update stats
+    function updateStats() {
+      document.getElementById('totalCount').textContent = vocabularyData.length;
+      document.getElementById('displayCount').textContent = filteredData.length;
+    }
+
+    // Render cards
+    function renderCards() {
+      const container = document.getElementById('cardsGrid');
+      const emptyState = document.getElementById('emptyState');
+      
+      if (filteredData.length === 0) {
+        container.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      container.innerHTML = filteredData.map(item => `
+        <div class="card" data-id="${item.id}">
+          <div class="card-category">${item.category}</div>
+          <div class="card-title">${item.chinese}</div>
+          <div class="card-title-en">${item.english}</div>
+          <div class="card-definition">${item.definition}</div>
+          <div class="card-definition-en">${item.definitionEn}</div>
+          
+          <button class="tts-btn" onclick="speakEnglish(${item.id})" style="width: 100%; margin: 1rem 0 0.5rem 0;">
+            🔊 播放英文 / Speak English
+          </button>
+          
+          <div class="card-content">
+            <div class="content-section">
+              <div class="section-title">核心意涵 / Core Essence</div>
+              <div class="section-content">${item.essence}</div>
+              <div class="section-content-en">${item.essenceEn}</div>
+            </div>
+            
+            <div class="content-section">
+              <div class="section-title">實踐應用 / Practical Application</div>
+              <div class="section-content">${item.application}</div>
+              <div class="section-content-en">${item.applicationEn}</div>
+            </div>
+            
+            <div class="content-section">
+              <div class="section-title">相關詞彙 / Related Terms</div>
+              <div class="related-terms">
+                ${item.relatedTerms.map(term => `<span class="tag">${term}</span>`).join('')}
+                ${item.relatedTermsEn.map(term => `<span class="tag tag-en">${term}</span>`).join('')}
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-toggle" onclick="toggleCard(this)">
+            <span>展開詳情 / Expand</span>
+            <span class="toggle-icon">▼</span>
+          </div>
+        </div>
+      `).join('');
+      
+      // Add click handlers
+      document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('click', function(e) {
+          if (e.target.closest('.tts-btn')) return;
+          toggleCard(this.querySelector('.card-toggle'));
+        });
+      });
+    }
+
+    // Toggle card expansion
+    window.toggleCard = function(toggleElement) {
+      const card = toggleElement.closest('.card');
+      card.classList.toggle('expanded');
+    };
+
+    // Text-to-speech
+    window.speakEnglish = function(id) {
+      const item = vocabularyData.find(v => v.id === id);
+      if (!item || !('speechSynthesis' in window)) return;
+      
+      window.speechSynthesis.cancel();
+      
+      const textToSpeak = `${item.english}. ${item.definitionEn}. ${item.essenceEn}`;
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.9;
+      
+      const btn = document.querySelector(`[onclick="speakEnglish(${id})"]`);
+      btn.classList.add('playing');
+      utterance.onend = () => btn.classList.remove('playing');
+      
+      window.speechSynthesis.speak(utterance);
+    };
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+<!-- FBPOST:START 臉書貼文＋圖卡（痛點→能力更新→智慧，雙語） -->
+<script>
+/* ═══ 臉書貼文＋圖卡 產生器（離線，不串接 AI / API）═══ */
+(function(){
+'use strict';
+const P=(zh,en)=>({zh:zh,en:en||''});
+
+// 三種語氣領域的共用素材
+const D={
+comm:{
+  why:P('因為我們從小學會說話，卻很少學會溝通。我們學會回應，卻沒學會理解；學會表達立場，卻沒學會表達需求；學會忍耐，卻沒學會修復。',
+        'Because we learned to talk as children, but rarely learned to communicate. We learned to react, not to understand; to state positions, not needs; to endure, not to repair.'),
+  shift:[P('少一點猜測，多一點確認。','Less guessing, more checking.'),P('少一點防衛，多一點好奇。','Less defending, more curiosity.'),P('少一點爭輸贏，多一點被理解。','Less winning, more being understood.'),P('少一點冷戰，多一點修復。','Less silence, more repair.')],
+  gold:[P('話說得對，不如話說得到。','Being right matters less than being received.'),P('愛沒有抵達，就還不算說完。','If love has not arrived, the sentence is not finished.'),P('關係不是贏來的，是修來的。','Relationships are not won; they are repaired.'),P('先連結，再糾正。','Connect before you correct.'),P('聽懂一個人，勝過說服一個人。','Understanding someone beats persuading them.'),P('溫柔不是軟弱，是有力量的選擇。','Gentleness is not weakness; it is a powerful choice.')],
+  practice:[P('① 先停三秒，再開口。','1) Pause three seconds before you speak.'),P('② 先說「我理解的是…」，再說「我的想法是…」。','2) Say "What I understand is…" before "What I think is…".'),P('③ 每天對一個人，說一句真心的感謝。','3) Give one sincere thank-you to someone every day.')],
+  note:P('親愛的你：你不是不會愛，你只是還沒找到讓愛抵達的路。你不需要變成另一個人，只需要多練一個能力。你今天多聽懂一句，關係就多鬆開一點；你今天多說清楚一句，誤會就少累積一點；你今天多修復一次，信任就多存進一點。',
+         'Dear you: it is not that you cannot love; you simply have not yet found the road by which love arrives. You do not need to become someone else — only to practise one more ability. Each sentence you truly hear loosens the relationship a little; each sentence you say clearly leaves one less misunderstanding; each repair you make deposits a little more trust.'),
+  find:[P('你會發現：被理解的人，才聽得進去。','You will find: only those who feel understood can truly listen.'),P('你會發現：安全的關係，才說得出真話。','You will find: only a safe relationship can hold the truth.'),P('你會發現：先修復的人，不是輸的人，是更有力量的人。','You will find: the one who repairs first is not the loser, but the stronger one.')],
+  tags:'#溝通 #關係 #親密關係'
+},
+think:{
+  why:P('因為我們一直很努力，卻很少停下來更新自己的模型。我們學會了答案，卻沒學會提問；學會了堅持，卻沒學會修正；學會了忙碌，卻沒學會看見。',
+        'Because we work hard but seldom pause to update our own models. We learned answers, not questions; persistence, not correction; busyness, not seeing.'),
+  shift:[P('少一點慌亂，多一點清楚。','Less panic, more clarity.'),P('少一點重複，多一點看見。','Less repetition, more insight.'),P('少一點硬撐，多一點方法。','Less forcing, more method.'),P('少一點自責，多一點修正。','Less self-blame, more correction.')],
+  gold:[P('你看見的世界，是你模型的樣子。','The world you see is shaped by your model.'),P('更新，比堅持更需要勇氣。','Updating takes more courage than insisting.'),P('問題不是敵人，是老師。','Problems are not enemies; they are teachers.'),P('走得慢沒關係，方向對就好。','Slow is fine, as long as the direction is right.'),P('看懂結構，才不會被事件淹沒。','See the structure, and events will not drown you.'),P('今天的修正，是明天的自由。','Today\'s correction is tomorrow\'s freedom.')],
+  practice:[P('① 寫下今天卡住的一件事。','1) Write down one thing you got stuck on today.'),P('② 問自己：「我的假設是什麼？」','2) Ask yourself: "What am I assuming?"'),P('③ 只修正一個小地方，明天再看一次。','3) Fix one small thing, and review it tomorrow.')],
+  note:P('親愛的你：你不是不夠聰明，你只是還沒換一副看世界的眼鏡。你不需要知道所有答案，只需要多練一個能力。你今天多看懂一層，焦慮就少一點；你今天多修正一次，方向就準一點；你今天多問一個好問題，世界就大一點。',
+         'Dear you: it is not that you are not smart enough; you simply have not yet changed the lenses through which you see the world. You do not need every answer — only to practise one more ability. Each layer you understand eases the anxiety a little; each correction sharpens your direction; each good question makes your world a little larger.'),
+  find:[P('你會發現：看清楚，比跑得快重要。','You will find: seeing clearly matters more than running fast.'),P('你會發現：問對問題，比找到答案重要。','You will find: asking the right question matters more than finding an answer.'),P('你會發現：願意修正的人，走得最遠。','You will find: those willing to correct go the farthest.')],
+  tags:'#思維升級 #認知 #終身學習'
+},
+faith:{
+  why:P('因為我們習慣靠自己，卻忘了自己是被愛的。我們學會了努力，卻沒學會安息；學會了守規矩，卻沒學會領受恩典；學會了知道，卻沒學會相信。',
+        'Because we are used to relying on ourselves and forget that we are loved. We learned to strive, not to rest; to keep rules, not to receive grace; to know, not to believe.'),
+  shift:[P('少一點懼怕，多一點平安。','Less fear, more peace.'),P('少一點靠自己硬撐，多一點交託。','Less striving alone, more trust.'),P('少一點定罪，多一點恩典。','Less condemnation, more grace.'),P('少一點比較，多一點感恩。','Less comparing, more thanksgiving.')],
+  gold:[P('你不是靠表現被愛，你是因著恩典被愛。','You are not loved for your performance; you are loved by grace.'),P('重擔交出去，手才空得出來領受。','Hand over the burden, and your hands are free to receive.'),P('神沒有遲到，祂正在預備。','God is not late; He is preparing.'),P('安靜不是什麼都不做，是把位置還給神。','Stillness is not doing nothing; it is giving God His place back.'),P('不是你抓住神，是神抓住你。','It is not you holding on to God; God is holding on to you.'),P('身份先於行為，恩典先於改變。','Identity comes before behavior; grace comes before change.')],
+  practice:[P('① 安靜三分鐘，把重擔說給神聽。','1) Be still for three minutes and tell God your burden.'),P('② 讀一節經文，慢慢讀三遍。','2) Read one verse slowly, three times.'),P('③ 為一個人禱告，並且讓他知道。','3) Pray for one person, and let them know.')],
+  note:P('親愛的你：你不是被忘記了，你只是太久沒有停下來聽。你不需要先變好才能來到神面前，只需要照著本相來。你今天多交託一件事，重擔就輕一點；你今天多相信一句話，心就穩一點；你今天多感謝一次，眼睛就亮一點。',
+         'Dear you: you have not been forgotten; you have simply gone too long without stopping to listen. You do not need to become better before you come to God — only to come as you are. Each thing you entrust today lightens the load; each word you believe steadies the heart; each thanksgiving brightens your eyes.'),
+  find:[P('你會發現：恩典早就在那裡。','You will find: grace was there all along.'),P('你會發現：你從來不是一個人。','You will find: you were never alone.'),P('你會發現：最深的安息，是知道自己被愛。','You will find: the deepest rest is knowing you are loved.')],
+  tags:'#信仰 #福音 #恩典'
+}};
+
+const TURN=[
+ n=>P('其實，不是你不夠好，是「'+n.zh+'」還沒有人好好教過你。','The truth is, you are not "not good enough" — no one ever really taught you '+n.en+'.'),
+ n=>P('不是你太差，是你還在用舊版本的自己，面對新版本的人生。這一次，要更新的是「'+n.zh+'」。','You are not failing — you are meeting a new chapter of life with an old version of yourself. This time, the update is '+n.en+'.'),
+ n=>P('痛點不是你的缺陷，是「'+n.zh+'」正在敲門。','The pain is not your flaw; it is '+n.en+' knocking at the door.'),
+ n=>P('卡住的地方，不是終點，是「'+n.zh+'」要長出來的地方。','Where you are stuck is not the end; it is where '+n.en+' is about to grow.')
+];
+const WISDOM=[
+ [P('更新一個能力，就多一種選擇。','Update one ability, and you gain one more choice.'),P('多一種選擇，就少一分無力。','One more choice means a little less helplessness.'),P('少一分無力，就多一分智慧。','A little less helplessness means a little more wisdom.')],
+ [P('能力不是天生的，是一次一次練出來的。','Ability is not inborn; it is built one practice at a time.'),P('智慧不是知道更多，是願意更新自己。','Wisdom is not knowing more; it is being willing to update yourself.'),P('你不需要一夜改變，只需要今天比昨天多懂一點。','You do not need to change overnight — only to understand a little more than yesterday.')],
+ [P('痛，不是懲罰，是提醒。','Pain is not punishment; it is a reminder.'),P('卡住，不是終點，是更新的入口。','Being stuck is not the end; it is the doorway to an update.'),P('每一次不舒服，都在把你帶向更大的自己。','Every discomfort is carrying you toward a larger self.')],
+ [P('看見，是改變的開始。','Seeing is where change begins.'),P('命名，是整理的開始。','Naming is where order begins.'),P('練習，是自由的開始。','Practice is where freedom begins.')]
+];
+const CLOSE=[
+ P('願你今天，對自己溫柔一點，對成長誠實一點。','May you be a little gentler with yourself today, and a little more honest about growing.'),
+ P('你不是壞掉了，你只是正在更新。','You are not broken — you are simply updating.'),
+ P('慢慢來，比較快；一點點，就很多。','Go slowly; it is faster. A little is already a lot.'),
+ P('把這篇留給今天的自己，也分享給那個正在努力的人。','Keep this for yourself today, and share it with someone who is trying hard.')
+];
+
+const clean=s=>String(s==null?'':s).trim().replace(/^[「『"“]+/,'').replace(/[」』"”]+$/,'').replace(/[。．.；;，,\s]+$/,'');
+const fin=(s,dot)=>/[？！?!」』”"]$/.test(s)?s:s+dot;
+const q=s=>'「'+clean(s)+'」';
+const qe=s=>'"'+clean(s)+'"';
+function count(t){return (t.match(/[一-鿿]/g)||[]).length+(t.match(/[A-Za-z][A-Za-z'’\-]*/g)||[]).length;}
+
+function build(it,v){
+  const d=D[it.domain],k=it.idx+(v||0),L=[];
+  const add=(zh,en)=>{if(zh)L.push(zh);if(en)L.push(en);};
+  const gap=()=>L.push('');
+  const rot=(arr,n,off)=>{const o=[];for(let i=0;i<Math.min(n,arr.length);i++)o.push(arr[(k+(off||0)+i)%arr.length]);return o;};
+  const name={zh:it.zh,en:'"'+it.en+'"'};
+
+  add('【'+it.hook.zh+'】',it.hook.en);gap();
+  add('你是不是也這樣？','Does this sound like you?');
+  it.pains.forEach(p=>add('・'+p.zh,p.en?'· '+p.en:''));gap();
+  const t=TURN[k%TURN.length](name);add(t.zh,t.en);gap();
+
+  add('▍為什麼會這樣｜Why it happens');add(d.why.zh,d.why.en);gap();
+
+  add('▍核心｜The core：'+it.zh+' '+it.en);
+  add(it.core.zh,it.core.en);
+  if(it.core2)add(it.core2.zh,it.core2.en);gap();
+
+  add('▍從舊模式，到新能力｜From old pattern to new ability');
+  const pairLines=(it.pairs||[]).map(p=>P('不是'+q(p.o.zh)+'，而是'+q(p.n.zh)+'。',(p.o.en&&p.n.en)?'Not '+qe(p.o.en)+' — but '+qe(p.n.en)+'.':''));
+  pairLines.forEach(p=>add(p.zh,p.en));
+  const sh=rot(d.shift,pairLines.length?3:4,0);
+  add('當你開始練習「'+it.zh+'」——','When you begin to practise '+name.en+' —');
+  sh.forEach(p=>add(p.zh,p.en));d.find.forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍金句｜Words to keep');
+  const gq=x=>P('「'+fin(clean(x.zh),'。')+'」',x.en?'"'+fin(clean(x.en),'.')+'"':'');
+  const gold=(it.quotes||[]).map(gq).concat(rot(d.gold,4,1).map(gq));
+  gold.forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍三個小練習｜Three small practices');
+  d.practice.forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍能力更新，智慧長出來｜Ability updated, wisdom grows');
+  WISDOM[k%WISDOM.length].concat(WISDOM[(k+1)%WISDOM.length]).forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍寫給你｜A note to you');add(d.note.zh,d.note.en);gap();
+
+  add('🌱 今天的小步｜'+it.step.zh,it.step.en?'🌱 Today\'s small step: '+it.step.en:'');gap();
+  const c=CLOSE[k%CLOSE.length];add(c.zh,c.en);gap();
+  const tagName='#'+it.zh.replace(/[\s、，—\-·．.]/g,'');
+  L.push(['#心靈雞湯','#自我成長',tagName,d.tags,(it.tags||[]).map(x=>'#'+String(x).replace(/\s/g,'')).join(' '),'#HealingWords #LifeOS'].filter(Boolean).join(' '));
+
+  const cq=(it.quotes&&it.quotes.length)?it.quotes[k%it.quotes.length]:it.core;
+  const first=s=>{const m=String(s).match(/^.*?[。！？!?.](?=\s|$|[^\d])/);return clean(m?m[0]:s);};
+  const short=(s,n,dot)=>String(s).trim().length<=n?fin(String(s).trim().replace(/[。.]$/,''),dot):fin(first(s),dot);
+  return {text:L.join('\n'),card:{
+    hook:it.hook.zh,
+    quote:short(cq.zh,34,'。'),
+    quoteEn:cq.en?short(cq.en,90,'.'):'',
+    lines:(pairLines.length?pairLines:sh).slice(0,3).map(p=>p.zh),
+    step:it.cardStep||short(it.step.zh,44,'。'),
+    name:it.zh+'｜'+it.en
+  }};
+}
+
+/* ── 圖卡（1080×1350 Canvas）── */
+const ZH='"Microsoft JhengHei","PingFang TC","Noto Sans TC","Heiti TC",sans-serif';
+function wrap(ctx,text,maxW){
+  const tk=String(text).match(/[A-Za-z0-9'’\-]+[.,!?;:]?\s?|\s+|[^\sA-Za-z0-9]/g)||[];
+  const noHead='，。！？、；：」』）)…—';
+  const noTail='「『（(“"';
+  const out=[];let cur=[];
+  const push=()=>{const s=cur.join('').trim();if(s)out.push(s);};
+  tk.forEach(w=>{
+    if(cur.join('').trim()&&ctx.measureText(cur.join('')+w).width>maxW){
+      // 標點不放行首、上引號不放行尾：把前一個字一起帶到下一行
+      const carry=[];
+      if(noHead.indexOf(w)>=0&&cur.length>1)carry.unshift(cur.pop());
+      while(cur.length>1&&noTail.indexOf(cur[cur.length-1].trim())>=0)carry.unshift(cur.pop());
+      push();cur=carry.concat(w.replace(/^\s+/,''));
+    }else cur.push(w);
+  });
+  push();
+  return out;
+}
+function drawCard(cv,card,theme){
+  const W=1080,H=1350,ctx=cv.getContext('2d');cv.width=W;cv.height=H;
+  const X=80,MW=W-160;
+  function lay(s,paint){
+    const f=(px,wt,fam)=>{ctx.font=(wt||'')+' '+Math.round(px*s)+'px '+(fam||ZH);};
+    const text=(arr,x,y,lh,col)=>{if(paint){ctx.fillStyle=col;arr.forEach((l,i)=>ctx.fillText(l,x,y+i*lh));}return y+arr.length*lh;};
+    ctx.textBaseline='top';
+    // 標頭：痛點
+    f(46,'bold');const hk=wrap(ctx,card.hook,MW);
+    const headH=Math.round(70+44*s+18+hk.length*62*s+48);
+    if(paint){ctx.fillStyle='#FAF6EF';ctx.fillRect(0,0,W,H);ctx.fillStyle=theme.color;ctx.fillRect(0,0,W,headH);
+      f(30,'');ctx.fillStyle='rgba(255,255,255,.85)';ctx.fillText('你是不是也這樣？',X,70);}
+    f(46,'bold');let y=text(hk,X,70+44*s+18,62*s,'#fff');
+    y=headH+90*s;
+    // 金句
+    f(66,'bold');const ql=wrap(ctx,card.quote,MW);y=text(ql,X,y,92*s,'#2B2622')+18*s;
+    if(card.quoteEn){f(30,'italic','Georgia,"Times New Roman",serif');y=text(wrap(ctx,card.quoteEn,MW),X,y,42*s,'#8A7F76');}
+    y+=50*s;
+    // 排比框
+    f(34,'');const bl=[];card.lines.forEach(l=>wrap(ctx,l,MW-110).forEach(x=>bl.push(x)));
+    const bh=bl.length*56*s+64*s;
+    if(paint){ctx.fillStyle=theme.tint;rr(ctx,X-20,y,MW+40,bh,28);ctx.fill();ctx.fillStyle=theme.color;ctx.fillRect(X-20,y+24,10,bh-48);}
+    text(bl,X+32,y+34*s,56*s,'#3A332E');y+=bh+48*s;
+    // 今天的小步
+    f(27,'');const pw=ctx.measureText('今天的小步').width+48,ph=54*s;
+    if(paint){ctx.fillStyle=theme.color;rr(ctx,X,y,pw,ph,ph/2);ctx.fill();ctx.fillStyle='#fff';ctx.fillText('今天的小步',X+24,y+(ph-27*s)/2-2);}
+    y+=ph+22*s;
+    f(34,'bold');y=text(wrap(ctx,card.step,MW),X,y,52*s,'#2B2622');
+    return y;
+  }
+  let s=1.3;while(s>0.55&&lay(s,false)>H-170)s-=0.03;
+  lay(s,true);
+  ctx.fillStyle='#E4DAD0';ctx.fillRect(X,H-130,MW,3);
+  ctx.textBaseline='top';ctx.font='bold 32px '+ZH;ctx.fillStyle=theme.color;ctx.fillText(theme.brand,X,H-96);
+  ctx.font='28px '+ZH;ctx.fillStyle='#8A7F76';const tg='#心靈雞湯';ctx.fillText(tg,W-X-ctx.measureText(tg).width,H-94);
+}
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+/* ── 介面 ── */
+let CFG=null,ITEMS=[],cur=null,ver=0;
+const $=id=>document.getElementById(id);
+function ui(){
+  const st=document.createElement('style');
+  st.textContent=`
+.fbp-btn{display:inline-flex;align-items:center;gap:4px;margin:8px 0 0;padding:6px 12px;border:0;border-radius:999px;background:var(--fbp-c);color:#fff;font:600 13px/1.2 ${ZH};cursor:pointer;white-space:nowrap}
+.fbp-btn:hover{filter:brightness(1.1)}
+#fbpFab{position:fixed;left:16px;bottom:76px;z-index:9998;margin:0;padding:11px 16px;font-size:14px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+#fbpMask{position:fixed;inset:0;z-index:9999;background:rgba(20,16,12,.6);display:none;align-items:center;justify-content:center;padding:12px}
+#fbpMask.on{display:flex}
+#fbpBox{background:#FAF6EF;color:#2B2622;width:min(1040px,100%);max-height:94vh;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;font:14px/1.6 ${ZH};text-align:left}
+#fbpTop{display:flex;gap:8px;align-items:center;padding:12px 14px;background:var(--fbp-c);color:#fff}
+#fbpTop b{flex:1;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#fbpSearch{flex:0 1 260px;min-width:110px;padding:7px 12px;border:0;border-radius:999px;font:14px ${ZH};color:#2B2622;background:#fff}
+#fbpX{background:none;border:0;color:#fff;font-size:22px;cursor:pointer;line-height:1}
+#fbpList{max-height:132px;overflow-x:hidden;overflow-y:auto;flex:none;padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #E4DAD0;background:#fff}
+#fbpList button{border:1px solid #E4DAD0;background:#FAF6EF;color:#2B2622;border-radius:999px;padding:3px 10px;font:12px ${ZH};cursor:pointer}
+#fbpList button.on{background:var(--fbp-c);color:#fff;border-color:var(--fbp-c)}
+#fbpMain{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;padding:14px;overflow:auto}
+#fbpText{width:100%;height:52vh;min-height:260px;box-sizing:border-box;padding:12px;border:1px solid #E4DAD0;border-radius:12px;background:#fff;color:#2B2622;font:14px/1.75 ${ZH};resize:vertical}
+#fbpCanvas{width:100%;height:auto;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15);display:block}
+#fbpBar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+#fbpBar .fbp-btn{margin:0}
+#fbpBar .fbp-g{background:#fff;color:var(--fbp-c);border:1px solid var(--fbp-c)}
+#fbpCnt{font-size:12px;color:#8A7F76;margin-left:auto}
+@media(max-width:760px){#fbpMain{grid-template-columns:minmax(0,1fr)}#fbpText{height:38vh}#fbpCanvas{max-width:300px;margin:0 auto}}
+@media print{#fbpFab,#fbpMask,.fbp-btn{display:none!important}}`;
+  document.head.appendChild(st);
+  document.documentElement.style.setProperty('--fbp-c',CFG.color);
+  const fab=document.createElement('button');fab.id='fbpFab';fab.className='fbp-btn';fab.textContent='📣 臉書貼文＋圖卡';
+  fab.onclick=()=>open((cur||ITEMS[0]).id);document.body.appendChild(fab);
+  const m=document.createElement('div');m.id='fbpMask';
+  m.innerHTML='<div id="fbpBox"><div id="fbpTop"><b id="fbpTitle"></b><input id="fbpSearch" type="search" placeholder="搜尋欄位 / Search…"><button id="fbpX" title="關閉">×</button></div>'+
+   '<div id="fbpList"></div><div id="fbpMain"><div><textarea id="fbpText" spellcheck="false"></textarea><div id="fbpBar">'+
+   '<button class="fbp-btn" id="fbpCopy">📋 複製貼文</button><button class="fbp-btn" id="fbpPng">🖼️ 下載圖卡</button>'+
+   '<button class="fbp-btn fbp-g" id="fbpNext">🔄 換一版</button><button class="fbp-btn fbp-g" id="fbpTxt">💾 貼文 TXT</button>'+
+   '<button class="fbp-btn fbp-g" id="fbpAll">📦 全部貼文 TXT</button><span id="fbpCnt"></span></div></div>'+
+   '<div><canvas id="fbpCanvas"></canvas></div></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',e=>{if(e.target===m)close();});
+  $('fbpX').onclick=close;
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+  $('fbpSearch').addEventListener('input',list);
+  $('fbpNext').onclick=()=>{ver++;show();};
+  $('fbpCopy').onclick=function(){const t=$('fbpText');const done=()=>flash(this,'✅ 已複製');
+    if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t.value).then(done,()=>{t.select();document.execCommand('copy');done();});
+    else{t.select();document.execCommand('copy');done();}};
+  $('fbpPng').onclick=()=>$('fbpCanvas').toBlob(b=>save(b,fname()+'.png'));
+  $('fbpTxt').onclick=()=>save(new Blob(['﻿'+$('fbpText').value],{type:'text/plain;charset=utf-8'}),fname()+'.txt');
+  $('fbpAll').onclick=()=>save(new Blob(['﻿'+ITEMS.map(it=>'════ '+it.no+' '+it.zh+' ════\n\n'+build(it,0).text).join('\n\n\n')],{type:'text/plain;charset=utf-8'}),CFG.brand+'_全部臉書貼文.txt');
+}
+function flash(b,t){const o=b.textContent;b.textContent=t;setTimeout(()=>b.textContent=o,1200);}
+function fname(){return (CFG.brand+'_'+cur.no+'_'+cur.zh).replace(/[\\/:*?"<>|\s]+/g,'_');}
+function save(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);}
+function list(){
+  const kw=$('fbpSearch').value.trim().toLowerCase();
+  const box=$('fbpList');box.innerHTML='';
+  ITEMS.filter(it=>!kw||(it.no+' '+it.zh+' '+it.en).toLowerCase().indexOf(kw)>=0).forEach(it=>{
+    const b=document.createElement('button');b.textContent=it.no+' '+it.zh;if(cur&&it.id===cur.id)b.className='on';
+    b.onclick=()=>open(it.id);box.appendChild(b);
+  });
+}
+function show(){
+  const r=build(cur,ver);
+  $('fbpTitle').textContent='📣 '+cur.no+' '+cur.zh+'｜'+cur.en;
+  $('fbpText').value=r.text;$('fbpText').scrollTop=0;
+  $('fbpCnt').textContent='約 '+count(r.text)+' 字（中文字＋英文單字）';
+  drawCard($('fbpCanvas'),r.card,{color:CFG.color,tint:CFG.tint,brand:CFG.brand});
+}
+function open(id){
+  const it=ITEMS.find(x=>String(x.id)===String(id));if(!it)return;
+  if(!cur||cur.id!==it.id)ver=0;cur=it;
+  $('fbpMask').classList.add('on');list();show();
+  const on=$('fbpList').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
+}
+function close(){$('fbpMask').classList.remove('on');}
+function mount(){
+  (CFG.mounts()||[]).forEach(m=>{
+    if(!m||!m.el||m.el.querySelector(':scope > .fbp-btn'))return;
+    const b=document.createElement('button');b.type='button';b.className='fbp-btn';b.textContent='📣 貼文＋圖卡';
+    b.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();open(m.id);});
+    m.el.appendChild(b);
+  });
+}
+function init(cfg){
+  CFG=cfg;
+  const go=()=>{
+    ITEMS=cfg.items().map((it,i)=>{it.idx=i;it.domain=cfg.domain;return it;});
+    ui();mount();
+    let tm=null;new MutationObserver(()=>{clearTimeout(tm);tm=setTimeout(mount,150);}).observe(document.body,{childList:true,subtree:true});
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(go,0));else setTimeout(go,0);
+}
+window.FBPost={init:init,build:build,count:count,P:P,open:open,items:()=>ITEMS};
+})();
+
+</script>
+<script>
+/* 逐項痛點：id, 痛點標題(中,英), 痛點1(中,英), 痛點2(中,英) */
+window.FBP_PAIN=window.FBP_PAIN||{};
+(function(){const X=(...a)=>{window.FBP_PAIN[a[0]]=a.slice(1);};
+X(1,`你很會想事情，卻沒想過自己是怎麼想的。`,`You think a great deal, and have never thought about how you think.`,`同樣的錯，換個場景又犯一次。`,`The same mistake, in a new setting, once more.`,`以為自己懂了，考試或上場才發現不懂。`,`You thought you understood, until the test or the real moment proved otherwise.`);
+X(2,`事情還沒發生，你心裡已經演完了結局。`,`Nothing has happened yet, and your mind has already played the ending.`,`用舊經驗看新的人，看到的都是過去。`,`Seeing new people through old experience, you see only the past.`,`猜錯了，卻怪現實不配合。`,`You predicted wrong and blamed reality.`);
+X(3,`一遇到沒把握的事，你就全身不舒服。`,`Anything uncertain makes your whole body uneasy.`,`為了不難受，躲開了所有會讓你成長的事。`,`To avoid discomfort, you dodge everything that would make you grow.`,`聽到不同的意見，第一反應是反駁。`,`Hearing a different view, your first move is to rebut.`);
+X(4,`你常說「早知道」，卻很少事先想「如果」。`,`You often say "if only I had known," and rarely ask "what if" beforehand.`,`後悔很多，推演很少。`,`Much regret, little rehearsal.`,`做了才知道代價。`,`You learned the cost only after acting.`);
+X(5,`你解決了一個問題，卻製造了另外兩個。`,`You solved one problem and created two more.`,`只盯著出事的那一點。`,`You stare only at the point where it broke.`,`怪一個人，其實是整個結構的結果。`,`You blame a person for what the whole structure produced.`);
+X(6,`越焦慮越睡不著，越睡不著越焦慮。`,`The more anxious, the less you sleep; the less you sleep, the more anxious.`,`掉進循環裡，卻以為只是運氣不好。`,`Caught in a loop, you call it bad luck.`,`好習慣起不來，因為沒有東西在推它。`,`A good habit never takes off because nothing is feeding it.`);
+X(7,`你以為看到的是事實，其實是你的版本。`,`You think you are seeing facts; you are seeing your version.`,`同一件事，別人怎麼會看成那樣？`,`How could anyone see the same thing so differently?`,`地圖舊了，還照著它走。`,`The map is outdated, and you still follow it.`);
+X(8,`「大家都這樣做」，是你唯一的理由。`,`"Everyone does it this way" is your only reason.`,`一直在別人的答案上修修補補。`,`You keep patching other people's answers.`,`沒問過：這件事最根本是什麼？`,`You never asked: what is this, at its root?`);
+X(9,`你只抓一個原因，世界卻有很多變數。`,`You hold on to one cause in a world of many variables.`,`非黑即白，所以常常卡住。`,`Black or white, so you are often stuck.`,`顧了這一面，就忘了那一面。`,`You attend to one side and forget the other.`);
+X(10,`環境變了，你還在用老方法硬撐。`,`The environment changed, and you still push on with the old way.`,`計畫一被打亂，整個人就亂了。`,`When the plan is disrupted, so are you.`,`怕改變，所以被改變。`,`Afraid of change, you are changed by it.`);
+X(11,`你每一處都很用力，卻沒有一處有效。`,`You push hard everywhere, and nowhere does it work.`,`把力氣花在最明顯、不是最關鍵的地方。`,`Your effort goes to the most visible spot, not the most pivotal.`,`忙了很久，局面一點也沒動。`,`Busy for a long time, and the situation has not moved.`);
+X(12,`努力了三個月沒看到結果，你就放棄了。`,`Three months without results, and you gave up.`,`今天的苦，是很久以前種下的。`,`Today's hardship was planted long ago.`,`剛見效就停，然後說「沒用」。`,`You stopped just as it began to work, then said it was useless.`);
+X(13,`一點打擊，就讓你退回原點。`,`A small blow sends you back to the start.`,`把自己保護得很好，卻越來越怕風。`,`So well protected that you fear the wind more each year.`,`只想避開壓力，沒想過讓壓力養大自己。`,`You only avoid stress and never let it strengthen you.`);
+X(14,`你做了決定，才發現對方知道得比你多。`,`You decided, then found the other side knew more than you.`,`不知道自己不知道什麼。`,`You do not know what you do not know.`,`被話術帶著走，事後才覺得不對。`,`Led along by a pitch, you sensed it only afterwards.`);
+X(15,`你只想著怎麼成功，卻沒想過會怎麼失敗。`,`You think only of how to succeed, never of how you might fail.`,`計畫很樂觀，現實很誠實。`,`The plan was optimistic; reality was honest.`,`最大的坑，都是事前沒人敢提的那個。`,`The deepest pit is the one no one dared mention.`);
+X(16,`眼前的問題解決了，更大的問題跟著來。`,`The immediate problem is solved, and a larger one follows.`,`只想到下一步，沒想到下下一步。`,`You thought of the next step, not the one after.`,`好心做的事，最後變成壞結果。`,`A well-meant act ended badly.`);
+X(17,`書看不下去，你以為是自己不夠聰明。`,`You cannot get through the book and assume you are not smart enough.`,`一下跳太難，然後全盤放棄。`,`You leapt too far, then gave up entirely.`,`一直待在舒服的範圍，所以一直沒長大。`,`You stayed where it was comfortable, and so stayed the same.`);
+X(18,`你知道發生了什麼，卻說不出為什麼。`,`You know what happened and cannot say why.`,`把「一起出現」當成「互相造成」。`,`You took "appearing together" for "one causing the other."`,`原因沒找到，所以同樣的事又來一次。`,`With the cause unfound, it happened again.`);
+X(19,`你以為是自己選的，其實是被擺好的。`,`You think you chose; it was arranged for you.`,`零食放在手邊，然後怪自己沒意志力。`,`Snacks within reach, and you blame your willpower.`,`一直靠忍，沒想過改環境。`,`You rely on endurance and never think to change the setting.`);
+X(20,`明知道這條路不對，卻已經走太遠回不了頭。`,`You know the road is wrong, and have gone too far to turn back.`,`「都投入這麼多了」，所以繼續錯。`,`"I have already put in so much," so you carry on wrong.`,`習慣成了理由。`,`Habit became the reason.`);
+X(21,`每個人都很優秀，合在一起卻不成事。`,`Each person is excellent, and together nothing works.`,`只看零件，看不到整體長出來的東西。`,`You look at parts and miss what the whole produces.`,`想控制每個細節，結果壓死了活力。`,`Trying to control every detail, you smothered the life in it.`);
+X(22,`事情做到一半，才發現漏掉最重要的那一項。`,`Halfway through, you find the most important item was left out.`,`靠腦袋記，總是少記一個。`,`Relying on memory, you always forget one.`,`想得很快，卻沒有想全。`,`You think fast and not completely.`);
+X(23,`每天看很多資訊，腦袋卻越來越亂。`,`So much information every day, and a mind that grows more cluttered.`,`滑了兩小時，沒有一句記得。`,`Two hours of scrolling, and not a line remembered.`,`重要的那一則，被淹在一百則裡。`,`The one that mattered was buried among a hundred.`);
+X(24,`你們吵得很兇，其實在談不同層次的事。`,`You argue fiercely while speaking on different levels.`,`他在談方向，你在談細節。`,`They speak of direction; you speak of detail.`,`陷在細節裡，抬不起頭看全局。`,`Sunk in detail, you cannot lift your head to see the whole.`);
+X(25,`你常說「沒辦法，環境就是這樣」。`,`You often say, "Nothing can be done; that is just how things are."`,`把人生的方向盤，交給了別人。`,`You handed the steering wheel of your life to someone else.`,`抱怨很多，行動很少。`,`Many complaints, few actions.`);
+X(26,`你是好意，他卻受傷了。`,`You meant well, and they were hurt.`,`一句「我又沒有那個意思」，讓事情更糟。`,`"That was not what I meant" only made it worse.`,`只看自己的出發點，沒看對方的感受。`,`You looked at your intention and not at their experience.`);
+X(27,`身邊的人都跟你想得一樣，你覺得很安心。`,`Everyone around you thinks as you do, and you feel safe.`,`不同的聲音，都被你請走了。`,`You have shown every different voice the door.`,`很一致，也很脆弱。`,`Very uniform, and very fragile.`);
+X(28,`你說「反正不用錢」，卻花掉了一個下午。`,`You said "it is free anyway," and spent an afternoon.`,`只算付出去的，沒算放棄掉的。`,`You count what you paid, not what you gave up.`,`什麼都想要，最後什麼都沒做好。`,`Wanting everything, you did nothing well.`);
+X(29,`你每一件事都親手做，所以永遠做不大。`,`You do everything by hand, so it never grows.`,`忙得要命，單位成本卻一直沒降。`,`Terribly busy, and the unit cost never falls.`,`做一份和做一百份，一樣累。`,`One or a hundred, it is equally exhausting.`);
+X(30,`你把每個環節都加強了，產出還是沒變。`,`You strengthened every link, and output did not change.`,`最慢的那一關，沒有人去看。`,`No one looks at the slowest stage.`,`很努力，卻努力在不是瓶頸的地方。`,`Hard at work, away from the bottleneck.`);
+X(31,`你以為多做一倍，就會多得一倍。`,`You assume twice the work brings twice the result.`,`一直加碼，卻毫無動靜。`,`You keep adding, and nothing stirs.`,`小看了一件小事，結果它翻了盤。`,`You dismissed a small thing, and it overturned everything.`);
+X(32,`前面太慢，你就以為沒有用。`,`The early stretch was slow, so you decided it was useless.`,`用直線想像未來。`,`You picture the future as a straight line.`,`在快要起飛之前，下了車。`,`You got off just before take-off.`);
+X(33,`你訂了獎勵，大家卻學會了鑽漏洞。`,`You set a reward, and people learned to game it.`,`數字變漂亮，事情卻變糟。`,`The numbers improved, and things got worse.`,`獎勵了表面，懲罰了老實人。`,`You rewarded appearances and punished the honest.`);
+X(34,`你越加班，產出越少。`,`The more overtime, the less output.`,`第十個小時的你，其實在做白工。`,`In your tenth hour, you are really working for nothing.`,`以為再多一點，就會更好。`,`You assume a little more will make it better.`);
+X(35,`你想等準備好才開始，結果一直沒開始。`,`You wanted to be ready first, and never began.`,`把時間花在沒人在意的細節。`,`You spent time on details no one cares about.`,`完美的計畫，輸給別人粗糙的行動。`,`A perfect plan lost to someone else's rough action.`);
+X(36,`你為每一個消息緊張，卻錯過真正重要的那個。`,`You tense at every piece of news and miss the one that matters.`,`被雜訊牽著走，一天換三次方向。`,`Pulled by noise, you change direction three times a day.`,`分不清什麼是一時波動，什麼是趨勢。`,`You cannot tell a blip from a trend.`);
+X(37,`你為了今天輕鬆一點，犧牲了十年後的自己。`,`For a little ease today, you sacrificed yourself ten years on.`,`眼前的小事很大，遠方的大事很小。`,`Near things loom large; distant ones look small.`,`「以後再說」說了好多年。`,`You have said "later" for many years.`);
+X(38,`你照著成功者的方法做，卻沒有成功。`,`You followed the successful, and did not succeed.`,`只聽贏的人說話。`,`You listen only to the winners.`,`沒看到那些用同樣方法、卻消失的人。`,`You never saw those who used the same method and vanished.`);
+X(39,`你把一切算得剛剛好，然後意外來了。`,`You calculated everything exactly, and then the unexpected came.`,`行程排滿，一件延誤就全倒。`,`A full schedule, and one delay topples it all.`,`沒有留餘地，所以沒有退路。`,`With no margin, there is no way back.`);
+X(40,`你一直在改良，卻從沒創造過新的東西。`,`You keep improving and have never created something new.`,`只敢做有人做過的事。`,`You dare only what has been done before.`,`很會比較，卻不會開始。`,`Good at comparing, not at beginning.`);
+X(41,`你在別人的賽道上，跑得很辛苦。`,`You are running hard on someone else's track.`,`拼命追前面的人，沒想過換一條路。`,`You chase the one ahead and never think of another road.`,`怕沒有路，所以不敢離開人群。`,`Afraid there is no path, you dare not leave the crowd.`);
+X(42,`你只有一把鎚子，看什麼都像釘子。`,`With only a hammer, everything looks like a nail.`,`在自己的專業裡，找不到答案。`,`The answer cannot be found inside your own field.`,`別的領域早就解決了，你卻不知道。`,`Another field solved it long ago, and you never knew.`);
+X(43,`你一整天都在回訊息，重要的事一件沒做。`,`You answered messages all day and did nothing important.`,`每十分鐘被打斷一次。`,`Interrupted every ten minutes.`,`很忙，卻沒有產出。`,`Very busy, with nothing produced.`);
+X(44,`你很久沒有做一件事做到忘記時間了。`,`It has been long since you lost track of time in anything.`,`做什麼都心不在焉。`,`Absent-minded in everything you do.`,`事情不是太難就是太無聊。`,`Everything is either too hard or too dull.`);
+X(45,`沒有人盯，你就不想動。`,`With no one watching, you do not want to move.`,`為了獎勵而做，獎勵沒了就停。`,`You work for the reward and stop when it ends.`,`達標了，卻一點也不開心。`,`You hit the target and felt no joy.`);
+X(46,`你想把一切算清楚，世界卻不照劇本走。`,`You want everything calculated, and the world ignores the script.`,`用簡單的答案，回答複雜的問題。`,`A simple answer to a complex question.`,`越想控制，越失控。`,`The more you try to control, the less control you have.`);
+X(47,`一切都很順，直到一件小事讓它全垮。`,`All went smoothly until one small thing brought it down.`,`追求穩定，卻變得一碰就碎。`,`In pursuit of stability, you became brittle.`,`只有一個收入、一個客戶、一個方法。`,`One income, one client, one method.`);
+X(48,`你的東西很好，卻只有你一個人在用。`,`Your work is good, and you are the only one using it.`,`一個一個拉人，累到不行。`,`Recruiting one by one, you are worn out.`,`沒有讓使用的人，幫你帶來下一個人。`,`You never let one user bring the next.`);
+X(49,`你幫他做完了，他下次還是不會。`,`You did it for them, and next time they still cannot.`,`什麼都自己來，團隊越來越弱。`,`Doing it all yourself, you weaken the team.`,`不放手，所以放不了假。`,`Unable to let go, you can never take leave.`);
+X(50,`同一個問題，你查了第三次。`,`You have looked up the same problem a third time.`,`學過的東西，用的時候找不到。`,`What you learned cannot be found when needed.`,`靠記憶，結果忘光。`,`You relied on memory and forgot it all.`);
+X(51,`帳面上有賺，戶頭卻沒錢。`,`A profit on paper, and nothing in the account.`,`收入不少，月底還是緊。`,`A decent income, and still tight at month's end.`,`錢進來的時間，趕不上錢出去的時間。`,`Money arrives later than it leaves.`);
+X(52,`你覺得每個月存一點點，沒什麼用。`,`You feel a little saved each month is pointless.`,`想等有大錢再開始。`,`You are waiting for a large sum before starting.`,`晚了十年，差了好幾倍。`,`Ten years late, several times behind.`);
+X(53,`錢好好放在銀行，卻越放越薄。`,`The money sits safely in the bank and grows thinner.`,`薪水沒變，東西越來越貴。`,`Pay unchanged, prices rising.`,`以為沒有虧，其實每年都在少。`,`You think you lost nothing; each year there is less.`);
+X(54,`你買了很多東西，卻沒有一樣在幫你賺錢。`,`You bought many things, and none of them earns for you.`,`以為那是資產，其實每個月都在掏你口袋。`,`You called it an asset while it emptied your pocket monthly.`,`收入變多，支出變更多。`,`Income rose, and spending rose faster.`);
+X(55,`你一停下來，收入就歸零。`,`The moment you stop, income drops to zero.`,`不敢生病、不敢休息。`,`You dare not fall ill or rest.`,`用時間換錢，換到沒有時間。`,`Trading time for money until no time is left.`);
+X(56,`你很會省小錢，卻常在大事上隨便決定。`,`Careful with small sums, careless with the big decisions.`,`只看價格，不看回報。`,`You look at price, not return.`,`花時間的時候，從沒想過划不划算。`,`You never ask whether your time is well spent.`);
+X(57,`市場一跌，你就整晚睡不著。`,`When the market drops, you lose a night's sleep.`,`別人賺你就追，一跌就賣。`,`You chase when others gain and sell at the first fall.`,`不知道自己能承受多少，就下了注。`,`You placed the bet without knowing what you could bear.`);
+X(58,`你把所有的錢，押在你最有信心的那一個。`,`You put all your money on the one you trust most.`,`一個意外，就全部受傷。`,`One accident, and everything is hit.`,`以為買很多檔就是分散，其實都是同一種。`,`You thought many holdings meant diversity; they were all one kind.`);
+X(59,`你覺得晚一點拿到錢，也沒差。`,`You feel getting paid later makes no difference.`,`為了省一點點，拖了很久才開始。`,`To save a little, you delayed starting for a long time.`,`忽略了：現在的一塊錢，比以後的一塊錢值錢。`,`You forgot that a dollar now is worth more than a dollar later.`);
+X(60,`你很努力賺錢，卻沒算過留下多少。`,`You work hard to earn and never counted what remains.`,`每年報稅才嚇一跳。`,`Each tax season is a shock.`,`合法能省的，你一樣都沒用。`,`You used none of the lawful savings available.`);
+X(61,`你每個月都在還錢，卻不知道哪一筆最貴。`,`You repay every month without knowing which debt costs most.`,`用高利的卡債，過低利的生活。`,`High-interest debt funding an ordinary life.`,`怕負債，卻也被負債綁住。`,`Afraid of debt, and bound by it all the same.`);
+X(62,`你賺得越多，越不敢停。`,`The more you earn, the less you dare stop.`,`把自由，押在「再多賺一點」。`,`You stake your freedom on "just a little more."`,`從沒算過：我到底需要多少？`,`You never calculated: how much do I really need?`);
+X(63,`加了薪，實際拿到的卻沒多多少。`,`A raise came, and take-home pay barely moved.`,`用平均的感覺，做邊際的決定。`,`You make marginal decisions on an average feeling.`,`多接一個案子，卻不知道划不划算。`,`You took one more job without knowing whether it paid.`);
+X(64,`錢不多，卻每一樣都放一點。`,`Not much money, a little placed in everything.`,`最好的機會來時，手上已經沒有子彈。`,`When the best chance came, you had nothing left.`,`哪裡吵就把錢放哪裡。`,`You put money wherever the noise was loudest.`);
+X(65,`你很有資產，急用時卻拿不出現金。`,`Rich in assets, and no cash in an emergency.`,`錢都鎖住了。`,`All the money is locked away.`,`被迫在最差的時候賣掉。`,`Forced to sell at the worst moment.`);
+})();
+
+(function(){const X=(...a)=>{window.FBP_PAIN[a[0]]=a.slice(1);};
+X(66,`你一直逼身體撐住，它卻一直想回到平衡。`,`You keep forcing your body to hold on while it keeps trying to rebalance.`,`熬夜之後靠咖啡，咖啡之後更睡不著。`,`Coffee after a late night, and less sleep after the coffee.`,`把身體的警訊，當成它不夠強。`,`You take your body's warnings as weakness.`);
+X(67,`你一直處在備戰狀態，連休息都放不下來。`,`You are always on alert and cannot relax even at rest.`,`肩膀很緊、心跳很快，卻說不出在怕什麼。`,`Tight shoulders, a racing heart, and no idea what you fear.`,`小事也能讓你爆炸。`,`Small things set you off.`);
+X(68,`你白天很睏，晚上卻很清醒。`,`Drowsy by day, wide awake at night.`,`假日補眠，週一更累。`,`You catch up on sleep at the weekend and feel worse on Monday.`,`睡前滑手機，一滑就是一小時。`,`An hour on the phone before bed.`);
+X(69,`你一忙就感冒，一放假就生病。`,`A cold whenever you are busy, illness whenever you rest.`,`小毛病一個接一個。`,`One small ailment after another.`,`一直壓著症狀，沒照顧到底子。`,`You suppress the symptoms and neglect the foundation.`);
+X(70,`你吃得不差，肚子卻一直不舒服。`,`You eat reasonably, and your gut is never comfortable.`,`心情不好，腸胃也跟著不好。`,`When your mood drops, your digestion follows.`,`只顧吃進去，沒想到是誰在幫你消化。`,`You think of what you eat, not of who helps you digest it.`);
+X(71,`你睡了很久還是累，還怪自己懶。`,`You slept long and are still tired, and call yourself lazy.`,`情緒起伏很大，卻找不到原因。`,`Large mood swings with no visible cause.`,`努力運動、控制飲食，身體還是不聽話。`,`Exercise and diet, and the body still does not respond.`);
+X(72,`你這裡痠、那裡痛，檢查卻都說還好。`,`An ache here, a pain there, and every test says fine.`,`一直很腫、很累、很悶。`,`Always puffy, tired and heavy.`,`身體裡有一把小火，一直沒有熄。`,`A small fire inside that never goes out.`);
+X(73,`你越少吃，越瘦不下來。`,`The less you eat, the less you lose.`,`節食成功，然後胖回更多。`,`The diet worked, then more came back.`,`跟身體作對，它就用省電模式回應你。`,`Fight your body, and it answers in power-saving mode.`);
+X(74,`保健品吃了一堆，卻感覺不到差別。`,`A pile of supplements, and no difference felt.`,`只看吃了多少，沒看吸收了多少。`,`You count what went in, not what was absorbed.`,`買得很貴，用得很少。`,`Expensive to buy, little used by the body.`);
+X(75,`你說「我們家就是這種體質」，然後放棄了。`,`You said, "It runs in the family," and gave up.`,`把一切推給遺傳。`,`You put everything down to genes.`,`忽略了每天的選擇，其實才是大部分的答案。`,`You overlooked that daily choices are most of the answer.`);
+X(76,`傷口好得越來越慢，你才發現自己沒在恢復。`,`Wounds heal more slowly, and you realise you are not recovering.`,`一直消耗，沒有修復。`,`Constant wear, no repair.`,`把休息當成浪費時間。`,`You treat rest as wasted time.`);
+X(77,`你看起來還年輕，身體卻比年齡老。`,`You look young, and your body is older than your years.`,`長期壓力、長期熬夜，覺得還撐得住。`,`Long stress, long nights, and you think you can still manage.`,`透支的東西，身體都記著。`,`The body keeps a record of every overdraft.`);
+X(78,`你不是懶，你是真的沒電。`,`You are not lazy; you are truly out of power.`,`下午三點，整個人像被關機。`,`At three in the afternoon, you shut down.`,`靠糖和咖啡撐，越撐越累。`,`Propped up by sugar and coffee, you grow more tired.`);
+X(79,`報告上只看一個數字，你就放心或嚇壞。`,`One number on the report reassures or terrifies you.`,`聽到膽固醇高就什麼油都不敢吃。`,`Hearing "high cholesterol," you fear every fat.`,`只看總量，沒看比例。`,`You read the total and not the ratio.`);
+X(80,`你說「我就是這樣的人，改不了」。`,`You say, "This is who I am; I cannot change."`,`覺得年紀大了，學不動了。`,`You feel too old to learn.`,`同一條路走太久，就以為只有這條路。`,`Having walked one path so long, you think it is the only one.`);
+X(81,`你的產品很好，卻一直賺不到錢。`,`Your product is good, and it never makes money.`,`很忙，卻不知道錢是從哪一步來的。`,`Busy, without knowing which step brings the money.`,`一直在改產品，沒想過改賺錢的方式。`,`You keep changing the product, never the way it earns.`);
+X(82,`客人來了，你卻越賣越虧。`,`Customers came, and each sale lost more.`,`廣告費一直加，利潤一直減。`,`Advertising rises as profit falls.`,`只看來了多少人，沒算每一個花了多少。`,`You counted arrivals, not what each one cost.`);
+X(83,`你一直找新客人，老客人卻悄悄走了。`,`You keep seeking new customers while old ones quietly leave.`,`只做一次生意。`,`You do business only once.`,`每個月都從零開始。`,`Every month starts from zero.`);
+X(84,`你做得好，別人一下就學走了。`,`You did it well, and others copied it at once.`,`只能靠降價留住客人。`,`Only a lower price keeps your customers.`,`沒有一樣東西，是別人拿不走的。`,`Nothing you have is beyond another's reach.`);
+X(85,`你什麼都做，卻沒有一樣比別人好。`,`You do everything, and nothing better than others.`,`客人問「為什麼要選你」，你答不出來。`,`A customer asks, "Why you?" and you have no answer.`,`拼命補弱點，忘了放大強項。`,`You patch weaknesses and forget to build strengths.`);
+X(86,`你想服務所有人，結果沒有人記得你。`,`You tried to serve everyone, and no one remembers you.`,`說不出一句話，講清楚自己是誰。`,`You cannot say in one sentence who you are.`,`跟別人看起來都一樣。`,`You look just like the rest.`);
+X(87,`生意變好，你卻快累垮了。`,`Business is better, and you are near collapse.`,`多一個客人，就多一份工。`,`One more customer means one more job.`,`靠人力撐，撐不大。`,`Held up by labour, it cannot grow large.`);
+X(88,`制度寫得很漂亮，大家做的卻是另一套。`,`The rules read beautifully, and people do something else.`,`新人來三個月，就變得跟舊人一樣。`,`Three months in, the newcomer is like everyone else.`,`想改文化，卻只換了標語。`,`You wanted to change the culture and changed only the slogan.`);
+X(89,`你交代了工作，卻每十分鐘去看一次。`,`You delegated, then checked every ten minutes.`,`怕他做不好，乾脆自己做。`,`Afraid they will fail, you do it yourself.`,`團隊不敢決定，因為決定都被改掉。`,`The team dares not decide, because decisions get overturned.`);
+X(90,`一年考核一次，大家都很驚訝。`,`A review once a year, and everyone is surprised.`,`目標訂了，卻沒有人回頭看。`,`Targets were set, and no one looked back at them.`,`只打分數，沒有幫他變好。`,`You gave a score and no help to improve.`);
+X(91,`你們很想創新，卻一直等靈感。`,`You want to innovate and keep waiting for inspiration.`,`點子很多，沒有一個被試過。`,`Many ideas, none tested.`,`失敗一次，就再也沒有人敢提。`,`After one failure, no one dares propose again.`);
+X(92,`策略開會講得很好，回去之後沒有人動。`,`The strategy sounded fine in the meeting, and no one acted afterwards.`,`計畫很大，第一步很模糊。`,`A grand plan, a vague first step.`,`每年都在訂新策略，舊的還沒做。`,`A new strategy every year, the old one never done.`);
+X(93,`你顧了客戶，卻忘了員工。`,`You looked after customers and forgot your staff.`,`決定之後，才發現有人被影響卻沒被問。`,`After deciding, you found someone affected had never been asked.`,`只聽最大聲的那一方。`,`You listen only to the loudest party.`);
+X(94,`一個小零件缺貨，整條線就停了。`,`One small part ran short, and the whole line stopped.`,`只管自己這一段。`,`You manage only your own section.`,`平常沒事，一出事就全倒。`,`Fine in normal times, total collapse in trouble.`);
+X(95,`景氣好時拼命擴張，景氣一轉就措手不及。`,`You expand hard in good times and are caught out when they turn.`,`以為好日子會一直下去。`,`You assumed the good days would last.`,`不知道自己現在站在週期的哪裡。`,`You do not know where in the cycle you stand.`);
+X(96,`你坐在桌前等靈感，等了一整天。`,`You sat at the desk waiting for inspiration all day.`,`以為創意是天分，不是過程。`,`You think creativity is talent, not a process.`,`一卡住，就覺得自己不行。`,`Once stuck, you conclude you cannot do it.`);
+X(97,`什麼都可以做的時候，你反而不知道做什麼。`,`When anything is possible, you do not know what to make.`,`抱怨資源不夠、時間不夠。`,`You complain of too little time and too few resources.`,`沒有框架，所以沒有起點。`,`No frame, so no starting point.`);
+X(98,`你有想法，卻怕跟別人不一樣。`,`You have an idea and fear being different.`,`做出來的東西，很安全，也很普通。`,`What you make is safe, and ordinary.`,`先看別人怎麼做，再決定自己敢不敢。`,`You check what others do before deciding whether you dare.`);
+X(99,`你覺得哪裡怪怪的，卻說不出哪裡不好。`,`Something feels off, and you cannot say what.`,`看得少，所以分不出好壞。`,`Having seen little, you cannot tell good from poor.`,`跟著流行走，沒有自己的眼光。`,`You follow fashion and have no eye of your own.`);
+X(100,`你每次都換一種風格，所以沒有人認得你。`,`A new style each time, so no one recognises you.`,`什麼都試，卻沒有留下自己的樣子。`,`You try everything and leave no mark of your own.`,`怕被定型，結果沒有形。`,`Afraid of being typecast, you have no shape.`);
+X(101,`你解釋了很久，別人還是沒有畫面。`,`You explained at length, and they still have no picture.`,`想法很新，卻找不到一個比喻讓人懂。`,`A fresh idea, and no metaphor to carry it.`,`兩件不相干的事，你從沒想過把它們連起來。`,`You never thought to connect two unrelated things.`);
+X(102,`你想做出「全新」的東西，所以一直做不出來。`,`You want something "entirely new," so nothing gets made.`,`覺得參考別人就是抄。`,`You think drawing on others is copying.`,`手上有很多素材，卻沒想過重新組合。`,`You hold plenty of material and never thought to recombine it.`);
+X(103,`你想輸出，卻發現裡面是空的。`,`You want to produce, and find nothing inside.`,`很久沒有好好讀、好好看、好好聽。`,`It has been long since you truly read, looked or listened.`,`靈感來了沒有記，回頭就忘。`,`Inspiration came unrecorded and was gone.`);
+X(104,`你想一次就寫到最好，所以第一句都寫不出來。`,`You want it perfect in one go, so the first line will not come.`,`第一版不好，就整個丟掉。`,`A poor first draft, and you threw it all away.`,`怕修改，其實是怕面對不夠好的自己。`,`Fearing revision is really fearing your own imperfection.`);
+X(105,`你怕不夠，所以一直加，加到沒有人看得懂。`,`Afraid of too little, you keep adding until no one can follow.`,`每一樣都捨不得刪。`,`You cannot bear to cut a thing.`,`東西很多，重點不見了。`,`Much material, and the point is lost.`);
+X(106,`你把事實都講完了，卻沒有人被打動。`,`You stated every fact, and no one was moved.`,`只有資訊，沒有人物、沒有轉折。`,`Information only — no people, no turn.`,`說完之後，別人記不得你說了什麼。`,`Afterwards, no one recalls what you said.`);
+X(107,`作品很完整，卻讓人沒有感覺。`,`The work is complete, and leaves people cold.`,`技巧很好，心不在裡面。`,`Fine technique, with no heart in it.`,`不敢放進自己真正的感受。`,`You dare not put your real feelings in.`);
+X(108,`你為「所有人」創作，結果沒有人覺得是為他。`,`You created for "everyone," and no one felt it was for them.`,`只想著自己想說什麼。`,`You think only of what you wish to say.`,`不知道對面坐的是誰。`,`You do not know who sits across from you.`);
+X(109,`你只做有把握的事，所以很久沒有突破。`,`You do only what is sure, so there has been no breakthrough for a long time.`,`怕失敗，所以每次都選最安全的。`,`Afraid to fail, you choose the safest each time.`,`作品越來越熟練，也越來越像上一個。`,`Each piece is more skilled, and more like the last.`);
+X(110,`你做得很美，卻很難用；或很好用，卻沒人想用。`,`It is beautiful and hard to use — or useful, and no one wants it.`,`把好看和好用，當成二選一。`,`You treat beauty and function as a choice of one.`,`顧了一邊，丟了另一邊。`,`You kept one side and dropped the other.`);
+})();
+
+/* 高維詞：110 個詞，依類別帶出痛點 */
+(function(){
+const P=FBPost.P;
+const CAT={
+'認知':[
+ {h:P('書讀了很多，遇到事情還是用老方法反應。','You have read so much, yet you still react the old way when things happen.'),
+  p:[P('知道很多道理，卻過不好這一天。','You know many principles, yet today still goes badly.'),P('同樣的坑，換個樣子又掉進去。','The same pit, in a new disguise, and you fall in again.'),P('很想改變，卻不知道自己是怎麼想的。','You want to change, but you do not know how you actually think.')]},
+ {h:P('你不是想太多，是沒有看見自己怎麼想。','You are not overthinking; you simply cannot see how you think.'),
+  p:[P('腦袋一直轉，卻轉不出新的答案。','Your mind keeps spinning but never lands on a new answer.'),P('別人一句話，就讓你懷疑自己一整天。','One remark from someone makes you doubt yourself all day.'),P('以為看見的是事實，其實看見的是自己的預設。','You think you see the facts; you are seeing your own assumptions.')]}],
+'決策':[
+ {h:P('想了很久，還是不敢做決定。','You have thought for so long and still cannot decide.'),
+  p:[P('怕選錯，所以一直拖。','Afraid to choose wrong, so you keep delaying.'),P('選了之後，又一直後悔。','After choosing, you keep regretting.'),P('聽了很多意見，卻更不知道該怎麼辦。','The more opinions you hear, the less you know what to do.')]},
+ {h:P('不是選項太少，是不知道自己要什麼。','It is not that you have too few options; you do not know what you want.'),
+  p:[P('眼前的好處，總是贏過長遠的方向。','Short-term gain keeps beating long-term direction.'),P('情緒一來，就做了衝動的決定。','When emotion arrives, the impulsive decision follows.'),P('事後才發現，當時根本沒看清楚。','Only afterwards do you realise you never saw it clearly.')]}],
+'系統':[
+ {h:P('一直在救火，卻從來沒找到火從哪裡來。','You keep putting out fires and never find where they start.'),
+  p:[P('解決了一個問題，又冒出三個。','Solve one problem, and three more appear.'),P('很努力，卻一直在原地打轉。','You work hard and keep going in circles.'),P('換了人、換了方法，結果還是一樣。','New people, new methods, the same result.')]},
+ {h:P('你修的是症狀，問題卻住在結構裡。','You are fixing symptoms, but the problem lives in the structure.'),
+  p:[P('只看見眼前這件事，看不見背後的連動。','You see the event in front of you, not the links behind it.'),P('越用力，反彈越大。','The harder you push, the harder it pushes back.'),P('明明沒做錯什麼，事情卻越來越卡。','You did nothing wrong, yet things keep getting stuck.')]}],
+'整合':[
+ {h:P('學了很多，卻像一盤散沙，用不出來。','You have learned a lot, but it is scattered sand you cannot use.'),
+  p:[P('筆記越做越多，腦袋越來越亂。','More and more notes, a more and more cluttered mind.'),P('每個觀念都懂，放在一起就不會了。','You understand each idea, but not how they fit together.'),P('一直在收集，卻沒有真正長成自己的東西。','You keep collecting, yet nothing becomes truly yours.')]}],
+'能力':[
+ {h:P('很忙、很累，卻感覺自己沒有在進步。','Busy and tired, yet you feel you are not growing.'),
+  p:[P('一直在做，卻不知道自己強在哪裡。','Always doing, never sure where your strength lies.'),P('看別人越走越遠，自己卻在原地。','Others move further ahead while you stay in place.'),P('練了很久，還是卡在同一個地方。','After long practice, you are stuck at the same spot.')]},
+ {h:P('不是你不夠努力，是努力沒有變成能力。','It is not a lack of effort; your effort has not yet become ability.'),
+  p:[P('學過就忘，用時才發現不會。','Learned and forgotten; you discover it only when you need it.'),P('怕犯錯，所以不敢多試。','Afraid of mistakes, so you do not dare to try more.'),P('把「知道」當成了「做到」。','You mistook knowing for doing.')]}],
+'財富':[
+ {h:P('賺得不算少，心裡卻一直不踏實。','You earn enough, yet you never feel settled.'),
+  p:[P('月初有錢，月底不知道錢去哪了。','Money at the start of the month, a mystery by the end.'),P('很努力工作，資產卻沒有跟著長大。','You work hard, yet your assets do not grow with you.'),P('一談到錢，就焦慮、就逃避。','The moment money comes up, you feel anxious and look away.')]},
+ {h:P('你缺的不是錢，是看懂錢的方式。','What you lack is not money, but a way of understanding it.'),
+  p:[P('用時間換錢，換到沒有時間。','Trading time for money until no time is left.'),P('聽到機會就心動，卻說不出它的風險。','Every opportunity excites you, yet you cannot name its risk.'),P('存不下來，也不敢開始。','You cannot save, and you do not dare to begin.')]}],
+'健康':[
+ {h:P('身體一直在說話，你卻一直叫它安靜。','Your body keeps speaking, and you keep telling it to be quiet.'),
+  p:[P('累了靠咖啡，睡不著靠手機。','Coffee for the tiredness, a phone for the sleeplessness.'),P('檢查報告還好，人卻一直不舒服。','The reports look fine, but you do not feel fine.'),P('等有空再運動，結果一直沒空。','You will exercise when you have time, and the time never comes.')]},
+ {h:P('你照顧了所有人，卻忘了照顧自己。','You took care of everyone and forgot yourself.'),
+  p:[P('把疲憊當成正常。','You have accepted exhaustion as normal.'),P('小毛病一直拖，拖成大問題。','Small issues delayed until they became large ones.'),P('知道該改，卻總是從明天開始。','You know you should change, and it always starts tomorrow.')]}],
+'組織':[
+ {h:P('會議開了很多，事情卻沒有往前。','So many meetings, and nothing has moved.'),
+  p:[P('大家都很忙，卻說不清在忙什麼。','Everyone is busy, and no one can say with what.'),P('事情不做沒人做，一做全是你的。','If you do not do it, no one will; once you do, it is all yours.'),P('同一個問題，換一批人又發生一次。','The same problem happens again with a new group of people.')]},
+ {h:P('不是人不好，是系統讓好人做不好事。','It is not bad people; it is a system that keeps good people from doing good work.'),
+  p:[P('說好的事，沒有人追。','What was agreed, no one follows up.'),P('責任很多，權限很少。','A lot of responsibility, very little authority.'),P('每個人都盡力了，整體卻沒有變好。','Everyone did their best, and the whole did not improve.')]}],
+'藝術':[
+ {h:P('日子過得很滿，心卻很空。','Your days are full and your heart is empty.'),
+  p:[P('很久沒有為一件事感動了。','It has been a long time since anything moved you.'),P('想創作，卻覺得自己不夠好。','You want to create, but feel you are not good enough.'),P('看了很多美的東西，卻說不出自己喜歡什麼。','You have seen much beauty, yet cannot say what you love.')]},
+ {h:P('你不是沒有才華，是太久沒有好好感受。','You do not lack talent; you have gone too long without truly feeling.'),
+  p:[P('怕被評價，所以不敢表達。','Afraid of judgment, so you do not express.'),P('把美當成奢侈，把效率當成全部。','You treat beauty as a luxury and efficiency as everything.'),P('做什麼都很快，卻沒有一件事做得深。','You do everything quickly, and nothing deeply.')]}]
+};
+const sents=(s,re)=>String(s).split(re).map(x=>x.trim()).filter(Boolean);
+FBPost.init({
+  brand:'高維詞 LifeOS',color:'#4B55B8',tint:'#E9EBFA',domain:'think',
+  items:()=>vocabularyData.map((v,i)=>{
+    const sets=CAT[v.category]||CAT['認知'],s=sets[i%sets.length];
+    const z=sents(v.essence,/(?<=[。！？])/),e=sents(v.essenceEn,/(?<=[.!?])\s+/);
+    const quotes=(z.length===e.length?z.map((x,j)=>P(x,e[j])):[P(v.essence,v.essenceEn)]);
+    // 逐項手寫痛點；沒有時才退回類別輪替組
+    const h=(window.FBP_PAIN||{})[v.id];
+    return {id:v.id,no:String(v.id).padStart(3,'0'),zh:v.chinese,en:v.english,hook:h?P(h[0],h[1]):s.h,pains:h?[P(h[2],h[3]),P(h[4],h[5]),s.p[i%3]]:s.p,
+      core:P(v.definition+'。',v.definitionEn+'.'),quotes:quotes,
+      step:P(v.application,v.applicationEn),tags:(v.relatedTerms||[]).slice(0,3)};
+  }),
+  mounts:()=>Array.from(document.querySelectorAll('.card[data-id]')).map(c=>({el:c,id:c.dataset.id}))
+});
+})();
+
+</script>
+<!-- FBPOST:END -->
+</body>
+</html>

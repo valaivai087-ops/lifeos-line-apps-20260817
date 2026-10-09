@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communication OS | 180 溝通能力系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #1A2B5F;
+            --gold: #C9960C;
+            --teal: #0A7A72;
+            --white: #FFFFFF;
+            --light-bg: #F8F9FB;
+            --border: #E0E6F0;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', '微軟正黑體', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--white);
+            color: var(--navy);
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+            color: var(--white);
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(26, 43, 95, 0.15);
+        }
+
+        .header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .controls {
+            background: var(--light-bg);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--gold);
+        }
+
+        .controls h3 {
+            color: var(--navy);
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid var(--navy);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .search-box button {
+            padding: 12px 25px;
+            background: var(--gold);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .search-box button:hover {
+            background: #B8860B;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: 2px solid var(--navy);
+            background: var(--white);
+            color: var(--navy);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--navy);
+            color: var(--white);
+        }
+
+        .btn.active {
+            background: var(--navy);
+            color: var(--white);
+        }
+
+        /* 卡片視圖 */
+        .view-cards {
+            display: none;
+        }
+
+        .view-cards.active {
+            display: block;
+        }
+
+        .abilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .ability-card {
+            background: var(--white);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(26, 43, 95, 0.1);
+        }
+
+        .ability-card:hover {
+            border-color: var(--gold);
+            box-shadow: 0 8px 20px rgba(26, 43, 95, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .ability-header {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+            color: var(--white);
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ability-number {
+            font-size: 24px;
+            font-weight: bold;
+            min-width: 60px;
+        }
+
+        .ability-name {
+            flex: 1;
+            font-size: 15px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        .toggle-icon {
+            font-size: 18px;
+            transition: transform 0.3s;
+        }
+
+        .ability-body {
+            padding: 20px;
+            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .ability-card.expanded .ability-body {
+            display: block;
+            max-height: 3000px;
+        }
+
+        .ability-card.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .content-section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .content-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-label {
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .bilingual-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 8px;
+        }
+
+        .text-block {
+            padding: 10px;
+            background: var(--light-bg);
+            border-radius: 6px;
+            border-left: 3px solid var(--teal);
+        }
+
+        .text-block.en {
+            border-left-color: var(--gold);
+        }
+
+        .text-block label {
+            display: block;
+            font-size: 11px;
+            color: var(--navy);
+            font-weight: bold;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .text-block p {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--navy);
+            margin: 0;
+        }
+
+        .text-block p.en {
+            font-style: italic;
+            color: #555;
+        }
+
+        .tts-button {
+            background: var(--teal);
+            color: var(--white);
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 6px;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .tts-button:hover {
+            background: #086B62;
+        }
+
+        .tts-button.gold {
+            background: var(--gold);
+        }
+
+        .tts-button.gold:hover {
+            background: #B8860B;
+        }
+
+        /* 表格視圖 */
+        .view-table {
+            display: none;
+        }
+
+        .view-table.active {
+            display: block;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(26, 43, 95, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+        }
+
+        table thead {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+            color: var(--white);
+            position: sticky;
+            top: 0;
+        }
+
+        table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid var(--gold);
+            font-size: 13px;
+        }
+
+        table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        table tbody tr:hover {
+            background: var(--light-bg);
+            transition: all 0.2s;
+        }
+
+        table tbody tr:nth-child(even) {
+            background: rgba(245, 245, 250, 0.5);
+        }
+
+        .table-number {
+            font-weight: bold;
+            color: var(--navy);
+            min-width: 60px;
+        }
+
+        .table-name {
+            font-weight: bold;
+            color: var(--navy);
+            min-width: 150px;
+        }
+
+        .table-essence-cn {
+            color: var(--navy);
+            min-width: 250px;
+        }
+
+        .table-formula-cn {
+            color: var(--navy);
+            min-width: 250px;
+        }
+
+        .table-essence-en {
+            color: #555;
+            font-style: italic;
+            min-width: 250px;
+        }
+
+        .table-formula-en {
+            color: #555;
+            font-style: italic;
+            min-width: 250px;
+        }
+
+        .stats {
+            background: rgba(201, 150, 12, 0.1);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            color: var(--navy);
+            font-weight: bold;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .footer {
+            background: var(--light-bg);
+            padding: 30px 20px;
+            text-align: center;
+            color: var(--navy);
+            border-top: 2px solid var(--border);
+            margin-top: 50px;
+        }
+
+        .footer p {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 900px) {
+            .abilities-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bilingual-box {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 32px;
+            }
+
+            .ability-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .ability-name {
+                font-size: 14px;
+            }
+
+            table th, table td {
+                padding: 8px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 Communication OS</h1>
+        <p>180 個溝通能力完整系統 | 180 Communication Skills System</p>
+    </div>
+
+    <div class="container">
+        <div class="controls">
+            <h3>📚 導航 | Navigation</h3>
+            
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜尋編號或能力名稱 | Search by number or name...">
+                <button onclick="searchAbilities()">🔍 搜尋 | Search</button>
+            </div>
+
+            <div class="stats" id="stats">已加載 180 項能力 | 180 Skills Loaded</div>
+
+            <div class="button-group">
+                <button class="btn active" id="btnCards" onclick="switchView('cards')">🎴 卡片視圖 | Cards</button>
+                <button class="btn" id="btnTable" onclick="switchView('table')">📊 完整表格 | Table</button>
+                <button class="btn" id="btnAll" onclick="showAllAbilities()">📖 全部 | All</button>
+                <button class="btn" id="btnExpand" onclick="expandAllCards()">➕ 展開 | Expand</button>
+                <button class="btn" id="btnCollapse" onclick="collapseAllCards()">➖ 收縮 | Collapse</button>
+            </div>
+        </div>
+
+        <!-- 卡片視圖 -->
+        <div class="view-cards active">
+            <div id="abilitiesContainer" class="abilities-grid"></div>
+        </div>
+
+        <!-- 表格視圖 -->
+        <div class="view-table">
+            <div class="table-container">
+                <table id="abilitiesTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%;">編號</th>
+                            <th style="width: 12%;">能力名稱</th>
+                            <th style="width: 20%;">本質 (中文)</th>
+                            <th style="width: 20%;">說話公式 (中文)</th>
+                            <th style="width: 20%;">Essence (English)</th>
+                            <th style="width: 20%;">Formula (English)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>✅ Communication OS | 高品質溝通完整系統</p>
+        <p>包含 180 項核心溝通能力，從基礎傾聽到高階愛的表達</p>
+        <p>180 core communication skills from basic listening to advanced love expression</p>
+    </div>
+
+    <script>
+        const allAbilities = [{"number": "001", "name_cn": "傾聽能力", "essence_cn": "真正的傾聽是理解模型，而不是等待回應。", "formula_cn": "\"我先確認一下，我理解的是……，有沒有哪裡需要修正？\"", "high_cn": "先理解，再回應；先同步模型，再提出觀點。", "name_en": "Listening Ability", "essence_en": "True listening is understanding the model, not waiting to respond.", "formula_en": "\"Let me confirm what I understand... is there anything that needs correction?\"", "high_en": "Understand first, then respond; synchronize models before offering perspectives."}, {"number": "002", "name_cn": "同理理解能力", "essence_cn": "理解對方的感受、需求與處境，而不是代替對方感受。", "formula_cn": "\"如果我是你，我猜你現在最在意的是……，我理解對嗎？\"", "high_cn": "理解不等於認同，而是理解對方如何形成這個模型。", "name_en": "Empathy Understanding", "essence_en": "Understanding others' feelings and needs without replacing their emotions.", "formula_en": "\"If I were you, what matters most to you right now is... am I correct?\"", "high_en": "Understanding ≠ agreement; understand how they formed their model."}, {"number": "003", "name_cn": "模型同步能力", "essence_cn": "溝通的本質是同步彼此對世界的理解。", "formula_cn": "\"我們現在理解的是同一件事嗎？\"", "high_cn": "先同步世界模型，再討論對錯。", "name_en": "Model Synchronization", "essence_en": "Communication synchronizes mutual understanding of the world.", "formula_en": "\"Are we understanding the same thing right now?\"", "high_en": "Synchronize world models before discussing right and wrong."}, {"number": "004", "name_cn": "世界觀理解能力", "essence_cn": "每個人都是依自己的世界模型行動。", "formula_cn": "\"你是怎麼看待這件事情的？\"", "high_cn": "先理解世界觀，再理解行為。", "name_en": "Worldview Understanding", "essence_en": "Everyone acts based on their own world model.", "formula_en": "\"How do you view this situation?\"", "high_en": "Understand worldview before understanding behavior."}, {"number": "005", "name_cn": "需求辨識能力", "essence_cn": "情緒背後通常都有未被滿足的需求。", "formula_cn": "\"你真正需要的是什麼？\"", "high_cn": "不要急著解決問題，先理解需求。", "name_en": "Needs Identification", "essence_en": "Emotions usually hide unmet needs.", "formula_en": "\"What do you really need?\"", "high_en": "Don't rush to solve problems—understand needs first."}, {"number": "006", "name_cn": "情緒辨識能力", "essence_cn": "情緒是系統回饋，不是敵人。", "formula_cn": "\"我感覺你現在有些焦慮／失望，是嗎？\"", "high_cn": "情緒不是問題，而是資訊。", "name_en": "Emotion Recognition", "essence_en": "Emotions are system feedback, not enemies.", "formula_en": "\"I sense you're feeling anxious/disappointed. Is that right?\"", "high_en": "Emotions are information, not problems."}, {"number": "007", "name_cn": "情緒命名能力", "essence_cn": "說出情緒，才能開始整理情緒。", "formula_cn": "\"如果要命名，你現在最接近哪一種感受？\"", "high_cn": "能命名，才能管理。", "name_en": "Emotion Naming", "essence_en": "Naming emotions is the first step to managing them.", "formula_en": "\"Which feeling are you closest to?\"", "high_en": "What is named can be managed."}, {"number": "008", "name_cn": "意圖辨識能力", "essence_cn": "語言背後都有真正目的。", "formula_cn": "\"你希望透過這句話達成什麼？\"", "high_cn": "先理解意圖，不急著解讀文字。", "name_en": "Intent Recognition", "essence_en": "Language always has real purpose behind it.", "formula_en": "\"What do you hope to achieve by saying this?\"", "high_en": "Understand intent first, don't rush to interpret words."}, {"number": "009", "name_cn": "假設驗證能力", "essence_cn": "所有理解都只是暫時假設。", "formula_cn": "\"我的理解是……，請幫我確認。 \"", "high_cn": "驗證比猜測重要。", "name_en": "Assumption Verification", "essence_en": "All understanding is only temporary assumption.", "formula_en": "\"My understanding is... please help me verify.\"", "high_en": "Verification is more important than guessing."}, {"number": "010", "name_cn": "提問能力", "essence_cn": "好的問題比好的答案更有價值。", "formula_cn": "\"你怎麼看？\"", "high_cn": "問題決定思考深度。", "name_en": "Questioning Ability", "essence_en": "Good questions have more value than good answers.", "formula_en": "\"What's your view on this?\"", "high_en": "Questions determine thinking depth."}, {"number": "011", "name_cn": "深度提問能力", "essence_cn": "追問真正原因，而非停留表面。", "formula_cn": "\"為什麼這件事對你這麼重要？\"", "high_cn": "追問到底層模型。", "name_en": "Deep Questioning", "essence_en": "Deep questions reveal core understanding and assumptions.", "formula_en": "\"What would happen if...?\"", "high_en": "Ask questions that make people think beyond surface."}, {"number": "012", "name_cn": "開放式提問能力", "essence_cn": "開放問題能增加資訊。", "formula_cn": "\"你能多分享一點嗎？\"", "high_cn": "讓對方生成，而不是限制回答。", "name_en": "Open-Ended Questions", "essence_en": "Open questions invite exploration rather than closure.", "formula_en": "\"Tell me more about...\"", "high_en": "Design questions that expand thinking space."}, {"number": "013", "name_cn": "澄清能力", "essence_cn": "澄清降低誤解。", "formula_cn": "\"你的意思是……嗎？\"", "high_cn": "確認比假設更有效。", "name_en": "Clarification Ability", "essence_en": "Clarification ensures mutual understanding and prevents misinterpretation.", "formula_en": "\"What do you mean by...?\"", "high_en": "Clarify ambiguity before acting on assumptions."}, {"number": "014", "name_cn": "重述能力", "essence_cn": "用自己的話確認理解。", "formula_cn": "\"我整理一下你的意思……\"", "high_cn": "重述是理解的驗證。", "name_en": "Restatement Ability", "essence_en": "Restating shows you listened and understood accurately.", "formula_en": "\"So you're saying that...\"", "high_en": "Reflect back what you hear to verify accuracy."}, {"number": "015", "name_cn": "摘要能力", "essence_cn": "濃縮資訊，保留本質。", "formula_cn": "\"重點有三個……\"", "high_cn": "高品質摘要降低認知負擔。", "name_en": "Summarization Ability", "essence_en": "Summarizing consolidates key points and shared understanding.", "formula_en": "\"The main points are...\"", "high_en": "Distill complexity into clear, actionable summaries."}, {"number": "016", "name_cn": "確認理解能力", "essence_cn": "確認比自以為理解更重要。", "formula_cn": "\"這樣理解正確嗎？\"", "high_cn": "每次重要溝通都要確認理解。", "name_en": "Understanding Confirmation", "essence_en": "Confirming ensures both parties share the same understanding.", "formula_en": "\"Is my understanding correct?\"", "high_en": "Never assume—always verify mutual understanding."}, {"number": "017", "name_cn": "回饋能力", "essence_cn": "回饋是更新模型的來源。", "formula_cn": "\"我的觀察是……\"", "high_cn": "回饋是幫助成長，不是批評。", "name_en": "Feedback Ability", "essence_en": "Feedback helps others see blind spots and improve.", "formula_en": "\"I noticed that... Have you considered...?\"", "high_en": "Give feedback that serves growth, not judgment."}, {"number": "018", "name_cn": "雙向回饋能力", "essence_cn": "彼此都能修正彼此模型。", "formula_cn": "\"你也可以回饋我。 \"", "high_cn": "回饋是雙向更新。", "name_en": "Bidirectional Feedback", "essence_en": "Two-way feedback creates mutual understanding and trust.", "formula_en": "\"I'd like to share something. I'd also like to hear your thoughts.\"", "high_en": "Feedback is a dialogue, not a monologue."}, {"number": "019", "name_cn": "校正能力", "essence_cn": "持續降低彼此誤差。", "formula_cn": "\"我們修正一下剛才的理解。 \"", "high_cn": "修正不是失敗，而是升級。", "name_en": "Correction Ability", "essence_en": "Correction done with respect preserves relationship while fixing error.", "formula_en": "\"I see it differently... Can we explore together?\"", "high_en": "Correct without diminishing the other person's value."}, {"number": "020", "name_cn": "認知校準能力", "essence_cn": "讓彼此對同一件事有一致理解。", "formula_cn": "\"我們目前的理解一致嗎？\"", "high_cn": "先校準認知，再開始合作。", "name_en": "Cognitive Alignment", "essence_en": "Aligning cognition means updating shared mental models together.", "formula_en": "\"Let me update my understanding...\"", "high_en": "Create safe space for mental model updates."}, {"number": "021", "name_cn": "共識建立能力", "essence_cn": "共識不是每個人都同意，而是每個人都理解共同決定。", "formula_cn": "\"我們目前共同同意的是……還有哪裡需要再確認？\"", "high_cn": "先建立共享模型，再開始執行；共識是共享理解，不是表面一致。", "name_en": "Consensus Building", "essence_en": "Consensus is shared understanding, not just surface agreement.", "formula_en": "\"We currently agree that... anything else to clarify?\"", "high_en": "Consensus is when everyone understands and accepts."}, {"number": "022", "name_cn": "共同目標建立能力", "essence_cn": "共同目標提供合作方向，降低內耗。", "formula_cn": "\"我們真正想完成的是什麼？\"", "high_cn": "先定義成功，再討論方法；方向一致比速度更重要。", "name_en": "Shared Goal Establishment", "essence_en": "Shared goals unite people with common purpose.", "formula_en": "\"Our goal is... Do we agree?\"", "high_en": "Align on destination before discussing path."}, {"number": "023", "name_cn": "共同語言建立能力", "essence_cn": "相同詞彙必須有相同定義。", "formula_cn": "\"我們先定義這個詞的意思。 \"", "high_cn": "定義一致，理解才會一致；語言不同，世界就不同。", "name_en": "Common Language Development", "essence_en": "Common language prevents misunderstanding across different backgrounds.", "formula_en": "\"By X, I mean...\"", "high_en": "Define key terms and create shared vocabulary."}, {"number": "024", "name_cn": "共同框架建立能力", "essence_cn": "共同框架降低認知成本，提高討論效率。", "formula_cn": "\"我們先用同一個架構討論。 \"", "high_cn": "先建立框架，再填入內容；框架比細節更重要。", "name_en": "Framework Alignment", "essence_en": "Aligned frameworks ensure consistent interpretation and action.", "formula_en": "\"We use this framework to...\"", "high_en": "Establish shared mental models and decision criteria."}, {"number": "025", "name_cn": "模型翻譯能力", "essence_cn": "真正的溝通是翻譯，而不是重複。", "formula_cn": "\"我換另一種方式說，你看看是否更容易理解。 \"", "high_cn": "翻譯比說服重要；讓對方在自己的模型裡理解。", "name_en": "Cross-Domain Translation", "essence_en": "Translation bridges understanding across different domains and expertise.", "formula_en": "\"In your field, this is like...\"", "high_en": "Build bridges between different ways of thinking."}, {"number": "026", "name_cn": "跨領域翻譯能力", "essence_cn": "不同領域只是不同語言系統。", "formula_cn": "\"如果用你的專業來說，就是……\"", "high_cn": "跨領域合作的核心不是知識，而是翻譯。", "name_en": "Cross-Field Translation", "essence_en": "Cross-field translation makes expertise accessible across disciplines.", "formula_en": "\"If we apply that here...\"", "high_en": "Translate specialized knowledge into common understanding."}, {"number": "027", "name_cn": "專業轉譯能力", "essence_cn": "真正理解的人，能把複雜說簡單。", "formula_cn": "\"簡單來說，它代表……\"", "high_cn": "深度理解會自然產生簡潔表達。", "name_en": "Professional Translation", "essence_en": "Professional translation converts specialized concepts into general language.", "formula_en": "\"In simple terms...\"", "high_en": "Make expertise accessible without dumbing it down."}, {"number": "028", "name_cn": "白話解釋能力", "essence_cn": "抽象概念需要生活化才能快速理解。", "formula_cn": "\"你可以把它想成……\"", "high_cn": "不是降低深度，而是降低理解成本。", "name_en": "Plain Language Explanation", "essence_en": "Plain language makes complex ideas understandable to anyone.", "formula_en": "\"Let me explain it this way...\"", "high_en": "Simplify without losing accuracy."}, {"number": "029", "name_cn": "比喻能力", "essence_cn": "比喻建立兩個模型之間的橋梁。", "formula_cn": "\"它就像……\"", "high_cn": "好的比喻能瞬間同步模型。", "name_en": "Analogy Ability", "essence_en": "Analogies help people grasp new concepts through familiar examples.", "formula_en": "\"It's like...\"", "high_en": "Use analogies to illuminate, not oversimplify."}, {"number": "030", "name_cn": "舉例能力", "essence_cn": "案例是抽象概念的具體化。", "formula_cn": "\"例如……\"", "high_cn": "例子讓知識變成經驗，而不是文字。", "name_en": "Example Ability", "essence_en": "Examples make abstract concepts concrete and relatable.", "formula_en": "\"For example...\"", "high_en": "Choose examples that illuminate rather than confuse."}, {"number": "031", "name_cn": "故事表達能力", "essence_cn": "故事是最容易被記住的知識結構。", "formula_cn": "\"曾經有一個人……\"", "high_cn": "故事同步情境、情緒與模型，比道理更容易內化。", "name_en": "Expression Precision", "essence_en": "Precise expression prevents misunderstanding and saves time.", "formula_en": "\"To be precise...\"", "high_en": "Say exactly what you mean with minimal words."}, {"number": "032", "name_cn": "視角切換能力", "essence_cn": "不同位置看到不同資訊。", "formula_cn": "\"如果站在他的角度呢？\"", "high_cn": "成熟的人能自由切換視角，而不是固守立場。", "name_en": "Language Agility", "essence_en": "Agility in language means adapting expression to audience.", "formula_en": "\"Let me put it differently...\"", "high_en": "Speak fluently across different registers and contexts."}, {"number": "033", "name_cn": "換位思考能力", "essence_cn": "理解他人的世界，不等於放棄自己的立場。", "formula_cn": "\"如果我是你，我可能也會這樣想。 \"", "high_cn": "理解不是認同，而是理解模型生成過程。", "name_en": "Metaphor Mastery", "essence_en": "Metaphors carry complex meanings in memorable images.", "formula_en": "\"Think of it as...\"", "high_en": "Use metaphors to reveal deeper patterns."}, {"number": "034", "name_cn": "多模型思考能力", "essence_cn": "一件事可能同時存在多種合理解釋。", "formula_cn": "\"還有沒有其他可能？\"", "high_cn": "避免單一模型，建立多重假設。", "name_en": "Visual Description", "essence_en": "Visual descriptions help others see what you see.", "formula_en": "\"Picture it this way...\"", "high_en": "Paint vivid pictures that create shared vision."}, {"number": "035", "name_cn": "價值觀辨識能力", "essence_cn": "衝突通常不是事實不同，而是價值排序不同。", "formula_cn": "\"你最在乎的是什麼？\"", "high_cn": "看見價值排序，比討論立場更重要。", "name_en": "Narrative Ability", "essence_en": "Narratives engage hearts and minds through story.", "formula_en": "\"Here's what happened...\"", "high_en": "Tell stories that teach, inspire, and transform."}, {"number": "036", "name_cn": "信念辨識能力", "essence_cn": "信念決定知覺，知覺決定行動。", "formula_cn": "\"你為什麼會這樣相信？\"", "high_cn": "不要急著改變結論，先理解底層信念。", "name_en": "Humor Integration", "essence_en": "Humor lightens tension and builds connection.", "formula_en": "\"That reminds me of...\"", "high_en": "Use humor to humanize and connect without deflecting."}, {"number": "037", "name_cn": "前提辨識能力", "essence_cn": "不同前提，必然得到不同結論。", "formula_cn": "\"我們是不是用了不同前提？\"", "high_cn": "真正需要同步的是假設，而不是答案。", "name_en": "Metaphor Decoding", "essence_en": "Decoding others' metaphors reveals their underlying thinking.", "formula_en": "\"When you say..., you mean...?\"", "high_en": "Understand the meaning behind the words."}, {"number": "038", "name_cn": "偏誤辨識能力", "essence_cn": "每個人都可能受認知偏誤影響。", "formula_cn": "\"有沒有可能我們都看漏了什麼？\"", "high_cn": "成熟的人不是沒有偏誤，而是願意修正偏誤。", "name_en": "Subtext Reading", "essence_en": "Reading subtext means understanding what's said between the lines.", "formula_en": "\"I sense you're concerned about...\"", "high_en": "Hear what's not being said."}, {"number": "039", "name_cn": "誤解診斷能力", "essence_cn": "許多衝突其實來自理解落差，而不是立場對立。", "formula_cn": "\"我們是理解不同，還是立場不同？\"", "high_cn": "先診斷誤解，再處理衝突；不要把資訊問題變成人際問題。", "name_en": "Non-Verbal Communication", "essence_en": "Body language often reveals more than words.", "formula_en": "\"Your expression suggests...\"", "high_en": "Read and respond to non-verbal signals."}, {"number": "040", "name_cn": "衝突診斷能力", "essence_cn": "衝突是系統訊號，不是敵人。", "formula_cn": "\"真正衝突的是目標、資訊、價值，還是情緒？\"", "high_cn": "不要急著解決衝突，先辨識衝突類型；診斷正確，處理才有效。", "name_en": "Tone Sensitivity", "essence_en": "Tone carries emotional meaning often as important as words.", "formula_en": "\"I notice your tone... Can we talk about that?\"", "high_en": "Respond to what's felt, not just what's said."}, {"number": "041", "name_cn": "衝突化解能力", "essence_cn": "衝突不是敵人，而是系統失去同步的訊號。", "formula_cn": "\"我們一起找一個彼此都能接受的方法。 \"", "high_cn": "不要急著分輸贏，而是一起降低系統摩擦。", "name_en": "Conflict Resolution", "essence_en": "Conflict signals system desynchronization, not hostility.", "formula_en": "\"Let's find an approach we both can accept.\"", "high_en": "Treat conflict as data to learn from, not battle to win."}, {"number": "042", "name_cn": "衝突重構能力", "essence_cn": "衝突往往是問題定義不同，而不是人不好。", "formula_cn": "\"我們是不是看到的是不同的問題？\"", "high_cn": "重新定義問題，比爭論答案更重要。", "name_en": "Disagreement Navigation", "essence_en": "Disagreement can strengthen understanding when handled well.", "formula_en": "\"I see it differently. Help me understand your view.\"", "high_en": "Hold conviction while remaining genuinely curious."}, {"number": "043", "name_cn": "關係修復能力", "essence_cn": "修復不是回到過去，而是建立更成熟的合作模式。", "formula_cn": "\"我希望修復我們之間的關係。 \"", "high_cn": "承認傷害、理解彼此、共同更新，讓關係升級。", "name_en": "Perspective Seeking", "essence_en": "Seeking perspectives reveals blind spots and expands thinking.", "formula_en": "\"What do you see that I might be missing?\"", "high_en": "View disagreement as opportunity to learn."}, {"number": "044", "name_cn": "信任建立能力", "essence_cn": "信任來自長期一致的行為，而不是承諾。", "formula_cn": "\"我答應你的事情，我會做到。 \"", "high_cn": "信任不是說出來的，而是一次次被驗證出來的。", "name_en": "Negotiation Ability", "essence_en": "Negotiation creates solutions that serve all parties.", "formula_en": "\"What would work for both of us?\"", "high_en": "Negotiate interests, not positions."}, {"number": "045", "name_cn": "信任維護能力", "essence_cn": "信任需要持續校準，而不是建立一次就永久存在。", "formula_cn": "\"目前有沒有讓你不安心的地方？\"", "high_cn": "主動確認、持續更新，信任才會累積。", "name_en": "Compromise Crafting", "essence_en": "Good compromises satisfy core needs while respecting constraints.", "formula_en": "\"Can we try...?\"", "high_en": "Find creative solutions beyond either/or."}, {"number": "046", "name_cn": "尊重差異能力", "essence_cn": "差異代表資訊來源不同，不代表誰對誰錯。", "formula_cn": "\"我們可以有不同的想法。 \"", "high_cn": "尊重差異，不急著消滅差異，而是理解差異。", "name_en": "Win-Win Building", "essence_en": "Win-win solutions exist when we expand the space thoughtfully.", "formula_en": "\"What if we...?\"", "high_en": "Expand possibilities before settling on trade-offs."}, {"number": "047", "name_cn": "包容多元能力", "essence_cn": "多元增加系統的適應能力。", "formula_cn": "\"我們一起看看還有哪些不同方法。 \"", "high_cn": "多元不是混亂，而是增加系統韌性。", "name_en": "Value Articulation", "essence_en": "Articulating values helps align decisions with principles.", "formula_en": "\"What matters most to us is...\"", "high_en": "Ground decisions in shared values."}, {"number": "048", "name_cn": "不評判能力", "essence_cn": "理解應先於評價。", "formula_cn": "\"我想先理解，再形成看法。 \"", "high_cn": "觀察先於判斷；事實先於標籤。", "name_en": "Principle Communication", "essence_en": "Clear principles guide decisions and build trust.", "formula_en": "\"We operate on the principle that...\"", "high_en": "Communicate principles clearly and consistently."}, {"number": "049", "name_cn": "延遲下結論能力", "essence_cn": "資訊不足時，最好的決策是暫停判斷。", "formula_cn": "\"目前資訊還不夠，我想再了解。 \"", "high_cn": "成熟的人保留更新空間，而不是急著下定論。", "name_en": "Boundary Setting", "essence_en": "Clear boundaries protect relationships and enable better collaboration.", "formula_en": "\"I can... I cannot...\"", "high_en": "Set boundaries with respect and clarity."}, {"number": "050", "name_cn": "好奇探索能力", "essence_cn": "真正的學習始於好奇。", "formula_cn": "\"我很好奇，你是怎麼想到的？\"", "high_cn": "用好奇取代批評，用探索取代防衛。", "name_en": "Curiosity", "essence_en": "Genuine curiosity opens doors to deeper understanding.", "formula_en": "\"I'm curious about...\"", "high_en": "Lead with authentic curiosity, not judgment."}, {"number": "051", "name_cn": "主動確認能力", "essence_cn": "確認比猜測更有效。", "formula_cn": "\"我確認一下，我理解的是……\"", "high_cn": "主動確認能降低大部分誤解。", "name_en": "Discovery Mindset", "essence_en": "Discovery mindset treats every conversation as learning opportunity.", "formula_en": "\"Tell me something I don't know...\"", "high_en": "Approach every interaction as discovery."}, {"number": "052", "name_cn": "積極傾聽能力", "essence_cn": "傾聽是一種高品質參與，而不是沉默等待。", "formula_cn": "\"你繼續說，我想完整理解。 \"", "high_cn": "真正的傾聽，是幫助對方把模型說完整。", "name_en": "Openness", "essence_en": "Openness invites others to share authentically.", "formula_en": "\"I'm open to hearing...\"", "high_en": "Create psychological safety through genuine openness."}, {"number": "053", "name_cn": "非語言訊號辨識能力", "essence_cn": "大量資訊來自表情、姿勢、停頓，而非文字。", "formula_cn": "\"我注意到你剛剛停頓了一下。 \"", "high_cn": "聽見沒說出口的訊息，比聽見文字更重要。", "name_en": "Vulnerability Expression", "essence_en": "Vulnerability builds trust and deepens connection.", "formula_en": "\"I don't know... I'm uncertain about...\"", "high_en": "Lead with appropriate vulnerability."}, {"number": "054", "name_cn": "肢體語言理解能力", "essence_cn": "身體經常比嘴巴更誠實。", "formula_cn": "\"我注意到你的表情有些變化。 \"", "high_cn": "觀察身體訊號，但不要急著解讀，先確認。", "name_en": "Authenticity", "essence_en": "Authenticity means showing up as your true self.", "formula_en": "\"That's really who I am...\"", "high_en": "Drop masks and connect genuinely."}, {"number": "055", "name_cn": "語氣辨識能力", "essence_cn": "相同文字，不同語氣，意義完全不同。", "formula_cn": "\"我聽到你的語氣裡，好像有些擔心。 \"", "high_cn": "語氣承載情緒，文字承載資訊。兩者都要理解。", "name_en": "Trust Building", "essence_en": "Trust is earned through consistent, congruent action.", "formula_en": "\"You can count on me to...\"", "high_en": "Build trust through integrity and follow-through."}, {"number": "056", "name_cn": "情境判斷能力", "essence_cn": "任何一句話都必須放在情境中理解。", "formula_cn": "\"現在適合討論這件事嗎？\"", "high_cn": "情境決定表達方式，而不是固定話術。", "name_en": "Reliability", "essence_en": "Reliability means doing what you say you'll do.", "formula_en": "\"I promise to...\"", "high_en": "Be someone people can depend on completely."}, {"number": "057", "name_cn": "溝通時機判斷能力", "essence_cn": "好的內容，也需要好的時機。", "formula_cn": "\"我們等彼此都比較平靜再談，好嗎？\"", "high_cn": "時機也是溝通的一部分；先處理情緒，再處理事情。", "name_en": "Accountability", "essence_en": "Accountability means taking responsibility for your actions.", "formula_en": "\"I take responsibility for...\"", "high_en": "Own your impact, not just intentions."}, {"number": "058", "name_cn": "對象分析能力", "essence_cn": "不同的人，需要不同的溝通方式。", "formula_cn": "\"我想先了解你的背景與需求。 \"", "high_cn": "不是改變內容，而是調整輸出方式。", "name_en": "Commitment Expression", "essence_en": "Clear commitments show dedication and build confidence.", "formula_en": "\"I'm committed to...\"", "high_en": "Express commitment with clarity and conviction."}, {"number": "059", "name_cn": "聽眾分析能力", "essence_cn": "有效表達，始於理解聽眾。", "formula_cn": "\"對你來說，最重要的是哪一部分？\"", "high_cn": "先分析接收端，再設計訊息；溝通是為了讓對方理解，而不是自己說完。", "name_en": "Follow-Through", "essence_en": "Follow-through transforms words into credibility.", "formula_en": "\"Here's what I did as promised...\"", "high_en": "Make your actions align with your words."}, {"number": "060", "name_cn": "表達層次調整能力", "essence_cn": "好的表達會依照對象調整深度、速度與語言。", "formula_cn": "\"我可以用簡單版，也可以用深入版，你希望哪一種？\"", "high_cn": "真正的高手，不是只會講深，而是能自由切換不同理解層次，讓每個人都能聽懂。", "name_en": "Consistency", "essence_en": "Consistency across time builds trust and reliability.", "formula_en": "\"Over time, you'll see that...\"", "high_en": "Be reliably yourself across different contexts."}, {"number": "061", "name_cn": "語言簡化能力", "essence_cn": "真正的高手不是說得複雜，而是把複雜變簡單。", "formula_cn": "\"一句話來說，就是……\"", "high_cn": "簡化不是刪除內容，而是保留本質、降低理解成本。", "name_en": "Influence", "essence_en": "Influence is earned through credibility and genuine care.", "formula_en": "\"Based on my experience...\"", "high_en": "Lead through example, not authority."}, {"number": "062", "name_cn": "語言精準能力", "essence_cn": "一個字的差異，可能造成完全不同的理解。", "formula_cn": "\"我想修正一下，我真正想表達的是……\"", "high_cn": "精準不是艱深，而是讓對方不用猜。", "name_en": "Persuasion", "essence_en": "Persuasion works by showing how something serves others' interests.", "formula_en": "\"This benefits you because...\"", "high_en": "Persuade by revealing genuine mutual value."}, {"number": "063", "name_cn": "關鍵字提煉能力", "essence_cn": "少數關鍵字能代表整個概念。", "formula_cn": "\"如果只能留下三個關鍵字，我會選……\"", "high_cn": "把大量資訊壓縮成少數高價值訊息。", "name_en": "Inspiration", "essence_en": "Inspiration comes from connecting to something larger than ourselves.", "formula_en": "\"Imagine if we could...\"", "high_en": "Inspire by painting compelling visions."}, {"number": "064", "name_cn": "核心訊息聚焦能力", "essence_cn": "一次溝通最好只有一個核心。", "formula_cn": "\"今天我最想傳達的是……\"", "high_cn": "不要讓重點互相競爭，而是讓核心自然浮現。", "name_en": "Vision Communication", "essence_en": "Clear vision helps people understand direction and purpose.", "formula_en": "\"We're building toward...\"", "high_en": "Paint futures that inspire commitment."}, {"number": "065", "name_cn": "邏輯表達能力", "essence_cn": "好的表達具有清楚的因果結構。", "formula_cn": "\"原因是……因此……所以……\"", "high_cn": "讓每個結論都能回到證據與推理，而不是情緒。", "name_en": "Purpose Expression", "essence_en": "Expressed purpose aligns effort and energizes teams.", "formula_en": "\"Why we do this is...\"", "high_en": "Connect work to meaningful purpose."}, {"number": "066", "name_cn": "結構化表達能力", "essence_cn": "結構比內容更容易被記住。", "formula_cn": "\"我分三個部分說明。 \"", "high_cn": "先給地圖，再帶細節；先全貌，再局部。", "name_en": "Motivation", "essence_en": "Motivation emerges when people feel valued and purposeful.", "formula_en": "\"Your contribution matters because...\"", "high_en": "Inspire through recognition and purpose."}, {"number": "067", "name_cn": "條理整理能力", "essence_cn": "整理是重新建立資訊秩序。", "formula_cn": "\"我們先整理目前的重點。 \"", "high_cn": "把混亂資訊變成可理解、可執行的結構。", "name_en": "Encouragement", "essence_en": "Encouragement strengthens confidence and resilience.", "formula_en": "\"You have what it takes...\"", "high_en": "Build others up through genuine recognition."}, {"number": "068", "name_cn": "流程說明能力", "essence_cn": "流程讓事情可以重複完成。", "formula_cn": "\"第一步……第二步……第三步……\"", "high_cn": "好的流程降低錯誤，也降低學習成本。", "name_en": "Support Provision", "essence_en": "Support means being present when others struggle.", "formula_en": "\"I'm here for you...\"", "high_en": "Offer support without solving for them."}, {"number": "069", "name_cn": "決策溝通能力", "essence_cn": "決策需要資訊同步，而不是權力宣告。", "formula_cn": "\"目前有哪些方案？各自的優缺點是什麼？\"", "high_cn": "先看選項，再看代價，最後共同決策。", "name_en": "Recognition", "essence_en": "Recognition validates effort and reinforces desired behavior.", "formula_en": "\"I appreciate your...\"", "high_en": "See and acknowledge what matters."}, {"number": "070", "name_cn": "協商能力", "essence_cn": "協商的核心是整合需求，而不是交換立場。", "formula_cn": "\"你最在意的是什麼？\"", "high_cn": "不要只談條件，而是理解彼此真正需求。", "name_en": "Celebration", "essence_en": "Celebration amplifies joy and reinforces success.", "formula_en": "\"Let's acknowledge what we've accomplished...\"", "high_en": "Make wins visible and shared."}, {"number": "071", "name_cn": "談判能力", "essence_cn": "真正的談判創造價值，而不是重新分配利益。", "formula_cn": "\"還有沒有讓彼此都更好的方案？\"", "high_cn": "先放大共同利益，再討論如何分配。", "name_en": "Feedback Reception", "essence_en": "Receiving feedback gracefully builds trust and enables growth.", "formula_en": "\"Thank you for that feedback. Let me consider it.\"", "high_en": "Receive feedback as gift, not threat."}, {"number": "072", "name_cn": "共贏思維能力", "essence_cn": "最好的合作讓雙方都變得更好。", "formula_cn": "\"怎麼做才能讓彼此都受益？\"", "high_cn": "雙贏不是妥協，而是重新設計系統。", "name_en": "Criticism Handling", "essence_en": "Handling criticism well requires separating self from actions.", "formula_en": "\"I hear you. Let me think about that.\"", "high_en": "Respond to criticism with curiosity, not defensiveness."}, {"number": "073", "name_cn": "期待管理能力", "essence_cn": "失望通常來自未說清楚的期待。", "formula_cn": "\"我們先確認彼此期待。 \"", "high_cn": "把隱藏期待說出來，比事後補救更有效。", "name_en": "Apology", "essence_en": "Sincere apology acknowledges impact and restores trust.", "formula_en": "\"I was wrong about... I apologize for...\"", "high_en": "Apologize genuinely without excuses."}, {"number": "074", "name_cn": "邊界設定能力", "essence_cn": "清楚界線能保護關係，而不是破壞關係。", "formula_cn": "\"我可以做到……但這部分我無法承諾。 \"", "high_cn": "尊重自己，也尊重對方；清楚比討好更成熟。", "name_en": "Amends", "essence_en": "Making amends demonstrates commitment to relationship repair.", "formula_en": "\"What can I do to make this right?\"", "high_en": "Actions matter more than words in restoring trust."}, {"number": "075", "name_cn": "情緒安撫能力", "essence_cn": "情緒穩定後，理性才能運作。", "formula_cn": "\"我知道這件事讓你很難受。 \"", "high_cn": "先接住情緒，再一起思考下一步。", "name_en": "Forgiveness", "essence_en": "Forgiveness releases grievance and restores possibility.", "formula_en": "\"I let that go...\"", "high_en": "Forgive to free yourself and the other."}, {"number": "076", "name_cn": "壓力溝通能力", "essence_cn": "壓力越大，越需要簡單、清楚、穩定。", "formula_cn": "\"我們先處理最重要的一件事。 \"", "high_cn": "聚焦、減少資訊量、建立可控制的小步驟。", "name_en": "Grace", "essence_en": "Grace is extending understanding beyond what was deserved.", "formula_en": "\"Everyone makes mistakes...\"", "high_en": "Extend grace while maintaining boundaries."}, {"number": "077", "name_cn": "高衝突溝通能力", "essence_cn": "衝突升高時，要降低情緒、提高結構。", "formula_cn": "\"我們先把焦點放回問題本身。 \"", "high_cn": "不要回應情緒，而是引導對話回到共同目標。", "name_en": "Compassion", "essence_en": "Compassion is feeling with others while maintaining perspective.", "formula_en": "\"That sounds really difficult...\"", "high_en": "Hold compassion without losing objectivity."}, {"number": "078", "name_cn": "危機溝通能力", "essence_cn": "危機時最重要的是真實、透明、持續更新。", "formula_cn": "\"目前已知的是……未知的是……下一步是……\"", "high_cn": "不知道就誠實說不知道；建立信任比假裝確定更重要。", "name_en": "Empathy", "essence_en": "Empathy is understanding someone's experience as if it were your own.", "formula_en": "\"That would feel...\"", "high_en": "Feel with others while maintaining healthy separation."}, {"number": "079", "name_cn": "跨世代溝通能力", "essence_cn": "不同世代代表不同成長環境與認知模型。", "formula_cn": "\"我想了解你那個年代是怎麼看這件事的。 \"", "high_cn": "先理解世代背景，再討論價值與做法。", "name_en": "Presence", "essence_en": "Presence is giving full attention and being genuinely there.", "formula_en": "\"I'm fully here with you...\"", "high_en": "Be completely present without multitasking."}, {"number": "080", "name_cn": "親子溝通能力", "essence_cn": "親子溝通的目標不是服從，而是培養獨立思考。", "formula_cn": "\"你怎麼看？你會怎麼做？\"", "high_cn": "少一點命令，多一點提問；少一點控制，多一點陪伴，讓孩子逐步建立判斷力與責任感。", "name_en": "Active Listening", "essence_en": "Active listening means fully focusing on what's being said.", "formula_en": "\"I'm listening...\"", "high_en": "Listen to understand, not to respond."}, {"number": "081", "name_cn": "夫妻溝通能力", "essence_cn": "夫妻不是彼此管理，而是共同經營生命系統。", "formula_cn": "\"我想先理解你的感受，再一起想方法。 \"", "high_cn": "婚姻不是爭輸贏，而是一起升級彼此的生命品質。", "name_en": "Deep Listening", "essence_en": "Deep listening hears what's unsaid and felt.", "formula_en": "\"I sense what you're really saying...\"", "high_en": "Listen for meaning, not just words."}, {"number": "082", "name_cn": "團隊溝通能力", "essence_cn": "團隊不是很多人在一起，而是很多模型同步。", "formula_cn": "\"目前每個人的角色、目標與下一步是什麼？\"", "high_cn": "先同步方向，再分工合作；資訊透明比個人能力更重要。", "name_en": "Patience", "essence_en": "Patience creates space for others to fully express.", "formula_en": "\"Take your time...\"", "high_en": "Patience is active, not passive waiting."}, {"number": "083", "name_cn": "跨部門協作能力", "essence_cn": "部門不同，目標不能不同。", "formula_cn": "\"我們共同成功的標準是什麼？\"", "high_cn": "跨部門不是互相支援，而是共同完成更大的系統目標。", "name_en": "Non-Judgment", "essence_en": "Non-judgment creates psychological safety for honesty.", "formula_en": "\"I'm not here to judge...\"", "high_en": "Suspend judgment to truly understand."}, {"number": "084", "name_cn": "跨文化溝通能力", "essence_cn": "文化不同，不代表價值高低，而是模型不同。", "formula_cn": "\"在你的文化裡，通常會怎麼做？\"", "high_cn": "先理解文化背景，再理解行為；不要用自己的文化當唯一標準。", "name_en": "Acceptance", "essence_en": "Acceptance means acknowledging what is, even if not ideal.", "formula_en": "\"I accept that...\"", "high_en": "Work with reality, not against it."}, {"number": "085", "name_cn": "教學表達能力", "essence_cn": "真正的教學不是老師講完，而是學生學會。", "formula_cn": "\"你可以用自己的話重新說一次嗎？\"", "high_cn": "以學生是否理解作為教學成功的標準，而不是老師講了多少。", "name_en": "Respect", "essence_en": "Respect is honoring someone's dignity and autonomy.", "formula_en": "\"I respect your...\"", "high_en": "Treat everyone with genuine respect."}, {"number": "086", "name_cn": "引導思考能力", "essence_cn": "引導比灌輸更能建立能力。", "formula_cn": "\"你覺得還有哪些可能？\"", "high_cn": "不要提供答案，而是設計思考；讓對方建立自己的模型。", "name_en": "Dignity", "essence_en": "Dignity is treating each person as inherently valuable.", "formula_en": "\"Your worth isn't conditional...\"", "high_en": "Never diminish anyone's fundamental worth."}, {"number": "087", "name_cn": "教練式提問能力", "essence_cn": "好的教練提供問題，而不是提供人生。", "formula_cn": "\"如果沒有任何限制，你會怎麼做？\"", "high_cn": "問題創造新的思考空間；真正的答案要由對方生成。", "name_en": "Equality", "essence_en": "Equality in conversation means honoring different perspectives equally.", "formula_en": "\"Your view is as valid as mine...\"", "high_en": "Listen as equals regardless of status."}, {"number": "088", "name_cn": "啟發能力", "essence_cn": "啟發不是傳遞知識，而是創造頓悟。", "formula_cn": "\"你有沒有發現，其實真正重要的是……\"", "high_cn": "幫助對方看見原本看不見的模式，而不是增加更多資訊。", "name_en": "Inclusion", "essence_en": "Inclusion means actively bringing others into belonging.", "formula_en": "\"We want your voice in this...\"", "high_en": "Make space for all voices and perspectives."}, {"number": "089", "name_cn": "認知更新能力", "essence_cn": "真正的成熟，是願意修正自己的模型。", "formula_cn": "\"新的資訊讓我修正了原本的看法。 \"", "high_cn": "更新不是否定過去，而是讓模型更接近真實。", "name_en": "Belonging", "essence_en": "Belonging is the feeling of being fully accepted.", "formula_en": "\"You belong here...\"", "high_en": "Create environments where people feel they belong."}, {"number": "090", "name_cn": "模型更新能力", "essence_cn": "所有能力的核心都是持續更新模型。", "formula_cn": "\"這次經驗讓我學到……\"", "high_cn": "回饋不是評價，而是模型更新的燃料。", "name_en": "Community Building", "essence_en": "Community is built through shared values and mutual care.", "formula_en": "\"We're in this together...\"", "high_en": "Foster genuine community, not just teams."}, {"number": "091", "name_cn": "共同決策能力", "essence_cn": "最好的決策，是共同理解後共同承擔。", "formula_cn": "\"大家都能接受這個方案嗎？\"", "high_cn": "參與決策的人，才會真正投入執行；共創比命令更有效。", "name_en": "Conflict Transformation", "essence_en": "Conflict transformed becomes opportunity for deeper connection.", "formula_en": "\"This conflict can strengthen us...\"", "high_en": "View conflict as catalyst for growth."}, {"number": "092", "name_cn": "共同學習能力", "essence_cn": "一起學習比各自學習更容易形成複利。", "formula_cn": "\"我們一起驗證看看。 \"", "high_cn": "共同學習建立共享知識庫，共同更新世界模型。", "name_en": "Bridge Building", "essence_en": "Bridge building connects opposing perspectives into shared understanding.", "formula_en": "\"Both of these are true...\"", "high_en": "Find the wisdom in both sides."}, {"number": "093", "name_cn": "回饋迭代能力", "essence_cn": "每次回饋都是下一次升級的起點。", "formula_cn": "\"下一次我們可以改善哪一點？\"", "high_cn": "不要停留在檢討，而是把回饋轉化為下一次的策略。", "name_en": "Mediation", "essence_en": "Mediation helps others find resolution independently.", "formula_en": "\"What would work for both of you?\"", "high_en": "Guide resolution without imposing solutions."}, {"number": "094", "name_cn": "誤差修正能力", "essence_cn": "錯誤暴露模型，修正提升能力。", "formula_cn": "\"是哪一個環節出了誤差？\"", "high_cn": "不要責怪人，而是修正系統；不要掩蓋錯誤，而是利用錯誤更新模型。", "name_en": "Facilitation", "essence_en": "Facilitation makes group communication flow and become productive.", "formula_en": "\"Let's make sure everyone is heard...\"", "high_en": "Create conditions for collective wisdom."}, {"number": "095", "name_cn": "持續同步能力", "essence_cn": "同步不是一次完成，而是持續校準。", "formula_cn": "\"目前有沒有新的資訊需要同步？\"", "high_cn": "共享模型需要持續更新，否則會逐漸產生偏差。", "name_en": "Group Dialogue", "essence_en": "Group dialogue requires managing multiple perspectives simultaneously.", "formula_en": "\"Let's hear from everyone...\"", "high_en": "Orchestrate conversations that honor all voices."}, {"number": "096", "name_cn": "長期關係經營能力", "essence_cn": "真正的關係來自長期一致的價值交換。", "formula_cn": "\"最近過得如何？\"", "high_cn": "平時就建立信任，不要等有需要才聯絡；長期互動比短期熱情更重要。", "name_en": "Meeting Leadership", "essence_en": "Good meetings produce decisions, not just noise.", "formula_en": "\"Here's what we're deciding today...\"", "high_en": "Run meetings that matter and move things forward."}, {"number": "097", "name_cn": "高品質對話能力", "essence_cn": "高品質對話讓雙方都變得更清楚。", "formula_cn": "\"我們一起把這個問題想得更完整。 \"", "high_cn": "真正的對話不是輸贏，而是共同提升彼此的理解品質。", "name_en": "Decision Communication", "essence_en": "Clear decision communication ensures everyone understands and accepts.", "formula_en": "\"We've decided to... Here's why...\"", "high_en": "Communicate decisions with clarity and rationale."}, {"number": "098", "name_cn": "理解本質能力", "essence_cn": "本質決定方向，現象只是結果。", "formula_cn": "\"真正的問題是什麼？\"", "high_cn": "不要一直修補現象，而是找到真正生成現象的結構與機制。", "name_en": "Disagreement Expression", "essence_en": "Expressing disagreement respectfully preserves relationship and integrity.", "formula_en": "\"I don't agree, and here's why...\"", "high_en": "Hold conviction while honoring others."}, {"number": "099", "name_cn": "降低誤解能力", "essence_cn": "大部分衝突不是惡意，而是模型不同。", "formula_cn": "\"我想確認我們理解的是同一件事。 \"", "high_cn": "每一次重要對話，都要先確認理解，再推進討論；確認比猜測更有效。", "name_en": "Perspective Sharing", "essence_en": "Sharing perspective authentically invites genuine dialogue.", "formula_en": "\"From my view...\"", "high_en": "Share freely while remaining open to influence."}, {"number": "100", "name_cn": "建立共享世界模型能力", "essence_cn": "最高層次的溝通，是共同建立一套可持續更新的理解系統。", "formula_cn": "\"我們現在共同理解的是什麼？未來如何一起更新？\"", "high_cn": "真正的溝通不是交換資訊，而是共同生成新的認知、共同修正誤差、共同建立能持續演化的共享世界模型；從「你和我」提升到「我們」。", "name_en": "Shared Model Building", "essence_en": "Building shared understanding is the foundation of collaboration.", "formula_en": "\"Together we understand that...\"", "high_en": "Co-create understanding, not just exchange information."}, {"number": "101", "name_cn": "問題定義能力", "essence_cn": "問題定義決定解決方向。", "formula_cn": "\"我們真正要解決的是哪一個問題？\"", "high_cn": "先定義問題，再找答案；很多人解決的是錯的問題。", "name_en": "Integration", "essence_en": "Integration brings different parts into coherent whole.", "formula_en": "\"Let's bring these together...\"", "high_en": "Synthesize diverse input into unified direction."}, {"number": "102", "name_cn": "根因分析能力", "essence_cn": "真正的改善來自找到生成原因，而不是處理結果。", "formula_cn": "\"真正造成這件事的原因是什麼？\"", "high_cn": "不要一直修補現象，而是修正產生現象的結構。", "name_en": "Synthesis", "essence_en": "Synthesis creates new understanding from multiple perspectives.", "formula_en": "\"What emerges when we combine these...\"", "high_en": "Find creative solutions in the intersection."}, {"number": "103", "name_cn": "限制辨識能力", "essence_cn": "限制決定系統的上限。", "formula_cn": "\"目前最大的限制是什麼？\"", "high_cn": "先解除最大瓶頸，再增加努力；限制解除後，系統自然提升。", "name_en": "Dialectical Thinking", "essence_en": "Dialectical thinking holds opposites together to create insight.", "formula_en": "\"This and that together reveal...\"", "high_en": "Transcend either/or thinking."}, {"number": "104", "name_cn": "優先順序能力", "essence_cn": "資源有限，必須聚焦高價值行動。", "formula_cn": "\"如果只能先做一件事，會是哪一件？\"", "high_cn": "重要的事情先做，而不是緊急的事情先做。", "name_en": "Systems Thinking", "essence_en": "Systems thinking reveals how parts interact to create outcomes.", "formula_en": "\"When this changes, that happens because...\"", "high_en": "Understand interconnections and patterns."}, {"number": "105", "name_cn": "槓桿辨識能力", "essence_cn": "少數節點能影響整個系統。", "formula_cn": "\"哪一個行動影響最大？\"", "high_cn": "找到高槓桿節點，比增加努力更有效。", "name_en": "Pattern Recognition", "essence_en": "Pattern recognition reveals underlying structures and dynamics.", "formula_en": "\"I notice a pattern...\"", "high_en": "See structures beneath surface noise."}, {"number": "106", "name_cn": "證據思考能力", "essence_cn": "證據比直覺更可靠。", "formula_cn": "\"支持這個結論的證據有哪些？\"", "high_cn": "不要用信念尋找證據，而是用證據更新信念。", "name_en": "Complexity", "essence_en": "Complexity requires holding multiple truths simultaneously.", "formula_en": "\"It's both/and not either/or...\"", "high_en": "Embrace complexity instead of oversimplifying."}, {"number": "107", "name_cn": "不確定管理能力", "essence_cn": "未知不是危機，而是等待更新的資訊。", "formula_cn": "\"目前我們還不知道的是什麼？\"", "high_cn": "成熟的人能在不確定中持續行動，而不是等待完全確定。", "name_en": "Nuance", "essence_en": "Nuance honors the subtlety that simple statements miss.", "formula_en": "\"It's more complex than that...\"", "high_en": "Distinguish important differences."}, {"number": "108", "name_cn": "預測能力", "essence_cn": "模型的價值，在於提升預測能力。", "formula_cn": "\"如果照目前發展，最可能發生什麼？\"", "high_cn": "預測不是算命，而是驗證模型是否足夠接近現實。", "name_en": "Paradox", "essence_en": "Paradox reveals limitations of binary thinking.", "formula_en": "\"Both are true even though they seem opposite...\"", "high_en": "Hold paradox as wisdom, not contradiction."}, {"number": "109", "name_cn": "回顧反思能力", "essence_cn": "反思讓經驗變成能力。", "formula_cn": "\"這次最大的收穫是什麼？\"", "high_cn": "沒有反思，經驗只是重複；反思才能形成智慧。", "name_en": "Ambiguity Tolerance", "essence_en": "Tolerating ambiguity allows growth beyond certainty.", "formula_en": "\"We can move forward without having all answers...\"", "high_en": "Act wisely despite incomplete information."}, {"number": "110", "name_cn": "持續改善能力", "essence_cn": "每天微調，長期形成複利。", "formula_cn": "\"下一次可以改善哪一點？\"", "high_cn": "不要追求一次完美，而是每天持續更新。", "name_en": "Uncertainty Navigation", "essence_en": "Navigating uncertainty requires flexibility and trust.", "formula_en": "\"We'll figure this out as we go...\"", "high_en": "Lead and move forward amid uncertainty."}, {"number": "111", "name_cn": "系統思考能力", "essence_cn": "世界由關係組成，而不是事件組成。", "formula_cn": "\"這件事還和哪些因素有關？\"", "high_cn": "不要只看單點，而是看整個系統如何互相影響。", "name_en": "Adaptability", "essence_en": "Adaptability means changing approach when conditions change.", "formula_en": "\"Let's adjust our strategy...\"", "high_en": "Flow with change while maintaining principles."}, {"number": "112", "name_cn": "控制回饋能力", "essence_cn": "沒有回饋，就沒有控制。", "formula_cn": "\"我們如何知道真的改善了？\"", "high_cn": "建立回饋迴路，讓系統能自我修正，而不是靠意志力。", "name_en": "Resilience", "essence_en": "Resilience is recovering strength from difficulty.", "formula_en": "\"We'll learn from this and move forward...\"", "high_en": "Rise stronger from setbacks."}, {"number": "113", "name_cn": "決策品質能力", "essence_cn": "好的決策來自好的流程，而非好的運氣。", "formula_cn": "\"這個決策依據哪些資訊？\"", "high_cn": "重視決策品質，而不是只看結果；好流程才能複製成功。", "name_en": "Persistence", "essence_en": "Persistence is continuing despite obstacles.", "formula_en": "\"We won't give up on this...\"", "high_en": "Stay committed while remaining flexible."}, {"number": "114", "name_cn": "學習遷移能力", "essence_cn": "真正學會，是能應用到不同情境。", "formula_cn": "\"這個方法還可以用在哪裡？\"", "high_cn": "把知識提升成原理，讓能力能跨領域遷移。", "name_en": "Determination", "essence_en": "Determination is resolute commitment to a goal.", "formula_en": "\"We're committed to achieving this...\"", "high_en": "Hold vision with unwavering commitment."}, {"number": "115", "name_cn": "模式辨識能力", "essence_cn": "模式比事件更有預測價值。", "formula_cn": "\"這件事以前出現過嗎？\"", "high_cn": "看見重複模式，就能降低重複犯錯。", "name_en": "Courage", "essence_en": "Courage is acting aligned with values despite fear.", "formula_en": "\"Even though it's scary, we're doing this...\"", "high_en": "Lead from courage, not from fear."}, {"number": "116", "name_cn": "風險溝通能力", "essence_cn": "風險說清楚，才能共同準備。", "formula_cn": "\"目前最大的風險是什麼？\"", "high_cn": "不要製造恐懼，而是建立共同的風險管理能力。", "name_en": "Risk Communication", "essence_en": "Clear risk communication enables informed decision-making.", "formula_en": "\"Here's what could go wrong and why it's worth it...\"", "high_en": "Be honest about risks and stakes."}, {"number": "117", "name_cn": "資源整合能力", "essence_cn": "成果來自資源配置，而非資源多寡。", "formula_cn": "\"目前有哪些資源可以整合？\"", "high_cn": "高手不是擁有最多資源，而是整合最多資源。", "name_en": "Vulnerability", "essence_en": "Vulnerability invites others to show up authentically.", "formula_en": "\"I'm learning too...\"", "high_en": "Model authenticity through vulnerability."}, {"number": "118", "name_cn": "行動設計能力", "essence_cn": "行動要足夠小，才能真正開始。", "formula_cn": "\"下一步最小可執行行動是什麼？\"", "high_cn": "把大目標拆成小步驟，降低開始的阻力。", "name_en": "Humility", "essence_en": "Humility is knowing your limits and learning from others.", "formula_en": "\"I don't have all the answers...\"", "high_en": "Lead with openness to being wrong."}, {"number": "119", "name_cn": "成果驗證能力", "essence_cn": "沒有驗證，就不知道是否真正有效。", "formula_cn": "\"哪些證據代表真的改善了？\"", "high_cn": "不要憑感覺判斷成果，而是建立可驗證的指標。", "name_en": "Surrender", "essence_en": "Surrender is releasing need for control.", "formula_en": "\"Let's see what emerges...\"", "high_en": "Trust process while holding intention."}, {"number": "120", "name_cn": "高維整合能力", "essence_cn": "真正的能力不是增加，而是整合。", "formula_cn": "\"我們如何把這些能力連成一個系統？\"", "high_cn": "高手不是會很多，而是能把知識、能力與經驗整合成可持續運作的生命系統；整合產生湧現，湧現創造新的能力。", "name_en": "Flow", "essence_en": "Flow emerges when effort and skill are perfectly balanced.", "formula_en": "\"We're in sync...\"", "high_en": "Align effort with momentum."}, {"number": "121", "name_cn": "觀點整合能力", "essence_cn": "成熟不是堅持一個觀點，而是整合多個觀點。", "formula_cn": "\"我們怎麼把兩個觀點整合起來？\"", "high_cn": "不要問誰對誰錯，而是問如何形成更完整的模型。", "name_en": "Presence", "essence_en": "Presence is being fully available in the moment.", "formula_en": "\"I'm completely here with you...\"", "high_en": "Show up fully without distraction."}, {"number": "122", "name_cn": "第一性原理溝通能力", "essence_cn": "回到不可再拆解的本質。", "formula_cn": "\"如果回到最根本，它真正是什麼？\"", "high_cn": "不要從答案開始，而是從本質開始；本質穩定，方法才能有效。", "name_en": "Attunement", "essence_en": "Attunement is tuning into others' emotional frequency.", "formula_en": "\"I sense you're...\"", "high_en": "Attune to emotional currents."}, {"number": "123", "name_cn": "系統建模能力", "essence_cn": "理解世界，需要先建立世界模型。", "formula_cn": "\"我們先把整個系統畫出來。 \"", "high_cn": "不要急著解決問題，而是先建立系統地圖；模型比記憶重要。", "name_en": "Resonance", "essence_en": "Resonance is when communication creates harmonic alignment.", "formula_en": "\"We're on the same wavelength...\"", "high_en": "Create resonance through alignment."}, {"number": "124", "name_cn": "因果推理能力", "essence_cn": "相關不代表因果，因果才能指導行動。", "formula_cn": "\"真正造成這個結果的是哪個因素？\"", "high_cn": "不要把同時發生當成因果；找到真正可控制的原因。", "name_en": "Synchrony", "essence_en": "Synchrony is moving together in rhythm and timing.", "formula_en": "\"We're moving together...\"", "high_en": "Develop collaborative timing."}, {"number": "125", "name_cn": "假設建立能力", "essence_cn": "所有理解都始於暫時假設。", "formula_cn": "\"目前我的假設是……\"", "high_cn": "成熟的人不是沒有假設，而是知道自己正在使用假設。", "name_en": "Harmony", "essence_en": "Harmony is diverse elements blending into pleasing whole.", "formula_en": "\"Together we create something special...\"", "high_en": "Build harmony from diverse strengths."}, {"number": "126", "name_cn": "假設驗證能力", "essence_cn": "模型必須接受現實檢驗。", "formula_cn": "\"我們如何驗證這個假設？\"", "high_cn": "先設計驗證，再決定相信；願意推翻自己的模型，才會持續進步。", "name_en": "Flow State", "essence_en": "Flow state is effortless engagement with challenging work.", "formula_en": "\"This feels just right...\"", "high_en": "Enable flow for yourself and others."}, {"number": "127", "name_cn": "多角度分析能力", "essence_cn": "不同角度提供不同資訊。", "formula_cn": "\"除了這個角度，還有哪些可能？\"", "high_cn": "單一視角產生偏誤，多重視角提升理解。", "name_en": "Peak Performance", "essence_en": "Peak performance emerges from optimal conditions and mindset.", "formula_en": "\"We're performing at our best...\"", "high_en": "Create conditions for excellence."}, {"number": "128", "name_cn": "情境模擬能力", "essence_cn": "先模擬，再決策。", "formula_cn": "\"如果發生A、B、C三種情況，我們怎麼做？\"", "high_cn": "高手先在腦中完成多次演練，再開始真正行動。", "name_en": "Mastery", "essence_en": "Mastery is deep skill developed through committed practice.", "formula_en": "\"I've practiced this until...\"", "high_en": "Commit to ongoing mastery."}, {"number": "129", "name_cn": "反例思考能力", "essence_cn": "反例讓模型更完整。", "formula_cn": "\"什麼情況下，這個方法可能失敗？\"", "high_cn": "不要只找支持自己的證據，也要找推翻自己的證據。", "name_en": "Excellence", "essence_en": "Excellence is consistent commitment to high standards.", "formula_en": "\"This meets our standard of excellence...\"", "high_en": "Never settle for mediocre."}, {"number": "130", "name_cn": "抽象化能力", "essence_cn": "抽象是找出不同事件背後共同規律。", "formula_cn": "\"這些事情共同代表什麼？\"", "high_cn": "不要停留在案例，而是提升成原理；原理才能跨領域遷移。", "name_en": "Quality", "essence_en": "Quality is attention to detail and care in execution.", "formula_en": "\"We're committed to quality...\"", "high_en": "Make quality non-negotiable."}, {"number": "131", "name_cn": "具體化能力", "essence_cn": "原理必須轉成行動才能產生價值。", "formula_cn": "\"如果明天就要開始，第一步是什麼？\"", "high_cn": "好的理論，一定能轉換成具體行動；知道不等於做到。", "name_en": "Craftsmanship", "essence_en": "Craftsmanship is pride in the work itself.", "formula_en": "\"This is crafted with care...\"", "high_en": "Take pride in your work."}, {"number": "132", "name_cn": "長期思考能力", "essence_cn": "今天的選擇，決定未來的自己。", "formula_cn": "\"五年後回頭看，現在最重要的是什麼？\"", "high_cn": "不要被短期情緒綁架，而是用長期視角重新排序現在的選擇。", "name_en": "Attention to Detail", "essence_en": "Attention to detail separates good from great.", "formula_en": "\"Did you notice...?\"", "high_en": "Let details reflect your values."}, {"number": "133", "name_cn": "機率思考能力", "essence_cn": "世界不是絕對，而是機率分布。", "formula_cn": "\"哪一種結果最有可能發生？\"", "high_cn": "成熟的人談機率，不談絕對；提高成功率，比追求保證更重要。", "name_en": "Precision", "essence_en": "Precision is exactness in thought and action.", "formula_en": "\"To be precise...\"", "high_en": "Be exact in what matters."}, {"number": "134", "name_cn": "複利思考能力", "essence_cn": "每天的小改善，會累積成巨大差距。", "formula_cn": "\"如果每天進步1%，一年後會怎樣？\"", "high_cn": "真正改變人生的，不是爆發，而是持續；複利比爆發更有力量。", "name_en": "Accuracy", "essence_en": "Accuracy is getting facts right.", "formula_en": "\"The accurate picture is...\"", "high_en": "Verify facts before spreading them."}, {"number": "135", "name_cn": "槓桿思考能力", "essence_cn": "找到少數高影響節點。", "formula_cn": "\"哪一個改變能帶動整個系統？\"", "high_cn": "不要平均分配努力，而是集中資源在最高槓桿的位置。", "name_en": "Truthfulness", "essence_en": "Truthfulness is speaking what you know to be true.", "formula_en": "\"The truth is...\"", "high_en": "Tell truth even when difficult."}, {"number": "136", "name_cn": "演化思考能力", "essence_cn": "不是最強的人生存，而是最能適應的人。", "formula_cn": "\"現在最需要調整的是什麼？\"", "high_cn": "不要守著舊方法，而是根據環境持續更新；適應比完美更重要。", "name_en": "Honesty", "essence_en": "Honesty is authenticity without masks.", "formula_en": "\"Honestly, I...\"", "high_en": "Be honest about doubts and limitations."}, {"number": "137", "name_cn": "自由能思考能力", "essence_cn": "生命持續透過降低預測誤差來適應世界。", "formula_cn": "\"我的預測哪裡和現實不同？\"", "high_cn": "不要害怕誤差；誤差不是失敗，而是更新模型最珍貴的資訊。", "name_en": "Integrity", "essence_en": "Integrity is alignment between values, words, and actions.", "formula_en": "\"I live by...\"", "high_en": "Make integrity non-negotiable."}, {"number": "138", "name_cn": "高維整合思考能力", "essence_cn": "不同模型互相補充，而不是互相排斥。", "formula_cn": "\"我們可以同時用哪些模型分析？\"", "high_cn": "不要依賴單一框架；第一性原理、系統思考、控制論、機率思維可以共同工作。", "name_en": "Ethics", "essence_en": "Ethics is acting from principles not just rules.", "formula_en": "\"The right thing here is...\"", "high_en": "Let principles guide decisions."}, {"number": "139", "name_cn": "智慧生成能力", "essence_cn": "智慧不是累積知識，而是整合知識、經驗與回饋。", "formula_cn": "\"這件事真正教會了我什麼？\"", "high_cn": "不要只增加資訊，而是生成新的生命原則；智慧是更新後穩定運作的能力。", "name_en": "Values Alignment", "essence_en": "Values alignment creates coherence and trust.", "formula_en": "\"This aligns with our values...\"", "high_en": "Align every decision with stated values."}, {"number": "140", "name_cn": "共創智慧能力", "essence_cn": "最高品質的對話，是共同生成新的理解，而不是交換既有答案。", "formula_cn": "\"我們能一起建立一個更好的模型嗎？\"", "high_cn": "真正的溝通不是你說服我、我說服你，而是彼此透過對話，共同產生原本都沒有的新模型、新框架與新智慧。", "name_en": "Principle Expression", "essence_en": "Expressed principles guide behavior and build culture.", "formula_en": "\"Our principle is...\"", "high_en": "Make principles visible and lived."}, {"number": "141", "name_cn": "影響力建立能力", "essence_cn": "真正的影響力不是控制別人，而是提升別人的判斷品質。", "formula_cn": "\"我提供一個觀點，你可以一起思考。 \"", "high_cn": "不要改變別人的選擇，而是提升別人的選擇能力。", "name_en": "Purpose Clarity", "essence_en": "Clarity about purpose energizes sustained effort.", "formula_en": "\"Our purpose is...\"", "high_en": "Know why you do what you do."}, {"number": "142", "name_cn": "說服能力", "essence_cn": "說服不是贏得辯論，而是共同更新模型。", "formula_cn": "\"我們一起看看有哪些新的證據。 \"", "high_cn": "用證據取代權威，用理解取代施壓；說服是共同發現真相，而不是壓倒對方。", "name_en": "Mission Communication", "essence_en": "Mission communication aligns individual effort with collective goal.", "formula_en": "\"Our mission is...\"", "high_en": "Make mission personal and compelling."}, {"number": "143", "name_cn": "敘事建構能力", "essence_cn": "故事是人類理解世界的重要方式。", "formula_cn": "\"這件事情真正代表的是……\"", "high_cn": "不是堆砌資訊，而是讓資訊形成有意義的故事，讓人看見方向。", "name_en": "Vision Leadership", "essence_en": "Vision leadership inspires commitment to future possibility.", "formula_en": "\"We're building toward...\"", "high_en": "Paint futures worth working toward."}, {"number": "144", "name_cn": "願景表達能力", "essence_cn": "願景讓人看見未來，而不只是現在。", "formula_cn": "\"如果成功，我們將一起看到……\"", "high_cn": "願景不是口號，而是能讓每個人都看見未來的共同畫面。", "name_en": "Strategy Communication", "essence_en": "Strategy communication shows how we'll achieve goals.", "formula_en": "\"Here's how we'll get there...\"", "high_en": "Make strategy clear to everyone."}, {"number": "145", "name_cn": "激勵能力", "essence_cn": "真正的動力來自內在意義，而不是外在壓力。", "formula_cn": "\"這件事對你真正重要的是什麼？\"", "high_cn": "不要推著別人走，而是幫助對方找到願意前進的理由。", "name_en": "Roadmap", "essence_en": "Roadmap shows milestones on journey to goals.", "formula_en": "\"Here are our key milestones...\"", "high_en": "Make path forward visible."}, {"number": "146", "name_cn": "鼓勵能力", "essence_cn": "鼓勵是放大對方已經存在的能力。", "formula_cn": "\"我相信你有能力做到。 \"", "high_cn": "真正的鼓勵不是稱讚，而是讓對方相信自己可以成長。", "name_en": "Progress Communication", "essence_en": "Progress communication maintains momentum and morale.", "formula_en": "\"Here's what we've accomplished...\"", "high_en": "Celebrate progress regularly."}, {"number": "147", "name_cn": "建設性回饋能力", "essence_cn": "回饋的目的不是評價，而是改善。", "formula_cn": "\"我觀察到……如果調整……可能會更好。 \"", "high_cn": "回饋要同時指出優勢、限制與下一步，而不是只有批評。", "name_en": "Impact Communication", "essence_en": "Impact communication shows how work creates value.", "formula_en": "\"This makes a difference because...\"", "high_en": "Connect work to meaningful impact."}, {"number": "148", "name_cn": "正向強化能力", "essence_cn": "被看見的好行為，更容易重複。", "formula_cn": "\"我特別欣賞你剛剛……\"", "high_cn": "不要只糾正錯誤，更要強化值得持續的行為。", "name_en": "Results Sharing", "essence_en": "Sharing results builds accountability and learning.", "formula_en": "\"Here are our results...\"", "high_en": "Be transparent about outcomes."}, {"number": "149", "name_cn": "授權能力", "essence_cn": "授權是交付責任，而不是丟掉工作。", "formula_cn": "\"這件事情交給你，你需要哪些資源？\"", "high_cn": "授權不是放手不管，而是提供支持，讓對方真正成長。", "name_en": "Failure Learning", "essence_en": "Learning from failure is how we grow beyond limits.", "formula_en": "\"Here's what we learned from that...\"", "high_en": "Mine failure for wisdom."}, {"number": "150", "name_cn": "賦能能力", "essence_cn": "真正的幫助，是讓對方未來不需要依賴你。", "formula_cn": "\"我教你方法，而不是直接幫你完成。 \"", "high_cn": "給答案只能解決一次，建立能力才能解決一生。", "name_en": "Empowerment", "essence_en": "Empowerment means giving others agency and authority.", "formula_en": "\"You have the power to...\"", "high_en": "Delegate real authority, not just tasks."}, {"number": "151", "name_cn": "領導對話能力", "essence_cn": "領導不是下命令，而是對齊方向。", "formula_cn": "\"我們共同想完成的是什麼？\"", "high_cn": "真正的領導先建立共同方向，再建立共同承諾。", "name_en": "Delegation", "essence_en": "Delegation multiplies capacity through others.", "formula_en": "\"I'm trusting you with...\"", "high_en": "Delegate meaningful work with clear support."}, {"number": "152", "name_cn": "決策引導能力", "essence_cn": "好的領導提升整個團隊的決策品質。", "formula_cn": "\"還有哪些資訊需要補充？\"", "high_cn": "不要替團隊決定，而是提升團隊共同決策能力。", "name_en": "Mentoring", "essence_en": "Mentoring develops others' capabilities through guidance.", "formula_en": "\"Let me share what I've learned...\"", "high_en": "Invest in developing others."}, {"number": "153", "name_cn": "信念塑造能力", "essence_cn": "長期行動來自長期信念。", "formula_cn": "\"我們共同相信的是什麼？\"", "high_cn": "文化不是制度建立，而是共同信念累積；信念決定文化，文化決定行為。", "name_en": "Coaching", "essence_en": "Coaching draws out someone's own wisdom and capability.", "formula_en": "\"What do you think would work?\"", "high_en": "Coach, don't direct."}, {"number": "154", "name_cn": "文化建立能力", "essence_cn": "文化是被持續重複的行為。", "formula_cn": "\"我們希望成為什麼樣的團隊？\"", "high_cn": "不要用制度要求文化，而是用每天的行動形成文化。", "name_en": "Teaching", "essence_en": "Teaching conveys knowledge and wisdom.", "formula_en": "\"Here's how to...\"", "high_en": "Teach in ways that stick."}, {"number": "155", "name_cn": "角色定位能力", "essence_cn": "角色清楚，合作才會流暢。", "formula_cn": "\"我的角色是……你的角色是……\"", "high_cn": "不要只分工作，而是定義責任、權限與合作方式。", "name_en": "Learning", "essence_en": "Continuous learning keeps you growing.", "formula_en": "\"I'm learning about...\"", "high_en": "Never stop being a beginner."}, {"number": "156", "name_cn": "責任釐清能力", "essence_cn": "責任清楚，系統才能穩定。", "formula_cn": "\"這件事情由誰負責？\"", "high_cn": "責任不是追究，而是建立可追蹤、可改善的系統。", "name_en": "Growth Mindset", "essence_en": "Growth mindset treats challenges as learning opportunities.", "formula_en": "\"I'm not there yet, but...\"", "high_en": "Believe ability develops through effort."}, {"number": "157", "name_cn": "承諾建立能力", "essence_cn": "公開承諾提高一致性與執行力。", "formula_cn": "\"你願意承諾完成這件事嗎？\"", "high_cn": "承諾不是壓力，而是把價值轉成行動；承諾越清楚，行動越穩定。", "name_en": "Feedback Seeking", "essence_en": "Seeking feedback shows humility and commitment to growth.", "formula_en": "\"What feedback do you have for me?\"", "high_en": "Actively seek to improve."}, {"number": "158", "name_cn": "行動追蹤能力", "essence_cn": "追蹤是支持，不是監督。", "formula_cn": "\"目前進度如何？有什麼需要協助？\"", "high_cn": "追蹤不是找錯，而是移除阻礙，協助成功。", "name_en": "Self-Awareness", "essence_en": "Self-awareness is knowing your strengths and limitations.", "formula_en": "\"I'm realizing about myself...\"", "high_en": "Know yourself deeply."}, {"number": "159", "name_cn": "成果分享能力", "essence_cn": "成功需要被整理、被分享，才能被複製。", "formula_cn": "\"這次成功最重要的原因是什麼？\"", "high_cn": "不要只分享成果，更要分享成功背後的思考、流程與模型，讓成功可以複製。", "name_en": "Self-Reflection", "essence_en": "Self-reflection deepens understanding of patterns and impact.", "formula_en": "\"Reflecting on that...\"", "high_en": "Regularly examine your impact."}, {"number": "160", "name_cn": "高影響力領導能力", "essence_cn": "最高層次的領導，是建立一個沒有自己也能持續成長的系統。", "formula_cn": "\"我們如何讓每個人都能獨立思考、共同成長？\"", "high_cn": "真正的領導不是成為最重要的人，而是建立一個每個人都能持續更新、持續決策、持續成長的高信任、高能力、高自主系統；領導的終點，是讓團隊不再依賴領導者。", "name_en": "Self-Development", "essence_en": "Self-development is intentional cultivation of capability.", "formula_en": "\"I'm working on developing...\"", "high_en": "Invest in becoming your best."}, {"number": "161", "name_cn": "真誠表達能力", "essence_cn": "真誠是真實表達，同時尊重彼此。", "formula_cn": "\"我真正想表達的是……\"", "high_cn": "真誠不是情緒宣洩，而是真實、負責、尊重地表達自己的模型。", "name_en": "Evolution", "essence_en": "Evolution is continuous improvement beyond current state.", "formula_en": "\"I'm evolving toward...\"", "high_en": "Continuously evolve."}, {"number": "162", "name_cn": "脆弱表達能力", "essence_cn": "適度展現脆弱能建立真正的連結。", "formula_cn": "\"其實我也有些擔心……\"", "high_cn": "脆弱不是軟弱，而是有勇氣讓別人看見真正的自己。", "name_en": "Transformation", "essence_en": "Transformation is fundamental change in perspective and being.", "formula_en": "\"This transformed how I...\"", "high_en": "Enable transformation in self and others."}, {"number": "163", "name_cn": "接納能力", "essence_cn": "接納現況，是改變的開始。", "formula_cn": "\"我接受目前就是這樣。 \"", "high_cn": "接納不是放棄，而是停止與現實對抗，把能量放在可改變的地方。", "name_en": "Breakthrough", "essence_en": "Breakthrough is breakthrough past limiting assumptions.", "formula_en": "\"What if we...?\"", "high_en": "Create space for breakthroughs."}, {"number": "164", "name_cn": "尊重能力", "essence_cn": "尊重是承認每個人都有自己的生命模型。", "formula_cn": "\"我尊重你的選擇。 \"", "high_cn": "即使不同意，也願意尊重對方的自主權；尊重不是認同，而是承認對方有選擇的權利。", "name_en": "Innovation", "essence_en": "Innovation creates something genuinely new.", "formula_en": "\"What if we tried...?\"", "high_en": "Foster genuine innovation."}, {"number": "165", "name_cn": "感謝能力", "essence_cn": "感謝讓價值被看見，關係被滋養。", "formula_cn": "\"謝謝你剛剛……\"", "high_cn": "不要只說謝謝，而是具體指出值得感謝的行為與影響。", "name_en": "Creativity", "essence_en": "Creativity is bringing something new into being.", "formula_en": "\"Here's an idea...\"", "high_en": "Unleash creative thinking."}, {"number": "166", "name_cn": "欣賞能力", "essence_cn": "欣賞是主動發現他人的優勢。", "formula_cn": "\"我欣賞你……\"", "high_cn": "真正的欣賞不是討好，而是看見對方真正的價值與努力。", "name_en": "Imagination", "essence_en": "Imagination envisions possibilities beyond current reality.", "formula_en": "\"Imagine if...\"", "high_en": "Dream bigger than current constraints."}, {"number": "167", "name_cn": "道歉能力", "essence_cn": "道歉的目的，是修復信任，而不是證明誰對誰錯。", "formula_cn": "\"這部分是我的責任，我願意修正。 \"", "high_cn": "成熟的人承擔自己的部分，不找藉口、不推責，而是用行動重建信任。", "name_en": "Possibility Thinking", "essence_en": "Possibility thinking expands range of what seems possible.", "formula_en": "\"What if we could...?\"", "high_en": "Think beyond apparent limitations."}, {"number": "168", "name_cn": "原諒能力", "essence_cn": "原諒是停止讓過去持續消耗現在。", "formula_cn": "\"我願意放下這件事。 \"", "high_cn": "原諒不是合理化傷害，而是停止讓傷害繼續控制自己的生命；保留界線，放下怨恨。", "name_en": "Hope Expression", "essence_en": "Hope expressed invites others to believe in possibility.", "formula_en": "\"I believe we can...\"", "high_en": "Lead with hope grounded in reality."}, {"number": "169", "name_cn": "修復對話能力", "essence_cn": "每一段長久關係，都需要持續修復。", "formula_cn": "\"我們重新開始，好嗎？\"", "high_cn": "修復不是回到從前，而是建立比以前更成熟的關係模式。", "name_en": "Aspiration", "essence_en": "Aspiration is reaching toward meaningful goal.", "formula_en": "\"What I aspire to is...\"", "high_en": "Aspire to worthy visions."}, {"number": "170", "name_cn": "深度陪伴能力", "essence_cn": "陪伴不是解決問題，而是共同承擔。", "formula_cn": "\"我在這裡陪你。 \"", "high_cn": "真正的陪伴不是急著給建議，而是讓對方感受到自己不是一個人。", "name_en": "Contribution", "essence_en": "Contribution is serving something larger than self.", "formula_en": "\"I want to contribute by...\"", "high_en": "Make meaningful contributions."}, {"number": "171", "name_cn": "安全感建立能力", "essence_cn": "安全感來自可預測、被理解與被尊重。", "formula_cn": "\"你可以放心說，我會先理解你。 \"", "high_cn": "真正的安全感不是控制，而是讓對方知道：即使不同意，也不會被否定。", "name_en": "Service", "essence_en": "Service is putting others' wellbeing first.", "formula_en": "\"How can I serve you?\"", "high_en": "Lead from service."}, {"number": "172", "name_cn": "心理安全建立能力", "essence_cn": "沒有心理安全，就沒有真正的合作與創新。", "formula_cn": "\"這裡可以放心提出不同意見。 \"", "high_cn": "真正成熟的團隊，不是沒有錯誤，而是敢公開錯誤、共同修正。", "name_en": "Generosity", "essence_en": "Generosity is giving freely without expectation.", "formula_en": "\"I want to give you...\"", "high_en": "Give generously and freely."}, {"number": "173", "name_cn": "信任循環建立能力", "essence_cn": "信任是長期一致行動形成的正向循環。", "formula_cn": "\"我們一起慢慢建立信任。 \"", "high_cn": "信任不是一次證明，而是一次又一次做到；每一次一致，都讓下一次合作成本更低。", "name_en": "Abundance", "essence_en": "Abundance mindset sees plenty rather than scarcity.", "formula_en": "\"There's enough for everyone...\"", "high_en": "Operate from abundance, not scarcity."}, {"number": "174", "name_cn": "情緒容納能力", "essence_cn": "情緒需要被容納，不一定立刻被改變。", "formula_cn": "\"你的感受可以存在。 \"", "high_cn": "不要急著消除情緒，而是提供足夠的心理空間，讓情緒自然流動。", "name_en": "Gratitude", "essence_en": "Gratitude amplifies awareness of what's already good.", "formula_en": "\"I'm grateful for...\"", "high_en": "Practice gratitude daily."}, {"number": "175", "name_cn": "同理陪伴能力", "essence_cn": "真正的同理，是陪對方理解自己。", "formula_cn": "\"我能理解你現在的感受。 \"", "high_cn": "同理不是替對方解決，而是陪對方走過；理解比建議更重要。", "name_en": "Appreciation", "essence_en": "Appreciation increases value of what's appreciated.", "formula_en": "\"I appreciate your...\"", "high_en": "Appreciate generously."}, {"number": "176", "name_cn": "希望建立能力", "essence_cn": "希望不是保證，而是相信還有下一步。", "formula_cn": "\"我們還有新的可能。 \"", "high_cn": "真正的希望不是否認困難，而是在困難中仍然找到下一個可以前進的方向。", "name_en": "Love Expression", "essence_en": "Expressed love creates safety and belonging.", "formula_en": "\"I care about you...\"", "high_en": "Lead from love."}, {"number": "177", "name_cn": "韌性建立能力", "essence_cn": "韌性是一次次更新後形成的穩定能力。", "formula_cn": "\"沒關係，我們再試一次。 \"", "high_cn": "真正的韌性不是不跌倒，而是每一次跌倒後，都帶著新的模型再次站起來。", "name_en": "Kindness", "essence_en": "Kindness is small acts that create ripples of care.", "formula_en": "\"Let me help...\"", "high_en": "Be kind in all interactions."}, {"number": "178", "name_cn": "智慧傾聽能力", "essence_cn": "聽見文字，更聽見需求、價值與信念。", "formula_cn": "\"我猜你真正擔心的是……\"", "high_cn": "高手聽的不是句子，而是句子背後的生命故事、需求與世界模型。", "name_en": "Compassion", "essence_en": "Compassion is feeling moved by others' suffering.", "formula_en": "\"That sounds painful...\"", "high_en": "Let compassion guide action."}, {"number": "179", "name_cn": "靈魂對話能力", "essence_cn": "最高品質的對話，是共同探索生命意義。", "formula_cn": "\"這件事對你的生命代表什麼？\"", "high_cn": "真正重要的不是事件本身，而是事件如何改變一個人的生命、信念與方向。", "name_en": "Wisdom", "essence_en": "Wisdom is knowing what matters most and why.", "formula_en": "\"The wisdom here is...\"", "high_en": "Cultivate and share wisdom."}, {"number": "180", "name_cn": "愛的表達能力", "essence_cn": "真正的愛，是持續增加彼此的自由、能力、信任與生命力。", "formula_cn": "\"我希望你的生命因為有我，而變得更自由、更成熟、更有力量。 \"", "high_cn": "愛不是控制，不是依賴，不是討好，不是犧牲；真正成熟的愛，是陪伴彼此持續更新世界模型、持續成長、持續承擔，最後共同建立一個能彼此滋養、彼此成全、彼此自由的生命系統。", "name_en": "Love Expression", "essence_en": "Love is the highest form of communication and connection.", "formula_en": "\"I love and support you...\"", "high_en": "Communicate through love."}];
+        let currentView = 'cards';
+
+        function switchView(view) {
+            currentView = view;
+            
+            // 切換按鈕樣式
+            document.getElementById('btnCards').classList.toggle('active', view === 'cards');
+            document.getElementById('btnTable').classList.toggle('active', view === 'table');
+            
+            // 隱藏/顯示視圖
+            document.querySelector('.view-cards').classList.toggle('active', view === 'cards');
+            document.querySelector('.view-table').classList.toggle('active', view === 'table');
+            
+            // 隱藏搜尋框和展開/收縮按鈕（表格視圖不需要）
+            const searchBox = document.querySelector('.search-box');
+            const expandBtns = [document.getElementById('btnAll'), document.getElementById('btnExpand'), document.getElementById('btnCollapse')];
+            
+            if (view === 'table') {
+                searchBox.style.display = 'none';
+                expandBtns.forEach(btn => btn.style.display = 'none');
+            } else {
+                searchBox.style.display = 'flex';
+                expandBtns.forEach(btn => btn.style.display = 'inline-block');
+            }
+            
+            if (view === 'table') {
+                renderTable();
+            }
+        }
+
+        function generateCard(ability) {
+            const escapeSingleQuote = (str) => str.replace(/'/g, "\\'");
+            
+            return `
+                <div class="ability-card" data-number="${ability.number}">
+                    <div class="ability-header" onclick="this.closest('.ability-card').classList.toggle('expanded')">
+                        <div class="ability-number">#${ability.number}</div>
+                        <div class="ability-name">
+                            ${ability.name_cn}<br>
+                            <span style="font-size: 12px; opacity: 0.9;">${ability.name_en}</span>
+                        </div>
+                        <div class="toggle-icon">▼</div>
+                    </div>
+                    <div class="ability-body">
+                        <div class="content-section">
+                            <div class="section-label">本質 | Essence</div>
+                            <div class="bilingual-box">
+                                <div class="text-block">
+                                    <label>中文</label>
+                                    <p>${ability.essence_cn}</p>
+                                    <button class="tts-button" onclick="speakText('${escapeSingleQuote(ability.essence_cn)}', 'zh-TW')">🔊 中文</button>
+                                </div>
+                                <div class="text-block en">
+                                    <label>English</label>
+                                    <p class="en">${ability.essence_en}</p>
+                                    <button class="tts-button gold" onclick="speakText('${escapeSingleQuote(ability.essence_en)}', 'en-US')">🔊 English</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <div class="section-label">說話公式 | Formula</div>
+                            <div class="bilingual-box">
+                                <div class="text-block">
+                                    <label>中文</label>
+                                    <p>${ability.formula_cn}</p>
+                                    <button class="tts-button" onclick="speakText('${escapeSingleQuote(ability.formula_cn)}', 'zh-TW')">🔊 中文</button>
+                                </div>
+                                <div class="text-block en">
+                                    <label>English</label>
+                                    <p class="en">${ability.formula_en}</p>
+                                    <button class="tts-button gold" onclick="speakText('${escapeSingleQuote(ability.formula_en)}', 'en-US')">🔊 English</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-section">
+                            <div class="section-label">高維表達 | High-Agency Version</div>
+                            <div class="bilingual-box">
+                                <div class="text-block">
+                                    <label>中文</label>
+                                    <p>${ability.high_cn}</p>
+                                    <button class="tts-button" onclick="speakText('${escapeSingleQuote(ability.high_cn)}', 'zh-TW')">🔊 中文</button>
+                                </div>
+                                <div class="text-block en">
+                                    <label>English</label>
+                                    <p class="en">${ability.high_en}</p>
+                                    <button class="tts-button gold" onclick="speakText('${escapeSingleQuote(ability.high_en)}', 'en-US')">🔊 English</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTable(list = allAbilities) {
+            const tbody = document.getElementById('tableBody');
+            let html = '';
+            
+            for (const ability of list) {
+                html += `
+                    <tr>
+                        <td class="table-number">#${ability.number}</td>
+                        <td class="table-name">${ability.name_cn}<br><span style="font-size: 11px; color: #666;">${ability.name_en}</span></td>
+                        <td class="table-essence-cn">${ability.essence_cn}</td>
+                        <td class="table-formula-cn">${ability.formula_cn}</td>
+                        <td class="table-essence-en">${ability.essence_en}</td>
+                        <td class="table-formula-en">${ability.formula_en}</td>
+                    </tr>
+                `;
+            }
+            
+            tbody.innerHTML = html;
+            document.getElementById('stats').textContent = `已加載 ${list.length} 項能力 | ${list.length} Skills Loaded`;
+        }
+
+        function renderAbilities(list = allAbilities) {
+            const container = document.getElementById('abilitiesContainer');
+            container.innerHTML = list.map(ability => generateCard(ability)).join('');
+            document.getElementById('stats').textContent = `已加載 ${list.length} 項能力 | ${list.length} Skills Loaded`;
+        }
+
+        function searchAbilities() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = query ? allAbilities.filter(a => 
+                a.number.includes(query) || 
+                a.name_cn.toLowerCase().includes(query) ||
+                a.name_en.toLowerCase().includes(query)
+            ) : allAbilities;
+            
+            if (currentView === 'table') {
+                renderTable(filtered);
+            } else {
+                renderAbilities(filtered);
+            }
+        }
+
+        function expandAllCards() {
+            document.querySelectorAll('.ability-card').forEach(card => {
+                card.classList.add('expanded');
+            });
+        }
+
+        function collapseAllCards() {
+            document.querySelectorAll('.ability-card').forEach(card => {
+                card.classList.remove('expanded');
+            });
+        }
+
+        function showAllAbilities() {
+            document.getElementById('searchInput').value = '';
+            if (currentView === 'table') {
+                renderTable();
+            } else {
+                renderAbilities();
+                collapseAllCards();
+            }
+        }
+
+        function speakText(text, lang) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            utterance.rate = lang === 'en-US' ? 0.9 : 0.95;
+            utterance.pitch = 1;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAbilities();
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') searchAbilities();
+            });
+        });
+    </script>
+<!-- FBPOST:START 臉書貼文＋圖卡（痛點→能力更新→智慧，雙語） -->
+<script>
+/* ═══ 臉書貼文＋圖卡 產生器（離線，不串接 AI / API）═══ */
+(function(){
+'use strict';
+const P=(zh,en)=>({zh:zh,en:en||''});
+
+// 三種語氣領域的共用素材
+const D={
+comm:{
+  why:P('因為我們從小學會說話，卻很少學會溝通。我們學會回應，卻沒學會理解；學會表達立場，卻沒學會表達需求；學會忍耐，卻沒學會修復。',
+        'Because we learned to talk as children, but rarely learned to communicate. We learned to react, not to understand; to state positions, not needs; to endure, not to repair.'),
+  shift:[P('少一點猜測，多一點確認。','Less guessing, more checking.'),P('少一點防衛，多一點好奇。','Less defending, more curiosity.'),P('少一點爭輸贏，多一點被理解。','Less winning, more being understood.'),P('少一點冷戰，多一點修復。','Less silence, more repair.')],
+  gold:[P('話說得對，不如話說得到。','Being right matters less than being received.'),P('愛沒有抵達，就還不算說完。','If love has not arrived, the sentence is not finished.'),P('關係不是贏來的，是修來的。','Relationships are not won; they are repaired.'),P('先連結，再糾正。','Connect before you correct.'),P('聽懂一個人，勝過說服一個人。','Understanding someone beats persuading them.'),P('溫柔不是軟弱，是有力量的選擇。','Gentleness is not weakness; it is a powerful choice.')],
+  practice:[P('① 先停三秒，再開口。','1) Pause three seconds before you speak.'),P('② 先說「我理解的是…」，再說「我的想法是…」。','2) Say "What I understand is…" before "What I think is…".'),P('③ 每天對一個人，說一句真心的感謝。','3) Give one sincere thank-you to someone every day.')],
+  note:P('親愛的你：你不是不會愛，你只是還沒找到讓愛抵達的路。你不需要變成另一個人，只需要多練一個能力。你今天多聽懂一句，關係就多鬆開一點；你今天多說清楚一句，誤會就少累積一點；你今天多修復一次，信任就多存進一點。',
+         'Dear you: it is not that you cannot love; you simply have not yet found the road by which love arrives. You do not need to become someone else — only to practise one more ability. Each sentence you truly hear loosens the relationship a little; each sentence you say clearly leaves one less misunderstanding; each repair you make deposits a little more trust.'),
+  find:[P('你會發現：被理解的人，才聽得進去。','You will find: only those who feel understood can truly listen.'),P('你會發現：安全的關係，才說得出真話。','You will find: only a safe relationship can hold the truth.'),P('你會發現：先修復的人，不是輸的人，是更有力量的人。','You will find: the one who repairs first is not the loser, but the stronger one.')],
+  tags:'#溝通 #關係 #親密關係'
+},
+think:{
+  why:P('因為我們一直很努力，卻很少停下來更新自己的模型。我們學會了答案，卻沒學會提問；學會了堅持，卻沒學會修正；學會了忙碌，卻沒學會看見。',
+        'Because we work hard but seldom pause to update our own models. We learned answers, not questions; persistence, not correction; busyness, not seeing.'),
+  shift:[P('少一點慌亂，多一點清楚。','Less panic, more clarity.'),P('少一點重複，多一點看見。','Less repetition, more insight.'),P('少一點硬撐，多一點方法。','Less forcing, more method.'),P('少一點自責，多一點修正。','Less self-blame, more correction.')],
+  gold:[P('你看見的世界，是你模型的樣子。','The world you see is shaped by your model.'),P('更新，比堅持更需要勇氣。','Updating takes more courage than insisting.'),P('問題不是敵人，是老師。','Problems are not enemies; they are teachers.'),P('走得慢沒關係，方向對就好。','Slow is fine, as long as the direction is right.'),P('看懂結構，才不會被事件淹沒。','See the structure, and events will not drown you.'),P('今天的修正，是明天的自由。','Today\'s correction is tomorrow\'s freedom.')],
+  practice:[P('① 寫下今天卡住的一件事。','1) Write down one thing you got stuck on today.'),P('② 問自己：「我的假設是什麼？」','2) Ask yourself: "What am I assuming?"'),P('③ 只修正一個小地方，明天再看一次。','3) Fix one small thing, and review it tomorrow.')],
+  note:P('親愛的你：你不是不夠聰明，你只是還沒換一副看世界的眼鏡。你不需要知道所有答案，只需要多練一個能力。你今天多看懂一層，焦慮就少一點；你今天多修正一次，方向就準一點；你今天多問一個好問題，世界就大一點。',
+         'Dear you: it is not that you are not smart enough; you simply have not yet changed the lenses through which you see the world. You do not need every answer — only to practise one more ability. Each layer you understand eases the anxiety a little; each correction sharpens your direction; each good question makes your world a little larger.'),
+  find:[P('你會發現：看清楚，比跑得快重要。','You will find: seeing clearly matters more than running fast.'),P('你會發現：問對問題，比找到答案重要。','You will find: asking the right question matters more than finding an answer.'),P('你會發現：願意修正的人，走得最遠。','You will find: those willing to correct go the farthest.')],
+  tags:'#思維升級 #認知 #終身學習'
+},
+faith:{
+  why:P('因為我們習慣靠自己，卻忘了自己是被愛的。我們學會了努力，卻沒學會安息；學會了守規矩，卻沒學會領受恩典；學會了知道，卻沒學會相信。',
+        'Because we are used to relying on ourselves and forget that we are loved. We learned to strive, not to rest; to keep rules, not to receive grace; to know, not to believe.'),
+  shift:[P('少一點懼怕，多一點平安。','Less fear, more peace.'),P('少一點靠自己硬撐，多一點交託。','Less striving alone, more trust.'),P('少一點定罪，多一點恩典。','Less condemnation, more grace.'),P('少一點比較，多一點感恩。','Less comparing, more thanksgiving.')],
+  gold:[P('你不是靠表現被愛，你是因著恩典被愛。','You are not loved for your performance; you are loved by grace.'),P('重擔交出去，手才空得出來領受。','Hand over the burden, and your hands are free to receive.'),P('神沒有遲到，祂正在預備。','God is not late; He is preparing.'),P('安靜不是什麼都不做，是把位置還給神。','Stillness is not doing nothing; it is giving God His place back.'),P('不是你抓住神，是神抓住你。','It is not you holding on to God; God is holding on to you.'),P('身份先於行為，恩典先於改變。','Identity comes before behavior; grace comes before change.')],
+  practice:[P('① 安靜三分鐘，把重擔說給神聽。','1) Be still for three minutes and tell God your burden.'),P('② 讀一節經文，慢慢讀三遍。','2) Read one verse slowly, three times.'),P('③ 為一個人禱告，並且讓他知道。','3) Pray for one person, and let them know.')],
+  note:P('親愛的你：你不是被忘記了，你只是太久沒有停下來聽。你不需要先變好才能來到神面前，只需要照著本相來。你今天多交託一件事，重擔就輕一點；你今天多相信一句話，心就穩一點；你今天多感謝一次，眼睛就亮一點。',
+         'Dear you: you have not been forgotten; you have simply gone too long without stopping to listen. You do not need to become better before you come to God — only to come as you are. Each thing you entrust today lightens the load; each word you believe steadies the heart; each thanksgiving brightens your eyes.'),
+  find:[P('你會發現：恩典早就在那裡。','You will find: grace was there all along.'),P('你會發現：你從來不是一個人。','You will find: you were never alone.'),P('你會發現：最深的安息，是知道自己被愛。','You will find: the deepest rest is knowing you are loved.')],
+  tags:'#信仰 #福音 #恩典'
+}};
+
+const TURN=[
+ n=>P('其實，不是你不夠好，是「'+n.zh+'」還沒有人好好教過你。','The truth is, you are not "not good enough" — no one ever really taught you '+n.en+'.'),
+ n=>P('不是你太差，是你還在用舊版本的自己，面對新版本的人生。這一次，要更新的是「'+n.zh+'」。','You are not failing — you are meeting a new chapter of life with an old version of yourself. This time, the update is '+n.en+'.'),
+ n=>P('痛點不是你的缺陷，是「'+n.zh+'」正在敲門。','The pain is not your flaw; it is '+n.en+' knocking at the door.'),
+ n=>P('卡住的地方，不是終點，是「'+n.zh+'」要長出來的地方。','Where you are stuck is not the end; it is where '+n.en+' is about to grow.')
+];
+const WISDOM=[
+ [P('更新一個能力，就多一種選擇。','Update one ability, and you gain one more choice.'),P('多一種選擇，就少一分無力。','One more choice means a little less helplessness.'),P('少一分無力，就多一分智慧。','A little less helplessness means a little more wisdom.')],
+ [P('能力不是天生的，是一次一次練出來的。','Ability is not inborn; it is built one practice at a time.'),P('智慧不是知道更多，是願意更新自己。','Wisdom is not knowing more; it is being willing to update yourself.'),P('你不需要一夜改變，只需要今天比昨天多懂一點。','You do not need to change overnight — only to understand a little more than yesterday.')],
+ [P('痛，不是懲罰，是提醒。','Pain is not punishment; it is a reminder.'),P('卡住，不是終點，是更新的入口。','Being stuck is not the end; it is the doorway to an update.'),P('每一次不舒服，都在把你帶向更大的自己。','Every discomfort is carrying you toward a larger self.')],
+ [P('看見，是改變的開始。','Seeing is where change begins.'),P('命名，是整理的開始。','Naming is where order begins.'),P('練習，是自由的開始。','Practice is where freedom begins.')]
+];
+const CLOSE=[
+ P('願你今天，對自己溫柔一點，對成長誠實一點。','May you be a little gentler with yourself today, and a little more honest about growing.'),
+ P('你不是壞掉了，你只是正在更新。','You are not broken — you are simply updating.'),
+ P('慢慢來，比較快；一點點，就很多。','Go slowly; it is faster. A little is already a lot.'),
+ P('把這篇留給今天的自己，也分享給那個正在努力的人。','Keep this for yourself today, and share it with someone who is trying hard.')
+];
+
+const clean=s=>String(s==null?'':s).trim().replace(/^[「『"“]+/,'').replace(/[」』"”]+$/,'').replace(/[。．.；;，,\s]+$/,'');
+const fin=(s,dot)=>/[？！?!」』”"]$/.test(s)?s:s+dot;
+const q=s=>'「'+clean(s)+'」';
+const qe=s=>'"'+clean(s)+'"';
+function count(t){return (t.match(/[一-鿿]/g)||[]).length+(t.match(/[A-Za-z][A-Za-z'’\-]*/g)||[]).length;}
+
+function build(it,v){
+  const d=D[it.domain],k=it.idx+(v||0),L=[];
+  const add=(zh,en)=>{if(zh)L.push(zh);if(en)L.push(en);};
+  const gap=()=>L.push('');
+  const rot=(arr,n,off)=>{const o=[];for(let i=0;i<Math.min(n,arr.length);i++)o.push(arr[(k+(off||0)+i)%arr.length]);return o;};
+  const name={zh:it.zh,en:'"'+it.en+'"'};
+
+  add('【'+it.hook.zh+'】',it.hook.en);gap();
+  add('你是不是也這樣？','Does this sound like you?');
+  it.pains.forEach(p=>add('・'+p.zh,p.en?'· '+p.en:''));gap();
+  const t=TURN[k%TURN.length](name);add(t.zh,t.en);gap();
+
+  add('▍為什麼會這樣｜Why it happens');add(d.why.zh,d.why.en);gap();
+
+  add('▍核心｜The core：'+it.zh+' '+it.en);
+  add(it.core.zh,it.core.en);
+  if(it.core2)add(it.core2.zh,it.core2.en);gap();
+
+  add('▍從舊模式，到新能力｜From old pattern to new ability');
+  const pairLines=(it.pairs||[]).map(p=>P('不是'+q(p.o.zh)+'，而是'+q(p.n.zh)+'。',(p.o.en&&p.n.en)?'Not '+qe(p.o.en)+' — but '+qe(p.n.en)+'.':''));
+  pairLines.forEach(p=>add(p.zh,p.en));
+  const sh=rot(d.shift,pairLines.length?3:4,0);
+  add('當你開始練習「'+it.zh+'」——','When you begin to practise '+name.en+' —');
+  sh.forEach(p=>add(p.zh,p.en));d.find.forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍金句｜Words to keep');
+  const gq=x=>P('「'+fin(clean(x.zh),'。')+'」',x.en?'"'+fin(clean(x.en),'.')+'"':'');
+  const gold=(it.quotes||[]).map(gq).concat(rot(d.gold,4,1).map(gq));
+  gold.forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍三個小練習｜Three small practices');
+  d.practice.forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍能力更新，智慧長出來｜Ability updated, wisdom grows');
+  WISDOM[k%WISDOM.length].concat(WISDOM[(k+1)%WISDOM.length]).forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍寫給你｜A note to you');add(d.note.zh,d.note.en);gap();
+
+  add('🌱 今天的小步｜'+it.step.zh,it.step.en?'🌱 Today\'s small step: '+it.step.en:'');gap();
+  const c=CLOSE[k%CLOSE.length];add(c.zh,c.en);gap();
+  const tagName='#'+it.zh.replace(/[\s、，—\-·．.]/g,'');
+  L.push(['#心靈雞湯','#自我成長',tagName,d.tags,(it.tags||[]).map(x=>'#'+String(x).replace(/\s/g,'')).join(' '),'#HealingWords #LifeOS'].filter(Boolean).join(' '));
+
+  const cq=(it.quotes&&it.quotes.length)?it.quotes[k%it.quotes.length]:it.core;
+  const first=s=>{const m=String(s).match(/^.*?[。！？!?.](?=\s|$|[^\d])/);return clean(m?m[0]:s);};
+  const short=(s,n,dot)=>String(s).trim().length<=n?fin(String(s).trim().replace(/[。.]$/,''),dot):fin(first(s),dot);
+  return {text:L.join('\n'),card:{
+    hook:it.hook.zh,
+    quote:short(cq.zh,34,'。'),
+    quoteEn:cq.en?short(cq.en,90,'.'):'',
+    lines:(pairLines.length?pairLines:sh).slice(0,3).map(p=>p.zh),
+    step:it.cardStep||short(it.step.zh,44,'。'),
+    name:it.zh+'｜'+it.en
+  }};
+}
+
+/* ── 圖卡（1080×1350 Canvas）── */
+const ZH='"Microsoft JhengHei","PingFang TC","Noto Sans TC","Heiti TC",sans-serif';
+function wrap(ctx,text,maxW){
+  const tk=String(text).match(/[A-Za-z0-9'’\-]+[.,!?;:]?\s?|\s+|[^\sA-Za-z0-9]/g)||[];
+  const noHead='，。！？、；：」』）)…—';
+  const noTail='「『（(“"';
+  const out=[];let cur=[];
+  const push=()=>{const s=cur.join('').trim();if(s)out.push(s);};
+  tk.forEach(w=>{
+    if(cur.join('').trim()&&ctx.measureText(cur.join('')+w).width>maxW){
+      // 標點不放行首、上引號不放行尾：把前一個字一起帶到下一行
+      const carry=[];
+      if(noHead.indexOf(w)>=0&&cur.length>1)carry.unshift(cur.pop());
+      while(cur.length>1&&noTail.indexOf(cur[cur.length-1].trim())>=0)carry.unshift(cur.pop());
+      push();cur=carry.concat(w.replace(/^\s+/,''));
+    }else cur.push(w);
+  });
+  push();
+  return out;
+}
+function drawCard(cv,card,theme){
+  const W=1080,H=1350,ctx=cv.getContext('2d');cv.width=W;cv.height=H;
+  const X=80,MW=W-160;
+  function lay(s,paint){
+    const f=(px,wt,fam)=>{ctx.font=(wt||'')+' '+Math.round(px*s)+'px '+(fam||ZH);};
+    const text=(arr,x,y,lh,col)=>{if(paint){ctx.fillStyle=col;arr.forEach((l,i)=>ctx.fillText(l,x,y+i*lh));}return y+arr.length*lh;};
+    ctx.textBaseline='top';
+    // 標頭：痛點
+    f(46,'bold');const hk=wrap(ctx,card.hook,MW);
+    const headH=Math.round(70+44*s+18+hk.length*62*s+48);
+    if(paint){ctx.fillStyle='#FAF6EF';ctx.fillRect(0,0,W,H);ctx.fillStyle=theme.color;ctx.fillRect(0,0,W,headH);
+      f(30,'');ctx.fillStyle='rgba(255,255,255,.85)';ctx.fillText('你是不是也這樣？',X,70);}
+    f(46,'bold');let y=text(hk,X,70+44*s+18,62*s,'#fff');
+    y=headH+90*s;
+    // 金句
+    f(66,'bold');const ql=wrap(ctx,card.quote,MW);y=text(ql,X,y,92*s,'#2B2622')+18*s;
+    if(card.quoteEn){f(30,'italic','Georgia,"Times New Roman",serif');y=text(wrap(ctx,card.quoteEn,MW),X,y,42*s,'#8A7F76');}
+    y+=50*s;
+    // 排比框
+    f(34,'');const bl=[];card.lines.forEach(l=>wrap(ctx,l,MW-110).forEach(x=>bl.push(x)));
+    const bh=bl.length*56*s+64*s;
+    if(paint){ctx.fillStyle=theme.tint;rr(ctx,X-20,y,MW+40,bh,28);ctx.fill();ctx.fillStyle=theme.color;ctx.fillRect(X-20,y+24,10,bh-48);}
+    text(bl,X+32,y+34*s,56*s,'#3A332E');y+=bh+48*s;
+    // 今天的小步
+    f(27,'');const pw=ctx.measureText('今天的小步').width+48,ph=54*s;
+    if(paint){ctx.fillStyle=theme.color;rr(ctx,X,y,pw,ph,ph/2);ctx.fill();ctx.fillStyle='#fff';ctx.fillText('今天的小步',X+24,y+(ph-27*s)/2-2);}
+    y+=ph+22*s;
+    f(34,'bold');y=text(wrap(ctx,card.step,MW),X,y,52*s,'#2B2622');
+    return y;
+  }
+  let s=1.3;while(s>0.55&&lay(s,false)>H-170)s-=0.03;
+  lay(s,true);
+  ctx.fillStyle='#E4DAD0';ctx.fillRect(X,H-130,MW,3);
+  ctx.textBaseline='top';ctx.font='bold 32px '+ZH;ctx.fillStyle=theme.color;ctx.fillText(theme.brand,X,H-96);
+  ctx.font='28px '+ZH;ctx.fillStyle='#8A7F76';const tg='#心靈雞湯';ctx.fillText(tg,W-X-ctx.measureText(tg).width,H-94);
+}
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+/* ── 介面 ── */
+let CFG=null,ITEMS=[],cur=null,ver=0;
+const $=id=>document.getElementById(id);
+function ui(){
+  const st=document.createElement('style');
+  st.textContent=`
+.fbp-btn{display:inline-flex;align-items:center;gap:4px;margin:8px 0 0;padding:6px 12px;border:0;border-radius:999px;background:var(--fbp-c);color:#fff;font:600 13px/1.2 ${ZH};cursor:pointer;white-space:nowrap}
+.fbp-btn:hover{filter:brightness(1.1)}
+#fbpFab{position:fixed;left:16px;bottom:76px;z-index:9998;margin:0;padding:11px 16px;font-size:14px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+#fbpMask{position:fixed;inset:0;z-index:9999;background:rgba(20,16,12,.6);display:none;align-items:center;justify-content:center;padding:12px}
+#fbpMask.on{display:flex}
+#fbpBox{background:#FAF6EF;color:#2B2622;width:min(1040px,100%);max-height:94vh;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;font:14px/1.6 ${ZH};text-align:left}
+#fbpTop{display:flex;gap:8px;align-items:center;padding:12px 14px;background:var(--fbp-c);color:#fff}
+#fbpTop b{flex:1;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#fbpSearch{flex:0 1 260px;min-width:110px;padding:7px 12px;border:0;border-radius:999px;font:14px ${ZH};color:#2B2622;background:#fff}
+#fbpX{background:none;border:0;color:#fff;font-size:22px;cursor:pointer;line-height:1}
+#fbpList{max-height:132px;overflow-x:hidden;overflow-y:auto;flex:none;padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #E4DAD0;background:#fff}
+#fbpList button{border:1px solid #E4DAD0;background:#FAF6EF;color:#2B2622;border-radius:999px;padding:3px 10px;font:12px ${ZH};cursor:pointer}
+#fbpList button.on{background:var(--fbp-c);color:#fff;border-color:var(--fbp-c)}
+#fbpMain{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;padding:14px;overflow:auto}
+#fbpText{width:100%;height:52vh;min-height:260px;box-sizing:border-box;padding:12px;border:1px solid #E4DAD0;border-radius:12px;background:#fff;color:#2B2622;font:14px/1.75 ${ZH};resize:vertical}
+#fbpCanvas{width:100%;height:auto;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15);display:block}
+#fbpBar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+#fbpBar .fbp-btn{margin:0}
+#fbpBar .fbp-g{background:#fff;color:var(--fbp-c);border:1px solid var(--fbp-c)}
+#fbpCnt{font-size:12px;color:#8A7F76;margin-left:auto}
+@media(max-width:760px){#fbpMain{grid-template-columns:minmax(0,1fr)}#fbpText{height:38vh}#fbpCanvas{max-width:300px;margin:0 auto}}
+@media print{#fbpFab,#fbpMask,.fbp-btn{display:none!important}}`;
+  document.head.appendChild(st);
+  document.documentElement.style.setProperty('--fbp-c',CFG.color);
+  const fab=document.createElement('button');fab.id='fbpFab';fab.className='fbp-btn';fab.textContent='📣 臉書貼文＋圖卡';
+  fab.onclick=()=>open((cur||ITEMS[0]).id);document.body.appendChild(fab);
+  const m=document.createElement('div');m.id='fbpMask';
+  m.innerHTML='<div id="fbpBox"><div id="fbpTop"><b id="fbpTitle"></b><input id="fbpSearch" type="search" placeholder="搜尋欄位 / Search…"><button id="fbpX" title="關閉">×</button></div>'+
+   '<div id="fbpList"></div><div id="fbpMain"><div><textarea id="fbpText" spellcheck="false"></textarea><div id="fbpBar">'+
+   '<button class="fbp-btn" id="fbpCopy">📋 複製貼文</button><button class="fbp-btn" id="fbpPng">🖼️ 下載圖卡</button>'+
+   '<button class="fbp-btn fbp-g" id="fbpNext">🔄 換一版</button><button class="fbp-btn fbp-g" id="fbpTxt">💾 貼文 TXT</button>'+
+   '<button class="fbp-btn fbp-g" id="fbpAll">📦 全部貼文 TXT</button><span id="fbpCnt"></span></div></div>'+
+   '<div><canvas id="fbpCanvas"></canvas></div></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',e=>{if(e.target===m)close();});
+  $('fbpX').onclick=close;
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+  $('fbpSearch').addEventListener('input',list);
+  $('fbpNext').onclick=()=>{ver++;show();};
+  $('fbpCopy').onclick=function(){const t=$('fbpText');const done=()=>flash(this,'✅ 已複製');
+    if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t.value).then(done,()=>{t.select();document.execCommand('copy');done();});
+    else{t.select();document.execCommand('copy');done();}};
+  $('fbpPng').onclick=()=>$('fbpCanvas').toBlob(b=>save(b,fname()+'.png'));
+  $('fbpTxt').onclick=()=>save(new Blob(['﻿'+$('fbpText').value],{type:'text/plain;charset=utf-8'}),fname()+'.txt');
+  $('fbpAll').onclick=()=>save(new Blob(['﻿'+ITEMS.map(it=>'════ '+it.no+' '+it.zh+' ════\n\n'+build(it,0).text).join('\n\n\n')],{type:'text/plain;charset=utf-8'}),CFG.brand+'_全部臉書貼文.txt');
+}
+function flash(b,t){const o=b.textContent;b.textContent=t;setTimeout(()=>b.textContent=o,1200);}
+function fname(){return (CFG.brand+'_'+cur.no+'_'+cur.zh).replace(/[\\/:*?"<>|\s]+/g,'_');}
+function save(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);}
+function list(){
+  const kw=$('fbpSearch').value.trim().toLowerCase();
+  const box=$('fbpList');box.innerHTML='';
+  ITEMS.filter(it=>!kw||(it.no+' '+it.zh+' '+it.en).toLowerCase().indexOf(kw)>=0).forEach(it=>{
+    const b=document.createElement('button');b.textContent=it.no+' '+it.zh;if(cur&&it.id===cur.id)b.className='on';
+    b.onclick=()=>open(it.id);box.appendChild(b);
+  });
+}
+function show(){
+  const r=build(cur,ver);
+  $('fbpTitle').textContent='📣 '+cur.no+' '+cur.zh+'｜'+cur.en;
+  $('fbpText').value=r.text;$('fbpText').scrollTop=0;
+  $('fbpCnt').textContent='約 '+count(r.text)+' 字（中文字＋英文單字）';
+  drawCard($('fbpCanvas'),r.card,{color:CFG.color,tint:CFG.tint,brand:CFG.brand});
+}
+function open(id){
+  const it=ITEMS.find(x=>String(x.id)===String(id));if(!it)return;
+  if(!cur||cur.id!==it.id)ver=0;cur=it;
+  $('fbpMask').classList.add('on');list();show();
+  const on=$('fbpList').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
+}
+function close(){$('fbpMask').classList.remove('on');}
+function mount(){
+  (CFG.mounts()||[]).forEach(m=>{
+    if(!m||!m.el||m.el.querySelector(':scope > .fbp-btn'))return;
+    const b=document.createElement('button');b.type='button';b.className='fbp-btn';b.textContent='📣 貼文＋圖卡';
+    b.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();open(m.id);});
+    m.el.appendChild(b);
+  });
+}
+function init(cfg){
+  CFG=cfg;
+  const go=()=>{
+    ITEMS=cfg.items().map((it,i)=>{it.idx=i;it.domain=cfg.domain;return it;});
+    ui();mount();
+    let tm=null;new MutationObserver(()=>{clearTimeout(tm);tm=setTimeout(mount,150);}).observe(document.body,{childList:true,subtree:true});
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(go,0));else setTimeout(go,0);
+}
+window.FBPost={init:init,build:build,count:count,P:P,open:open,items:()=>ITEMS};
+})();
+
+</script>
+<script>
+/* 逐項痛點：編號, 英文名, 痛點標題(中,英), 痛點1(中,英), 痛點2(中,英) */
+window.FBP_PAIN=window.FBP_PAIN||{};
+(function(){const X=(...a)=>{window.FBP_PAIN[a[0]]=a.slice(1);};
+X(`001`,`Listening`,`他還沒說完，你心裡已經準備好怎麼回了。`,`They have not finished, and your reply is already prepared.`,`人在聽，心在等輪到自己。`,`Your ears are open, but your mind is waiting for its turn.`,`聽完了，卻說不出他剛剛真正在意什麼。`,`You heard it all, yet cannot say what truly mattered to them.`);
+X(`002`,`Empathic Understanding`,`你說「我懂」，他卻覺得你一點都不懂。`,`You say "I understand," and they feel you do not understand at all.`,`急著安慰，反而讓對方更孤單。`,`Rushing to comfort leaves them lonelier.`,`把自己的感覺，當成了他的感覺。`,`You mistook your own feelings for theirs.`);
+X(`003`,`Model Synchronization`,`講了半天，才發現你們說的根本不是同一件事。`,`After a long talk, you discover you were never discussing the same thing.`,`各說各話，還以為在溝通。`,`Two monologues, mistaken for a conversation.`,`結論都下了，理解卻沒對上。`,`The conclusion is reached, but the understanding never matched.`);
+X(`004`,`Worldview Understanding`,`你想不通：他怎麼會這樣想？`,`You cannot figure out how they could possibly think that way.`,`用自己的標準，去量別人的人生。`,`You measure another life with your own ruler.`,`覺得他不可理喻，其實只是世界不同。`,`You call them unreasonable; their world is simply different.`);
+X(`005`,`Needs Identification`,`他發了一頓脾氣，你只聽到抱怨。`,`They lost their temper, and all you heard was complaining.`,`忙著回應情緒，卻沒看見情緒後面的需要。`,`Busy answering the emotion, you missed the need behind it.`,`事情解決了，他還是不開心。`,`The matter is solved, and they are still unhappy.`);
+X(`006`,`Emotion Recognition`,`一有情緒，就覺得自己是不是又不夠好。`,`Whenever emotion arises, you wonder if you are failing again.`,`把情緒當成麻煩，急著把它趕走。`,`You treat emotion as trouble and hurry to drive it away.`,`身體已經在抗議，你卻說「我沒事」。`,`Your body is protesting, and you say "I am fine."`);
+X(`007`,`Emotion Naming`,`心裡悶悶的，卻說不出那是什麼。`,`Something feels heavy inside, and you cannot name it.`,`只會說「煩」，分不清是委屈、害怕還是失望。`,`You only say "annoyed," unable to tell hurt from fear from disappointment.`,`說不清楚，最後變成一場脾氣。`,`Unable to say it, you end up in an outburst.`);
+X(`008`,`Intent Recognition`,`他嘴上說「隨便」，你就真的以為隨便。`,`They said "whatever," and you took it literally.`,`只聽字面，錯過了真正想說的話。`,`You heard the words and missed what was meant.`,`回答了問題，卻沒有回應到人。`,`You answered the question but not the person.`);
+X(`009`,`Assumption Verification`,`你很確定他是那個意思——直到發現不是。`,`You were sure that was what they meant — until it was not.`,`把猜測當事實，然後為它生氣。`,`You treat a guess as fact, then get angry about it.`,`從來沒想過要問一句：「是這樣嗎？」`,`It never occurred to you to ask: "Is that right?"`);
+X(`010`,`Questioning`,`急著給答案，卻問錯了問題。`,`You hurry to give answers to the wrong question.`,`怕問了顯得不懂，乾脆不問。`,`Afraid a question will make you look ignorant, you do not ask.`,`一開口就是「為什麼你不…」。`,`Your questions begin with "Why didn't you…".`);
+X(`011`,`Deep Questioning`,`問題解決了三次，它還是回來。`,`You have solved it three times, and it keeps coming back.`,`問到第一個答案，就停下來了。`,`You stop at the first answer.`,`處理了表面，沒碰到原因。`,`You handled the surface and never reached the cause.`);
+X(`012`,`Open-Ended Questions`,`你問「好不好」，他只回「還好」。`,`You ask "Is it okay?" and they answer "Fine."`,`問題都是是非題，對話很快就結束。`,`Every question is yes-or-no, and the talk ends quickly.`,`想多了解他，卻不知道怎麼問。`,`You want to know more and do not know how to ask.`);
+X(`013`,`Clarification`,`「我以為你說的是…」這句話，你說過太多次。`,`"I thought you meant…" — you have said it too many times.`,`不好意思再問一次，結果做錯了。`,`Too shy to ask again, you got it wrong.`,`一個模糊的字，換來一整週的白工。`,`One vague word cost a whole week of wasted work.`);
+X(`014`,`Restatement`,`你點頭說懂了，轉身就做成另一件事。`,`You nodded that you understood, then did something else entirely.`,`聽完沒有說回去，誤會就留在那裡。`,`You never said it back, so the misunderstanding stayed.`,`對方以為你知道，你以為你知道。`,`They assumed you knew; so did you.`);
+X(`015`,`Summarization`,`講了十分鐘，別人問：「所以重點是？」`,`After ten minutes, someone asks: "So what is the point?"`,`資訊很多，卻抓不到主幹。`,`So much information, and no main thread.`,`會議開完，沒有人說得出結論。`,`The meeting ends and no one can state the conclusion.`);
+X(`016`,`Understanding Confirmation`,`你問「懂了嗎？」，大家都說懂了。`,`You ask "Got it?" and everyone says yes.`,`最怕的不是不懂，是以為自己懂。`,`The danger is not failing to understand, but assuming you do.`,`沒確認的理解，最後都變成返工。`,`Unconfirmed understanding always turns into rework.`);
+X(`017`,`Feedback`,`想說真話，又怕傷了感情。`,`You want to be honest and fear hurting the relationship.`,`忍著不講，直到忍不住一次講完。`,`You hold it in until it all comes out at once.`,`一開口，就變成批評。`,`The moment you speak, it becomes criticism.`);
+X(`018`,`Two-Way Feedback`,`你很會給建議，卻很難聽進別人的。`,`You give advice well and take it poorly.`,`只有上對下，沒有下對上。`,`Feedback flows down, never up.`,`每個人都小心翼翼，沒有人說真話。`,`Everyone is careful, and no one tells the truth.`);
+X(`019`,`Correction`,`小誤差沒修，慢慢變成大裂縫。`,`A small error left alone slowly becomes a wide crack.`,`覺得「差不多就好」，結果越差越多。`,`"Close enough" kept drifting further.`,`等到出事，才想到該對一下。`,`Only after trouble do you think to check.`);
+X(`020`,`Cognitive Alignment`,`同一份文件，三個人讀出三個意思。`,`One document, three readers, three meanings.`,`以為有共識，做出來才發現沒有。`,`You thought you agreed, until the work proved otherwise.`,`一直在修正結果，沒有對齊理解。`,`You keep fixing results and never align understanding.`);
+X(`021`,`Consensus Building`,`表決通過了，卻沒有人真心要做。`,`The vote passed, and no one truly intends to do it.`,`把「沒人反對」當成共識。`,`You mistook "no objection" for consensus.`,`會上點頭，會後各做各的。`,`Nods in the meeting, separate paths afterwards.`);
+X(`022`,`Shared Goal Setting`,`大家都很拚，卻往不同方向拚。`,`Everyone is working hard, in different directions.`,`你要的是品質，他要的是速度。`,`You want quality; they want speed.`,`吵了很久，才發現目標本來就不一樣。`,`After much arguing, you find the goals were never the same.`);
+X(`023`,`Common Language`,`都說「盡快」，你的盡快是今天，他的是下週。`,`Both say "soon" — yours means today, theirs means next week.`,`同一個詞，各有各的定義。`,`One word, a private definition for each.`,`爭的不是事情，是字的意思。`,`The dispute is not about the matter, but the meaning of a word.`);
+X(`024`,`Shared Framework`,`討論一直繞，因為每個人用的地圖不一樣。`,`The discussion circles because everyone holds a different map.`,`你在談原因，他在談責任。`,`You are discussing causes; they are discussing blame.`,`每次開會都要從頭解釋一遍。`,`Every meeting starts by explaining everything again.`);
+X(`025`,`Model Translation`,`你說了三遍一樣的話，他還是聽不懂。`,`You said the same thing three times, and they still do not understand.`,`只會重複，不會換個方式說。`,`You can repeat, but not rephrase.`,`用自己的語言，說給不同世界的人聽。`,`You speak your own language to someone from another world.`);
+X(`026`,`Cross-Field Translation`,`工程師和業務坐在一起，像在說兩種語言。`,`Engineers and sales sit together and speak two languages.`,`覺得對方外行，其實只是用詞不同。`,`You think them amateurs; they simply use other words.`,`專業越深，越難跟別人說清楚。`,`The deeper the expertise, the harder it is to explain.`);
+X(`027`,`Professional Translation`,`你講得很專業，對方聽得很茫然。`,`You sound professional, and they look lost.`,`術語一出口，距離就拉開。`,`One piece of jargon, and distance appears.`,`懂很多，卻沒辦法讓人聽懂。`,`You know a great deal and cannot make it understood.`);
+X(`028`,`Plain Language`,`解釋得越多，對方越聽不懂。`,`The more you explain, the less they understand.`,`講的是觀念，對方需要的是畫面。`,`You offer concepts; they need a picture.`,`孩子、長輩一聽就放空。`,`Children and elders tune out at once.`);
+X(`029`,`Analogy`,`道理都對，卻沒有人記得住。`,`Every point is correct, and no one remembers it.`,`找不到一個「就像…」來幫忙。`,`You cannot find a single "it is like…" to help.`,`新觀念進不去，因為沒有橋。`,`The new idea cannot enter; there is no bridge.`);
+X(`030`,`Giving Examples`,`你說得很抽象，他問：「可以舉個例子嗎？」`,`You speak in abstractions, and they ask: "Can you give an example?"`,`原則講完了，沒有人知道怎麼做。`,`The principle is stated, and no one knows what to do.`,`少了一個例子，多了十分鐘解釋。`,`One missing example, ten extra minutes of explaining.`);
+X(`031`,`Storytelling`,`簡報做得很完整，聽的人卻在滑手機。`,`The slides are thorough, and the audience is on their phones.`,`只有數據，沒有故事。`,`All data, no story.`,`說完了，沒有一句被記住。`,`You finished, and not a sentence was remembered.`);
+X(`032`,`Perspective Switching`,`你覺得理所當然的事，別人卻看不到。`,`What is obvious to you is invisible to others.`,`一直站在自己的位置看問題。`,`You keep viewing the problem from your own seat.`,`吵到最後才發現，只是站的地方不同。`,`In the end you find you were simply standing in different places.`);
+X(`033`,`Standing in Their Shoes`,`你說「換作是我才不會這樣」。`,`You say, "I would never do that in their place."`,`怕理解了對方，就等於自己輸了。`,`You fear that understanding them means losing.`,`只想被理解，卻不想去理解。`,`You want to be understood, not to understand.`);
+X(`034`,`Multi-Model Thinking`,`你只有一個解釋，而且很確定。`,`You have one explanation, and you are certain of it.`,`一看到現象，就認定是那個原因。`,`You see a symptom and fix on one cause.`,`別人提出別的可能，你覺得是在找碴。`,`When others offer alternatives, you feel attacked.`);
+X(`035`,`Value Recognition`,`事實都一樣，你們卻怎麼談都談不攏。`,`The facts are the same, and you still cannot agree.`,`你在乎公平，他在乎和諧。`,`You care about fairness; they care about harmony.`,`吵的是事情，卡的是價值。`,`The argument is about the matter; the block is about values.`);
+X(`036`,`Belief Recognition`,`你覺得「人就是不可靠」，然後處處看到證據。`,`You believe "people are unreliable," and see proof everywhere.`,`從沒懷疑過自己相信的事。`,`You have never questioned what you believe.`,`同樣的反應，一再出現。`,`The same reaction appears again and again.`);
+X(`037`,`Premise Recognition`,`兩個人都很有邏輯，結論卻完全相反。`,`Both of you are logical, and the conclusions are opposite.`,`沒說出口的前提，才是爭執的起點。`,`The unstated premise is where the argument began.`,`一直辯結論，沒人回頭看起點。`,`You debate conclusions and never look back at the start.`);
+X(`038`,`Bias Recognition`,`你只記得他做錯的那幾次。`,`You remember only the times they got it wrong.`,`第一印象不好，之後怎麼看都不順眼。`,`A poor first impression colours everything after.`,`覺得自己很客觀。`,`You are sure you are objective.`);
+X(`039`,`Misunderstanding Diagnosis`,`你們其實想的一樣，卻吵得像仇人。`,`You actually want the same thing, and fight like enemies.`,`把聽錯，當成對方故意。`,`You took a mishearing for malice.`,`沒先查是不是誤會，就先反擊。`,`You struck back before checking for a misunderstanding.`);
+X(`040`,`Conflict Diagnosis`,`一有衝突，就想快點結束它。`,`When conflict appears, you only want it over.`,`壓下去了，下次又從同一個地方冒出來。`,`Pressed down, it rises again from the same place.`,`只看到誰在生氣，沒看到哪裡出了問題。`,`You see who is angry, not what went wrong.`);
+X(`041`,`Conflict Resolution`,`吵完了，問題還在，感情卻少了一點。`,`The fight is over, the problem remains, and affection is a little less.`,`不是冷戰，就是爆炸。`,`Either a cold war or an explosion.`,`每次都想贏，結果兩個人都輸。`,`You always try to win, and both lose.`);
+X(`042`,`Conflict Reframing`,`你覺得是他有問題，他覺得是你有問題。`,`You think they are the problem; they think you are.`,`把人當成問題，問題就永遠解不了。`,`Treat the person as the problem, and it is never solved.`,`同一件事，你們各自在解不同的題。`,`One situation, and each of you is solving a different puzzle.`);
+X(`043`,`Relationship Repair`,`和好了，卻再也回不到從前。`,`You made up, and it is never quite the same.`,`說了對不起，心裡的結還在。`,`"Sorry" was said, and the knot remains.`,`假裝沒事，裂縫卻越來越大。`,`You pretend all is well while the crack widens.`);
+X(`044`,`Trust Building`,`你很有誠意，對方卻還是不放心。`,`You are sincere, and they still do not feel at ease.`,`話說得很滿，事做得很少。`,`Big words, small deeds.`,`想靠一次表現，換來長久的信任。`,`You hope one good showing buys lasting trust.`);
+X(`045`,`Trust Maintenance`,`以為信任建立了，就不用再經營。`,`You assumed trust, once built, needs no tending.`,`小事沒交代，疑心就長出來。`,`A small thing left unexplained, and doubt takes root.`,`等到對方失望，才發現很久沒對話了。`,`Only when they are disappointed do you notice how long it has been since you talked.`);
+X(`046`,`Respecting Differences`,`他跟你不一樣，你就覺得他不對。`,`They differ from you, so you decide they are wrong.`,`想把對方，改成自己習慣的樣子。`,`You try to remake them into what you are used to.`,`差異一出現，就開始分對錯。`,`When a difference appears, you start sorting right from wrong.`);
+X(`047`,`Embracing Diversity`,`團隊裡都是同一種人，想法也都一樣。`,`The team is all one type, with all the same ideas.`,`不一樣的聲音，總是被當成麻煩。`,`A different voice is always treated as trouble.`,`很和諧，卻沒有新東西。`,`Very harmonious, and nothing new.`);
+X(`048`,`Non-Judgment`,`他話還沒說完，你心裡已經打好分數。`,`Before they finish, you have already scored them.`,`一句「你這樣不對」，讓對方再也不想說。`,`One "that is wrong" and they stop sharing.`,`評價太快，理解太慢。`,`Too quick to judge, too slow to understand.`);
+X(`049`,`Delaying Conclusions`,`只聽到一半，你就下了結論。`,`You heard half and reached a verdict.`,`受不了「還不確定」的感覺。`,`You cannot bear the feeling of "not sure yet."`,`結論下得很快，後悔也來得很快。`,`The conclusion came fast, and so did the regret.`);
+X(`050`,`Curiosity`,`很久沒有對一個人，真的感到好奇了。`,`It has been long since you were truly curious about someone.`,`覺得都知道了，所以不再問。`,`You think you already know, so you stop asking.`,`對話只剩下交代事情。`,`Conversation has shrunk to logistics.`);
+X(`051`,`Active Confirmation`,`你猜他應該知道，他猜你應該會說。`,`You guessed they knew; they guessed you would say.`,`寧願猜一個晚上，也不問一句話。`,`You would rather guess all night than ask one question.`,`猜錯了，還怪對方沒說清楚。`,`You guessed wrong and blamed them for being unclear.`);
+X(`052`,`Engaged Listening`,`你安靜地聽，對方卻覺得你沒在聽。`,`You listen in silence, and they feel unheard.`,`沒有回應的傾聽，像對著牆說話。`,`Listening without response feels like talking to a wall.`,`眼睛看著他，心卻在別的地方。`,`Your eyes are on them; your mind is elsewhere.`);
+X(`053`,`Reading Non-Verbal Signals`,`他說「沒事」，你就相信沒事。`,`They said "nothing is wrong," and you believed it.`,`只聽話，沒看表情。`,`You heard the words and missed the face.`,`那個停頓、那個嘆氣，你都錯過了。`,`The pause, the sigh — you missed them both.`);
+X(`054`,`Understanding Body Language`,`他嘴上答應，身體卻往後退了一步。`,`They agreed aloud while their body stepped back.`,`雙手抱胸、眼神飄走，你還在繼續說。`,`Arms crossed, eyes drifting, and you keep talking.`,`自己皺著眉說「我很好」。`,`You frown while saying "I am fine."`);
+X(`055`,`Tone Recognition`,`同一句「好啊」，你聽不出他是真的好。`,`The same "sure" — you cannot tell whether they mean it.`,`你覺得只是在講事情，他覺得你在兇他。`,`You think you are just stating facts; they feel scolded.`,`訊息打出去，對方讀成另一種語氣。`,`You send a message, and it is read in another tone.`);
+X(`056`,`Context Judgment`,`同一句話，在家說沒事，在會議上就出事。`,`The same sentence is harmless at home and a problem in a meeting.`,`把私下的玩笑，帶到公開場合。`,`You carried a private joke into a public setting.`,`話沒有錯，場合錯了。`,`The words were not wrong; the setting was.`);
+X(`057`,`Timing`,`他剛進門、最累的時候，你開始談最難的事。`,`They just walked in, exhausted, and you raise the hardest topic.`,`話是對的，只是說得太早或太晚。`,`The words were right, only too early or too late.`,`急著現在講完，結果什麼都沒講成。`,`You insisted on finishing now, and nothing was achieved.`);
+X(`058`,`Knowing Your Counterpart`,`你用同一套方式，跟每一個人說話。`,`You speak to everyone in exactly the same way.`,`對急性子講細節，對細心的人講大概。`,`Details for the impatient, summaries for the careful.`,`方法沒錯，只是對象不對。`,`The method was fine; the person was not the match.`);
+X(`059`,`Audience Analysis`,`你準備了你想講的，不是他們想聽的。`,`You prepared what you wanted to say, not what they needed to hear.`,`講得很用心，台下卻沒有共鳴。`,`You spoke with care, and nothing resonated.`,`不知道聽的人是誰，就開始講。`,`You began without knowing who was listening.`);
+X(`060`,`Adjusting Depth`,`對新手講得太深，對高手講得太淺。`,`Too deep for beginners, too shallow for experts.`,`只有一種速度、一種說法。`,`One speed, one way of saying it.`,`對方跟不上，你卻沒有發現。`,`They fell behind, and you did not notice.`);
+})();
+
+(function(){const X=(...a)=>{window.FBP_PAIN[a[0]]=a.slice(1);};
+X(`061`,`Simplifying Language`,`你越想講清楚，句子就越長。`,`The more you try to be clear, the longer the sentence grows.`,`怕講太簡單，顯得自己不專業。`,`You fear that simple words will make you look unprofessional.`,`聽的人累了，你還沒講到重點。`,`The listener is tired, and you have not reached the point.`);
+X(`062`,`Precise Language`,`一句「你總是這樣」，讓對方整個炸開。`,`One "you always do this," and they explode.`,`說「大概」「可能」「再看看」，結果沒人動。`,`"Roughly," "maybe," "we will see" — and no one moves.`,`差一個字，意思差很多。`,`One word off, and the meaning is far off.`);
+X(`063`,`Keyword Distillation`,`筆記寫了三頁，回頭看不知道重點在哪。`,`Three pages of notes, and you cannot find the point.`,`每一句都想留，結果什麼都沒留下。`,`You tried to keep every sentence and kept none.`,`講完之後，沒有一個詞被帶走。`,`After you spoke, not one word was carried away.`);
+X(`064`,`Core Message Focus`,`一次想講五件事，結果一件也沒被記住。`,`You tried to say five things, and none was remembered.`,`什麼都重要，就等於什麼都不重要。`,`When everything is important, nothing is.`,`對方聽完問：「所以你要我做什麼？」`,`They listen and ask: "So what do you want me to do?"`);
+X(`065`,`Logical Expression`,`你心裡很清楚，說出來卻跳來跳去。`,`It is clear in your head and jumps around when spoken.`,`只說結論，沒說為什麼。`,`You gave the conclusion without the why.`,`對方聽不懂，你覺得是他不用心。`,`They do not follow, and you think they are not trying.`);
+X(`066`,`Structured Expression`,`想到哪說到哪，說完自己也忘了講過什麼。`,`You speak as thoughts come and forget what you said.`,`內容很好，卻沒有骨架。`,`Good content, no skeleton.`,`沒有「第一、第二、第三」，聽的人很辛苦。`,`Without "first, second, third," the listener struggles.`);
+X(`067`,`Organizing`,`資料一大堆，腦袋一團亂。`,`A heap of material, a tangled mind.`,`東西越收越多，卻越找不到。`,`You collect more and find less.`,`不是沒有資訊，是沒有秩序。`,`It is not a lack of information, but of order.`);
+X(`068`,`Process Explanation`,`你做得很熟，卻教不會別人。`,`You do it expertly and cannot teach it.`,`交接只說「就這樣弄」，下一個人只好重來。`,`The handover was "just do it like this," so the next person starts over.`,`每次都靠記憶，每次都漏一步。`,`You rely on memory each time, and miss a step each time.`);
+X(`069`,`Decision Communication`,`決定公布了，大家才第一次聽說。`,`The decision is announced, and everyone is hearing it for the first time.`,`只說「就這樣決定」，沒說為什麼。`,`You said "it is decided" without the reason.`,`表面服從，心裡不服。`,`Compliance on the surface, resistance within.`);
+X(`070`,`Bargaining Together`,`你堅持你的，他堅持他的，誰也不讓。`,`You hold your position, they hold theirs, and no one yields.`,`一直談條件，沒談真正的需要。`,`You traded terms and never spoke of real needs.`,`各退一步，結果兩邊都不滿意。`,`Each stepped back, and both were dissatisfied.`);
+X(`071`,`Negotiation`,`每次談判，都像在搶同一塊餅。`,`Every negotiation feels like fighting over one pie.`,`贏了價格，輸了下一次合作。`,`You won the price and lost the next deal.`,`只想著不能吃虧。`,`You think only about not losing out.`);
+X(`072`,`Win-Win Thinking`,`你覺得他多拿一點，你就少一點。`,`You feel that whatever they gain, you lose.`,`把夥伴當對手。`,`You treat a partner as an opponent.`,`贏了這一局，卻沒有人想再跟你合作。`,`You won this round, and no one wants to work with you again.`);
+X(`073`,`Expectation Management`,`你以為他會記得，他根本不知道你在等。`,`You assumed they would remember; they never knew you were waiting.`,`期待沒說出口，失望卻很大聲。`,`The expectation was silent; the disappointment was loud.`,`「我以為你會…」成了你們的口頭禪。`,`"I thought you would…" has become your refrain.`);
+X(`074`,`Boundary Setting`,`明明不想答應，還是說了「好」。`,`You did not want to agree, and still said "yes."`,`怕拒絕會破壞關係，結果累的是自己。`,`Fearing refusal would harm the relationship, you wore yourself out.`,`忍到最後，用生氣來畫界線。`,`You endure until anger draws the line for you.`);
+X(`075`,`Emotional Soothing`,`他在哭，你卻急著跟他講道理。`,`They are crying, and you hurry to reason with them.`,`一句「你不要想太多」，讓對方更難過。`,`"Do not overthink it" only made them sadder.`,`情緒還沒下來，事情怎麼談都談不成。`,`Until the emotion settles, nothing can be discussed.`);
+X(`076`,`Communicating Under Pressure`,`一緊張，話就又快又亂。`,`When nervous, your words come fast and scattered.`,`時間越趕，交代得越不清楚。`,`The tighter the time, the vaguer the instructions.`,`壓力大的時候，最容易說出傷人的話。`,`Under pressure, hurtful words come most easily.`);
+X(`077`,`High-Conflict Communication`,`聲音越來越大，卻沒有人在聽。`,`Voices rise, and no one is listening.`,`你一句、我一句，越吵越遠。`,`Line for line, you argue further apart.`,`事後才後悔：那句話不該說。`,`Afterwards you regret: that should not have been said.`);
+X(`078`,`Crisis Communication`,`出事了，第一個反應是先不要講。`,`Something went wrong, and your first instinct is to say nothing.`,`想等弄清楚再說，謠言卻先傳開。`,`You waited for clarity, and rumour spread first.`,`說了一半的真話，最後失去全部的信任。`,`A half-truth cost you all the trust.`);
+X(`079`,`Cross-Generational Communication`,`你說「我們以前哪有這樣」，他已經不想聽。`,`You say, "It was never like this in our day," and they stop listening.`,`長輩覺得被頂嘴，年輕人覺得不被懂。`,`Elders feel talked back to; the young feel misunderstood.`,`不是不孝順、不是不講理，是年代不同。`,`Not unfilial, not unreasonable — simply a different era.`);
+X(`080`,`Parent-Child Communication`,`你說是為他好，他卻把房門關上。`,`You say it is for their good, and they close the door.`,`一開口就是提醒、糾正、催促。`,`Every sentence is a reminder, a correction, a push.`,`孩子很聽話，卻不再跟你說心事。`,`The child obeys, and no longer tells you what is on their mind.`);
+X(`081`,`Couple Communication`,`每天說的話，只剩「吃了沒」「幾點回來」。`,`Your daily talk has shrunk to "Have you eaten?" and "When are you home?"`,`把另一半當成要管理的人。`,`You treat your partner as someone to manage.`,`住在一起，卻覺得很孤單。`,`Living together, and feeling alone.`);
+X(`082`,`Team Communication`,`每個人都很忙，卻不知道別人在忙什麼。`,`Everyone is busy, and no one knows with what.`,`訊息很多，共識很少。`,`Many messages, little shared understanding.`,`事情掉在中間，沒有人接。`,`Things fall into the gap, and no one catches them.`);
+X(`083`,`Cross-Department Collaboration`,`每個部門都達標，公司卻沒有變好。`,`Every department hit its target, and the company did not improve.`,`「這不是我們部門的事。」`,`"That is not our department."`,`信件往來十幾封，問題還在原地。`,`A dozen emails later, the problem has not moved.`);
+X(`084`,`Cross-Cultural Communication`,`你覺得是禮貌，他覺得是冷淡。`,`You meant it as politeness; they felt it as coldness.`,`用自己的文化，解讀別人的行為。`,`You read their behavior through your own culture.`,`一個手勢、一句玩笑，就造成誤會。`,`One gesture, one joke, and a misunderstanding is born.`);
+X(`085`,`Teaching Expression`,`你教得很完整，他還是不會。`,`You taught it thoroughly, and they still cannot do it.`,`把「講完」當成「教會」。`,`You mistook "covered" for "learned."`,`只顧進度，沒看見學生的眼神。`,`You watched the schedule and missed the students' eyes.`);
+X(`086`,`Guiding Thought`,`你直接給了答案，他下次還是來問。`,`You gave the answer, and they came back with the same question.`,`怕他走冤枉路，結果他不會走路。`,`You spared them the detour, and they never learned to walk.`,`說得太多，讓對方想得太少。`,`You said so much that they thought too little.`);
+X(`087`,`Coaching Questions`,`你很想幫他，就替他做了決定。`,`You wanted to help, so you decided for them.`,`給建議很快，陪他想清楚很難。`,`Advice comes quickly; helping them think it through is hard.`,`他照做了，卻沒有長出自己的判斷。`,`They followed, and never grew their own judgment.`);
+X(`088`,`Inspiring Insight`,`知識都給了，他卻沒有被點亮。`,`You gave all the knowledge, and nothing lit up.`,`講得很滿，沒有留白。`,`So full, with no space left.`,`聽懂了，卻沒有「原來如此」。`,`Understood, without an "aha."`);
+X(`089`,`Cognitive Updating`,`證據擺在眼前，你還是不想改口。`,`The evidence is in front of you, and you still will not change your word.`,`把「被說服」當成「輸了」。`,`You treat being persuaded as losing.`,`堅持了很久，才發現守的是面子。`,`After holding out so long, you find you were guarding your pride.`);
+X(`090`,`Model Updating`,`用十年前的方法，處理今天的問題。`,`You handle today's problem with a method ten years old.`,`世界變了，你的看法沒變。`,`The world changed; your view did not.`,`很努力，卻一直用同一套。`,`You work hard, always with the same approach.`);
+X(`091`,`Shared Decision-Making`,`決定是你做的，後果卻要大家一起扛。`,`You made the decision, and everyone carries the consequences.`,`沒被問過的人，很難全心投入。`,`People who were never asked rarely commit fully.`,`出了問題，大家說：「當初又不是我決定的。」`,`When it fails, they say: "It was not my decision."`);
+X(`092`,`Learning Together`,`每個人都在學，卻沒有人分享。`,`Everyone is learning, and no one is sharing.`,`同樣的錯，團隊裡每個人都犯一遍。`,`The same mistake, made once by each member.`,`學到的東西，只留在自己的筆記裡。`,`What you learned stays in your own notebook.`);
+X(`093`,`Feedback Iteration`,`聽到回饋，點點頭，然後照舊。`,`You hear the feedback, nod, and carry on as before.`,`同樣的建議，被提了三次。`,`The same suggestion has been made three times.`,`檢討會開完，下一次還是一樣。`,`The review is held, and next time is the same.`);
+X(`094`,`Error Correction`,`做錯了，第一件事是找理由。`,`When wrong, your first move is to find a reason.`,`怕被發現，所以錯誤越藏越大。`,`Afraid of being found out, you let the mistake grow in hiding.`,`把錯誤當成恥辱，而不是線索。`,`You treat a mistake as shame, not as a clue.`);
+X(`095`,`Continuous Synchronization`,`年初對齊過，年底才發現早就走偏。`,`You aligned in January and found in December you had long drifted.`,`以為講過一次就夠了。`,`You assumed saying it once was enough.`,`各自往前跑，回頭已經看不到彼此。`,`Each ran ahead, and looking back, lost sight of the other.`);
+X(`096`,`Long-Term Relationship Building`,`有事才聯絡，沒事就消失。`,`You reach out only when you need something.`,`只想著拿，很少想著給。`,`You think of taking, rarely of giving.`,`關係不是斷了，是慢慢淡了。`,`The relationship did not break; it slowly faded.`);
+X(`097`,`High-Quality Dialogue`,`聊了很久，卻什麼也沒聊到。`,`You talked for a long time and touched nothing.`,`話很多，理解很少。`,`Many words, little understanding.`,`結束之後，兩個人都更模糊了。`,`Afterwards, both of you are less clear.`);
+X(`098`,`Grasping the Essence`,`忙著處理每一個狀況，卻沒看見共同的原因。`,`Busy handling each case, you miss the common cause.`,`被細節淹沒，忘了原本要解決什麼。`,`Buried in detail, you forget what you set out to solve.`,`看到很多現象，說不出一句本質。`,`You see many phenomena and cannot state the essence.`);
+X(`099`,`Reducing Misunderstanding`,`你覺得他是故意的，其實他只是沒想到。`,`You think they did it on purpose; they simply did not think of it.`,`先假設惡意，再開始對話。`,`You assume malice, then begin the conversation.`,`一個誤會，耗掉一段關係。`,`One misunderstanding consumed a relationship.`);
+X(`100`,`Building a Shared World Model`,`在一起很多年，卻像活在兩個世界。`,`Together for years, and living in two worlds.`,`每次都要重新解釋，每次都重新誤會。`,`Each time you explain again, and misunderstand again.`,`有很多對話，卻沒有共同的理解。`,`Many conversations, no shared understanding.`);
+X(`101`,`Problem Definition`,`很努力地，解了一個錯的問題。`,`You worked hard to solve the wrong problem.`,`還沒搞清楚問題，就開始想辦法。`,`You started on solutions before the problem was clear.`,`大家都在忙，卻說不出到底要解決什麼。`,`Everyone is busy, and no one can say what is being solved.`);
+X(`102`,`Root Cause Analysis`,`藥吃了，症狀好了，過一陣子又來。`,`The symptom eased, then returned after a while.`,`換了人，問題還在。`,`You replaced the person, and the problem stayed.`,`一直在收拾結果，沒有人去找原因。`,`You keep cleaning up outcomes while no one looks for the cause.`);
+X(`103`,`Constraint Recognition`,`加了人、加了預算，產出還是一樣。`,`More people, more budget, the same output.`,`到處都在努力，就是沒努力在卡住的地方。`,`Effort everywhere except where it is stuck.`,`不知道瓶頸在哪，所以每一處都想加強。`,`Not knowing the bottleneck, you try to strengthen everything.`);
+X(`104`,`Prioritization`,`每件事都很急，你一件也做不好。`,`Everything is urgent, and you do none of it well.`,`忙了一整天，最重要的那件還沒碰。`,`A full busy day, and the most important thing is untouched.`,`不會說「這個先不做」。`,`You cannot say, "Not this one for now."`);
+X(`105`,`Leverage Recognition`,`做了一百件事，沒有一件改變局面。`,`A hundred things done, and none changed the picture.`,`平均用力，所以到處都沒力。`,`Effort spread evenly is effort felt nowhere.`,`很勤勞，卻沒找到關鍵的那個點。`,`Diligent, yet you never found the pivotal point.`);
+X(`106`,`Evidence-Based Thinking`,`你說「我覺得」，他也說「我覺得」。`,`You say "I feel," and so do they.`,`誰聲音大，就聽誰的。`,`Whoever is loudest wins.`,`很有把握，卻拿不出一個數字。`,`You are confident and cannot produce one number.`);
+X(`107`,`Managing Uncertainty`,`還不確定的事，你已經擔心了一整晚。`,`Something uncertain has already cost you a night of worry.`,`非要有答案，才敢往前走。`,`You dare not move without an answer.`,`把「不知道」當成「完蛋了」。`,`You hear "I do not know" as "all is lost."`);
+X(`108`,`Prediction`,`每次都說「沒想到會這樣」。`,`Every time you say, "I never expected this."`,`事後都看得懂，事前都沒看見。`,`Clear in hindsight, invisible beforehand.`,`只會反應，不會預先準備。`,`You react, and do not prepare.`);
+X(`109`,`Reflection`,`事情過了就過了，從來沒有回頭看。`,`Once it is over, you never look back.`,`經驗很多，學到的卻很少。`,`Much experience, little learned.`,`十年的資歷，其實是一年的經驗重複十次。`,`Ten years on the job that are really one year repeated ten times.`);
+X(`110`,`Continuous Improvement`,`立志大改變，三天後恢復原狀。`,`You vowed a great change and were back to normal in three days.`,`看不起小進步，所以一直沒進步。`,`You scorn small progress, so there is none.`,`等一個完美的開始，等了很久。`,`You have long been waiting for the perfect start.`);
+X(`111`,`Systems Thinking`,`你解決了這裡，那裡又出問題。`,`You fixed it here, and it broke over there.`,`只看到一件一件的事，沒看到它們之間的線。`,`You see events one by one, not the lines between them.`,`怪某個人，問題卻不是某個人造成的。`,`You blame one person for what no single person caused.`);
+X(`112`,`Feedback Control`,`事情交出去，就再也沒有下文。`,`You handed it off and never heard back.`,`不知道做得好不好，只好憑感覺。`,`With no way of knowing how it went, you go by feeling.`,`等結果出來才發現，早就偏了。`,`Only at the result do you find it veered off long ago.`);
+X(`113`,`Decision Quality`,`結果不好，你就覺得當初決定錯了。`,`The result was poor, so you conclude the decision was wrong.`,`決定都靠當下的心情。`,`Decisions rest on the mood of the moment.`,`運氣好的那一次，被當成了能力。`,`The time luck was kind, you called it skill.`);
+X(`114`,`Transfer of Learning`,`課堂上會，回到現場就不會。`,`You could do it in class and not on the job.`,`學了很多，卻不知道能用在哪裡。`,`You learned much and do not know where to use it.`,`題目一換，就重新學一次。`,`Change the question, and you learn it all over again.`);
+X(`115`,`Pattern Recognition`,`同樣的劇情，你演了第三次。`,`The same plot, and you are playing it a third time.`,`每次都覺得是意外。`,`Each time it feels like an accident.`,`換了對象，結局一樣。`,`A different person, the same ending.`);
+X(`116`,`Risk Communication`,`你早就覺得不對，卻沒有說出口。`,`You sensed it was wrong long ago and said nothing.`,`怕被說烏鴉嘴，所以選擇沉默。`,`Afraid of being called a pessimist, you stayed silent.`,`出事之後，每個人都說「我早就知道」。`,`After it happened, everyone said, "I knew it."`);
+X(`117`,`Resource Integration`,`總覺得資源不夠，所以什麼都做不成。`,`You always feel short of resources, so nothing gets done.`,`手上有的沒用好，一直在要更多。`,`You underuse what you have and keep asking for more.`,`每個人都有一點，卻沒有人把它們接起來。`,`Everyone holds a piece, and no one joins them.`);
+X(`118`,`Action Design`,`計畫很完整，就是一直沒有開始。`,`The plan is complete; it simply never starts.`,`第一步太大，所以遲遲跨不出去。`,`The first step is so big you cannot take it.`,`想很多，做很少。`,`Much thought, little action.`);
+X(`119`,`Outcome Verification`,`做完就算了，從來不知道有沒有用。`,`You finished and never learned whether it worked.`,`覺得有效，卻說不出怎麼知道的。`,`You feel it worked and cannot say how you know.`,`一直做一樣的事，因為沒有人去量。`,`You keep doing the same thing because no one measures.`);
+X(`120`,`High-Level Integration`,`學了很多招，上場還是只會那一招。`,`You learned many moves and still use only one.`,`能力一項一項加，卻沒有連在一起。`,`Abilities added one by one, never linked.`,`會很多，卻用不出來。`,`You know a lot and cannot bring it to bear.`);
+})();
+
+(function(){const X=(...a)=>{window.FBP_PAIN[a[0]]=a.slice(1);};
+X(`121`,`Integrating Viewpoints`,`兩邊都有道理，你卻只能選一邊站。`,`Both sides have a point, and you can only pick one.`,`聽了越多意見，越不知道怎麼辦。`,`The more opinions you hear, the less you know what to do.`,`把不同的看法，當成互相打架。`,`You treat different views as a fight.`);
+X(`122`,`First-Principles Communication`,`討論了很久，都在談別人怎麼做。`,`A long discussion, all about how others do it.`,`「大家都這樣」成了唯一的理由。`,`"Everyone does it this way" became the only reason.`,`一直修枝葉，沒有回到根。`,`You keep trimming leaves and never return to the root.`);
+X(`123`,`System Modeling`,`事情很複雜，你只能走一步算一步。`,`It is complicated, and you can only take it one step at a time.`,`腦中沒有全貌，所以常常顧此失彼。`,`With no whole picture, you gain one thing and lose another.`,`說不清楚各部分怎麼互相影響。`,`You cannot explain how the parts affect one another.`);
+X(`124`,`Causal Reasoning`,`兩件事一起發生，你就認定是它造成的。`,`Two things happened together, so you decided one caused the other.`,`做對了，卻不知道為什麼對。`,`You got it right and do not know why.`,`改錯了地方，問題當然還在。`,`You changed the wrong thing, so the problem remains.`);
+X(`125`,`Forming Hypotheses`,`沒有想法，只好等別人告訴你怎麼做。`,`With no idea of your own, you wait to be told.`,`怕猜錯，所以不敢先提一個可能。`,`Afraid of guessing wrong, you offer no possibility.`,`資料看了很多，還是說不出「我猜是…」。`,`After much data, you still cannot say, "My guess is…"`);
+X(`126`,`Testing Hypotheses`,`你的想法很漂亮，卻從來沒有試過。`,`Your idea is elegant and has never been tried.`,`相信了很久，才發現根本沒驗證過。`,`You believed it for years before noticing it was never tested.`,`怕現實打臉，所以不去看現實。`,`Fearing reality will prove you wrong, you avoid looking.`);
+X(`127`,`Multi-Angle Analysis`,`你只看到一面，就很肯定。`,`You saw one side and were certain.`,`報告寫得很完整，卻只有一個角度。`,`A thorough report, from a single angle.`,`別人一問「那從客戶看呢？」你答不出來。`,`Someone asks, "And from the customer's side?" and you have no answer.`);
+X(`128`,`Scenario Simulation`,`做了才知道會這樣，可是已經來不及。`,`You only knew once you had done it, and by then it was too late.`,`沒有先在腦中走過一遍。`,`You never walked through it in your mind first.`,`只準備了順利的版本。`,`You prepared only for the version where all goes well.`);
+X(`129`,`Counterexample Thinking`,`你舉了十個支持的例子，卻沒想過一個相反的。`,`Ten supporting examples, and not one that contradicts.`,`只找同意你的人討論。`,`You discuss only with those who agree.`,`被一個例外問倒。`,`A single exception left you speechless.`);
+X(`130`,`Abstraction`,`每一次都像是新問題，其實是同一個。`,`Each time looks like a new problem; it is the same one.`,`記得很多故事，說不出一個道理。`,`You remember many stories and cannot name one principle.`,`經驗不能複製，因為沒有被整理成規律。`,`Experience cannot be reused because it was never distilled into a rule.`);
+X(`131`,`Making It Concrete`,`道理講得頭頭是道，明天不知道要做什麼。`,`Fine principles today, and no idea what to do tomorrow.`,`目標很大，沒有第一步。`,`A grand goal, no first step.`,`大家都同意，卻沒有人動。`,`Everyone agrees, and no one moves.`);
+X(`132`,`Long-Term Thinking`,`每天都在處理今天，從來沒想過十年後。`,`You handle today every day and never think ten years ahead.`,`為了現在舒服，一直借未來的。`,`For comfort now, you keep borrowing from the future.`,`重要的事不急，所以一直沒做。`,`The important is not urgent, so it stays undone.`);
+X(`133`,`Probabilistic Thinking`,`你要的是「一定會」或「一定不會」。`,`You want "definitely will" or "definitely will not."`,`一次失敗，就說「這條路不行」。`,`One failure, and you declare the path closed.`,`把小機率的事，想成一定會發生。`,`You imagine an unlikely event as certain.`);
+X(`134`,`Compound Thinking`,`做了一個月沒看到效果，你就放棄了。`,`A month without visible results, and you quit.`,`看不起每天的一點點。`,`You look down on a little each day.`,`總想一次到位，結果一直沒到。`,`You want to arrive in one leap, and never arrive.`);
+X(`135`,`Leverage Thinking`,`你很拚，成果卻跟力氣不成比例。`,`You push hard, and the results do not match the effort.`,`用力在最費力的地方。`,`You apply force where it is hardest.`,`從沒問過：「做哪一件，其他都會變容易？」`,`You never asked: "Which one thing makes the rest easier?"`);
+X(`136`,`Evolutionary Thinking`,`環境變了，你還在用以前成功的方法。`,`The environment changed, and you still use what once worked.`,`很強，卻很難改。`,`Strong, and hard to change.`,`把適應當成妥協。`,`You treat adapting as giving in.`);
+X(`137`,`Free-Energy Thinking`,`事情和你想的不一樣，你就很焦慮。`,`When things differ from what you expected, you grow anxious.`,`拼命想控制，卻越來越不安。`,`You strain to control and feel less and less secure.`,`把意外當成威脅，而不是資訊。`,`You treat surprise as a threat, not as information.`);
+X(`138`,`High-Level Integrated Thinking`,`學了一套理論，就用它解釋全世界。`,`You learned one theory and used it to explain everything.`,`不同學派在你腦中互相否定。`,`Different schools cancel each other out in your mind.`,`知道很多模型，卻不知道什麼時候用哪一個。`,`You know many models and not when to use which.`);
+X(`139`,`Generating Wisdom`,`書讀了很多，日子卻沒有比較好過。`,`You have read much, and life has not become easier.`,`知識一直進來，卻沒有變成判斷。`,`Knowledge keeps arriving and never becomes judgment.`,`懂很多，遇到事情還是慌。`,`You understand a great deal and still panic when things happen.`);
+X(`140`,`Co-Creating Wisdom`,`討論變成輪流發表，沒有人被改變。`,`Discussion became taking turns, and no one was changed.`,`每個人都帶著答案來，帶著同一個答案走。`,`Everyone came with an answer and left with the same one.`,`很久沒有聊到一個「我們都沒想過」的地方。`,`It has been long since a talk reached somewhere neither of you had imagined.`);
+X(`141`,`Building Influence`,`你說的話，沒有人當一回事。`,`No one takes what you say seriously.`,`想靠職位，讓別人聽你的。`,`You rely on position to be heard.`,`別人照做了，卻沒有真的相信。`,`They complied, and did not truly believe.`);
+X(`142`,`Persuasion`,`你辯贏了，他還是不照做。`,`You won the debate, and they still will not do it.`,`講的都是你在乎的，不是他在乎的。`,`Everything you said was what matters to you, not to them.`,`越想說服，對方越抗拒。`,`The harder you push, the more they resist.`);
+X(`143`,`Narrative Building`,`你有很好的想法，卻說不成一個故事。`,`You have a fine idea and cannot make it a story.`,`事實一條一條，沒有一條線。`,`Fact after fact, with no thread.`,`別人記不住你做了什麼。`,`People cannot remember what you did.`);
+X(`144`,`Expressing Vision`,`你知道要去哪裡，團隊卻只看到眼前的工作。`,`You know where you are going; the team sees only the task in front.`,`講的是數字，不是未來的樣子。`,`You speak of numbers, not of how the future looks.`,`大家很忙，卻不知道為了什麼。`,`Everyone is busy and does not know what for.`);
+X(`145`,`Motivating`,`你一直催，他一直拖。`,`You keep pushing, and they keep delaying.`,`獎金給了，熱情沒有來。`,`The bonus was paid, and the passion did not come.`,`用壓力推著走，一放手就停。`,`Driven by pressure, they stop the moment you let go.`);
+X(`146`,`Encouraging`,`你想鼓勵他，說出口卻變成「你應該更努力」。`,`You meant to encourage, and it came out as "You should try harder."`,`只在做錯的時候開口。`,`You speak up only when something is wrong.`,`他其實做得不錯，卻從來沒聽你說過。`,`They are actually doing well and have never heard it from you.`);
+X(`147`,`Constructive Feedback`,`你是想幫他，他卻覺得被否定。`,`You meant to help, and they felt rejected.`,`只說哪裡不好，沒說怎麼更好。`,`You said what was wrong, not how to improve.`,`回饋變成打分數。`,`Feedback turned into grading.`);
+X(`148`,`Positive Reinforcement`,`做對一百次沒人說，做錯一次大家都記得。`,`A hundred things done right go unmentioned; one mistake is remembered by all.`,`覺得「做好是應該的」。`,`You think, "Doing well is only expected."`,`好的行為沒被看見，就慢慢不見了。`,`Good behavior that goes unseen slowly disappears.`);
+X(`149`,`Delegating Authority`,`事情交出去了，你又忍不住拿回來做。`,`You handed it over and could not resist taking it back.`,`交代了工作，卻沒有交代權限。`,`You assigned the work without the authority.`,`什麼都自己來，累到沒有人能接手。`,`Doing everything yourself, you are exhausted and no one can take over.`);
+X(`150`,`Empowering`,`你幫了他很多，他卻越來越依賴。`,`You helped so much, and they depend on you more and more.`,`替他解決問題，卻沒有讓他學會解決。`,`You solved the problem and never let them learn to.`,`你一不在，事情就停擺。`,`The moment you are away, everything stops.`);
+X(`151`,`Leadership Dialogue`,`你下了指令，卻沒有人知道為什麼。`,`You gave the order, and no one knows why.`,`會議上只有你在講。`,`You are the only one talking in the meeting.`,`大家都說「好」，方向卻沒有對齊。`,`Everyone says "yes," and the direction is still not aligned.`);
+X(`152`,`Guiding Decisions`,`大小事都來問你，你成了瓶頸。`,`Every matter, large and small, comes to you, and you are the bottleneck.`,`你決定得很快，團隊卻學不會判斷。`,`You decide quickly, and the team never learns to judge.`,`你不在，就沒有人敢做決定。`,`Without you, no one dares decide.`);
+X(`153`,`Shaping Beliefs`,`制度訂了很多，大家還是不相信做得到。`,`Many rules were set, and people still do not believe it can be done.`,`喊口號，卻沒有人被打動。`,`Slogans are shouted, and no one is moved.`,`行為改了一陣子，又回到原樣。`,`Behavior changed for a while, then returned.`);
+X(`154`,`Building Culture`,`牆上貼著價值觀，實際上是另一套。`,`Values hang on the wall; practice is something else.`,`說重視誠實，說真話的人卻被冷落。`,`Honesty is praised, and those who speak truth are sidelined.`,`新人學到的，是大家真正在做的事。`,`Newcomers learn what people actually do.`);
+X(`155`,`Role Clarity`,`兩個人做同一件事，另一件事沒人做。`,`Two people did the same task, and another was left undone.`,`「我以為這是你負責的。」`,`"I thought that was yours."`,`每個人都很忙，卻互相踩線。`,`Everyone is busy, stepping on one another's lines.`);
+X(`156`,`Clarifying Responsibility`,`出了問題，每個人都說不是自己。`,`When something goes wrong, everyone says it was not them.`,`大家都有責任，就等於沒人負責。`,`When all are responsible, no one is.`,`事情總是掉在「我們」這兩個字裡。`,`Things always fall into the word "we."`);
+X(`157`,`Building Commitment`,`大家都說「我盡量」，結果沒有人做到。`,`Everyone said, "I will try," and no one delivered.`,`沒有說出日期，就等於沒有答應。`,`Without a date, there is no promise.`,`答應得很快，忘得也很快。`,`Quick to agree, quick to forget.`);
+X(`158`,`Action Follow-Up`,`會議決定了很多事，下次開會才發現都沒做。`,`Many things were decided, and the next meeting revealed none were done.`,`一追進度，對方就覺得被盯。`,`When you follow up, they feel watched.`,`不好意思問，結果拖到來不及。`,`Too shy to ask, you let it slide until too late.`);
+X(`159`,`Sharing Results`,`做得很好，卻沒有人知道。`,`You did it well, and no one knows.`,`成功了一次，卻說不出是怎麼做到的。`,`You succeeded once and cannot say how.`,`好的做法，只留在一個人身上。`,`A good practice remains with one person.`);
+X(`160`,`High-Impact Leadership`,`你很重要——重要到不能請假。`,`You are important — too important to take a day off.`,`團隊的天花板，就是你自己。`,`The team's ceiling is you.`,`你一離開，一切就退回原點。`,`When you leave, everything returns to zero.`);
+X(`161`,`Honest Expression`,`你說了實話，卻傷了人。`,`You told the truth, and someone was hurt.`,`為了和氣，一直說著不是真心的話。`,`For the sake of peace, you keep saying what you do not mean.`,`不是太直，就是太假。`,`Either too blunt or too false.`);
+X(`162`,`Expressing Vulnerability`,`你習慣說「我沒事」，其實快撐不住了。`,`You are used to saying "I am fine" while barely holding on.`,`怕示弱會被看不起。`,`You fear showing weakness will invite contempt.`,`一直很堅強，所以沒有人知道你需要幫忙。`,`Always strong, so no one knows you need help.`);
+X(`163`,`Acceptance`,`你一直想：「如果當初不是這樣就好了。」`,`You keep thinking: "If only it had not been this way."`,`跟已經發生的事對抗，耗光了力氣。`,`Fighting what has already happened has drained you.`,`不肯承認現況，所以也無法開始改變。`,`Refusing to admit the present, you cannot begin to change it.`);
+X(`164`,`Respect`,`你是為他好，卻沒有問過他要不要。`,`You meant well, and never asked whether they wanted it.`,`打斷、糾正、替他決定。`,`Interrupting, correcting, deciding for them.`,`關係很近，尊重卻很少。`,`Very close, with very little respect.`);
+X(`165`,`Gratitude`,`他每天為你做的事，你已經看不見了。`,`What they do for you every day has become invisible.`,`心裡感謝，卻從來沒說出口。`,`Grateful inside, and never once said aloud.`,`等到失去，才想起該說謝謝。`,`Only after the loss do you remember to say thank you.`);
+X(`166`,`Appreciation`,`你一眼就看到他的缺點，卻說不出他的優點。`,`You spot their flaws at a glance and cannot name their strengths.`,`習慣挑錯，不習慣稱讚。`,`Used to finding fault, not to praising.`,`他在你面前，越來越沒有自信。`,`Around you, they grow less and less confident.`);
+X(`167`,`Apology`,`你說了對不起，後面卻接著「可是」。`,`You said sorry, followed by "but."`,`明知道自己有錯，就是開不了口。`,`You know you were wrong and cannot say it.`,`道歉變成解釋，解釋變成爭辯。`,`The apology became an explanation, and the explanation an argument.`);
+X(`168`,`Forgiveness`,`事情過去很多年，你想起來還是很氣。`,`Years have passed, and it still angers you.`,`不原諒他，痛的卻是自己。`,`You do not forgive them, and the one in pain is you.`,`把舊帳帶進每一次新的爭吵。`,`You carry old accounts into every new quarrel.`);
+X(`169`,`Repair Conversations`,`吵完之後，誰也不肯先開口。`,`After the fight, neither will speak first.`,`靠時間沖淡，問題卻沒有談開。`,`You let time dull it, and nothing was talked through.`,`和好了，卻不知道下次怎麼避免。`,`You made up without knowing how to avoid the next one.`);
+X(`170`,`Deep Companionship`,`他只是想有人陪，你卻一直給建議。`,`They only wanted company, and you kept giving advice.`,`受不了沉默，所以急著說點什麼。`,`Unable to bear silence, you hurry to say something.`,`人在旁邊，心沒有在。`,`Beside them in body, absent in heart.`);
+X(`171`,`Building Security`,`你今天很熱情，明天很冷淡，他不知道該怎麼靠近。`,`Warm today, distant tomorrow — they do not know how to approach you.`,`情緒一來，就說出要離開的話。`,`When emotion rises, you threaten to leave.`,`愛是有的，穩定卻沒有。`,`There is love, without steadiness.`);
+X(`172`,`Psychological Safety`,`開會沒有人提問，因為問了會被笑。`,`No one asks in meetings, because asking gets laughed at.`,`犯錯的人被公開檢討，之後大家都不說了。`,`One person was publicly blamed, and after that everyone went quiet.`,`表面很順，底下全是不敢說的話。`,`Smooth on the surface, full of unsaid words beneath.`);
+X(`173`,`Building a Trust Loop`,`你不信他，所以盯很緊；他覺得被懷疑，就更不想做。`,`You distrust them and watch closely; feeling doubted, they care even less.`,`一次失信之後，互相防備越來越多。`,`After one broken promise, the guarding only grew.`,`想重建信任，卻不知道從哪一步開始。`,`You want to rebuild trust and do not know which step comes first.`);
+X(`174`,`Holding Emotions`,`他一難過，你就急著讓他「好起來」。`,`The moment they are sad, you hurry to make them "feel better."`,`受不了別人的眼淚。`,`You cannot bear another person's tears.`,`自己的情緒也不允許停留。`,`You do not let your own feelings stay, either.`);
+X(`175`,`Empathic Companionship`,`你說「我也經歷過」，然後開始講自己的故事。`,`You say, "I have been through that too," and begin your own story.`,`急著告訴他答案，卻沒陪他找到自己的。`,`You hurried to give the answer rather than help them find their own.`,`他說完之後，更不懂自己了。`,`After talking, they understood themselves even less.`);
+X(`176`,`Building Hope`,`他說「沒用了」，你不知道該說什麼。`,`They said, "It is no use," and you did not know what to say.`,`一句「會好的」，連自己都不太相信。`,`"It will be fine" — you hardly believe it yourself.`,`看不到路的時候，就覺得沒有路。`,`When you cannot see the road, you decide there is none.`);
+X(`177`,`Building Resilience`,`一次打擊，就讓你很久站不起來。`,`One blow keeps you down for a long time.`,`以為堅強就是不能倒下。`,`You think strength means never falling.`,`撐過去了，卻沒有變得更穩。`,`You got through it and came out no steadier.`);
+X(`178`,`Wise Listening`,`每一個字你都聽到了，卻沒聽懂他這個人。`,`You heard every word and did not understand the person.`,`聽到抱怨，沒聽到在乎。`,`You heard the complaint and missed the caring.`,`聽完之後，你記得事情，不記得他。`,`Afterwards you remember the matter, not them.`);
+X(`179`,`Soul-Level Dialogue`,`認識很多年，卻從來沒聊過「你為什麼而活」。`,`Years of knowing each other, and you never spoke of what you live for.`,`話題總停在工作、孩子和天氣。`,`The topics stop at work, children and weather.`,`很熟，卻不深。`,`Familiar, not deep.`);
+X(`180`,`Expressing Love`,`你很愛他，他卻感覺不到。`,`You love them deeply, and they cannot feel it.`,`用自己習慣的方式愛，不是他需要的方式。`,`You love in the way you are used to, not the way they need.`,`愛變成了管，關心變成了壓力。`,`Love became control; care became pressure.`);
+})();
+
+/* Communication OS：180 項溝通能力 */
+(function(){
+const P=FBPost.P;
+// {n}=能力名稱（去掉「能力」二字），{e}=英文名稱
+const SETS=[
+ {h:P('明明很在乎，話一出口卻變成了距離。','You care so much, yet the moment you speak, distance appears.'),
+  p:[P('想好好說，卻越說越僵。','You meant to talk it through, and it only grew tenser.'),P('對方一沉默，你就開始慌。','The moment they go quiet, you start to panic.'),P('事後才想到：當時其實可以換一種說法。','Only afterwards do you realise there was another way to say it.')]},
+ {h:P('你說的是關心，他聽到的卻是指責。','You meant care; they heard blame.'),
+  p:[P('一句好意，換來一場冷戰。','A kind intention, repaid with a cold war.'),P('解釋越多，誤會越深。','The more you explain, the deeper the misunderstanding.'),P('最後只剩一句：「算了，不說了。」','In the end only one line remains: "Forget it. Never mind."')]},
+ {h:P('同一件事，講了十次，還是沒有用。','You have said the same thing ten times, and still nothing changes.'),
+  p:[P('你越大聲，對方越聽不見。','The louder you get, the less they hear.'),P('道理都對，關係卻越來越遠。','Every point is right, and the relationship keeps drifting.'),P('你開始懷疑：是不是我不會說話？','You begin to wonder: do I just not know how to talk?')]},
+ {h:P('不是不想溝通，是每次溝通都好累。','It is not that you do not want to communicate; every attempt is exhausting.'),
+  p:[P('話到嘴邊，又吞了回去。','The words reach your lips, and you swallow them again.'),P('怕說錯，乾脆什麼都不說。','Afraid of saying it wrong, you say nothing at all.'),P('忍到最後，一次全部爆發。','You hold it in until it all bursts out at once.')]},
+ {h:P('人就在眼前，心卻好像隔著一道牆。','They are right in front of you, yet a wall stands between your hearts.'),
+  p:[P('聊的都是事情，很久沒有聊心情。','You talk about tasks; it has been long since you talked about feelings.'),P('你想靠近，卻不知道從哪一句開始。','You want to draw closer but do not know which sentence to start with.'),P('習慣了「還好」「沒事」「隨便」。','You have grown used to "fine," "nothing," and "whatever."')]},
+ {h:P('你以為他懂，他以為你知道。','You assumed they understood; they assumed you knew.'),
+  p:[P('沒說出口的期待，變成了失望。','The unspoken expectation became disappointment.'),P('猜來猜去，猜成了心結。','Guessing back and forth turned into a knot in the heart.'),P('明明是同一邊的人，卻像在對抗。','You are on the same side, yet it feels like a fight.')]},
+ {h:P('開會時沒人說話，會後每個人都有意見。','No one speaks in the meeting; everyone has opinions afterwards.'),
+  p:[P('交代了三次，做出來還是不一樣。','You explained it three times, and the result is still different.'),P('大家都點頭，卻各自理解成不同的事。','Everyone nodded, and each understood something different.'),P('問題不在能力，在沒有對齊。','The problem is not ability; it is alignment.')]},
+ {h:P('想把「{n}」做好，卻總是卡在同一個地方。','You want to get {e} right, yet you keep getting stuck at the same place.'),
+  p:[P('知道該怎麼做，當下就是做不到。','You know what to do, and in the moment you cannot do it.'),P('情緒一來，學過的方法全忘了。','Once emotion arrives, every method you learned is gone.'),P('每一次都告訴自己：下次要不一樣。','Each time you tell yourself: next time will be different.')]}
+];
+const fill=(x,a)=>P(x.zh.replace('{n}',a.name_cn.replace(/能力$/,'')),x.en.replace('{e}',a.name_en));
+FBPost.init({
+  brand:'Communication OS',color:'#0E7C86',tint:'#E2F3F4',domain:'comm',
+  items:()=>allAbilities.map((a,i)=>{
+    const s=SETS[i%SETS.length];
+    const f0=a.formula_cn.trim(),QL='"“',QR='"”';
+    const fz=(QL.indexOf(f0[0])>=0&&QR.indexOf(f0[f0.length-1])>=0&&!/["“”]/.test(f0.slice(1,-1)))?'「'+f0.slice(1,-1)+'」':f0;
+    // 逐項手寫痛點（含修正後的英文名）；沒有時才退回輪替組
+    const h=(window.FBP_PAIN||{})[a.number];
+    if(h)return {id:a.number,no:'#'+a.number,zh:a.name_cn,en:h[0],hook:P(h[1],h[2]),pains:[P(h[3],h[4]),P(h[5],h[6]),s.p[i%3]],
+      core:P(a.essence_cn,a.essence_en),quotes:[P(a.high_cn,a.high_en),P(a.essence_cn,a.essence_en)],
+      step:P('找一個人，練習說這一句：'+fz,'Find one person and practise this line: '+a.formula_en),cardStep:'找一個人，練習說：'+fz};
+    return {id:a.number,no:'#'+a.number,zh:a.name_cn,en:a.name_en,hook:fill(s.h,a),pains:s.p,
+      core:P(a.essence_cn,a.essence_en),
+      quotes:[P(a.high_cn,a.high_en),P(a.essence_cn,a.essence_en)],
+      step:P('找一個人，練習說這一句：'+fz,'Find one person and practise this line: '+a.formula_en),
+      cardStep:'找一個人，練習說：'+fz};
+  }),
+  mounts:()=>Array.from(document.querySelectorAll('.ability-card[data-number]')).map(c=>({el:c.querySelector('.ability-name')||c,id:c.dataset.number}))
+});
+})();
+
+</script>
+<!-- FBPOST:END -->
+</body>
+</html>

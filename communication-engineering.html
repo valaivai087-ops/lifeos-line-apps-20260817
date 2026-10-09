@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>溝通工程 Communication OS｜關係升級系統</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080410;--s1:#0D0620;--s2:#120830;--card:#180C40;--bdr:#221450;--bdr2:#2E1A6A;
+  --txt:#EDE0FF;--dim:#5A3A90;--dim2:#3A2060;
+  --rose:#E8306A;--rose2:#C01850;--gr:rgba(232,48,106,.09);
+  --gold:#E8A820;--gold2:#C08010;--gg:rgba(232,168,32,.1);
+  --violet:#9B5CF6;--teal:#14B8A6;--blue:#60A5FA;--green:#34D399;--orange:#FB923C;
+  /* 5 lever colors */
+  --l1:#60A5FA;--l2:#34D399;--l3:#FB923C;--l4:#9B5CF6;--l5:#F472B6;
+  /* 16 model colors - groups */
+  --gA:#F472B6;--gB:#60A5FA;--gC:#34D399;--gD:#9B5CF6;
+  --neg:#6080D8;--hyd:#30C8C0;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--txt);font-family:'Noto Sans TC','Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden;padding-bottom:52px;}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:300;background:rgba(8,4,16,.97);backdrop-filter:blur(18px);border-bottom:1px solid var(--bdr);padding:0 16px;display:flex;align-items:center;height:52px;gap:0;}
+.brand{font-size:15px;font-weight:900;background:linear-gradient(135deg,var(--rose),var(--violet),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.5px;flex-shrink:0;margin-right:12px;white-space:nowrap;}
+.nav{display:flex;flex:1;overflow-x:auto;scrollbar-width:none;} .nav::-webkit-scrollbar{display:none;}
+.nb{flex:none;padding:0 10px;height:52px;font-size:11px;font-weight:600;border:none;background:none;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap;font-family:inherit;}
+.nb.on{color:var(--rose);border-bottom-color:var(--rose);}
+.nb:hover:not(.on){color:var(--txt);}
+.buy-top{flex-shrink:0;margin-left:8px;padding:7px 14px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:12px;font-weight:700;border:none;border-radius:8px;cursor:pointer;font-family:inherit;text-decoration:none;display:flex;align-items:center;gap:5px;transition:.15s;white-space:nowrap;}
+.buy-top:hover{opacity:.87;transform:translateY(-1px);}
+
+.pg{display:none;} .pg.on{display:block;}
+.wrap{max-width:960px;margin:0 auto;padding:22px 16px;}
+.sec-h{font-size:clamp(19px,4vw,28px);font-weight:900;letter-spacing:-1px;margin-bottom:6px;}
+.sec-s{font-size:13px;color:var(--dim);margin-bottom:20px;font-weight:300;}
+
+/* BUY BANNER */
+.bb{background:linear-gradient(135deg,rgba(232,168,32,.1),rgba(232,168,32,.04));border:1px solid rgba(232,168,32,.22);border-radius:18px;padding:26px;text-align:center;max-width:700px;margin:0 auto;}
+.bb-h{font-size:clamp(16px,3.5vw,22px);font-weight:900;color:var(--gold);margin-bottom:5px;}
+.bb-p{font-size:13px;color:var(--dim);line-height:1.8;margin-bottom:18px;}
+.bb-a{display:inline-flex;align-items:center;gap:6px;padding:13px 28px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:14px;font-weight:700;border-radius:10px;text-decoration:none;transition:.2s;}
+.bb-a:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(232,168,32,.26);}
+.bb-note{font-size:11px;color:var(--dim);margin-top:8px;}
+
+/* HERO */
+.hero{min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:52px 16px;text-align:center;position:relative;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.12;pointer-events:none;}
+.oa{width:560px;height:560px;background:var(--rose);top:-180px;left:-160px;}
+.ob{width:360px;height:360px;background:var(--violet);bottom:-80px;right:-80px;}
+.oc{width:300px;height:300px;background:#1E0A4A;top:44%;left:52%;transform:translate(-50%,-50%);}
+.hero-tag{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--rose);text-transform:uppercase;margin-bottom:13px;}
+.hero-h1{font-size:clamp(44px,9vw,96px);font-weight:900;line-height:.92;letter-spacing:-3px;margin-bottom:13px;background:linear-gradient(140deg,var(--txt) 20%,var(--rose) 60%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-p{font-size:clamp(14px,2vw,17px);color:var(--dim);max-width:520px;margin:0 auto 28px;line-height:2;font-weight:300;}
+.hero-formula{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:32px;}
+.hf{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid;}
+.hf.r{background:rgba(232,48,106,.08);border-color:rgba(232,48,106,.3);color:var(--rose);}
+.hf.g{background:rgba(232,168,32,.08);border-color:rgba(232,168,32,.3);color:var(--gold);}
+.hf.x{color:var(--dim);border-color:transparent;background:transparent;font-size:15px;}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-r{padding:12px 26px;background:linear-gradient(135deg,var(--rose),var(--rose2));color:#fff;font-size:14px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block;transition:.2s;}
+.btn-r:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(232,48,106,.28);}
+.btn-g{padding:12px 26px;background:transparent;color:var(--gold);font-size:14px;font-weight:700;border:1.5px solid rgba(232,168,32,.35);border-radius:10px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block;transition:.2s;}
+.btn-g:hover{border-color:var(--gold);background:var(--gg);}
+
+/* COMM SCORE DASHBOARD */
+.comm-dash{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:20px;}
+.cd-card{background:var(--card);border-radius:12px;padding:13px;text-align:center;border:1px solid var(--bdr2);transition:.2s;cursor:pointer;}
+.cd-card:hover{transform:translateY(-2px);}
+.cd-icon{font-size:20px;margin-bottom:4px;}
+.cd-name{font-size:11px;font-weight:700;margin-bottom:4px;}
+.cd-score{font-size:28px;font-weight:900;margin-bottom:3px;}
+.cd-bar-bg{height:3px;background:var(--bdr);border-radius:2px;}
+.cd-bar{height:100%;border-radius:2px;transition:.8s;}
+
+/* FORMULA BOX */
+.formula-box{background:linear-gradient(135deg,rgba(232,48,106,.07),rgba(232,168,32,.04));border:1px solid rgba(232,48,106,.18);border-radius:12px;padding:16px;text-align:center;font-size:14px;line-height:2.6;color:var(--dim);margin-bottom:15px;}
+.formula-box b{color:var(--txt);font-size:15px;}
+.formula-box .eq{color:var(--gold);font-size:18px;font-weight:900;}
+
+/* DIAGNOSIS */
+.d-intro{background:var(--card);border:1px solid var(--bdr2);border-radius:14px;padding:18px;text-align:center;margin-bottom:18px;}
+.d-intro h2{font-size:18px;font-weight:900;color:var(--rose);margin-bottom:4px;}
+.d-intro p{font-size:13px;color:var(--dim);line-height:1.7;}
+.sym-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px;margin-bottom:18px;}
+.sym-btn{background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:11px 12px;cursor:pointer;color:var(--txt);font-family:inherit;transition:.18s;text-align:left;}
+.sym-btn:hover{border-color:var(--rose);background:var(--gr);}
+.sym-btn.sel{border-color:var(--rose);background:var(--gr);}
+.sy-icon{font-size:16px;display:block;margin-bottom:3px;}
+.sy-name{font-size:12px;font-weight:600;display:block;}
+.sy-sub{font-size:10px;color:var(--dim);display:block;margin-top:1px;}
+.sym-btn.sel .sy-name{color:var(--rose);}
+.run-btn{display:block;margin:0 auto;padding:12px 28px;background:linear-gradient(135deg,var(--rose),var(--rose2));color:#fff;font-size:14px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;transition:.2s;}
+.run-btn:hover{transform:translateY(-1px);box-shadow:0 7px 20px rgba(232,48,106,.24);}
+.rst-btn{display:block;margin:9px auto 0;padding:8px 18px;background:transparent;color:var(--dim);font-size:12px;border:1px solid var(--bdr);border-radius:8px;cursor:pointer;font-family:inherit;}
+.d-result{display:none;} .d-result.show{display:block;}
+.model-score-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:18px;}
+.msc{background:var(--card);border:1.5px solid var(--bdr);border-radius:11px;padding:12px;}
+.msc.hit{border-width:2px;}
+.msc-top{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.msc-ico{font-size:17px;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.msc-name{font-size:12px;font-weight:700;}
+.msc-pct{font-size:10px;margin-top:1px;}
+.msc-bar-bg{height:3px;background:var(--bdr);border-radius:2px;margin-bottom:7px;}
+.msc-bar{height:100%;border-radius:2px;transition:.6s;}
+.msc-tags{display:flex;flex-wrap:wrap;gap:3px;}
+.msc-tag{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;}
+.rec-h{font-size:13px;font-weight:700;color:var(--gold);margin:16px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--bdr);}
+.rec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin-bottom:18px;}
+.rec-card{background:var(--card);border:1px solid var(--bdr2);border-radius:11px;padding:13px;border-top:3px solid;}
+.rc-m{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px;}
+.rc-name{font-size:14px;font-weight:700;margin-bottom:3px;}
+.rc-formula{font-size:12px;font-weight:700;color:var(--rose);margin-bottom:3px;}
+.rc-quote{font-size:12px;font-style:italic;color:var(--gold);margin-bottom:4px;}
+.rc-action{font-size:12px;color:var(--dim);line-height:1.6;margin-bottom:8px;}
+.rc-buy{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:11px;font-weight:700;border-radius:6px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:.13s;}
+.rc-buy:hover{opacity:.84;transform:translateY(-1px);}
+
+/* LEVER TABS (5大槓桿) */
+.lever-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.l-tab{padding:7px 14px;border-radius:18px;border:1.5px solid var(--bdr);background:transparent;cursor:pointer;font-size:11px;font-weight:700;color:var(--dim);transition:.17s;font-family:inherit;white-space:nowrap;}
+.l-tab.on{color:#080410;border-color:transparent;font-weight:800;}
+.l-content{display:none;} .l-content.on{display:block;}
+.l-head{background:var(--card);border:1px solid var(--bdr2);border-radius:13px;padding:17px;margin-bottom:14px;}
+.l-icon-big{font-size:26px;margin-bottom:7px;}
+.l-h1{font-size:21px;font-weight:900;letter-spacing:-1px;margin-bottom:4px;}
+.l-principle{font-size:12px;font-style:italic;color:var(--dim);margin-bottom:9px;}
+.l-why{font-size:13px;color:var(--dim);line-height:1.8;}
+.old-new{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
+.on-box{border-radius:11px;padding:13px;}
+.on-bad{background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.22);}
+.on-good{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.22);}
+.on-title{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;}
+.on-item{font-size:12px;color:var(--dim);padding:4px 0;border-bottom:1px solid var(--bdr);}
+.on-item:last-child{border-bottom:none;}
+.formula-chain{background:var(--card);border:1px solid var(--bdr2);border-radius:11px;padding:13px;text-align:center;margin-bottom:12px;font-size:13px;line-height:2.4;color:var(--dim);}
+.formula-chain b{color:var(--txt);}
+.formula-chain .arr{color:var(--rose);}
+.quotes-6{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin-bottom:12px;}
+.q6-card{background:var(--s2);border-radius:9px;padding:11px 13px;border-left:3px solid;font-size:13px;font-weight:600;line-height:1.6;cursor:copy;transition:.15s;}
+.q6-card:hover{opacity:.88;}
+.q6-num{font-size:10px;color:var(--dim);margin-bottom:3px;}
+.nt-box{background:var(--card);border:1px solid var(--bdr2);border-radius:12px;padding:14px;margin-bottom:11px;}
+.nt-box-t{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:11px;}
+.nt-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--bdr);}
+.nt-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.nt-ico-s{font-size:17px;flex-shrink:0;margin-top:2px;}
+.nt-content-s{flex:1;}
+.nt-name-s{font-size:13px;font-weight:700;margin-bottom:2px;}
+.nt-mech-s{font-size:11px;color:var(--rose);font-weight:600;margin-bottom:2px;}
+.nt-why-s{font-size:12px;color:var(--dim);line-height:1.6;}
+.buy-sm{display:inline-flex;align-items:center;gap:4px;margin-top:5px;padding:4px 10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:11px;font-weight:700;border-radius:5px;text-decoration:none;}
+.tech-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.tech-card{border-radius:11px;padding:13px;}
+.tech-neg{background:rgba(96,128,216,.08);border:1px solid rgba(96,128,216,.22);}
+.tech-hyd{background:rgba(48,200,192,.08);border:1px solid rgba(48,200,192,.22);}
+.tech-t{font-size:12px;font-weight:700;margin-bottom:6px;}
+.tech-flow{font-size:12px;color:var(--dim);line-height:1.9;}
+.tech-flow b{color:var(--txt);}
+.tech-flow .arr{color:var(--rose);}
+.tech-buy{display:inline-flex;align-items:center;gap:4px;margin-top:7px;padding:5px 11px;background:linear-gradient(135deg,var(--teal),#009888);color:#020A08;font-size:11px;font-weight:700;border-radius:5px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;}
+
+/* 16 MODELS PAGE */
+.model-group-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.mg-tab{padding:7px 14px;border-radius:18px;border:1.5px solid var(--bdr);background:transparent;cursor:pointer;font-size:11px;font-weight:700;color:var(--dim);transition:.17s;font-family:inherit;}
+.mg-tab.on{color:#080410;border-color:transparent;}
+.mg-content{display:none;} .mg-content.on{display:block;}
+.model-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;}
+.m-card{background:var(--card);border:1px solid var(--bdr2);border-radius:13px;padding:16px;border-top:3px solid;}
+.mc-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;}
+.mc-ico{font-size:20px;width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.mc-num{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;opacity:.7;margin-bottom:2px;}
+.mc-name{font-size:15px;font-weight:700;}
+.mc-principle{font-size:11px;color:var(--dim);font-style:italic;}
+.mc-formula{font-size:12px;color:var(--rose);font-weight:600;margin-bottom:8px;padding:7px 11px;background:rgba(232,48,106,.07);border-radius:8px;line-height:1.7;}
+.mc-quotes{border-top:1px solid var(--bdr);padding-top:9px;}
+.mc-qt{font-size:10px;font-weight:700;color:var(--dim);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;}
+.mc-q{font-size:12px;color:var(--dim);padding:4px 0;border-bottom:1px solid var(--bdr);}
+.mc-q:last-child{border-bottom:none;}
+.mc-q b{color:var(--gold);}
+
+/* AI COACH */
+.ai-wrap{max-width:640px;margin:0 auto;}
+.quick-btns{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:13px;}
+.qb{padding:7px 13px;background:var(--s2);border:1px solid var(--bdr);border-radius:18px;font-size:12px;color:var(--dim);cursor:pointer;font-family:inherit;transition:.14s;}
+.qb:hover{border-color:var(--rose);color:var(--rose);}
+.ai-chat{background:var(--card);border:1px solid var(--bdr2);border-radius:13px;padding:18px;margin-bottom:13px;min-height:280px;display:flex;flex-direction:column;gap:12px;max-height:460px;overflow-y:auto;}
+.ai-msg{display:flex;gap:9px;}
+.ai-msg.user{justify-content:flex-end;}
+.ai-bubble{padding:11px 14px;font-size:13px;line-height:1.75;max-width:88%;border-radius:13px;}
+.ai-msg.user .ai-bubble{background:linear-gradient(135deg,var(--rose),var(--rose2));color:#fff;border-radius:13px 13px 4px 13px;}
+.ai-msg.bot .ai-bubble{background:var(--s2);border:1px solid var(--bdr2);border-radius:13px 13px 13px 4px;}
+.ai-bubble b{color:var(--gold);}
+.ai-bubble .hl{color:var(--rose);}
+.ai-ico{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;align-self:flex-end;background:rgba(232,48,106,.2);}
+.ai-input-row{display:flex;gap:9px;}
+.ai-inp{flex:1;padding:11px 14px;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);font-size:13px;font-family:inherit;outline:none;transition:.2s;}
+.ai-inp:focus{border-color:var(--rose);}
+.ai-inp::placeholder{color:var(--dim);}
+.ai-send{padding:11px 20px;background:linear-gradient(135deg,var(--rose),var(--rose2));color:#fff;font-size:13px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;transition:.18s;flex-shrink:0;}
+.ai-send:hover{opacity:.87;}
+.ai-send:disabled{opacity:.5;cursor:not-allowed;}
+.ai-thinking{display:flex;gap:4px;align-items:center;padding:6px 0;}
+.ai-dot{width:7px;height:7px;border-radius:50%;background:var(--rose);opacity:.4;animation:bounce .9s infinite;}
+.ai-dot:nth-child(2){animation-delay:.2s;} .ai-dot:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px);opacity:1}}
+
+/* DAILY */
+.daily-wrap{max-width:600px;margin:0 auto;}
+.today-card{background:linear-gradient(135deg,rgba(232,48,106,.1),rgba(232,168,32,.08));border:1px solid rgba(232,48,106,.2);border-radius:15px;padding:20px;text-align:center;margin-bottom:13px;}
+.tc-label{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--rose);text-transform:uppercase;margin-bottom:6px;}
+.tc-lv{font-size:22px;font-weight:900;margin-bottom:4px;}
+.tc-quote{font-size:13px;font-style:italic;color:var(--dim);line-height:1.7;}
+.score-box{background:var(--card);border:1px solid var(--bdr2);border-radius:12px;padding:12px;text-align:center;margin-bottom:12px;}
+.sb-pts{font-size:46px;font-weight:900;color:var(--gold);}
+.sb-lbl{font-size:12px;color:var(--dim);}
+.task-box{background:var(--card);border:1px solid var(--bdr2);border-radius:12px;padding:15px;margin-bottom:12px;}
+.tb-t{font-size:11px;font-weight:700;color:var(--rose);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
+.task-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bdr);}
+.task-item:last-child{border-bottom:none;}
+.t-check{width:21px;height:21px;border-radius:6px;border:1.5px solid var(--bdr2);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s;font-size:12px;font-weight:700;}
+.t-check.done{background:var(--rose);border-color:var(--rose);color:#fff;}
+.t-text{font-size:13px;flex:1;}
+.t-text.s{text-decoration:line-through;color:var(--dim);}
+.t-pts{font-size:11px;font-weight:700;color:var(--gold);}
+
+/* QUOTES PAGE */
+.quotes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:9px;}
+.q-card{background:var(--card);border:1px solid var(--bdr2);border-radius:12px;padding:16px;cursor:copy;transition:.15s;position:relative;overflow:hidden;}
+.q-card:hover{border-color:var(--rose);}
+.q-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;}
+.qc-num{font-size:10px;color:var(--dim);margin-bottom:6px;letter-spacing:.5px;}
+.qc-text{font-size:14px;font-weight:700;line-height:1.75;margin-bottom:7px;}
+.qc-type{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;display:inline-block;}
+.copy-toast{display:none;position:fixed;bottom:66px;left:50%;transform:translateX(-50%);background:var(--rose);color:#fff;font-size:12px;font-weight:700;padding:8px 18px;border-radius:9px;z-index:600;animation:cpop .4s ease;}
+
+/* LEARN */
+.phil-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+.lcard{background:var(--card);border:1px solid var(--bdr2);border-radius:12px;padding:14px;}
+.lc-t{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--rose);margin-bottom:6px;}
+.lc-b{font-size:13px;color:var(--dim);line-height:1.9;}
+.lc-b b{color:var(--txt);}.lc-b .hl{color:var(--rose);}.lc-b .warn{color:#F59E0B;}
+.upgrade-path{display:flex;flex-direction:column;gap:0;max-width:260px;margin:12px auto 18px;}
+.up-node{padding:9px 16px;border-radius:9px;font-size:12px;font-weight:600;text-align:center;border:1px solid;}
+.up-arr{color:var(--rose);opacity:.35;font-size:17px;padding:2px 0;text-align:center;}
+
+/* FLASH + QUIZ */
+.fcmeta{display:flex;gap:12px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:10px 14px;margin-bottom:12px;align-items:center;}
+.fcm-i{display:flex;flex-direction:column;align-items:center;}
+.fcm-l{font-size:9px;color:var(--dim);}
+.fcm-v{font-size:18px;font-weight:700;color:var(--rose);}
+.mla{margin-left:auto;display:flex;gap:6px;}
+.pbar-w{height:4px;background:var(--bdr);border-radius:3px;margin-bottom:10px;}
+.pbar-f{height:100%;background:linear-gradient(90deg,var(--rose),var(--gold));border-radius:3px;transition:.3s;}
+.fcwrap{perspective:1100px;max-width:500px;margin:0 auto;}
+.fc{width:100%;height:290px;position:relative;transform-style:preserve-3d;transition:.52s cubic-bezier(.4,0,.2,1);cursor:pointer;}
+.fc.flip{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;border-radius:15px;padding:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;backface-visibility:hidden;text-align:center;border:1px solid var(--bdr2);}
+.front{background:var(--card);}
+.back{background:linear-gradient(135deg,var(--card),#0E0630);transform:rotateY(180deg);}
+.fc-eye{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;color:var(--rose);}
+.fc-big{font-size:36px;font-weight:900;letter-spacing:-1.5px;margin-bottom:6px;}
+.fc-hint{font-size:12px;color:var(--dim);}
+.fc-zh{font-size:16px;font-weight:700;color:var(--rose);margin-bottom:8px;}
+.fc-detail{font-size:12px;color:var(--dim);line-height:1.65;max-width:340px;}
+.fc-btns{display:none;gap:9px;justify-content:center;margin-top:12px;}
+.fc-tap{font-size:11px;color:var(--dim);text-align:center;margin-top:7px;}
+.ctr-txt{font-size:11px;color:var(--dim);text-align:center;margin-bottom:10px;}
+.btn{padding:9px 18px;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:.17s;}
+.btn-ok{background:rgba(52,211,153,.14);color:var(--green);border:1px solid rgba(52,211,153,.3);}
+.btn-ok:hover{background:rgba(52,211,153,.26);}
+.btn-bad{background:rgba(244,63,94,.12);color:#F43F5E;border:1px solid rgba(244,63,94,.28);}
+.btn-bad:hover{background:rgba(244,63,94,.24);}
+.btn-ghost{background:var(--card);color:var(--dim);border:1px solid var(--bdr);}
+.btn-ghost:hover{border-color:var(--bdr2);color:var(--txt);}
+.result-box{text-align:center;padding:30px;background:var(--card);border-radius:14px;border:1px solid var(--bdr2);}
+.r-stars{font-size:26px;letter-spacing:4px;margin-bottom:5px;}
+.r-score{font-size:50px;font-weight:900;color:var(--rose);}
+.r-msg{font-size:13px;color:var(--dim);margin-bottom:14px;}
+.q-type{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--rose);text-transform:uppercase;margin-bottom:6px;display:inline-block;}
+.q-q{font-size:17px;font-weight:700;margin-bottom:16px;line-height:1.4;}
+.q-opts{display:grid;gap:7px;}
+.qopt{background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:12px 14px;font-size:13px;cursor:pointer;text-align:left;color:var(--txt);font-family:inherit;transition:.17s;line-height:1.4;}
+.qopt:hover:not(:disabled){border-color:var(--rose);background:var(--gr);}
+.qopt.ok{border-color:var(--green);background:rgba(52,211,153,.1);color:var(--green);}
+.qopt.bad{border-color:#F43F5E;background:rgba(244,63,94,.1);color:#F43F5E;}
+.q-exp{background:var(--card);border:1px solid var(--bdr2);border-radius:10px;padding:12px;margin-top:8px;font-size:13px;line-height:1.7;display:none;color:var(--dim);}
+.q-exp.show{display:block;}
+.q-exp b{color:var(--rose);}
+.q-next-w{text-align:center;margin-top:9px;display:none;}
+
+/* XP BAR */
+.xp-bar{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--s1);border-top:1px solid var(--bdr);padding:7px 16px;display:flex;align-items:center;gap:12px;}
+.xp-lbl{font-size:11px;color:var(--dim);white-space:nowrap;}
+.xp-bg{flex:1;height:7px;background:var(--bdr);border-radius:4px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--rose),var(--violet),var(--gold));border-radius:4px;transition:.5s;}
+.xp-pts{font-size:12px;font-weight:700;color:var(--gold);white-space:nowrap;}
+.combo{display:none;position:fixed;top:60px;right:14px;background:var(--rose);color:#fff;font-weight:800;font-size:13px;border-radius:9px;padding:7px 13px;z-index:600;animation:cpop .4s ease;}
+@keyframes cpop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.2)}100%{opacity:1;transform:scale(1)}}
+
+@media(max-width:600px){
+  .phil-grid{grid-template-columns:1fr;}
+  .tech-row{grid-template-columns:1fr;}
+  .sym-grid{grid-template-columns:repeat(2,1fr);}
+  .old-new{grid-template-columns:1fr;}
+  .comm-dash{grid-template-columns:repeat(3,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">溝通工程 Comm OS</div>
+  <nav class="nav">
+    <button class="nb on" onclick="gp('home',this)">💗 首頁</button>
+    <button class="nb" onclick="gp('diag',this)">🩺 溝通診斷</button>
+    <button class="nb" onclick="gp('lever',this)">⚡ 五大槓桿</button>
+    <button class="nb" onclick="gp('models',this)">📚 16大模型</button>
+    <button class="nb" onclick="gp('ai',this)">🤖 AI教練</button>
+    <button class="nb" onclick="gp('daily',this)">📅 每日挑戰</button>
+    <button class="nb" onclick="gp('quotes',this)">✨ 金句庫</button>
+    <button class="nb" onclick="gp('learn',this)">📖 原理</button>
+    <button class="nb" onclick="gp('flash',this)">🃏 閃卡</button>
+    <button class="nb" onclick="gp('quiz',this)">🧠 測驗</button>
+  </nav>
+  <a class="buy-top" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 訂購</a>
+</div>
+<div id="comboBadge" class="combo"></div>
+<div id="copyToast" class="copy-toast">✅ 已複製！</div>
+
+<!-- ════ HOME ════ -->
+<div class="pg on" id="pg-home">
+<div class="hero">
+  <div class="orb oa"></div><div class="orb ob"></div><div class="orb oc"></div>
+  <div style="position:relative;z-index:1;max-width:600px;margin:0 auto">
+    <div class="hero-tag">Communication Operating System</div>
+    <h1 class="hero-h1">讓愛<br>成功抵達</h1>
+    <p class="hero-p">溝通的目的不是說話，<br>而是<b style="color:var(--rose)">讓兩個大腦成功同步</b>。<br>所有關係問題，本質都是模型不同步。</p>
+    <div class="hero-formula">
+      <span class="hf r">傾聽</span><span class="hf x">→</span>
+      <span class="hf r">需求</span><span class="hf x">→</span>
+      <span class="hf r">信任</span><span class="hf x">→</span>
+      <span class="hf r">安全感</span><span class="hf x">→</span>
+      <span class="hf r">預測</span>
+      <span class="hf x">=</span><span class="hf g">幸福</span>
+    </div>
+    <div class="hero-btns">
+      <button class="btn-r" onclick="gp('diag',document.querySelectorAll('.nb')[1])">🩺 診斷我的溝通問題</button>
+      <button class="btn-g" onclick="gp('ai',document.querySelectorAll('.nb')[4])">🤖 AI 溝通教練</button>
+    </div>
+  </div>
+</div>
+<div class="wrap" style="padding-top:0">
+  <div class="sec-h" style="text-align:center;margin-bottom:14px">溝通<span style="color:var(--rose)">能力儀表板</span></div>
+  <div class="comm-dash" id="commDash"></div>
+  <div class="formula-box" style="max-width:640px;margin:14px auto 24px">
+    <b>婚姻品質</b> <span class="eq">=</span>
+    <b>傾聽力</b> <span style="color:var(--rose)">×</span>
+    <b>需求理解力</b> <span style="color:var(--rose)">×</span>
+    <b>信任度</b> <span style="color:var(--rose)">×</span>
+    <b>安全感</b> <span style="color:var(--rose)">×</span>
+    <b>預測精度</b><br>
+    <span style="font-size:13px;font-style:italic">幸福婚姻不是找到完美的人，而是願意持續更新彼此模型的人</span>
+  </div>
+  <div class="bb">
+    <div class="bb-h">💊 溝通力的神經科學補充</div>
+    <div class="bb-p">良好溝通需要：前額葉功能 + 情緒調節 + 神經可塑性<br>冠貞生技精選 × 科學補充，讓大腦更有能力理解和連結</div>
+    <a class="bb-a" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">前往 7-ELEVEN 賣貨便訂購 →</a>
+    <div class="bb-note">可透過 LINE 群詢問最適合個人狀況的補充組合</div>
+  </div>
+</div>
+</div>
+
+<!-- ════ DIAGNOSIS ════ -->
+<div class="pg" id="pg-diag">
+<div class="wrap">
+  <div class="d-intro">
+    <h2>🩺 溝通問題診斷</h2>
+    <p>選擇你正在經歷的溝通困境 → 定位模型失衡 → 獲得升級策略<br>所有衝突，本質都是模型不同步</p>
+  </div>
+  <div style="font-size:11px;font-weight:700;color:var(--rose);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">選擇你的溝通困境（可多選）</div>
+  <div class="sym-grid" id="symGrid"></div>
+  <div style="text-align:center;margin-bottom:18px">
+    <button class="run-btn" onclick="runDiag()">🔍 分析我的溝通模型</button>
+    <button class="rst-btn" onclick="resetDiag()">重新選擇</button>
+  </div>
+  <div class="d-result" id="diagResult">
+    <div style="font-size:13px;font-weight:700;margin-bottom:10px">你的溝通模型失衡分析</div>
+    <div class="model-score-grid" id="modelScoreGrid"></div>
+    <div class="rec-h">📚 精準升級策略 × 模型 × 行動 × 金句</div>
+    <div class="rec-grid" id="recGrid"></div>
+    <div class="bb" style="margin-top:18px">
+      <div class="bb-h">溝通升級從神經開始</div>
+      <div class="bb-p">前額葉功能決定理性溝通能力，情緒調節決定衝突修復速度</div>
+      <a class="bb-a" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 立即前往訂購</a>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════ 5 LEVER ════ -->
+<div class="pg" id="pg-lever">
+<div class="wrap">
+  <div class="sec-h">五大<span style="color:var(--rose)">槓桿模型</span></div>
+  <div class="sec-s">決定婚姻80%品質的五條因果鏈 · 每個都有完整升級策略</div>
+  <div class="lever-tabs" id="leverTabs"></div>
+  <div id="leverContents"></div>
+</div>
+</div>
+
+<!-- ════ 16 MODELS ════ -->
+<div class="pg" id="pg-models">
+<div class="wrap">
+  <div class="sec-h">16大<span style="color:var(--rose)">溝通模型</span></div>
+  <div class="sec-s">舊模式 vs 新模式 + 第一性原理 + 萬用公式 + 6個金句</div>
+  <div class="model-group-tabs" id="mgTabs"></div>
+  <div id="mgContents"></div>
+</div>
+</div>
+
+<!-- ════ AI ════ -->
+<div class="pg" id="pg-ai">
+<div class="wrap">
+  <div class="sec-h">AI 溝通<span style="color:var(--rose)">教練</span></div>
+  <div class="sec-s">輸入你的關係困境，AI 分析溝通模型失衡並給出精準升級建議</div>
+  <div class="ai-wrap">
+    <div class="quick-btns">
+      <button class="qb" onclick="askAI(this.textContent)">今天跟老婆吵架了</button>
+      <button class="qb" onclick="askAI(this.textContent)">我感覺對方不理解我</button>
+      <button class="qb" onclick="askAI(this.textContent)">我不知道怎麼道歉</button>
+      <button class="qb" onclick="askAI(this.textContent)">對方情緒來了我不知道怎麼回應</button>
+      <button class="qb" onclick="askAI(this.textContent)">我們同一件事一直吵</button>
+      <button class="qb" onclick="askAI(this.textContent)">怎麼讓對方感受到被理解？</button>
+    </div>
+    <div class="ai-chat" id="aiChat">
+      <div class="ai-msg bot">
+        <div class="ai-ico">💗</div>
+        <div class="ai-bubble">你好！我是你的 <b>AI 溝通教練</b>。<br><br>我會根據「溝通工程」的16大模型，分析你的溝通困境是哪個模型需要升級，並給出具體的行動建議和金句。<br><br>告訴我你的困境，或點擊上方快速問題。</div>
+      </div>
+    </div>
+    <div class="ai-input-row">
+      <input class="ai-inp" id="aiInput" placeholder="輸入你的關係或溝通問題..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAI()}">
+      <button class="ai-send" id="aiSendBtn" onclick="sendAI()">送出</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════ DAILY ════ -->
+<div class="pg" id="pg-daily">
+<div class="wrap">
+  <div class="daily-wrap">
+    <div class="today-card">
+      <div class="tc-label">今日溝通挑戰</div>
+      <div class="tc-lv" id="todayLv">理解者 Lv3</div>
+      <div class="tc-quote" id="todayQuote">「先理解，再被理解」</div>
+    </div>
+    <div class="score-box">
+      <div class="sb-pts" id="todayPts">35</div>
+      <div class="sb-lbl">溝通積分 · 今日完成 <span id="doneC">0</span> / 7 項</div>
+    </div>
+    <div class="task-box">
+      <div class="tb-t">📅 今日七大溝通任務</div>
+      <div id="taskList"></div>
+    </div>
+    <!-- Level system -->
+    <div class="sec-h" style="font-size:17px;margin-bottom:12px;">⚡ 溝通能力升級路徑</div>
+    <div id="levelList" style="max-width:360px;margin:0 auto 20px;display:flex;flex-direction:column;gap:5px;"></div>
+    <div class="bb">
+      <div class="bb-h">溝通力 = 神經系統的能力</div>
+      <div class="bb-p">情緒調節、同理心、決策都需要前額葉功能支持<br>補充神經系統，讓溝通升級更輕鬆</div>
+      <a class="bb-a" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 7-ELEVEN 賣貨便 立即訂購</a>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════ QUOTES ════ -->
+<div class="pg" id="pg-quotes">
+<div class="wrap">
+  <div class="sec-h">溝通<span style="color:var(--rose)">金句庫</span></div>
+  <div class="sec-s">96個溝通智慧金句（16模型×6句）· 點擊複製分享</div>
+  <div class="quotes-grid" id="quotesGrid"></div>
+</div>
+</div>
+
+<!-- ════ LEARN ════ -->
+<div class="pg" id="pg-learn">
+<div class="wrap">
+  <div class="sec-h">溝通<span style="color:var(--rose)">原理</span></div>
+  <div class="sec-s">從系統論理解溝通，才能找到真正的槓桿</div>
+  <div class="formula-box">
+    <b>溝通</b> = 一個大腦的模型 <span class="eq">→</span> 成功同步到另一個大腦<br>
+    <b>所有衝突</b> = 模型不同步<br>
+    <b>所有幸福</b> = 持續更新彼此模型
+  </div>
+  <div class="sec-h" style="font-size:17px;margin-bottom:12px">溝通<span style="color:var(--rose)">升級路徑</span></div>
+  <div class="upgrade-path" id="upPath"></div>
+  <div class="phil-grid">
+    <div class="lcard"><div class="lc-t">🔬 第一性原理</div><div class="lc-b">溝通不是說話，<br>而是<b class="hl">讓對方大腦成功接收你的模型</b><br><br>你知道的≠對方知道的<br>你以為的≠對方以為的<br><br>誤會 = 模型差異，不是惡意</div></div>
+    <div class="lcard"><div class="lc-t">🔄 控制論解析</div><div class="lc-b">溝通是<b>誤差修正系統</b><br><br>說話→接收→回饋→比較誤差→修正<br>直到同步<br><br>衝突 = 修正訊號<br>不修正 = <span class="warn">問題累積</span></div></div>
+    <div class="lcard"><div class="lc-t">🧠 預測編碼解析</div><div class="lc-b">大腦不直接理解世界，<br>而是根據過去經驗<b>預測世界</b><br><br>妻子說「你很忙吧」<br>丈夫預測：她在抱怨<br>實際：她只是關心<br>→<span class="warn">錯誤預測→衝突</span></div></div>
+    <div class="lcard"><div class="lc-t">🌍 系統論解析</div><div class="lc-b">夫妻不是兩個人，<br>而是<b>一個互動系統</b><br><br>任何一方改變→整體都改變<br>婚姻品質 = 數萬次微互動累積湧現<br>每天一句感謝 > 一次昂貴禮物</div></div>
+    <div class="lcard"><div class="lc-t">⚡ 自由能原理</div><div class="lc-b">良好溝通的目的：<br>降低彼此的不確定性<br><br>不知道對方想什麼→焦慮↑<br>知道對方想什麼→<span class="hl">安全感↑</span><br><br>愛的本質 = 讓對方安心</div></div>
+    <div class="lcard"><div class="lc-t">💊 神經科學</div><div class="lc-b">情緒調節→前額葉功能<br>同理心→鏡像神經元<br>衝突修復→神經可塑性<br><br>神經系統是溝通的<b>硬體基礎</b><br>補充對的材料，<span class="hl">大腦溝通能力↑</span></div></div>
+  </div>
+  <div class="bb" style="margin-top:20px">
+    <div class="bb-h">真正的溝通不是把話說完，而是讓愛成功抵達</div>
+    <div class="bb-p">婚姻最大的錯誤不是不了解對方，而是以為自己已經了解對方</div>
+    <a class="bb-a" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 7-ELEVEN 賣貨便 立即訂購</a>
+  </div>
+</div>
+</div>
+
+<!-- ════ FLASH ════ -->
+<div class="pg" id="pg-flash">
+<div class="wrap" style="max-width:560px">
+  <div class="sec-h">閃卡<span style="color:var(--rose)">練習</span></div>
+  <div class="sec-s">16大溝通模型 × 核心知識</div>
+  <div class="fcmeta">
+    <div class="fcm-i"><div class="fcm-l">已看</div><div class="fcm-v" id="fcSeen">0</div></div>
+    <div class="fcm-i"><div class="fcm-l">✅</div><div class="fcm-v" id="fcOK">0</div></div>
+    <div class="fcm-i"><div class="fcm-l">❌</div><div class="fcm-v" id="fcNG">0</div></div>
+    <div class="mla"><button class="btn btn-ghost" onclick="startFC()">🔀</button></div>
+  </div>
+  <div class="pbar-w"><div class="pbar-f" id="fcBar"></div></div>
+  <div class="ctr-txt" id="fcCtr"></div>
+  <div class="fcwrap">
+    <div class="fc" id="fcCard" onclick="flipFC()">
+      <div class="face front"><div class="fc-eye" id="fcEye"></div><div class="fc-big" id="fcBig"></div><div class="fc-hint">點擊翻面</div></div>
+      <div class="face back"><div class="fc-eye" id="fcEye2"></div><div class="fc-zh" id="fcZh"></div><div class="fc-detail" id="fcDetail"></div></div>
+    </div>
+  </div>
+  <div class="fc-tap">翻面後 ✅ / ❌</div>
+  <div class="fc-btns" id="fcBtns">
+    <button class="btn btn-bad" onclick="markFC(false)">❌ 再看</button>
+    <button class="btn btn-ghost" onclick="skipFC()">⏭</button>
+    <button class="btn btn-ok" onclick="markFC(true)">✅ 記得</button>
+  </div>
+  <div id="fcResult" style="display:none;margin-top:20px">
+    <div class="result-box">
+      <div class="r-stars" id="rStars"></div>
+      <div class="r-score" id="rScore"></div>
+      <div class="r-msg" id="rMsg"></div>
+      <button class="btn btn-ok" onclick="startFC()" style="margin-top:12px;padding:9px 20px">再來一輪</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════ QUIZ ════ -->
+<div class="pg" id="pg-quiz">
+<div class="wrap" style="max-width:620px">
+  <div class="sec-h">溝通<span style="color:var(--rose)">測驗</span></div>
+  <div class="sec-s">驗證你對16大溝通模型的理解</div>
+  <div class="fcmeta">
+    <div class="fcm-i"><div class="fcm-l">第</div><div class="fcm-v" id="qN">1</div></div>
+    <div class="fcm-i"><div class="fcm-l">✅</div><div class="fcm-v" id="qC">0</div></div>
+    <div class="fcm-i"><div class="fcm-l">❌</div><div class="fcm-v" id="qW">0</div></div>
+    <div class="mla"><button class="btn btn-ghost" onclick="startQuiz()">重開</button></div>
+  </div>
+  <div class="pbar-w"><div class="pbar-f" id="qBar"></div></div>
+  <div id="quizArea">
+    <div class="q-type" id="qType">溝通模型</div>
+    <div class="q-q" id="qQ"></div>
+    <div class="q-opts" id="qOpts"></div>
+    <div class="q-exp" id="qExp"></div>
+    <div class="q-next-w" id="qNext"><button class="btn btn-ok" style="padding:9px 18px" onclick="nextQ()">下一題 →</button></div>
+  </div>
+  <div id="quizResult" style="display:none;margin-top:20px">
+    <div class="result-box">
+      <div class="r-stars" id="qStars"></div>
+      <div class="r-score" id="qScore"></div>
+      <div class="r-msg" id="qMsg"></div>
+      <button class="btn btn-ok" onclick="startQuiz()" style="margin-top:12px;padding:9px 18px">再測一次</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="xp-bar">
+  <div class="xp-lbl" id="xpLabel">理解者 Lv3</div>
+  <div class="xp-bg"><div class="xp-fill" id="xpFill" style="width:35%"></div></div>
+  <div class="xp-pts" id="xpPts">35 / 100 XP</div>
+</div>
+
+<script>
+const BUY='https://myship.7-11.com.tw/general/detail/GM2407210007294';
+
+// ═══ 5 LEVER DATA ═══
+const LEVERS=[
+{id:'l1',ico:'👂',name:'傾聽模型',en:'Listening',color:'var(--l1)',
+ principle:'理解先於回應——人最深層的需求不是被改變，而是被理解',
+ why:'傾聽是所有溝通的起點，也是最高效的建立連結策略。多數衝突不是沒有答案，而是沒有被真正聽見。',
+ formula:'傾聽→理解→信任',
+ ultimate:'耳朵是通往人心最短的路',
+ old:['我在等你講完','急著反駁','急著給建議','證明我對','防衛模式'],
+ new_:['我想理解你','專心接收','先確認理解','看見對方需求','接收模式'],
+ quotes:['傾聽是最高級的尊重。','先理解，再被理解。','很多人聽見聲音，卻沒聽見需求。','傾聽能降低衝突。','真正的傾聽沒有急著反駁。','耳朵比嘴巴更能創造親密。'],
+ neg:'副交感活化→前額葉功能↑→衝動控制↑→深度傾聽能力提升',
+ hyd:'神經系統氧化壓力↓→認知清明↑→更有能力保持專注傾聽',
+ nutrients:[
+   {ico:'🧠',n:'甘胺酸鎂（+GABA）',mech:'前額葉調節',why:'前額葉功能↑=理性聆聽能力↑。衝突時感情腦（杏仁核）過激，鎂+GABA幫助降低神經過激，恢復理性傾聽模式。'},
+   {ico:'🐟',n:'Omega-3（DHA）',mech:'神經細胞膜流動性',why:'DHA是前額葉主要結構脂肪。DHA充足→鏡像神經元功能↑→同理心↑→傾聽品質↑。'},
+   {ico:'⚡',n:'超級B群',mech:'神經傳導物質合成',why:'B6是血清素+多巴胺合成輔酶。情緒穩定=傾聽品質↑。B12維護神經髓鞘，神經訊號傳導更精準。'},
+ ],
+ syms:['忍不住反駁','都在等對方講完','聽不進去','邊聽邊準備回擊']},
+
+{id:'l2',ico:'🎯',name:'需求模型',en:'Needs',color:'var(--l2)',
+ principle:'所有行為都是需求驅動——情緒是需求的影子',
+ why:'爭吵表面是事件，本質是需求未被滿足。看見需求比糾正行為重要100倍。多數衝突不是對事，而是對「需求未被看見」的反應。',
+ formula:'情緒→需求→行動',
+ ultimate:'每一次衝突背後，都有一個未被滿足的需求',
+ old:['看見抱怨','看見生氣','看見冷戰','責怪行為'],
+ new_:['看見孤單','看見失望','看見害怕','理解需求'],
+ quotes:['所有情緒背後都有需求。','需求被看見，關係就靠近。','爭吵常常是需求未被滿足。','理解需求比爭輸贏重要。','需求說出來，比期待猜到更有效。','健康關係建立在需求交換上。'],
+ neg:'壓力荷爾蒙↓→安全感↑→更願意說出真實需求→溝通質量↑',
+ hyd:'情緒穩定→需求表達更清晰→誤解減少→關係品質↑',
+ nutrients:[
+   {ico:'🌊',n:'茶胺酸（L-Theanine）',mech:'α腦波促進',why:'促進放鬆清醒狀態，讓大腦在衝突時仍能冷靜分析對方行為背後的需求，而非只看到「攻擊」。'},
+   {ico:'💊',n:'丁酸鈉',mech:'腸腦軸情緒穩定',why:'腸道產生血清素→情緒穩定→更容易識別自己和對方的真實需求，而非被表層情緒驚擾。'},
+   {ico:'🧪',n:'神經營養素（B12+B6）',mech:'情緒神經傳導',why:'B6是多巴胺+血清素合成輔酶，情緒神經傳導物質充足→情緒識別能力↑→需求理解精準度↑。'},
+ ],
+ syms:['常指責對方行為','看不懂對方真正要什麼','情緒一來就看不清需求','總是猜錯']},
+
+{id:'l3',ico:'🤝',name:'信任模型',en:'Trust',color:'var(--l3)',
+ principle:'信任來自可預測性——說到做到比說得好聽重要',
+ why:'信任是關係最大的資產，也是最脆弱的系統。信任來自長期一致性，不來自激情或承諾。每一次守信都在存入信任帳戶。',
+ formula:'承諾→行動→一致→信任',
+ ultimate:'信任的建立很慢，崩塌卻很快',
+ old:['靠承諾','說得好聽','一次感動','期待信任'],
+ new_:['靠行動','做得到','長期一致','創造信任'],
+ quotes:['信任來自一致性。','說到做到比承諾動聽重要。','每一次守信都在存款。','信任靠累積，不靠口號。','信任是關係最大的資產。','失去信任比失去金錢更昂貴。'],
+ neg:'穩定的生理環境→行為更一致→信任帳戶持續存入',
+ hyd:'粒線體保護→精力充沛→更有資源維持承諾一致性',
+ nutrients:[
+   {ico:'⚡',n:'NMN（+ CoQ10）',mech:'細胞能量充足',why:'能量充足→意志力更強→承諾更容易維持→一致性↑→信任建立。能量不足=承諾容易打折扣。'},
+   {ico:'🌊',n:'Omega-3',mech:'決策品質提升',why:'DHA提升前額葉決策能力，讓承諾在做出之前就更深思熟慮，減少「說到做不到」的情況。'},
+   {ico:'🌿',n:'粒線寶',mech:'SIRT活化長期自律',why:'SIRT蛋白調節細胞長期行為，活化SIRT=長期一致性↑=信任複利形成。'},
+ ],
+ syms:['常常說了不做','說到做不到','感覺對方不可信','承諾後忘記']},
+
+{id:'l4',ico:'🏠',name:'安全感模型',en:'Security',color:'var(--l4)',
+ principle:'生命需要穩定預測——安全感來自穩定，不是激情',
+ why:'安全感是親密關係的地基。沒有安全感=防衛模式啟動=真實的自己無法出現。愛的本質是降低彼此的不確定性。',
+ formula:'理解→穩定→安全感',
+ ultimate:'愛的本質，是讓對方安心',
+ old:['忽冷忽熱','情緒化','難以預測','控制對方'],
+ new_:['穩定關心','穩定回應','穩定存在','安定對方'],
+ quotes:['安全感來自可預測。','被理解是最大的安全感。','安全感讓愛能流動。','穩定比刺激更長久。','安全感是關係的地基。','有安全感的人更能付出愛。'],
+ neg:'副交感優勢→情緒穩定→伴侶安全感↑→防衛降低→親密↑',
+ hyd:'氧化壓力↓→神經系統更穩定→行為可預測性↑→安全感↑',
+ nutrients:[
+   {ico:'💤',n:'甘胺酸鎂（+GABA+褪黑素）',mech:'睡眠品質↑→情緒穩定',why:'睡眠好→情緒穩定→行為可預測→伴侶安全感↑。睡眠是最廉價的安全感建造工具。'},
+   {ico:'🧠',n:'茶胺酸+B群',mech:'情緒調節',why:'α腦波促進放鬆清醒，B6穩定神經傳導。情緒穩定的人讓伴侶感到安全。'},
+   {ico:'🐟',n:'Omega-3（EPA）',mech:'慢性發炎↓→情緒波動↓',why:'EPA降低慢性發炎→情緒更穩定→行為可預測性↑→伴侶安全感↑。'},
+ ],
+ syms:['感覺關係不穩定','容易焦慮失控','伴侶說不知道你的狀態','情緒反應很大']},
+
+{id:'l5',ico:'🔮',name:'預測模型',en:'Prediction',color:'var(--l5)',
+ principle:'大腦是預測機器——你怎麼預測，就怎麼理解對方',
+ why:'愛一個人就是持續更新對他的理解。以為自己懂對方，是衝突最常見的起點。伴侶不是固定的人，而是不斷成長的人。',
+ formula:'觀察→建模→預測→修正',
+ ultimate:'婚姻最大的錯誤，不是不了解對方，而是以為自己已經了解對方',
+ old:['我以為我懂你','固定印象','主觀認定','以為懂了'],
+ new_:['持續認識你','動態模型','持續修正','持續更新'],
+ quotes:['你怎麼預測，就怎麼理解。','誤會常來自錯誤預測。','更新模型比堅持立場重要。','理解對方才能預測對方。','預測越準，衝突越少。','智慧來自持續修正預測。'],
+ neg:'大腦清明→觀察力↑→對方行為預測更準→誤解↓',
+ hyd:'神經系統負擔↓→認知彈性↑→更容易更新對方模型',
+ nutrients:[
+   {ico:'⚡',n:'NMN（NAD+）',mech:'大腦認知彈性',why:'NAD+提升大腦前額葉代謝效率→認知彈性↑→更容易「更新」對伴侶的既有模型，而非固執於舊印象。'},
+   {ico:'🧠',n:'超級B群',mech:'神經可塑性',why:'B群是神經可塑性的輔酶。神經可塑性↑=學習和更新能力↑=更容易持續更新對伴侶的理解。'},
+   {ico:'🌿',n:'粒線寶（多酚）',mech:'SIRT活化認知升級',why:'多酚活化SIRT=大腦學習和適應能力↑=持續更新伴侶模型的能力↑=預測精度↑=衝突↓。'},
+ ],
+ syms:['常誤解對方意思','以為自己很了解對方卻常猜錯','固執己見','很難接受對方已經改變']},
+];
+
+// 16 MODELS
+const MODELS=[
+  {id:'m1',ico:'💬',name:'表達模型',color:'var(--gA)',group:'A',
+   principle:'資訊必須成功抵達對方',
+   formula:'看見事實→表達感受→說出需求→提出請求',
+   quote:'表達的目的不是說話，而是被理解。',
+   old:['發洩情緒','指責對方','我要講完','爭輸贏'],
+   new_:['傳遞訊息','表達需求','對方聽懂','建立理解'],
+   quotes:['表達不是發洩，而是傳遞。','說清楚，比說很多重要。','感受能表達，關係才能靠近。','好的表達讓人理解，不是讓人屈服。','成熟的人表達需求，不表達攻擊。','不是指責，而是表達。'],
+   syms:['表達','衝突','情緒']},
+  {id:'m2',ico:'❓',name:'提問模型',color:'var(--gA)',group:'A',
+   principle:'不知道就探索',
+   formula:'不知道→提問→探索→理解',
+   quote:'問題品質決定理解品質。',
+   old:['預設答案','直接判斷','急著定論','質問'],
+   new_:['保持好奇','先提問','探索真相','理解'],
+   quotes:['好問題比好答案更有力量。','提問打開理解的大門。','先問，再判斷。','提問讓對話流動。','探索比質問更有效。','答案會停止思考，問題會打開智慧。'],
+   syms:['誤解','衝突']},
+  {id:'m3',ico:'👂',name:'傾聽模型',color:'var(--gA)',group:'A',
+   principle:'理解先於回應',
+   formula:'停止反駁→專心接收→理解對方→建立連結',
+   quote:'耳朵比嘴巴更接近真相。',
+   old:['等待反駁','聽內容','聽完回擊','防衛'],
+   new_:['專心理解','聽需求','聽完思考','接收'],
+   quotes:['傾聽是最高級的尊重。','先理解，再被理解。','很多問題不是沒答案，而是沒被聽見。','耳朵比嘴巴更容易靠近人心。','被理解是人最深層的渴望。','傾聽是愛最具體的樣子。'],
+   syms:['傾聽','誤解','衝突']},
+  {id:'m4',ico:'💗',name:'同理模型',color:'var(--gA)',group:'A',
+   principle:'每個行為都有原因',
+   formula:'感受對方→理解對方→接納對方→支持對方',
+   quote:'同理不是認同，而是理解。',
+   old:['評價','批判','指責','改變對方'],
+   new_:['理解','好奇','看見痛苦','理解對方'],
+   quotes:['同理不是同意，而是理解。','看見對方的世界，關係就開始改變。','每個情緒背後都有原因。','理解比批評有力量。','同理能融化防衛。','愛從理解開始。'],
+   syms:['衝突','情緒','傾聽']},
+  {id:'m5',ico:'🌊',name:'情緒模型',color:'var(--gB)',group:'B',
+   principle:'情緒是訊號',
+   formula:'情緒→訊號→需求→行動',
+   quote:'情緒不是問題，忽略情緒才是問題。',
+   old:['消滅情緒','壓抑情緒','情緒是敵人','否定感受'],
+   new_:['解讀情緒','接納情緒','情緒是導航','看見需求'],
+   quotes:['情緒是訊號，不是敵人。','情緒在提醒你有需求。','先接納情緒，再處理問題。','情緒被理解，痛苦就減半。','成熟不是沒情緒，而是會管理情緒。','情緒不是問題，忽略情緒才是問題。'],
+   syms:['情緒','衝突']},
+  {id:'m6',ico:'🎯',name:'需求模型',color:'var(--gB)',group:'B',
+   principle:'需求驅動行為',
+   formula:'情緒→需求→滿足→幸福',
+   quote:'衝突表面是事件，本質是需求。',
+   old:['看行為','責怪','爭對錯','猜測'],
+   new_:['看需求','理解','找需求','說出需求'],
+   quotes:['每個情緒背後都有需求。','需求被看見，關係就靠近。','爭吵常常是需求未被滿足。','需求說出來，比期待猜到更有效。','需求不會消失，只會換方式出現。','成熟的人表達需求，而不是期待猜到。'],
+   syms:['需求','衝突','情緒']},
+  {id:'m7',ico:'⚡',name:'衝突模型',color:'var(--gB)',group:'B',
+   principle:'差異必然存在',
+   formula:'差異→衝突→溝通→升級',
+   quote:'衝突不是敵人，而是更新通知。',
+   old:['衝突是壞事','贏過對方','誰錯','壓制'],
+   new_:['衝突是資訊','理解差異','哪裡失配','整合'],
+   quotes:['衝突是差異，不是敵意。','衝突是更新模型的機會。','問題不是衝突，而是不修正。','衝突是回饋，不是審判。','好的關係靠修正，不靠壓抑。','衝突不是結束，是更新開始。'],
+   syms:['衝突','誤解','信任']},
+  {id:'m8',ico:'🙏',name:'道歉模型',color:'var(--gB)',group:'B',
+   principle:'關係比面子重要',
+   formula:'承認→理解→修正→重建',
+   quote:'成熟不是沒犯錯，而是願意修正。',
+   old:['解釋自己','維護自尊','找理由','道歉是輸'],
+   new_:['理解對方','修復關係','承擔責任','道歉是修復'],
+   quotes:['道歉不是認輸，而是修復。','真誠比理由更重要。','修正比解釋更有價值。','好的道歉重建信任。','願意道歉的人更容易成長。','好的道歉不是解釋自己，而是修復關係。'],
+   syms:['衝突','信任']},
+  {id:'m9',ico:'🔑',name:'信任模型',color:'var(--gC)',group:'C',
+   principle:'信任來自可預測性',
+   formula:'承諾→行動→一致→信任',
+   quote:'信任是時間複利的結果。',
+   old:['靠承諾','靠感覺','一次感動','說得好'],
+   new_:['靠行動','靠一致性','長期累積','做得到'],
+   quotes:['信任來自一致性。','說到做到比承諾動聽重要。','每一次守信都在存款。','信任靠累積，不靠口號。','信任是關係最大的資產。','信任不是說出來的，信任是做出來的。'],
+   syms:['信任','安全感']},
+  {id:'m10',ico:'🏠',name:'安全感模型',color:'var(--gC)',group:'C',
+   principle:'生命需要穩定預測',
+   formula:'理解→接納→穩定→安全感',
+   quote:'安全感來自穩定，而非激情。',
+   old:['追求刺激','忽冷忽熱','情緒化','控制對方'],
+   new_:['創造穩定','穩定輸出','可預測','安定對方'],
+   quotes:['安全感來自可預測。','被理解是最大的安全感。','穩定比刺激更長久。','安全感是關係的地基。','有安全感的人更能付出愛。','最大的安全感是知道你一直都在。'],
+   syms:['安全感','信任']},
+  {id:'m11',ico:'⏰',name:'陪伴模型',color:'var(--gC)',group:'C',
+   principle:'注意力就是愛',
+   formula:'時間→專注→連結→親密',
+   quote:'陪伴不是在旁邊，而是在心裡。',
+   old:['人在心不在','敷衍陪伴','滑手機','時間數量'],
+   new_:['全然在場','深度陪伴','看見對方','品質密度'],
+   quotes:['陪伴是最珍貴的禮物。','在場比完美重要。','高品質陪伴勝過長時間相處。','共同經歷創造連結。','時間花在哪裡，愛就在哪裡。','最好的愛是高品質陪伴。'],
+   syms:['安全感','信任']},
+  {id:'m12',ico:'🌟',name:'感謝模型',color:'var(--gC)',group:'C',
+   principle:'被看見的行為會增強',
+   formula:'看見→感謝→肯定→放大',
+   quote:'你關注什麼，什麼就成長。',
+   old:['聚焦缺點','視為理所當然','抱怨','挑毛病'],
+   new_:['聚焦優點','表達感謝','肯定','看見付出'],
+   quotes:['感謝讓關係進入正循環。','看見付出，幸福增加。','感謝是最低成本的投資。','被感謝的人更願意付出。','感謝能放大美好。','幸福從感謝開始。'],
+   syms:['親密','幸福複利']},
+  {id:'m13',ico:'🔮',name:'預測模型',color:'var(--gD)',group:'D',
+   principle:'大腦是預測機器',
+   formula:'觀察→建模→預測→修正',
+   quote:'愛一個人，就是持續更新對他的理解。',
+   old:['我認為','猜測','固定印象','主觀認定'],
+   new_:['我驗證','更新','動態模型','持續修正'],
+   quotes:['你怎麼預測，就怎麼理解。','誤會常來自錯誤預測。','更新模型比堅持立場重要。','預測越準，衝突越少。','愛一個人，就是持續更新對他的理解。','婚姻最大的錯誤是以為自己已經了解對方。'],
+   syms:['誤解','衝突']},
+  {id:'m14',ico:'🔄',name:'控制論模型',color:'var(--gD)',group:'D',
+   principle:'回饋決定進化',
+   formula:'行動→回饋→修正→優化',
+   quote:'沒有回饋，就沒有進步。',
+   old:['犯錯羞愧','逃避回饋','自我合理化','固定模式'],
+   new_:['犯錯修正','擁抱回饋','自我更新','閉環優化'],
+   quotes:['回饋是成長的起點。','沒有回饋，就沒有修正。','修正速度決定成長速度。','錯誤不是失敗，是訊號。','閉環比努力更重要。','成功來自持續優化。'],
+   syms:['衝突','成長']},
+  {id:'m15',ico:'🌊',name:'自由能模型',color:'var(--gD)',group:'D',
+   principle:'生命持續降低不確定性',
+   formula:'不確定→焦慮 / 理解→穩定',
+   quote:'愛的本質，是降低彼此的不確定性。',
+   old:['製造猜疑','隱藏','不說明','增加焦慮'],
+   new_:['增加透明','分享','主動溝通','降低焦慮'],
+   quotes:['焦慮來自不確定。','理解能降低恐懼。','安全感降低內耗。','預測越準，焦慮越少。','愛能降低彼此的不確定性。','穩定關係能節省生命能量。'],
+   syms:['安全感','焦慮']},
+  {id:'m16',ico:'💎',name:'智慧模型',color:'var(--gD)',group:'D',
+   principle:'持續更新比堅持正確重要',
+   formula:'覺察→理解→修正→成長',
+   quote:'真正的成熟，不是證明自己正確，而是願意讓自己進化。',
+   old:['我是對的','固執','自我中心','執著面子'],
+   new_:['我可以更新','彈性','系統思維','提升智慧'],
+   quotes:['智慧不是知道，而是理解。','智慧是持續更新自己。','成熟是修正速度變快。','真正的智慧來自覺察。','智慧讓衝突變成教材。','最高的智慧是共同成長。'],
+   syms:['成長','衝突']},
+];
+
+const MODEL_GROUPS=[
+  {id:'A',name:'表達與理解',color:'var(--gA)',models:['m1','m2','m3','m4']},
+  {id:'B',name:'情緒與衝突',color:'var(--gB)',models:['m5','m6','m7','m8']},
+  {id:'C',name:'信任與親密',color:'var(--gC)',models:['m9','m10','m11','m12']},
+  {id:'D',name:'智慧與成長',color:'var(--gD)',models:['m13','m14','m15','m16']},
+];
+
+// SYMPTOMS
+const ALL_SYMS=[
+  {ico:'💢',name:'吵架一直重複',m:['m7','m6']},
+  {ico:'😤',name:'感覺對方不理解我',m:['m3','m4']},
+  {ico:'😶',name:'說了反而更糟',m:['m1','m5']},
+  {ico:'❓',name:'不知道對方真正要什麼',m:['m6','m2']},
+  {ico:'😰',name:'情緒來了就失控',m:['m5','m7']},
+  {ico:'🤔',name:'不知道怎麼道歉',m:['m8']},
+  {ico:'😔',name:'感覺關係很遠',m:['m11','m10']},
+  {ico:'😡',name:'對方說你不在乎他',m:['m12','m11']},
+  {ico:'😨',name:'對方情緒來不知道怎麼回',m:['m4','m3']},
+  {ico:'🕵️',name:'總是猜錯對方意思',m:['m13','m2']},
+  {ico:'🙄',name:'說了沒用',m:['m9','m14']},
+  {ico:'😞',name:'感覺不被尊重',m:['m10','m9']},
+  {ico:'🗣️',name:'說不出口',m:['m1','m5']},
+  {ico:'⏰',name:'沒有時間相處',m:['m11']},
+  {ico:'🔁',name:'不斷誤解',m:['m13','m3']},
+  {ico:'💔',name:'信任感下降',m:['m9','m8']},
+];
+
+// TASKS
+const TASKS=[
+  {text:'今天主動傾聽3分鐘不打斷',pts:15,model:'傾聽模型'},
+  {text:'說一句感謝或肯定對方',pts:10,model:'感謝模型'},
+  {text:'發現自己情緒時先停一下再說話',pts:15,model:'情緒模型'},
+  {text:'問對方「你今天怎麼樣？」並用心聆聽',pts:10,model:'傾聽模型'},
+  {text:'用「我感覺...」開頭說一件事',pts:15,model:'表達模型'},
+  {text:'今晚11點前入睡（神經系統修復）',pts:20,model:'生命力'},
+  {text:'補充今日神經系統營養素',pts:10,model:'補充'},
+];
+
+const LEVELS=[
+  {lv:'Lv1',name:'衝突模式',desc:'習慣防衛和反擊',color:'#6B7280'},
+  {lv:'Lv2',name:'覺察者',desc:'開始察覺模型問題',color:'var(--blue)'},
+  {lv:'Lv3',name:'理解者',desc:'先理解再被理解',color:'var(--green)'},
+  {lv:'Lv4',name:'同理者',desc:'能看見對方需求',color:'var(--orange)'},
+  {lv:'Lv5',name:'溝通者',desc:'有效傳遞和接收',color:'var(--violet)'},
+  {lv:'Lv6',name:'修復者',desc:'衝突後能快速修復',color:'var(--rose)'},
+  {lv:'Lv7',name:'建造者',desc:'主動建造關係品質',color:'var(--gold)'},
+  {lv:'Lv8',name:'智慧伴侶',desc:'持續升級彼此模型',color:'#fff'},
+];
+
+const FC_CARDS=[
+  {eye:'傾聽模型',big:'傾聽',zh:'先理解，再被理解',detail:'傾聽不是等待說話，而是理解對方。真正的傾聽沒有急著反駁。耳朵比嘴巴更接近真相。被理解是人最深層的渴望'},
+  {eye:'需求模型',big:'需求',zh:'情緒是需求的影子',detail:'所有行為都是需求驅動。爭吵表面是事件，本質是需求未被滿足。看見需求比糾正行為重要100倍'},
+  {eye:'信任模型',big:'信任',zh:'信任來自一致性，不是承諾',detail:'說到做到比說得好聽重要。每一次守信都在存款，每一次失信都在提款。信任是關係最大的資產'},
+  {eye:'安全感模型',big:'安全感',zh:'安全感來自穩定，而非激情',detail:'忽冷忽熱是安全感殺手。穩定的關心、穩定的回應、穩定的存在=安全感的來源。愛的本質是讓對方安心'},
+  {eye:'預測模型',big:'預測',zh:'大腦是預測機器——誤解來自錯誤預測',detail:'你怎麼預測，就怎麼理解對方。愛一個人就是持續更新對他的理解。婚姻最大錯誤=以為自己已經了解對方'},
+  {eye:'表達模型',big:'表達',zh:'表達的目的是被理解，不是說話',detail:'事實→感受→需求→請求。不是指責而是表達，不是抱怨而是說明，不是攻擊而是連結'},
+  {eye:'衝突模型',big:'衝突',zh:'衝突是更新通知，不是敵人',detail:'衝突是差異，不是敵意。問題不是衝突，而是不修正。好的關係靠修正，不靠壓抑。衝突後的修復=模型升級'},
+  {eye:'同理模型',big:'同理',zh:'同理不是同意，而是理解',detail:'每個行為背後都有原因。看見對方的痛苦，比評判對方的行為更重要。理解比批評有力量，接納比改變更重要'},
+  {eye:'情緒模型',big:'情緒',zh:'情緒是訊號，不是敵人',detail:'情緒在告訴你有需求未被滿足。先接納情緒，再處理問題。成熟不是沒有情緒，而是能管理情緒'},
+  {eye:'控制論',big:'回饋',zh:'沒有回饋，就沒有成長',detail:'溝通是誤差修正系統。衝突=修正訊號。修正速度決定關係成長速度。閉環比努力更重要'},
+  {eye:'自由能模型',big:'不確定',zh:'焦慮來自不確定，安全感來自理解',detail:'不知道對方想什麼→焦慮。知道對方想什麼→安全感。愛的本質=降低彼此的不確定性。主動溝通=降低關係自由能'},
+  {eye:'終極公式',big:'幸福',zh:'幸福婚姻=兩個人持續更新彼此模型',detail:'幸福不是找到完美的人，而是願意持續傾聽、持續理解、持續信任、持續創造安全感、持續更新彼此模型'},
+];
+
+const QUIZ=[
+  {type:'傾聽模型',q:'真正的傾聽和假傾聽最大的差別是？',opts:['傾聽時間長短','是否在理解對方，還是等待反駁——真正的傾聽是完全專注在「理解」，而非等待機會說話或反駁','話說多少','音量大小'],ans:1,exp:'傾聽是最高效的連結策略。多數人在「聽」的時候，其實是在準備反駁或給建議。真正的傾聽是：停止反駁→專心接收→理解對方→建立連結。'},
+  {type:'需求模型',q:'當伴侶抱怨「你都不關心我」，最高維度的回應是？',opts:['反駁說我有關心','道歉說我下次會改','看見抱怨背後未被滿足的需求（被愛、被陪伴、被看見），並回應那個需求','解釋自己很忙'],ans:2,exp:'需求模型第一性原理：所有行為都是需求驅動。「你都不關心我」=一個人感到孤單和未被看見。正確回應是看見需求，而非爭論事實。'},
+  {type:'信任模型',q:'信任最主要來自？',opts:['說很多愛對方的話','給昂貴禮物','長期的一致性——說到做到，每次守信都在存款，每次失信都在提款','一次浪漫的驚喜'],ans:2,exp:'信任是時間複利的結果。一次感動可能增加10點信任，但一次失信可能提走100點。信任的建立很慢，崩塌卻很快。說到做到比說得好聽重要。'},
+  {type:'安全感模型',q:'關係中「安全感」最主要的來源是？',opts:['對方帥/美','對方有錢','穩定的可預測性——情緒穩定、行為一致、讓對方知道你一直都在','浪漫的行為'],ans:2,exp:'安全感=可預測性。忽冷忽熱是安全感殺手。穩定的關心、穩定的回應、穩定的存在=安全感來源。愛的本質是讓對方安心，不是讓對方激動。'},
+  {type:'衝突模型',q:'衝突的本質是什麼？',opts:['一方對一方錯','模型差異——不是誰對誰錯，而是兩個人的模型在某個地方沒有同步','感情不好','個性不合'],ans:1,exp:'控制論視角：衝突=誤差修正的訊號，不是審判。差異必然存在，問題不在有衝突，而在衝突後是否能修正。好的關係靠修正，不靠壓抑。'},
+  {type:'預測模型',q:'婚姻中最常見的衝突來源是？',opts:['金錢問題','不了解對方','以為自己已經了解對方——用舊的模型解讀新的對方，造成持續誤解和衝突','個性差異太大'],ans:2,exp:'預測模型：你怎麼預測，就怎麼理解對方。伴侶不是固定的人，而是不斷成長的人。婚姻最大錯誤不是不了解，而是以為自己已經了解，停止更新。'},
+  {type:'神經科學',q:'大腦哪個區域對「理性溝通」最重要？',opts:['杏仁核（情緒腦）','前額葉——負責衝動控制、同理心、理性決策；壓力過高時前額葉功能下降，容易情緒化溝通','海馬迴','腦幹'],ans:1,exp:'衝突時，杏仁核（情緒腦）激活，前額葉被抑制。甘胺酸鎂+GABA幫助降低神經過激，恢復前額葉功能，讓理性溝通成為可能。'},
+  {type:'終極公式',q:'「幸福婚姻」的本質是？',opts:['找到完美的人','不發生衝突','兩個人願意持續傾聽、理解、信任、創造安全感、持續更新彼此模型','有足夠的金錢'],ans:2,exp:'婚姻不是找到懂你的人。婚姻是兩個人願意持續更新彼此模型。所有幸福關係，本質都是持續更新彼此模型。幸福=持續傾聽×理解×信任×安全感×預測精度。'},
+];
+
+const QUOTES_ALL=MODELS.flatMap(m=>m.quotes.map((q,i)=>({text:q,model:m.name,color:m.color,n:m.name.slice(0,2)+(i+1)})));
+
+// ═══ STATE ═══
+let selSyms=new Set(),curLever='l1',curMG='A';
+let fcWords=[],fcIdx=0,fcOK=0,fcNG=0,fcFlipped=false;
+let qData=[],qIdx=0,qC=0,qW=0,qAnsed=false,comboN=0,comboT=null;
+let taskDone=new Array(7).fill(false),xp=35;
+let chatHistory=[];
+
+window.onload=()=>{
+  renderDash();renderSymGrid();renderLeverTabs();renderLeverContents();
+  renderMGTabs();renderMGContents();renderTaskList();renderLevels();
+  renderUpPath();renderQuotes();startFC();startQuiz();
+};
+
+function gp(id,btn){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+}
+
+// DASHBOARD
+function renderDash(){
+  const items=[
+    {ico:'👂',name:'傾聽力',s:72,c:'var(--l1)'},
+    {ico:'🎯',name:'需求理解',s:65,c:'var(--l2)'},
+    {ico:'🤝',name:'信任度',s:80,c:'var(--l3)'},
+    {ico:'🏠',name:'安全感',s:70,c:'var(--l4)'},
+    {ico:'🔮',name:'預測精度',s:60,c:'var(--l5)'},
+    {ico:'💬',name:'表達力',s:75,c:'var(--gA)'},
+  ];
+  document.getElementById('commDash').innerHTML=items.map(it=>`
+    <div class="cd-card" style="border-color:${it.c}22">
+      <div class="cd-icon">${it.ico}</div>
+      <div class="cd-name" style="color:${it.c}">${it.name}</div>
+      <div class="cd-score" style="color:${it.c}">${it.s}</div>
+      <div class="cd-bar-bg"><div class="cd-bar" style="background:${it.c};width:${it.s}%"></div></div>
+    </div>`).join('');
+}
+
+// DIAGNOSIS
+function renderSymGrid(){
+  document.getElementById('symGrid').innerHTML=ALL_SYMS.map(s=>`
+    <button class="sym-btn" onclick="toggleSym('${s.name}',this)">
+      <span class="sy-icon">${s.ico}</span>
+      <span class="sy-name">${s.name}</span>
+      <span class="sy-sub">${s.m.map(id=>MODELS.find(x=>x.id===id)?.name).join('+')}</span>
+    </button>`).join('');
+}
+function toggleSym(name,el){if(selSyms.has(name)){selSyms.delete(name);el.classList.remove('sel');}else{selSyms.add(name);el.classList.add('sel');}}
+function runDiag(){
+  if(!selSyms.size){alert('請先選擇至少一個困境');return;}
+  const scores={};MODELS.forEach(m=>scores[m.id]=0);
+  selSyms.forEach(sym=>{const s=ALL_SYMS.find(x=>x.name===sym);if(s)s.m.forEach(id=>scores[id]=(scores[id]||0)+1);});
+  const maxS=Math.max(...Object.values(scores));
+  const sorted=MODELS.map(m=>({...m,score:scores[m.id]||0})).sort((a,b)=>b.score-a.score);
+  document.getElementById('modelScoreGrid').innerHTML=sorted.slice(0,8).map(m=>{
+    const pct=maxS>0?Math.round(m.score/maxS*100):0;const hit=m.score>0;
+    return `<div class="msc${hit?' hit':''}" style="border-color:${hit?m.color+'55':'var(--bdr)'};opacity:${hit?1:.45}">
+      <div class="msc-top"><div class="msc-ico" style="background:${m.color}18">${m.ico}</div>
+        <div><div class="msc-name" style="color:${hit?m.color:'var(--dim)'}">${m.name}</div>
+        <div class="msc-pct" style="color:${hit?m.color:'var(--dim)'}">${hit?`需升級 ${pct}%`:'正常'}</div></div>
+      </div>
+      <div class="msc-bar-bg"><div class="msc-bar" style="background:${m.color};width:${pct}%"></div></div>
+      <div class="msc-tags">${[...selSyms].filter(sym=>{const sm=ALL_SYMS.find(x=>x.name===sym);return sm&&sm.m.includes(m.id);}).map(sym=>`<span class="msc-tag" style="background:${m.color}18;color:${m.color}">${sym}</span>`).join('')}</div>
+    </div>`;
+  }).join('');
+  const top=sorted.filter(m=>m.score>0).slice(0,4);
+  document.getElementById('recGrid').innerHTML=top.map(m=>`
+    <div class="rec-card" style="border-top-color:${m.color}">
+      <div class="rc-m" style="color:${m.color}">${m.ico} ${m.name}</div>
+      <div class="rc-name">${m.principle}</div>
+      <div class="rc-formula" style="color:${m.color}">${m.formula}</div>
+      <div class="rc-quote">「${m.quote}」</div>
+      <div class="rc-action">${m.quotes.slice(0,3).join('；')}</div>
+      <a class="rc-buy" href="${BUY}" target="_blank">🛒 查看補充品</a>
+    </div>`).join('');
+  document.getElementById('diagResult').classList.add('show');
+  setTimeout(()=>document.getElementById('diagResult').scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+function resetDiag(){selSyms.clear();document.querySelectorAll('.sym-btn').forEach(b=>b.classList.remove('sel'));document.getElementById('diagResult').classList.remove('show');}
+
+// LEVER TABS
+function renderLeverTabs(){
+  document.getElementById('leverTabs').innerHTML=LEVERS.map(l=>`
+    <button class="l-tab${l.id===curLever?' on':''}" id="lt-${l.id}" onclick="switchLever('${l.id}')"
+      style="${l.id===curLever?`background:${l.color};color:#080410`:''}">${l.ico} ${l.name}</button>`).join('');
+}
+function switchLever(id){
+  curLever=id;
+  document.querySelectorAll('.l-tab').forEach(t=>{t.classList.remove('on');t.style.background='';t.style.color='';});
+  document.querySelectorAll('.l-content').forEach(c=>c.classList.remove('on'));
+  const l=LEVERS.find(x=>x.id===id);
+  const tab=document.getElementById('lt-'+id);
+  if(tab){tab.classList.add('on');tab.style.background=l.color;tab.style.color='#080410';}
+  document.getElementById('lc-'+id).classList.add('on');
+}
+function renderLeverContents(){
+  document.getElementById('leverContents').innerHTML=LEVERS.map(l=>`
+    <div class="l-content${l.id===curLever?' on':''}" id="lc-${l.id}">
+      <div class="l-head">
+        <div class="l-icon-big">${l.ico}</div>
+        <div class="l-h1" style="color:${l.color}">${l.name}</div>
+        <div class="l-principle" style="color:${l.color}">第一性原理：${l.principle}</div>
+        <div class="l-why">${l.why}</div>
+      </div>
+      <div class="formula-chain">
+        ${l.formula.split('→').map((p,i)=>i===0?`<b>${p.trim()}</b>`:`<span class="arr">→</span> ${p.trim()}`).join(' ')}
+        <br><b>終極金句：</b>「${l.ultimate}」
+      </div>
+      <div class="old-new">
+        <div class="on-box on-bad"><div class="on-title" style="color:#F43F5E">❌ 舊模式</div>${l.old.map(s=>`<div class="on-item">${s}</div>`).join('')}</div>
+        <div class="on-box on-good"><div class="on-title" style="color:var(--green)">✅ 新模式</div>${l.new_.map(s=>`<div class="on-item">${s}</div>`).join('')}</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:8px">💬 核心金句（點擊複製）</div>
+      <div class="quotes-6">
+        ${l.quotes.map((q,i)=>`<div class="q6-card" style="border-color:${l.color}" onclick="copyText('${q.replace(/'/g,"&#39;")}',this)">
+          <div class="q6-num">#${i+1}</div>${q}</div>`).join('')}
+      </div>
+      <div class="nt-box">
+        <div class="nt-box-t">💊 對應神經科學補充 — 為何有效</div>
+        ${l.nutrients.map(n=>`<div class="nt-item">
+          <div class="nt-ico-s">${n.ico}</div>
+          <div class="nt-content-s">
+            <div class="nt-name-s">${n.n}</div>
+            <div class="nt-mech-s">${n.mech}</div>
+            <div class="nt-why-s">${n.why}</div>
+            <a class="buy-sm" href="${BUY}" target="_blank">🛒 訂購</a>
+          </div></div>`).join('')}
+      </div>
+      <div class="tech-row">
+        <div class="tech-card tech-neg">
+          <div class="tech-t" style="color:var(--neg)">🌬️ 負離子機</div>
+          <div class="tech-flow">${l.neg.split('→').map((p,i)=>i===0?`<b>${p.trim()}</b>`:`<span class="arr">→</span> ${p.trim()}`).join(' ')}</div>
+          <a class="tech-buy" href="${BUY}" target="_blank">🛒 查看負離子機</a>
+        </div>
+        <div class="tech-card tech-hyd">
+          <div class="tech-t" style="color:var(--hyd)">💧 氫氧水</div>
+          <div class="tech-flow">${l.hyd.split('→').map((p,i)=>i===0?`<b>${p.trim()}</b>`:`<span class="arr">→</span> ${p.trim()}`).join(' ')}</div>
+          <a class="tech-buy" href="${BUY}" target="_blank">🛒 查看氫氧水</a>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// 16 MODELS
+function renderMGTabs(){
+  document.getElementById('mgTabs').innerHTML=MODEL_GROUPS.map(g=>`
+    <button class="mg-tab${g.id===curMG?' on':''}" id="mgt-${g.id}" onclick="switchMG('${g.id}')"
+      style="${g.id===curMG?`background:${g.color};color:#080410`:''}">${g.name}</button>`).join('');
+}
+function switchMG(id){
+  curMG=id;
+  document.querySelectorAll('.mg-tab').forEach(t=>{t.classList.remove('on');t.style.background='';t.style.color='';});
+  document.querySelectorAll('.mg-content').forEach(c=>c.classList.remove('on'));
+  const g=MODEL_GROUPS.find(x=>x.id===id);
+  const tab=document.getElementById('mgt-'+id);
+  if(tab){tab.classList.add('on');tab.style.background=g.color;tab.style.color='#080410';}
+  document.getElementById('mgc-'+id).classList.add('on');
+}
+function renderMGContents(){
+  document.getElementById('mgContents').innerHTML=MODEL_GROUPS.map(g=>`
+    <div class="mg-content${g.id===curMG?' on':''}" id="mgc-${g.id}">
+      <div class="model-grid">
+        ${MODELS.filter(m=>m.group===g.id).map(m=>`
+        <div class="m-card" style="border-top-color:${m.color}">
+          <div class="mc-header">
+            <div class="mc-ico" style="background:${m.color}18">${m.ico}</div>
+            <div>
+              <div class="mc-num" style="color:${m.color}">${m.principle}</div>
+              <div class="mc-name" style="color:${m.color}">${m.name}</div>
+            </div>
+          </div>
+          <div class="mc-formula" style="color:${m.color}">${m.formula}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:11px">
+            <div style="background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.2);border-radius:8px;padding:9px">
+              <div style="font-size:10px;font-weight:700;color:#F43F5E;margin-bottom:5px">❌ 舊模式</div>
+              ${m.old.map(s=>`<div style="font-size:11px;color:var(--dim);padding:2px 0">${s}</div>`).join('')}
+            </div>
+            <div style="background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);border-radius:8px;padding:9px">
+              <div style="font-size:10px;font-weight:700;color:var(--green);margin-bottom:5px">✅ 新模式</div>
+              ${m.new_.map(s=>`<div style="font-size:11px;color:var(--dim);padding:2px 0">${s}</div>`).join('')}
+            </div>
+          </div>
+          <div class="mc-quotes">
+            <div class="mc-qt">核心金句（點擊複製）</div>
+            ${m.quotes.map(q=>`<div class="mc-q" onclick="copyText('${q.replace(/'/g,"&#39;")}',this)" style="cursor:copy"><b>💬</b> ${q}</div>`).join('')}
+          </div>
+          <div style="margin-top:10px;padding:9px;background:${m.color}08;border-radius:7px;font-size:12px;font-style:italic;text-align:center;color:${m.color}">${m.quote}</div>
+        </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// AI COACH
+const AI_SYS=`你是「溝通工程 Communication OS」的 AI 溝通教練。
+根據使用者的關係困境，用以下16大模型框架分析：
+表達模型、提問模型、傾聽模型、同理模型、情緒模型、需求模型、衝突模型、道歉模型、信任模型、安全感模型、陪伴模型、感謝模型、預測模型、控制論模型、自由能模型、智慧模型
+
+給出：
+1. 最可能失衡的1-2個模型
+2. 用第一性原理分析根因
+3. 3個今天就能做的具體行動
+4. 一句改善關係的萬用金句
+5. 一個補充建議（從：甘胺酸鎂、GABA、Omega-3、茶胺酸、B群、NMN、CoQ10、丁酸鈉中推薦）
+
+格式：繁體中文，溫暖有力，200-280字`;
+async function sendAI(){
+  const inp=document.getElementById('aiInput');
+  const msg=inp.value.trim();
+  if(!msg||document.getElementById('aiSendBtn').disabled)return;
+  inp.value='';
+  addMsg('user',msg);chatHistory.push({role:'user',content:msg});
+  document.getElementById('aiSendBtn').disabled=true;
+  const thinkId='t'+Date.now();
+  addMsg('bot','<div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>',thinkId);
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:AI_SYS,messages:chatHistory})});
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'請再試一次。';
+    document.getElementById(thinkId)?.remove();
+    addMsg('bot',reply.replace(/\n/g,'<br>'));
+    chatHistory.push({role:'assistant',content:reply});
+  }catch(e){document.getElementById(thinkId)?.remove();addMsg('bot','連線問題，請稍後再試。');}
+  document.getElementById('aiSendBtn').disabled=false;
+}
+function addMsg(role,html,id){
+  const chat=document.getElementById('aiChat');
+  const div=document.createElement('div');div.className='ai-msg '+role;if(id)div.id=id;
+  div.innerHTML=role==='user'?`<div class="ai-bubble">${html}</div>`:`<div class="ai-ico">💗</div><div class="ai-bubble">${html}</div>`;
+  chat.appendChild(div);chat.scrollTop=chat.scrollHeight;
+}
+function askAI(msg){document.getElementById('aiInput').value=msg;sendAI();}
+
+// DAILY
+function renderTaskList(){
+  document.getElementById('taskList').innerHTML=TASKS.map((t,i)=>`
+    <div class="task-item">
+      <div class="t-check${taskDone[i]?' done':''}" onclick="toggleTask(${i})">${taskDone[i]?'✓':''}</div>
+      <div class="t-text${taskDone[i]?' s':''}">${t.text}</div>
+      <div class="t-pts">+${t.pts} XP</div>
+    </div>`).join('');
+  const pts=35+taskDone.reduce((s,d,i)=>d?s+TASKS[i].pts:s,0);
+  document.getElementById('todayPts').textContent=pts;
+  document.getElementById('doneC').textContent=taskDone.filter(Boolean).length;
+  updateXP(pts);
+}
+function toggleTask(i){
+  taskDone[i]=!taskDone[i];const gain=taskDone[i]?TASKS[i].pts:-TASKS[i].pts;
+  xp=Math.max(35,xp+gain);renderTaskList();
+  const cb=document.getElementById('comboBadge');
+  if(taskDone[i]){cb.textContent=(gain>0?'+':'')+gain+' XP 💗';cb.style.display='block';setTimeout(()=>cb.style.display='none',1200);}
+}
+function renderLevels(){
+  document.getElementById('levelList').innerHTML=LEVELS.map((l,i)=>`
+    <div style="display:flex;align-items:center;gap:9px;padding:7px 11px;background:var(--card);border-radius:9px;border:1px solid ${i===2?l.color+'44':'var(--bdr)'}">
+      <div style="width:24px;height:24px;border-radius:50%;background:${l.color}18;color:${l.color};font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${l.lv}</div>
+      <div><div style="font-size:12px;font-weight:700;color:${i===2?l.color:'var(--txt)'}">${l.name}${i===2?' ← 你現在在這裡':''}</div><div style="font-size:11px;color:var(--dim)">${l.desc}</div></div>
+    </div>`).join('');
+}
+function updateXP(pts){
+  const v=Math.min(pts,100);
+  document.getElementById('xpFill').style.width=v+'%';
+  document.getElementById('xpPts').textContent=v+' / 100 XP';
+  const lv=v>=90?'智慧伴侶 Lv8':v>=75?'建造者 Lv7':v>=60?'修復者 Lv6':v>=50?'溝通者 Lv5':v>=40?'同理者 Lv4':v>=30?'理解者 Lv3':'覺察者 Lv2';
+  document.getElementById('xpLabel').textContent=lv;
+  document.getElementById('todayLv').textContent=lv;
+  const quotes=['先理解，再被理解','情緒是需求的影子','信任是做出來的','安全感來自穩定','愛一個人就是持續更新對他的理解'];
+  document.getElementById('todayQuote').textContent='「'+quotes[Math.floor(Math.random()*quotes.length)]+'」';
+}
+
+// LEARN - upgrade path
+function renderUpPath(){
+  const steps=['表達','傾聽','同理','需求理解','衝突修正','信任建立','安全感建立','親密連結','智慧溝通'];
+  const colors=['var(--gA)','var(--l1)','var(--gB)','var(--l2)','var(--gC)','var(--l3)','var(--l4)','var(--l5)','var(--gold)'];
+  document.getElementById('upPath').innerHTML=steps.map((s,i)=>`
+    <div class="up-node" style="border-color:${colors[i]}44;color:${colors[i]};background:${colors[i]}08">${s}</div>
+    ${i<steps.length-1?`<div class="up-arr">↓</div>`:''}`).join('');
+}
+
+// QUOTES
+function renderQuotes(){
+  document.getElementById('quotesGrid').innerHTML=QUOTES_ALL.map((q,idx)=>`
+    <div class="q-card" onclick="copyText('${q.text.replace(/'/g,"&#39;")}',this)" style="border-bottom-color:${q.color}">
+      <div class="q-card" style="position:absolute;bottom:0;left:0;right:0;height:2px;background:${q.color};border-radius:0 0 11px 11px"></div>
+      <div class="qc-num" style="color:${q.color}">#${String(idx+1).padStart(2,'0')} · ${q.model}</div>
+      <div class="qc-text">${q.text}</div>
+      <span class="qc-type" style="background:${q.color}18;color:${q.color}">點擊複製</span>
+    </div>`).join('');
+}
+function copyText(text,el){
+  navigator.clipboard&&navigator.clipboard.writeText(text).then(()=>{
+    el.style.borderColor='var(--rose)';
+    const t=document.getElementById('copyToast');t.style.display='block';
+    setTimeout(()=>{t.style.display='none';el.style.borderColor='';},1400);
+  });
+}
+
+// FLASHCARD
+function shuffle(a){return [...a].sort(()=>Math.random()-.5);}
+function startFC(){
+  fcWords=shuffle([...FC_CARDS]);fcIdx=0;fcOK=0;fcNG=0;fcFlipped=false;
+  document.getElementById('fcResult').style.display='none';
+  document.getElementById('fcCard').style.display='';
+  document.getElementById('fcBtns').style.display='none';
+  document.getElementById('fcCard').classList.remove('flip');renderFC();
+}
+function renderFC(){
+  if(fcIdx>=fcWords.length){showFCR();return;}
+  const c=fcWords[fcIdx];
+  document.getElementById('fcBar').style.width=(fcIdx/fcWords.length*100)+'%';
+  document.getElementById('fcCtr').textContent=`第 ${fcIdx+1} / ${fcWords.length} 張`;
+  document.getElementById('fcSeen').textContent=fcIdx;
+  document.getElementById('fcOK').textContent=fcOK;
+  document.getElementById('fcNG').textContent=fcNG;
+  ['fcEye','fcEye2'].forEach(id=>document.getElementById(id).textContent=c.eye);
+  document.getElementById('fcBig').textContent=c.big;
+  document.getElementById('fcZh').textContent=c.zh;
+  document.getElementById('fcDetail').textContent=c.detail;
+  document.getElementById('fcCard').classList.remove('flip');
+  fcFlipped=false;document.getElementById('fcBtns').style.display='none';
+}
+function flipFC(){document.getElementById('fcCard').classList.toggle('flip');fcFlipped=!fcFlipped;document.getElementById('fcBtns').style.display=fcFlipped?'flex':'none';}
+function markFC(ok){if(ok)fcOK++;else{fcNG++;fcWords.push(fcWords[fcIdx]);}fcIdx++;renderFC();}
+function skipFC(){fcIdx++;renderFC();}
+function showFCR(){
+  document.getElementById('fcResult').style.display='block';document.getElementById('fcCard').style.display='none';
+  const pct=fcOK/(fcOK+fcNG)*100||0;
+  document.getElementById('rStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('rScore').textContent=`記住 ${fcOK} 個`;
+  document.getElementById('rMsg').textContent=pct>=90?'溝通模型全掌握！讓愛成功抵達 🎉':pct>=70?'很好！繼續鞏固16大模型。':'多複習幾遍，模型通了就全懂了。';
+}
+
+// QUIZ
+function startQuiz(){
+  qData=shuffle([...QUIZ]);qIdx=0;qC=0;qW=0;qAnsed=false;comboN=0;
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('quizArea').style.display='';renderQ();
+}
+function renderQ(){
+  if(qIdx>=qData.length){showQR();return;}
+  qAnsed=false;const q=qData[qIdx];
+  document.getElementById('qN').textContent=qIdx+1;
+  document.getElementById('qC').textContent=qC;
+  document.getElementById('qW').textContent=qW;
+  document.getElementById('qBar').style.width=(qIdx/qData.length*100)+'%';
+  document.getElementById('qType').textContent=q.type;
+  document.getElementById('qQ').textContent=q.q;
+  document.getElementById('qExp').classList.remove('show');
+  document.getElementById('qNext').style.display='none';
+  document.getElementById('qOpts').innerHTML=q.opts.map((o,i)=>`
+    <button class="qopt" onclick="ansQ(this,${i},${q.ans},'${q.exp.replace(/'/g,"\\'")}')">${o}</button>`).join('');
+}
+function ansQ(btn,chosen,ans,exp){
+  if(qAnsed)return;qAnsed=true;
+  const ok=chosen===ans;
+  document.querySelectorAll('.qopt').forEach((b,i)=>{b.disabled=true;if(i===chosen)b.classList.add(ok?'ok':'bad');else if(i===ans)b.classList.add('ok');});
+  if(ok){qC++;comboN++;showCombo();}else{qW++;comboN=0;}
+  document.getElementById('qExp').innerHTML=`<b>${ok?'✅ 正確！':'❌ 解析：'}</b> ${exp}`;
+  document.getElementById('qExp').classList.add('show');
+  document.getElementById('qNext').style.display='block';
+}
+function nextQ(){qIdx++;renderQ();}
+function showCombo(){
+  if(comboN<3)return;
+  const b=document.getElementById('comboBadge');b.textContent=`🔥 ${comboN}連！`;b.style.display='block';
+  clearTimeout(comboT);comboT=setTimeout(()=>b.style.display='none',1400);
+}
+function showQR(){
+  document.getElementById('quizResult').style.display='block';document.getElementById('quizArea').style.display='none';
+  const pct=qC/(qC+qW)*100||0;
+  document.getElementById('qStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('qScore').textContent=`${qC}/${qC+qW}`;
+  document.getElementById('qMsg').textContent=pct>=90?'溝通工程專家！讓愛成功抵達 🎉':pct>=70?'很棒！繼續深化16大模型。':'多複習，模型通了就全對了。';
+}
+</script>
+<!-- FBPOST:START 臉書貼文＋圖卡（痛點→能力更新→智慧，雙語） -->
+<script>
+/* ═══ 臉書貼文＋圖卡 產生器（離線，不串接 AI / API）═══ */
+(function(){
+'use strict';
+const P=(zh,en)=>({zh:zh,en:en||''});
+
+// 三種語氣領域的共用素材
+const D={
+comm:{
+  why:P('因為我們從小學會說話，卻很少學會溝通。我們學會回應，卻沒學會理解；學會表達立場，卻沒學會表達需求；學會忍耐，卻沒學會修復。',
+        'Because we learned to talk as children, but rarely learned to communicate. We learned to react, not to understand; to state positions, not needs; to endure, not to repair.'),
+  shift:[P('少一點猜測，多一點確認。','Less guessing, more checking.'),P('少一點防衛，多一點好奇。','Less defending, more curiosity.'),P('少一點爭輸贏，多一點被理解。','Less winning, more being understood.'),P('少一點冷戰，多一點修復。','Less silence, more repair.')],
+  gold:[P('話說得對，不如話說得到。','Being right matters less than being received.'),P('愛沒有抵達，就還不算說完。','If love has not arrived, the sentence is not finished.'),P('關係不是贏來的，是修來的。','Relationships are not won; they are repaired.'),P('先連結，再糾正。','Connect before you correct.'),P('聽懂一個人，勝過說服一個人。','Understanding someone beats persuading them.'),P('溫柔不是軟弱，是有力量的選擇。','Gentleness is not weakness; it is a powerful choice.')],
+  practice:[P('① 先停三秒，再開口。','1) Pause three seconds before you speak.'),P('② 先說「我理解的是…」，再說「我的想法是…」。','2) Say "What I understand is…" before "What I think is…".'),P('③ 每天對一個人，說一句真心的感謝。','3) Give one sincere thank-you to someone every day.')],
+  note:P('親愛的你：你不是不會愛，你只是還沒找到讓愛抵達的路。你不需要變成另一個人，只需要多練一個能力。你今天多聽懂一句，關係就多鬆開一點；你今天多說清楚一句，誤會就少累積一點；你今天多修復一次，信任就多存進一點。',
+         'Dear you: it is not that you cannot love; you simply have not yet found the road by which love arrives. You do not need to become someone else — only to practise one more ability. Each sentence you truly hear loosens the relationship a little; each sentence you say clearly leaves one less misunderstanding; each repair you make deposits a little more trust.'),
+  find:[P('你會發現：被理解的人，才聽得進去。','You will find: only those who feel understood can truly listen.'),P('你會發現：安全的關係，才說得出真話。','You will find: only a safe relationship can hold the truth.'),P('你會發現：先修復的人，不是輸的人，是更有力量的人。','You will find: the one who repairs first is not the loser, but the stronger one.')],
+  tags:'#溝通 #關係 #親密關係'
+},
+think:{
+  why:P('因為我們一直很努力，卻很少停下來更新自己的模型。我們學會了答案，卻沒學會提問；學會了堅持，卻沒學會修正；學會了忙碌，卻沒學會看見。',
+        'Because we work hard but seldom pause to update our own models. We learned answers, not questions; persistence, not correction; busyness, not seeing.'),
+  shift:[P('少一點慌亂，多一點清楚。','Less panic, more clarity.'),P('少一點重複，多一點看見。','Less repetition, more insight.'),P('少一點硬撐，多一點方法。','Less forcing, more method.'),P('少一點自責，多一點修正。','Less self-blame, more correction.')],
+  gold:[P('你看見的世界，是你模型的樣子。','The world you see is shaped by your model.'),P('更新，比堅持更需要勇氣。','Updating takes more courage than insisting.'),P('問題不是敵人，是老師。','Problems are not enemies; they are teachers.'),P('走得慢沒關係，方向對就好。','Slow is fine, as long as the direction is right.'),P('看懂結構，才不會被事件淹沒。','See the structure, and events will not drown you.'),P('今天的修正，是明天的自由。','Today\'s correction is tomorrow\'s freedom.')],
+  practice:[P('① 寫下今天卡住的一件事。','1) Write down one thing you got stuck on today.'),P('② 問自己：「我的假設是什麼？」','2) Ask yourself: "What am I assuming?"'),P('③ 只修正一個小地方，明天再看一次。','3) Fix one small thing, and review it tomorrow.')],
+  note:P('親愛的你：你不是不夠聰明，你只是還沒換一副看世界的眼鏡。你不需要知道所有答案，只需要多練一個能力。你今天多看懂一層，焦慮就少一點；你今天多修正一次，方向就準一點；你今天多問一個好問題，世界就大一點。',
+         'Dear you: it is not that you are not smart enough; you simply have not yet changed the lenses through which you see the world. You do not need every answer — only to practise one more ability. Each layer you understand eases the anxiety a little; each correction sharpens your direction; each good question makes your world a little larger.'),
+  find:[P('你會發現：看清楚，比跑得快重要。','You will find: seeing clearly matters more than running fast.'),P('你會發現：問對問題，比找到答案重要。','You will find: asking the right question matters more than finding an answer.'),P('你會發現：願意修正的人，走得最遠。','You will find: those willing to correct go the farthest.')],
+  tags:'#思維升級 #認知 #終身學習'
+},
+faith:{
+  why:P('因為我們習慣靠自己，卻忘了自己是被愛的。我們學會了努力，卻沒學會安息；學會了守規矩，卻沒學會領受恩典；學會了知道，卻沒學會相信。',
+        'Because we are used to relying on ourselves and forget that we are loved. We learned to strive, not to rest; to keep rules, not to receive grace; to know, not to believe.'),
+  shift:[P('少一點懼怕，多一點平安。','Less fear, more peace.'),P('少一點靠自己硬撐，多一點交託。','Less striving alone, more trust.'),P('少一點定罪，多一點恩典。','Less condemnation, more grace.'),P('少一點比較，多一點感恩。','Less comparing, more thanksgiving.')],
+  gold:[P('你不是靠表現被愛，你是因著恩典被愛。','You are not loved for your performance; you are loved by grace.'),P('重擔交出去，手才空得出來領受。','Hand over the burden, and your hands are free to receive.'),P('神沒有遲到，祂正在預備。','God is not late; He is preparing.'),P('安靜不是什麼都不做，是把位置還給神。','Stillness is not doing nothing; it is giving God His place back.'),P('不是你抓住神，是神抓住你。','It is not you holding on to God; God is holding on to you.'),P('身份先於行為，恩典先於改變。','Identity comes before behavior; grace comes before change.')],
+  practice:[P('① 安靜三分鐘，把重擔說給神聽。','1) Be still for three minutes and tell God your burden.'),P('② 讀一節經文，慢慢讀三遍。','2) Read one verse slowly, three times.'),P('③ 為一個人禱告，並且讓他知道。','3) Pray for one person, and let them know.')],
+  note:P('親愛的你：你不是被忘記了，你只是太久沒有停下來聽。你不需要先變好才能來到神面前，只需要照著本相來。你今天多交託一件事，重擔就輕一點；你今天多相信一句話，心就穩一點；你今天多感謝一次，眼睛就亮一點。',
+         'Dear you: you have not been forgotten; you have simply gone too long without stopping to listen. You do not need to become better before you come to God — only to come as you are. Each thing you entrust today lightens the load; each word you believe steadies the heart; each thanksgiving brightens your eyes.'),
+  find:[P('你會發現：恩典早就在那裡。','You will find: grace was there all along.'),P('你會發現：你從來不是一個人。','You will find: you were never alone.'),P('你會發現：最深的安息，是知道自己被愛。','You will find: the deepest rest is knowing you are loved.')],
+  tags:'#信仰 #福音 #恩典'
+}};
+
+const TURN=[
+ n=>P('其實，不是你不夠好，是「'+n.zh+'」還沒有人好好教過你。','The truth is, you are not "not good enough" — no one ever really taught you '+n.en+'.'),
+ n=>P('不是你太差，是你還在用舊版本的自己，面對新版本的人生。這一次，要更新的是「'+n.zh+'」。','You are not failing — you are meeting a new chapter of life with an old version of yourself. This time, the update is '+n.en+'.'),
+ n=>P('痛點不是你的缺陷，是「'+n.zh+'」正在敲門。','The pain is not your flaw; it is '+n.en+' knocking at the door.'),
+ n=>P('卡住的地方，不是終點，是「'+n.zh+'」要長出來的地方。','Where you are stuck is not the end; it is where '+n.en+' is about to grow.')
+];
+const WISDOM=[
+ [P('更新一個能力，就多一種選擇。','Update one ability, and you gain one more choice.'),P('多一種選擇，就少一分無力。','One more choice means a little less helplessness.'),P('少一分無力，就多一分智慧。','A little less helplessness means a little more wisdom.')],
+ [P('能力不是天生的，是一次一次練出來的。','Ability is not inborn; it is built one practice at a time.'),P('智慧不是知道更多，是願意更新自己。','Wisdom is not knowing more; it is being willing to update yourself.'),P('你不需要一夜改變，只需要今天比昨天多懂一點。','You do not need to change overnight — only to understand a little more than yesterday.')],
+ [P('痛，不是懲罰，是提醒。','Pain is not punishment; it is a reminder.'),P('卡住，不是終點，是更新的入口。','Being stuck is not the end; it is the doorway to an update.'),P('每一次不舒服，都在把你帶向更大的自己。','Every discomfort is carrying you toward a larger self.')],
+ [P('看見，是改變的開始。','Seeing is where change begins.'),P('命名，是整理的開始。','Naming is where order begins.'),P('練習，是自由的開始。','Practice is where freedom begins.')]
+];
+const CLOSE=[
+ P('願你今天，對自己溫柔一點，對成長誠實一點。','May you be a little gentler with yourself today, and a little more honest about growing.'),
+ P('你不是壞掉了，你只是正在更新。','You are not broken — you are simply updating.'),
+ P('慢慢來，比較快；一點點，就很多。','Go slowly; it is faster. A little is already a lot.'),
+ P('把這篇留給今天的自己，也分享給那個正在努力的人。','Keep this for yourself today, and share it with someone who is trying hard.')
+];
+
+const clean=s=>String(s==null?'':s).trim().replace(/^[「『"“]+/,'').replace(/[」』"”]+$/,'').replace(/[。．.；;，,\s]+$/,'');
+const fin=(s,dot)=>/[？！?!」』”"]$/.test(s)?s:s+dot;
+const q=s=>'「'+clean(s)+'」';
+const qe=s=>'"'+clean(s)+'"';
+function count(t){return (t.match(/[一-鿿]/g)||[]).length+(t.match(/[A-Za-z][A-Za-z'’\-]*/g)||[]).length;}
+
+function build(it,v){
+  const d=D[it.domain],k=it.idx+(v||0),L=[];
+  const add=(zh,en)=>{if(zh)L.push(zh);if(en)L.push(en);};
+  const gap=()=>L.push('');
+  const rot=(arr,n,off)=>{const o=[];for(let i=0;i<Math.min(n,arr.length);i++)o.push(arr[(k+(off||0)+i)%arr.length]);return o;};
+  const name={zh:it.zh,en:'"'+it.en+'"'};
+
+  add('【'+it.hook.zh+'】',it.hook.en);gap();
+  add('你是不是也這樣？','Does this sound like you?');
+  it.pains.forEach(p=>add('・'+p.zh,p.en?'· '+p.en:''));gap();
+  const t=TURN[k%TURN.length](name);add(t.zh,t.en);gap();
+
+  add('▍為什麼會這樣｜Why it happens');add(d.why.zh,d.why.en);gap();
+
+  add('▍核心｜The core：'+it.zh+' '+it.en);
+  add(it.core.zh,it.core.en);
+  if(it.core2)add(it.core2.zh,it.core2.en);gap();
+
+  add('▍從舊模式，到新能力｜From old pattern to new ability');
+  const pairLines=(it.pairs||[]).map(p=>P('不是'+q(p.o.zh)+'，而是'+q(p.n.zh)+'。',(p.o.en&&p.n.en)?'Not '+qe(p.o.en)+' — but '+qe(p.n.en)+'.':''));
+  pairLines.forEach(p=>add(p.zh,p.en));
+  const sh=rot(d.shift,pairLines.length?3:4,0);
+  add('當你開始練習「'+it.zh+'」——','When you begin to practise '+name.en+' —');
+  sh.forEach(p=>add(p.zh,p.en));d.find.forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍金句｜Words to keep');
+  const gq=x=>P('「'+fin(clean(x.zh),'。')+'」',x.en?'"'+fin(clean(x.en),'.')+'"':'');
+  const gold=(it.quotes||[]).map(gq).concat(rot(d.gold,4,1).map(gq));
+  gold.forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍三個小練習｜Three small practices');
+  d.practice.forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍能力更新，智慧長出來｜Ability updated, wisdom grows');
+  WISDOM[k%WISDOM.length].concat(WISDOM[(k+1)%WISDOM.length]).forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍寫給你｜A note to you');add(d.note.zh,d.note.en);gap();
+
+  add('🌱 今天的小步｜'+it.step.zh,it.step.en?'🌱 Today\'s small step: '+it.step.en:'');gap();
+  const c=CLOSE[k%CLOSE.length];add(c.zh,c.en);gap();
+  const tagName='#'+it.zh.replace(/[\s、，—\-·．.]/g,'');
+  L.push(['#心靈雞湯','#自我成長',tagName,d.tags,(it.tags||[]).map(x=>'#'+String(x).replace(/\s/g,'')).join(' '),'#HealingWords #LifeOS'].filter(Boolean).join(' '));
+
+  const cq=(it.quotes&&it.quotes.length)?it.quotes[k%it.quotes.length]:it.core;
+  const first=s=>{const m=String(s).match(/^.*?[。！？!?.](?=\s|$|[^\d])/);return clean(m?m[0]:s);};
+  const short=(s,n,dot)=>String(s).trim().length<=n?fin(String(s).trim().replace(/[。.]$/,''),dot):fin(first(s),dot);
+  return {text:L.join('\n'),card:{
+    hook:it.hook.zh,
+    quote:short(cq.zh,34,'。'),
+    quoteEn:cq.en?short(cq.en,90,'.'):'',
+    lines:(pairLines.length?pairLines:sh).slice(0,3).map(p=>p.zh),
+    step:it.cardStep||short(it.step.zh,44,'。'),
+    name:it.zh+'｜'+it.en
+  }};
+}
+
+/* ── 圖卡（1080×1350 Canvas）── */
+const ZH='"Microsoft JhengHei","PingFang TC","Noto Sans TC","Heiti TC",sans-serif';
+function wrap(ctx,text,maxW){
+  const tk=String(text).match(/[A-Za-z0-9'’\-]+[.,!?;:]?\s?|\s+|[^\sA-Za-z0-9]/g)||[];
+  const noHead='，。！？、；：」』）)…—';
+  const noTail='「『（(“"';
+  const out=[];let cur=[];
+  const push=()=>{const s=cur.join('').trim();if(s)out.push(s);};
+  tk.forEach(w=>{
+    if(cur.join('').trim()&&ctx.measureText(cur.join('')+w).width>maxW){
+      // 標點不放行首、上引號不放行尾：把前一個字一起帶到下一行
+      const carry=[];
+      if(noHead.indexOf(w)>=0&&cur.length>1)carry.unshift(cur.pop());
+      while(cur.length>1&&noTail.indexOf(cur[cur.length-1].trim())>=0)carry.unshift(cur.pop());
+      push();cur=carry.concat(w.replace(/^\s+/,''));
+    }else cur.push(w);
+  });
+  push();
+  return out;
+}
+function drawCard(cv,card,theme){
+  const W=1080,H=1350,ctx=cv.getContext('2d');cv.width=W;cv.height=H;
+  const X=80,MW=W-160;
+  function lay(s,paint){
+    const f=(px,wt,fam)=>{ctx.font=(wt||'')+' '+Math.round(px*s)+'px '+(fam||ZH);};
+    const text=(arr,x,y,lh,col)=>{if(paint){ctx.fillStyle=col;arr.forEach((l,i)=>ctx.fillText(l,x,y+i*lh));}return y+arr.length*lh;};
+    ctx.textBaseline='top';
+    // 標頭：痛點
+    f(46,'bold');const hk=wrap(ctx,card.hook,MW);
+    const headH=Math.round(70+44*s+18+hk.length*62*s+48);
+    if(paint){ctx.fillStyle='#FAF6EF';ctx.fillRect(0,0,W,H);ctx.fillStyle=theme.color;ctx.fillRect(0,0,W,headH);
+      f(30,'');ctx.fillStyle='rgba(255,255,255,.85)';ctx.fillText('你是不是也這樣？',X,70);}
+    f(46,'bold');let y=text(hk,X,70+44*s+18,62*s,'#fff');
+    y=headH+90*s;
+    // 金句
+    f(66,'bold');const ql=wrap(ctx,card.quote,MW);y=text(ql,X,y,92*s,'#2B2622')+18*s;
+    if(card.quoteEn){f(30,'italic','Georgia,"Times New Roman",serif');y=text(wrap(ctx,card.quoteEn,MW),X,y,42*s,'#8A7F76');}
+    y+=50*s;
+    // 排比框
+    f(34,'');const bl=[];card.lines.forEach(l=>wrap(ctx,l,MW-110).forEach(x=>bl.push(x)));
+    const bh=bl.length*56*s+64*s;
+    if(paint){ctx.fillStyle=theme.tint;rr(ctx,X-20,y,MW+40,bh,28);ctx.fill();ctx.fillStyle=theme.color;ctx.fillRect(X-20,y+24,10,bh-48);}
+    text(bl,X+32,y+34*s,56*s,'#3A332E');y+=bh+48*s;
+    // 今天的小步
+    f(27,'');const pw=ctx.measureText('今天的小步').width+48,ph=54*s;
+    if(paint){ctx.fillStyle=theme.color;rr(ctx,X,y,pw,ph,ph/2);ctx.fill();ctx.fillStyle='#fff';ctx.fillText('今天的小步',X+24,y+(ph-27*s)/2-2);}
+    y+=ph+22*s;
+    f(34,'bold');y=text(wrap(ctx,card.step,MW),X,y,52*s,'#2B2622');
+    return y;
+  }
+  let s=1.3;while(s>0.55&&lay(s,false)>H-170)s-=0.03;
+  lay(s,true);
+  ctx.fillStyle='#E4DAD0';ctx.fillRect(X,H-130,MW,3);
+  ctx.textBaseline='top';ctx.font='bold 32px '+ZH;ctx.fillStyle=theme.color;ctx.fillText(theme.brand,X,H-96);
+  ctx.font='28px '+ZH;ctx.fillStyle='#8A7F76';const tg='#心靈雞湯';ctx.fillText(tg,W-X-ctx.measureText(tg).width,H-94);
+}
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+/* ── 介面 ── */
+let CFG=null,ITEMS=[],cur=null,ver=0;
+const $=id=>document.getElementById(id);
+function ui(){
+  const st=document.createElement('style');
+  st.textContent=`
+.fbp-btn{display:inline-flex;align-items:center;gap:4px;margin:8px 0 0;padding:6px 12px;border:0;border-radius:999px;background:var(--fbp-c);color:#fff;font:600 13px/1.2 ${ZH};cursor:pointer;white-space:nowrap}
+.fbp-btn:hover{filter:brightness(1.1)}
+#fbpFab{position:fixed;left:16px;bottom:76px;z-index:9998;margin:0;padding:11px 16px;font-size:14px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+#fbpMask{position:fixed;inset:0;z-index:9999;background:rgba(20,16,12,.6);display:none;align-items:center;justify-content:center;padding:12px}
+#fbpMask.on{display:flex}
+#fbpBox{background:#FAF6EF;color:#2B2622;width:min(1040px,100%);max-height:94vh;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;font:14px/1.6 ${ZH};text-align:left}
+#fbpTop{display:flex;gap:8px;align-items:center;padding:12px 14px;background:var(--fbp-c);color:#fff}
+#fbpTop b{flex:1;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#fbpSearch{flex:0 1 260px;min-width:110px;padding:7px 12px;border:0;border-radius:999px;font:14px ${ZH};color:#2B2622;background:#fff}
+#fbpX{background:none;border:0;color:#fff;font-size:22px;cursor:pointer;line-height:1}
+#fbpList{max-height:132px;overflow-x:hidden;overflow-y:auto;flex:none;padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #E4DAD0;background:#fff}
+#fbpList button{border:1px solid #E4DAD0;background:#FAF6EF;color:#2B2622;border-radius:999px;padding:3px 10px;font:12px ${ZH};cursor:pointer}
+#fbpList button.on{background:var(--fbp-c);color:#fff;border-color:var(--fbp-c)}
+#fbpMain{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;padding:14px;overflow:auto}
+#fbpText{width:100%;height:52vh;min-height:260px;box-sizing:border-box;padding:12px;border:1px solid #E4DAD0;border-radius:12px;background:#fff;color:#2B2622;font:14px/1.75 ${ZH};resize:vertical}
+#fbpCanvas{width:100%;height:auto;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15);display:block}
+#fbpBar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+#fbpBar .fbp-btn{margin:0}
+#fbpBar .fbp-g{background:#fff;color:var(--fbp-c);border:1px solid var(--fbp-c)}
+#fbpCnt{font-size:12px;color:#8A7F76;margin-left:auto}
+@media(max-width:760px){#fbpMain{grid-template-columns:minmax(0,1fr)}#fbpText{height:38vh}#fbpCanvas{max-width:300px;margin:0 auto}}
+@media print{#fbpFab,#fbpMask,.fbp-btn{display:none!important}}`;
+  document.head.appendChild(st);
+  document.documentElement.style.setProperty('--fbp-c',CFG.color);
+  const fab=document.createElement('button');fab.id='fbpFab';fab.className='fbp-btn';fab.textContent='📣 臉書貼文＋圖卡';
+  fab.onclick=()=>open((cur||ITEMS[0]).id);document.body.appendChild(fab);
+  const m=document.createElement('div');m.id='fbpMask';
+  m.innerHTML='<div id="fbpBox"><div id="fbpTop"><b id="fbpTitle"></b><input id="fbpSearch" type="search" placeholder="搜尋欄位 / Search…"><button id="fbpX" title="關閉">×</button></div>'+
+   '<div id="fbpList"></div><div id="fbpMain"><div><textarea id="fbpText" spellcheck="false"></textarea><div id="fbpBar">'+
+   '<button class="fbp-btn" id="fbpCopy">📋 複製貼文</button><button class="fbp-btn" id="fbpPng">🖼️ 下載圖卡</button>'+
+   '<button class="fbp-btn fbp-g" id="fbpNext">🔄 換一版</button><button class="fbp-btn fbp-g" id="fbpTxt">💾 貼文 TXT</button>'+
+   '<button class="fbp-btn fbp-g" id="fbpAll">📦 全部貼文 TXT</button><span id="fbpCnt"></span></div></div>'+
+   '<div><canvas id="fbpCanvas"></canvas></div></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',e=>{if(e.target===m)close();});
+  $('fbpX').onclick=close;
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+  $('fbpSearch').addEventListener('input',list);
+  $('fbpNext').onclick=()=>{ver++;show();};
+  $('fbpCopy').onclick=function(){const t=$('fbpText');const done=()=>flash(this,'✅ 已複製');
+    if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t.value).then(done,()=>{t.select();document.execCommand('copy');done();});
+    else{t.select();document.execCommand('copy');done();}};
+  $('fbpPng').onclick=()=>$('fbpCanvas').toBlob(b=>save(b,fname()+'.png'));
+  $('fbpTxt').onclick=()=>save(new Blob(['﻿'+$('fbpText').value],{type:'text/plain;charset=utf-8'}),fname()+'.txt');
+  $('fbpAll').onclick=()=>save(new Blob(['﻿'+ITEMS.map(it=>'════ '+it.no+' '+it.zh+' ════\n\n'+build(it,0).text).join('\n\n\n')],{type:'text/plain;charset=utf-8'}),CFG.brand+'_全部臉書貼文.txt');
+}
+function flash(b,t){const o=b.textContent;b.textContent=t;setTimeout(()=>b.textContent=o,1200);}
+function fname(){return (CFG.brand+'_'+cur.no+'_'+cur.zh).replace(/[\\/:*?"<>|\s]+/g,'_');}
+function save(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);}
+function list(){
+  const kw=$('fbpSearch').value.trim().toLowerCase();
+  const box=$('fbpList');box.innerHTML='';
+  ITEMS.filter(it=>!kw||(it.no+' '+it.zh+' '+it.en).toLowerCase().indexOf(kw)>=0).forEach(it=>{
+    const b=document.createElement('button');b.textContent=it.no+' '+it.zh;if(cur&&it.id===cur.id)b.className='on';
+    b.onclick=()=>open(it.id);box.appendChild(b);
+  });
+}
+function show(){
+  const r=build(cur,ver);
+  $('fbpTitle').textContent='📣 '+cur.no+' '+cur.zh+'｜'+cur.en;
+  $('fbpText').value=r.text;$('fbpText').scrollTop=0;
+  $('fbpCnt').textContent='約 '+count(r.text)+' 字（中文字＋英文單字）';
+  drawCard($('fbpCanvas'),r.card,{color:CFG.color,tint:CFG.tint,brand:CFG.brand});
+}
+function open(id){
+  const it=ITEMS.find(x=>String(x.id)===String(id));if(!it)return;
+  if(!cur||cur.id!==it.id)ver=0;cur=it;
+  $('fbpMask').classList.add('on');list();show();
+  const on=$('fbpList').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
+}
+function close(){$('fbpMask').classList.remove('on');}
+function mount(){
+  (CFG.mounts()||[]).forEach(m=>{
+    if(!m||!m.el||m.el.querySelector(':scope > .fbp-btn'))return;
+    const b=document.createElement('button');b.type='button';b.className='fbp-btn';b.textContent='📣 貼文＋圖卡';
+    b.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();open(m.id);});
+    m.el.appendChild(b);
+  });
+}
+function init(cfg){
+  CFG=cfg;
+  const go=()=>{
+    ITEMS=cfg.items().map((it,i)=>{it.idx=i;it.domain=cfg.domain;return it;});
+    ui();mount();
+    let tm=null;new MutationObserver(()=>{clearTimeout(tm);tm=setTimeout(mount,150);}).observe(document.body,{childList:true,subtree:true});
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(go,0));else setTimeout(go,0);
+}
+window.FBPost={init:init,build:build,count:count,P:P,open:open,items:()=>ITEMS};
+})();
+
+</script>
+<script>
+/* 溝通工程：5 槓桿 + 16 模型 */
+(function(){
+const P=FBPost.P;
+// 中→英對照（貼文雙語用）
+const T={
+// 第一性原理
+'理解先於回應——人最深層的需求不是被改變，而是被理解':'Understanding comes before responding — our deepest need is not to be changed, but to be understood',
+'所有行為都是需求驅動——情緒是需求的影子':'All behavior is driven by needs — emotion is the shadow of a need',
+'信任來自可預測性——說到做到比說得好聽重要':'Trust comes from predictability — keeping your word matters more than fine words',
+'生命需要穩定預測——安全感來自穩定，不是激情':'Life needs stable prediction — security comes from steadiness, not passion',
+'大腦是預測機器——你怎麼預測，就怎麼理解對方':'The brain is a prediction machine — how you predict is how you understand the other person',
+'資訊必須成功抵達對方':'The message must actually arrive','不知道就探索':'When you do not know, explore','理解先於回應':'Understanding comes before responding',
+'每個行為都有原因':'Every behavior has a reason','情緒是訊號':'Emotion is a signal','需求驅動行為':'Needs drive behavior','差異必然存在':'Differences are inevitable',
+'關係比面子重要':'The relationship matters more than saving face','信任來自可預測性':'Trust comes from predictability','生命需要穩定預測':'Life needs stable prediction',
+'注意力就是愛':'Attention is love','被看見的行為會增強':'Behavior that is seen grows stronger','大腦是預測機器':'The brain is a prediction machine','回饋決定進化':'Feedback drives evolution',
+'生命持續降低不確定性':'Life keeps reducing uncertainty','持續更新比堅持正確重要':'Continual updating matters more than insisting on being right',
+// 終極金句 / 模型金句
+'耳朵是通往人心最短的路':'The ear is the shortest road to the heart','每一次衝突背後，都有一個未被滿足的需求':'Behind every conflict there is an unmet need',
+'信任的建立很慢，崩塌卻很快':'Trust is built slowly and collapses quickly','愛的本質，是讓對方安心':'The essence of love is helping the other feel safe',
+'婚姻最大的錯誤，不是不了解對方，而是以為自己已經了解對方':'The biggest mistake in marriage is not failing to understand your partner, but assuming you already do',
+'表達的目的不是說話，而是被理解。':'The purpose of expressing is not to talk, but to be understood.','問題品質決定理解品質。':'The quality of your questions decides the quality of your understanding.',
+'耳朵比嘴巴更接近真相。':'The ear is closer to the truth than the mouth.','同理不是認同，而是理解。':'Empathy is not agreement; it is understanding.',
+'情緒不是問題，忽略情緒才是問題。':'Emotion is not the problem; ignoring it is.','衝突表面是事件，本質是需求。':'On the surface a conflict is an event; underneath it is a need.',
+'衝突不是敵人，而是更新通知。':'Conflict is not the enemy; it is an update notice.','成熟不是沒犯錯，而是願意修正。':'Maturity is not making no mistakes; it is being willing to correct them.',
+'信任是時間複利的結果。':'Trust is the compound interest of time.','安全感來自穩定，而非激情。':'Security comes from steadiness, not passion.',
+'陪伴不是在旁邊，而是在心裡。':'Companionship is not being beside someone; it is being in their heart.','你關注什麼，什麼就成長。':'Whatever you pay attention to grows.',
+'愛一個人，就是持續更新對他的理解。':'To love someone is to keep updating your understanding of them.','沒有回饋，就沒有進步。':'No feedback, no progress.',
+'愛的本質，是降低彼此的不確定性。':'The essence of love is lowering each other\'s uncertainty.','真正的成熟，不是證明自己正確，而是願意讓自己進化。':'True maturity is not proving yourself right; it is letting yourself evolve.',
+// 公式
+'傾聽→理解→信任':'Listen → Understand → Trust','情緒→需求→行動':'Emotion → Need → Action','承諾→行動→一致→信任':'Promise → Action → Consistency → Trust',
+'理解→穩定→安全感':'Understanding → Stability → Security','觀察→建模→預測→修正':'Observe → Model → Predict → Correct',
+'看見事實→表達感受→說出需求→提出請求':'See the facts → Express the feeling → Name the need → Make a request','不知道→提問→探索→理解':'Not knowing → Ask → Explore → Understand',
+'停止反駁→專心接收→理解對方→建立連結':'Stop rebutting → Receive fully → Understand → Connect','感受對方→理解對方→接納對方→支持對方':'Feel them → Understand them → Accept them → Support them',
+'情緒→訊號→需求→行動':'Emotion → Signal → Need → Action','情緒→需求→滿足→幸福':'Emotion → Need → Fulfilment → Happiness','差異→衝突→溝通→升級':'Difference → Conflict → Communication → Upgrade',
+'承認→理解→修正→重建':'Admit → Understand → Correct → Rebuild','理解→接納→穩定→安全感':'Understand → Accept → Stabilise → Security','時間→專注→連結→親密':'Time → Focus → Connection → Intimacy',
+'看見→感謝→肯定→放大':'Notice → Thank → Affirm → Amplify','行動→回饋→修正→優化':'Act → Feedback → Correct → Optimise','不確定→焦慮 / 理解→穩定':'Uncertainty → Anxiety / Understanding → Stability',
+'覺察→理解→修正→成長':'Notice → Understand → Correct → Grow',
+// 症狀（槓桿）
+'忍不住反駁':'You cannot help rebutting','都在等對方講完':'You are only waiting for them to finish','聽不進去':'You cannot take in what they say',
+'常指責對方行為':'You often blame their behavior','看不懂對方真正要什麼':'You cannot see what they really want','情緒一來就看不清需求':'Once emotion rises, the need disappears from view',
+'常常說了不做':'You often say it but do not do it','說到做不到':'Promises get made and not kept','感覺對方不可信':'They feel hard to trust',
+'感覺關係不穩定':'The relationship feels unstable','容易焦慮失控':'Anxiety takes over easily','伴侶說不知道你的狀態':'Your partner says they never know how you are',
+'常誤解對方意思':'You often misread what they mean','以為自己很了解對方卻常猜錯':'You think you know them well, yet keep guessing wrong','固執己見':'You hold on to your own view',
+// 舊模式
+'我在等你講完':'I am waiting for you to finish','急著反駁':'rushing to rebut','急著給建議':'rushing to give advice','證明我對':'proving I am right','防衛模式':'defense mode',
+'看見抱怨':'seeing the complaint','看見生氣':'seeing the anger','看見冷戰':'seeing the cold war','責怪行為':'blaming the behavior',
+'靠承諾':'relying on promises','說得好聽':'saying it nicely','一次感動':'one moving moment','期待信任':'expecting trust',
+'忽冷忽熱':'hot and cold','情緒化':'being emotional','難以預測':'being unpredictable','控制對方':'controlling the other',
+'我以為我懂你':'I assumed I knew you','固定印象':'fixed impressions','主觀認定':'subjective certainty','以為懂了':'thinking I already understand',
+'發洩情緒':'venting emotion','指責對方':'blaming the other','我要講完':'I must finish my point','爭輸贏':'fighting to win',
+'預設答案':'assuming the answer','直接判斷':'judging right away','急著定論':'rushing to conclude','質問':'interrogating',
+'等待反駁':'waiting to rebut','聽內容':'listening to the words','聽完回擊':'listening, then striking back','防衛':'defending',
+'評價':'evaluating','批判':'criticising','指責':'blaming','改變對方':'trying to change them',
+'消滅情緒':'eliminating emotion','壓抑情緒':'suppressing emotion','情緒是敵人':'emotion is the enemy','否定感受':'denying feelings',
+'看行為':'looking at behavior','責怪':'blaming','爭對錯':'arguing right and wrong','猜測':'guessing',
+'衝突是壞事':'conflict is bad','贏過對方':'beating the other','誰錯':'who is wrong','壓制':'suppressing',
+'解釋自己':'explaining myself','維護自尊':'protecting my pride','找理由':'finding excuses','道歉是輸':'apologising means losing',
+'靠感覺':'relying on feeling','說得好':'speaking well',
+'追求刺激':'chasing excitement',
+'人在心不在':'present in body, absent in heart','敷衍陪伴':'half-hearted company','滑手機':'scrolling the phone','時間數量':'quantity of time',
+'聚焦缺點':'focusing on flaws','視為理所當然':'taking it for granted','抱怨':'complaining','挑毛病':'fault-finding',
+'我認為':'I assume',
+'犯錯羞愧':'shame over mistakes','逃避回饋':'avoiding feedback','自我合理化':'self-justifying','固定模式':'fixed patterns',
+'製造猜疑':'creating suspicion','隱藏':'hiding','不說明':'not explaining','增加焦慮':'adding anxiety',
+'我是對的':'I am right','固執':'stubbornness','自我中心':'self-centredness','執著面子':'clinging to face',
+// 新模式
+'我想理解你':'I want to understand you','專心接收':'receiving with full attention','先確認理解':'checking my understanding first','看見對方需求':'seeing the other\'s need','接收模式':'receiving mode',
+'看見孤單':'seeing the loneliness','看見失望':'seeing the disappointment','看見害怕':'seeing the fear','理解需求':'understanding the need',
+'靠行動':'relying on action','做得到':'following through','長期一致':'long-term consistency','創造信任':'creating trust',
+'穩定關心':'steady care','穩定回應':'steady responses','穩定存在':'steady presence','安定對方':'settling the other',
+'持續認識你':'I keep getting to know you','動態模型':'a living model','持續修正':'continual correction','持續更新':'continual updating',
+'傳遞訊息':'conveying the message','表達需求':'expressing the need','對方聽懂':'the other truly understands','建立理解':'building understanding',
+'保持好奇':'staying curious','先提問':'asking first','探索真相':'exploring what is true','理解':'understanding',
+'專心理解':'understanding with full attention','聽需求':'listening for the need','聽完思考':'listening, then reflecting','接收':'receiving',
+'好奇':'curiosity','看見痛苦':'seeing the pain','理解對方':'understanding the other',
+'解讀情緒':'reading emotion','接納情緒':'accepting emotion','情緒是導航':'emotion is navigation','看見需求':'seeing the need',
+'看需求':'looking at the need','找需求':'finding the need','說出需求':'naming the need',
+'衝突是資訊':'conflict is information','理解差異':'understanding the difference','哪裡失配':'where the mismatch is','整合':'integrating',
+'修復關係':'repairing the relationship','承擔責任':'taking responsibility','道歉是修復':'apologising is repair',
+'靠一致性':'relying on consistency','長期累積':'long-term accumulation',
+'創造穩定':'creating stability','穩定輸出':'steady output','可預測':'being predictable',
+'全然在場':'being fully present','深度陪伴':'deep companionship','看見對方':'seeing the other','品質密度':'quality and depth',
+'聚焦優點':'focusing on strengths','表達感謝':'expressing thanks','肯定':'affirming','看見付出':'noticing the effort',
+'我驗證':'I verify','更新':'updating',
+'犯錯修正':'correcting mistakes','擁抱回饋':'embracing feedback','自我更新':'self-updating','閉環優化':'closed-loop improvement',
+'增加透明':'adding transparency','分享':'sharing','主動溝通':'communicating first','降低焦慮':'lowering anxiety',
+'我可以更新':'I can update','彈性':'flexibility','系統思維':'systems thinking','提升智慧':'growing in wisdom',
+// 金句
+'傾聽是最高級的尊重。':'Listening is the highest form of respect.','先理解，再被理解。':'Seek first to understand, then to be understood.','很多人聽見聲音，卻沒聽見需求。':'Many hear the voice but miss the need.','傾聽能降低衝突。':'Listening lowers conflict.',
+'所有情緒背後都有需求。':'Behind every emotion there is a need.','需求被看見，關係就靠近。':'When a need is seen, the relationship draws closer.','爭吵常常是需求未被滿足。':'Arguments are often unmet needs.','理解需求比爭輸贏重要。':'Understanding the need matters more than winning.',
+'信任來自一致性。':'Trust comes from consistency.','說到做到比承諾動聽重要。':'Doing what you said matters more than a beautiful promise.','每一次守信都在存款。':'Every kept promise is a deposit.','信任靠累積，不靠口號。':'Trust is accumulated, not announced.',
+'安全感來自可預測。':'Security comes from being predictable.','被理解是最大的安全感。':'Being understood is the greatest security.','安全感是關係的地基。':'Security is the foundation of a relationship.','安全感讓愛能流動。':'Security lets love flow.','穩定比刺激更長久。':'Steadiness outlasts excitement.',
+'你怎麼預測，就怎麼理解。':'How you predict is how you understand.','誤會常來自錯誤預測。':'Misunderstanding often comes from a wrong prediction.','更新模型比堅持立場重要。':'Updating your model matters more than holding your position.','理解對方才能預測對方。':'Only by understanding someone can you predict them.',
+'表達不是發洩，而是傳遞。':'Expression is not venting; it is delivery.','說清楚，比說很多重要。':'Saying it clearly matters more than saying a lot.','感受能表達，關係才能靠近。':'When feelings can be spoken, the relationship can draw near.','好的表達讓人理解，不是讓人屈服。':'Good expression helps people understand, not submit.',
+'好問題比好答案更有力量。':'A good question is more powerful than a good answer.','提問打開理解的大門。':'Questions open the door to understanding.','先問，再判斷。':'Ask first, judge later.','提問讓對話流動。':'Questions keep the conversation flowing.',
+'很多問題不是沒答案，而是沒被聽見。':'Many problems are not unanswered; they are unheard.','耳朵比嘴巴更容易靠近人心。':'The ear reaches the heart more easily than the mouth.',
+'同理不是同意，而是理解。':'Empathy is not agreement; it is understanding.','看見對方的世界，關係就開始改變。':'When you see their world, the relationship begins to change.','每個情緒背後都有原因。':'Every emotion has a reason behind it.','理解比批評有力量。':'Understanding is stronger than criticism.',
+'情緒是訊號，不是敵人。':'Emotion is a signal, not an enemy.','情緒在提醒你有需求。':'Emotion is reminding you that a need exists.','先接納情緒，再處理問題。':'Accept the emotion first, then handle the problem.','情緒被理解，痛苦就減半。':'When emotion is understood, the pain is halved.',
+'每個情緒背後都有需求。':'Behind every emotion there is a need.','需求說出來，比期待猜到更有效。':'Naming a need works better than hoping it will be guessed.',
+'衝突是差異，不是敵意。':'Conflict is difference, not hostility.','衝突是更新模型的機會。':'Conflict is a chance to update the model.','問題不是衝突，而是不修正。':'The problem is not conflict; it is failing to correct.','衝突是回饋，不是審判。':'Conflict is feedback, not a verdict.',
+'道歉不是認輸，而是修復。':'An apology is not surrender; it is repair.','真誠比理由更重要。':'Sincerity matters more than reasons.','修正比解釋更有價值。':'Correction is worth more than explanation.','好的道歉重建信任。':'A good apology rebuilds trust.',
+'陪伴是最珍貴的禮物。':'Presence is the most precious gift.','在場比完美重要。':'Being present matters more than being perfect.','高品質陪伴勝過長時間相處。':'Quality presence beats long hours together.','共同經歷創造連結。':'Shared experience creates connection.',
+'感謝讓關係進入正循環。':'Gratitude turns a relationship into a virtuous cycle.','看見付出，幸福增加。':'Notice the effort, and happiness grows.','感謝是最低成本的投資。':'Gratitude is the lowest-cost investment.','被感謝的人更願意付出。':'People who are thanked give more willingly.',
+'預測越準，衝突越少。':'The better the prediction, the fewer the conflicts.',
+'回饋是成長的起點。':'Feedback is where growth begins.','沒有回饋，就沒有修正。':'No feedback, no correction.','修正速度決定成長速度。':'The speed of correction sets the speed of growth.','錯誤不是失敗，是訊號。':'A mistake is not failure; it is a signal.',
+'焦慮來自不確定。':'Anxiety comes from uncertainty.','理解能降低恐懼。':'Understanding lowers fear.','安全感降低內耗。':'Security reduces inner friction.','預測越準，焦慮越少。':'The better the prediction, the less the anxiety.',
+'智慧不是知道，而是理解。':'Wisdom is not knowing; it is understanding.','智慧是持續更新自己。':'Wisdom is continually updating yourself.','成熟是修正速度變快。':'Maturity is correcting faster.','真正的智慧來自覺察。':'Real wisdom comes from awareness.'
+};
+const t=s=>T[s]||'';
+const B=s=>P(s,t(s));
+const HOOK={
+l1:P('他一開口，你就已經在想怎麼反駁。','The moment they start talking, you are already planning your rebuttal.'),
+l2:P('吵的是那件小事，痛的卻是「你沒有看見我」。','You are arguing about a small thing, but what hurts is "you did not see me."'),
+l3:P('答應的事又沒做到，信任就這樣一點一點流失。','Another promise slipped, and trust leaks away a little at a time.'),
+l4:P('你明明很在乎，對方卻一直覺得不安。','You care deeply, yet the other person never feels safe.'),
+l5:P('你以為很了解他，卻一次又一次猜錯。','You thought you knew them well, yet you keep guessing wrong.'),
+m1:P('話說了很多，對方卻一句也沒聽進去。','You said so much, and not one word landed.'),
+m2:P('還沒問清楚，就已經在心裡判了對方的罪。','Before asking a single question, you had already passed the verdict.'),
+m3:P('你在聽，卻只是在等輪到自己說話。','You are listening — but only waiting for your turn to speak.'),
+m4:P('你急著講道理，他只想被理解。','You hurry to reason; they only wanted to be understood.'),
+m5:P('情緒一上來，說出口的都是後悔的話。','Once the emotion rises, everything you say becomes something you regret.'),
+m6:P('你要的不是他認錯，是他懂你要什麼。','You do not need them to admit fault; you need them to know what you need.'),
+m7:P('每次吵架，都在吵同一件事。','Every argument is the same argument.'),
+m8:P('一句「對不起」卡在喉嚨，怎麼也說不出口。','One "I am sorry" is stuck in your throat and will not come out.'),
+m9:P('被辜負過一次，就很難再相信。','Let down once, and it becomes hard to trust again.'),
+m10:P('愛是有的，安心卻一直沒有。','The love is there; the sense of safety never arrived.'),
+m11:P('坐在同一張沙發上，卻各自滑著手機。','On the same sofa, each scrolling a separate phone.'),
+m12:P('他做的一切，你都覺得理所當然。','Everything they do, you have come to take for granted.'),
+m13:P('「你就是這樣的人」——這句話關上了理解的門。','"That is just who you are" — the sentence that closes the door on understanding.'),
+m14:P('同樣的錯，一犯再犯，卻沒有人敢說。','The same mistake, again and again, and no one dares to name it.'),
+m15:P('他不說，你就猜；你一猜，就焦慮。','They do not say; you guess. You guess; you become anxious.'),
+m16:P('吵贏了，卻輸掉了關係。','You won the argument and lost the relationship.')
+};
+function mk(x,no,isLever){
+  const pairs=x.old.slice(0,4).map((o,i)=>({o:B(o),n:B(x.new_[i])}));
+  const core=isLever?P(x.principle.replace('——','：')+'。',t(x.principle)+'.'):P(x.name+'的第一性原理：'+x.principle+'。','First principle: '+t(x.principle)+'.');
+  const core2=isLever?P('「'+x.ultimate+'。」','"'+t(x.ultimate)+'."'):B(x.quote);
+  const pains=isLever?x.syms.slice(0,3).map(B):x.old.slice(0,3).map(o=>P('話還沒說完，舊模式就先啟動了：'+o+'。',t(o)?'Before the sentence is finished, the old pattern has already started: '+t(o)+'.':''));
+  return {id:x.id,no:no,zh:x.name,en:(x.en||{表達模型:'Expression',提問模型:'Questioning',傾聽模型:'Listening',同理模型:'Empathy',情緒模型:'Emotion',需求模型:'Needs',衝突模型:'Conflict',道歉模型:'Apology',信任模型:'Trust',安全感模型:'Security',陪伴模型:'Presence',感謝模型:'Gratitude',預測模型:'Prediction',控制論模型:'Cybernetics',自由能模型:'Free Energy',智慧模型:'Wisdom'}[x.name]||'')+' Model',
+    hook:HOOK[x.id],pains:pains,core:core,core2:core2,pairs:pairs,quotes:x.quotes.slice(0,4).map(B),
+    step:P('只練一條路：'+x.formula+'，完整走一遍。','Practise one path today — '+t(x.formula)+' — all the way through, once.'),
+    cardStep:'只練一條路：'+x.formula+'。'};
+}
+FBPost.init({
+  brand:'溝通工程 LifeOS',color:'#C2416B',tint:'#FCE9EF',domain:'comm',
+  items:()=>LEVERS.map((l,i)=>mk(l,'L'+(i+1),true)).concat(MODELS.map((m,i)=>mk(m,'M'+String(i+1).padStart(2,'0'),false))),
+  mounts:()=>{
+    const out=[];
+    LEVERS.forEach(l=>{const el=document.querySelector('#lc-'+l.id+' .l-head');if(el)out.push({el:el,id:l.id});});
+    document.querySelectorAll('.m-card').forEach(c=>{const n=c.querySelector('.mc-name');const m=n&&MODELS.find(x=>x.name===n.textContent.trim());if(m)out.push({el:c,id:m.id});});
+    return out;
+  }
+});
+})();
+
+</script>
+<!-- FBPOST:END -->
+</body>
+</html>

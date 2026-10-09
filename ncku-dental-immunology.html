@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>成大牙醫免疫學MAX</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1c2430;--sub:#5b6676;--line:#e2e6ec;--pri:#0f6e84;--pri2:#e3f3f6;--ok:#1a8f55;--okbg:#e5f6ec;--bad:#c23b3b;--badbg:#fbe9e9;--warn:#a86a00;--warnbg:#fff4dc;--hl:#ffe680}
+@media (prefers-color-scheme:dark){:root{--bg:#12161c;--card:#1b212a;--ink:#e8ecf1;--sub:#9aa6b6;--line:#2c3440;--pri:#5cc4d8;--pri2:#16323a;--ok:#5fd396;--okbg:#153324;--bad:#f08080;--badbg:#3a1c1c;--warn:#f0c060;--warnbg:#3a2e12;--hl:#806a00}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px 0}
+.top{display:flex;gap:12px;align-items:center;max-width:980px;margin:0 auto}
+h1{font-size:18px;margin:0;white-space:nowrap}
+#q{flex:1;min-width:0;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+#q:focus{outline:2px solid var(--pri)}
+nav{display:flex;gap:4px;max-width:980px;margin:8px auto 0;overflow-x:auto}
+nav button{border:0;background:none;color:var(--sub);font:inherit;padding:8px 12px;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+nav button.on{color:var(--pri);border-color:var(--pri);font-weight:700}
+main{max-width:980px;margin:0 auto;padding:16px}
+h2{font-size:17px;margin:22px 0 8px}
+h2:first-child{margin-top:0}
+h3{font-size:15px;margin:14px 0 6px;color:var(--sub)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin:0 0 12px}
+.sub{color:var(--sub);font-size:14px}
+.chain{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin:4px 0}
+.chain b{font-weight:600;background:var(--pri2);color:var(--ink);padding:3px 8px;border-radius:6px;font-size:14px}
+.chain i{font-style:normal;color:var(--pri)}
+.lab{font-size:13px;color:var(--sub);margin-top:8px}
+.mn{background:var(--warnbg);color:var(--warn);border-radius:8px;padding:8px 10px;font-weight:700;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--sub);font-weight:600;font-size:13px}
+tr:last-child td{border-bottom:0}
+td.t{font-weight:700;white-space:nowrap}
+.scroll{overflow-x:auto}
+details.card>summary{cursor:pointer;font-weight:700;font-size:16px;list-style:none;display:flex;gap:8px;align-items:center}
+details.card>summary::-webkit-details-marker{display:none}
+details.card>summary::after{content:"＋";margin-left:auto;color:var(--sub)}
+details.card[open]>summary::after{content:"－"}
+.tag{display:inline-block;background:var(--pri);color:#fff;border-radius:5px;padding:1px 7px;font-size:12px;font-weight:700}
+@media (prefers-color-scheme:dark){.tag{color:#0c1418}}
+.trap{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0;font-size:14.5px}
+.trap div{padding:6px 9px;border-radius:7px}
+.trap .x{background:var(--badbg)}.trap .o{background:var(--okbg)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.chips button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:4px 12px;font:inherit;font-size:14px;cursor:pointer}
+.chips button.on{background:var(--pri);border-color:var(--pri);color:#fff}
+@media (prefers-color-scheme:dark){.chips button.on{color:#0c1418}}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;font-size:14.5px}
+.vs div{background:var(--bg);border-radius:7px;padding:7px 9px}
+.vs b{display:block}
+.key{margin-top:6px;font-weight:700;color:var(--pri)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.mod{cursor:pointer}.mod:hover{border-color:var(--pri)}
+.qbox{font-size:19px;font-weight:700;margin:6px 0 14px}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:9px;padding:11px 13px;margin:0 0 8px;font:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--pri)}
+.opt.sel{border-color:var(--pri);background:var(--pri2);font-weight:700}
+.nums{display:flex;flex-wrap:wrap;gap:4px}.nums button{width:36px;height:30px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;cursor:pointer;font:inherit;font-size:13px}.nums .a{background:var(--pri2)}.nums .c{outline:2px solid var(--pri)}
+.opt.r{background:var(--okbg);border-color:var(--ok)}.opt.w{background:var(--badbg);border-color:var(--bad)}
+.btn{border:0;background:var(--pri);color:#fff;border-radius:8px;padding:9px 16px;font:inherit;font-weight:700;cursor:pointer}
+@media (prefers-color-scheme:dark){.btn{color:#0c1418}}
+.btn.ghost{background:none;color:var(--sub);border:1px solid var(--line);font-weight:400}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden}.bar span{display:block;height:100%;background:var(--ok)}
+.stat{display:grid;grid-template-columns:92px 1fr 86px;gap:8px;align-items:center;font-size:13.5px;margin:5px 0}
+mark{background:var(--hl);color:inherit;border-radius:3px}
+.big{font-size:17px;font-weight:700;line-height:1.9}
+ol,ul{margin:6px 0;padding-left:22px}
+@media (max-width:560px){.trap,.vs{grid-template-columns:1fr}h1{font-size:16px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top"><h1>🦷 免疫學MAX</h1><input id="q" type="search" placeholder="搜尋：IL-12、RANKL、牙周、Type III、口水…" autocomplete="off"></div>
+  <nav id="nav"></nav>
+</header>
+<main id="main"></main>
+<script>
+const MODS=[
+{id:'M1',name:'辨識',en:'Threat Recognition',q:'誰發現敵人？',mn:'外敵PAMP｜內傷DAMP｜PRR警報｜BCR直接看｜TCR看Peptide-MHC',
+nodes:['PAMP|病原相關分子模式|微生物共同模式＝外敵警報（如 LPS）','DAMP|損傷相關分子模式|受傷／壓力細胞的危險訊號＝內部火警','PRR|模式辨識受體|先天免疫的警報器「大類」','TLR|類鐸受體|PRR 的重要家族之一','Antigen|抗原|可被特異性免疫（BCR／TCR）辨識的標的＝敵人特徵','BCR|B細胞受體|可直接辨識抗原','TCR|T細胞受體|只辨識 Peptide-MHC 複合體'],
+chains:['核心|PAMP/DAMP→PRR/TLR→Innate Activation','無菌性發炎|Cell Damage→DAMP→PRR→Inflammation'],
+traps:['PAMP 和 Antigen 完全相同|PAMP＝先天辨識的共同模式；Antigen＝特異性免疫辨識的標的','PRR 和 TLR 是同義詞|TLR 是 PRR 其中一個家族','看到「辨識」就選 TCR|先問辨識的是 PAMP（PRR）、完整抗原（BCR）還是 Peptide-MHC（TCR）','DAMP 是病原訊號|DAMP 來自自己受傷的細胞，所以發炎≠一定感染']},
+{id:'M2',name:'先天',en:'Innate Immunity',q:'誰先上場？',mn:'N先打｜M吃叫｜D送情報｜NK先天殺｜Eosinophil蟲敏',
+nodes:['Barrier|皮膚／黏膜|城牆；Saliva 唾液＝護城河','Neutrophil|嗜中性球|第一線士兵，急性細菌／黴菌、吞噬','Macrophage|巨噬細胞|吞噬＋放 IL-1／IL-6／TNF-α 發炎訊號＝吃＋叫','Dendritic Cell|樹突細胞|情報員：攝取抗原→呈現→啟動 Naive T；連接先天與後天','NK Cell|自然殺手細胞|先天殺手，快速殺病毒感染／異常細胞，不靠 TCR','Eosinophil|嗜酸性球|寄生蟲／過敏（受 IL-5 調控）','Complement|補體|血液中的援軍：貼＋叫＋打'],
+chains:['核心|Threat→PRR→Neutrophil先打→Macrophage吃＋叫→Dendritic送情報','兩大系統|Innate＝快・粗・PRR｜Adaptive＝準・T/B・Memory'],
+traps:['看到吞噬就選 Macrophage|急性第一線是 Neutrophil；Macrophage 偏吞噬＋發炎訊號','看到 APC 就選 Macrophage|「最有效啟動 Naive T」優先 Dendritic','只有 Dendritic 能呈現抗原|Dendritic／Macrophage／B Cell 都是 Professional APC','病毒感染一律選 CD8|早期先天殺傷→NK；抗原特異性殺傷→CD8','先天免疫絕對沒有任何記憶|經典抗原特異性記憶屬 Adaptive；另有 Trained Immunity 概念（不等同）']},
+{id:'M3',name:'呈現',en:'Antigen Processing & Presentation',q:'情報怎麼交給 T 細胞？',mn:'先切→再裝→再秀→TCR看→共同刺激→啟動｜I×8＝8｜II×4＝8',
+nodes:['Processing|抗原處理|把抗原切成 Peptide＝先「切」','Presentation|抗原呈現|Peptide 裝上 MHC 展示＝再「秀」','MHC I|第一型MHC|主要展示細胞內來源胜肽→CD8；幾乎所有有核細胞都有','MHC II|第二型MHC|主要展示攝取的外源抗原胜肽→CD4；主要在 Professional APC','TCR Recognition|TCR辨識|TCR 讀 Peptide-MHC（MHC 是展示板，不是受體）','Co-stimulation|共同刺激|Signal 2（CD28-B7）；Signal 1＝TCR、Signal 3＝Cytokine 決定分化方向','Cross-presentation|交叉呈現|Dendritic 把某些外源抗原放上 MHC I→啟動 Naive CD8','Professional APC|專業抗原呈現細胞|Dendritic（啟動Naive T最強）、Macrophage、B Cell'],
+chains:['完整鏈|Antigen→Processing→Peptide→MHC Loading→Peptide-MHC→TCR＋Co-stimulation→Clonal Expansion→Effector＋Memory','MHC I|Intracellular Protein→Peptide-MHC I→CD8→殺感染細胞','MHC II|Extracellular Uptake→Processing→Peptide-MHC II→CD4→指揮'],
+traps:['MHC 辨識抗原|MHC 負責展示；TCR 辨識 Peptide-MHC','MHC I＝病毒專用|本質是「細胞內來源胜肽」，病毒只是典型考題（還有自身、腫瘤蛋白）','MHC II＝細菌專用|本質是「被 APC 攝取處理的外源抗原」','看到 Peptide-MHC，T 細胞就一定活化|Naive T 還需要 Co-stimulation 等訊號','外源抗原絕不能進 MHC I|Dendritic 可 Cross-presentation','Processing＝Presentation|先切（處理）再秀（展示）']},
+{id:'M4',name:'T細胞',en:'T Cell & Cytokines',q:'怎麼決定打法？',mn:'CD4指揮｜CD8殺｜Th1裡｜Th2蟲敏｜Th17菌炎｜Treg停',
+nodes:['CD4 T Cell|輔助T細胞|指揮官／協調，配 MHC II','CD8 T Cell|細胞毒殺T細胞|殺手，配 MHC I，殺感染／異常細胞','Th1|第一型輔助T|細胞內病原＋活化 Macrophage（IFN-γ）','Th2|第二型輔助T|寄生蟲＋過敏＋IgE（IL-4）＋Eosinophil（IL-5）','Th17|第17型輔助T|細菌／黴菌＋黏膜＋招募 Neutrophil（IL-17）','Treg|調節型T細胞|Tolerance＋煞車（IL-10、TGF-β）','Tfh|濾泡輔助T|IL-21→幫助 B Cell 抗體反應','Memory T|記憶T細胞|保留未來快速反應能力（≠正在作戰的 Effector T）'],
+chains:['Th1軸|IL-12→Th1→IFN-γ→Macrophage活化','Th2軸|IL-4→Th2→IL-4/IL-5→IgE＋Eosinophil','Th17軸|Th17→IL-17→Neutrophil招募','Treg軸|Treg→IL-10/TGF-β→Regulation','CD8|Intracellular Protein→Peptide-MHC I→CD8活化→Clonal Expansion→殺感染細胞→Memory CD8'],
+traps:['CD4 主要直接殺感染細胞|CD4 偏 Helper；CD8 才是 Cytotoxic','看到細菌都選 Th1|細菌／黴菌＋Neutrophil＋黏膜→Th17；細胞內病原→Th1','IL-12 是 T 細胞增殖|IL-2＝T增殖；IL-12＝推 Th1／NK','IL-12 和 IFN-γ 都是活化 Macrophage|IL-12 是上游推 Th1；IFN-γ 是下游強化 Macrophage','只背 Cytokine 名稱|背「來源→Cytokine→Target→Outcome」']},
+{id:'M5',name:'B細胞・記憶',en:'B Cell, Antibody & Memory',q:'抗體怎麼產生、升級、留下記憶？',mn:'B辨識｜Plasma工廠｜Memory存檔｜GC升級｜M初・G主・A口・E敏・D-B',
+nodes:['B Cell|B細胞|BCR 直接辨識抗原→活化／分化＝準備','Plasma Cell|漿細胞|大量分泌抗體＝工廠','Memory B|記憶B細胞|再次遇抗原快速啟動＝存檔','Long-lived Plasma Cell|長壽命漿細胞|長期持續分泌抗體（血中長期抗體的來源）','IgM|免疫球蛋白M|初次反應較早出現','IgG|免疫球蛋白G|血液主力、長期保護、再次反應重要','IgA|免疫球蛋白A|黏膜／口水（Secretory IgA）★牙醫必考','IgE|免疫球蛋白E|過敏／寄生蟲，接 Mast Cell','IgD|免疫球蛋白D|B 細胞表面相關','Class Switching|類別轉換|IgM→IgG／IgA／IgE，換恆定區＝換武器種類','Affinity Maturation|親和力成熟|SHM＋選擇→結合更準＝把瞄準變準','Germinal Center|生發中心|SHM＋Affinity Maturation＋Class Switching 的場所','Clonal Selection|克隆選擇|抗原選中特異 Clone→擴增→Effector＋Memory'],
+chains:['B細胞母鏈|Antigen→BCR→B Activation（T幫忙）→Clonal Expansion→Germinal Center→SHM＋Class Switching→Plasma＋Memory B＋LLPC','Primary|第一次・Naive為主・較慢較弱・IgM較突出','Secondary|再次・Memory為主・更快更強・親和力更高','Active vs Passive|主動＝自己做・慢・久・有記憶（感染／疫苗）｜被動＝拿現成・快・短・無記憶（母體抗體）','Humoral vs Cell-mediated|體液＝B＋Antibody→細胞外病原／毒素｜細胞＝T Cell→細胞內病原／感染細胞','抗體效應|Antibody→Neutralization中和／Opsonization調理／Complement Activation'],
+traps:['Memory B 一直分泌抗體|長期分泌是 Long-lived Plasma Cell；Memory B 負責再次啟動','第一次反應只有 IgM|Primary 也能 Class Switching，IgM 只是較早突出','第二次反應＝只是 IgG|重點是 Memory→更快、更強、親和力更高','Class Switching 是換一個敵人|只換 Isotype（恆定區），抗原特異性不變','看到抗體都選 IgG|口水／黏膜→IgA；過敏→IgE','B Cell 本身大量分泌抗體|Plasma Cell 才是抗體工廠']},
+{id:'M6',name:'效應',en:'Effector System',q:'最後怎麼真正打？',mn:'3b貼｜5a叫｜5b-9打｜抗體抓｜吞噬吃｜CD8/NK殺',
+nodes:['C3b|補體C3b|Opsonization 調理作用＝貼標籤→吞噬↑','C3a / C5a|補體C3a/C5a|發炎；C5a 強力 Chemotaxis＝叫援軍','C5b-9|膜攻擊複合體 MAC|在敵人膜上打洞','Neutralization|中和|抗體封住病原／毒素，阻止其作用','Opsonization|調理作用|標記後讓吞噬細胞更容易吃','Phagocytosis|吞噬|Neutrophil／Macrophage 吞進去處理','Cytotoxicity|細胞毒殺|CD8／NK 殺死整個標的細胞','Cytokine|細胞激素|細胞間的 LINE 訊息','Chemokine|趨化因子|傳定位、引導細胞移動（導航）'],
+chains:['補體|Complement Activation→C3→C3b貼＋C3a炎→C5→C5a叫＋C5b→C5b-9打洞','發炎群|Macrophage→IL-1＋IL-6＋TNF-α→Inflammation'],
+traps:['C5a 形成 MAC|MAC 是 C5b-9；C5a 是趨化／發炎','C3b 負責 Chemotaxis|C3b＝貼標籤；C5a＝叫援軍','中和＝把敵人吃掉|Neutralization＝封鎖；Opsonization＝貼標促吞噬','Cytokine＝Chemokine|Cytokine 傳訊息；Chemokine 專門導航叫細胞過來']},
+{id:'M7',name:'失控',en:'Immune Dysregulation',q:'免疫怎麼變疾病？',mn:'I-E｜II打｜III沉｜IV-T｜弱・錯・大・久',
+nodes:['Type I|第一型超敏|IgE→Mast Cell→Histamine；立即型（數分鐘）','Type II|第二型超敏|IgG／IgM 抗體針對細胞／組織標的＝直接打','Type III|第三型超敏|Immune Complex 免疫複合體沉積→發炎','Type IV|第四型超敏|T Cell 媒介；延遲型（48–72 小時）','Immunodeficiency|免疫缺陷|太弱＝防禦不足→感染風險↑','Autoimmunity|自體免疫|打錯＝失去 Self-Tolerance，攻擊自己','Hypersensitivity|超敏／過敏|打太大＝對相對無害抗原過度反應','Chronic Inflammation|慢性發炎|打太久＝停不下來→組織破壞','Tolerance|免疫耐受|對特定標的不產生破壞性反應（不是免疫弱）','Immunosuppression|免疫抑制|整體或部分免疫功能被壓低'],
+chains:['正常|Threat→Recognition→Activation→Inflammation→Elimination→Regulation→Repair→Homeostasis','失控|發炎該停沒停→Chronic Inflammation→Tissue Damage→Disease','過敏鏈|Th2→IgE→Mast Cell→Histamine→Immediate Allergy'],
+traps:['發炎＝一定有感染|Infection 是病原；Inflammation 是宿主反應，DAMP 也能引發','看到 Antibody 就判 Type II|先看是 IgE（I）、直接打標的（II）還是複合體沉積（III）','過敏都選 Type I|延遲、T 細胞媒介→Type IV','Tolerance＝免疫很弱|耐受是「該不打」；缺陷是「打不了」','自體免疫＝過敏|打自己 vs 對外來無害物打太大']},
+{id:'M8',name:'牙科',en:'Dental & Osteoimmunology',q:'最後變成什麼口腔疾病？',mn:'Blast造｜Clast破｜RANKL拆｜OPG擋｜牙周看骨｜齲齒看酸｜牙髓看炎痛',
+nodes:['Oral Ecosystem|口腔生態系|Microbiome居民＋Mucosa城牆＋Saliva護城河＋IgA巡邏＋免疫軍隊；健康≠沒有細菌，是動態平衡','Secretory IgA|分泌型IgA|唾液／黏膜的主要抗體 ★★★★★','Osteoblast|成骨細胞|造骨（Blast＝Build）','Osteoclast|破骨細胞|骨吸收（Clast＝Crush）；牙周骨流失的執行者','RANK|RANK受體|破骨前驅細胞上的受體＝門鎖','RANKL|RANK配體|促破骨訊號＝拆骨命令','OPG|骨保護素|誘餌受體，抓住 RANKL＝擋','Gingivitis|牙齦炎|牙齦發炎，無附連／骨破壞；去除病因通常可逆','Periodontitis|牙周炎|支持組織破壞＋附連喪失＋齒槽骨流失','Caries|齲齒|糖→酸→脫礦；牙體硬組織破壞（不是免疫破骨）','Pulpitis|牙髓炎|牙髓發炎＋痛','Pulp Necrosis|牙髓壞死|牙髓組織死亡→可進展為根尖周發炎'],
+chains:['牙周 ★|Plaque→Dysbiosis→PRR/TLR→Neutrophil/Macrophage→IL-1β/TNF-α/IL-6/IL-17→RANKL↑→Osteoclast↑→Alveolar Bone Loss→Periodontitis','骨免疫|RANKL→RANK→Osteoclast↑→Bone Resorption↑','保護鏈|OPG抓RANKL→RANK訊號↓→Osteoclast↓','齲齒 ★|Sugar→Biofilm代謝→Acid↑→pH↓→Demineralization→Caries','牙髓 ★|Caries/Trauma/Infection→Pulpal Inflammation→Pain→Necrosis→Periapical Inflammation'],
+traps:['牙周骨流失是細菌直接把骨頭吃掉|Dysbiosis＋宿主免疫反應失調→RANKL／Osteoclast→Bone Loss','蛀牙是免疫破骨|Caries 主鏈是 Biofilm＋Sugar→Acid→脫礦，不是 RANKL','牙齦流血就是牙周炎|Periodontitis 要有附連喪失／骨流失；否則是 Gingivitis','RANKL 自己拆骨|RANKL 是命令；Osteoclast 才是執行者','痛就代表牙髓死了|Pulpitis＝炎；Necrosis＝死','口腔健康＝把細菌殺光|健康＝菌相＋屏障＋免疫的動態平衡']}
+];
+// 模組|A|B|A是什麼|B是什麼|一秒判斷
+const CONF=['M1|PAMP|DAMP|微生物共同模式|受傷細胞危險訊號|外敵警報 vs 內部火警','M1|PAMP|Antigen|先天辨識的共同模式|特異性免疫辨識的標的|模式 vs 特定標的','M1|PRR|TLR|模式辨識受體大類|PRR 的一個家族|大類 vs 子類','M1|BCR|TCR|可直接辨識抗原|辨識 Peptide-MHC|直接看 vs 經MHC看','M1|Antigen|Antibody|被辨識的標的（敵人特徵）|免疫球蛋白（抓敵武器）|敵人 vs 武器',
+'M2|Innate|Adaptive|快、PRR、先打|特異、T/B、Memory|快＝先天；準＋記憶＝後天','M2|Neutrophil|Macrophage|第一線、急性細菌|吞噬＋發炎訊號|先打 vs 吃＋叫','M2|Macrophage|Dendritic|吞噬＋發炎作戰|抗原呈現、啟動 Naive T|作戰 vs 送情報','M2|NK|CD8|Innate、不靠TCR|Adaptive、TCR＋MHC I|先天殺 vs 精準殺','M2|Neutrophil|Eosinophil|細菌／黴菌|寄生蟲／過敏|N菌 vs E蟲敏',
+'M3|Processing|Presentation|把抗原切成 Peptide|Peptide-MHC 展示|先切 vs 再秀','M3|MHC|TCR|展示 Peptide 的平台|辨識 Peptide-MHC 的受體|展示板 vs 讀展示板','M3|MHC I|MHC II|細胞內來源→CD8；所有有核細胞|外源攝取→CD4；專業APC|I→8 vs II→4','M3|Signal 1|Signal 2|TCR 辨識 Peptide-MHC|Co-stimulation（CD28-B7）|認得 vs 確認開戰',
+'M4|CD4|CD8|Helper 指揮／調節|Cytotoxic 殺感染細胞|4指揮 vs 8殺','M4|Th1|Th2|細胞內病原＋Macrophage|寄生蟲＋過敏＋IgE|1裡 vs 2蟲敏','M4|Th1|Th17|Macrophage／細胞內|Neutrophil／細菌黴菌黏膜|M vs N','M4|Th17|Treg|招募N、促發炎|Tolerance、抑制|油門 vs 煞車','M4|IL-2|IL-12|T 細胞增殖|推 Th1／NK|2長T vs 12推Th1','M4|IL-4|IL-5|Th2＋IgE 方向|Eosinophil|4做IgE vs 5叫嗜酸','M4|IL-10|IL-17|抑制發炎|招募 Neutrophil|10停火 vs 17叫兵','M4|IL-10|IL-12|煞車|推 Th1|煞車 vs 油門','M4|IL-12|IFN-γ|上游：推 Th1／NK|下游：活化 Macrophage|12推 → γ打','M4|IL-1|IL-6|發炎＋發燒|發炎＋急性期反應|1點火 vs 6全身','M4|TNF-α|IFN-γ|強力發炎／內皮活化|Macrophage 活化|大火 vs 強M','M4|Effector T|Memory T|現在執行任務|保留未來快速反應|現在 vs 未來',
+'M5|B Cell|Plasma Cell|辨識／分化前身|大量製造抗體|準備 vs 工廠','M5|Plasma Cell|Memory B|現在分泌抗體|未來再次快速反應|生產 vs 存檔','M5|Memory B|Long-lived Plasma|再次遇抗原快速啟動|長期持續分泌抗體|再啟動 vs 持續生產','M5|IgM|IgG|初次反應較早|血液主力／再次反應|M初 vs G主','M5|IgA|IgE|黏膜／口水|過敏／寄生蟲|A口 vs E敏','M5|Primary|Secondary|Naive為主、慢、弱|Memory為主、快、強、準|第一次 vs 再次','M5|Class Switching|Affinity Maturation|換 Isotype（恆定區）|提高親和力（可變區）|換武器 vs 變準','M5|Active|Passive|自己做、慢、久、有記憶|拿現成、快、短、無記憶|自己做 vs 拿現成','M5|Humoral|Cell-mediated|B＋Antibody→細胞外|T Cell→細胞內／感染細胞|抗體 vs T細胞','M5|Adaptive Memory|Trained Immunity|抗原特異性 T/B 記憶|先天細胞功能重塑|經典記憶 vs 先天訓練',
+'M6|C3b|C5a|Opsonization|Chemotaxis／發炎|貼 vs 叫','M6|C5a|C5b-9|招募／發炎|MAC 打洞|叫 vs 打','M6|Neutralization|Opsonization|封住病原／毒素|標記促吞噬|封 vs 貼','M6|Phagocytosis|Cytotoxicity|吞進去處理|殺死整個標的細胞|吃 vs 殺','M6|Cytokine|Chemokine|細胞間訊息|引導細胞移動|傳LINE vs 傳定位',
+'M7|Type I|Type IV|IgE／Mast、立即|T Cell、延遲|快E vs 慢T','M7|Type II|Type III|抗體針對細胞／組織標的|Immune Complex 沉積|直接打 vs 沉積','M7|Autoimmunity|Allergy|攻擊 Self|對外來無害物過度反應|打自己 vs 打太大','M7|Infection|Inflammation|病原進入／繁殖|宿主反應|感染可引發炎；發炎不一定感染','M7|Tolerance|Immunosuppression|對特定標的不攻擊|免疫功能整體被壓低|精準不打 vs 整體壓低','M7|Immunodeficiency|Immunosuppression|免疫系統本身缺陷|免疫功能被抑制|缺陷 vs 被壓',
+'M8|Osteoblast|Osteoclast|造骨|破骨／骨吸收|Blast造 vs Clast破','M8|RANK|RANKL|受體|配體／促破骨訊號|鎖 vs 訊號','M8|RANKL|OPG|促 Osteoclast|攔截 RANKL|拆 vs 擋','M8|RANKL|Osteoclast|促破骨的訊號|真正執行骨吸收的細胞|命令 vs 執行','M8|Gingivitis|Periodontitis|牙齦炎、無附連／骨破壞、可逆|支持組織破壞＋骨流失|無骨流失 vs 有骨流失','M8|Caries|Periodontitis|糖→酸→脫礦|菌相→炎→RANKL→破骨|酸 vs 骨','M8|Caries|Pulpitis|牙體硬組織脫礦|牙髓發炎|洞 vs 髓腔炎痛','M8|Pulpitis|Pulp Necrosis|牙髓發炎|牙髓死亡|炎 vs 死','M8|Periodontitis|Pulpitis|牙周支持組織＋骨破壞|牙髓發炎→痛→可壞死|牙周看骨 vs 牙髓看炎痛','M7|Type I|Type II|IgE＋Mast Cell＋Histamine、立即|IgG／IgM 針對細胞或組織標的|E＋快 vs 抗體打標的','M7|Type III|Type IV|Immune Complex 沉積→發炎|T Cell 媒介、延遲|沉 vs T','M5|Plasma Cell|Memory B Cell|現在大量生產抗體|保留記憶、再次暴露快速反應|生產 vs 存檔'];
+// 名稱|來源|功能|口訣
+const CYTO=['IL-1|Macrophage 等|發炎、發燒、內皮活化|點火','IL-2|Activated T Cell|T 細胞增殖、生存|長T','IL-4|Th2、Mast Cell|Th2 分化、促 IgE 反應|Th2＋IgE','IL-5|Th2、ILC2|Eosinophil 生長／活化|叫嗜酸','IL-6|Macrophage 等|發炎、急性期反應|全身炎','IL-10|Treg、Macrophage|抑制發炎、免疫調節|煞車','IL-12|Dendritic、Macrophage|促 Th1、活化 NK／IFN-γ 方向|推Th1','IL-17|Th17|招募 Neutrophil、黏膜防禦|叫N','IL-21|Tfh|幫助 B Cell、抗體反應|幫B','TNF-α|Macrophage 等|強力發炎、內皮活化|大火','IFN-γ|Th1、NK、CD8|活化 Macrophage、細胞型免疫|強M','TGF-β|Treg 等|免疫調節＋組織修復|調節＋修復'];
+const CPATH=['Macrophage→IL-1＋IL-6＋TNF-α→Inflammation','Dendritic/Macrophage→IL-12→Th1/NK→IFN-γ→Macrophage活化','Th2→IL-4→IgE方向','Th2→IL-5→Eosinophil→寄生蟲／過敏','Th17→IL-17→Neutrophil→細菌／黴菌／黏膜防禦','Treg→IL-10＋TGF-β→抑制／調節','Tfh→IL-21→B Cell→Antibody','牙周：Dysbiosis→PRR/TLR→IL-1β/TNF-α/IL-6→RANKL↑→Osteoclast↑→Bone Loss'];
+// 模組|題幹關鍵字|第一反射
+const REF=['M1|LPS／微生物共同模式|PAMP','M1|壞死／受傷細胞釋出的危險訊號|DAMP','M1|辨識 PAMP／DAMP 的受體大類|PRR','M1|可直接辨識游離抗原的受體|BCR','M1|無感染卻發炎（Sterile Inflammation）的訊號|DAMP',
+'M2|Acute Bacterial Infection 急性細菌第一線|Neutrophil 嗜中性球','M2|Phagocytosis＋IL-1／TNF 吞噬＋發炎訊號|Macrophage 巨噬細胞','M2|最有效啟動 Naive T Cell|Dendritic Cell 樹突細胞','M2|早期先天細胞毒殺（不靠 TCR）|NK Cell 自然殺手','M2|寄生蟲感染時增加的顆粒球|Eosinophil 嗜酸性球',
+'M3|細胞內來源胜肽（如病毒蛋白）的呈現|MHC I → CD8','M3|APC 攝取外源抗原後的呈現|MHC II → CD4','M3|把抗原切成 Peptide|Antigen Processing 抗原處理','M3|真正「辨識」Peptide-MHC 的是|TCR','M3|B7／CD28|Co-stimulation 共同刺激','M3|樹突細胞把外源抗原放上 MHC I|Cross-presentation 交叉呈現','M3|幾乎所有有核細胞都表現|MHC I','M3|主要只在 Professional APC 表現|MHC II',
+'M4|細胞內病原＋Macrophage 活化|Th1','M4|寄生蟲／過敏／IgE|Th2','M4|細菌／黴菌／黏膜＋Neutrophil|Th17','M4|免疫耐受／踩煞車|Treg','M4|T 細胞增殖|IL-2','M4|推 Th1 分化|IL-12','M4|活化 Macrophage|IFN-γ','M4|Th2／IgE 方向|IL-4','M4|Eosinophil 生長活化|IL-5','M4|招募 Neutrophil|IL-17','M4|抑制發炎|IL-10','M4|發燒＋發炎「點火」|IL-1','M4|急性期反應 Acute-phase Response|IL-6','M4|強力發炎＋內皮活化|TNF-α','M4|Tfh 幫助 B 細胞|IL-21','M4|免疫調節＋組織修復|TGF-β',
+'M5|初次反應較早出現的抗體|IgM','M5|血液主力抗體|IgG','M5|唾液／黏膜的主要抗體|Secretory IgA','M5|立即過敏／寄生蟲的抗體|IgE','M5|大量分泌抗體的細胞|Plasma Cell 漿細胞','M5|長期持續分泌抗體|Long-lived Plasma Cell','M5|再次暴露時快速啟動|Memory B Cell','M5|IgM 變成 IgG／IgA／IgE|Class Switching 類別轉換','M5|抗體結合越來越準|Affinity Maturation 親和力成熟','M5|SHM＋類別轉換發生的場所|Germinal Center 生發中心','M5|母體抗體／外給抗體|Passive Immunity 被動免疫','M5|疫苗／感染後自己產生|Active Immunity 主動免疫',
+'M6|Opsonization 貼標籤|C3b','M6|Chemotaxis 強力招募|C5a','M6|MAC 膜上打洞|C5b-9','M6|抗體阻止毒素／病毒結合|Neutralization 中和','M6|專門引導細胞移動的訊號|Chemokine 趨化因子',
+'M7|數分鐘＋IgE＋Mast Cell＋Histamine|Type I','M7|抗體針對細胞／組織標的|Type II','M7|Immune Complex 沉積|Type III','M7|48–72 小時、T 細胞延遲反應|Type IV','M7|失去自我耐受、攻擊 Self|Autoimmunity 自體免疫','M7|反覆／伺機性感染|Immunodeficiency 免疫缺陷','M7|發炎停不下來、打太久|Chronic Inflammation 慢性發炎',
+'M8|造骨|Osteoblast 成骨細胞','M8|執行骨吸收|Osteoclast 破骨細胞','M8|促破骨的配體訊號|RANKL','M8|攔截 RANKL 的誘餌受體|OPG 骨保護素','M8|破骨前驅細胞上的受體|RANK','M8|牙齦紅腫流血、無附連／骨破壞|Gingivitis 牙齦炎','M8|牙周囊袋＋附連喪失＋齒槽骨流失|Periodontitis 牙周炎','M8|糖＋低 pH＋Enamel 脫礦|Caries 齲齒','M8|冷熱刺激痛、牙髓發炎|Pulpitis 牙髓炎','M8|牙髓失去活性|Pulp Necrosis 牙髓壞死',
+'阻斷|阻斷 IL-12|Th1／IFN-γ 軸↓','阻斷|阻斷 IL-5|Eosinophil 反應↓','阻斷|阻斷 IL-17|Neutrophil 招募↓','阻斷|阻斷 RANKL|Osteoclast↓→骨吸收↓','阻斷|增加 OPG|RANKL-RANK 訊號↓→破骨↓','阻斷|缺 C3b|Opsonization↓','阻斷|缺 C5a|Chemotaxis↓','阻斷|缺 C5b-9|MAC 形成↓','阻斷|缺 Co-stimulation|Naive T 活化↓','M1|PRR 的重要家族|TLR','M4|IL-1／IL-6／TNF-α 一起出現|Inflammation 發炎','M5|再次遇到同一抗原快速反應的 B 細胞|Memory B Cell','M7|免疫太弱|Immunodeficiency 免疫缺陷','M7|免疫反應過大|Hypersensitivity 超敏反應','M7|紅腫熱痛但無病原證據|Inflammation（不等於 Infection）','M8|齒槽骨流失的機制主軸|RANKL → Osteoclast'];
+const MAIN=['一般免疫|Threat→PAMP/DAMP→PRR/TLR→Innate→Antigen Processing→Peptide-MHC→TCR＋Co-stimulation→Clonal Expansion→CD4/CD8/B→Cytokine/Antibody/Killing→Clearance→Regulation→Memory','牙周|Dysbiosis→PRR/TLR→Inflammation→RANKL↑→Osteoclast↑→Alveolar Bone Loss→Periodontitis','齲齒|Sugar→Biofilm→Acid↑→pH↓→Demineralization→Caries','牙髓|Caries/Trauma/Infection→Pulpitis→Pain→Necrosis→Periapical Inflammation'];
+const REV=['Bone Loss←Osteoclast←RANKL←Inflammation←Dysbiosis','立即過敏←Histamine←Mast Cell←IgE←Th2','Macrophage Activation←IFN-γ←Th1←IL-12','Neutrophil Recruitment←IL-17←Th17','CD8 Activation←Peptide-MHC I←細胞內抗原處理','CD4 Activation←Peptide-MHC II←APC處理外源抗原'];
+const LAST=['M1｜外敵PAMP｜內傷DAMP｜PRR警報','M2｜N先打｜M吃叫｜D情報｜NK殺','M3｜先切再秀TCR看｜I→8｜II→4','M4｜1裡｜2蟲敏｜17菌炎｜Reg停','M5｜B辨識｜P生產｜M存檔｜GC升級｜M初G主A口E敏','M6｜3b貼｜5a叫｜5b-9打','M7｜I-E｜II打｜III沉｜IV-T','M8｜Blast造｜Clast破｜RANKL拆｜OPG擋｜牙周骨｜齲齒酸｜牙髓炎痛'];
+const DANGER=['PAMP／DAMP＝外敵／內傷','Macrophage／Dendritic＝作戰／情報','NK／CD8＝先天殺／特異殺','MHC／TCR＝展示／辨識','MHC I／II＝I→8／II→4','IL-2／IL-12＝長T／推Th1','IL-12／IFN-γ＝推Th1／強M','Memory B／LLPC＝再啟動／長期生產','Class Switch／Affinity＝換種類／變準','C3b／C5a／C5b-9＝貼／叫／打','Type II／III＝直接打／沉積','RANKL／Osteoclast＝命令／執行'];
+
+// 學習法：[標題,[內容行…]]，行首「>」＝箭頭鏈
+const STUDY=[
+['APP 定位與課程銜接',['不是免疫學百科全書，而是「看到疾病→找到免疫機制→推出結果→連到牙科臨床」的免疫導航器。','依成大牙醫公開課程設計：大二「免疫學、微生物學」→大三「口腔微生物及免疫學、病理學、口腔病理學」。','>基礎免疫→口腔免疫→疾病→牙科臨床','公式：免疫學＝角色×關係×機制｜牙醫免疫＝免疫機制×口腔生態×組織反應｜真正掌握＝病例→機制→預測']],
+['最好背的方法：背箭頭，不背孤立名詞',['❌ 錯誤背法：RANKL、Osteoclast、Inflammation、Bone Loss 四個名詞分開背。','✅ MAX 背法：一條鏈一次收四個考點。','>Inflammation→RANKL↑→Osteoclast↑→Bone Loss↑','Node 讓你知道東西是什麼；Relation 讓你知道怎麼連；Mechanism 讓你知道為什麼；Prediction 讓你知道是不是真的懂；病例讓你知道能不能用。','名詞忘記一個仍可能推得出答案；箭頭全斷，背再多名詞也難處理變化題。']],
+['三層掌握 L1–L3',['L1 國中版：我能不能用一句白話講懂？　例：RANKL＝叫人拆骨頭的訊號。','L2 大學版：我能不能講出正確專有名詞與機制？　例：RANKL promotes osteoclast differentiation and activation。','L3 牙醫版：我能不能放進病例？　例：Periodontal inflammation→RANKL↑→Osteoclast↑→Alveolar bone loss。','三層都會才算真正掌握。']],
+['免疫只做 7 件事（一句話先懂）',['免疫系統＝身體的警察＋軍隊＋情報中心＋記憶系統。','>敵人進來→發現→通報→出兵→消滅→停止→記憶','>Antigen→Recognition→Signal→Activation→Attack→Regulation→Memory','免疫真正重要的不是攻擊越強越好，而是能啟動、能清除、也能適時停止。']],
+['免疫世界角色表',['敵人＝Antigen 抗原｜警報器＝PRR／TLR｜第一線軍隊＝Innate Immunity','情報員＝Dendritic Cell｜展示板＝MHC｜指揮官＝CD4｜殺手＝CD8','武器工廠＝B Cell→Plasma Cell｜武器＝Antibody｜通訊系統＝Cytokine（LINE 訊息）','援軍＝Complement｜煞車＝Treg／Tolerance｜資料庫＝Memory Cell','口腔城堡：黏膜＝城牆｜Saliva＝護城河｜IgA＝巡邏抗體｜Microbiome＝城裡居民｜免疫細胞＝軍隊']],
+['13 層學習路徑（過關再進下一層）',['L0 母鏈：先知道每個名詞住在哪一層','L1 先天／後天：看到任何免疫細胞，3 秒內能分先天或後天','L2 辨識系統：能回答「誰被看到？誰負責看到？」（PAMP／DAMP／Antigen、PRR／TLR）','L3 先天細胞：看到急性細菌／吞噬發炎／抗原呈現／先天殺手能秒選角色','L4 MHC／CD4／CD8：病毒細胞內→MHC I→CD8 形成自動反射','L5 Th1／Th2／Th17／Treg：看到病原種類能推出 T Helper 方向','L6 B Cell／抗體：看到「口水」不用思考直接選 IgA','L7 補體／Cytokine：看到 Opsonization／Chemotaxis／MAC 能直接找到補體','L8 免疫失控：看到疾病先判斷「弱／錯／大／久」','L9 過敏四型：立即／抗體打標的／複合體沉積／延遲 T 能秒分','L10 口腔免疫：從「殺菌思維」升級成「生態平衡思維」','L11 牙周＋骨免疫：看到 Alveolar Bone Loss 立刻跑出 RANKL→Osteoclast','L12 牙周／齲齒／牙髓：三種病例不能跑錯機制','L13 病例推理：固定跑七問','考前最小路徑：L0→L3→L4→L5→L6→L9→L11→L12→L13','過關標準：看到 A 能推出 B，看到 B 也能反推 A。']],
+['七級測驗（自我檢查到第幾級）',['L1 看中文→說英文','L2 看英文→說白話','L3 給上游→找下游','L4 給下游→反推上游','L5 給疾病→找 Node','L6 給病例→跑 Mechanism','L7 Prediction：改一個 Node，預測結果','>RANKL↓→Osteoclast↓→Bone Resorption↓','真正理解＝能預測。']],
+['每個 Node 的固定卡片（自己出題用）',['>名稱→一句白話→它是誰→它看到誰→它通知誰→它做什麼','>上游是誰→下游是誰→失控會怎樣→牙科連結','>病例一題→反向題一題→Prediction 一題→一句口訣','任何 Node 都要答得出四件事：在哪個模組？上游是誰？下游是誰？題目改掉它時 Outcome 怎麼變？']],
+['12 個問題入口',['01 誰是敵人？→Antigen','02 誰先看到？→PRR／TLR','03 誰先衝過去？→Neutrophil','04 誰把敵人吃掉？→Macrophage','05 誰送情報？→Dendritic Cell','06 誰看情報？→CD4／CD8','07 誰下命令？→CD4','08 誰製造武器？→B Cell→Plasma Cell→Antibody','09 誰殺感染細胞？→CD8','10 誰叫援軍？→Cytokines／Chemokines','11 誰踩煞車？→Treg／IL-10／Tolerance','12 為什麼牙周骨頭消失？→Inflammation→RANKL→Osteoclast']],
+['首頁八大入口（原始 APP 架構）',['01 免疫世界地圖｜02 先天免疫｜03 T 細胞｜04 B 細胞＋抗體','05 發炎＋Cytokine｜06 免疫疾病｜07 口腔免疫｜08 牙科病例','原則：先給地圖，再進細節；不要一開始就丟 100 個名詞。']],
+['錯題診斷器（答錯不要只抄答案）',['E1 名詞錯｜E2 角色錯｜E3 上游錯｜E4 下游錯','E5 細胞錯（N／M／D／NK 選錯）｜E6 Cytokine 上下游接錯','E7 先天／後天錯｜E8 MHC I／II 錯｜E9 CD4／CD8 錯','E10 疾病連結錯（Acid／RANKL／過敏分型）｜E11 時間順序錯｜E12 病例無法轉成 Mechanism','錯題後固定問 5 題：','① 我把哪兩個 Node 混在一起？','② 它們是不是同一個模組？','③ 兩者真正的 Difference 是什麼？','④ 正確箭頭是 A→B 還是 B→A？','⑤ 如果改變 A，我能不能預測 B 會怎麼變？','>錯題→Error Attribution→修正箭頭→換題 Retest']],
+['萬用病例解題器（8 步）',['STEP 1 Reality：病人到底發生什麼？','STEP 2 Threat：細菌？病毒？過敏原？組織損傷？','STEP 3 Recognition：誰先看到？','STEP 4 Cell：哪個免疫細胞？','STEP 5 Signal：哪個 Cytokine／Antibody／Complement？','STEP 6 Mechanism：中間箭頭怎麼走？','STEP 7 Outcome：最後造成什麼？','STEP 8 Prediction：阻斷其中一個 Node，結果怎麼改？']],
+['四個病例範例',['牙周：牙齦紅腫＋流血＋囊袋＋齒槽骨流失','>Plaque/Dysbiosis→Innate Recognition→Neutrophil/Macrophage→Cytokines→Adaptive Immunity→RANKL→Osteoclast→Bone Loss','過敏：接觸過敏原後幾分鐘快速腫脹（快速＝Type I）','>Allergen→IgE→Mast Cell→Histamine→Immediate Hypersensitivity','病毒：病毒在細胞裡','>病毒感染細胞→MHC I→CD8→殺感染細胞','口水：唾液中的重要黏膜抗體？','>嘴巴→Mucosa→Secretory IgA']],
+['八層防混淆掃讀（先看層級，再比同層）',['>Threat威脅→Pattern模式→Receptor受體→Cell細胞→Presentation呈現與指揮→Signal訊號→Effector效應→Outcome／Disease','第1層 危險來源：Infection＝病原存在｜Inflammation＝宿主反應。紅腫熱痛＋無病原證據→Inflammation','第2層 危險模式：PAMP＝外敵共同模式｜DAMP＝內傷警報｜Antigen＝特異性免疫辨識標的','第3層 辨識受體：PRR＝大類｜TLR＝其中一家族（問「大類」選 PRR，問「代表家族」選 TLR）','第4層 先天細胞：急性第一線→Neutrophil｜吞噬＋Cytokine→Macrophage｜啟動 Naive T→Dendritic｜先天快速殺→NK','第5層 呈現＋T細胞：I→8｜II→4｜Th1裡｜Th2蟲敏｜Th17菌炎｜Treg停','第6層 B細胞＋抗體：B前身｜Plasma工廠｜Memory存檔｜M初G主A口E敏','第7層 訊號＋效應：Cytokine訊息｜Chemokine導航｜C3b貼｜C3a/C5a叫｜C5b-9打','第8層 疾病＋牙科：弱錯大久｜E打沉T｜牙齦看炎｜牙周看骨｜齲齒看酸｜牙髓看炎痛','關鍵：PAMP、PRR、Macrophage、RANKL、Osteoclast、Bone Loss 不是互相競爭的答案，而是同一條鏈的不同位置。','>PAMP（模式）→PRR（受體）→Macrophage（細胞）→Cytokine（訊號）→RANKL（機制）→Osteoclast（效應）→Bone Loss（結果）→Periodontitis（疾病）']],
+['兩個選項都像答案時：四問',['不要問「哪個名詞我比較熟」，改問：','① 題目問哪一層？','② 兩個選項是不是同一層？','③ 題幹給的是上游還是下游？','④ 跑一條箭頭。','層級對照：辨識層→PRR／TLR／MHC｜細胞層→Neutrophil／Macrophage／T／B｜訊號層→Cytokine／Complement｜效應層→Antibody／CD8／Osteoclast｜屏障層→Saliva／Mucosa／IgA｜牙周骨破壞→RANKL／Osteoclast｜齲齒→Acid／Demineralization','掃題五眼：找關鍵字→判層級→同層比較→跑上下游→Prediction（這個 Node 被阻斷，下一步升還是降？）']],
+['角色故事：把身體想成一座城',['Barrier＝城牆｜Saliva＝護城河｜IgA＝城牆巡邏隊｜PRR／TLR＝警報器','Neutrophil＝第一批衝出去的士兵｜Macrophage＝會吃敵人又會呼叫支援的士兵｜Dendritic＝情報員','MHC＝情報展示板｜CD4＝指揮官｜CD8＝精準殺手','B Cell＝武器部門｜Plasma Cell＝武器工廠｜Antibody＝武器｜Complement＝自動防禦武器','Treg＝煞車系統｜Memory Cell＝敵人資料庫','這樣不是背 20 個名詞，而是在背一場戰爭的流程。']],
+['記憶四層：故事→節點→箭頭→病例',['L1 故事層','>城牆→警報→士兵→情報員→指揮官→殺手→武器→煞車→記憶','L2 Node 層','>Barrier→PRR→Neutrophil/Macrophage/Dendritic→MHC→T/B→Effector→Treg→Memory','L3 Mechanism 層','>Recognition→Activation→Inflammation→Elimination→Regulation→Repair','L4 Case 層','>Symptoms→Node→Relation→Mechanism→Disease→Prediction','四大模組另一種看法：WHO 誰做事→HOW 事情怎麼發生→WHAT HAPPENS 失控變什麼→HOW TO SOLVE 病例怎麼倒推']],
+['雙向都能跑（順推＋逆推）',['順向：Cause→Mechanism→Outcome','>牙周慢性發炎→RANKL↑→Osteoclast↑→Bone Loss','逆向：題目給結果，往上倒推','>Bone Loss←Osteoclast←RANKL←Inflammation','整條可雙向運算的鏈：Threat↔Recognition↔Cell↔Signal↔Mechanism↔Tissue Response↔Disease↔Clinical Finding','題目是給你一個 Outcome，要你找到正確的上游 Mechanism。']],
+['六大考場反射＋八個錨點',['看到這六個詞，要能自動生成答案路徑：','>病毒→MHC I→CD8','>外來抗原→MHC II→CD4','>口水 Saliva→Secretory IgA','>立即過敏→IgE→Mast Cell→Histamine','>齒槽骨流失→RANKL→Osteoclast','>脫礦 Demineralization→Acid','八個錨點：Neutrophil｜MHC I→CD8／MHC II→CD4｜M初G主A口E敏｜貼→叫→打｜弱→錯→大→久｜IgA＋Oral Ecosystem｜牙周骨／齲齒酸／牙髓炎痛｜先定位 Layer 再沿箭頭找答案','考前策略：不要再增加 Node 數量，提高 Relation 調用速度。']],
+['術語全名（縮寫｜英文全名｜中文）',['PAMP｜Pathogen-Associated Molecular Pattern｜病原體相關分子模式','DAMP｜Damage-Associated Molecular Pattern｜損傷相關分子模式','PRR｜Pattern Recognition Receptor｜模式辨識受體','TLR｜Toll-like Receptor｜類鐸受體','NK Cell｜Natural Killer Cell｜自然殺手細胞','MHC I｜Major Histocompatibility Complex Class I｜第一類主要組織相容性複合體','MHC II｜Major Histocompatibility Complex Class II｜第二類主要組織相容性複合體','CD4｜CD4 Helper T Cell｜CD4 輔助型 T 細胞','CD8｜CD8 Cytotoxic T Cell｜CD8 細胞毒性 T 細胞','Th1／Th2／Th17｜T Helper 1／2／17｜第一型／第二型／第17型輔助 T 細胞','Treg｜Regulatory T Cell｜調節型 T 細胞','Ig｜Immunoglobulin（IgM／IgG／IgA／IgE／IgD）｜免疫球蛋白','MAC｜Membrane Attack Complex｜膜攻擊複合體','IL｜Interleukin（IL-1、IL-6、IL-10…）｜介白素','TNF-α｜Tumor Necrosis Factor-alpha｜腫瘤壞死因子α','IFN-γ｜Interferon-gamma｜干擾素γ','RANK｜Receptor Activator of Nuclear Factor Kappa-B｜核因子κB受體活化因子','RANKL｜RANK Ligand｜核因子κB受體活化因子配體','OPG｜Osteoprotegerin｜骨保護素','要背的是：完整英文名稱＋縮寫＋中文＋功能＋上下游箭頭，不是只有縮寫。']],
+['終極學習鏈',['>地圖→角色→Node→Relation→Mechanism→Disease→Case→Prediction→Error→Model Update','不要追求「背最多」，要追求「看到題目，腦中自動跑出正確的箭頭」。','混淆不是因為名詞太多，而是 Node 沒有放回正確層級。']]
+];
+const N36=['N01|Innate Immunity|先天免疫','N02|Adaptive Immunity|適應性免疫','N03|Barrier Immunity|屏障免疫','N04|PRR|警報器','N05|TLR|重要警報器','N06|Complement|補體','N07|Neutrophil|第一線士兵','N08|Macrophage|吞噬＋警報','N09|Dendritic Cell|情報員','N10|Antigen|敵人標誌','N11|Antigen Presentation|展示敵人','N12|MHC I|給 CD8 看','N13|MHC II|給 CD4 看','N14|CD4|指揮','N15|CD8|殺感染細胞','N16|Th1|細胞內敵人','N17|Th2|蟲＋過敏','N18|Th17|菌＋發炎','N19|Treg|煞車','N20|B Cell|抗體系統','N21|Plasma Cell|抗體工廠','N22|Antibody|抗體','N23|IgA|口腔黏膜重點','N24|Cytokine|免疫訊息','N25|Chemokine|叫細胞過來','N26|Inflammation|發炎反應','N27|Tolerance|不要亂打自己','N28|Hypersensitivity|反應過強','N29|Autoimmunity|打自己','N30|Immunodeficiency|防禦不足','N31|Tumor Immunity|腫瘤免疫','N32|Mucosal Immunity|黏膜免疫','N33|Oral Microbiome|口腔菌相','N34|Periodontal Immunity|牙周免疫','N35|Pulpal Immunity|牙髓免疫','N36|Osteoimmunology|骨免疫'];
+
+// 戰術藍圖（來自「牙醫免疫戰術藍圖.pdf」15 頁）：行首「>」＝箭頭鏈，「#」＝小標
+const BP=[
+['01 總指揮中心：七步戰術母鏈',['>威脅→辨識→初擊→情報→指揮→效應與煞車→建檔','威脅＝病原／組織損傷｜辨識＝PRR／TLR 發現 PAMP／DAMP｜初擊＝先天免疫第一線交火','情報＝樹突細胞抗原處理與展示｜指揮＝T／B 細胞活化與特異性攻擊','效應與煞車＝清除敵人→Treg 踩煞車｜建檔＝留下記憶細胞，下次秒殺','真正要背的不是名詞，是能自動運轉的底層機制。']],
+['02 兩大軍團：突擊隊 vs 精準狙擊手',['#先天免疫 Innate｜一句話：先打再說','強項：速度、辨識廣度｜弱項：特異性、記憶','核心戰術：快、先打、模式辨識（PRR）｜主力兵種：Neutrophil、Macrophage、Dendritic、NK','#適應性免疫 Adaptive｜一句話：認準再打','強項：特異性、殺傷力、記憶｜弱項：速度（初次慢）','核心戰術：初次慢、高度特異性（BCR／TCR）、擁有記憶｜主力兵種：T Cell、B Cell']],
+['03 先天防禦陣線：四大特種兵',['Neutrophil｜代號：第一線士兵｜專長：急性細菌防禦、快速吞噬｜指令：先衝先打','Macrophage｜代號：清道夫兼廣播站｜專長：吞噬病原、釋放發炎訊號｜指令：吃＋叫','Dendritic Cell｜代號：終極情報員｜專長：抗原呈現、啟動 Naive T Cell｜指令：專業送情報','NK Cell｜代號：先天暗殺者｜專長：不靠特異性，快速秒殺｜指令：先天殺']],
+['04 跨系統情報橋樑：切、裝、展',['抗原不是直接看，必須經過三步：','>Step 1 Processing（切）→Step 2 Loading（裝）→Step 3 Presentation（展）','切＝Antigen（敵人特徵）被切碎成 Peptide｜裝＝將 Peptide 裝載至 MHC 展示板｜展＝Peptide-MHC 複合體向 T 細胞展示','#兩條出貨路線','>MHC I 路線：細胞內抗原（如病毒）→CD8 T Cell（I×8＝8）','>MHC II 路線：外源攝取抗原→CD4 T Cell（II×4＝8）']],
+['05 戰術指揮所（T Cell）：決策與火力分流',['>Naive T Cell→CD8（殺手）：TCR 辨識 Peptide-MHC I→啟動 Cytotoxic 模式→精準擊殺感染細胞','>Naive T Cell→CD4（總指揮）→Th1／Th2／Th17／Treg','Th1（細胞內）｜指令：IFN-γ→啟動巨噬細胞｜口訣：1＝裡','Th2（寄生蟲／過敏）｜指令：IL-4／IL-5→啟動 IgE｜口訣：2＝蟲敏','Th17（黏膜／細菌）｜指令：IL-17→呼叫 Neutrophil｜口訣：17＝菌炎','Treg（調節）｜指令：IL-10／TGF-β→維持耐受｜口訣：Treg＝停']],
+['06 兵工廠與武器庫：B 細胞與五大抗體',['>B Cell（辨識準備）→Plasma Cell（量產工廠）→Antibody','>Plasma Cell 旁支→Memory B（資料存檔）','IgM｜初次：戰役最先抵達的早期武器','IgG｜主力：血液常規軍與長期保護主力','IgA｜口水 ★牙醫最重要：唾液與黏膜的終極巡邏兵（Secretory IgA）','IgE｜過敏：應對寄生蟲與第一型立即過敏','IgD｜B細胞：停留於 B 細胞表面的信號受體']],
+['07 細胞激素通訊網：三條線',['紅線＝發炎｜橘線＝指揮｜藍線＝煞車','#紅線：發炎點火線','IL-1（局部點火）｜IL-6（全身反應）｜TNF-α（強力大火）','#橘線：特異性指揮線','>IL-12→Th1 方向→IFN-γ（強化 Macrophage）','>IL-4→Th2 方向→IL-5（呼叫 Eosinophil）','>IL-17→呼叫 Neutrophil（黏膜防禦）','#藍線：制動滅火線','>IL-10＆TGF-β→抑制發炎，強制踩煞車']],
+['08 補體打擊系統：三步作戰',['STEP 1 貼標籤（Opsonization）｜C3b→精準標記敵人，大幅提升巨噬細胞吞噬效率','STEP 2 叫援軍（Chemotaxis＆Inflammation）｜C3a／C5a→釋放化學導航訊號，招募大批白血球','STEP 3 貫穿打洞（Membrane Attack Complex）｜C5b-9（MAC）→直接在病原體細胞膜上打洞']],
+['09 系統失控矩陣：四型過敏',['I 型 立即型（Immediate）｜路徑：IgE→Mast Cell→Histamine｜特徵：幾分鐘內快速腫脹／休克｜口訣：I-E','II 型 抗體打擊（Antibody-mediated）｜路徑：IgG／IgM→攻擊細胞／組織標的｜特徵：抗體引發的精準誤傷｜口訣：II-打','III 型 複合體沉積（Immune Complex）｜路徑：抗原抗體結合→Immune Complex 沉積｜特徵：沉積引發的無差別破壞｜口訣：III-沉','IV 型 延遲型（T-Cell mediated）｜路徑：T Cell 啟動→巨噬細胞活化｜特徵：唯一不靠抗體的慢速反應｜口訣：IV-T']],
+['10 終極防禦前線：口腔城堡',['Microbiome（常駐居民）：共生菌相，失衡即引發戰爭','Saliva（護城河）：沖刷與生化防禦','Secretory IgA（巡邏兵）：黏膜最重要的特異性抗體','Mucosa（城牆）：物理屏障','Immune System（駐守軍隊）','動態平衡（Homeostasis）：健康≠沒有細菌，是城牆＋護城河＋居民＋軍隊的平衡。']],
+['11 骨免疫核心：決定齒槽骨生死的蹺蹺板',['破壞端（RANKL）：發炎釋放促破骨訊號→結合 RANK 受體→喚醒 Osteoclast（破骨細胞）','保護端（OPG）：攔截盾牌（Decoy Receptor），抓住 RANKL，強制中斷破壞訊號','蹺蹺板往哪邊倒，看的是 RANKL／OPG 的平衡。','#★ 牙周病必背絕對路徑','>Dysbiosis→Inflammation→RANKL↑→Osteoclast↑→Bone Loss']],
+['12 牙科三大戰役對比',['#牙周病（看「骨」）','>牙菌斑失衡 Dysbiosis→宿主異常發炎 Inflammation→RANKL 激增→破骨細胞活化→齒槽骨流失','#齲齒（看「酸」）','>糖分攝取 Sugar→細菌代謝產酸 Acid→pH 值下降→牙體硬組織脫礦 Demineralization','#牙髓炎（看「炎痛」）','>深度感染刺激→牙髓局部發炎 Pulpal Inflammation→壓力引發劇痛 Pain→嚴重導致壞死 Necrosis']],
+['13 MAX 萬用解題引擎：陌生病例的演算法',['從題目症狀（Symptoms）開始，依序問：','1. Threat（誰進來？）：細菌／病毒／過敏原？','2. Recognition（誰看到？）：PRR 還是 TCR／BCR？','3. Cell（誰被叫來？）：Neutrophil／Macrophage／T／B？','4. Signal（什麼訊號？）：哪一種 Cytokine／Complement？','5. Mechanism（機制走向）：沿著箭頭找上下游因果','6. Outcome（造成什麼？）：破壞／骨流失／脫礦？','→ 破解干擾選項，鎖定精準答案。']],
+['14 終極反射區：考前 30 秒',['#辨識對接','>病毒／細胞內→MHC I→CD8','>外來抗原→MHC II→CD4','#四大先鋒','N＝先打｜M＝吃叫｜D＝送情報｜NK＝先天殺','#指揮分流','Th1＝裡｜Th2＝蟲敏｜Th17＝菌炎｜Treg＝停','#抗體兵器','M＝初｜G＝主｜A＝口水｜E＝過敏','#補體三擊','3b＝貼｜5a＝叫｜5b-9＝打洞','#牙科鐵律','>牙周＝炎→RANKL→破骨→骨流失','>齲齒＝糖→產酸→脫礦','>牙髓＝感染→發炎→劇痛→壞死','造＝Blast｜破＝Clast｜拆＝RANKL｜擋＝OPG']]
+];
+
+const $=s=>document.querySelector(s),esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+let Q='';
+const hl=s=>{s=esc(s);if(!Q)return s;for(const t of Q.split(/\s+/).filter(Boolean)){s=s.replace(new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),m=>'<mark>'+m+'</mark>')}return s};
+const chain=s=>{const rev=s.includes('←'),p=s.split(rev?'←':'→');return '<div class="chain">'+p.map(x=>'<b>'+hl(x)+'</b>').join('<i>'+(rev?'←':'→')+'</i>')+'</div>'};
+const lchain=s=>{const i=s.indexOf('|'),l=s.slice(0,i),c=s.slice(i+1);return '<div class="lab">'+hl(l)+'</div>'+(c.includes('→')?chain(c):'<div>'+hl(c)+'</div>')};
+const trap=s=>{const[a,b]=s.split('|');return '<div class="trap"><div class="x">❌ '+hl(a)+'</div><div class="o">✅ '+hl(b)+'</div></div>'};
+const conf=s=>{const[m,a,b,da,db,k]=s.split('|');return '<div class="card"><span class="tag">'+m+'</span> <b>'+hl(a)+' vs '+hl(b)+'</b><div class="vs"><div><b>'+hl(a)+'</b>'+hl(da)+'</div><div><b>'+hl(b)+'</b>'+hl(db)+'</div></div><div class="key">⚡ '+hl(k)+'</div></div>'};
+const nodeRows=a=>a.map(n=>{const[t,z,d]=n.split('|');return '<tr><td class="t">'+hl(t)+'<div class="sub">'+hl(z)+'</div></td><td>'+hl(d)+'</td></tr>'}).join('');
+const refRows=a=>a.map(r=>{const[m,k,v]=r.split('|');return '<tr><td><span class="tag">'+m+'</span></td><td>'+hl(k)+'</td><td class="t">→ '+hl(v)+'</td></tr>'}).join('');
+const cytoRows=a=>a.map(c=>{const[n,s,f,k]=c.split('|');return '<tr><td class="t">'+hl(n)+'</td><td>'+hl(s)+'</td><td>'+hl(f)+'</td><td class="t">'+hl(k)+'</td></tr>'}).join('');
+
+const TABS=[['map','地圖'],['mod','八模組'],['conf','易混淆'],['cyto','細胞因子'],['case','病例反射'],['quiz','測驗'],['last','最後60秒'],['study','學習法'],['bp','戰術藍圖']];
+const sline=l=>l[0]==='>'?chain(l.slice(1)):l[0]==='#'?'<div class="lab" style="font-weight:700;color:var(--pri)">'+hl(l.slice(1))+'</div>':'<div>'+hl(l)+'</div>';
+const scard=([t,ls])=>'<div class="card"><b>'+hl(t)+'</b><div style="margin-top:6px;font-size:15px">'+ls.map(sline).join('')+'</div></div>';
+const n36Rows=a=>a.map(n=>{const[i,e,z]=n.split('|');return '<tr><td class="sub">'+i+'</td><td class="t">'+hl(e)+'</td><td>'+hl(z)+'</td></tr>'}).join('');
+let tab='map',fm='全部',openMod='M1';
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let stats=store.get('immMaxStats',{}),wrong=store.get('immMaxWrong',[]);
+
+function chips(list){return '<div class="chips">'+list.map(m=>'<button class="'+(m===fm?'on':'')+'" data-fm="'+m+'">'+m+'</button>').join('')+'</div>'}
+const MIDS=['全部',...MODS.map(m=>m.id)];
+const V={
+map(){return '<h2>先背這一條</h2><div class="card">'+chain('威脅→辨識→先天→呈現→T細胞→B細胞→效應→調節・記憶→牙科疾病')+'<div class="sub">發現敵人 → 通知軍隊 → 消滅敵人 → 停止攻擊 → 記住敵人。先知道每個名詞「住在哪一層」，再背差異。</div></div>'+
+'<div class="card" style="border-color:var(--pri)"><b style="font-size:17px">📝 模擬考・題庫測驗</b><div class="sub" style="margin:4px 0 10px">題庫 '+ITEMS.length+' 題。模擬考限時作答，每答完一題馬上顯示答案與解析，交卷後有總分；也可以到「測驗」分頁做分類練習。</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-ex="20">模擬考 20 題</button><button class="btn" data-ex="50">模擬考 50 題</button><button class="btn" data-ex="100">模擬考 100 題</button><button class="btn" data-ex="50" data-src="15">國考真題 50 題</button><button class="btn ghost" data-tab="quiz">分類練習</button></div></div><h2>八大模組（點進去看）</h2><div class="grid">'+MODS.map(m=>'<div class="card mod" data-go="'+m.id+'"><span class="tag">'+m.id+'</span> <b>'+m.name+'</b><div class="sub">'+m.q+'</div><div style="font-size:13.5px;margin-top:6px">'+m.mn+'</div></div>').join('')+'</div>'+
+'<h2>全科四條母鏈</h2><div class="card">'+MAIN.map(lchain).join('')+'</div>'+
+'<h2>怎麼用這個 APP 考過</h2><div class="card"><ol><li><b>地圖</b>：先看上面母鏈，知道八模組順序。</li><li><b>八模組</b>：一次一個模組，看節點→箭頭→陷阱。</li><li><b>易混淆</b>：只看「一秒判斷」那行。</li><li><b>測驗</b>：七級（L1→L7）加上關鍵字反射、易混二選一、找出錯誤、箭頭鏈、細胞因子、術語全名、病例實戰與綜合隨機；每類 80% 以上過關，錯題自動進錯題本。</li><li><b>最後60秒</b>：進考場前只看那一頁。</li><li><b>學習法</b>：三層掌握、13 層路徑、錯題診斷、36 Node。</li></ol><div class="sub">時間不夠只讀：M2 → M3 → M4 → M5 抗體 → M7 過敏四型 → M8。</div></div>'+
+'<h2>考前優先順序</h2><div class="card"><div>★★★★★ 必拿：MHC I/II、CD4/CD8、Th1/2/17/Treg、IgM/G/A/E、過敏四型</div><div>★★★★★ 牙醫必拿：IgA、RANKL/OPG/Osteoclast、牙周 vs 齲齒 vs 牙髓</div><div>★★★★☆ 訊號題：IL-1/2/4/5/6/10/12/17、TNF-α、IFN-γ</div><div>★★★★☆ 機制題：Complement、PRR/TLR、PAMP/DAMP</div></div>'},
+mod(){return MODS.map(m=>'<details class="card" data-mod="'+m.id+'"'+(m.id===openMod?' open':'')+'><summary><span class="tag">'+m.id+'</span>'+m.name+'<span class="sub" style="font-weight:400">'+m.q+'</span></summary>'+modBody(m)+'</details>').join('')},
+conf(){const a=CONF.filter(c=>fm==='全部'||c.startsWith(fm+'|'));return chips(MIDS)+a.map(conf).join('')},
+cyto(){return '<h2>先背這 12 個</h2><div class="card scroll"><table><tr><th>細胞因子</th><th>主要來源</th><th>核心功能</th><th>口訣</th></tr>'+cytoRows(CYTO)+'</table></div><h2>不要單顆背，背路徑</h2><div class="card">'+CPATH.map(chain).join('')+'</div><h2>最容易混</h2>'+CONF.filter(c=>/\|(IL-|TNF)/.test(c)).map(conf).join('')},
+case(){const a=REF.filter(c=>fm==='全部'||c.startsWith(fm+'|'));return '<div class="card"><b>病例七問</b><div class="sub">①誰進來（Threat）→②誰看到（Recognition）→③什麼受體→④哪個細胞→⑤什麼訊號→⑥機制怎麼走→⑦最後造成什麼／失控變什麼病</div><div class="lab">線索軸</div><div style="font-size:14.5px">時間：數分鐘→Type I｜48–72h→Type IV｜第一次→Primary｜再次→Memory｜長期→Chronic<br>位置：黏膜／口水→IgA｜細胞內→MHC I／CD8／Th1｜牙齦→Gingivitis｜齒槽骨→Periodontitis｜Enamel→Caries｜Pulp→Pulpitis</div></div>'+chips([...MIDS,'阻斷'])+'<div class="card scroll"><table><tr><th></th><th>題幹看到</th><th>第一反射</th></tr>'+refRows(a)+'</table></div><h2>逆推：題目給結果，往上找原因</h2><div class="card">'+REV.map(chain).join('')+'<div class="sub">阻斷題：把該節點從箭頭刪掉，直接看下游誰下降。</div></div>'},
+quiz(){if(exam)return examView();const wn=ITEMS.filter(x=>wrong.includes(x.key)).length;return '<div class="card" style="border-color:var(--pri)"><b style="font-size:17px">📝 模擬考</b><div class="sub" style="margin:4px 0 10px">從題庫隨機抽題（病例題、機制題、預測題、易混題為主），限時作答。每答完一題馬上顯示正確答案與解析，交卷後有總分與逐題檢討。每題 1 分鐘。</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-ex="20">20 題・20 分鐘</button><button class="btn" data-ex="50">50 題・50 分鐘</button><button class="btn" data-ex="100">100 題・100 分鐘</button></div><div class="lab">只考國考真題（考選部 110–115 年公開試題，共 '+EXQ.length+' 題）</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-ex="25" data-src="15">國考真題 25 題</button><button class="btn" data-ex="50" data-src="15">國考真題 50 題</button><button class="btn" data-ex="100" data-src="15">國考真題 100 題</button></div>'+(hist.length?'<div class="lab">最近成績</div><div style="font-size:14px">'+hist.map(h=>h.d+'　'+h.r+'/'+h.n+'（'+Math.round(h.r/h.n*100)+' 分）').join('<br>')+'</div>':'')+'</div><h2>分類練習（答完馬上看解析）</h2><div class="sub" style="margin-bottom:8px">題庫共 '+ITEMS.length+' 題｜目前範圍 '+pool().length+' 題</div><div class="chips">'+ORDER.map(n=>'<button class="'+(n===lv?'on':'')+'" data-lv="'+n+'">'+LVN[n]+(n===0?' '+wn:n<99&&passed(n)?' ✓':'')+'</button>').join('')+'</div>'+chips(MIDS)+'<div class="card" id="qz"></div><div class="card"><b>答對率（錯題診斷）</b><div id="st"></div><div style="margin-top:10px"><button class="btn ghost" id="rs">清除紀錄</button></div></div>'},
+bp(){return '<div class="card sub">整理自「牙醫免疫戰術藍圖」簡報，共 14 張圖卡，照順序由上往下看就是一場完整戰役。</div>'+BP.map(scard).join('')},
+study(){return STUDY.map(scard).join('')+'<h2>牙醫免疫最重要 36 Node</h2><div class="card scroll"><table>'+n36Rows(N36)+'</table></div>'},
+last(){return '<h2>八句</h2><div class="card big">'+LAST.map(esc).join('<br>')+'</div><h2>牙科三條一定背</h2><div class="card">'+MAIN.slice(1).map(lchain).join('')+'</div><h2>六大考場反射</h2><div class="card">'+['病毒→MHC I→CD8','外來抗原→MHC II→CD4','口水→Secretory IgA','立即過敏→IgE→Mast Cell→Histamine','齒槽骨流失→RANKL→Osteoclast','脫礦→Acid'].map(chain).join('')+'</div><h2>最危險 12 組</h2><div class="card">'+DANGER.map(esc).join('<br>')+'</div><h2>考場只跑這條</h2><div class="card">'+chain('題幹關鍵字→定位M1–M8→核心節點→上一個箭頭→下一個箭頭→排除最像的混淆項→答案')+'<div class="sub">兩個選項很像時，不要問「哪個比較熟」，先問「題目現在問的是哪一層」。</div></div>'}
+};
+function modBody(m){return '<h3>核心節點</h3><div class="scroll"><table>'+nodeRows(m.nodes)+'</table></div><h3>必背箭頭</h3>'+m.chains.map(lchain).join('')+'<h3>錯誤想法 vs 正確模型</h3>'+m.traps.map(trap).join('')+'<div class="mn">口訣：'+hl(m.mn)+'</div>'}
+
+function search(){const ts=Q.toLowerCase().split(/\s+/).filter(Boolean),ok=s=>ts.every(t=>s.toLowerCase().includes(t));let h='';
+for(const m of MODS){const n=m.nodes.filter(ok),c=m.chains.filter(ok),t=m.traps.filter(ok);if(n.length||c.length||t.length)h+='<div class="card"><span class="tag">'+m.id+'</span> <b>'+m.name+'</b>'+(n.length?'<div class="scroll"><table>'+nodeRows(n)+'</table></div>':'')+c.map(lchain).join('')+t.map(trap).join('')+'</div>'}
+const cy=CYTO.filter(ok);if(cy.length)h+='<div class="card scroll"><b>細胞因子</b><table>'+cytoRows(cy)+'</table></div>';
+const cp=[...CPATH,...REV].filter(ok);if(cp.length)h+='<div class="card"><b>路徑</b>'+cp.map(chain).join('')+'</div>';
+const rf=REF.filter(ok);if(rf.length)h+='<div class="card scroll"><b>題幹反射</b><table>'+refRows(rf)+'</table></div>';
+h+=CONF.filter(ok).map(conf).join('');
+for(const[t,ls]of[...STUDY,...BP]){const m=ok(t)?ls:ls.filter(ok);if(m.length)h+=scard([t,m])}
+const n3=N36.filter(ok);if(n3.length)h+='<div class="card scroll"><b>36 Node</b><table>'+n36Rows(n3)+'</table></div>';
+return h||'<div class="card sub">找不到「'+esc(Q)+'」。試試英文術語或中文關鍵字，例如 RANKL、口水、過敏。</div>'}
+
+// 測驗
+let cur=null,sess={r:0,n:0};
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+// 七級題庫：L3/L4 用 EDGES（模組|上游|下游），L5 疾病→Node，L6 病例→機制，L7 預測
+const EDGES=['M1|PAMP／DAMP|PRR／TLR','M1|PRR／TLR 活化|Innate Immunity 啟動','M2|Dendritic Cell 攝取抗原|Antigen Processing 抗原處理','M3|Antigen Processing|Peptide 裝上 MHC','M3|Peptide-MHC I|CD8 T Cell','M3|Peptide-MHC II|CD4 T Cell','M3|TCR 辨識＋Co-stimulation|Clonal Expansion 克隆擴增','M4|IL-12|Th1','M4|Th1|IFN-γ','M4|IFN-γ|Macrophage 活化','M4|IL-5|Eosinophil','M4|IL-4|IgE 反應','M4|Th17|IL-17','M4|IL-17|Neutrophil 招募','M4|Treg|IL-10／TGF-β','M4|IL-21|B Cell 抗體反應','M5|B Cell 活化＋T 細胞幫忙|Germinal Center','M5|Germinal Center|Plasma＋Memory B','M5|Somatic Hypermutation＋選擇|Affinity↑','M5|IgE|Mast Cell','M5|Mast Cell 活化|Histamine 釋放','M6|C3b|Opsonization→吞噬↑','M6|C5a|Chemotaxis→招募白血球','M6|C5b|C5b-9（MAC）打洞','M7|Immune Complex 沉積|Type III 發炎','M7|失去 Self-Tolerance|Autoimmunity','M7|發炎停不下來|Chronic Inflammation→Tissue Damage','M8|Plaque 堆積|Dysbiosis 菌相失衡','M8|牙周慢性發炎|RANKL↑','M8|RANKL 結合 RANK|Osteoclast 生成／活化↑','M8|Osteoclast↑|Bone Resorption→齒槽骨流失','M8|OPG 抓住 RANKL|RANK 訊號↓','M8|Sugar＋細菌代謝|Acid↑','M8|Acid↑・pH↓|Demineralization 脫礦','M8|Pulpal Inflammation 加重|Pulp Necrosis','M8|Pulp Necrosis|Periapical Inflammation 根尖周發炎'];
+const DIS=['M8|牙周炎的齒槽骨流失|RANKL→Osteoclast','M8|齲齒|Acid→Demineralization','M8|牙髓炎|Pulpal Inflammation→Pain','M8|牙齦炎|Plaque→牙齦發炎（無附連／骨破壞）','M7|立即型過敏|IgE→Mast Cell→Histamine','M7|48–72 小時延遲型反應|T Cell（Type IV）','M7|免疫複合體疾病|Immune Complex 沉積（Type III）','M7|抗體攻擊細胞表面／組織標的|Antibody-mediated（Type II）','M7|自體免疫疾病|失去 Self-Tolerance','M7|反覆伺機性感染|Immunodeficiency','M4|寄生蟲感染|Th2→IL-5→Eosinophil','M4|細胞內病原感染|Th1→IFN-γ→Macrophage','M4|黏膜細菌／黴菌感染|Th17→IL-17→Neutrophil','M3|病毒感染細胞|MHC I→CD8','M2|急性化膿性細菌感染|Neutrophil','M1|無菌性組織壞死引起的發炎|DAMP→PRR','M5|再次感染反應更快更強|Memory B／T Cell','M5|口腔黏膜第一線抗體防禦|Secretory IgA','M5|新生兒靠母體抗體保護|Passive Immunity'];
+const CASES=['M8|45 歲，牙齦流血、牙周囊袋加深、X 光見齒槽骨吸收|Dysbiosis→Inflammation→RANKL↑→Osteoclast↑→Bone Loss','M8|常喝含糖飲料，臼齒出現白斑與窩洞|Sugar→Biofilm→Acid↑→pH↓→Demineralization','M8|深蛀牙，喝冰水劇痛、夜間自發痛|Caries→Pulpal Inflammation→Pain','M8|曾劇痛的牙後來不痛、變色，根尖出現陰影|Pulpitis→Necrosis→Periapical Inflammation','M8|刷牙流血、牙齦紅腫，但無附連喪失、骨高度正常|Plaque→Gingival Inflammation（Gingivitis，可逆）','M7|接觸過敏原後數分鐘全身蕁麻疹、快速腫脹|Allergen→IgE→Mast Cell→Histamine（Type I）','M7|接觸某物質兩天後，接觸處才出現紅疹|Antigen→T Cell→Delayed Reaction（Type IV）','M7|抗原抗體複合體沉積在組織造成發炎|Immune Complex→Deposition→Inflammation（Type III）','M3|口腔上皮細胞被病毒感染，細胞內出現病毒蛋白|Intracellular Protein→Peptide-MHC I→CD8→殺感染細胞','M4|病原躲在巨噬細胞裡面，需要把巨噬細胞變強|IL-12→Th1→IFN-γ→Macrophage 活化','M4|寄生蟲感染，嗜酸性球與 IgE 上升|Th2→IL-4／IL-5→IgE＋Eosinophil','M4|口腔黏膜黴菌感染，大量嗜中性球浸潤|Th17→IL-17→Neutrophil 招募','M2|急性細菌感染，膿液中大量多形核白血球|PAMP→PRR→Neutrophil→Phagocytosis','M5|打過疫苗的人再遇同一病原，抗體幾天內大量上升|Memory B→Secondary Response→快・強・高親和力','M1|外傷造成組織壞死，沒有細菌卻紅腫熱痛|Cell Damage→DAMP→PRR→Sterile Inflammation'];
+const PRED=['M4|阻斷 IL-12|Th1／IFN-γ 軸↓','M4|阻斷 IL-5|Eosinophil 反應↓','M4|阻斷 IL-17|Neutrophil 招募↓','M4|阻斷 IFN-γ|Macrophage 活化↓','M4|阻斷 IL-2|T 細胞增殖↓','M4|阻斷 IL-4|Th2／IgE 反應↓','M4|Treg／IL-10 功能喪失|發炎失控、自體免疫風險↑','M8|阻斷 RANKL|Osteoclast↓→骨吸收↓','M8|增加 OPG|RANKL-RANK 訊號↓→破骨↓','M8|OPG 下降|RANKL 訊號↑→骨吸收↑','M8|減少糖攝取|Acid↓→脫礦↓','M6|缺 C3b|Opsonization↓','M6|缺 C5a|Chemotaxis↓','M6|缺 C5b-9|MAC 形成↓','M3|缺 Co-stimulation|Naive T 活化↓','M2|缺乏 Dendritic Cell|Naive T 啟動效率↓','M5|無法 Class Switching|IgG／IgA／IgE↓，以 IgM 為主','M5|缺乏 Plasma Cell|抗體分泌↓','M7|Mast Cell 無法脫顆粒|Histamine↓→立即過敏症狀↓'];
+// 病例實戰：完整四選一＋逐選項解析 [模組,題幹,[選項],答案index,[逐項解析],秒判]
+const MCQ=[
+['M7','患者拔除下顎第三大臼齒後，手術區出現局部紅、腫、熱、痛；沒有膿液、細菌培養或其他明確感染證據。下列何者最適合描述目前的局部反應？',['Infection 感染','Inflammation 發炎','Autoimmunity 自體免疫','Hypersensitivity 超敏反應'],1,['感染強調病原存在／繁殖，不能只因紅腫痛就判定感染','發炎是宿主對組織損傷等刺激產生的反應','題幹沒有攻擊自身抗原的線索','題幹沒有過度免疫反應或過敏線索'],'Infection＝病原問題；Inflammation＝宿主反應'],
+['M1','患者因口腔外傷造成黏膜受損，受損細胞釋放內源性危險訊號，啟動先天免疫。這類訊號最符合何者？',['PAMP 病原體相關分子模式','DAMP 損傷相關分子模式','IgA 免疫球蛋白A','MHC I 第一類主要組織相容性複合體'],1,['PAMP 代表微生物的共同分子模式','DAMP 來自受損／受壓細胞的危險訊號','IgA 是黏膜抗體，不是危險模式','MHC I 屬抗原呈現系統'],'外敵共同模式＝PAMP；內傷警報＝DAMP'],
+['M1','牙周組織的先天免疫細胞偵測到細菌共同分子模式後啟動發炎。若問「負責辨認這類共同危險模式的受體大類」，何者最適合？',['PRR 模式辨識受體','TLR 類鐸受體','IgE 免疫球蛋白E','RANK 核因子κB受體活化因子'],0,['PRR 是辨識 PAMP／DAMP 的受體大類','TLR 是 PRR 的一個家族；若問「代表家族」才選它','IgE 與第一型超敏反應／寄生蟲相關','RANK 是骨免疫相關受體'],'PRR＝大類；TLR＝其中一家族'],
+['M2','急性細菌性牙周感染早期，大量吞噬細胞快速進入感染部位形成第一線防禦。最符合哪一種細胞？',['Neutrophil 嗜中性球','Macrophage 巨噬細胞','Dendritic Cell 樹突細胞','NK Cell 自然殺手細胞'],0,['急性細菌感染的快速第一線細胞','也能吞噬，但定位是「吃＋叫」，兼具發炎訊號功能','定位是抗原呈現、啟動 T 細胞','定位是先天快速殺傷感染／異常細胞'],'嗜中先打｜巨噬吃叫｜樹突情報｜NK先天殺'],
+['M3','病毒感染口腔上皮細胞後，病毒來源的細胞內抗原被呈現，活化可直接殺死感染細胞的 T 細胞。最符合哪條路徑？',['MHC I → CD8 細胞毒性T細胞','MHC II → CD4 輔助型T細胞','IgE → Mast Cell 肥大細胞','C3b → Opsonization 調理作用'],0,['細胞內／病毒→MHC I→CD8','MHC II 連到 CD4 Helper T','這是第一型超敏反應','C3b 負責調理作用（貼標籤）'],'I→8；II→4'],
+['M5','研究團隊想評估口腔黏膜的抗體防禦能力，採集唾液分析。最符合哪一類免疫球蛋白？',['IgM','IgG','IgA','IgE'],2,['IgM 定位為初次反應早期','IgG 定位為血液主要抗體','Secretory IgA 與黏膜、唾液防禦高度相關','IgE 與過敏及寄生蟲相關'],'M初｜G主｜A口｜E敏'],
+['M6','細菌進入口腔組織後，某補體成分沉積於細菌表面，使吞噬細胞更容易辨識並吞噬。最符合何者？',['C3b → Opsonization 調理作用','C5a → Chemotaxis 趨化作用','C5b-9 → MAC 膜攻擊複合體','IL-10 介白素10'],0,['C3b 替病原「貼標籤」','C5a 的考點是發炎與招募','C5b-9 形成 MAC，功能是膜上打洞','IL-10 定位為免疫調節／煞車'],'C3b貼｜C3a/C5a叫｜C5b-9打'],
+['M8','患者長期牙菌斑堆積與慢性牙周發炎，影像見明顯齒槽骨流失。哪條機制最能直接連結慢性發炎與骨破壞？',['IgA↑ → 黏膜保護↑','RANKL↑ → Osteoclast↑ → Bone Resorption↑','OPG↑ → RANKL 作用↑ → Bone Resorption↑','Osteoblast↑ → Bone Formation↑ → Bone Loss↑'],1,['IgA 與黏膜防禦相關，無法解釋破骨','RANKL↑→破骨細胞形成／活化↑→骨吸收↑','OPG 會攔截 RANKL，方向相反','Osteoblast 負責造骨'],'Blast造｜Clast破｜RANKL拆｜OPG擋'],
+['M7','患者接受某抗原刺激後數分鐘內出現明顯過敏症狀，涉及 IgE、Mast Cell 及 Histamine 釋放。最符合哪一型超敏反應？',['Type I 第一型','Type II 第二型','Type III 第三型','Type IV 第四型'],0,['IgE 媒介的立即型超敏反應','第二型是抗體針對細胞／組織標的','第三型核心是免疫複合體沉積','第四型是 T 細胞媒介的延遲型'],'I-E｜II-打｜III-沉｜IV-T'],
+['M8','患者長期高糖飲食，口腔細菌代謝糖類產酸，局部 pH 持續下降並造成牙釉質礦物質流失。最符合哪條疾病鏈？',['Dysbiosis → RANKL↑ → Osteoclast↑ → Periodontitis','Sugar → Acid↑ → pH↓ → Demineralization → Dental Caries','IgE → Mast Cell → Histamine → Allergy','MHC I → CD8 → Cytotoxicity'],1,['這是牙周炎／骨吸收方向','齲齒核心機制鏈','這是第一型超敏反應','這是細胞內抗原的 T 細胞反應'],'牙周看骨｜齲齒看酸｜牙髓看炎痛'],
+['M1','牙周致病菌的 LPS 被牙齦中的先天免疫細胞辨識並引發發炎。LPS 在這裡最適合歸類為何者？',['DAMP','Antibody','PAMP','Chemokine'],2,['DAMP 來自自己受傷的細胞，不是微生物','Antibody 是 B／Plasma 產生的免疫球蛋白','LPS 是微生物的共同分子模式＝外敵警報','Chemokine 是引導細胞移動的訊號'],'外敵共同模式＝PAMP；內傷警報＝DAMP'],
+['M1','某淋巴球可以不經過 MHC，直接辨識完整的游離抗原。它使用的受體是？',['BCR','TCR','PRR','MHC II'],0,['BCR 可直接辨識抗原','TCR 只辨識 Peptide-MHC 複合體','PRR 辨識的是共同危險模式，不是特定抗原','MHC 是展示平台，不是抗原受體'],'BCR 直接看｜TCR 看 Peptide-MHC'],
+['M1','關於 PAMP 與 Antigen，下列何者正確？',['兩者是同義詞','PAMP 來自受傷的宿主細胞','Antigen 只能被 TLR 辨識','PAMP 由 PRR 辨識；Antigen 由 BCR／TCR 特異性辨識'],3,['PAMP 是共同模式，Antigen 是特定標的','來自受傷細胞的是 DAMP','TLR 是 PRR 家族，辨識的是模式','先天看模式、後天看特定標的'],'PRR→PAMP／DAMP｜BCR／TCR→Antigen'],
+['M1','車禍造成大片口腔組織壞死，沒有細菌感染卻出現明顯發炎。最能解釋的路徑是？',['PAMP → TCR','DAMP → PRR → Inflammation','Antigen → BCR → Antibody','IgE → Mast Cell'],1,['PAMP 是微生物模式，且 TCR 不辨識模式','受損細胞釋出 DAMP，被 PRR 偵測→無菌性發炎','題幹沒有抗體反應的線索','這是第一型過敏'],'發炎≠一定感染；DAMP 也能啟動先天免疫'],
+['M2','要把抗原情報交給從未見過抗原的 Naive T Cell 並啟動它，哪一種細胞最重要？',['Macrophage','Neutrophil','Dendritic Cell','NK Cell'],2,['Macrophage 也能呈現抗原，但定位是吞噬＋發炎','Neutrophil 是第一線吞噬，不負責啟動 T 細胞','樹突細胞是啟動 Naive T 最重要的專業 APC','NK 是先天殺手'],'Macrophage 作戰｜Dendritic 送情報'],
+['M2','病毒感染初期，尚未產生抗原特異性 T 細胞之前，哪種細胞可以快速殺死受感染細胞？',['CD8 T Cell','NK Cell','Plasma Cell','Th2'],1,['CD8 需要抗原特異性活化，屬後天免疫','NK 是先天殺手，不靠 TCR 特異性','Plasma 負責分泌抗體','Th2 與寄生蟲／過敏相關'],'先天快速殺→NK｜特異性殺→CD8'],
+['M2','某細胞吞噬細菌後，釋放 IL-1、IL-6、TNF-α 放大發炎反應。最符合哪種細胞？',['Macrophage','Neutrophil','B Cell','Treg'],0,['巨噬細胞＝吃＋叫（吞噬＋發炎訊號）','Neutrophil 定位是第一線先打','B Cell 屬抗體系統','Treg 是抑制免疫'],'N先打｜M吃＋叫'],
+['M2','關於先天免疫與適應性免疫，下列何者正確？',['先天免疫具有高度抗原特異性的記憶','適應性免疫主要靠 PRR 辨識','適應性免疫初次反應比先天免疫更快','先天免疫反應快，以模式辨識為主'],3,['經典抗原特異性記憶屬於適應性免疫','適應性靠 BCR／TCR','適應性初次反應較慢','先天＝快、PRR、先打'],'快＝先天；準＋記憶＝後天'],
+['M2','寄生蟲感染的病人，血中某種顆粒球明顯上升。這種細胞與主要調控它的細胞因子是？',['Neutrophil／IL-17','Macrophage／IFN-γ','Eosinophil／IL-5','NK／IL-12'],2,['這組合對應細菌／黴菌','這組合對應細胞內病原','Th2→IL-5→Eosinophil，對應寄生蟲／過敏','這組合對應 Th1／NK 方向'],'IL-5＝叫嗜酸性球'],
+['M3','樹突細胞吞入細胞外的細菌抗原並處理後，主要經哪條路徑呈現？',['MHC I → CD8','MHC I → CD4','MHC II → CD8','MHC II → CD4'],3,['MHC I 主要呈現細胞內來源胜肽','配對錯誤：I 配 8','配對錯誤：II 配 4','外源攝取抗原→MHC II→CD4'],'I×8＝8｜II×4＝8'],
+['M3','下列關於抗原辨識的敘述，何者正確？',['MHC 是辨識抗原的受體','TCR 辨識的是 Peptide-MHC 複合體','TCR 可直接辨識游離的完整抗原','BCR 只能辨識 Peptide-MHC'],1,['MHC 是展示板，不是受體','T 細胞經由 MHC 看抗原','能直接辨識游離抗原的是 BCR','BCR 可直接辨識抗原'],'MHC 展示｜TCR 辨識'],
+['M3','Naive T Cell 的 TCR 已辨識 Peptide-MHC，但 APC 沒有提供 B7–CD28 訊號。最可能的結果是？',['T 細胞完整活化並大量增殖','T 細胞直接分化成 Plasma Cell','Naive T Cell 的活化受限','補體被活化'],2,['只有 Signal 1 不足以完整活化','Plasma Cell 來自 B 細胞','缺少 Signal 2（共同刺激）','與補體無關'],'看到 Peptide-MHC≠一定開戰，還要 Co-stimulation'],
+['M3','樹突細胞把攝取進來的外源性抗原呈現在 MHC I 上，藉此啟動 Naive CD8 T Cell。這個現象稱為？',['Cross-presentation','Class Switching','Opsonization','Affinity Maturation'],0,['交叉呈現：外源抗原→MHC I→CD8','類別轉換是抗體換 Isotype','調理作用是貼標籤促吞噬','親和力成熟是抗體結合變準'],'「內＝I、外＝II」有重要例外'],
+['M3','MHC I 分子主要表現在哪些細胞？',['只有樹突細胞','只有 B 細胞','幾乎所有有核細胞','只有巨噬細胞'],2,['MHC I 不限於 APC','MHC I 不限於 B 細胞','所以任何有核細胞被病毒感染都能被 CD8 看見','MHC I 不限於巨噬細胞'],'MHC I 廣；MHC II 專（專業 APC）'],
+['M3','抗原要被 T 細胞看見，正確的順序是？',['展示→處理→裝載','裝載→處理→展示','處理成 Peptide→裝上 MHC→展示給 TCR','直接由 TCR 辨識完整抗原'],2,['順序顛倒','要先切成 Peptide 才能裝','先切→再裝→再展示','TCR 不直接看完整抗原'],'切→裝→展'],
+['M4','樹突細胞分泌 IL-12 後，最直接推動哪一個方向？',['Th2','Th1','Th17','Treg'],1,['Th2 方向由 IL-4 推動','IL-12→Th1→IFN-γ→Macrophage','Th17 對應 IL-17／Neutrophil','Treg 對應 IL-10／TGF-β'],'IL-12＝推 Th1'],
+['M4','Th1 細胞要讓巨噬細胞殺菌能力變強，主要靠哪個細胞因子？',['IL-4','IL-10','IL-5','IFN-γ'],3,['IL-4 是 Th2／IgE 方向','IL-10 是煞車','IL-5 是叫嗜酸性球','IFN-γ＝強化 Macrophage'],'IL-12 上游推 Th1；IFN-γ 下游強 M'],
+['M4','T 細胞活化後大量增殖，主要依賴哪個細胞因子？',['IL-2','IL-12','IL-17','TNF-α'],0,['IL-2＝T 細胞增殖、生存','IL-12 是推 Th1','IL-17 是招募嗜中性球','TNF-α 是強力發炎'],'2 長 T｜12 推 Th1'],
+['M4','口腔黏膜黴菌感染時，Th17 細胞分泌的 IL-17 主要招募哪種細胞？',['Eosinophil','Plasma Cell','Neutrophil','Osteoblast'],2,['Eosinophil 由 IL-5 調控','Plasma 是抗體工廠','Th17→IL-17→Neutrophil','成骨細胞與此無關'],'17＝菌＋炎＝叫 N'],
+['M4','哪一組細胞因子最能代表 Treg 的「煞車」功能？',['IL-1、IL-6','IL-10、TGF-β','IL-4、IL-5','IL-12、IFN-γ'],1,['這是發炎群','Treg→IL-10／TGF-β→抑制／調節','這是 Th2 方向','這是 Th1 方向'],'IL-10＝煞車'],
+['M4','實驗中把 IL-12 阻斷，預期下列哪一項最先下降？',['Eosinophil 數量','IgE 濃度','MAC 形成','Th1／IFN-γ 軸與巨噬細胞活化'],3,['那是 IL-5 的下游','那是 IL-4／Th2 的下游','那是補體 C5b-9','IL-12→Th1→IFN-γ→Macrophage，上游斷了下游就降'],'阻斷題：把節點刪掉，看下游'],
+['M4','感染後肝臟大量製造急性期蛋白（Acute-phase Response），主要與哪個細胞因子相關？',['IL-6','IL-2','IL-5','IL-17'],0,['IL-6＝發炎＋急性期反應＝全身炎','IL-2 是 T 增殖','IL-5 是嗜酸性球','IL-17 是叫嗜中性球'],'IL-1 點火｜IL-6 全身'],
+['M4','CD4 與 CD8 T 細胞的分工，下列何者正確？',['CD4 主要直接殺死感染細胞','CD8 配 MHC II','CD4 是指揮／協調，CD8 是細胞毒殺','兩者都屬先天免疫'],2,['直接殺的是 CD8','CD8 配 MHC I','4 指揮、8 殺','兩者都屬適應性免疫'],'CD4 下命令｜CD8 直接殺'],
+['M5','接種疫苗多年後，血中仍持續測得抗體。主要是哪種細胞在持續分泌？',['Memory B Cell','Naive B Cell','Long-lived Plasma Cell','Treg'],2,['Memory B 負責再次遇抗原時快速啟動，不是持續分泌','Naive B 尚未被活化','長壽命漿細胞＝長期抗體工廠','Treg 不分泌抗體'],'Memory B＝存檔再啟動｜LLPC＝長期生產'],
+['M5','B 細胞原本製造 IgM，後來改為製造 IgA，但辨識的抗原不變。這個過程是？',['Affinity Maturation','Class Switching','Cross-presentation','Clonal Deletion'],1,['親和力成熟是結合變準，不是換類別','類別轉換：換 Isotype（恆定區），特異性不變','那是樹突細胞的抗原呈現例外','題幹沒有提到'],'Switch 換武器種類｜Affinity 把瞄準變準'],
+['M5','免疫反應進行一段時間後，抗體與抗原的結合力越來越強。主要機制是？',['Class Switching','Opsonization','Co-stimulation','Somatic Hypermutation＋選擇＝Affinity Maturation'],3,['類別轉換只換種類','調理作用是貼標籤','共同刺激是 T 細胞活化的 Signal 2','體細胞高突變後選出親和力更高的 Clone'],'SHM 改可變區→選出更準的'],
+['M5','再次遇到同一抗原時的免疫反應（Secondary Response），下列何者最正確？',['比初次更快、更強，抗體親和力通常更高','只會產生 IgM','由 Naive 淋巴球主導','強度比初次弱'],0,['Memory 細胞帶來快・強・準','再次反應常見類別轉換後的抗體','主導的是 Memory 淋巴球','再次反應通常更強'],'第一次＝慢｜第二次＝快強準'],
+['M5','新生兒靠母體傳來的抗體獲得保護。這屬於哪一種免疫？',['主動免疫，有記憶','主動免疫，無記憶','被動免疫，快但短暫、無記憶','被動免疫，持久且有記憶'],2,['抗體不是自己做的','抗體不是自己做的','拿現成抗體＝快、短、無記憶','被動免疫不產生記憶'],'自己做＝主動｜拿現成＝被動'],
+['M5','關於初次免疫反應（Primary Response），下列何者正確？',['只會產生 IgM，不會有其他抗體','IgM 較早出現，但之後仍可類別轉換','由 Memory B 主導','反應比再次反應快'],1,['初次也能 Class Switching','IgM 只是「較早突出」','初次由 Naive 淋巴球主導','初次較慢'],'初次≠只有 IgM'],
+['M5','Somatic Hypermutation、Affinity Maturation 與 Class Switching 主要發生在哪裡？',['Germinal Center','骨髓腔','牙髓腔','補體系統'],0,['生發中心＝B 細胞升級中心','不是這三者的主要場所','與此無關','補體是血漿蛋白系統'],'GC 升級'],
+['M5','體液免疫（Humoral）與細胞免疫（Cell-mediated）的主角分別是？',['T Cell／B Cell','Neutrophil／Macrophage','NK／Dendritic','B Cell＋Antibody／T Cell'],3,['順序相反','兩者都是先天細胞','兩者都是先天細胞','體液＝抗體；細胞＝T'],'體液對付細胞外；細胞免疫對付細胞內'],
+['M6','補體活化後，哪個片段最具代表性地負責趨化、招募白血球到感染部位？',['C3b','C5a','C5b-9','IgG'],1,['C3b 是貼標籤','C5a＝強力 Chemotaxis＝叫援軍','C5b-9 是 MAC 打洞','IgG 是抗體不是補體'],'3b 貼｜5a 叫｜5b-9 打'],
+['M6','直接在病原體細胞膜上打洞造成溶解的構造是？',['C3a','C3b','C5b-9（MAC）','Histamine'],2,['C3a 是發炎訊號','C3b 是調理作用','膜攻擊複合體','Histamine 是肥大細胞釋放的介質'],'C5a 叫≠C5b-9 打'],
+['M6','抗體結合在細菌毒素上，使毒素無法作用於宿主細胞。這種效應稱為？',['Opsonization','Chemotaxis','Cytotoxicity','Neutralization'],3,['調理是標記後促進吞噬','趨化是招募細胞','細胞毒殺是殺死整個標的細胞','中和＝封住病原／毒素'],'Neutralize 封｜Opsonize 貼'],
+['M6','Cytokine 與 Chemokine 的關係，何者最正確？',['Chemokine 特別偏向引導細胞移動；Cytokine 是較廣義的細胞間訊號','兩者完全無關','Chemokine 是抗體的一種','Cytokine 只負責打洞'],0,['Cytokine 傳訊息｜Chemokine 傳定位','Chemokine 是訊號分子的一類','抗體是免疫球蛋白','打洞的是 C5b-9'],'傳 LINE vs 傳定位'],
+['M6','CD8 T Cell 與 NK Cell 殺死感染細胞，和巨噬細胞的吞噬，差別在於？',['兩者完全相同','前者殺死整個標的細胞，後者把病原吞進去處理','前者靠抗體，後者靠補體','前者屬先天，後者屬後天'],1,['機制不同','Cytotoxicity 殺｜Phagocytosis 吃','兩者都不是這樣分類','CD8 屬後天，NK 與巨噬屬先天'],'吃 vs 殺'],
+['M7','抗原與抗體形成的複合體沉積在組織中並引發發炎。屬於第幾型超敏反應？',['Type I','Type II','Type III','Type IV'],2,['I 型是 IgE＋Mast Cell','II 型是抗體直接針對細胞／組織標的','III 型＝Immune Complex 沉積','IV 型是 T 細胞延遲型'],'II 直接打｜III 沉積'],
+['M7','接觸某物質 48–72 小時後才出現的皮膚反應，主要由 T 細胞媒介。屬於？',['Type I','Type IV','Type III','Type II'],1,['I 型是幾分鐘內','IV 型＝T Cell＝Delayed，唯一不靠抗體','III 型是複合體沉積','II 型是抗體媒介'],'快 E｜慢 T'],
+['M7','抗體直接結合在細胞表面的標的上，造成該細胞受損。最符合哪一型？',['Type II','Type I','Type III','Type IV'],0,['II 型＝抗體打細胞／組織標的','I 型核心是 IgE／Mast Cell','III 型是游離複合體沉積','IV 型不靠抗體'],'看到 Antibody 先分：IgE／打標的／沉積'],
+['M7','免疫系統失去 Self-Tolerance、開始攻擊自己的組織，稱為？',['Immunodeficiency','Allergy','Chronic Infection','Autoimmunity'],3,['免疫缺陷是打不夠','過敏是對外來相對無害物打太大','題幹沒有感染線索','自體免疫＝打錯人'],'弱｜錯｜大｜久'],
+['M7','關於免疫耐受（Tolerance），下列何者正確？',['等於免疫功能低下','是對特定標的不產生破壞性反應','一定會造成反覆感染','與 Treg 無關'],1,['耐受不是免疫很弱','「該不打」而不是「打不了」','反覆感染是免疫缺陷的表現','Treg 是維持耐受的重要角色'],'Tolerance≠Immunodeficiency'],
+['M7','發炎本身是保護機制。下列哪一項「不是」發炎變成問題的原因？',['太強','太久','位置錯','能在清除後適時停止'],3,['太強會傷組織','太久＝慢性發炎','位置錯會打到不該打的地方','能啟動、能清除、也能停止，才是正常免疫'],'問題不是有發炎，而是太強、太久、位置錯、停不下來'],
+['M8','OPG（Osteoprotegerin）保護骨頭的方式是？',['直接殺死破骨細胞','促進 RANKL 表現','當誘餌受體抓住 RANKL，使它無法結合 RANK','增加酸的產生'],2,['OPG 不是殺手','方向相反','OPG＝Decoy Receptor＝擋','與齲齒的酸無關'],'RANKL 拆｜OPG 擋'],
+['M8','RANKL 促進骨吸收，是因為它與哪個分子結合？',['OPG','RANK','TLR','IgA'],1,['與 OPG 結合反而被攔截','RANKL→RANK→Osteoclast 形成／活化','TLR 是模式辨識受體','IgA 是黏膜抗體'],'RANK＝門鎖｜RANKL＝拆骨命令'],
+['M8','真正「執行」齒槽骨吸收的細胞是？',['Osteoclast','Osteoblast','RANKL','Neutrophil'],0,['破骨細胞＝執行者','成骨細胞負責造骨','RANKL 是訊號不是細胞','Neutrophil 是第一線吞噬'],'RANKL 是命令｜Osteoclast 是工人'],
+['M8','區分牙齦炎（Gingivitis）與牙周炎（Periodontitis）最關鍵的是？',['有沒有牙菌斑','有沒有牙齦流血','有沒有附連喪失／齒槽骨流失','有沒有蛀牙'],2,['兩者都可能有牙菌斑','兩者都可能流血','牙周炎＝支持組織破壞＋骨流失','蛀牙是另一條機制'],'無骨流失 vs 有骨流失'],
+['M8','牙髓壞死（Pulp Necrosis）之後，病變最可能往哪裡進展？',['牙釉質再礦化','齒槽骨增生','唾液 IgA 上升','根尖周發炎（Periapical Inflammation）'],3,['與此無關','方向相反','與此無關','感染→炎→痛→壞死→根尖'],'牙髓鏈最後一格是根尖'],
+['M8','關於「口腔健康」，下列何者最正確？',['口腔內完全沒有細菌','菌相、屏障、免疫與宿主維持動態平衡','免疫反應越強越好','只要沒有蛀牙就是健康'],1,['健康≠無菌','Oral Ecosystem 的 Homeostasis','免疫要能啟動也要能停','還有牙周、黏膜等面向'],'健康≠沒有細菌'],
+['M8','關於牙周炎的齒槽骨流失，下列哪個觀念正確？',['是細菌直接把骨頭吃掉','主要是酸造成脫礦','是菌相失衡加上宿主發炎反應失調，經 RANKL／Osteoclast 造成','與免疫無關'],2,['忽略了宿主反應的角色','酸脫礦是齲齒的主鏈','Dysbiosis＋Dysregulated Host Response','牙周炎是典型骨免疫問題'],'敵人＋自己的反應'],
+['M8','若能提高牙周組織中 OPG 相對於 RANKL 的比例，預期結果是？',['RANKL–RANK 訊號下降，破骨與骨吸收減少','破骨細胞增加','牙釉質脫礦增加','IgE 上升'],0,['OPG 攔截 RANKL→破骨方向下降','方向相反','那是齲齒機制','無關'],'看 RANKL／OPG balance'],
+['M8','題幹出現「Enamel Demineralization」與出現「Alveolar Bone Loss」，應分別想到？',['RANKL／Acid','Acid／RANKL→Osteoclast','IgE／IgA','MHC I／MHC II'],1,['順序相反','脫礦看酸；骨流失看 RANKL','無關','無關'],'牙齒硬組織看酸｜齒槽骨看 RANKL'],
+['M8','牙周組織中哪一組細胞因子的上升，最常與 RANKL 增加、骨破壞方向相連？',['IL-10、TGF-β','IL-4、IL-5','IL-2','IL-1β、TNF-α、IL-6'],3,['這組偏抑制／調節','這組是 Th2 方向','IL-2 是 T 增殖','發炎網路→RANKL／OPG 偏向破骨'],'Dysbiosis→發炎細胞因子→RANKL↑→Osteoclast↑'],
+['M8','深蛀牙的病人喝冰水劇痛、夜間自發痛，牙齒仍有活性反應。最符合的診斷與機制是？',['牙髓壞死：組織已死亡','牙周炎：RANKL 造成骨流失','牙髓炎：牙髓發炎造成疼痛','齲齒：單純脫礦不會痛'],2,['題幹說牙齒仍有活性','題幹沒有骨流失','Caries→Pulpal Inflammation→Pain','題幹重點在牙髓的炎與痛'],'炎≠死：Pulpitis 是發炎，Necrosis 是死亡']];
+// 國考真題（考選部公開試題；答案為官方標準答案，解析為自行撰寫）
+const EXQ=[
+["M4", "下列何者不是巨噬細胞（macrophage）所分泌的免疫及發炎相關的細胞激素（cytokine）？", ["介白素-2（IL-2）", "介白素-6（IL-6）", "介白素-12（IL-12）", "腫瘤壞死因子-α（TNF-α）"], 0, "110年第一次牙醫師・牙醫學(二) 第54題", "IL-2 主要由活化的 T 細胞分泌（讓 T 細胞增殖）；IL-6、IL-12、TNF-α 都是巨噬細胞會分泌的訊號。"],
+["M7", "花粉過敏是下列何種類型的過敏反應？", ["即發性過敏反應", "抗體依賴性之細胞毒殺反應", "抗體免疫複合物所引起的反應", "細胞性過敏反應"], 0, "110年第一次牙醫師・牙醫學(二) 第55題", "花粉過敏＝第一型：IgE→Mast Cell→Histamine，立即型。"],
+["M2", "下列何者非宿主自然性抑菌因素（natural defense factor）？", ["（Bio）chemical factors", "Antibiotics", "Physical mechanical factors", "Immunological factors"], 1, "110年第一次牙醫師・牙醫學(二) 第62題", "抗生素是外來藥物，不是宿主自己的防禦；物理、生化、免疫因素才是宿主天然防禦。"],
+["M7", "罹患謝格連氏症候群（Sjögren syndrome）的患者其唾液腺中，最主要的發炎細胞為下列何者？", ["嗜中性白血球（neutrophil）", "淋巴球（lymphocyte）", "巨噬細胞（macrophage）", "嗜伊紅球（eosinophil）"], 1, "110年第二次牙醫師・牙醫學(二) 第15題", "Sjögren 是自體免疫疾病，唾液腺以淋巴球浸潤為主。"],
+["M7", "下列何者不是自體免疫疾病（autoimmune disease）？", ["氣喘（asthma）", "全身性紅斑性狼瘡（systemic lupus erythematous）", "風濕性熱（rheumatic fever）", "類風濕性關節炎（rheumatoid arthritis）"], 0, "110年第二次牙醫師・牙醫學(二) 第54題", "氣喘屬過敏（第一型、IgE），不是自體免疫；SLE、風濕熱、類風濕性關節炎都與自體免疫有關。"],
+["M4", "關於T細胞免疫（T-cell immunity），下列敘述何者錯誤？", ["會促進抗體及炎性反應", "殺死感染細胞，主要由CD8+ T細胞來執行", "對於控制病毒感染（尤其套膜病毒），CD4+ TH2反應比TH1反應來得重要", "毒殺性T細胞（CD8+ killer T cell）會促進感染細胞的凋亡（apoptosis）"], 2, "110年第二次牙醫師・牙醫學(二) 第55題", "控制病毒這類細胞內病原靠 Th1（IFN-γ）與 CD8；Th2 偏寄生蟲與過敏。"],
+["M8", "慢性牙周炎的致病菌會刺激macrophage分泌下列何種介質，造成vasodilation，因而加重發炎反應？", ["IL-4", "IL-8", "PGE2", "IL-6"], 2, "110年第二次牙醫師・牙醫學(二) 第61題", "PGE2 造成血管擴張並促進骨吸收，是牙周發炎的重要介質；IL-8 是趨化因子。"],
+["M4", "下列何者屬於抗炎性細胞激素（anti-inflammatory cytokines）？①IL-10 ②IL-1 ③IL-6", ["僅①", "①②", "僅③", "②③"], 0, "110年第二次牙醫師・牙醫學(二) 第63題", "IL-10 是抗發炎（煞車）；IL-1、IL-6 是促發炎。"],
+["M5", "下列何者會促進B細胞的增殖（clonal expansion）？", ["Class I MHC分子呈現抗原給T helper細胞", "IL-1、IL-6 及TNF-α", "IL-4、IL-5及IL-10", "Interferon-α、IL-3及TNF-α"], 2, "111年第一次牙醫師・牙醫學(二) 第55題", "IL-4、IL-5、IL-10 屬 Th2 方向，幫助 B 細胞增殖分化；呈現給 T helper 的是 MHC II 不是 MHC I。"],
+["M6", "下列補體片段（fragment），何者是過敏素（anaphylotoxin）會刺激肥大細胞（mast cell）釋放組織胺？①C2a ②C2b ③C3a ④C4a ⑤C5a", ["①②③", "②③④", "①④⑤", "③④⑤"], 3, "111年第一次牙醫師・牙醫學(二) 第56題", "C3a、C4a、C5a 是過敏素（anaphylatoxin），可使肥大細胞脫顆粒，其中 C5a 最強。"],
+["M3", "抗原經由endocytosis或phagocytosis進入細胞之後，在lysosomal vesicles中可以與下列何分子結合，之後再被送到細胞表面呈現出來？①Class I MHC ②Class II MHC ③Nucleus", ["僅①", "僅②", "僅③", "①②"], 1, "111年第一次牙醫師・牙醫學(二) 第62題", "外源抗原經吞噬→溶小體路徑→裝上 MHC II→呈現給 CD4。"],
+["M4", "關於臨床上使用之免疫調節劑和抗發炎單株抗體及蛋白質藥物的敘述，下列何者錯誤？", ["adalimumab可用來中和發炎激素TNF-α", "abatacept為包含CTLA-4胞外區域和IgG1 Fc區的重組蛋白", "ixekizumab可用來中和發炎激素IL-1", "tocilizumab可與發炎激素IL-6的受體結合"], 2, "111年第一次牙醫師・牙醫學(二) 第76題", "ixekizumab 中和的是 IL-17A，不是 IL-1；adalimumab 抗 TNF-α、abatacept 是 CTLA-4-Ig、tocilizumab 抗 IL-6 受體。"],
+["M7", "關於血管性水腫（angioedema）之敘述，下列何者正確？", ["使用 ACE inhibitors 可能會引起血管性水腫", "為 IgG 所引起的過敏反應", "改用 angiotensin II receptor blockers 仍然會有很高的機會產生血管性水腫", "無論是那種原因引起的血管性水腫，都可以用 antihistamine 有效治療"], 0, "111年第二次牙醫師・牙醫學(二) 第6題", "ACE 抑制劑使 bradykinin 堆積而引起血管性水腫，不是抗體媒介的過敏，抗組織胺效果有限。"],
+["M2", "骨髓細胞（myeloid cells）中，下列何者具有抗原呈現（antigen presentation）的功能？", ["嗜中性白血球（neutrophil）", "嗜鹼性白血球（basophil）", "樹突細胞（dendritic cell）", "嗜酸性白血球（eosinophil）"], 2, "111年第二次牙醫師・牙醫學(二) 第56題", "樹突細胞是專業抗原呈現細胞（APC）。"],
+["M5", "母體產生麻疹抗體，經由胎盤傳給胎兒，新生兒出生後數月內對麻疹傳染具有抵抗力，屬於下列何種免疫？", ["自然主動免疫", "自然被動免疫", "人工主動免疫", "人工被動免疫"], 1, "111年第二次牙醫師・牙醫學(二) 第57題", "母體抗體經胎盤給胎兒＝自然被動免疫：快、短暫、無記憶。"],
+["M8", "下列何者數值（ratio）愈高，會讓牙周病更嚴重？", ["OPG/RANK ratio", "RANKL/OPG ratio", "OPG/RANKL ratio", "BMP/OPG ratio"], 1, "111年第二次牙醫師・牙醫學(二) 第62題", "RANKL／OPG 比值越高→破骨越多→牙周破壞越嚴重。"],
+["M7", "下列何者與自體免疫疾病無關？", ["Addison disease", "pemphigusvulgaris", "Cushing disease", "Graves disease"], 2, "112年第一次牙醫師・牙醫學(二) 第25題", "Cushing disease 是腦下垂體 ACTH 腺瘤，非自體免疫；Addison、pemphigus、Graves 都是自體免疫。"],
+["M6", "關於補體（complement）的敘述，下列何者正確？", ["補體因子 C5 是經典途徑和替代途徑兩者的中心成分", "補體活化的替代途徑可以直接被抗體刺激，在補體的早期階段很重要", "經典途徑的第一個成分 C1 實際上是 C1q、C1r 和 C1s 的複合物", "免疫球蛋白（Ig）中的 IgG4、IgA、IgD 及 IgE，可以活化補體的經典途徑"], 2, "112年第一次牙醫師・牙醫學(二) 第54題", "C1＝C1q＋C1r＋C1s；兩條途徑的中心成分是 C3；替代途徑不需要抗體；能活化經典途徑的主要是 IgM 與 IgG1／2／3。"],
+["M5", "關於淋巴結（lymph node）的構造中，下列那一個區域含有的細胞，以 T 細胞為主？", ["膠原被膜區（collagenous capsule）", "副皮質區（paracortex）", "發生中心（germinal center）", "次級淋巴濾泡（secondary lymphoid follicle）"], 1, "112年第一次牙醫師・牙醫學(二) 第55題", "淋巴結副皮質區是 T 細胞區；濾泡與生發中心是 B 細胞區。"],
+["M8", "下列何者不是唾液中的抗菌物質？", ["Lysozyme", "Amylase", "S-IgA", "Lactoferrin"], 1, "112年第一次牙醫師・牙醫學(二) 第61題", "Amylase 是消化酵素；lysozyme、lactoferrin、S-IgA 才是唾液的抗菌成分。"],
+["M8", "下列何種細胞在牙周健康者的牙齦溝液中數量最多？", ["T cell", "B cell", "neutrophil", "monocyte"], 2, "112年第一次牙醫師・牙醫學(二) 第62題", "健康牙齦溝液中以嗜中性球最多（第一線）。"],
+["M6", "關於補體（complement）的敘述，下列何者錯誤？", ["C1由C1q、C1r及C1s組成，屬於補體的傳統路徑（classical complement pathway）", "C5轉化酵素（C5 convertase），可以將C5切成C5a及C5b", "C5b具有趨化因子（chemotactic factor）的特性，會引起發炎作用", "C3b可以附著在細菌的表面，協助具有補體接受器的嗜中性白血球進行吞噬作用"], 2, "112年第二次牙醫師・牙醫學(二) 第54題", "有趨化作用的是 C5a；C5b 是膜攻擊複合體（MAC）的起始成分。"],
+["M7", "下列何種免疫球蛋白（immunoglobulin）在Type I hypersensitivity reaction中扮演重要角色？", ["IgA", "IgD", "IgE", "IgG"], 2, "112年第二次牙醫師・牙醫學(二) 第55題", "第一型超敏反應的核心抗體是 IgE。"],
+["M2", "當細菌入侵人體時，體內免疫細胞會以下列何種方式將細菌分解？", ["Endocytosis", "Exocytosis", "Phagocytosis", "Pinocytosis"], 2, "112年第二次牙醫師・牙醫學(二) 第60題", "吞噬細胞以 phagocytosis 吞入並分解細菌。"],
+["M4", "人類免疫缺陷病毒（human immunodeficiency virus）最主要是殺死下列何種細胞而導致愛滋病（AIDS）？", ["B細胞（B cells）", "巨噬細胞（macrophages）", "含CD4的T細胞（CD4-positive T cells）", "含CD8的T細胞（CD8-positive T cells）"], 2, "112年第二次牙醫師・牙醫學(二) 第61題", "HIV 主要感染並破壞 CD4+ T 細胞。"],
+["M2", "下列何者不是水溶性先天防禦性的物質（soluble innate defense mediator）？", ["溶菌素（lysozyme）", "乳酸過氧化氫酶（lactoperoxidase）", "乳鐵蛋白（lactoferrin）", "免疫球蛋白-M（IgM）"], 3, "112年第二次牙醫師・牙醫學(二) 第62題", "IgM 是適應性免疫的產物；lysozyme、lactoperoxidase、lactoferrin 屬先天的可溶性防禦物質。"],
+["M2", "關於先天性免疫細胞，下列敘述何者錯誤？", ["嗜中性白血球（neutrophil）在血液中可以清除細菌", "肥大細胞（mast cell）與 IgE 結合，釋放組織胺，引起過敏反應", "嗜鹼性白血球（basophil）在抗寄生蟲反應是主要的免疫細胞", "M1 巨噬細胞（M1 macrophage）主要是參與發炎反應"], 2, "113年第一次牙醫師・牙醫學(二) 第54題", "抗寄生蟲的主力是嗜酸性球（eosinophil），不是嗜鹼性球。"],
+["M4", "當菌血症發生時，最可能引發肝臟那一種改變？", ["染色體異常", "C 反應蛋白增加", "抗體 IgG 上升", "細胞核異常"], 1, "113年第一次牙醫師・牙醫學(二) 第55題", "菌血症→IL-6→肝臟急性期反應→C 反應蛋白（CRP）上升。"],
+["M8", "關於急性壞死性潰瘍性牙齦炎（acute necrotizing ulcerative gingivitis），下列敘述何者錯誤？", ["免疫球蛋白 G（IgG）及 M（IgM）對大型的螺旋體屬（Spirochaeta）有高的效價", "螺旋體與細梭菌（fusobateria）是主要的致病菌", "常有口臭，發燒現象", "人類免疫缺陷病毒（HIV）感染之患者及壓力下的年輕人都是高危險群"], 0, "113年第一次牙醫師・牙醫學(二) 第60題", "急性壞死性潰瘍性牙齦炎與螺旋體、梭桿菌相關，好發於壓力大與免疫低下者；選項 A 關於抗體效價的敘述不正確。"],
+["M7", "關於發炎反應的敘述，下列何者錯誤？", ["可以分為三個時期 acute inflammation、subacute inflammation、chronic inflammation", "在 acute stage 組織胺會分泌，造成血管擴張", "在 subacute stage 發炎細胞會離開受傷組織，進而進行組織修復", "在 subacute stage 時，prostaglandins、leukotrienes、platelet-activating factor 及 cytokines 扮演了重要角色"], 2, "113年第一次牙醫師・牙醫學(二) 第71題", "亞急性期發炎細胞仍持續進入組織參與反應，不是離開；組織修復屬更後期。"],
+["M6", "下列何種免疫球蛋白（immunoglobulin）參與antibody-dependent cellular cytotoxicity（ADCC）？", ["IgA", "IgD", "IgE", "IgG"], 3, "113年第二次牙醫師・牙醫學(二) 第54題", "ADCC 由 IgG 的 Fc 與 NK 細胞的 Fc 受體結合而啟動。"],
+["M7", "對於全身性紅斑性狼瘡（systemic lupus erythematosus）的血清檢查，下列何者正確？", ["只有少數的患者有 antinuclear antibodies（ANAs）", "antinuclear antibodies（ANAs）的存在，對於全身性紅斑性狼瘡的診斷有專一性", "Ro/La 抗體對於全身性紅斑性狼瘡的診斷有專一性", "small nuclear RNA 的抗體存在，對於全身性紅斑性狼瘡的診斷有很高的專一性"], 3, "114年第一次牙醫師・牙醫學(二) 第26題", "抗 Sm（small nuclear RNP）抗體對 SLE 專一性高；ANA 敏感但不專一；Ro／La 抗體常見於 Sjögren。"],
+["M8", "下列何種口內淋巴組織有助於 S-IgA 產生？", ["palatine and lingual tonsils", "salivary gland lymphoid tissue", "gingival lymphoid tissue", "scattered submucosal lymphoid cells"], 1, "114年第一次牙醫師・牙醫學(二) 第55題", "分泌型 IgA 主要由唾液腺相關淋巴組織的漿細胞產生。"],
+["M7", "下列那一種疾病和 IgE 及肥大細胞（mast cell）活化最有關？", ["氣喘（asthma）", "腎絲球炎（glomerulonephritis）", "重症肌無力（myasthenia gravis）", "溶血性貧血（hemolytic anemia）"], 0, "114年第一次牙醫師・牙醫學(二) 第56題", "氣喘＝第一型（IgE／肥大細胞）；腎絲球炎多為第三型，重症肌無力與溶血性貧血為第二型。"],
+["M8", "關於牙周病致病細菌的毒性（virulence），下列敘述何者錯誤？", ["Aggregatibacter actinomycetemcomitans 能製造外毒素（exotoxin），如 leukotoxin 和 Cdt，毒殺宿主細胞", "細菌會分泌胞外蛋白質水解酶（extracellular proteolytic enzymes），破壞降解宿主結締組織", "Gingipain 是由 Porphyromonas gingivalis 所分泌的一種蛋白質水解酶，能破壞宿主結締組織中的膠原蛋白", "細菌會誘發宿主免疫細胞基因突變，而導致免疫力下降，甚至可能導致口腔癌"], 3, "114年第一次牙醫師・牙醫學(二) 第60題", "牙周致病菌的毒力來自外毒素、蛋白酶等；「誘發免疫細胞基因突變」不是它的毒力機制。"],
+["M7", "下列何種物質可由肺部肥大細胞（mast cell）所釋出且會誘發氣喘？", ["adrenaline", "dopamine", "histamine", "acetylcholine"], 2, "114年第一次牙醫師・牙醫學(二) 第65題", "肥大細胞釋出 histamine，引起支氣管收縮。"],
+["M7", "關於復發性口瘡口炎（recurrent aphthous stomatitis）的敘述，下列何者正確？", ["主要是體液性免疫反應（humoral immunity）所引起", "較常發生於口腔角化黏膜", "增加了 TNF-alpha 的產生", "最常發生於老年人"], 2, "115年第一次牙醫師・牙醫學(二) 第8題", "復發性口瘡以細胞性免疫（T 細胞）為主，TNF-α 增加，好發於非角化黏膜與年輕人。"],
+["M7", "後天性大疱性表皮鬆解（epidermolysis bullosa acquisita）主因在於自體抗體攻擊下列何種蛋白質？", ["角質蛋白", "第Ⅰ型膠原纖維", "第Ⅳ型膠原纖維", "第Ⅶ型膠原纖維"], 3, "115年第一次牙醫師・牙醫學(二) 第26題", "後天性大疱性表皮鬆解的自體抗體針對第 VII 型膠原（錨定纖維）。"],
+["M5", "下列何者可以幫助 B 細胞活化與成熟分泌抗體？", ["Monocyte", "Neutrophil", "T helper cell", "Endothelial cell"], 2, "115年第一次牙醫師・牙醫學(二) 第54題", "B 細胞活化與類別轉換需要 T helper（CD40L 與細胞激素）幫忙。"],
+["M3", "Class I major histocompatibility complex（MHC）分子不會表現在下列何細胞上？", ["Epithelial cell", "Endothelial cell", "Neutrophil", "Erythrocyte"], 3, "115年第一次牙醫師・牙醫學(二) 第55題", "MHC I 表現於幾乎所有有核細胞；成熟紅血球沒有細胞核，不表現。"],
+["M5", "如未接種 B 型肝炎疫苗及無 B 型肝炎抗體的牙醫師，在治療病人時受到 B 型肝炎病毒（hepatitis B virus）感染，下列處置何者最適當？", ["立即注射干擾素", "立即注射 HBIG（hepatitis B immunoglobulin）", "立即注射干擾素及 HBIG（hepatitis B immunoglobulin）", "立即注射 HBIG（hepatitis B immunoglobulin）並接種 B 型肝炎疫苗"], 3, "115年第一次牙醫師・牙醫學(二) 第64題", "暴露後處置＝HBIG（被動免疫，立即保護）＋疫苗（主動免疫，產生記憶）。"],
+["M3", "細菌的超級抗原（superantigens）主要具有下列何種特性？", ["能在真核細胞的細胞膜上打洞", "不需經抗原處理（antigen processing），本身就可活化免疫細胞", "可抑制巨噬細胞（macrophages）的吞噬作用", "可抑制巨噬細胞內的顆粒釋放內容物（degranulation）"], 1, "114年第一次醫師・醫學(二) 第6題", "超級抗原不經抗原處理，直接橋接 MHC II 與 TCR，非特異性地活化大量 T 細胞。"],
+["M2", "下列有關先天性免疫系統對抗病原菌感染的敘述，何者最適當？", ["先天性免疫細胞只有監測身體的功能，無法有效移除病原體", "先天性免疫細胞無法提供專一性的保護力，且缺乏有效的記憶反應", "先天性免疫細胞摧毀它們所遇到的一切，需要後天性免疫來調節抑制這個過程", "先天性免疫細胞分泌的細胞激素和趨化因子在沒有後天性免疫的情況下具有毒性"], 1, "114年第一次醫師・醫學(二) 第18題", "先天免疫能有效清除病原，但缺乏抗原專一性與典型的記憶反應。"],
+["M2", "病原菌感染時，在感染處引起先天性免疫發炎反應，吸引下列何種血液中的免疫細胞最快來到感染處？", ["B 細胞", "NK 細胞", "嗜中性白血球", "CD8 毒殺 T 細胞"], 2, "114年第一次醫師・醫學(二) 第19題", "嗜中性球最快到達感染處。"],
+["M3", "下列對於 MHC 分子的描述，何者最不適當？", ["MHC class I 及 MHC class II 分子是由多個基因所表達（polygenic）", "MHC class III 的基因產物在免疫系統中不具功能", "每一個表達 MHC class I 及 MHC class II 分子的基因是具有基因多型性（polymorphism）", "MHC class II 分子間的差異大部分是在β1 region 上的胺基酸序列"], 1, "114年第一次醫師・醫學(二) 第20題", "MHC class III 區域編碼補體（C2、C4、Factor B）與 TNF 等，具有免疫功能。"],
+["M5", "下列關於 B 細胞發育的敘述，何者最不適當？", ["骨髓是 B 細胞開始進行發育的器官", "會辨識自體抗原的 B 細胞可以在骨髓中被清除", "會辨識自體抗原的 B 細胞可以在脾臟中被清除", "無法表現替代輕鏈（surrogate light chain）的 B 細胞，發育時會停滯在 immature B 細胞時期"], 3, "114年第一次醫師・醫學(二) 第21題", "沒有替代輕鏈就無法形成 pre-BCR，發育會停在更早的 pro-B／pre-B 階段，不是 immature B。"],
+["M4", "T 淋巴細胞生成與發育的位置為何？", ["肺臟", "脾臟", "淋巴結", "胸腺"], 3, "114年第一次醫師・醫學(二) 第22題", "T 細胞在胸腺發育成熟。"],
+["M4", "慢性感染 Mycobacterium tuberculosis 時，病人肺部常形成肉芽腫（granuloma），是一種群聚巨噬細胞及其他免疫細胞的病理組織，下列有關肉芽腫的敘述何者最不適當？", ["巨噬細胞無法有效清除感染的 Mycobacterium tuberculosis", "被感染的巨噬細胞形成融合在一起的現象", "常見 TH17 細胞圍繞在融合的巨噬細胞周圍", "常見於病人帶有 NADPH oxidase 基因突變"], 2, "114年第一次醫師・醫學(二) 第23題", "結核肉芽腫周圍主要是 Th1（IFN-γ）細胞；NADPH oxidase 缺陷（慢性肉芽腫病）也容易形成肉芽腫。"],
+["M5", "有關體細胞超突變（somatic hypermutation），下列敘述何者最不適當？", ["主要發生在 germinal center 的 B 細胞中", "由 activation-induced cytidine deaminase（AID）在抗體的 Fc region 造成點突變", "為促進親和力成熟（affinity maturation）的主要機制", "可增加抗體的多樣性（diversity）"], 1, "114年第一次醫師・醫學(二) 第24題", "AID 是在抗體可變區（V region）造成點突變，不是 Fc 區。"],
+["M2", "肺結核是由 Mycobacterium tuberculosis 感染後引起的慢性傳染病。下列何者是造成該細菌長期潛伏於被感染的細胞內的最主要因素？", ["複製繁殖力高", "抵抗吞噬體的作用", "抑制樹突細胞抗原呈獻", "抗原變異性大"], 1, "114年第一次醫師・醫學(二) 第25題", "結核菌能抑制吞噬體與溶小體融合，因此可在巨噬細胞內長期存活。"],
+["M7", "下列何種自體免疫疾病，最主要是由 T 細胞攻擊組織，進而影響中樞神經系統功能？", ["類風濕性關節炎", "多發性硬化症", "克隆氏症", "紅斑性狼瘡"], 1, "114年第一次醫師・醫學(二) 第26題", "多發性硬化症由 T 細胞攻擊中樞神經的髓鞘。"],
+["M4", "在腫瘤微環境（tumor microenvironment）中，下列何者是最不具免疫抑制性的分子或細胞？", ["programmed death-1（PD-1）", "調節性 T 細胞（regulatory T cell, Treg）", "M1 巨噬細胞（M1 macrophage）", "interleukin 10（IL-10）"], 2, "114年第一次醫師・醫學(二) 第27題", "M1 巨噬細胞是促發炎、抗腫瘤的；PD-1、Treg、IL-10 都是抑制性的。"],
+["M4", "以 PD-L1 單株抗體作為免疫癌症療法最主要的機轉，是阻斷下列何種細胞表現的 PD-L1 與 PD-1 的結合？", ["巨噬細胞", "樹突細胞", "T 細胞", "腫瘤細胞"], 3, "114年第一次醫師・醫學(二) 第28題", "腫瘤細胞表現 PD-L1，與 T 細胞的 PD-1 結合使 T 細胞失能；抗 PD-L1 抗體阻斷這個結合。"],
+["M4", "下列免疫檢查點抑制劑（immune checkpoint inhibitor），何者不是作用在 T 細胞？", ["pembrolizumab", "basiliximab", "atezolizumab", "ipilimumab"], 2, "114年第一次醫師・醫學(二) 第54題", "atezolizumab 的標的是 PD-L1（主要在腫瘤細胞與 APC 上），不在 T 細胞上；pembrolizumab（PD-1）、ipilimumab（CTLA-4）的標的在 T 細胞上。"],
+["M8", "下列何者為 RANK ligand（RANKL）單株抗體製劑，可作為治療骨質疏鬆症之藥物？", ["adalimumab", "infliximab", "romosozumab", "denosumab"], 3, "114年第一次醫師・醫學(二) 第60題", "denosumab 是抗 RANKL 單株抗體，抑制破骨細胞；romosozumab 是抗 sclerostin。"],
+["M4", "下列何種抗體藥物之標的為 IL-5，用於治療嚴重型嗜酸性（eosinophilic）氣喘？", ["reslizumab", "omalizumab", "dupilumab", "alemtuzumab"], 0, "114年第一次醫師・醫學(二) 第68題", "reslizumab 抗 IL-5（IL-5→Eosinophil）；omalizumab 抗 IgE；dupilumab 抗 IL-4 受體 α。"],
+["M3", "下列何種分子的過度表現最不可能使腫瘤細胞逃避免疫攻擊（immune evasion）？", ["TGF-β", "CTLA-4", "PD-L1", "MHC molecules"], 3, "114年第一次醫師・醫學(二) 第81題", "MHC 表現越高越容易被 T 細胞辨識；腫瘤通常是「降低」MHC 表現來逃避免疫。"],
+["M7", "以直接免疫螢光法（direct immunofluorescence）檢查天皰瘡（pemphigus vulgaris）所引起的水泡，可以發現 IgG 免疫球蛋白主要沉積於什麼位置？", ["表皮層鱗狀上皮細胞之間（intercellular regions of epidermal cells）", "表皮層下之基底膜（basement membrane）", "血管壁（vascular walls）", "汗腺管（eccrine ducts）之基底膜"], 0, "114年第一次醫師・醫學(二) 第100題", "天皰瘡的自體抗體針對橋粒蛋白（desmoglein），IgG 沉積在上皮細胞之間。"],
+["M5", "在抗體與抗原的交互作用中，下列那個作用力參與最少？", ["范德瓦爾斯力（van der Waals force）", "氫鍵（hydrogen bond）", "偶極－偶極力（dipole-dipole force）", "共價鍵（covalent bond）"], 3, "114年第二次醫師・醫學(二) 第19題", "抗原與抗體靠非共價作用力（氫鍵、凡得瓦力、靜電、疏水）結合，是可逆的。"],
+["M3", "主要組織相容性複合體（major histocompatibility complex, MHC）為 T 細胞辨識抗原過程中重要的分子，關於 MHC 的敘述，下列何者最不適當？", ["MHC class I 呈獻的抗原胜肽較短，而 MHC class II 呈獻的抗原胜肽較長", "MHC class I 呈獻抗原給 CD8 T 細胞，而 MHC class II 呈獻抗原給 CD4 T 細胞", "組成 MHC class II 的分子有兩個，分別是α chain 與β chain，其中β chain 的變化性（variability）遠高於α chain", "MHC class I 與 class II 都有分子不會接觸到抗原，class I 中是β2-microglobulin，而 class II 中是αchain"], 3, "114年第二次醫師・醫學(二) 第20題", "MHC II 的 α 鏈與 β 鏈都參與形成胜肽結合槽；MHC I 不接觸抗原的是 β2-microglobulin。"],
+["M5", "下列有關 pre-B 細胞受體（pre-B cell receptor）的敘述，何者最不適當？", ["具有免疫球蛋白輕鏈之κ鏈（κ chain）", "可以傳遞存活訊號使 pre-B 細胞繼續發育", "具有 Igα和 Igβ兩個訊號傳遞蛋白", "可以傳遞訊號抑制免疫球蛋白重鏈（heavy chain）基因進行重組（rearrangement）"], 0, "114年第二次醫師・醫學(二) 第21題", "pre-BCR 由重鏈加上替代輕鏈（VpreB、λ5）組成，此時還沒有 κ／λ 輕鏈。"],
+["M4", "下列何者最不可能高度表現於調節性 T 細胞（Treg）？", ["CD25", "IL-10", "CTLA-4", "B7"], 3, "114年第二次醫師・醫學(二) 第22題", "Treg 高度表現 CD25、CTLA-4、IL-10、FoxP3；B7（CD80／86）主要在抗原呈現細胞上。"],
+["M4", "在沒有病原菌感染的情況下，人體腸胃道組織中的樹突細胞（dendritic cell）最常見的特徵是：", ["會分泌大量細胞激素 IL-12", "細胞表面有高量 B7-1 分子，是高效能的抗原呈獻細胞", "腸道中的 TGF-β與 IL-10 會增進樹突細胞對共生菌的耐受性", "可製造 A 酸（retinoic acid）並增進 T 毒殺細胞功能"], 2, "114年第二次醫師・醫學(二) 第23題", "腸道在穩態下，TGF-β 與 IL-10 讓樹突細胞偏向耐受、誘導 Treg。"],
+["M1", "革蘭氏陽性細菌細胞壁的 peptidoglycan 最主要是經由下列何種受體被辨識？", ["Toll-like receptor 2", "Toll-like receptor 4", "Toll-like receptor 8", "Toll-like receptor 9"], 0, "114年第二次醫師・醫學(二) 第24題", "TLR2 辨識 peptidoglycan／lipoteichoic acid；TLR4 辨識 LPS；TLR9 辨識 CpG DNA。"],
+["M7", "自體免疫疾病一但建立之後，通常會逐漸演化成長期且持續的疾病，在治療上面也缺乏具有特異性且有效的治療方式。下列有關自體免疫疾病難以治癒的原因，何者最不適當？", ["自體免疫疾病的病程中，免疫系統不斷接受抗原的刺激，形成一個正回饋的發炎反應", "治療上無法移除自身抗原", "表位擴散（epitope spreading）的特性造成更多辨識自身抗原的免疫細胞活化", "自體免疫疾病的病人都有調節型 T 細胞（regulatory T cell）的異常"], 3, "114年第二次醫師・醫學(二) 第25題", "並非所有自體免疫病人都有 Treg 異常；持續的自體抗原刺激與表位擴散才是難治的主因。"],
+["M4", "有關腫瘤免疫反應的敘述，下列何者最適當？", ["有腫瘤特異性抗原的呈獻，可產生並存在著腫瘤專一性 T 淋巴球", "免疫細胞無法進入腫瘤組織內，因而無法抑制腫瘤細胞的生長", "腫瘤細胞不斷生長增加時，亦產生性質變異，表現突變的細胞表面分子，進而造成免疫細胞的死亡", "因腫瘤細胞性質的變異，表現出腫瘤抑制基因（tumor suppressor gene）的產物，引起了腫瘤抑制自然殺手細胞的效果"], 0, "114年第二次醫師・醫學(二) 第26題", "腫瘤特異性抗原可被呈現，並誘發腫瘤專一性的 T 細胞。"],
+["M4", "腫瘤如黑色素瘤（melanoma）會產生骨髓衍生性抑制細胞（MDSCs），最主要透過分泌下列何種細胞激素以利腫瘤細胞生長？", ["IL-1", "IL-10", "TNF-α", "IFN-γ"], 1, "114年第二次醫師・醫學(二) 第28題", "骨髓衍生性抑制細胞（MDSC）分泌 IL-10、TGF-β 等，抑制抗腫瘤免疫。"],
+["M4", "下列藥物中，何者為 anti-CD19 chimeric antigen receptor (CAR) T cells 產品，用於治療 relapsedlarge B-cell lymphoma？", ["abatacept", "siponimod", "teriflunomide", "tisagenlecleucel"], 3, "114年第二次醫師・醫學(二) 第56題", "tisagenlecleucel 是 anti-CD19 CAR-T 細胞產品。"],
+["M7", "天皰瘡（pemphigus vulgaris）的致病機轉與下列何者最有關係？", ["第一型過敏反應", "第二型過敏反應", "第三型過敏反應", "第四型過敏反應"], 1, "114年第二次醫師・醫學(二) 第79題", "天皰瘡＝自體抗體攻擊細胞表面標的＝第二型超敏反應。"],
+["M4", "若先天 interferon-γ受體基因缺陷的病人感染結核分枝桿菌，最可能導致下列何種結果？", ["病人將在沒有症狀的情況下清除結核分枝桿菌的感染", "病人將產生更強的免疫反應，並降低活動性結核病的風險", "病人罹患播散性結核病的風險將增加", "病人將具有完全抵抗結核分枝桿菌感染的免疫力"], 2, "115年第一次醫師・醫學(二) 第4題", "IFN-γ 是活化巨噬細胞殺結核菌的關鍵；IFN-γ 受體缺陷→容易發生播散性分枝桿菌感染。"],
+["M2", "第一型干擾素（interferon）α及β做為抗病毒藥物，最主要是抑制病毒複製的下列何項步驟？", ["病毒的入侵", "病毒轉錄", "病毒蛋白質合成", "病毒的組裝"], 2, "115年第一次醫師・醫學(二) 第17題", "第一型干擾素誘導抗病毒蛋白（如 PKR、OAS／RNase L），主要抑制病毒蛋白質合成。"],
+["M5", "後天性免疫反應需較長時間建立，從接觸病原後需數天到數週才達到高峰。然而，這些反應比先天性免疫反應更具特異性，且能產生免疫記憶，增強面臨相同病原體時的保護，下列何者最符合此種應用？", ["疫苗", "抗生素", "抗過敏反應藥物", "免疫抑制劑"], 0, "115年第一次醫師・醫學(二) 第18題", "疫苗就是利用適應性免疫的特異性與記憶。"],
+["M1", "痛風（gout）是尿酸結晶（urate crystals）沉澱在關節組織後所引起的發炎症。下列那一種先天性免疫活化途徑最可能參與上述發炎反應？", ["NLRP1", "NLRP3", "MDA5", "cGAS"], 1, "115年第一次醫師・醫學(二) 第19題", "尿酸結晶是危險訊號（DAMP），活化 NLRP3 inflammasome→IL-1β→發炎。"],
+["M3", "關於 major histocompatibility complex（MHC）polymorphism 與抗病毒免疫反應，下列敘述何者最具相關性？", ["增加可被 MHC 呈獻的抗原種類，有利於抑制病毒在族群中傳播", "呈獻出最容易被 T 細胞記憶的主要抗原點（predominant epitope）", "確保沒有年齡別的抗病毒免疫力差異性", "避免 T 細胞在毒殺病毒時造成過度的自體免疫反應"], 0, "115年第一次醫師・醫學(二) 第20題", "MHC 多型性讓族群能呈現更多種抗原胜肽，病原不容易全面逃脫。"],
+["M4", "下列何種 CD4 效應 T 細胞（effector CD4 T cells）分泌的細胞激素（cytokines），扮演最重要的免疫抑制功能？", ["IL-4", "IL-10", "IL-12", "TNF-α"], 1, "115年第一次醫師・醫學(二) 第21題", "IL-10 是最重要的抑制性細胞激素（Treg 等分泌）。"],
+["M5", "下列那些基因缺失會造成抗體無法進行類型轉換（class switch）？①activation-induced cytidinedeaminase（AID） ②adenosine deaminase（ADA） ③CD40 ④CD40 ligand ⑤RAG1", ["①③④", "②④⑤", "①②⑤", "③④⑤"], 0, "115年第一次醫師・醫學(二) 第22題", "類別轉換需要 AID 與 CD40–CD40L；ADA、RAG1 缺陷造成的是嚴重複合型免疫缺乏（SCID）。"],
+["M5", "每一顆 B 細胞只表現一種專一性（specificity）抗原受體，其最主要的機制為：", ["RNA 選擇性剪接（alternative splicing）", "DNA 重組（rearrangement）", "等位基因排除（allelic exclusion）", "類型轉換重組（class switch recombination）"], 2, "115年第一次醫師・醫學(二) 第23題", "等位基因排除（allelic exclusion）確保每個 B 細胞只表現一組重鏈／輕鏈，因此只有單一專一性。"],
+["M2", "呼吸道剛被病毒感染時，最不可能產生下列何種分子？", ["type I interferon", "type II interferon", "CCL2", "IL-18"], 1, "115年第一次醫師・醫學(二) 第24題", "感染初期由先天免疫產生第一型干擾素、趨化因子、IL-18；第二型干擾素（IFN-γ）主要來自稍後被活化的 NK／T 細胞。"],
+["M6", "Streptococcus pneumoniae 是一種胞外菌（extracellular bacteria）。下列何者最有可能幫助 S.pneumoniae 逃脫免疫偵測？", ["產生大量的 lipopolysaccharide（LPS），毒殺免疫細胞", "形成孢子，躲避免疫偵測", "減少基因表達，避免刺激免疫反應", "細菌表面的莢膜多醣（capsular polysaccharide），干擾補體活化反應"], 3, "115年第一次醫師・醫學(二) 第25題", "莢膜多醣阻礙補體沉積與吞噬；肺炎鏈球菌是革蘭氏陽性菌，沒有 LPS。"],
+["M4", "2018 年諾貝爾生醫獎，由 James Allison 與 Tasuku Honjo 共同獲得，表彰他們發展出利用免疫檢查點抑制劑（immune checkpoint inhibitor, ICI）對抗癌療法的突破性研究，下列關於免疫檢查點抑制劑的描述，何者最不適當？", ["ICI 在癌症治療取得突破性的結果，如：黑色素瘤（melanoma）獲得較好的反應", "Pembrolizumab 與 Nivolumab 是兩種常見的 PD-1 抗體藥物，其治療反應率優於 CTLA-4 抗體藥物", "Ipilimumab 是 CTLA-4 抗體藥物，其治療副作用率高於 PD-1 抗體藥物", "對於急性淋巴細胞白血病（acute lymphocytic leukemia, ALL），除了 CAR-T 療法外，ICI 亦有顯著的療效"], 3, "115年第一次醫師・醫學(二) 第26題", "免疫檢查點抑制劑對急性淋巴性白血病療效有限；CAR-T 才是 ALL 的重要免疫療法。"],
+["M3", "移植前所進行捐贈者與受贈者之淋巴細胞混合反應（mixed lymphocyte reaction, MLR），最主要評估下列何者之相容程度？", ["HLA-A", "HLA-DR", "H2-D", "H2-K"], 1, "115年第一次醫師・醫學(二) 第27題", "混合淋巴球反應主要反映 MHC class II（HLA-DR）差異引起的 CD4 T 細胞增殖。"],
+["M6", "抗 CD20 抗體（Rituximab）可治療非霍奇金氏淋巴瘤（non-Hodgkin's lymphoma）。主要是經由下列何種機轉引起 B 細胞的凋亡，達到抗腫瘤效果？", ["ADCC（經由活化 Fc receptor）", "immunotoxin（抗體 + toxin）", "抗體結合 chemotherapeutic drug", "免疫檢查點阻斷方法（immune checkpoint blockade）"], 0, "115年第一次醫師・醫學(二) 第28題", "Rituximab 的 Fc 與 NK 細胞的 Fc 受體結合→ADCC。"],
+["M7", "下列呼吸道治療藥物中，何者亦可治療慢性復發蕁麻疹（chronic recurrent urticaria）及花生過敏？", ["albuterol", "dupilumab", "roflumilast", "omalizumab"], 3, "115年第一次醫師・醫學(二) 第67題", "omalizumab 是抗 IgE 抗體，用於過敏性氣喘、慢性蕁麻疹與食物過敏。"],
+["M4", "下列治療類風濕性關節炎的藥物中，何者不是經由直接抑制 TNF-α的作用而產生療效？", ["infliximab", "etanercept", "adalimumab", "abatacept"], 3, "115年第一次醫師・醫學(二) 第70題", "abatacept 是 CTLA-4-Ig，阻斷 B7–CD28 共同刺激；其餘三者直接抑制 TNF-α。"],
+["M2", "下列何種磷脂質於細胞凋亡後，會由細胞膜的內層翻轉出來到細胞膜的外層，被巨噬細胞識別以進行吞噬作用？", ["phosphatidylcholine", "phosphatidylserine", "sphingomyelin", "glycolipid"], 1, "115年第一次醫師・醫學(二) 第76題", "凋亡細胞把 phosphatidylserine 翻到膜外，作為「吃我」訊號給巨噬細胞。"],
+["M7", "腎臟移植後腎臟切片發現腎臟間質、腎小管上皮細胞間與血管內皮有淋巴細胞浸潤，有小血管壁出現壞死現象，未出現間質纖維化與腎小管萎縮，螢光染色未發現有抗體或 C4d 補體沉積。下列何者為最可能的診斷？", ["慢性排斥（chronic rejection）", "超急性排斥（hyperacute rejection）", "急性細胞排斥（acute cellular rejection）", "急性抗體媒介排斥（acute antibody-mediated rejection）"], 2, "115年第一次醫師・醫學(二) 第79題", "淋巴球浸潤、沒有抗體或 C4d 沉積＝T 細胞媒介的急性細胞排斥。"],
+["M4", "下列何者對於類風濕性關節炎（rheumatoid arthritis）發生機轉的重要性最為明確，且已有專一性拮抗劑用於治療？", ["rheumatoid factor", "IL-2", "IFN-α", "TNF"], 3, "115年第一次醫師・醫學(二) 第89題", "TNF 在類風濕性關節炎致病中的角色明確，抗 TNF 製劑已廣泛用於治療。"],
+["M7", "橋本氏甲狀腺炎（Hashimoto thyroiditis）病患較常出現下列那些自體免疫抗體？", ["antithyroglobulin antibody 和 antithyroid peroxidase antibody", "antithyroglobulin antibody 和 anti-TSH receptor antibody", "antinuclear antibody 和 antithyroid peroxidase antibody", "antimitochondrial antibody 和 anti-TSH receptor antibody"], 0, "115年第一次醫師・醫學(二) 第97題", "橋本氏甲狀腺炎：anti-thyroglobulin 與 anti-TPO 抗體；anti-TSH receptor 抗體是 Graves disease。"],
+["M6", "破傷風免疫球蛋白（tetanus immunoglobulin）在臨床治療破傷風的最主要目的為何？", ["刺激神經傳導物質的釋放", "中和未結合的破傷風毒素", "誘導長期免疫力", "殺死破傷風梭菌"], 1, "115年第二次醫師・醫學(二) 第8題", "被動給予的抗毒素抗體中和尚未結合神經的毒素（Neutralization），不會產生長期免疫。"],
+["M2", "有關先天性免疫（innate immunity）反應，下列敘述何者最不適當？", ["先天性免疫反應可利用吞噬細胞及補體來攻擊病原菌", "辨識病原菌的先天性免疫受體分子的基因不會重組", "先天性免疫反應在感染處常可因產生細胞激素引起發炎反應", "先天性免疫反應具有抗原特異性的免疫記憶"], 3, "115年第二次醫師・醫學(二) 第18題", "抗原特異性的免疫記憶屬於適應性免疫。"],
+["M3", "關於 major histocompatibility complex（MHC，包括 class I 與 class II），下列敘述何者最適當？", ["它們都是由單一基因（monogeny）構成", "具有三種主要的 MHC class I 基因", "具有 allelic exclusion 的特點", "IL-5 可以促進 MHC class II 表現在抗原呈獻細胞表面上"], 1, "115年第二次醫師・醫學(二) 第19題", "人類 MHC class I 有 HLA-A、B、C 三個主要基因；MHC 是多基因、共顯性表現，沒有 allelic exclusion。"],
+["M5", "過量表現細胞激素 BAFF 的個體，發生自體免疫疾病 Sjögren's syndrome（又名乾燥症）的機率會上升，乾燥症以破壞人體外分泌腺體，如淚腺及唾液腺的症狀最顯著。檢查 BAFF 過量之乾燥症患者的免疫系統及血液，預期最可能發現下列何種異狀？", ["骨髓內發育中的 pre-B 細胞增加", "從骨髓製造出來的 immature B 細胞增加", "血液中自體反應性（autoreactive）的成熟 B 細胞增加", "血液中自體反應性（autoreactive）的成熟 T 細胞增加"], 2, "115年第二次醫師・醫學(二) 第20題", "BAFF 是 B 細胞存活因子，過量會讓本該被淘汰的自體反應性成熟 B 細胞存活下來。"],
+["M4", "有關 T 細胞次群生成及其轉錄因子的配對，下列何者最適當？", ["TH1：Tbet", "TH2：RORγt", "TFH：GATA3", "Treg：Bcl-6"], 0, "115年第二次醫師・醫學(二) 第21題", "Th1–T-bet、Th2–GATA3、Th17–RORγt、Tfh–Bcl-6、Treg–FoxP3。"],
+["M5", "A 型肝炎病毒藉由糞口傳染途徑，造成病人急性肝炎症狀。檢測病人血液中專一性對抗 A 型肝炎病毒的抗體，當發現下列何種類型的抗體濃度最高，最可能顯示該病人剛遭受該病毒感染？", ["IgA", "IgE", "IgG", "IgM"], 3, "115年第二次醫師・醫學(二) 第22題", "IgM 最高代表近期初次感染；IgG 代表過去感染或已有免疫。"],
+["M5", "不同類型的抗體具有不同的功能，而這些抗體是經由抗體類型轉換（isotype switch）的機制產生，下列敘述何者最不適當？", ["活化的 B 細胞在生發中心（germinal center）進行抗體類型轉換，而且這個過程需要 AID（activation-induced cytidine deaminase）酵素的參與進行 DNA 重組", "施打疫苗的目的除了增加抗體的質和量外，也促進抗體從 IgM 轉換到 IgG 及其他的抗體類型，提升免疫力", "活化的 B 細胞在進行抗體類型轉換的過程會受到細胞激素的影響，比如 IFN-γ會促進 IgG3 及 IgG2a 的轉換，而 IL-4 則是促進 IgG1 及 IgA 的轉換", "B 細胞和輔助型 T 細胞的交互作用對於抗體類型轉換的發生十分重要，如果 CD40L 或是 CD40 的缺失會造成 B細胞和 T 細胞無法交互作用而引起 IgM 過多症候群（hyper IgM syndrome）"], 2, "115年第二次醫師・醫學(二) 第24題", "IL-4 促進的是 IgG1 與 IgE，不是 IgA；IgA 主要由 TGF-β 促進。"],
+["M7", "大明去爬山，一時興起用手去觸摸路旁植物的葉子，第 2 天之後，發現手背很癢，並開始出現一些水泡與紅腫現象，醫師診斷出是過敏反應，下列何者是最適當的敘述？", ["屬於第三型過敏反應", "過度活化之 TH1 與 CD8 T 細胞所致", "IL-4 與 IL-5 這兩種細胞激素被大量分泌", "葉片上油脂物質即為抗原，直接活化體內免疫反應所致"], 1, "115年第二次醫師・醫學(二) 第26題", "接觸性皮膚炎＝第四型延遲型，由 Th1 與 CD8 T 細胞媒介；小分子是半抗原，要先與自體蛋白結合。"],
+["M7", "自主性免疫調節因子（AIRE）是一種轉錄調節因子，它能夠促進胸腺基質細胞表達某些「組織特異性」蛋白質。在 T 細胞的發育過程中，這個機制提供了 T 細胞對這些組織特異自體抗原建立中樞免疫耐受性。在 AIRE中發生缺失突變的病患（一種稱為 APECED 的疾病）會出現一系列症狀，其中一些涉及到自體免疫攻擊分泌腺體。從這樣的分析觀察中，下列敘述何者最適當？", ["AIRE 所調控的基因表現，對於中樞免疫耐受性移除對某些組織產生反應的自體免疫 T 細胞上至關重要", "受到自體免疫攻擊的分泌腺體肇因於由 AIRE 所調控的高量自體抗原表現", "AIRE 的表現抑制 T 細胞的發育", "AIRE 過度表現時直接造成 T 細胞的活化，因此引發自體免疫的症狀"], 0, "115年第二次醫師・醫學(二) 第27題", "AIRE 讓胸腺表現組織特異性抗原以進行負向選擇；缺失→自體反應性 T 細胞逃脫→自體免疫。"],
+["M3", "有關毒殺 T 細胞抗原 4（CTLA-4）之作用，下列敘述何者最不適當？", ["與 CD28 競爭相同的配體（ligand）", "可以傳遞共同刺激訊息（co-stimulatory signals）到細胞內", "可與 CD80 結合", "可與 CD86 結合"], 1, "115年第二次醫師・醫學(二) 第28題", "CTLA-4 與 CD28 競爭 B7（CD80／86），傳遞的是抑制訊號，不是共同刺激訊號。"],
+["M7", "薛格連氏症候群（Sjögren syndrome）具備下列何種特徵？", ["腎絲球病變是常見的病變", "anti-SS-A 或 anti-SS-B 抗體是此病的專一性自體抗體", "最常見併發的惡性淋巴瘤是 T 細胞淋巴瘤", "類風濕因子（rheumatoid factor）陽性常見於此病"], 3, "115年第二次醫師・醫學(二) 第78題", "類風濕因子在 Sjögren 常見；anti-SS-A／SS-B 也見於 SLE 等疾病，並非專一；併發的淋巴瘤以 B 細胞為主。"],
+["M7", "下列何種疾病的致病機制與第二型過敏反應最有關？", ["重症肌無力（myasthenia gravis）", "狼瘡腎炎（lupus nephritis）", "血清病（serum sickness）", "接觸性皮膚炎（contact dermatitis）"], 0, "115年第二次醫師・醫學(二) 第79題", "重症肌無力＝抗乙醯膽鹼受體抗體＝第二型；狼瘡腎炎與血清病是第三型；接觸性皮膚炎是第四型。"]];
+const LVN={0:'錯題本',1:'L1 中→英',2:'L2 英→白話',3:'L3 上游→下游',4:'L4 下游→上游',5:'L5 疾病→Node',6:'L6 病例→機制',7:'L7 預測',8:'病例實戰',9:'關鍵字反射',10:'易混二選一',11:'找出錯誤',12:'箭頭鏈',13:'細胞因子',14:'術語全名',15:'國考真題',99:'綜合隨機'},ORDER=[15,8,1,2,3,4,5,6,7,9,10,11,12,13,14,99,0];
+const ITEMS=[],add=(lv,m,q,a,ex)=>ITEMS.push({lv,m,q,a,ex,key:'L'+lv+'|'+q+'|'+a});
+for(const m of MODS)for(const n of m.nodes){const[t,z,d]=n.split('|');if(!/[A-Za-z]{2,}/.test(z))add(1,m.id,'「'+z+'」的英文是？',t);add(2,m.id,t+'（'+z+'）用白話說是？',d)}
+for(const e of EDGES){const[m,a,b]=e.split('|');add(3,m,a+' → 直接下一步是？',b,a+'→'+b);add(4,m,'？ → '+b+'（直接上一步是誰）',a,a+'→'+b)}
+for(const e of DIS){const[m,q,a]=e.split('|');add(5,m,q+' → 核心 Node／機制？',a)}
+for(const e of CASES){const[m,q,a]=e.split('|');add(6,m,'病例：'+q+'。跑哪條機制？',a)}
+for(const e of PRED){const[m,q,a]=e.split('|');add(7,m,q+' → 預測結果？',a)}
+for(const[m,q,o,i,why,tip]of MCQ)ITEMS.push({lv:8,m,q,a:o[i],opts:o,why,tip:'秒判：'+tip,key:'L8|'+q});
+for(const[m,q,o,i,src,ex]of EXQ)ITEMS.push({lv:15,m,q,a:o[i],opts:o,tip:'出處：'+src+'（考選部公開試題，答案為官方標準答案）\n解析（非官方，自行撰寫）：'+ex,key:'L15|'+src});
+// 自動出題：把現有資料全部變成題目
+const addX=(lv,m,q,a,x)=>ITEMS.push(Object.assign({lv,m,q,a,key:'L'+lv+'|'+q+'|'+a},x));
+// 9 關鍵字反射（順＋逆）
+for(const r of REF){const[m,k,v]=r.split('|');if(m==='阻斷')continue;addX(9,m,'題幹看到「'+k+'」→ 第一反射？',v);addX(9,m,'「'+v+'」最符合哪個題幹線索？',k)}
+// 10 易混二選一
+for(const c of CONF){const[m,A,B,da,db,k]=c.split('|'),tip='一秒判斷：'+k;if(!da.includes(A))addX(10,m,'「'+da+'」是哪一個？',A,{opts:[A,B],tip});if(!db.includes(B))addX(10,m,'「'+db+'」是哪一個？',B,{opts:[A,B],tip})}
+// 11 找出錯誤想法：1 個陷阱＋3 個正確敘述
+for(const m of MODS){const truths=m.nodes.map(n=>{const[t,z,d]=n.split('|');return t+'＝'+d});for(const t of m.traps){const[w,r]=t.split('|');addX(11,m.id,'下列哪個想法是「錯」的？',w,{dp:truths,tip:'正確模型：'+r})}}
+// 12 箭頭鏈：每條鏈的每一格都出「下一步／上一步」
+{const CH=[['M1','總母鏈',MAIN[0].split('|')[1]]];for(const m of MODS)for(const c of m.chains){const i=c.indexOf('|');CH.push([m.id,c.slice(0,i),c.slice(i+1)])}
+for(const c of CPATH)CH.push(c.startsWith('牙周：')?['M8','牙周細胞因子',c.slice(3)]:['M4','細胞因子路徑',c]);
+for(const[m,lab,c]of CH){if(c.includes('｜')||!c.includes('→'))continue;const ns=c.split('→');if(ns.length<3)continue;
+for(let i=0;i<ns.length-1;i++){addX(12,m,'【'+lab+'】'+ns[i]+' → 下一步？',ns[i+1],{dp:ns.filter(x=>x!==ns[i]),cur:ns[i],ex:c});addX(12,m,'【'+lab+'】？ → '+ns[i+1]+'（上一步是誰）',ns[i],{dp:ns.filter(x=>x!==ns[i+1]),cur:ns[i+1],ex:c})}}}
+// 13 細胞因子
+for(const c of CYTO){const[n,s,f,k]=c.split('|'),tip=n+'｜來源：'+s+'｜'+f+'｜口訣：'+k;addX(13,'M4',n+' 的核心功能？',f,{tip});addX(13,'M4','「'+f+'」是哪個細胞因子？',n,{tip});addX(13,'M4','口訣「'+k+'」是哪個細胞因子？',n,{tip})}
+// 14 術語全名
+{const TM=['M1','M1','M1','M1','M2','M3','M3','M4','M4','M4','M4','M5','M6','M4','M4','M4','M8','M8','M8'];let j=0;
+for(const l of STUDY.find(s=>s[0].startsWith('術語全名'))[1]){const p=l.split('｜');if(p.length!==3)continue;const m=TM[j++]||'M1',[ab,en,zh]=p,tip=l;if(en.startsWith(ab.split('／')[0]))continue;addX(14,m,ab+' 的英文全名？',en,{tip});addX(14,m,ab+' 的中文？',zh,{tip});addX(14,m,'「'+zh+'」的縮寫？',ab,{tip})}}
+let lv=1;
+const passed=n=>{const s=stats['L'+n];return s&&s.n>=10&&s.r/s.n>=.8};
+function makeOpts(it){if(it.opts)return it.opts;
+const same=ITEMS.filter(x=>x.lv===it.lv),bad=new Set(same.filter(x=>x.q===it.q).map(x=>x.a)),uniq=a=>[...new Set(a.map(x=>x.a))].filter(x=>!bad.has(x));
+let d=it.dp?shuffle([...new Set(it.dp)].filter(x=>x!==it.a)):[];
+if(d.length<3)d=d.concat(shuffle(uniq(same.filter(x=>x.m===it.m)).filter(x=>!d.includes(x)&&x!==it.cur)));
+if(d.length<3)d=d.concat(shuffle(uniq(same).filter(x=>!d.includes(x)&&x!==it.cur)));
+return shuffle([it.a,...d.slice(0,3)])}
+// 模擬考：限時、交卷後才對答案
+let exam=null,tmr=null,hist=store.get('immMaxExam',[]);
+const fmt=s=>(s/60|0)+':'+String(s%60).padStart(2,'0');
+function startExam(n,only){const W=only?[[only,1]]:[[15,.3],[8,.25],[6,.1],[5,.05],[7,.1],[11,.05],[10,.05],[9,.05],[3,.025],[4,.025]];let ch=[];
+for(const[l,f]of W)ch=ch.concat(shuffle(ITEMS.filter(x=>x.lv===l)).slice(0,Math.round(n*f)));
+if(ch.length<n)ch=ch.concat(shuffle(ITEMS.filter(x=>![1,2,14].includes(x.lv)&&!ch.includes(x))).slice(0,n-ch.length));
+exam={qs:shuffle(ch).slice(0,n).map(it=>({it,opts:makeOpts(it),sel:-1})),i:0,start:Date.now(),end:Date.now()+n*60000,done:false};
+clearInterval(tmr);tmr=setInterval(tick,1000);render();scrollTo(0,0)}
+function tick(){if(!exam||exam.done){clearInterval(tmr);return}const s=Math.max(0,Math.round((exam.end-Date.now())/1000)),e=$('#tm');if(e)e.textContent=fmt(s);if(s<=0)finishExam()}
+function finishExam(){clearInterval(tmr);exam.done=true;exam.used=Math.round((Date.now()-exam.start)/1000);let r=0;
+for(const q of exam.qs){const ok=q.opts[q.sel]===q.it.a;if(ok)r++;const s=stats[q.it.m]||(stats[q.it.m]={r:0,n:0});s.n++;if(ok)s.r++;if(!ok&&!wrong.includes(q.it.key))wrong.push(q.it.key)}
+exam.score=r;hist.unshift({d:new Date().toLocaleDateString('zh-TW'),n:exam.qs.length,r});hist=hist.slice(0,8);
+store.set('immMaxStats',stats);store.set('immMaxWrong',wrong);store.set('immMaxExam',hist);render();scrollTo(0,0)}
+// 解析：箭頭＋秒判＋題目裡出現的相關名詞定義＋模組口訣
+const NIDX=[];MODS.forEach(m=>m.nodes.forEach(n=>{const[t,z,d]=n.split('|');NIDX.push([t,z,d])}));CYTO.forEach(c=>{const[n,s,f]=c.split('|');NIDX.push([n,'細胞因子',f])});
+NIDX.forEach(n=>{let b=n[0].replace(/ (T Cell|Cell)$/,'');if(b.length<2)b=n[0];n[3]=new RegExp('(^|[^A-Za-z0-9-])'+b.replace(/[.*+?^${}()|[\]\\\/]/g,'\\$&')+'($|[^A-Za-z0-9-])')});
+function explLines(it){const mo=MODS.find(x=>x.id===it.m),L=[];if(it.ex)L.push('箭頭：'+it.ex);if(it.tip)L.push(...String(it.tip).split('\n'));
+const inA=NIDX.filter(n=>n[3].test(it.a)),inQ=NIDX.filter(n=>!inA.includes(n)&&n[3].test(it.q));
+for(const n of[...inA,...inQ].slice(0,4))L.push('▸ '+n[0]+'（'+n[1]+'）：'+n[2]);
+L.push(mo.id+' '+mo.name+' 口訣：'+mo.mn);return L}
+function expl(it){return explLines(it).join('　')}
+function fbHtml(it,opts,sel){const right=opts[sel]===it.a;return '<div class="mn">'+(right?'✅ 答對了':'❌ 答錯了')+'｜正確答案：'+esc(it.a)+'</div><div style="margin-top:8px;font-size:14.5px;background:var(--bg);border-radius:8px;padding:10px 12px"><b>解析</b>'+explLines(it).map(l=>'<div>'+esc(l)+'</div>').join('')+(it.why?'<div style="margin-top:6px"><b>逐選項</b></div>'+it.why.map((w,j)=>'<div>'+(opts[j]===it.a?'✅':'❌')+' '+(j+1)+'. '+esc(opts[j])+'：'+esc(w)+'</div>').join(''):'')+'</div>'}
+function examView(){const N=exam.qs.length;
+if(!exam.done){const q=exam.qs[exam.i],ans=exam.qs.filter(x=>x.sel>=0).length;
+return '<div class="card"><div class="sub">📝 模擬考　第 '+(exam.i+1)+' / '+N+' 題　已答 '+ans+'　答對 '+exam.qs.filter(x=>x.sel>=0&&x.opts[x.sel]===x.it.a).length+'　剩餘 <b id="tm"></b></div><div class="qbox">'+esc(q.it.q)+'</div>'+q.opts.map((o,j)=>'<button class="opt'+(q.sel<0?'':o===q.it.a?' r':q.sel===j?' w':'')+'" data-es="'+j+'"'+(q.sel<0?'':' disabled')+'>'+(j+1)+'. '+esc(o)+'</button>').join('')+(q.sel<0?'':fbHtml(q.it,q.opts,q.sel))+
+'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><button class="btn ghost" id="exprev">← 上一題</button><button class="btn ghost" id="exnext">下一題 →</button><span style="flex:1"></span><button class="btn" id="exsub">交卷</button></div></div>'+
+'<div class="card"><div class="sub" style="margin-bottom:6px">題號（有底色＝已作答，點了可跳題；答案選了就鎖定）</div><div class="nums">'+exam.qs.map((x,j)=>'<button class="'+(x.sel>=0?'a ':'')+(j===exam.i?'c':'')+'" data-ej="'+j+'">'+(j+1)+'</button>').join('')+'</div><div style="margin-top:12px"><button class="btn ghost" id="exquit">放棄這次模擬考</button></div></div>'}
+const pct=Math.round(exam.score/N*100),bm={};for(const q of exam.qs){const b=bm[q.it.m]||(bm[q.it.m]={r:0,n:0});b.n++;if(q.opts[q.sel]===q.it.a)b.r++}
+return '<div class="card"><div class="sub">📝 模擬考成績</div><div class="qbox" style="font-size:30px;margin-bottom:4px">'+exam.score+' / '+N+'（'+pct+' 分）'+(pct>=60?' ✅':' ❌')+'</div><div class="sub">用時 '+fmt(exam.used)+'｜答錯的題目已加入錯題本</div><div class="lab">各模組表現</div>'+MODS.filter(m=>bm[m.id]).map(m=>{const b=bm[m.id],p=Math.round(b.r/b.n*100);return '<div class="stat"><b>'+m.id+' '+m.name+'</b><div class="bar"><span style="width:'+p+'%"></span></div><span>'+b.r+'/'+b.n+'</span></div>'}).join('')+
+'<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-ex="'+N+'">再考一次</button><button class="btn ghost" id="exquit">回到練習</button></div></div><h2>逐題檢討</h2>'+
+exam.qs.map((q,j)=>{const ok=q.opts[q.sel]===q.it.a;return '<div class="card"><div class="sub">'+(ok?'✅':'❌')+' 第 '+(j+1)+' 題　<span class="tag">'+q.it.m+'</span></div><div style="font-weight:700;margin:4px 0">'+esc(q.it.q)+'</div>'+(ok?'':'<div class="trap" style="grid-template-columns:1fr"><div class="x">你的答案：'+(q.sel<0?'未作答':esc(q.opts[q.sel]))+'</div></div>')+'<div class="trap" style="grid-template-columns:1fr"><div class="o">正確答案：'+esc(q.it.a)+'</div></div><div class="sub">'+esc(expl(q.it))+'</div>'+(q.it.why?'<div style="font-size:14px;margin-top:4px">'+q.it.why.map((w,k)=>'<div>'+(q.opts[k]===q.it.a?'✅':'❌')+' '+esc(q.opts[k])+'：'+esc(w)+'</div>').join('')+'</div>':'')+'</div>'}).join('')}
+function pool(){return ITEMS.filter(x=>(lv===99||(lv?x.lv===lv:wrong.includes(x.key)))&&(fm==='全部'||x.m===fm))}
+function nextQ(){const p=pool(),el=$('#qz');if(!el)return;
+if(!p.length){el.innerHTML='<div class="sub">'+(lv?'這一級在此模組沒有題目，換個模組或選「全部」。':'錯題本是空的，太好了。回各級繼續刷題吧。')+'</div>';cur=null;return}
+let it;do{it=p[Math.random()*p.length|0]}while(p.length>1&&cur&&it===cur.it);
+cur={it,m:it.m,v:it.a,done:false,opts:makeOpts(it)};
+el.innerHTML='<div class="sub"><span class="tag">'+(it.lv<8?'L'+it.lv:LVN[it.lv])+'</span> <span class="tag">'+it.m+'</span> 本次 '+sess.r+' / '+sess.n+'</div><div class="qbox">'+esc(it.q)+'</div>'+cur.opts.map((o,i)=>'<button class="opt" data-o="'+i+'">'+(i+1)+'. '+esc(o)+'</button>').join('')+'<div id="fb"></div>'}
+function answer(i){if(!cur||cur.done||i>=cur.opts.length)return;cur.done=true;const right=cur.opts[i]===cur.v,it=cur.it;sess.n++;if(right)sess.r++;
+for(const k of['L'+it.lv,it.m]){const s=stats[k]||(stats[k]={r:0,n:0});s.n++;if(right)s.r++}
+if(right){if(!lv)wrong=wrong.filter(x=>x!==it.key)}else if(!wrong.includes(it.key))wrong.push(it.key);
+store.set('immMaxStats',stats);store.set('immMaxWrong',wrong);
+document.querySelectorAll('.opt').forEach((b,j)=>{b.disabled=true;if(cur.opts[j]===cur.v)b.classList.add('r');else if(j===i)b.classList.add('w')});
+const mo=MODS.find(x=>x.id===it.m);
+$('#fb').innerHTML=fbHtml(it,cur.opts,i)+'<div style="margin-top:10px"><button class="btn" id="nx">下一題（Enter）</button></div>';drawStats()}
+function drawStats(){const el=$('#st');if(!el)return;const row=(id,lab)=>{const s=stats[id]||{r:0,n:0},p=s.n?Math.round(s.r/s.n*100):0;return '<div class="stat"><b>'+lab+'</b><div class="bar"><span style="width:'+p+'%"></span></div><span>'+(s.n?p+'%（'+s.r+'/'+s.n+'）':'未作答')+'</span></div>'};
+el.innerHTML='<div class="lab">七級（答 10 題以上且 80% 以上＝過關 ✓）</div>'+ORDER.filter(n=>n&&n<99).map(n=>row('L'+n,(n<8?'L'+n:LVN[n])+(passed(n)?'✓':''))).join('')+'<div class="lab">各模組（看弱在哪一層）</div>'+MODS.map(m=>row(m.id,m.id)).join('')}
+
+function render(){$('#nav').innerHTML=TABS.map(([k,n])=>'<button class="'+(k===tab&&!Q?'on':'')+'" data-tab="'+k+'">'+n+'</button>').join('');
+$('#main').innerHTML=Q?search():V[tab]();if(!Q&&tab==='quiz'){nextQ();drawStats();tick()}}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-ex],[data-es],[data-ej],#exprev,#exnext,#exsub,#exquit,[data-tab],[data-fm],[data-lv],[data-go],[data-o],#nx,#rs');if(!t)return;
+if(t.dataset.lv){lv=+t.dataset.lv;render();return}
+if(t.dataset.ex){tab='quiz';Q='';$('#q').value='';startExam(+t.dataset.ex,+t.dataset.src||0);return}
+if(exam&&(t.dataset.es||t.dataset.ej||/^ex/.test(t.id))){const e=exam;
+if(t.dataset.es){if(e.qs[e.i].sel<0)e.qs[e.i].sel=+t.dataset.es}else if(t.dataset.ej)e.i=+t.dataset.ej;
+else if(t.id==='exprev')e.i=Math.max(0,e.i-1);else if(t.id==='exnext')e.i=Math.min(e.qs.length-1,e.i+1);
+else if(t.id==='exsub'){const u=e.qs.filter(x=>x.sel<0).length;if(confirm(u?'還有 '+u+' 題沒作答，確定交卷？':'確定交卷？'))finishExam();return}
+else if(t.id==='exquit'){if(e.done||confirm('放棄這次模擬考？作答不會保留。')){clearInterval(tmr);exam=null}}
+render();return}
+if(t.dataset.tab){tab=t.dataset.tab;fm='全部';Q='';$('#q').value='';render();scrollTo(0,0)}
+else if(t.dataset.fm){fm=t.dataset.fm;render()}
+else if(t.dataset.go){tab='mod';openMod=t.dataset.go;render();const d=$('[data-mod="'+openMod+'"]');d&&d.scrollIntoView()}
+else if(t.dataset.o)answer(+t.dataset.o);
+else if(t.id==='nx')nextQ();
+else if(t.id==='rs'&&confirm('清除答題紀錄與錯題本？')){stats={};wrong=[];sess={r:0,n:0};store.set('immMaxStats',stats);store.set('immMaxWrong',wrong);render()}});
+document.addEventListener('keydown',e=>{if(tab!=='quiz'||Q||e.target.id==='q')return;
+if(exam){if(exam.done)return;const q=exam.qs[exam.i];if(e.key>='1'&&e.key<='4'&&+e.key<=q.opts.length){if(q.sel<0)q.sel=+e.key-1}else if(e.key==='ArrowRight'||e.key==='Enter')exam.i=Math.min(exam.qs.length-1,exam.i+1);else if(e.key==='ArrowLeft')exam.i=Math.max(0,exam.i-1);else return;render();return}if(e.key>='1'&&e.key<='4')answer(+e.key-1);else if(e.key==='Enter'&&cur&&cur.done)nextQ()});
+$('#q').addEventListener('input',e=>{Q=e.target.value.trim();render()});
+render();
+</script>
+</body>
+</html>

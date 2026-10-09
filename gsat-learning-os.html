@@ -2245,9 +2245,44 @@ function removeMyQuestions(ids){
   practiceState.current = null; practiceState.answered=false; practiceState.chosen=null;
 }
 
+function readDocxText(file, cb){
+  var rd = new FileReader();
+  rd.onload = function(){
+    try{
+      var buf = rd.result, u8 = new Uint8Array(buf), dv = new DataView(buf);
+      var eocd = -1;
+      for(var i=u8.length-22;i>=Math.max(0,u8.length-65557);i--){ if(dv.getUint32(i,true)===0x06054b50){ eocd=i; break; } }
+      if(eocd<0) return cb(new Error("不是有效的 docx"));
+      var cdCount = dv.getUint16(eocd+10,true), p = dv.getUint32(eocd+16,true), entry = null;
+      for(var n=0;n<cdCount;n++){
+        if(dv.getUint32(p,true)!==0x02014b50) break;
+        var method = dv.getUint16(p+10,true), csize = dv.getUint32(p+20,true);
+        var nl = dv.getUint16(p+28,true), el = dv.getUint16(p+30,true), cl = dv.getUint16(p+32,true), lho = dv.getUint32(p+42,true);
+        var name = new TextDecoder().decode(u8.subarray(p+46,p+46+nl));
+        if(name==="word/document.xml"){ entry = {method:method, csize:csize, lho:lho}; break; }
+        p += 46+nl+el+cl;
+      }
+      if(!entry) return cb(new Error("找不到文件內容"));
+      var start = entry.lho + 30 + dv.getUint16(entry.lho+26,true) + dv.getUint16(entry.lho+28,true);
+      var data = u8.subarray(start, start+entry.csize);
+      var done = function(bytes){
+        var xml = new TextDecoder("utf-8").decode(bytes);
+        var text = xml.replace(/<w:tab\/>/g," ").replace(/<w:br[^>]*\/>/g,"\n").replace(/<\/w:p>/g,"\n").replace(/<[^>]+>/g,"");
+        text = text.replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&amp;/g,"&");
+        cb(null, text);
+      };
+      if(entry.method===0) return done(data);
+      if(typeof DecompressionStream==="undefined") return cb(new Error("這個瀏覽器不支援讀 docx，請改用 Chrome／Edge，或把內容複製貼上"));
+      var ds = new DecompressionStream("deflate-raw");
+      new Response(new Blob([data]).stream().pipeThrough(ds)).arrayBuffer().then(function(ab){ done(new Uint8Array(ab)); }, function(e){ cb(e); });
+    }catch(e){ cb(e); }
+  };
+  rd.readAsArrayBuffer(file);
+}
+
 function parseMyQuestionText(text){
   var out = [], bad = 0;
-  var t = String(text||"").trim();
+  var t = String(text||"").replace(/\r/g,"").trim();
   if(!t) return {items:out, bad:0};
   if(t.charAt(0)==="[" || t.charAt(0)==="{"){
     try{
@@ -2264,21 +2299,54 @@ function parseMyQuestionText(text){
     }catch(e){ return {items:out, bad:1, jsonError:true}; }
     return {items:out, bad:bad};
   }
-  t.split(/\n\s*\n+/).forEach(function(block){
-    var lines = block.split(/\n/).map(function(l){ return l.trim(); }).filter(function(l){ return l; });
-    if(!lines.length) return;
-    var stem = [], opts = {}, ans = "", reason = "", seenOpt = false;
-    lines.forEach(function(l){
-      var m;
-      if((m = l.match(/^(?:答案|正解|解答|Answer|ANS)\s*[:：]\s*[\(（]?([A-Ea-e])/i))){ ans = m[1].toUpperCase(); return; }
-      if((m = l.match(/^(?:解析|詳解|說明|Explanation)\s*[:：]\s*(.+)$/i))){ reason = m[1]; return; }
-      if((m = l.match(/^[\(（]?([A-Ea-e])[\)）\.．、:：]\s*(.+)$/))){ opts[m[1].toUpperCase()] = m[2]; seenOpt = true; return; }
-      if(!seenOpt) stem.push(l); else if(reason) reason += " " + l;
-    });
-    var stemText = stem.join(" ").replace(/^\s*(?:第\s*\d+\s*題|\d+\s*[\.．、\)）])\s*/, "");
-    if(stemText && Object.keys(opts).length>=2 && opts[ans]) out.push({stem:stemText, options:opts, answer:ans, reason:reason});
-    else bad++;
+  /* 統一答案區：單獨一行的「答案／解答」標題，後面接 1.B 2.D … ；或同一行 答案：1.B 2.C 3.A */
+  var key = {};
+  var pairRe = /(\d{1,3})\s*[\.．\)）、:：\-]?\s*[\(（]?([A-Ea-e])[\)）]?/g;
+  var kh = t.match(/\n\s*(?:答案|解答|參考答案|Answer Key|Answers)\s*[:：]?\s*\n([\s\S]*)$/i);
+  if(kh){
+    var cnt = 0, mm; var seg = kh[1];
+    while((mm = pairRe.exec(seg))){ key[mm[1]] = mm[2].toUpperCase(); cnt++; }
+    if(cnt >= 3) t = t.slice(0, kh.index); else key = {};
+  }
+  var lines = [];
+  t.split("\n").forEach(function(raw){
+    var l = raw.trim();
+    if(!l){ lines.push(""); return; }
+    var km = l.match(/^(?:答案|解答|Answers?)\s*[:：]\s*((?:\d{1,3}\s*[\.．\)）、:：\-]?\s*[\(（]?[A-Ea-e][\)）]?\s*[,，;；]?\s*){3,})$/i);
+    if(km){ var m2; pairRe.lastIndex = 0; while((m2 = pairRe.exec(km[1]))) key[m2[1]] = m2[2].toUpperCase(); return; }
+    if((l.match(/[\(（][A-Ea-e][\)）]/g)||[]).length >= 2){
+      l.replace(/\s*([\(（][A-Ea-e][\)）])/g, "\n$1").split("\n").forEach(function(piece){ piece = piece.trim(); if(piece) lines.push(piece); });
+    } else lines.push(l);
   });
+  var cur = null, seenOpt = false, blank = false, reasonMode = false;
+  function flush(){
+    if(!cur) return;
+    var stemText = cur.stem.join(" ").replace(/^\s*(?:第\s*\d+\s*題|\d+\s*[\.．、\)）])\s*/, "").trim();
+    var ans = cur.ans || (cur.num && key[cur.num]) || "";
+    if(stemText && Object.keys(cur.opts).length>=2 && cur.opts[ans]) out.push({stem:stemText, options:cur.opts, answer:ans, reason:cur.reason});
+    else if(Object.keys(cur.opts).length) bad++;
+    cur = null; seenOpt = false; reasonMode = false;
+  }
+  lines.forEach(function(l){
+    if(!l){ blank = true; return; }
+    var m;
+    if((m = l.match(/^(?:答案|正解|解答|Answer|ANS)\s*[:：]\s*[\(（]?([A-Ea-e])/i))){ if(cur) cur.ans = m[1].toUpperCase(); blank = false; return; }
+    if((m = l.match(/^(?:解析|詳解|說明|Explanation)\s*[:：]\s*(.*)$/i))){ if(cur){ cur.reason = m[1]; reasonMode = true; } blank = false; return; }
+    if((m = l.match(/^[\(（]?([A-Ea-e])[\)）\.．、:：]\s*(.+)$/)) && cur){ cur.opts[m[1].toUpperCase()] = m[2]; seenOpt = true; reasonMode = false; blank = false; return; }
+    var nm = l.match(/^(?:第\s*(\d+)\s*題|(\d{1,3})\s*[\.．、\)）])\s*(.*)$/);
+    if(nm && !(reasonMode && !blank)){
+      flush(); cur = {num:nm[1]||nm[2], stem:[nm[3]||""], opts:{}, ans:"", reason:""}; blank = false; return;
+    }
+    if(!cur){ cur = {num:"", stem:[l], opts:{}, ans:"", reason:""}; blank = false; return; }
+    if(seenOpt){
+      if(reasonMode && !blank){ cur.reason += " " + l; return; }
+      if(blank || cur.ans){ flush(); cur = {num:"", stem:[l], opts:{}, ans:"", reason:""}; blank = false; return; }
+      /* 選項後的續行，併入最後一個選項 */
+      var ks = Object.keys(cur.opts); cur.opts[ks[ks.length-1]] += " " + l; return;
+    }
+    cur.stem.push(l); blank = false;
+  });
+  flush();
   return {items:out, bad:bad};
 }
 
@@ -2291,14 +2359,15 @@ function renderImportQ(){
   html += '<div class="card pad">';
   html += '<div class="filter-row"><label class="muted">這批題目的題型　<select id="myqType">'+MYQ_TYPES.map(function(t,i){ return '<option value="'+i+'"'+(i===myqState.typeIdx?' selected':'')+'>'+t.zh+'</option>'; }).join("")+'</select></label></div>';
   html += '<textarea id="myqText" rows="14" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:var(--surface);color:var(--ink);" placeholder="1. She is interested ___ learning English.\n(A) at\n(B) in\n(C) on\n(D) with\n答案：B\n解析：be interested in 是固定搭配。\n\n2. 下一題…（題與題之間空一行）">'+escapeHtml(myqState.text)+'</textarea>';
-  html += '<div class="cta-row"><input type="file" id="myqFile" accept=".txt,.json,.md"> <button class="btn" id="myqPreview">解析預覽</button> <button class="btn primary" id="myqAdd">加入我的題庫</button></div>';
+  html += '<div class="cta-row"><input type="file" id="myqFile" accept=".txt,.json,.md,.docx"> <button class="btn" id="myqPreview">解析預覽</button> <button class="btn primary" id="myqAdd">加入我的題庫</button></div>';
   html += '<div id="myqMsg" class="queue-note">'+escapeHtml(myqState.msg)+'</div>';
   html += '<div id="myqPrev"></div>';
   html += '</div>';
   html += '<div class="card pad"><div class="evidence-label">支援的格式</div>'+
     '<div style="font-size:13px;line-height:1.8;">① <b>文字</b>：每題一段（題與題之間空一行）；題幹一行或多行，選項寫成 <code>(A) …</code>、<code>A. …</code> 或 <code>A、…</code>，再寫 <code>答案：B</code>，可選寫 <code>解析：…</code>。<br>'+
     '② <b>JSON</b>：<code>[{"stem":"題幹","options":{"A":"…","B":"…","C":"…","D":"…"},"answer":"B","reason":"解析"}]</code>（options 也可以是陣列）。<br>'+
-    '題目貼進來後，若你的資料是 PDF／Word，可以先複製文字貼上；排版太亂時，先整理成上面的格式比較不會漏題。</div></div>';
+    '選項也可以全部寫在同一行：<code>1. 題幹 (A) … (B) … (C) … (D) …</code>；答案可以寫在每題後面，也可以統一寫在最後（單獨一行「答案」，下面接 <code>1.B 2.D 3.A</code>）。<br>' +
+    '<b>Word 檔 (.docx)</b> 可以直接選檔讀入；PDF 請先複製文字貼上。排版太亂時，先整理成上面的格式比較不會漏題。</div></div>';
   html += '<div class="section-head"><h2>我已匯入的題目（'+mine.length+' 題）</h2></div>';
   if(!mine.length){
     html += '<div class="card"><div class="empty-note">還沒有匯入任何題目。</div></div>';
@@ -2319,6 +2388,14 @@ function renderImportQ(){
   document.getElementById("myqText").addEventListener("input", function(e){ myqState.text = e.target.value; });
   document.getElementById("myqFile").addEventListener("change", function(e){
     var f = e.target.files && e.target.files[0]; if(!f) return;
+    if(/\.docx$/i.test(f.name)){
+      readDocxText(f, function(err, txt){
+        myqState.text = err ? "" : txt;
+        myqState.msg = err ? ("讀取 Word 檔失敗："+err.message) : "已讀入 Word 檔「"+f.name+"」，請按「解析預覽」。";
+        renderImportQ();
+      });
+      return;
+    }
     var rd = new FileReader();
     rd.onload = function(){ myqState.text = String(rd.result||""); myqState.msg = "已讀入檔案「"+f.name+"」，請按「解析預覽」。"; renderImportQ(); };
     rd.readAsText(f, "utf-8");

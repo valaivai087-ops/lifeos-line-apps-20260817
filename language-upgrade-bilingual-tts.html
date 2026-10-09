@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>語言升維手冊 OS｜Language Upgrade Handbook</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      background: #ffffff; 
+      font-family: 'Microsoft JhengHei', 'Segoe UI', Tahoma, sans-serif; 
+      color: #1a2b5f; 
+    }
+    .header {
+      background: linear-gradient(135deg, #1a2b5f 0%, #0a7a72 100%);
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .header h1 { font-size: 32px; margin-bottom: 8px; font-weight: 700; }
+    .header p { font-size: 16px; opacity: 0.95; }
+    .controls {
+      background: #f8f9fa;
+      padding: 20px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    .search-box {
+      padding: 10px 15px;
+      border: 2px solid #c9960c;
+      border-radius: 6px;
+      font-size: 14px;
+      width: 300px;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    .btn-primary { background: #1a2b5f; color: white; }
+    .btn-primary:hover { background: #0a7a72; }
+    .btn-secondary { background: #c9960c; color: white; }
+    .btn-secondary:hover { background: #a67d09; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px 20px; }
+    .stats {
+      background: linear-gradient(135deg, #f0f9ff 0%, #f0fff4 100%);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      border-left: 4px solid #c9960c;
+    }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+    .stat-box { background: white; padding: 15px; border-radius: 6px; border: 2px solid #c9960c; text-align: center; }
+    .stat-number { font-size: 28px; font-weight: 700; color: #c9960c; }
+    .stat-label { font-size: 11px; color: #666; margin-top: 4px; }
+    .volume-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .volume-card {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .volume-card:hover {
+      border-color: #c9960c;
+      box-shadow: 0 4px 16px rgba(201,150,12,0.2);
+      transform: translateY(-4px);
+    }
+    .volume-header {
+      background: linear-gradient(135deg, #1a2b5f 0%, #0a7a72 100%);
+      color: white;
+      padding: 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      user-select: none;
+    }
+    .volume-header:hover { background: linear-gradient(135deg, #0a7a72 0%, #1a2b5f 100%); }
+    .volume-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .volume-subtitle { font-size: 13px; opacity: 0.9; }
+    .expand-icon { font-size: 16px; transition: transform 0.3s; }
+    .volume-card.expanded .expand-icon { transform: rotate(180deg); }
+    .volume-content {
+      display: none;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease-out;
+    }
+    .volume-content.active {
+      display: block;
+      max-height: 3000px;
+    }
+    .ability-list { padding: 20px; max-height: 700px; overflow-y: auto; }
+    .ability-item {
+      padding: 15px;
+      margin-bottom: 12px;
+      background: #f8f9fa;
+      border-left: 4px solid #c9960c;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .ability-item:hover {
+      background: #fff3e0;
+      transform: translateX(4px);
+    }
+    .ability-item.expanded {
+      background: white;
+      border-left-color: #0a7a72;
+      box-shadow: 0 2px 8px rgba(10,122,114,0.1);
+    }
+    .ability-num {
+      font-size: 11px;
+      color: #c9960c;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .ability-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .old-way, .new-way {
+      padding: 12px;
+      border-radius: 4px;
+    }
+    .old-way {
+      background: #fff0f0;
+      border-left: 3px solid #e74c3c;
+    }
+    .new-way {
+      background: #f0fff4;
+      border-left: 3px solid #27ae60;
+    }
+    .old-label, .new-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .old-label { color: #c0392b; }
+    .new-label { color: #1e8449; }
+    .lang-section {
+      margin-bottom: 8px;
+    }
+    .lang-section.zh { margin-bottom: 10px; }
+    .lang-label {
+      font-size: 9px;
+      font-weight: 700;
+      color: #666;
+      margin-bottom: 2px;
+      text-transform: uppercase;
+    }
+    .tts-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      font-size: 10px;
+      background: #1a2b5f;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: all 0.2s;
+    }
+    .tts-btn:hover {
+      background: #0a7a72;
+      transform: scale(1.08);
+    }
+    .tts-btn.playing {
+      background: #c9960c;
+      animation: pulse 0.6s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .footer {
+      background: #f8f9fa;
+      padding: 20px;
+      text-align: center;
+      font-size: 11px;
+      color: #666;
+      border-top: 1px solid #e0e0e0;
+      margin-top: 40px;
+    }
+    .scroll-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      background: #c9960c;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: all 0.3s;
+      z-index: 99;
+    }
+    .scroll-top.show { display: flex; }
+    @media (max-width: 768px) {
+      .header h1 { font-size: 24px; }
+      .volume-grid { grid-template-columns: 1fr; }
+      .ability-pair { grid-template-columns: 1fr; }
+      .search-box { width: 100%; }
+      .controls { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>語言升維手冊 OS｜Language Upgrade Handbook</h1>
+    <p>Complete Bilingual Version with English TTS | 30 Abilities × 900 Transformations</p>
+  </div>
+
+  <div class="controls">
+    <input type="text" class="search-box" id="searchInput" placeholder="搜尋 / Search...">
+    <button class="btn btn-primary" id="expandAllBtn">📂 展開全部 / Expand All</button>
+    <button class="btn btn-secondary" id="collapseAllBtn">📁 收合全部 / Collapse All</button>
+  </div>
+
+  <div class="container">
+    <div class="stats">
+      <div style="text-align: center; margin-bottom: 15px;">
+        <h3 style="font-size: 14px; color: #666;">📊 Learning Progress</h3>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-number">30</div><div class="stat-label">Core Abilities</div></div>
+        <div class="stat-box"><div class="stat-number">900</div><div class="stat-label">Upgrade Items</div></div>
+        <div class="stat-box"><div class="stat-number">10</div><div class="stat-label">Volumes</div></div>
+        <div class="stat-box"><div class="stat-number">∞</div><div class="stat-label">Potential</div></div>
+      </div>
+    </div>
+
+    <div id="volumeContainer" class="volume-grid"></div>
+  </div>
+
+  <button class="scroll-top" id="scrollTopBtn">↑</button>
+
+  <div class="footer">
+    <p>語言升維手冊 Operating System | Compiled by: Anne Wang (王欣蓉)</p>
+    <p>🔊 Click speaker icon for English pronunciation | 按喇叭鍵發音英文內容</p>
+  </div>
+
+  <script>
+    const abilitiesData = [{"num": "001", "chinese": "語言覺察能力", "english": "Language Awareness", "items": [{"num": "001", "old": "只注意別人說什麼。", "new": "先注意自己每天說什麼。", "en_old": "Only notice what others say.", "en_new": "First notice what you say every day."}, {"num": "002", "old": "語言只是聊天。", "new": "語言是建立世界模型。", "en_old": "Language is just chatting.", "en_new": "Language builds world models."}, {"num": "003", "old": "想到什麼說什麼。", "new": "先思考語言會產生什麼結果。", "en_old": "Say whatever comes to mind.", "en_new": "Think first about language's outcomes."}, {"num": "004", "old": "抱怨是抒發。", "new": "抱怨是在訓練大腦看見問題。", "en_old": "Complaining releases emotion.", "en_new": "Complaining trains the brain to see problems."}, {"num": "005", "old": "鼓勵只是安慰。", "new": "鼓勵是在建立新的預測模型。", "en_old": "Encouragement is just comfort.", "en_new": "Encouragement builds new prediction models."}, {"num": "006", "old": "不知道自己的口頭禪。", "new": "能辨識自己的高頻語言。", "en_old": "Unaware of your verbal habits.", "en_new": "Identify your high-frequency language."}, {"num": "007", "old": "一直說「我不行」。", "new": "改成「我還沒學會」。", "en_old": "Keep saying \"I can't\".", "en_new": "Say \"I haven't learned yet\"."}, {"num": "008", "old": "一直說「沒辦法」。", "new": "改成「還有哪些可能？」", "en_old": "[一直說「沒辦法」。]", "en_new": "[改成「還有哪些可能？」]"}, {"num": "009", "old": "一直說「都是他的錯」。", "new": "改成「我可以更新什麼？」", "en_old": "[一直說「都是他的錯」。]", "en_new": "[改成「我可以更新什麼？」]"}, {"num": "010", "old": "一直說「我很倒楣」。", "new": "改成「我忽略了哪些訊號？」", "en_old": "[一直說「我很倒楣」。]", "en_new": "[改成「我忽略了哪些訊號？」]"}, {"num": "011", "old": "把語言當情緒出口。", "new": "把語言當認知工具。", "en_old": "[把語言當情緒出口。]", "en_new": "[把語言當認知工具。]"}, {"num": "012", "old": "說完就忘。", "new": "觀察每一句話如何影響自己。", "en_old": "[說完就忘。]", "en_new": "[觀察每一句話如何影響自己。]"}, {"num": "013", "old": "沒有覺察負面語言。", "new": "能即時停止限制性語言。", "en_old": "[沒有覺察負面語言。]", "en_new": "[能即時停止限制性語言。]"}, {"num": "014", "old": "只注意別人的態度。", "new": "先注意自己的語言品質。", "en_old": "[只注意別人的態度。]", "en_new": "[先注意自己的語言品質。]"}, {"num": "015", "old": "一直使用受害者語言。", "new": "建立負責任語言。", "en_old": "[一直使用受害者語言。]", "en_new": "[建立負責任語言。]"}, {"num": "016", "old": "語言沒有方向。", "new": "語言對齊目標。", "en_old": "[語言沒有方向。]", "en_new": "[語言對齊目標。]"}, {"num": "017", "old": "一直強化恐懼。", "new": "開始強化可能性。", "en_old": "[一直強化恐懼。]", "en_new": "[開始強化可能性。]"}, {"num": "018", "old": "一直放大問題。", "new": "開始尋找槓桿。", "en_old": "[一直放大問題。]", "en_new": "[開始尋找槓桿。]"}, {"num": "019", "old": "一直描述痛苦。", "new": "開始描述解法。", "en_old": "[一直描述痛苦。]", "en_new": "[開始描述解法。]"}, {"num": "020", "old": "一直描述限制。", "new": "開始描述資源。", "en_old": "[一直描述限制。]", "en_new": "[開始描述資源。]"}, {"num": "021", "old": "一直描述過去。", "new": "開始描述未來。", "en_old": "[一直描述過去。]", "en_new": "[開始描述未來。]"}, {"num": "022", "old": "一直描述失敗。", "new": "開始描述學習。", "en_old": "[一直描述失敗。]", "en_new": "[開始描述學習。]"}, {"num": "023", "old": "一直描述結果。", "new": "開始描述生成機制。", "en_old": "[一直描述結果。]", "en_new": "[開始描述生成機制。]"}, {"num": "024", "old": "一直描述情緒。", "new": "開始描述需求。", "en_old": "[一直描述情緒。]", "en_new": "[開始描述需求。]"}, {"num": "025", "old": "一直描述事件。", "new": "開始描述結構。", "en_old": "[一直描述事件。]", "en_new": "[開始描述結構。]"}, {"num": "026", "old": "一直描述人物。", "new": "開始描述系統。", "en_old": "[一直描述人物。]", "en_new": "[開始描述系統。]"}, {"num": "027", "old": "一直描述現象。", "new": "開始描述本質。", "en_old": "[一直描述現象。]", "en_new": "[開始描述本質。]"}, {"num": "028", "old": "一直描述答案。", "new": "開始描述問題。", "en_old": "[一直描述答案。]", "en_new": "[開始描述問題。]"}, {"num": "029", "old": "一直描述結論。", "new": "開始描述推理。", "en_old": "[一直描述結論。]", "en_new": "[開始描述推理。]"}, {"num": "030", "old": "語言只是表達。", "new": "語言成為重新設計人生的工具。", "en_old": "[語言只是表達。]", "en_new": "[語言成為重新設計人生的工具。]"}]}, {"num": "002", "chinese": "語言更新能力", "english": "Language Updating", "items": [{"num": "001", "old": "重複舊語言。", "new": "主動更新語言。", "en_old": "Repeat old language.", "en_new": "Actively update language."}, {"num": "002", "old": "使用限制句。", "new": "使用可能句。", "en_old": "Use limiting sentences.", "en_new": "Use possibility sentences."}, {"num": "003", "old": "固定思維。", "new": "成長思維。", "en_old": "Fixed mindset.", "en_new": "Growth mindset."}, {"num": "004", "old": "「我就是這樣。」", "new": "「我可以改變。」", "en_old": "[「我就是這樣。」]", "en_new": "[「我可以改變。」]"}, {"num": "005", "old": "「我做不到。」", "new": "「我還需要方法。」", "en_old": "[「我做不到。」]", "en_new": "[「我還需要方法。」]"}, {"num": "006", "old": "「太難了。」", "new": "「先拆成小步驟。」", "en_old": "[「太難了。」]", "en_new": "[「先拆成小步驟。」]"}, {"num": "007", "old": "「沒有希望。」", "new": "「還沒找到路。」", "en_old": "[「沒有希望。」]", "en_new": "[「還沒找到路。」]"}, {"num": "008", "old": "「一定失敗。」", "new": "「先驗證看看。」", "en_old": "[「一定失敗。」]", "en_new": "[「先驗證看看。」]"}, {"num": "009", "old": "「都是命。」", "new": "「很多可以設計。」", "en_old": "[「都是命。」]", "en_new": "[「很多可以設計。」]"}, {"num": "010", "old": "「我運氣不好。」", "new": "「我要提高成功率。」", "en_old": "[「我運氣不好。」]", "en_new": "[「我要提高成功率。」]"}, {"num": "011", "old": "「他害我。」", "new": "「我怎麼回應？」", "en_old": "[「他害我。」]", "en_new": "[「我怎麼回應？」]"}, {"num": "012", "old": "「事情很糟。」", "new": "「事情提供資訊。」", "en_old": "[「事情很糟。」]", "en_new": "[「事情提供資訊。」]"}, {"num": "013", "old": "「我沒天分。」", "new": "「能力可以訓練。」", "en_old": "[「我沒天分。」]", "en_new": "[「能力可以訓練。」]"}, {"num": "014", "old": "「我很笨。」", "new": "「我還在學。」", "en_old": "[「我很笨。」]", "en_new": "[「我還在學。」]"}, {"num": "015", "old": "「我不適合。」", "new": "「我要找到方法。」", "en_old": "[「我不適合。」]", "en_new": "[「我要找到方法。」]"}, {"num": "016", "old": "一直自責。", "new": "開始修正模型。", "en_old": "[一直自責。]", "en_new": "[開始修正模型。]"}, {"num": "017", "old": "一直否定自己。", "new": "開始建立自己。", "en_old": "[一直否定自己。]", "en_new": "[開始建立自己。]"}, {"num": "018", "old": "一直害怕失敗。", "new": "開始累積回饋。", "en_old": "[一直害怕失敗。]", "en_new": "[開始累積回饋。]"}, {"num": "019", "old": "一直比較。", "new": "開始成長。", "en_old": "[一直比較。]", "en_new": "[開始成長。]"}, {"num": "020", "old": "一直抱怨。", "new": "開始設計。", "en_old": "[一直抱怨。]", "en_new": "[開始設計。]"}, {"num": "021", "old": "一直等待。", "new": "開始行動。", "en_old": "[一直等待。]", "en_new": "[開始行動。]"}, {"num": "022", "old": "一直猜測。", "new": "開始驗證。", "en_old": "[一直猜測。]", "en_new": "[開始驗證。]"}, {"num": "023", "old": "一直情緒化。", "new": "開始分析。", "en_old": "[一直情緒化。]", "en_new": "[開始分析。]"}, {"num": "024", "old": "一直反應。", "new": "開始預測。", "en_old": "[一直反應。]", "en_new": "[開始預測。]"}, {"num": "025", "old": "一直相信舊故事。", "new": "開始建立新故事。", "en_old": "[一直相信舊故事。]", "en_new": "[開始建立新故事。]"}, {"num": "026", "old": "一直相信限制。", "new": "開始建立可能。", "en_old": "[一直相信限制。]", "en_new": "[開始建立可能。]"}, {"num": "027", "old": "一直使用受害語言。", "new": "開始使用創造語言。", "en_old": "[一直使用受害語言。]", "en_new": "[開始使用創造語言。]"}, {"num": "028", "old": "一直使用匱乏語言。", "new": "開始使用豐盛語言。", "en_old": "[一直使用匱乏語言。]", "en_new": "[開始使用豐盛語言。]"}, {"num": "029", "old": "一直更新資訊。", "new": "開始更新語言。", "en_old": "[一直更新資訊。]", "en_new": "[開始更新語言。]"}, {"num": "030", "old": "改變說法。", "new": "改變整個世界模型。", "en_old": "[改變說法。]", "en_new": "[改變整個世界模型。]"}]}, {"num": "003", "chinese": "觀點切換能力", "english": "Perspective Shifting", "items": [{"num": "001", "old": "只有一種答案。", "new": "同時看見多種可能。", "en_old": "[只有一種答案。]", "en_new": "[同時看見多種可能。]"}, {"num": "002", "old": "只站在自己角度。", "new": "能站在別人角度。", "en_old": "[只站在自己角度。]", "en_new": "[能站在別人角度。]"}, {"num": "003", "old": "只看事件。", "new": "看事件背後結構。", "en_old": "[只看事件。]", "en_new": "[看事件背後結構。]"}, {"num": "004", "old": "只看現在。", "new": "同時看短期與長期。", "en_old": "[只看現在。]", "en_new": "[同時看短期與長期。]"}, {"num": "005", "old": "只看結果。", "new": "看生成機制。", "en_old": "[只看結果。]", "en_new": "[看生成機制。]"}, {"num": "006", "old": "只看對錯。", "new": "看限制條件。", "en_old": "[只看對錯。]", "en_new": "[看限制條件。]"}, {"num": "007", "old": "只問誰錯。", "new": "先問系統哪裡失衡。", "en_old": "[只問誰錯。]", "en_new": "[先問系統哪裡失衡。]"}, {"num": "008", "old": "只看表象。", "new": "看本質。", "en_old": "[只看表象。]", "en_new": "[看本質。]"}, {"num": "009", "old": "只相信直覺。", "new": "願意驗證假設。", "en_old": "[只相信直覺。]", "en_new": "[願意驗證假設。]"}, {"num": "010", "old": "把不同意見當攻擊。", "new": "把不同意見當資訊。", "en_old": "[把不同意見當攻擊。]", "en_new": "[把不同意見當資訊。]"}, {"num": "011", "old": "只看失敗。", "new": "看回饋。", "en_old": "[只看失敗。]", "en_new": "[看回饋。]"}, {"num": "012", "old": "只看危機。", "new": "同時看機會。", "en_old": "[只看危機。]", "en_new": "[同時看機會。]"}, {"num": "013", "old": "只看問題。", "new": "同時看資源。", "en_old": "[只看問題。]", "en_new": "[同時看資源。]"}, {"num": "014", "old": "只看障礙。", "new": "尋找槓桿。", "en_old": "[只看障礙。]", "en_new": "[尋找槓桿。]"}, {"num": "015", "old": "只看人物。", "new": "看互動關係。", "en_old": "[只看人物。]", "en_new": "[看互動關係。]"}, {"num": "016", "old": "只看個體。", "new": "看系統。", "en_old": "[只看個體。]", "en_new": "[看系統。]"}, {"num": "017", "old": "只看局部。", "new": "看全局。", "en_old": "[只看局部。]", "en_new": "[看全局。]"}, {"num": "018", "old": "只看原因。", "new": "看回饋循環。", "en_old": "[只看原因。]", "en_new": "[看回饋循環。]"}, {"num": "019", "old": "只看輸出。", "new": "看控制器。", "en_old": "[只看輸出。]", "en_new": "[看控制器。]"}, {"num": "020", "old": "只看情緒。", "new": "看需求。", "en_old": "[只看情緒。]", "en_new": "[看需求。]"}, {"num": "021", "old": "只看行為。", "new": "看信念。", "en_old": "[只看行為。]", "en_new": "[看信念。]"}, {"num": "022", "old": "只看信念。", "new": "看世界模型。", "en_old": "[只看信念。]", "en_new": "[看世界模型。]"}, {"num": "023", "old": "只看單點。", "new": "看整張網路。", "en_old": "[只看單點。]", "en_new": "[看整張網路。]"}, {"num": "024", "old": "只看衝突。", "new": "看共同利益。", "en_old": "[只看衝突。]", "en_new": "[看共同利益。]"}, {"num": "025", "old": "只看損失。", "new": "看學習。", "en_old": "[只看損失。]", "en_new": "[看學習。]"}, {"num": "026", "old": "只看今天。", "new": "看十年。", "en_old": "[只看今天。]", "en_new": "[看十年。]"}, {"num": "027", "old": "只看自己。", "new": "看整體。", "en_old": "[只看自己。]", "en_new": "[看整體。]"}, {"num": "028", "old": "只找答案。", "new": "重新定義問題。", "en_old": "[只找答案。]", "en_new": "[重新定義問題。]"}, {"num": "029", "old": "固定視角。", "new": "自由切換視角。", "en_old": "[固定視角。]", "en_new": "[自由切換視角。]"}, {"num": "030", "old": "理解事情。", "new": "理解世界如何運作。", "en_old": "[理解事情。]", "en_new": "[理解世界如何運作。]"}]}, {"num": "004", "chinese": "本質思考能力", "english": "Essential Thinking", "items": [{"num": "001", "old": "看現象。", "new": "看本質。", "en_old": "[看現象。]", "en_new": "[看本質。]"}, {"num": "002", "old": "只看結果。", "new": "看原因。", "en_old": "[只看結果。]", "en_new": "[看原因。]"}, {"num": "003", "old": "只看答案。", "new": "看問題。", "en_old": "[只看答案。]", "en_new": "[看問題。]"}, {"num": "004", "old": "只看事件。", "new": "看機制。", "en_old": "[只看事件。]", "en_new": "[看機制。]"}, {"num": "005", "old": "只看故事。", "new": "看規律。", "en_old": "[只看故事。]", "en_new": "[看規律。]"}, {"num": "006", "old": "只記案例。", "new": "找共通點。", "en_old": "[只記案例。]", "en_new": "[找共通點。]"}, {"num": "007", "old": "只看變化。", "new": "找不變。", "en_old": "[只看變化。]", "en_new": "[找不變。]"}, {"num": "008", "old": "只看表面成功。", "new": "看底層能力。", "en_old": "[只看表面成功。]", "en_new": "[看底層能力。]"}, {"num": "009", "old": "只看輸出。", "new": "看輸入。", "en_old": "[只看輸出。]", "en_new": "[看輸入。]"}, {"num": "010", "old": "只看努力。", "new": "看方向。", "en_old": "[只看努力。]", "en_new": "[看方向。]"}, {"num": "011", "old": "只看速度。", "new": "看方向是否正確。", "en_old": "[只看速度。]", "en_new": "[看方向是否正確。]"}, {"num": "012", "old": "只看工具。", "new": "看模型。", "en_old": "[只看工具。]", "en_new": "[看模型。]"}, {"num": "013", "old": "只看方法。", "new": "看原理。", "en_old": "[只看方法。]", "en_new": "[看原理。]"}, {"num": "014", "old": "只背知識。", "new": "理解生成機制。", "en_old": "[只背知識。]", "en_new": "[理解生成機制。]"}, {"num": "015", "old": "只記流程。", "new": "理解邏輯。", "en_old": "[只記流程。]", "en_new": "[理解邏輯。]"}, {"num": "016", "old": "只看症狀。", "new": "找根因。", "en_old": "[只看症狀。]", "en_new": "[找根因。]"}, {"num": "017", "old": "只看衝突。", "new": "看需求。", "en_old": "[只看衝突。]", "en_new": "[看需求。]"}, {"num": "018", "old": "只看情緒。", "new": "看訊號。", "en_old": "[只看情緒。]", "en_new": "[看訊號。]"}, {"num": "019", "old": "只看習慣。", "new": "看身份。", "en_old": "[只看習慣。]", "en_new": "[看身份。]"}, {"num": "020", "old": "只看身份。", "new": "看信念。", "en_old": "[只看身份。]", "en_new": "[看信念。]"}, {"num": "021", "old": "只看選擇。", "new": "看價值排序。", "en_old": "[只看選擇。]", "en_new": "[看價值排序。]"}, {"num": "022", "old": "只看金錢。", "new": "看價值交換。", "en_old": "[只看金錢。]", "en_new": "[看價值交換。]"}, {"num": "023", "old": "只看產品。", "new": "看解決方案。", "en_old": "[只看產品。]", "en_new": "[看解決方案。]"}, {"num": "024", "old": "只看能力。", "new": "看系統。", "en_old": "[只看能力。]", "en_new": "[看系統。]"}, {"num": "025", "old": "只看競爭。", "new": "看合作。", "en_old": "[只看競爭。]", "en_new": "[看合作。]"}, {"num": "026", "old": "只看成功。", "new": "看複製機制。", "en_old": "[只看成功。]", "en_new": "[看複製機制。]"}, {"num": "027", "old": "只看技巧。", "new": "看底層原則。", "en_old": "[只看技巧。]", "en_new": "[看底層原則。]"}, {"num": "028", "old": "只看知識。", "new": "看智慧。", "en_old": "[只看知識。]", "en_new": "[看智慧。]"}, {"num": "029", "old": "只看今天。", "new": "看演化。", "en_old": "[只看今天。]", "en_new": "[看演化。]"}, {"num": "030", "old": "停留現象。", "new": "回到第一性本質。", "en_old": "[停留現象。]", "en_new": "[回到第一性本質。]"}]}, {"num": "005", "chinese": "第一性原理能力", "english": "First Principles Thinking", "items": [{"num": "001", "old": "接受答案。", "new": "自己推導答案。", "en_old": "[接受答案。]", "en_new": "[自己推導答案。]"}, {"num": "002", "old": "相信權威。", "new": "驗證原理。", "en_old": "[相信權威。]", "en_new": "[驗證原理。]"}, {"num": "003", "old": "模仿別人。", "new": "理解本質。", "en_old": "[模仿別人。]", "en_new": "[理解本質。]"}, {"num": "004", "old": "背公式。", "new": "理解公式怎麼來。", "en_old": "[背公式。]", "en_new": "[理解公式怎麼來。]"}, {"num": "005", "old": "背知識。", "new": "建立知識。", "en_old": "[背知識。]", "en_new": "[建立知識。]"}, {"num": "006", "old": "照做。", "new": "知道為什麼。", "en_old": "[照做。]", "en_new": "[知道為什麼。]"}, {"num": "007", "old": "依賴經驗。", "new": "依賴邏輯。", "en_old": "[依賴經驗。]", "en_new": "[依賴邏輯。]"}, {"num": "008", "old": "相信習慣。", "new": "相信證據。", "en_old": "[相信習慣。]", "en_new": "[相信證據。]"}, {"num": "009", "old": "只會模仿。", "new": "能創造。", "en_old": "[只會模仿。]", "en_new": "[能創造。]"}, {"num": "010", "old": "看到結果。", "new": "拆解生成過程。", "en_old": "[看到結果。]", "en_new": "[拆解生成過程。]"}, {"num": "011", "old": "只問怎麼做。", "new": "先問為什麼。", "en_old": "[只問怎麼做。]", "en_new": "[先問為什麼。]"}, {"num": "012", "old": "只看成功。", "new": "看成功條件。", "en_old": "[只看成功。]", "en_new": "[看成功條件。]"}, {"num": "013", "old": "只會複製。", "new": "能重新設計。", "en_old": "[只會複製。]", "en_new": "[能重新設計。]"}, {"num": "014", "old": "只會改善。", "new": "能重建。", "en_old": "[只會改善。]", "en_new": "[能重建。]"}, {"num": "015", "old": "只修補。", "new": "重新建構。", "en_old": "[只修補。]", "en_new": "[重新建構。]"}, {"num": "016", "old": "停留表層。", "new": "一路往下拆。", "en_old": "[停留表層。]", "en_new": "[一路往下拆。]"}, {"num": "017", "old": "只相信流程。", "new": "理解機制。", "en_old": "[只相信流程。]", "en_new": "[理解機制。]"}, {"num": "018", "old": "把限制當事實。", "new": "重新驗證限制。", "en_old": "[把限制當事實。]", "en_new": "[重新驗證限制。]"}, {"num": "019", "old": "問題來就處理。", "new": "預防問題。", "en_old": "[問題來就處理。]", "en_new": "[預防問題。]"}, {"num": "020", "old": "只學技巧。", "new": "學原理。", "en_old": "[只學技巧。]", "en_new": "[學原理。]"}, {"num": "021", "old": "依靠記憶。", "new": "依靠理解。", "en_old": "[依靠記憶。]", "en_new": "[依靠理解。]"}, {"num": "022", "old": "相信直覺。", "new": "建立推理。", "en_old": "[相信直覺。]", "en_new": "[建立推理。]"}, {"num": "023", "old": "看單點。", "new": "看底層規律。", "en_old": "[看單點。]", "en_new": "[看底層規律。]"}, {"num": "024", "old": "只會使用工具。", "new": "理解工具背後原理。", "en_old": "[只會使用工具。]", "en_new": "[理解工具背後原理。]"}, {"num": "025", "old": "看答案。", "new": "建立推導能力。", "en_old": "[看答案。]", "en_new": "[建立推導能力。]"}, {"num": "026", "old": "接受世界。", "new": "重新定義世界。", "en_old": "[接受世界。]", "en_new": "[重新定義世界。]"}, {"num": "027", "old": "等待創新。", "new": "自己創新。", "en_old": "[等待創新。]", "en_new": "[自己創新。]"}, {"num": "028", "old": "知識越多越好。", "new": "原理越少越強。", "en_old": "[知識越多越好。]", "en_new": "[原理越少越強。]"}, {"num": "029", "old": "依靠別人思考。", "new": "建立獨立思考。", "en_old": "[依靠別人思考。]", "en_new": "[建立獨立思考。]"}, {"num": "030", "old": "知道答案。", "new": "知道答案是如何生成的。", "en_old": "[知道答案。]", "en_new": "[知道答案是如何生成的。]"}]}, {"num": "006", "chinese": "模型建構能力", "english": "Model Building", "items": [{"num": "001", "old": "犯錯就自責。", "new": "犯錯先分析。", "en_old": "[犯錯就自責。]", "en_new": "[犯錯先分析。]"}, {"num": "002", "old": "逃避錯誤。", "new": "面對錯誤。", "en_old": "[逃避錯誤。]", "en_new": "[面對錯誤。]"}, {"num": "003", "old": "替自己找理由。", "new": "替自己找原因。", "en_old": "[替自己找理由。]", "en_new": "[替自己找原因。]"}, {"num": "004", "old": "怕承認錯誤。", "new": "勇於修正錯誤。", "en_old": "[怕承認錯誤。]", "en_new": "[勇於修正錯誤。]"}, {"num": "005", "old": "一直重複犯錯。", "new": "建立防呆機制。", "en_old": "[一直重複犯錯。]", "en_new": "[建立防呆機制。]"}, {"num": "006", "old": "相信直覺。", "new": "驗證假設。", "en_old": "[相信直覺。]", "en_new": "[驗證假設。]"}, {"num": "007", "old": "失敗就放棄。", "new": "失敗就更新。", "en_old": "[失敗就放棄。]", "en_new": "[失敗就更新。]"}, {"num": "008", "old": "只修正結果。", "new": "修正流程。", "en_old": "[只修正結果。]", "en_new": "[修正流程。]"}, {"num": "009", "old": "只修正流程。", "new": "修正模型。", "en_old": "[只修正流程。]", "en_new": "[修正模型。]"}, {"num": "010", "old": "只修正模型。", "new": "修正目標函數。", "en_old": "[只修正模型。]", "en_new": "[修正目標函數。]"}, {"num": "011", "old": "只修正自己。", "new": "修正整個系統。", "en_old": "[只修正自己。]", "en_new": "[修正整個系統。]"}, {"num": "012", "old": "錯誤代表能力差。", "new": "錯誤代表資料增加。", "en_old": "[錯誤代表能力差。]", "en_new": "[錯誤代表資料增加。]"}, {"num": "013", "old": "怕被批評。", "new": "利用回饋。", "en_old": "[怕被批評。]", "en_new": "[利用回饋。]"}, {"num": "014", "old": "一直證明自己。", "new": "一直改善自己。", "en_old": "[一直證明自己。]", "en_new": "[一直改善自己。]"}, {"num": "015", "old": "只記住失敗。", "new": "記住改善方法。", "en_old": "[只記住失敗。]", "en_new": "[記住改善方法。]"}, {"num": "016", "old": "問題一直重演。", "new": "建立SOP。", "en_old": "[問題一直重演。]", "en_new": "[建立SOP。]"}, {"num": "017", "old": "怪運氣。", "new": "找控制點。", "en_old": "[怪運氣。]", "en_new": "[找控制點。]"}, {"num": "018", "old": "只修補漏洞。", "new": "重新設計。", "en_old": "[只修補漏洞。]", "en_new": "[重新設計。]"}, {"num": "019", "old": "修一次就停。", "new": "持續PDCA。", "en_old": "[修一次就停。]", "en_new": "[持續PDCA。]"}, {"num": "020", "old": "相信一次成功。", "new": "接受反覆迭代。", "en_old": "[相信一次成功。]", "en_new": "[接受反覆迭代。]"}, {"num": "021", "old": "看到錯誤就沮喪。", "new": "看到錯誤就學習。", "en_old": "[看到錯誤就沮喪。]", "en_new": "[看到錯誤就學習。]"}, {"num": "022", "old": "不知道哪裡錯。", "new": "快速定位錯誤。", "en_old": "[不知道哪裡錯。]", "en_new": "[快速定位錯誤。]"}, {"num": "023", "old": "不記錄錯誤。", "new": "建立錯題本。", "en_old": "[不記錄錯誤。]", "en_new": "[建立錯題本。]"}, {"num": "024", "old": "沒有檢查機制。", "new": "建立檢查清單。", "en_old": "[沒有檢查機制。]", "en_new": "[建立檢查清單。]"}, {"num": "025", "old": "結果不好才改。", "new": "過程就修正。", "en_old": "[結果不好才改。]", "en_new": "[過程就修正。]"}, {"num": "026", "old": "沒有數據。", "new": "數據驅動改善。", "en_old": "[沒有數據。]", "en_new": "[數據驅動改善。]"}, {"num": "027", "old": "只改善自己。", "new": "改善整個流程。", "en_old": "[只改善自己。]", "en_new": "[改善整個流程。]"}, {"num": "028", "old": "害怕失敗。", "new": "善用失敗。", "en_old": "[害怕失敗。]", "en_new": "[善用失敗。]"}, {"num": "029", "old": "一直重來。", "new": "累積複利改善。", "en_old": "[一直重來。]", "en_new": "[累積複利改善。]"}, {"num": "030", "old": "錯誤是終點。", "new": "錯誤是升級入口。", "en_old": "[錯誤是終點。]", "en_new": "[錯誤是升級入口。]"}]}, {"num": "007", "chinese": "模型更新能力", "english": "Model Updating", "items": [{"num": "001", "old": "犯錯就自責。", "new": "犯錯先分析。", "en_old": "[犯錯就自責。]", "en_new": "[犯錯先分析。]"}, {"num": "002", "old": "逃避錯誤。", "new": "面對錯誤。", "en_old": "[逃避錯誤。]", "en_new": "[面對錯誤。]"}, {"num": "003", "old": "替自己找理由。", "new": "替自己找原因。", "en_old": "[替自己找理由。]", "en_new": "[替自己找原因。]"}, {"num": "004", "old": "怕承認錯誤。", "new": "勇於修正錯誤。", "en_old": "[怕承認錯誤。]", "en_new": "[勇於修正錯誤。]"}, {"num": "005", "old": "一直重複犯錯。", "new": "建立防呆機制。", "en_old": "[一直重複犯錯。]", "en_new": "[建立防呆機制。]"}, {"num": "006", "old": "相信直覺。", "new": "驗證假設。", "en_old": "[相信直覺。]", "en_new": "[驗證假設。]"}, {"num": "007", "old": "失敗就放棄。", "new": "失敗就更新。", "en_old": "[失敗就放棄。]", "en_new": "[失敗就更新。]"}, {"num": "008", "old": "只修正結果。", "new": "修正流程。", "en_old": "[只修正結果。]", "en_new": "[修正流程。]"}, {"num": "009", "old": "只修正流程。", "new": "修正模型。", "en_old": "[只修正流程。]", "en_new": "[修正模型。]"}, {"num": "010", "old": "只修正模型。", "new": "修正目標函數。", "en_old": "[只修正模型。]", "en_new": "[修正目標函數。]"}, {"num": "011", "old": "只修正自己。", "new": "修正整個系統。", "en_old": "[只修正自己。]", "en_new": "[修正整個系統。]"}, {"num": "012", "old": "錯誤代表能力差。", "new": "錯誤代表資料增加。", "en_old": "[錯誤代表能力差。]", "en_new": "[錯誤代表資料增加。]"}, {"num": "013", "old": "怕被批評。", "new": "利用回饋。", "en_old": "[怕被批評。]", "en_new": "[利用回饋。]"}, {"num": "014", "old": "一直證明自己。", "new": "一直改善自己。", "en_old": "[一直證明自己。]", "en_new": "[一直改善自己。]"}, {"num": "015", "old": "只記住失敗。", "new": "記住改善方法。", "en_old": "[只記住失敗。]", "en_new": "[記住改善方法。]"}, {"num": "016", "old": "問題一直重演。", "new": "建立SOP。", "en_old": "[問題一直重演。]", "en_new": "[建立SOP。]"}, {"num": "017", "old": "怪運氣。", "new": "找控制點。", "en_old": "[怪運氣。]", "en_new": "[找控制點。]"}, {"num": "018", "old": "只修補漏洞。", "new": "重新設計。", "en_old": "[只修補漏洞。]", "en_new": "[重新設計。]"}, {"num": "019", "old": "修一次就停。", "new": "持續PDCA。", "en_old": "[修一次就停。]", "en_new": "[持續PDCA。]"}, {"num": "020", "old": "相信一次成功。", "new": "接受反覆迭代。", "en_old": "[相信一次成功。]", "en_new": "[接受反覆迭代。]"}, {"num": "021", "old": "看到錯誤就沮喪。", "new": "看到錯誤就學習。", "en_old": "[看到錯誤就沮喪。]", "en_new": "[看到錯誤就學習。]"}, {"num": "022", "old": "不知道哪裡錯。", "new": "快速定位錯誤。", "en_old": "[不知道哪裡錯。]", "en_new": "[快速定位錯誤。]"}, {"num": "023", "old": "不記錄錯誤。", "new": "建立錯題本。", "en_old": "[不記錄錯誤。]", "en_new": "[建立錯題本。]"}, {"num": "024", "old": "沒有檢查機制。", "new": "建立檢查清單。", "en_old": "[沒有檢查機制。]", "en_new": "[建立檢查清單。]"}, {"num": "025", "old": "結果不好才改。", "new": "過程就修正。", "en_old": "[結果不好才改。]", "en_new": "[過程就修正。]"}, {"num": "026", "old": "沒有數據。", "new": "數據驅動改善。", "en_old": "[沒有數據。]", "en_new": "[數據驅動改善。]"}, {"num": "027", "old": "只改善自己。", "new": "改善整個流程。", "en_old": "[只改善自己。]", "en_new": "[改善整個流程。]"}, {"num": "028", "old": "害怕失敗。", "new": "善用失敗。", "en_old": "[害怕失敗。]", "en_new": "[善用失敗。]"}, {"num": "029", "old": "一直重來。", "new": "累積複利改善。", "en_old": "[一直重來。]", "en_new": "[累積複利改善。]"}, {"num": "030", "old": "錯誤是終點。", "new": "錯誤是升級入口。", "en_old": "[錯誤是終點。]", "en_new": "[錯誤是升級入口。]"}]}, {"num": "008", "chinese": "預測能力", "english": "Prediction", "items": [{"num": "001", "old": "犯錯就自責。", "new": "犯錯先分析。", "en_old": "[犯錯就自責。]", "en_new": "[犯錯先分析。]"}, {"num": "002", "old": "逃避錯誤。", "new": "面對錯誤。", "en_old": "[逃避錯誤。]", "en_new": "[面對錯誤。]"}, {"num": "003", "old": "替自己找理由。", "new": "替自己找原因。", "en_old": "[替自己找理由。]", "en_new": "[替自己找原因。]"}, {"num": "004", "old": "怕承認錯誤。", "new": "勇於修正錯誤。", "en_old": "[怕承認錯誤。]", "en_new": "[勇於修正錯誤。]"}, {"num": "005", "old": "一直重複犯錯。", "new": "建立防呆機制。", "en_old": "[一直重複犯錯。]", "en_new": "[建立防呆機制。]"}, {"num": "006", "old": "相信直覺。", "new": "驗證假設。", "en_old": "[相信直覺。]", "en_new": "[驗證假設。]"}, {"num": "007", "old": "失敗就放棄。", "new": "失敗就更新。", "en_old": "[失敗就放棄。]", "en_new": "[失敗就更新。]"}, {"num": "008", "old": "只修正結果。", "new": "修正流程。", "en_old": "[只修正結果。]", "en_new": "[修正流程。]"}, {"num": "009", "old": "只修正流程。", "new": "修正模型。", "en_old": "[只修正流程。]", "en_new": "[修正模型。]"}, {"num": "010", "old": "只修正模型。", "new": "修正目標函數。", "en_old": "[只修正模型。]", "en_new": "[修正目標函數。]"}, {"num": "011", "old": "只修正自己。", "new": "修正整個系統。", "en_old": "[只修正自己。]", "en_new": "[修正整個系統。]"}, {"num": "012", "old": "錯誤代表能力差。", "new": "錯誤代表資料增加。", "en_old": "[錯誤代表能力差。]", "en_new": "[錯誤代表資料增加。]"}, {"num": "013", "old": "怕被批評。", "new": "利用回饋。", "en_old": "[怕被批評。]", "en_new": "[利用回饋。]"}, {"num": "014", "old": "一直證明自己。", "new": "一直改善自己。", "en_old": "[一直證明自己。]", "en_new": "[一直改善自己。]"}, {"num": "015", "old": "只記住失敗。", "new": "記住改善方法。", "en_old": "[只記住失敗。]", "en_new": "[記住改善方法。]"}, {"num": "016", "old": "問題一直重演。", "new": "建立SOP。", "en_old": "[問題一直重演。]", "en_new": "[建立SOP。]"}, {"num": "017", "old": "怪運氣。", "new": "找控制點。", "en_old": "[怪運氣。]", "en_new": "[找控制點。]"}, {"num": "018", "old": "只修補漏洞。", "new": "重新設計。", "en_old": "[只修補漏洞。]", "en_new": "[重新設計。]"}, {"num": "019", "old": "修一次就停。", "new": "持續PDCA。", "en_old": "[修一次就停。]", "en_new": "[持續PDCA。]"}, {"num": "020", "old": "相信一次成功。", "new": "接受反覆迭代。", "en_old": "[相信一次成功。]", "en_new": "[接受反覆迭代。]"}, {"num": "021", "old": "看到錯誤就沮喪。", "new": "看到錯誤就學習。", "en_old": "[看到錯誤就沮喪。]", "en_new": "[看到錯誤就學習。]"}, {"num": "022", "old": "不知道哪裡錯。", "new": "快速定位錯誤。", "en_old": "[不知道哪裡錯。]", "en_new": "[快速定位錯誤。]"}, {"num": "023", "old": "不記錄錯誤。", "new": "建立錯題本。", "en_old": "[不記錄錯誤。]", "en_new": "[建立錯題本。]"}, {"num": "024", "old": "沒有檢查機制。", "new": "建立檢查清單。", "en_old": "[沒有檢查機制。]", "en_new": "[建立檢查清單。]"}, {"num": "025", "old": "結果不好才改。", "new": "過程就修正。", "en_old": "[結果不好才改。]", "en_new": "[過程就修正。]"}, {"num": "026", "old": "沒有數據。", "new": "數據驅動改善。", "en_old": "[沒有數據。]", "en_new": "[數據驅動改善。]"}, {"num": "027", "old": "只改善自己。", "new": "改善整個流程。", "en_old": "[只改善自己。]", "en_new": "[改善整個流程。]"}, {"num": "028", "old": "害怕失敗。", "new": "善用失敗。", "en_old": "[害怕失敗。]", "en_new": "[善用失敗。]"}, {"num": "029", "old": "一直重來。", "new": "累積複利改善。", "en_old": "[一直重來。]", "en_new": "[累積複利改善。]"}, {"num": "030", "old": "錯誤是終點。", "new": "錯誤是升級入口。", "en_old": "[錯誤是終點。]", "en_new": "[錯誤是升級入口。]"}]}, {"num": "009", "chinese": "誤差修正能力", "english": "Error Correction", "items": [{"num": "001", "old": "犯錯就自責。", "new": "犯錯先分析。", "en_old": "[犯錯就自責。]", "en_new": "[犯錯先分析。]"}, {"num": "002", "old": "逃避錯誤。", "new": "面對錯誤。", "en_old": "[逃避錯誤。]", "en_new": "[面對錯誤。]"}, {"num": "003", "old": "替自己找理由。", "new": "替自己找原因。", "en_old": "[替自己找理由。]", "en_new": "[替自己找原因。]"}, {"num": "004", "old": "怕承認錯誤。", "new": "勇於修正錯誤。", "en_old": "[怕承認錯誤。]", "en_new": "[勇於修正錯誤。]"}, {"num": "005", "old": "一直重複犯錯。", "new": "建立防呆機制。", "en_old": "[一直重複犯錯。]", "en_new": "[建立防呆機制。]"}, {"num": "006", "old": "相信直覺。", "new": "驗證假設。", "en_old": "[相信直覺。]", "en_new": "[驗證假設。]"}, {"num": "007", "old": "失敗就放棄。", "new": "失敗就更新。", "en_old": "[失敗就放棄。]", "en_new": "[失敗就更新。]"}, {"num": "008", "old": "只修正結果。", "new": "修正流程。", "en_old": "[只修正結果。]", "en_new": "[修正流程。]"}, {"num": "009", "old": "只修正流程。", "new": "修正模型。", "en_old": "[只修正流程。]", "en_new": "[修正模型。]"}, {"num": "010", "old": "只修正模型。", "new": "修正目標函數。", "en_old": "[只修正模型。]", "en_new": "[修正目標函數。]"}, {"num": "011", "old": "只修正自己。", "new": "修正整個系統。", "en_old": "[只修正自己。]", "en_new": "[修正整個系統。]"}, {"num": "012", "old": "錯誤代表能力差。", "new": "錯誤代表資料增加。", "en_old": "[錯誤代表能力差。]", "en_new": "[錯誤代表資料增加。]"}, {"num": "013", "old": "怕被批評。", "new": "利用回饋。", "en_old": "[怕被批評。]", "en_new": "[利用回饋。]"}, {"num": "014", "old": "一直證明自己。", "new": "一直改善自己。", "en_old": "[一直證明自己。]", "en_new": "[一直改善自己。]"}, {"num": "015", "old": "只記住失敗。", "new": "記住改善方法。", "en_old": "[只記住失敗。]", "en_new": "[記住改善方法。]"}, {"num": "016", "old": "問題一直重演。", "new": "建立SOP。", "en_old": "[問題一直重演。]", "en_new": "[建立SOP。]"}, {"num": "017", "old": "怪運氣。", "new": "找控制點。", "en_old": "[怪運氣。]", "en_new": "[找控制點。]"}, {"num": "018", "old": "只修補漏洞。", "new": "重新設計。", "en_old": "[只修補漏洞。]", "en_new": "[重新設計。]"}, {"num": "019", "old": "修一次就停。", "new": "持續PDCA。", "en_old": "[修一次就停。]", "en_new": "[持續PDCA。]"}, {"num": "020", "old": "相信一次成功。", "new": "接受反覆迭代。", "en_old": "[相信一次成功。]", "en_new": "[接受反覆迭代。]"}, {"num": "021", "old": "看到錯誤就沮喪。", "new": "看到錯誤就學習。", "en_old": "[看到錯誤就沮喪。]", "en_new": "[看到錯誤就學習。]"}, {"num": "022", "old": "不知道哪裡錯。", "new": "快速定位錯誤。", "en_old": "[不知道哪裡錯。]", "en_new": "[快速定位錯誤。]"}, {"num": "023", "old": "不記錄錯誤。", "new": "建立錯題本。", "en_old": "[不記錄錯誤。]", "en_new": "[建立錯題本。]"}, {"num": "024", "old": "沒有檢查機制。", "new": "建立檢查清單。", "en_old": "[沒有檢查機制。]", "en_new": "[建立檢查清單。]"}, {"num": "025", "old": "結果不好才改。", "new": "過程就修正。", "en_old": "[結果不好才改。]", "en_new": "[過程就修正。]"}, {"num": "026", "old": "沒有數據。", "new": "數據驅動改善。", "en_old": "[沒有數據。]", "en_new": "[數據驅動改善。]"}, {"num": "027", "old": "只改善自己。", "new": "改善整個流程。", "en_old": "[只改善自己。]", "en_new": "[改善整個流程。]"}, {"num": "028", "old": "害怕失敗。", "new": "善用失敗。", "en_old": "[害怕失敗。]", "en_new": "[善用失敗。]"}, {"num": "029", "old": "一直重來。", "new": "累積複利改善。", "en_old": "[一直重來。]", "en_new": "[累積複利改善。]"}, {"num": "030", "old": "錯誤是終點。", "new": "錯誤是升級入口。", "en_old": "[錯誤是終點。]", "en_new": "[錯誤是升級入口。]"}]}, {"num": "010", "chinese": "系統思考能力", "english": "Systems Thinking", "items": [{"num": "001", "old": "只看事件。", "new": "看系統。", "en_old": "[只看事件。]", "en_new": "[看系統。]"}, {"num": "002", "old": "只看人。", "new": "看關係。", "en_old": "[只看人。]", "en_new": "[看關係。]"}, {"num": "003", "old": "只看結果。", "new": "看流程。", "en_old": "[只看結果。]", "en_new": "[看流程。]"}, {"num": "004", "old": "只看症狀。", "new": "看根因。", "en_old": "[只看症狀。]", "en_new": "[看根因。]"}, {"num": "005", "old": "只看局部。", "new": "看整體。", "en_old": "[只看局部。]", "en_new": "[看整體。]"}, {"num": "006", "old": "只看今天。", "new": "看長期。", "en_old": "[只看今天。]", "en_new": "[看長期。]"}, {"num": "007", "old": "單一路徑。", "new": "多重回饋。", "en_old": "[單一路徑。]", "en_new": "[多重回饋。]"}, {"num": "008", "old": "找壞人。", "new": "找失衡點。", "en_old": "[找壞人。]", "en_new": "[找失衡點。]"}, {"num": "009", "old": "改善人。", "new": "改善環境。", "en_old": "[改善人。]", "en_new": "[改善環境。]"}, {"num": "010", "old": "相信努力。", "new": "相信槓桿。", "en_old": "[相信努力。]", "en_new": "[相信槓桿。]"}, {"num": "011", "old": "一因一果。", "new": "多因多果。", "en_old": "[一因一果。]", "en_new": "[多因多果。]"}, {"num": "012", "old": "線性思考。", "new": "循環思考。", "en_old": "[線性思考。]", "en_new": "[循環思考。]"}, {"num": "013", "old": "事件彼此獨立。", "new": "事件互相影響。", "en_old": "[事件彼此獨立。]", "en_new": "[事件互相影響。]"}, {"num": "014", "old": "只看輸出。", "new": "看輸入。", "en_old": "[只看輸出。]", "en_new": "[看輸入。]"}, {"num": "015", "old": "忽略回饋。", "new": "重視Feedback。", "en_old": "[忽略回饋。]", "en_new": "[重視Feedback。]"}, {"num": "016", "old": "只看短期利益。", "new": "考慮長期代價。", "en_old": "[只看短期利益。]", "en_new": "[考慮長期代價。]"}, {"num": "017", "old": "只改善一點。", "new": "改善整體。", "en_old": "[只改善一點。]", "en_new": "[改善整體。]"}, {"num": "018", "old": "一直救火。", "new": "建立防火系統。", "en_old": "[一直救火。]", "en_new": "[建立防火系統。]"}, {"num": "019", "old": "相信偶然。", "new": "尋找規律。", "en_old": "[相信偶然。]", "en_new": "[尋找規律。]"}, {"num": "020", "old": "問題一個一個解。", "new": "一次改善整個系統。", "en_old": "[問題一個一個解。]", "en_new": "[一次改善整個系統。]"}, {"num": "021", "old": "依靠英雄。", "new": "依靠制度。", "en_old": "[依靠英雄。]", "en_new": "[依靠制度。]"}, {"num": "022", "old": "靠意志力。", "new": "靠系統。", "en_old": "[靠意志力。]", "en_new": "[靠系統。]"}, {"num": "023", "old": "看到競爭。", "new": "看到合作。", "en_old": "[看到競爭。]", "en_new": "[看到合作。]"}, {"num": "024", "old": "只管理結果。", "new": "管理流程。", "en_old": "[只管理結果。]", "en_new": "[管理流程。]"}, {"num": "025", "old": "沒有優先順序。", "new": "找到核心槓桿。", "en_old": "[沒有優先順序。]", "en_new": "[找到核心槓桿。]"}, {"num": "026", "old": "改輸出。", "new": "改控制器。", "en_old": "[改輸出。]", "en_new": "[改控制器。]"}, {"num": "027", "old": "局部最佳。", "new": "整體最佳。", "en_old": "[局部最佳。]", "en_new": "[整體最佳。]"}, {"num": "028", "old": "只看成功。", "new": "看成功如何生成。", "en_old": "[只看成功。]", "en_new": "[看成功如何生成。]"}, {"num": "029", "old": "相信運氣。", "new": "相信系統。", "en_old": "[相信運氣。]", "en_new": "[相信系統。]"}, {"num": "030", "old": "生活很亂。", "new": "生活有架構。", "en_old": "[生活很亂。]", "en_new": "[生活有架構。]"}]}, {"num": "011", "chinese": "結構分析能力", "english": "Structural Analysis", "items": [{"num": "001", "old": "只看事情。", "new": "看結構。", "en_old": "[只看事情。]", "en_new": "[看結構。]"}, {"num": "002", "old": "只看表象。", "new": "看底層。", "en_old": "[只看表象。]", "en_new": "[看底層。]"}, {"num": "003", "old": "只看症狀。", "new": "看生成機制。", "en_old": "[只看症狀。]", "en_new": "[看生成機制。]"}, {"num": "004", "old": "只看問題。", "new": "找根因。", "en_old": "[只看問題。]", "en_new": "[找根因。]"}, {"num": "005", "old": "只看人物。", "new": "看角色關係。", "en_old": "[只看人物。]", "en_new": "[看角色關係。]"}, {"num": "006", "old": "只看能力。", "new": "看能力來源。", "en_old": "[只看能力。]", "en_new": "[看能力來源。]"}, {"num": "007", "old": "只看成績。", "new": "看學習系統。", "en_old": "[只看成績。]", "en_new": "[看學習系統。]"}, {"num": "008", "old": "只看收入。", "new": "看價值系統。", "en_old": "[只看收入。]", "en_new": "[看價值系統。]"}, {"num": "009", "old": "只看健康。", "new": "看生活系統。", "en_old": "[只看健康。]", "en_new": "[看生活系統。]"}, {"num": "010", "old": "只看情緒。", "new": "看需求結構。", "en_old": "[只看情緒。]", "en_new": "[看需求結構。]"}, {"num": "011", "old": "只看選擇。", "new": "看價值排序。", "en_old": "[只看選擇。]", "en_new": "[看價值排序。]"}, {"num": "012", "old": "只看信念。", "new": "看世界模型。", "en_old": "[只看信念。]", "en_new": "[看世界模型。]"}, {"num": "013", "old": "只看工具。", "new": "看工具背後模型。", "en_old": "[只看工具。]", "en_new": "[看工具背後模型。]"}, {"num": "014", "old": "只看知識。", "new": "看知識網路。", "en_old": "[只看知識。]", "en_new": "[看知識網路。]"}, {"num": "015", "old": "只看學習。", "new": "看學習流程。", "en_old": "[只看學習。]", "en_new": "[看學習流程。]"}, {"num": "016", "old": "只看關係。", "new": "看互動模式。", "en_old": "[只看關係。]", "en_new": "[看互動模式。]"}, {"num": "017", "old": "只看衝突。", "new": "看系統失衡。", "en_old": "[只看衝突。]", "en_new": "[看系統失衡。]"}, {"num": "018", "old": "只看時間。", "new": "看資源配置。", "en_old": "[只看時間。]", "en_new": "[看資源配置。]"}, {"num": "019", "old": "只看效率。", "new": "看方向。", "en_old": "[只看效率。]", "en_new": "[看方向。]"}, {"num": "020", "old": "只看勤奮。", "new": "看策略。", "en_old": "[只看勤奮。]", "en_new": "[看策略。]"}, {"num": "021", "old": "只看管理。", "new": "看控制。", "en_old": "[只看管理。]", "en_new": "[看控制。]"}, {"num": "022", "old": "只看流程。", "new": "看控制點。", "en_old": "[只看流程。]", "en_new": "[看控制點。]"}, {"num": "023", "old": "只看結果。", "new": "看輸入品質。", "en_old": "[只看結果。]", "en_new": "[看輸入品質。]"}, {"num": "024", "old": "只看失敗。", "new": "看限制條件。", "en_old": "[只看失敗。]", "en_new": "[看限制條件。]"}, {"num": "025", "old": "只看成功案例。", "new": "找共通結構。", "en_old": "[只看成功案例。]", "en_new": "[找共通結構。]"}, {"num": "026", "old": "只分析資料。", "new": "建立架構。", "en_old": "[只分析資料。]", "en_new": "[建立架構。]"}, {"num": "027", "old": "只看細節。", "new": "看全貌。", "en_old": "[只看細節。]", "en_new": "[看全貌。]"}, {"num": "028", "old": "只會評論。", "new": "能重建結構。", "en_old": "[只會評論。]", "en_new": "[能重建結構。]"}, {"num": "029", "old": "沒有框架。", "new": "建立框架。", "en_old": "[沒有框架。]", "en_new": "[建立框架。]"}, {"num": "030", "old": "一直分析事情。", "new": "開始分析世界如何運作。", "en_old": "[一直分析事情。]", "en_new": "[開始分析世界如何運作。]"}]}, {"num": "012", "chinese": "問題定義能力", "english": "Problem Definition", "items": [{"num": "001", "old": "急著找答案。", "new": "先定義問題。", "en_old": "[急著找答案。]", "en_new": "[先定義問題。]"}, {"num": "002", "old": "解錯問題。", "new": "解真正問題。", "en_old": "[解錯問題。]", "en_new": "[解真正問題。]"}, {"num": "003", "old": "看到症狀。", "new": "找到根因。", "en_old": "[看到症狀。]", "en_new": "[找到根因。]"}, {"num": "004", "old": "一直治標。", "new": "開始治本。", "en_old": "[一直治標。]", "en_new": "[開始治本。]"}, {"num": "005", "old": "看到困難。", "new": "重新定義困難。", "en_old": "[看到困難。]", "en_new": "[重新定義困難。]"}, {"num": "006", "old": "問題很多。", "new": "找核心問題。", "en_old": "[問題很多。]", "en_new": "[找核心問題。]"}, {"num": "007", "old": "事情很亂。", "new": "整理問題。", "en_old": "[事情很亂。]", "en_new": "[整理問題。]"}, {"num": "008", "old": "想到什麼做什麼。", "new": "先分析問題。", "en_old": "[想到什麼做什麼。]", "en_new": "[先分析問題。]"}, {"num": "009", "old": "一直努力。", "new": "先確認方向。", "en_old": "[一直努力。]", "en_new": "[先確認方向。]"}, {"num": "010", "old": "一直解決結果。", "new": "先改善生成機制。", "en_old": "[一直解決結果。]", "en_new": "[先改善生成機制。]"}, {"num": "011", "old": "只問怎麼辦。", "new": "先問真正發生什麼。", "en_old": "[只問怎麼辦。]", "en_new": "[先問真正發生什麼。]"}, {"num": "012", "old": "怪別人。", "new": "找系統限制。", "en_old": "[怪別人。]", "en_new": "[找系統限制。]"}, {"num": "013", "old": "問題越來越多。", "new": "一次找到源頭。", "en_old": "[問題越來越多。]", "en_new": "[一次找到源頭。]"}, {"num": "014", "old": "看到事件。", "new": "看到結構。", "en_old": "[看到事件。]", "en_new": "[看到結構。]"}, {"num": "015", "old": "看到衝突。", "new": "看到需求。", "en_old": "[看到衝突。]", "en_new": "[看到需求。]"}, {"num": "016", "old": "看到情緒。", "new": "看到訊號。", "en_old": "[看到情緒。]", "en_new": "[看到訊號。]"}, {"num": "017", "old": "看到錯誤。", "new": "看到回饋。", "en_old": "[看到錯誤。]", "en_new": "[看到回饋。]"}, {"num": "018", "old": "問題固定。", "new": "問題可以重新定義。", "en_old": "[問題固定。]", "en_new": "[問題可以重新定義。]"}, {"num": "019", "old": "只會回答。", "new": "會提出好問題。", "en_old": "[只會回答。]", "en_new": "[會提出好問題。]"}, {"num": "020", "old": "沒有優先順序。", "new": "找到最高槓桿。", "en_old": "[沒有優先順序。]", "en_new": "[找到最高槓桿。]"}, {"num": "021", "old": "全部都重要。", "new": "知道真正重要。", "en_old": "[全部都重要。]", "en_new": "[知道真正重要。]"}, {"num": "022", "old": "看到很多小問題。", "new": "看到一個大問題。", "en_old": "[看到很多小問題。]", "en_new": "[看到一個大問題。]"}, {"num": "023", "old": "只會修補。", "new": "重新設計。", "en_old": "[只會修補。]", "en_new": "[重新設計。]"}, {"num": "024", "old": "一直做。", "new": "先思考。", "en_old": "[一直做。]", "en_new": "[先思考。]"}, {"num": "025", "old": "直覺解決。", "new": "模型分析。", "en_old": "[直覺解決。]", "en_new": "[模型分析。]"}, {"num": "026", "old": "沒有框架。", "new": "建立問題框架。", "en_old": "[沒有框架。]", "en_new": "[建立問題框架。]"}, {"num": "027", "old": "一直忙。", "new": "先定義。", "en_old": "[一直忙。]", "en_new": "[先定義。]"}, {"num": "028", "old": "找答案。", "new": "找問題。", "en_old": "[找答案。]", "en_new": "[找問題。]"}, {"num": "029", "old": "問題愈解愈多。", "new": "問題愈定義愈少。", "en_old": "[問題愈解愈多。]", "en_new": "[問題愈定義愈少。]"}, {"num": "030", "old": "努力解決。", "new": "重新定義。", "en_old": "[努力解決。]", "en_new": "[重新定義。]"}]}, {"num": "013", "chinese": "抽象思考能力", "english": "Abstract Thinking", "items": [{"num": "001", "old": "記住案例。", "new": "找共同規律。", "en_old": "[記住案例。]", "en_new": "[找共同規律。]"}, {"num": "002", "old": "記故事。", "new": "理解模型。", "en_old": "[記故事。]", "en_new": "[理解模型。]"}, {"num": "003", "old": "只看個案。", "new": "看所有案例。", "en_old": "[只看個案。]", "en_new": "[看所有案例。]"}, {"num": "004", "old": "事情彼此無關。", "new": "找共同模式。", "en_old": "[事情彼此無關。]", "en_new": "[找共同模式。]"}, {"num": "005", "old": "背知識。", "new": "理解原理。", "en_old": "[背知識。]", "en_new": "[理解原理。]"}, {"num": "006", "old": "只會記。", "new": "會歸納。", "en_old": "[只會記。]", "en_new": "[會歸納。]"}, {"num": "007", "old": "只看細節。", "new": "看概念。", "en_old": "[只看細節。]", "en_new": "[看概念。]"}, {"num": "008", "old": "概念彼此分開。", "new": "概念彼此連結。", "en_old": "[概念彼此分開。]", "en_new": "[概念彼此連結。]"}, {"num": "009", "old": "事情很多。", "new": "分類整理。", "en_old": "[事情很多。]", "en_new": "[分類整理。]"}, {"num": "010", "old": "知識零散。", "new": "形成知識樹。", "en_old": "[知識零散。]", "en_new": "[形成知識樹。]"}, {"num": "011", "old": "事件不同。", "new": "本質相同。", "en_old": "[事件不同。]", "en_new": "[本質相同。]"}, {"num": "012", "old": "一直背。", "new": "一直整理。", "en_old": "[一直背。]", "en_new": "[一直整理。]"}, {"num": "013", "old": "很多資訊。", "new": "很多模型。", "en_old": "[很多資訊。]", "en_new": "[很多模型。]"}, {"num": "014", "old": "案例越多越亂。", "new": "案例越多越清楚。", "en_old": "[案例越多越亂。]", "en_new": "[案例越多越清楚。]"}, {"num": "015", "old": "一直增加資料。", "new": "一直壓縮智慧。", "en_old": "[一直增加資料。]", "en_new": "[一直壓縮智慧。]"}, {"num": "016", "old": "看到不同。", "new": "看到相同。", "en_old": "[看到不同。]", "en_new": "[看到相同。]"}, {"num": "017", "old": "看到特殊。", "new": "看到普遍。", "en_old": "[看到特殊。]", "en_new": "[看到普遍。]"}, {"num": "018", "old": "只知道發生什麼。", "new": "知道為什麼。", "en_old": "[只知道發生什麼。]", "en_new": "[知道為什麼。]"}, {"num": "019", "old": "依賴記憶。", "new": "依賴理解。", "en_old": "[依賴記憶。]", "en_new": "[依賴理解。]"}, {"num": "020", "old": "知道很多。", "new": "理解很深。", "en_old": "[知道很多。]", "en_new": "[理解很深。]"}, {"num": "021", "old": "事件導向。", "new": "規律導向。", "en_old": "[事件導向。]", "en_new": "[規律導向。]"}, {"num": "022", "old": "知識越來越重。", "new": "模型越來越簡單。", "en_old": "[知識越來越重。]", "en_new": "[模型越來越簡單。]"}, {"num": "023", "old": "沒有架構。", "new": "建立樹狀架構。", "en_old": "[沒有架構。]", "en_new": "[建立樹狀架構。]"}, {"num": "024", "old": "每件事重新學。", "new": "一次學會很多事。", "en_old": "[每件事重新學。]", "en_new": "[一次學會很多事。]"}, {"num": "025", "old": "不知道如何應用。", "new": "跨領域應用。", "en_old": "[不知道如何應用。]", "en_new": "[跨領域應用。]"}, {"num": "026", "old": "資訊堆積。", "new": "智慧壓縮。", "en_old": "[資訊堆積。]", "en_new": "[智慧壓縮。]"}, {"num": "027", "old": "看到表象。", "new": "看到共同本質。", "en_old": "[看到表象。]", "en_new": "[看到共同本質。]"}, {"num": "028", "old": "知識很多。", "new": "模型很少。", "en_old": "[知識很多。]", "en_new": "[模型很少。]"}, {"num": "029", "old": "理解局部。", "new": "理解全局。", "en_old": "[理解局部。]", "en_new": "[理解全局。]"}, {"num": "030", "old": "累積知識。", "new": "累積智慧。", "en_old": "[累積知識。]", "en_new": "[累積智慧。]"}]}, {"num": "014", "chinese": "模式辨識能力", "english": "Pattern Recognition", "items": [{"num": "001", "old": "事情每次都不同。", "new": "快速找到共同模式。", "en_old": "[事情每次都不同。]", "en_new": "[快速找到共同模式。]"}, {"num": "002", "old": "每次重新開始。", "new": "快速辨識規律。", "en_old": "[每次重新開始。]", "en_new": "[快速辨識規律。]"}, {"num": "003", "old": "看到偶然。", "new": "看到必然。", "en_old": "[看到偶然。]", "en_new": "[看到必然。]"}, {"num": "004", "old": "只看事件。", "new": "看模式。", "en_old": "[只看事件。]", "en_new": "[看模式。]"}, {"num": "005", "old": "不知道下一步。", "new": "預測下一步。", "en_old": "[不知道下一步。]", "en_new": "[預測下一步。]"}, {"num": "006", "old": "一直犯同樣錯。", "new": "辨識錯誤模式。", "en_old": "[一直犯同樣錯。]", "en_new": "[辨識錯誤模式。]"}, {"num": "007", "old": "情緒反應。", "new": "模式分析。", "en_old": "[情緒反應。]", "en_new": "[模式分析。]"}, {"num": "008", "old": "沒有分類。", "new": "建立模式庫。", "en_old": "[沒有分類。]", "en_new": "[建立模式庫。]"}, {"num": "009", "old": "只會記憶。", "new": "會辨識。", "en_old": "[只會記憶。]", "en_new": "[會辨識。]"}, {"num": "010", "old": "只會分析。", "new": "快速判斷。", "en_old": "[只會分析。]", "en_new": "[快速判斷。]"}, {"num": "011", "old": "沒有經驗。", "new": "快速複製經驗。", "en_old": "[沒有經驗。]", "en_new": "[快速複製經驗。]"}, {"num": "012", "old": "只看一點。", "new": "看整體模式。", "en_old": "[只看一點。]", "en_new": "[看整體模式。]"}, {"num": "013", "old": "事情很多。", "new": "規律很少。", "en_old": "[事情很多。]", "en_new": "[規律很少。]"}, {"num": "014", "old": "一直猜。", "new": "辨識趨勢。", "en_old": "[一直猜。]", "en_new": "[辨識趨勢。]"}, {"num": "015", "old": "沒有方向。", "new": "看見方向。", "en_old": "[沒有方向。]", "en_new": "[看見方向。]"}, {"num": "016", "old": "只會做。", "new": "知道何時做。", "en_old": "[只會做。]", "en_new": "[知道何時做。]"}, {"num": "017", "old": "沒有優先順序。", "new": "找到高頻模式。", "en_old": "[沒有優先順序。]", "en_new": "[找到高頻模式。]"}, {"num": "018", "old": "一直被事情推著走。", "new": "提前辨識變化。", "en_old": "[一直被事情推著走。]", "en_new": "[提前辨識變化。]"}, {"num": "019", "old": "事情複雜。", "new": "模式簡單。", "en_old": "[事情複雜。]", "en_new": "[模式簡單。]"}, {"num": "020", "old": "資訊混亂。", "new": "規律清楚。", "en_old": "[資訊混亂。]", "en_new": "[規律清楚。]"}, {"num": "021", "old": "看到結果。", "new": "看到循環。", "en_old": "[看到結果。]", "en_new": "[看到循環。]"}, {"num": "022", "old": "只看一次。", "new": "看歷史演化。", "en_old": "[只看一次。]", "en_new": "[看歷史演化。]"}, {"num": "023", "old": "沒有預測。", "new": "建立預測。", "en_old": "[沒有預測。]", "en_new": "[建立預測。]"}, {"num": "024", "old": "沒有警覺。", "new": "快速發現異常。", "en_old": "[沒有警覺。]", "en_new": "[快速發現異常。]"}, {"num": "025", "old": "事件驅動。", "new": "模式驅動。", "en_old": "[事件驅動。]", "en_new": "[模式驅動。]"}, {"num": "026", "old": "不知道風險。", "new": "提前發現風險。", "en_old": "[不知道風險。]", "en_new": "[提前發現風險。]"}, {"num": "027", "old": "只會應付。", "new": "提前準備。", "en_old": "[只會應付。]", "en_new": "[提前準備。]"}, {"num": "028", "old": "一直學新東西。", "new": "一直找舊規律。", "en_old": "[一直學新東西。]", "en_new": "[一直找舊規律。]"}, {"num": "029", "old": "看到不同事件。", "new": "看到同一模型。", "en_old": "[看到不同事件。]", "en_new": "[看到同一模型。]"}, {"num": "030", "old": "記住事情。", "new": "掌握世界運作模式。", "en_old": "[記住事情。]", "en_new": "[掌握世界運作模式。]"}]}, {"num": "015", "chinese": "認知升維能力", "english": "Cognitive Upgrade", "items": [{"num": "001", "old": "二元思考。", "new": "系統思考。", "en_old": "[二元思考。]", "en_new": "[系統思考。]"}, {"num": "002", "old": "只有對錯。", "new": "理解限制條件。", "en_old": "[只有對錯。]", "en_new": "[理解限制條件。]"}, {"num": "003", "old": "只看事件。", "new": "看整個系統。", "en_old": "[只看事件。]", "en_new": "[看整個系統。]"}, {"num": "004", "old": "只看現在。", "new": "看長期演化。", "en_old": "[只看現在。]", "en_new": "[看長期演化。]"}, {"num": "005", "old": "只看結果。", "new": "看生成機制。", "en_old": "[只看結果。]", "en_new": "[看生成機制。]"}, {"num": "006", "old": "只看輸出。", "new": "看控制器。", "en_old": "[只看輸出。]", "en_new": "[看控制器。]"}, {"num": "007", "old": "只看努力。", "new": "看槓桿。", "en_old": "[只看努力。]", "en_new": "[看槓桿。]"}, {"num": "008", "old": "只看能力。", "new": "看能力如何生成。", "en_old": "[只看能力。]", "en_new": "[看能力如何生成。]"}, {"num": "009", "old": "只看成功。", "new": "看成功模型。", "en_old": "[只看成功。]", "en_new": "[看成功模型。]"}, {"num": "010", "old": "只看失敗。", "new": "看更新方向。", "en_old": "[只看失敗。]", "en_new": "[看更新方向。]"}, {"num": "011", "old": "只看答案。", "new": "看問題。", "en_old": "[只看答案。]", "en_new": "[看問題。]"}, {"num": "012", "old": "只看工具。", "new": "看模型。", "en_old": "[只看工具。]", "en_new": "[看模型。]"}, {"num": "013", "old": "只看知識。", "new": "看智慧。", "en_old": "[只看知識。]", "en_new": "[看智慧。]"}, {"num": "014", "old": "只看技巧。", "new": "看原理。", "en_old": "[只看技巧。]", "en_new": "[看原理。]"}, {"num": "015", "old": "只看原因。", "new": "看回饋循環。", "en_old": "[只看原因。]", "en_new": "[看回饋循環。]"}, {"num": "016", "old": "只看人物。", "new": "看結構。", "en_old": "[只看人物。]", "en_new": "[看結構。]"}, {"num": "017", "old": "只看情緒。", "new": "看需求。", "en_old": "[只看情緒。]", "en_new": "[看需求。]"}, {"num": "018", "old": "只看競爭。", "new": "看合作。", "en_old": "[只看競爭。]", "en_new": "[看合作。]"}, {"num": "019", "old": "只看單點。", "new": "看整張網路。", "en_old": "[只看單點。]", "en_new": "[看整張網路。]"}, {"num": "020", "old": "只看個體。", "new": "看生態系。", "en_old": "[只看個體。]", "en_new": "[看生態系。]"}, {"num": "021", "old": "只看改變。", "new": "看演化。", "en_old": "[只看改變。]", "en_new": "[看演化。]"}, {"num": "022", "old": "只看局部最佳。", "new": "看整體最佳。", "en_old": "[只看局部最佳。]", "en_new": "[看整體最佳。]"}, {"num": "023", "old": "只看努力。", "new": "看方向。", "en_old": "[只看努力。]", "en_new": "[看方向。]"}, {"num": "024", "old": "只看今天。", "new": "看複利。", "en_old": "[只看今天。]", "en_new": "[看複利。]"}, {"num": "025", "old": "只會分析。", "new": "能整合。", "en_old": "[只會分析。]", "en_new": "[能整合。]"}, {"num": "026", "old": "只會反應。", "new": "提前預測。", "en_old": "[只會反應。]", "en_new": "[提前預測。]"}, {"num": "027", "old": "固定世界觀。", "new": "持續更新世界模型。", "en_old": "[固定世界觀。]", "en_new": "[持續更新世界模型。]"}, {"num": "028", "old": "接受現實。", "new": "重新設計現實。", "en_old": "[接受現實。]", "en_new": "[重新設計現實。]"}, {"num": "029", "old": "知識增加。", "new": "認知升維。", "en_old": "[知識增加。]", "en_new": "[認知升維。]"}, {"num": "030", "old": "改變行為。", "new": "改變整個生命操作系統。", "en_old": "[改變行為。]", "en_new": "[改變整個生命操作系統。]"}]}, {"num": "016", "chinese": "情緒辨識能力", "english": "Emotion Recognition", "items": [{"num": "001", "old": "被情緒控制。", "new": "辨識情緒。", "en_old": "[被情緒控制。]", "en_new": "[辨識情緒。]"}, {"num": "002", "old": "討厭情緒。", "new": "理解情緒。", "en_old": "[討厭情緒。]", "en_new": "[理解情緒。]"}, {"num": "003", "old": "壓抑情緒。", "new": "接納情緒。", "en_old": "[壓抑情緒。]", "en_new": "[接納情緒。]"}, {"num": "004", "old": "情緒就是事實。", "new": "情緒只是訊號。", "en_old": "[情緒就是事實。]", "en_new": "[情緒只是訊號。]"}, {"num": "005", "old": "情緒就是自己。", "new": "情緒只是狀態。", "en_old": "[情緒就是自己。]", "en_new": "[情緒只是狀態。]"}, {"num": "006", "old": "害怕焦慮。", "new": "分析焦慮。", "en_old": "[害怕焦慮。]", "en_new": "[分析焦慮。]"}, {"num": "007", "old": "害怕悲傷。", "new": "理解失去。", "en_old": "[害怕悲傷。]", "en_new": "[理解失去。]"}, {"num": "008", "old": "害怕憤怒。", "new": "理解界線。", "en_old": "[害怕憤怒。]", "en_new": "[理解界線。]"}, {"num": "009", "old": "害怕恐懼。", "new": "理解風險。", "en_old": "[害怕恐懼。]", "en_new": "[理解風險。]"}, {"num": "010", "old": "不知道自己感受。", "new": "能說出真正感受。", "en_old": "[不知道自己感受。]", "en_new": "[能說出真正感受。]"}, {"num": "011", "old": "不知道需求。", "new": "知道需求。", "en_old": "[不知道需求。]", "en_new": "[知道需求。]"}, {"num": "012", "old": "情緒來就爆發。", "new": "先停下觀察。", "en_old": "[情緒來就爆發。]", "en_new": "[先停下觀察。]"}, {"num": "013", "old": "一直反應。", "new": "先辨識。", "en_old": "[一直反應。]", "en_new": "[先辨識。]"}, {"num": "014", "old": "一直逃避。", "new": "願意面對。", "en_old": "[一直逃避。]", "en_new": "[願意面對。]"}, {"num": "015", "old": "只看情緒。", "new": "看情緒來源。", "en_old": "[只看情緒。]", "en_new": "[看情緒來源。]"}, {"num": "016", "old": "只看痛苦。", "new": "看提醒。", "en_old": "[只看痛苦。]", "en_new": "[看提醒。]"}, {"num": "017", "old": "怪情緒。", "new": "理解情緒。", "en_old": "[怪情緒。]", "en_new": "[理解情緒。]"}, {"num": "018", "old": "一直壓抑。", "new": "健康表達。", "en_old": "[一直壓抑。]", "en_new": "[健康表達。]"}, {"num": "019", "old": "只有好壞。", "new": "理解不同功能。", "en_old": "[只有好壞。]", "en_new": "[理解不同功能。]"}, {"num": "020", "old": "情緒沒有名字。", "new": "能精準命名。", "en_old": "[情緒沒有名字。]", "en_new": "[能精準命名。]"}, {"num": "021", "old": "沒有自我覺察。", "new": "提高情緒覺察。", "en_old": "[沒有自我覺察。]", "en_new": "[提高情緒覺察。]"}, {"num": "022", "old": "只看表面。", "new": "看深層需求。", "en_old": "[只看表面。]", "en_new": "[看深層需求。]"}, {"num": "023", "old": "只看爆發。", "new": "看累積。", "en_old": "[只看爆發。]", "en_new": "[看累積。]"}, {"num": "024", "old": "只怪別人。", "new": "理解互動。", "en_old": "[只怪別人。]", "en_new": "[理解互動。]"}, {"num": "025", "old": "一直內耗。", "new": "開始整理。", "en_old": "[一直內耗。]", "en_new": "[開始整理。]"}, {"num": "026", "old": "只想消除情緒。", "new": "利用情緒。", "en_old": "[只想消除情緒。]", "en_new": "[利用情緒。]"}, {"num": "027", "old": "情緒很亂。", "new": "情緒有分類。", "en_old": "[情緒很亂。]", "en_new": "[情緒有分類。]"}, {"num": "028", "old": "情緒代表失敗。", "new": "情緒代表資訊。", "en_old": "[情緒代表失敗。]", "en_new": "[情緒代表資訊。]"}, {"num": "029", "old": "情緒是阻力。", "new": "情緒是導航。", "en_old": "[情緒是阻力。]", "en_new": "[情緒是導航。]"}, {"num": "030", "old": "逃避情緒。", "new": "善用情緒提升人生。", "en_old": "[逃避情緒。]", "en_new": "[善用情緒提升人生。]"}]}, {"num": "017", "chinese": "情緒轉譯能力", "english": "Emotion Translation", "items": [{"num": "001", "old": "直接爆發。", "new": "翻譯情緒。", "en_old": "[直接爆發。]", "en_new": "[翻譯情緒。]"}, {"num": "002", "old": "情緒等於事實。", "new": "情緒等於訊號。", "en_old": "[情緒等於事實。]", "en_new": "[情緒等於訊號。]"}, {"num": "003", "old": "焦慮就是不好。", "new": "焦慮代表不確定。", "en_old": "[焦慮就是不好。]", "en_new": "[焦慮代表不確定。]"}, {"num": "004", "old": "憤怒就是討厭。", "new": "憤怒代表界線。", "en_old": "[憤怒就是討厭。]", "en_new": "[憤怒代表界線。]"}, {"num": "005", "old": "悲傷就是脆弱。", "new": "悲傷代表失去。", "en_old": "[悲傷就是脆弱。]", "en_new": "[悲傷代表失去。]"}, {"num": "006", "old": "恐懼就是膽小。", "new": "恐懼代表風險。", "en_old": "[恐懼就是膽小。]", "en_new": "[恐懼代表風險。]"}, {"num": "007", "old": "快樂只是情緒。", "new": "快樂代表需求被滿足。", "en_old": "[快樂只是情緒。]", "en_new": "[快樂代表需求被滿足。]"}, {"num": "008", "old": "嫉妒就是壞。", "new": "嫉妒代表渴望。", "en_old": "[嫉妒就是壞。]", "en_new": "[嫉妒代表渴望。]"}, {"num": "009", "old": "羞愧就是失敗。", "new": "羞愧代表身份衝突。", "en_old": "[羞愧就是失敗。]", "en_new": "[羞愧代表身份衝突。]"}, {"num": "010", "old": "愧疚就是懲罰。", "new": "愧疚代表價值違背。", "en_old": "[愧疚就是懲罰。]", "en_new": "[愧疚代表價值違背。]"}, {"num": "011", "old": "壓力就是痛苦。", "new": "壓力代表負荷增加。", "en_old": "[壓力就是痛苦。]", "en_new": "[壓力代表負荷增加。]"}, {"num": "012", "old": "疲勞就是懶惰。", "new": "疲勞代表能量不足。", "en_old": "[疲勞就是懶惰。]", "en_new": "[疲勞代表能量不足。]"}, {"num": "013", "old": "孤單就是沒人陪。", "new": "孤單代表連結需求。", "en_old": "[孤單就是沒人陪。]", "en_new": "[孤單代表連結需求。]"}, {"num": "014", "old": "失望就是人生不好。", "new": "失望代表期待落差。", "en_old": "[失望就是人生不好。]", "en_new": "[失望代表期待落差。]"}, {"num": "015", "old": "抱怨就是發洩。", "new": "抱怨代表需求未滿足。", "en_old": "[抱怨就是發洩。]", "en_new": "[抱怨代表需求未滿足。]"}, {"num": "016", "old": "生氣就吵架。", "new": "生氣先翻譯。", "en_old": "[生氣就吵架。]", "en_new": "[生氣先翻譯。]"}, {"num": "017", "old": "焦慮就逃跑。", "new": "焦慮先分析。", "en_old": "[焦慮就逃跑。]", "en_new": "[焦慮先分析。]"}, {"num": "018", "old": "害怕就放棄。", "new": "害怕先準備。", "en_old": "[害怕就放棄。]", "en_new": "[害怕先準備。]"}, {"num": "019", "old": "悲傷就否定自己。", "new": "悲傷允許哀悼。", "en_old": "[悲傷就否定自己。]", "en_new": "[悲傷允許哀悼。]"}, {"num": "020", "old": "情緒沒有用途。", "new": "情緒都有功能。", "en_old": "[情緒沒有用途。]", "en_new": "[情緒都有功能。]"}, {"num": "021", "old": "一直壓抑。", "new": "開始理解。", "en_old": "[一直壓抑。]", "en_new": "[開始理解。]"}, {"num": "022", "old": "一直責怪。", "new": "開始探索。", "en_old": "[一直責怪。]", "en_new": "[開始探索。]"}, {"num": "023", "old": "一直逃避。", "new": "開始整理。", "en_old": "[一直逃避。]", "en_new": "[開始整理。]"}, {"num": "024", "old": "只有反應。", "new": "開始轉譯。", "en_old": "[只有反應。]", "en_new": "[開始轉譯。]"}, {"num": "025", "old": "不知道需求。", "new": "找到真正需求。", "en_old": "[不知道需求。]", "en_new": "[找到真正需求。]"}, {"num": "026", "old": "不知道限制。", "new": "找到限制條件。", "en_old": "[不知道限制。]", "en_new": "[找到限制條件。]"}, {"num": "027", "old": "不知道下一步。", "new": "產生更新方案。", "en_old": "[不知道下一步。]", "en_new": "[產生更新方案。]"}, {"num": "028", "old": "情緒降低效率。", "new": "情緒提升智慧。", "en_old": "[情緒降低效率。]", "en_new": "[情緒提升智慧。]"}, {"num": "029", "old": "情緒是負擔。", "new": "情緒是導航系統。", "en_old": "[情緒是負擔。]", "en_new": "[情緒是導航系統。]"}, {"num": "030", "old": "情緒主導人生。", "new": "情緒幫助更新生命模型。", "en_old": "[情緒主導人生。]", "en_new": "[情緒幫助更新生命模型。]"}]}, {"num": "018", "chinese": "自我反思能力", "english": "Self Reflection", "items": [{"num": "001", "old": "一直怪別人。", "new": "先檢查自己。", "en_old": "[一直怪別人。]", "en_new": "[先檢查自己。]"}, {"num": "002", "old": "看到別人的錯。", "new": "先看自己的盲點。", "en_old": "[看到別人的錯。]", "en_new": "[先看自己的盲點。]"}, {"num": "003", "old": "一直解釋。", "new": "一直反思。", "en_old": "[一直解釋。]", "en_new": "[一直反思。]"}, {"num": "004", "old": "一直防衛。", "new": "願意修正。", "en_old": "[一直防衛。]", "en_new": "[願意修正。]"}, {"num": "005", "old": "一直合理化。", "new": "尋找真相。", "en_old": "[一直合理化。]", "en_new": "[尋找真相。]"}, {"num": "006", "old": "只看結果。", "new": "回顧過程。", "en_old": "[只看結果。]", "en_new": "[回顧過程。]"}, {"num": "007", "old": "每天重複生活。", "new": "每天整理人生。", "en_old": "[每天重複生活。]", "en_new": "[每天整理人生。]"}, {"num": "008", "old": "沒有紀錄。", "new": "建立反思日誌。", "en_old": "[沒有紀錄。]", "en_new": "[建立反思日誌。]"}, {"num": "009", "old": "不知道自己怎麼想。", "new": "知道自己的思考模式。", "en_old": "[不知道自己怎麼想。]", "en_new": "[知道自己的思考模式。]"}, {"num": "010", "old": "不知道自己怎麼決策。", "new": "分析自己的決策。", "en_old": "[不知道自己怎麼決策。]", "en_new": "[分析自己的決策。]"}, {"num": "011", "old": "不知道自己情緒來源。", "new": "追蹤情緒來源。", "en_old": "[不知道自己情緒來源。]", "en_new": "[追蹤情緒來源。]"}, {"num": "012", "old": "不知道自己習慣。", "new": "辨識習慣迴路。", "en_old": "[不知道自己習慣。]", "en_new": "[辨識習慣迴路。]"}, {"num": "013", "old": "不知道自己限制。", "new": "辨識限制信念。", "en_old": "[不知道自己限制。]", "en_new": "[辨識限制信念。]"}, {"num": "014", "old": "不知道自己價值排序。", "new": "重新排序價值。", "en_old": "[不知道自己價值排序。]", "en_new": "[重新排序價值。]"}, {"num": "015", "old": "一直忙。", "new": "停下來思考。", "en_old": "[一直忙。]", "en_new": "[停下來思考。]"}, {"num": "016", "old": "一直輸入。", "new": "輸入加反思。", "en_old": "[一直輸入。]", "en_new": "[輸入加反思。]"}, {"num": "017", "old": "一直做。", "new": "做完檢討。", "en_old": "[一直做。]", "en_new": "[做完檢討。]"}, {"num": "018", "old": "犯錯就忘。", "new": "錯誤變教材。", "en_old": "[犯錯就忘。]", "en_new": "[錯誤變教材。]"}, {"num": "019", "old": "一直追求效率。", "new": "追求成長。", "en_old": "[一直追求效率。]", "en_new": "[追求成長。]"}, {"num": "020", "old": "一直比較別人。", "new": "比較昨天的自己。", "en_old": "[一直比較別人。]", "en_new": "[比較昨天的自己。]"}, {"num": "021", "old": "沒有學習循環。", "new": "建立PDCA。", "en_old": "[沒有學習循環。]", "en_new": "[建立PDCA。]"}, {"num": "022", "old": "不知道人生方向。", "new": "定期校正方向。", "en_old": "[不知道人生方向。]", "en_new": "[定期校正方向。]"}, {"num": "023", "old": "一直累積知識。", "new": "累積智慧。", "en_old": "[一直累積知識。]", "en_new": "[累積智慧。]"}, {"num": "024", "old": "一直累積經驗。", "new": "累積模型。", "en_old": "[一直累積經驗。]", "en_new": "[累積模型。]"}, {"num": "025", "old": "一直累積故事。", "new": "累積規律。", "en_old": "[一直累積故事。]", "en_new": "[累積規律。]"}, {"num": "026", "old": "不知道自己真正目標。", "new": "校正目標函數。", "en_old": "[不知道自己真正目標。]", "en_new": "[校正目標函數。]"}, {"num": "027", "old": "不知道為何卡住。", "new": "找到真正瓶頸。", "en_old": "[不知道為何卡住。]", "en_new": "[找到真正瓶頸。]"}, {"num": "028", "old": "不知道如何進步。", "new": "知道下一步更新。", "en_old": "[不知道如何進步。]", "en_new": "[知道下一步更新。]"}, {"num": "029", "old": "生活一直重複。", "new": "每天微更新。", "en_old": "[生活一直重複。]", "en_new": "[每天微更新。]"}, {"num": "030", "old": "反思只是回憶。", "new": "反思成為人生升級系統。", "en_old": "[反思只是回憶。]", "en_new": "[反思成為人生升級系統。]"}]}, {"num": "019", "chinese": "信念檢查能力", "english": "Belief Auditing", "items": [{"num": "001", "old": "相信所有想法。", "new": "驗證所有想法。", "en_old": "[相信所有想法。]", "en_new": "[驗證所有想法。]"}, {"num": "002", "old": "信念就是事實。", "new": "信念只是模型。", "en_old": "[信念就是事實。]", "en_new": "[信念只是模型。]"}, {"num": "003", "old": "不檢查信念。", "new": "定期更新信念。", "en_old": "[不檢查信念。]", "en_new": "[定期更新信念。]"}, {"num": "004", "old": "一直相信過去。", "new": "相信證據。", "en_old": "[一直相信過去。]", "en_new": "[相信證據。]"}, {"num": "005", "old": "認為自己就是這樣。", "new": "身份可以更新。", "en_old": "[認為自己就是這樣。]", "en_new": "[身份可以更新。]"}, {"num": "006", "old": "我沒有天分。", "new": "能力可以訓練。", "en_old": "[我沒有天分。]", "en_new": "[能力可以訓練。]"}, {"num": "007", "old": "我做不到。", "new": "我還沒做到。", "en_old": "[我做不到。]", "en_new": "[我還沒做到。]"}, {"num": "008", "old": "事情就是如此。", "new": "事情可以重新定義。", "en_old": "[事情就是如此。]", "en_new": "[事情可以重新定義。]"}, {"num": "009", "old": "命運決定人生。", "new": "選擇塑造人生。", "en_old": "[命運決定人生。]", "en_new": "[選擇塑造人生。]"}, {"num": "010", "old": "成功靠運氣。", "new": "成功靠系統。", "en_old": "[成功靠運氣。]", "en_new": "[成功靠系統。]"}, {"num": "011", "old": "害怕改變。", "new": "改變是成長。", "en_old": "[害怕改變。]", "en_new": "[改變是成長。]"}, {"num": "012", "old": "失敗代表沒能力。", "new": "失敗代表模型需更新。", "en_old": "[失敗代表沒能力。]", "en_new": "[失敗代表模型需更新。]"}, {"num": "013", "old": "痛苦代表不好。", "new": "痛苦代表提醒。", "en_old": "[痛苦代表不好。]", "en_new": "[痛苦代表提醒。]"}, {"num": "014", "old": "焦慮代表危險。", "new": "焦慮代表不確定。", "en_old": "[焦慮代表危險。]", "en_new": "[焦慮代表不確定。]"}, {"num": "015", "old": "憤怒代表敵人。", "new": "憤怒代表界線。", "en_old": "[憤怒代表敵人。]", "en_new": "[憤怒代表界線。]"}, {"num": "016", "old": "悲傷代表軟弱。", "new": "悲傷代表珍惜。", "en_old": "[悲傷代表軟弱。]", "en_new": "[悲傷代表珍惜。]"}, {"num": "017", "old": "一定要贏。", "new": "持續進步更重要。", "en_old": "[一定要贏。]", "en_new": "[持續進步更重要。]"}, {"num": "018", "old": "努力一定成功。", "new": "方向比努力重要。", "en_old": "[努力一定成功。]", "en_new": "[方向比努力重要。]"}, {"num": "019", "old": "工具最重要。", "new": "模型最重要。", "en_old": "[工具最重要。]", "en_new": "[模型最重要。]"}, {"num": "020", "old": "知識最重要。", "new": "能力最重要。", "en_old": "[知識最重要。]", "en_new": "[能力最重要。]"}, {"num": "021", "old": "答案最重要。", "new": "問題最重要。", "en_old": "[答案最重要。]", "en_new": "[問題最重要。]"}, {"num": "022", "old": "別人決定我。", "new": "我決定自己。", "en_old": "[別人決定我。]", "en_new": "[我決定自己。]"}, {"num": "023", "old": "環境限制我。", "new": "我可以設計環境。", "en_old": "[環境限制我。]", "en_new": "[我可以設計環境。]"}, {"num": "024", "old": "沒有機會。", "new": "創造機會。", "en_old": "[沒有機會。]", "en_new": "[創造機會。]"}, {"num": "025", "old": "只能接受。", "new": "可以更新。", "en_old": "[只能接受。]", "en_new": "[可以更新。]"}, {"num": "026", "old": "固定思維。", "new": "成長思維。", "en_old": "Fixed mindset.", "en_new": "Growth mindset."}, {"num": "027", "old": "相信故事。", "new": "理解規律。", "en_old": "[相信故事。]", "en_new": "[理解規律。]"}, {"num": "028", "old": "相信情緒。", "new": "理解情緒。", "en_old": "[相信情緒。]", "en_new": "[理解情緒。]"}, {"num": "029", "old": "相信昨天。", "new": "更新今天。", "en_old": "[相信昨天。]", "en_new": "[更新今天。]"}, {"num": "030", "old": "信念限制人生。", "new": "信念創造人生。", "en_old": "[信念限制人生。]", "en_new": "[信念創造人生。]"}]}, {"num": "020", "chinese": "語意重建能力", "english": "Meaning Reconstruction", "items": [{"num": "001", "old": "失敗就是失敗。", "new": "失敗是回饋。", "en_old": "[失敗就是失敗。]", "en_new": "[失敗是回饋。]"}, {"num": "002", "old": "問題就是阻礙。", "new": "問題是教材。", "en_old": "[問題就是阻礙。]", "en_new": "[問題是教材。]"}, {"num": "003", "old": "困難就是痛苦。", "new": "困難是能力訓練。", "en_old": "[困難就是痛苦。]", "en_new": "[困難是能力訓練。]"}, {"num": "004", "old": "挑戰就是壓力。", "new": "挑戰是成長。", "en_old": "[挑戰就是壓力。]", "en_new": "[挑戰是成長。]"}, {"num": "005", "old": "犯錯就是不好。", "new": "犯錯就是更新。", "en_old": "[犯錯就是不好。]", "en_new": "[犯錯就是更新。]"}, {"num": "006", "old": "批評就是攻擊。", "new": "批評可能是資訊。", "en_old": "[批評就是攻擊。]", "en_new": "[批評可能是資訊。]"}, {"num": "007", "old": "拒絕就是否定。", "new": "拒絕是重新配對。", "en_old": "[拒絕就是否定。]", "en_new": "[拒絕是重新配對。]"}, {"num": "008", "old": "等待就是浪費。", "new": "等待是準備。", "en_old": "[等待就是浪費。]", "en_new": "[等待是準備。]"}, {"num": "009", "old": "慢就是落後。", "new": "慢是打基礎。", "en_old": "[慢就是落後。]", "en_new": "[慢是打基礎。]"}, {"num": "010", "old": "改變就是風險。", "new": "改變就是機會。", "en_old": "[改變就是風險。]", "en_new": "[改變就是機會。]"}, {"num": "011", "old": "競爭就是打敗別人。", "new": "競爭就是提升自己。", "en_old": "[競爭就是打敗別人。]", "en_new": "[競爭就是提升自己。]"}, {"num": "012", "old": "成功就是有錢。", "new": "成功是持續創造價值。", "en_old": "[成功就是有錢。]", "en_new": "[成功是持續創造價值。]"}, {"num": "013", "old": "幸福就是沒有問題。", "new": "幸福是有能力面對問題。", "en_old": "[幸福就是沒有問題。]", "en_new": "[幸福是有能力面對問題。]"}, {"num": "014", "old": "成熟就是忍耐。", "new": "成熟是管理自己。", "en_old": "[成熟就是忍耐。]", "en_new": "[成熟是管理自己。]"}, {"num": "015", "old": "自由就是想做什麼。", "new": "自由是有選擇能力。", "en_old": "[自由就是想做什麼。]", "en_new": "[自由是有選擇能力。]"}, {"num": "016", "old": "愛就是感覺。", "new": "愛是持續投入。", "en_old": "[愛就是感覺。]", "en_new": "[愛是持續投入。]"}, {"num": "017", "old": "工作只是賺錢。", "new": "工作是創造價值。", "en_old": "[工作只是賺錢。]", "en_new": "[工作是創造價值。]"}, {"num": "018", "old": "學習就是考試。", "new": "學習是更新模型。", "en_old": "[學習就是考試。]", "en_new": "[學習是更新模型。]"}, {"num": "019", "old": "閱讀就是增加知識。", "new": "閱讀是重建世界觀。", "en_old": "[閱讀就是增加知識。]", "en_new": "[閱讀是重建世界觀。]"}, {"num": "020", "old": "英文只是語言。", "new": "英文是新的思考方式。", "en_old": "[英文只是語言。]", "en_new": "[英文是新的思考方式。]"}, {"num": "021", "old": "人生就是命運。", "new": "人生是設計。", "en_old": "[人生就是命運。]", "en_new": "[人生是設計。]"}, {"num": "022", "old": "命運固定。", "new": "命運可以重塑。", "en_old": "[命運固定。]", "en_new": "[命運可以重塑。]"}, {"num": "023", "old": "習慣只是重複。", "new": "習慣是身份生成器。", "en_old": "[習慣只是重複。]", "en_new": "[習慣是身份生成器。]"}, {"num": "024", "old": "身份是天生。", "new": "身份是每天選擇。", "en_old": "[身份是天生。]", "en_new": "[身份是每天選擇。]"}, {"num": "025", "old": "能力是天賦。", "new": "能力是複利。", "en_old": "[能力是天賦。]", "en_new": "[能力是複利。]"}, {"num": "026", "old": "智慧是知道很多。", "new": "智慧是做出更好決策。", "en_old": "[智慧是知道很多。]", "en_new": "[智慧是做出更好決策。]"}, {"num": "027", "old": "語言只是說話。", "new": "語言是創造人生。", "en_old": "[語言只是說話。]", "en_new": "[語言是創造人生。]"}, {"num": "028", "old": "思考只是分析。", "new": "思考是建模。", "en_old": "[思考只是分析。]", "en_new": "[思考是建模。]"}, {"num": "029", "old": "成長只是努力。", "new": "成長是持續更新。", "en_old": "[成長只是努力。]", "en_new": "[成長是持續更新。]"}, {"num": "030", "old": "人生只是活著。", "new": "人生是不斷重建自己的生命模型。", "en_old": "[人生只是活著。]", "en_new": "[人生是不斷重建自己的生命模型。]"}]}, {"num": "021", "chinese": "溝通能力", "english": "Communication", "items": [{"num": "001", "old": "只想表達自己。", "new": "先理解對方。", "en_old": "[只想表達自己。]", "en_new": "[先理解對方。]"}, {"num": "002", "old": "一直說。", "new": "懂得停。", "en_old": "[一直說。]", "en_new": "[懂得停。]"}, {"num": "003", "old": "只說事實。", "new": "兼顧感受。", "en_old": "[只說事實。]", "en_new": "[兼顧感受。]"}, {"num": "004", "old": "一直講道理。", "new": "建立連結。", "en_old": "[一直講道理。]", "en_new": "[建立連結。]"}, {"num": "005", "old": "急著反駁。", "new": "先確認理解。", "en_old": "[急著反駁。]", "en_new": "[先確認理解。]"}, {"num": "006", "old": "贏得辯論。", "new": "解決問題。", "en_old": "[贏得辯論。]", "en_new": "[解決問題。]"}, {"num": "007", "old": "控制別人。", "new": "影響別人。", "en_old": "[控制別人。]", "en_new": "[影響別人。]"}, {"num": "008", "old": "命令別人。", "new": "引導別人。", "en_old": "[命令別人。]", "en_new": "[引導別人。]"}, {"num": "009", "old": "一直批評。", "new": "提出建議。", "en_old": "[一直批評。]", "en_new": "[提出建議。]"}, {"num": "010", "old": "只講內容。", "new": "注意語氣。", "en_old": "[只講內容。]", "en_new": "[注意語氣。]"}, {"num": "011", "old": "只講語氣。", "new": "注意結構。", "en_old": "[只講語氣。]", "en_new": "[注意結構。]"}, {"num": "012", "old": "想到就說。", "new": "思考後再說。", "en_old": "[想到就說。]", "en_new": "[思考後再說。]"}, {"num": "013", "old": "情緒說話。", "new": "價值說話。", "en_old": "[情緒說話。]", "en_new": "[價值說話。]"}, {"num": "014", "old": "用責備開始。", "new": "用理解開始。", "en_old": "[用責備開始。]", "en_new": "[用理解開始。]"}, {"num": "015", "old": "只想證明自己。", "new": "建立共同目標。", "en_old": "[只想證明自己。]", "en_new": "[建立共同目標。]"}, {"num": "016", "old": "一直糾正。", "new": "一起探索。", "en_old": "[一直糾正。]", "en_new": "[一起探索。]"}, {"num": "017", "old": "只想改變別人。", "new": "一起成長。", "en_old": "[只想改變別人。]", "en_new": "[一起成長。]"}, {"num": "018", "old": "用壓力溝通。", "new": "用信任溝通。", "en_old": "[用壓力溝通。]", "en_new": "[用信任溝通。]"}, {"num": "019", "old": "一直否定。", "new": "先肯定再建議。", "en_old": "[一直否定。]", "en_new": "[先肯定再建議。]"}, {"num": "020", "old": "只重效率。", "new": "兼顧關係。", "en_old": "[只重效率。]", "en_new": "[兼顧關係。]"}, {"num": "021", "old": "一直輸出。", "new": "雙向交流。", "en_old": "[一直輸出。]", "en_new": "[雙向交流。]"}, {"num": "022", "old": "只看立場。", "new": "看需求。", "en_old": "[只看立場。]", "en_new": "[看需求。]"}, {"num": "023", "old": "說很多。", "new": "說重點。", "en_old": "[說很多。]", "en_new": "[說重點。]"}, {"num": "024", "old": "只想說服。", "new": "建立理解。", "en_old": "[只想說服。]", "en_new": "[建立理解。]"}, {"num": "025", "old": "對抗思維。", "new": "合作思維。", "en_old": "[對抗思維。]", "en_new": "[合作思維。]"}, {"num": "026", "old": "一直防衛。", "new": "願意交流。", "en_old": "[一直防衛。]", "en_new": "[願意交流。]"}, {"num": "027", "old": "一句話破壞關係。", "new": "一句話建立信任。", "en_old": "[一句話破壞關係。]", "en_new": "[一句話建立信任。]"}, {"num": "028", "old": "一直比較。", "new": "一起創造。", "en_old": "[一直比較。]", "en_new": "[一起創造。]"}, {"num": "029", "old": "溝通是技巧。", "new": "溝通是建立關係。", "en_old": "[溝通是技巧。]", "en_new": "[溝通是建立關係。]"}, {"num": "030", "old": "會說話。", "new": "能創造合作。", "en_old": "[會說話。]", "en_new": "[能創造合作。]"}]}, {"num": "022", "chinese": "傾聽能力", "english": "Deep Listening", "items": [{"num": "001", "old": "等對方說完。", "new": "真正理解對方。", "en_old": "[等對方說完。]", "en_new": "[真正理解對方。]"}, {"num": "002", "old": "一直準備回答。", "new": "專心理解。", "en_old": "[一直準備回答。]", "en_new": "[專心理解。]"}, {"num": "003", "old": "只聽內容。", "new": "聽情緒。", "en_old": "[只聽內容。]", "en_new": "[聽情緒。]"}, {"num": "004", "old": "只聽情緒。", "new": "聽需求。", "en_old": "[只聽情緒。]", "en_new": "[聽需求。]"}, {"num": "005", "old": "只聽需求。", "new": "聽價值觀。", "en_old": "[只聽需求。]", "en_new": "[聽價值觀。]"}, {"num": "006", "old": "只聽語言。", "new": "聽背後故事。", "en_old": "[只聽語言。]", "en_new": "[聽背後故事。]"}, {"num": "007", "old": "急著建議。", "new": "先陪伴。", "en_old": "[急著建議。]", "en_new": "[先陪伴。]"}, {"num": "008", "old": "急著分析。", "new": "先理解。", "en_old": "[急著分析。]", "en_new": "[先理解。]"}, {"num": "009", "old": "急著評論。", "new": "保持好奇。", "en_old": "[急著評論。]", "en_new": "[保持好奇。]"}, {"num": "010", "old": "一直打斷。", "new": "完整聆聽。", "en_old": "[一直打斷。]", "en_new": "[完整聆聽。]"}, {"num": "011", "old": "聽自己想聽。", "new": "聽真正發生什麼。", "en_old": "[聽自己想聽。]", "en_new": "[聽真正發生什麼。]"}, {"num": "012", "old": "只注意錯誤。", "new": "注意優點。", "en_old": "[只注意錯誤。]", "en_new": "[注意優點。]"}, {"num": "013", "old": "只注意表面。", "new": "注意深層需求。", "en_old": "[只注意表面。]", "en_new": "[注意深層需求。]"}, {"num": "014", "old": "帶著偏見聽。", "new": "帶著開放聽。", "en_old": "[帶著偏見聽。]", "en_new": "[帶著開放聽。]"}, {"num": "015", "old": "想贏。", "new": "想理解。", "en_old": "[想贏。]", "en_new": "[想理解。]"}, {"num": "016", "old": "一直猜測。", "new": "適時確認。", "en_old": "[一直猜測。]", "en_new": "[適時確認。]"}, {"num": "017", "old": "沒有耐心。", "new": "耐心等待。", "en_old": "[沒有耐心。]", "en_new": "[耐心等待。]"}, {"num": "018", "old": "一直解決。", "new": "先理解。", "en_old": "[一直解決。]", "en_new": "[先理解。]"}, {"num": "019", "old": "只聽一次。", "new": "持續觀察。", "en_old": "[只聽一次。]", "en_new": "[持續觀察。]"}, {"num": "020", "old": "忽略沉默。", "new": "理解沉默。", "en_old": "[忽略沉默。]", "en_new": "[理解沉默。]"}, {"num": "021", "old": "只聽文字。", "new": "聽語氣。", "en_old": "[只聽文字。]", "en_new": "[聽語氣。]"}, {"num": "022", "old": "只聽語氣。", "new": "看表情。", "en_old": "[只聽語氣。]", "en_new": "[看表情。]"}, {"num": "023", "old": "只看表情。", "new": "理解情境。", "en_old": "[只看表情。]", "en_new": "[理解情境。]"}, {"num": "024", "old": "只看事件。", "new": "理解生命歷程。", "en_old": "[只看事件。]", "en_new": "[理解生命歷程。]"}, {"num": "025", "old": "一直比較。", "new": "真正接納。", "en_old": "[一直比較。]", "en_new": "[真正接納。]"}, {"num": "026", "old": "只關心答案。", "new": "關心人。", "en_old": "[只關心答案。]", "en_new": "[關心人。]"}, {"num": "027", "old": "只注意問題。", "new": "注意資源。", "en_old": "[只注意問題。]", "en_new": "[注意資源。]"}, {"num": "028", "old": "聽見資訊。", "new": "聽見世界觀。", "en_old": "[聽見資訊。]", "en_new": "[聽見世界觀。]"}, {"num": "029", "old": "傾聽只是禮貌。", "new": "傾聽建立信任。", "en_old": "[傾聽只是禮貌。]", "en_new": "[傾聽建立信任。]"}, {"num": "030", "old": "會聽。", "new": "真正理解人。", "en_old": "[會聽。]", "en_new": "[真正理解人。]"}]}, {"num": "023", "chinese": "提問能力", "english": "Questioning", "items": [{"num": "001", "old": "一直回答。", "new": "先提問。", "en_old": "[一直回答。]", "en_new": "[先提問。]"}, {"num": "002", "old": "問對錯。", "new": "問原因。", "en_old": "[問對錯。]", "en_new": "[問原因。]"}, {"num": "003", "old": "問結果。", "new": "問過程。", "en_old": "[問結果。]", "en_new": "[問過程。]"}, {"num": "004", "old": "問事件。", "new": "問結構。", "en_old": "[問事件。]", "en_new": "[問結構。]"}, {"num": "005", "old": "問人物。", "new": "問系統。", "en_old": "[問人物。]", "en_new": "[問系統。]"}, {"num": "006", "old": "問答案。", "new": "問假設。", "en_old": "[問答案。]", "en_new": "[問假設。]"}, {"num": "007", "old": "問細節。", "new": "問本質。", "en_old": "[問細節。]", "en_new": "[問本質。]"}, {"num": "008", "old": "問怎麼做。", "new": "問為什麼。", "en_old": "[問怎麼做。]", "en_new": "[問為什麼。]"}, {"num": "009", "old": "問誰錯。", "new": "問哪裡失衡。", "en_old": "[問誰錯。]", "en_new": "[問哪裡失衡。]"}, {"num": "010", "old": "問怎麼解決。", "new": "問真正問題。", "en_old": "[問怎麼解決。]", "en_new": "[問真正問題。]"}, {"num": "011", "old": "封閉式提問。", "new": "開放式提問。", "en_old": "[封閉式提問。]", "en_new": "[開放式提問。]"}, {"num": "012", "old": "質問。", "new": "探索。", "en_old": "[質問。]", "en_new": "[探索。]"}, {"num": "013", "old": "審問。", "new": "理解。", "en_old": "[審問。]", "en_new": "[理解。]"}, {"num": "014", "old": "證明自己。", "new": "增加理解。", "en_old": "[證明自己。]", "en_new": "[增加理解。]"}, {"num": "015", "old": "問一次。", "new": "持續追問。", "en_old": "[問一次。]", "en_new": "[持續追問。]"}, {"num": "016", "old": "只問表面。", "new": "一直往下拆。", "en_old": "[只問表面。]", "en_new": "[一直往下拆。]"}, {"num": "017", "old": "問今天。", "new": "問長期。", "en_old": "[問今天。]", "en_new": "[問長期。]"}, {"num": "018", "old": "問個體。", "new": "問整體。", "en_old": "[問個體。]", "en_new": "[問整體。]"}, {"num": "019", "old": "問方法。", "new": "問模型。", "en_old": "[問方法。]", "en_new": "[問模型。]"}, {"num": "020", "old": "問工具。", "new": "問原理。", "en_old": "[問工具。]", "en_new": "[問原理。]"}, {"num": "021", "old": "問成功。", "new": "問成功如何生成。", "en_old": "[問成功。]", "en_new": "[問成功如何生成。]"}, {"num": "022", "old": "問失敗。", "new": "問如何更新。", "en_old": "[問失敗。]", "en_new": "[問如何更新。]"}, {"num": "023", "old": "沒有方向。", "new": "問題引導方向。", "en_old": "[沒有方向。]", "en_new": "[問題引導方向。]"}, {"num": "024", "old": "提問只是取得資訊。", "new": "提問改變思考。", "en_old": "[提問只是取得資訊。]", "en_new": "[提問改變思考。]"}, {"num": "025", "old": "提問增加答案。", "new": "提問增加智慧。", "en_old": "[提問增加答案。]", "en_new": "[提問增加智慧。]"}, {"num": "026", "old": "提問找責任。", "new": "提問找槓桿。", "en_old": "[提問找責任。]", "en_new": "[提問找槓桿。]"}, {"num": "027", "old": "提問增加衝突。", "new": "提問增加合作。", "en_old": "[提問增加衝突。]", "en_new": "[提問增加合作。]"}, {"num": "028", "old": "提問只是技巧。", "new": "提問是思維能力。", "en_old": "[提問只是技巧。]", "en_new": "[提問是思維能力。]"}, {"num": "029", "old": "一直找答案。", "new": "一直提升問題品質。", "en_old": "[一直找答案。]", "en_new": "[一直提升問題品質。]"}, {"num": "030", "old": "回答改變事情。", "new": "好問題改變人生。", "en_old": "[回答改變事情。]", "en_new": "[好問題改變人生。]"}]}, {"num": "024", "chinese": "說服能力", "english": "Influence", "items": [{"num": "001", "old": "控制別人。", "new": "影響別人。", "en_old": "[控制別人。]", "en_new": "[影響別人。]"}, {"num": "002", "old": "靠權威。", "new": "靠信任。", "en_old": "[靠權威。]", "en_new": "[靠信任。]"}, {"num": "003", "old": "靠命令。", "new": "靠願景。", "en_old": "[靠命令。]", "en_new": "[靠願景。]"}, {"num": "004", "old": "一直要求。", "new": "先示範。", "en_old": "[一直要求。]", "en_new": "[先示範。]"}, {"num": "005", "old": "一直推銷。", "new": "創造價值。", "en_old": "[一直推銷。]", "en_new": "[創造價值。]"}, {"num": "006", "old": "一直證明自己。", "new": "證明成果。", "en_old": "[一直證明自己。]", "en_new": "[證明成果。]"}, {"num": "007", "old": "一直說服。", "new": "先理解。", "en_old": "[一直說服。]", "en_new": "[先理解。]"}, {"num": "008", "old": "一直反駁。", "new": "尋找共識。", "en_old": "[一直反駁。]", "en_new": "[尋找共識。]"}, {"num": "009", "old": "靠情緒施壓。", "new": "靠邏輯引導。", "en_old": "[靠情緒施壓。]", "en_new": "[靠邏輯引導。]"}, {"num": "010", "old": "只談利益。", "new": "兼顧價值。", "en_old": "[只談利益。]", "en_new": "[兼顧價值。]"}, {"num": "011", "old": "只談功能。", "new": "談真正需求。", "en_old": "[只談功能。]", "en_new": "[談真正需求。]"}, {"num": "012", "old": "一直給答案。", "new": "引導思考。", "en_old": "[一直給答案。]", "en_new": "[引導思考。]"}, {"num": "013", "old": "只改變行為。", "new": "改變觀點。", "en_old": "[只改變行為。]", "en_new": "[改變觀點。]"}, {"num": "014", "old": "只改變觀點。", "new": "改變世界模型。", "en_old": "[只改變觀點。]", "en_new": "[改變世界模型。]"}, {"num": "015", "old": "只改變今天。", "new": "改變未來決策。", "en_old": "[只改變今天。]", "en_new": "[改變未來決策。]"}, {"num": "016", "old": "一次成交。", "new": "長期信任。", "en_old": "[一次成交。]", "en_new": "[長期信任。]"}, {"num": "017", "old": "急著成交。", "new": "先建立關係。", "en_old": "[急著成交。]", "en_new": "[先建立關係。]"}, {"num": "018", "old": "一直比較。", "new": "一起成長。", "en_old": "[一直比較。]", "en_new": "[一起成長。]"}, {"num": "019", "old": "靠技巧。", "new": "靠人格。", "en_old": "[靠技巧。]", "en_new": "[靠人格。]"}, {"num": "020", "old": "靠話術。", "new": "靠真誠。", "en_old": "[靠話術。]", "en_new": "[靠真誠。]"}, {"num": "021", "old": "靠壓力。", "new": "靠動機。", "en_old": "[靠壓力。]", "en_new": "[靠動機。]"}, {"num": "022", "old": "改變別人。", "new": "啟發別人。", "en_old": "[改變別人。]", "en_new": "[啟發別人。]"}, {"num": "023", "old": "強迫接受。", "new": "自由選擇。", "en_old": "[強迫接受。]", "en_new": "[自由選擇。]"}, {"num": "024", "old": "贏一次。", "new": "合作一輩子。", "en_old": "[贏一次。]", "en_new": "[合作一輩子。]"}, {"num": "025", "old": "短期成交。", "new": "終身信任。", "en_old": "[短期成交。]", "en_new": "[終身信任。]"}, {"num": "026", "old": "說很多。", "new": "問得好。", "en_old": "[說很多。]", "en_new": "[問得好。]"}, {"num": "027", "old": "一直輸出。", "new": "建立互動。", "en_old": "[一直輸出。]", "en_new": "[建立互動。]"}, {"num": "028", "old": "只有口才。", "new": "真正影響力。", "en_old": "[只有口才。]", "en_new": "[真正影響力。]"}, {"num": "029", "old": "讓人服從。", "new": "讓人願意跟隨。", "en_old": "[讓人服從。]", "en_new": "[讓人願意跟隨。]"}, {"num": "030", "old": "會推銷。", "new": "會創造改變。", "en_old": "[會推銷。]", "en_new": "[會創造改變。]"}]}, {"num": "025", "chinese": "合作能力", "english": "Collaboration", "items": [{"num": "001", "old": "只想贏。", "new": "一起贏。", "en_old": "[只想贏。]", "en_new": "[一起贏。]"}, {"num": "002", "old": "競爭第一。", "new": "合作第一。", "en_old": "[競爭第一。]", "en_new": "[合作第一。]"}, {"num": "003", "old": "只看自己。", "new": "看團隊。", "en_old": "[只看自己。]", "en_new": "[看團隊。]"}, {"num": "004", "old": "各做各的。", "new": "共同完成。", "en_old": "[各做各的。]", "en_new": "[共同完成。]"}, {"num": "005", "old": "互相防備。", "new": "互相信任。", "en_old": "[互相防備。]", "en_new": "[互相信任。]"}, {"num": "006", "old": "只看分工。", "new": "看共同目標。", "en_old": "[只看分工。]", "en_new": "[看共同目標。]"}, {"num": "007", "old": "只分責任。", "new": "共享成果。", "en_old": "[只分責任。]", "en_new": "[共享成果。]"}, {"num": "008", "old": "一直比較。", "new": "互相補位。", "en_old": "[一直比較。]", "en_new": "[互相補位。]"}, {"num": "009", "old": "只看能力。", "new": "看互補。", "en_old": "[只看能力。]", "en_new": "[看互補。]"}, {"num": "010", "old": "怕別人比自己強。", "new": "欣賞高手。", "en_old": "[怕別人比自己強。]", "en_new": "[欣賞高手。]"}, {"num": "011", "old": "只想表現。", "new": "幫助成功。", "en_old": "[只想表現。]", "en_new": "[幫助成功。]"}, {"num": "012", "old": "資訊保留。", "new": "知識共享。", "en_old": "[資訊保留。]", "en_new": "[知識共享。]"}, {"num": "013", "old": "害怕失去功勞。", "new": "共同創造價值。", "en_old": "[害怕失去功勞。]", "en_new": "[共同創造價值。]"}, {"num": "014", "old": "只靠自己。", "new": "善用團隊。", "en_old": "[只靠自己。]", "en_new": "[善用團隊。]"}, {"num": "015", "old": "沒有共同語言。", "new": "建立共同模型。", "en_old": "[沒有共同語言。]", "en_new": "[建立共同模型。]"}, {"num": "016", "old": "只有工作。", "new": "建立信任。", "en_old": "[只有工作。]", "en_new": "[建立信任。]"}, {"num": "017", "old": "只重效率。", "new": "效率與關係兼顧。", "en_old": "[只重效率。]", "en_new": "[效率與關係兼顧。]"}, {"num": "018", "old": "只完成任務。", "new": "共同成長。", "en_old": "[只完成任務。]", "en_new": "[共同成長。]"}, {"num": "019", "old": "看到差異。", "new": "看到優勢。", "en_old": "[看到差異。]", "en_new": "[看到優勢。]"}, {"num": "020", "old": "各自努力。", "new": "形成槓桿。", "en_old": "[各自努力。]", "en_new": "[形成槓桿。]"}, {"num": "021", "old": "只解決自己的問題。", "new": "一起解決系統問題。", "en_old": "[只解決自己的問題。]", "en_new": "[一起解決系統問題。]"}, {"num": "022", "old": "合作靠規定。", "new": "合作靠文化。", "en_old": "[合作靠規定。]", "en_new": "[合作靠文化。]"}, {"num": "023", "old": "害怕分享。", "new": "樂於分享。", "en_old": "[害怕分享。]", "en_new": "[樂於分享。]"}, {"num": "024", "old": "合作只是工具。", "new": "合作是競爭力。", "en_old": "[合作只是工具。]", "en_new": "[合作是競爭力。]"}, {"num": "025", "old": "只重個人成就。", "new": "共同成功。", "en_old": "[只重個人成就。]", "en_new": "[共同成功。]"}, {"num": "026", "old": "各自學習。", "new": "共同學習。", "en_old": "[各自學習。]", "en_new": "[共同學習。]"}, {"num": "027", "old": "只看成本。", "new": "看合作複利。", "en_old": "[只看成本。]", "en_new": "[看合作複利。]"}, {"num": "028", "old": "一次合作。", "new": "長期合作。", "en_old": "[一次合作。]", "en_new": "[長期合作。]"}, {"num": "029", "old": "只是同事。", "new": "成為夥伴。", "en_old": "[只是同事。]", "en_new": "[成為夥伴。]"}, {"num": "030", "old": "合作完成工作。", "new": "合作創造未來。", "en_old": "[合作完成工作。]", "en_new": "[合作創造未來。]"}]}, {"num": "026", "chinese": "衝突化解能力", "english": "Conflict Resolution", "items": [{"num": "001", "old": "一定要贏。", "new": "一起解決問題。", "en_old": "[一定要贏。]", "en_new": "[一起解決問題。]"}, {"num": "002", "old": "找誰錯。", "new": "找真正原因。", "en_old": "[找誰錯。]", "en_new": "[找真正原因。]"}, {"num": "003", "old": "情緒對抗。", "new": "理性對話。", "en_old": "[情緒對抗。]", "en_new": "[理性對話。]"}, {"num": "004", "old": "急著反擊。", "new": "先理解。", "en_old": "[急著反擊。]", "en_new": "[先理解。]"}, {"num": "005", "old": "一直防衛。", "new": "保持開放。", "en_old": "[一直防衛。]", "en_new": "[保持開放。]"}, {"num": "006", "old": "一直解釋。", "new": "先傾聽。", "en_old": "[一直解釋。]", "en_new": "[先傾聽。]"}, {"num": "007", "old": "一直批評。", "new": "提出建議。", "en_old": "[一直批評。]", "en_new": "[提出建議。]"}, {"num": "008", "old": "看立場。", "new": "看需求。", "en_old": "[看立場。]", "en_new": "[看需求。]"}, {"num": "009", "old": "互相指責。", "new": "共同分析。", "en_old": "[互相指責。]", "en_new": "[共同分析。]"}, {"num": "010", "old": "只想證明自己。", "new": "尋找共同利益。", "en_old": "[只想證明自己。]", "en_new": "[尋找共同利益。]"}, {"num": "011", "old": "輸贏重要。", "new": "關係重要。", "en_old": "[輸贏重要。]", "en_new": "[關係重要。]"}, {"num": "012", "old": "討論人物。", "new": "討論事情。", "en_old": "[討論人物。]", "en_new": "[討論事情。]"}, {"num": "013", "old": "討論事情。", "new": "討論系統。", "en_old": "[討論事情。]", "en_new": "[討論系統。]"}, {"num": "014", "old": "一直翻舊帳。", "new": "解決現在。", "en_old": "[一直翻舊帳。]", "en_new": "[解決現在。]"}, {"num": "015", "old": "一直否定。", "new": "先肯定。", "en_old": "[一直否定。]", "en_new": "[先肯定。]"}, {"num": "016", "old": "一直抱怨。", "new": "一起改善。", "en_old": "[一直抱怨。]", "en_new": "[一起改善。]"}, {"num": "017", "old": "一直逃避。", "new": "勇敢面對。", "en_old": "[一直逃避。]", "en_new": "[勇敢面對。]"}, {"num": "018", "old": "一直忍耐。", "new": "健康表達。", "en_old": "[一直忍耐。]", "en_new": "[健康表達。]"}, {"num": "019", "old": "只靠情緒。", "new": "靠事實。", "en_old": "[只靠情緒。]", "en_new": "[靠事實。]"}, {"num": "020", "old": "只靠事實。", "new": "兼顧感受。", "en_old": "[只靠事實。]", "en_new": "[兼顧感受。]"}, {"num": "021", "old": "一直堅持。", "new": "願意調整。", "en_old": "[一直堅持。]", "en_new": "[願意調整。]"}, {"num": "022", "old": "只有一種答案。", "new": "共同創造答案。", "en_old": "[只有一種答案。]", "en_new": "[共同創造答案。]"}, {"num": "023", "old": "衝突破壞關係。", "new": "衝突促進成長。", "en_old": "[衝突破壞關係。]", "en_new": "[衝突促進成長。]"}, {"num": "024", "old": "只想停止衝突。", "new": "改善系統。", "en_old": "[只想停止衝突。]", "en_new": "[改善系統。]"}, {"num": "025", "old": "短暫和平。", "new": "長期信任。", "en_old": "[短暫和平。]", "en_new": "[長期信任。]"}, {"num": "026", "old": "避免衝突。", "new": "善用衝突。", "en_old": "[避免衝突。]", "en_new": "[善用衝突。]"}, {"num": "027", "old": "衝突就是危機。", "new": "衝突就是更新機會。", "en_old": "[衝突就是危機。]", "en_new": "[衝突就是更新機會。]"}, {"num": "028", "old": "解決一次。", "new": "建立預防機制。", "en_old": "[解決一次。]", "en_new": "[建立預防機制。]"}, {"num": "029", "old": "一直重演。", "new": "建立新模式。", "en_old": "[一直重演。]", "en_new": "[建立新模式。]"}, {"num": "030", "old": "化解衝突。", "new": "建立更好的合作系統。", "en_old": "[化解衝突。]", "en_new": "[建立更好的合作系統。]"}]}, {"num": "027", "chinese": "決策能力", "english": "Decision Making", "items": [{"num": "001", "old": "靠情緒決定。", "new": "靠目標函數決定。", "en_old": "[靠情緒決定。]", "en_new": "[靠目標函數決定。]"}, {"num": "002", "old": "想到就做。", "new": "分析後行動。", "en_old": "[想到就做。]", "en_new": "[分析後行動。]"}, {"num": "003", "old": "看眼前利益。", "new": "看長期複利。", "en_old": "[看眼前利益。]", "en_new": "[看長期複利。]"}, {"num": "004", "old": "只看結果。", "new": "看機率。", "en_old": "[只看結果。]", "en_new": "[看機率。]"}, {"num": "005", "old": "只看好處。", "new": "同時看成本。", "en_old": "[只看好處。]", "en_new": "[同時看成本。]"}, {"num": "006", "old": "害怕選擇。", "new": "建立判準。", "en_old": "[害怕選擇。]", "en_new": "[建立判準。]"}, {"num": "007", "old": "一直猶豫。", "new": "快速決策。", "en_old": "[一直猶豫。]", "en_new": "[快速決策。]"}, {"num": "008", "old": "決策靠感覺。", "new": "決策靠模型。", "en_old": "[決策靠感覺。]", "en_new": "[決策靠模型。]"}, {"num": "009", "old": "一直拖延。", "new": "立即執行。", "en_old": "[一直拖延。]", "en_new": "[立即執行。]"}, {"num": "010", "old": "事情來再決定。", "new": "提前規劃。", "en_old": "[事情來再決定。]", "en_new": "[提前規劃。]"}, {"num": "011", "old": "不知道優先順序。", "new": "找到最高槓桿。", "en_old": "[不知道優先順序。]", "en_new": "[找到最高槓桿。]"}, {"num": "012", "old": "每件事都重要。", "new": "只做最重要。", "en_old": "[每件事都重要。]", "en_new": "[只做最重要。]"}, {"num": "013", "old": "一直忙。", "new": "一直聚焦。", "en_old": "[一直忙。]", "en_new": "[一直聚焦。]"}, {"num": "014", "old": "一直比較。", "new": "明確取捨。", "en_old": "[一直比較。]", "en_new": "[明確取捨。]"}, {"num": "015", "old": "只看今天。", "new": "看十年後。", "en_old": "[只看今天。]", "en_new": "[看十年後。]"}, {"num": "016", "old": "靠直覺。", "new": "靠驗證。", "en_old": "[靠直覺。]", "en_new": "[靠驗證。]"}, {"num": "017", "old": "一直猜。", "new": "建立假設。", "en_old": "[一直猜。]", "en_new": "[建立假設。]"}, {"num": "018", "old": "只看單點。", "new": "看整個系統。", "en_old": "[只看單點。]", "en_new": "[看整個系統。]"}, {"num": "019", "old": "決策沒有標準。", "new": "建立決策框架。", "en_old": "[決策沒有標準。]", "en_new": "[建立決策框架。]"}, {"num": "020", "old": "沒有數據。", "new": "數據支持。", "en_old": "[沒有數據。]", "en_new": "[數據支持。]"}, {"num": "021", "old": "只靠經驗。", "new": "經驗＋模型。", "en_old": "[只靠經驗。]", "en_new": "[經驗＋模型。]"}, {"num": "022", "old": "害怕犯錯。", "new": "快速修正。", "en_old": "[害怕犯錯。]", "en_new": "[快速修正。]"}, {"num": "023", "old": "一直等待最好時機。", "new": "先開始再更新。", "en_old": "[一直等待最好時機。]", "en_new": "[先開始再更新。]"}, {"num": "024", "old": "一次決定一切。", "new": "持續迭代。", "en_old": "[一次決定一切。]", "en_new": "[持續迭代。]"}, {"num": "025", "old": "只有A或B。", "new": "創造第三方案。", "en_old": "[只有A或B。]", "en_new": "[創造第三方案。]"}, {"num": "026", "old": "只解決現在。", "new": "預防未來。", "en_old": "[只解決現在。]", "en_new": "[預防未來。]"}, {"num": "027", "old": "決策耗能。", "new": "建立SOP。", "en_old": "[決策耗能。]", "en_new": "[建立SOP。]"}, {"num": "028", "old": "一直後悔。", "new": "持續學習。", "en_old": "[一直後悔。]", "en_new": "[持續學習。]"}, {"num": "029", "old": "決策只是選擇。", "new": "決策是人生設計。", "en_old": "[決策只是選擇。]", "en_new": "[決策是人生設計。]"}, {"num": "030", "old": "被人生推著走。", "new": "主動設計人生。", "en_old": "[被人生推著走。]", "en_new": "[主動設計人生。]"}]}, {"num": "028", "chinese": "學習能力", "english": "Learning", "items": [{"num": "001", "old": "背知識。", "new": "更新模型。", "en_old": "[背知識。]", "en_new": "[更新模型。]"}, {"num": "002", "old": "一直輸入。", "new": "輸入＋輸出。", "en_old": "[一直輸入。]", "en_new": "[輸入＋輸出。]"}, {"num": "003", "old": "知道很多。", "new": "做到很多。", "en_old": "[知道很多。]", "en_new": "[做到很多。]"}, {"num": "004", "old": "看很多書。", "new": "改變很多行為。", "en_old": "[看很多書。]", "en_new": "[改變很多行為。]"}, {"num": "005", "old": "一直收藏。", "new": "一直實踐。", "en_old": "[一直收藏。]", "en_new": "[一直實踐。]"}, {"num": "006", "old": "記住答案。", "new": "理解原理。", "en_old": "[記住答案。]", "en_new": "[理解原理。]"}, {"num": "007", "old": "背單字。", "new": "建立世界模型。", "en_old": "[背單字。]", "en_new": "[建立世界模型。]"}, {"num": "008", "old": "一直閱讀。", "new": "一直思考。", "en_old": "[一直閱讀。]", "en_new": "[一直思考。]"}, {"num": "009", "old": "一直學。", "new": "一直更新。", "en_old": "[一直學。]", "en_new": "[一直更新。]"}, {"num": "010", "old": "一直聽課。", "new": "建立能力。", "en_old": "[一直聽課。]", "en_new": "[建立能力。]"}, {"num": "011", "old": "只學一次。", "new": "間隔複習。", "en_old": "[只學一次。]", "en_new": "[間隔複習。]"}, {"num": "012", "old": "只記憶。", "new": "理解。", "en_old": "[只記憶。]", "en_new": "[理解。]"}, {"num": "013", "old": "只理解。", "new": "應用。", "en_old": "[只理解。]", "en_new": "[應用。]"}, {"num": "014", "old": "只應用。", "new": "教學。", "en_old": "[只應用。]", "en_new": "[教學。]"}, {"num": "015", "old": "只接受資訊。", "new": "整理資訊。", "en_old": "[只接受資訊。]", "en_new": "[整理資訊。]"}, {"num": "016", "old": "只整理資訊。", "new": "建立架構。", "en_old": "[只整理資訊。]", "en_new": "[建立架構。]"}, {"num": "017", "old": "只建立架構。", "new": "建立模型。", "en_old": "[只建立架構。]", "en_new": "[建立模型。]"}, {"num": "018", "old": "知識越多越好。", "new": "模型越精準越好。", "en_old": "[知識越多越好。]", "en_new": "[模型越精準越好。]"}, {"num": "019", "old": "害怕錯誤。", "new": "利用錯誤。", "en_old": "[害怕錯誤。]", "en_new": "[利用錯誤。]"}, {"num": "020", "old": "只考高分。", "new": "真正解決問題。", "en_old": "[只考高分。]", "en_new": "[真正解決問題。]"}, {"num": "021", "old": "學校結束就停止。", "new": "終身學習。", "en_old": "[學校結束就停止。]", "en_new": "[終身學習。]"}, {"num": "022", "old": "工具第一。", "new": "思維第一。", "en_old": "[工具第一。]", "en_new": "[思維第一。]"}, {"num": "023", "old": "只學專業。", "new": "跨領域整合。", "en_old": "[只學專業。]", "en_new": "[跨領域整合。]"}, {"num": "024", "old": "知識彼此分開。", "new": "建立知識網路。", "en_old": "[知識彼此分開。]", "en_new": "[建立知識網路。]"}, {"num": "025", "old": "一直追新知。", "new": "回到第一性原理。", "en_old": "[一直追新知。]", "en_new": "[回到第一性原理。]"}, {"num": "026", "old": "資訊爆炸。", "new": "智慧壓縮。", "en_old": "[資訊爆炸。]", "en_new": "[智慧壓縮。]"}, {"num": "027", "old": "累積資訊。", "new": "提升預測。", "en_old": "[累積資訊。]", "en_new": "[提升預測。]"}, {"num": "028", "old": "一直知道。", "new": "一直做到。", "en_old": "[一直知道。]", "en_new": "[一直做到。]"}, {"num": "029", "old": "一直努力。", "new": "持續複利。", "en_old": "[一直努力。]", "en_new": "[持續複利。]"}, {"num": "030", "old": "學習結束。", "new": "學習就是人生。", "en_old": "[學習結束。]", "en_new": "[學習就是人生。]"}]}, {"num": "029", "chinese": "身份重塑能力", "english": "Identity Design", "items": [{"num": "001", "old": "身份固定。", "new": "身份可以設計。", "en_old": "[身份固定。]", "en_new": "[身份可以設計。]"}, {"num": "002", "old": "我是這樣的人。", "new": "我要成為這樣的人。", "en_old": "[我是這樣的人。]", "en_new": "[我要成為這樣的人。]"}, {"num": "003", "old": "身份來自過去。", "new": "身份來自選擇。", "en_old": "[身份來自過去。]", "en_new": "[身份來自選擇。]"}, {"num": "004", "old": "身份來自他人評價。", "new": "身份來自價值。", "en_old": "[身份來自他人評價。]", "en_new": "[身份來自價值。]"}, {"num": "005", "old": "害怕改變。", "new": "建立新身份。", "en_old": "[害怕改變。]", "en_new": "[建立新身份。]"}, {"num": "006", "old": "等待成長。", "new": "主動成長。", "en_old": "[等待成長。]", "en_new": "[主動成長。]"}, {"num": "007", "old": "被故事限制。", "new": "重新寫故事。", "en_old": "[被故事限制。]", "en_new": "[重新寫故事。]"}, {"num": "008", "old": "被標籤限制。", "new": "重新定義自己。", "en_old": "[被標籤限制。]", "en_new": "[重新定義自己。]"}, {"num": "009", "old": "一直證明自己。", "new": "一直成長。", "en_old": "[一直證明自己。]", "en_new": "[一直成長。]"}, {"num": "010", "old": "身份來自工作。", "new": "身份來自使命。", "en_old": "[身份來自工作。]", "en_new": "[身份來自使命。]"}, {"num": "011", "old": "一直比較。", "new": "一直進步。", "en_old": "[一直比較。]", "en_new": "[一直進步。]"}, {"num": "012", "old": "身份靠別人。", "new": "身份靠自己。", "en_old": "[身份靠別人。]", "en_new": "[身份靠自己。]"}, {"num": "013", "old": "習慣配合身份。", "new": "身份帶動習慣。", "en_old": "[習慣配合身份。]", "en_new": "[身份帶動習慣。]"}, {"num": "014", "old": "每天重複昨天。", "new": "每天成為新自己。", "en_old": "[每天重複昨天。]", "en_new": "[每天成為新自己。]"}, {"num": "015", "old": "一直演角色。", "new": "活出真正價值。", "en_old": "[一直演角色。]", "en_new": "[活出真正價值。]"}, {"num": "016", "old": "被情緒定義。", "new": "被使命定義。", "en_old": "[被情緒定義。]", "en_new": "[被使命定義。]"}, {"num": "017", "old": "身份是結果。", "new": "身份是起點。", "en_old": "[身份是結果。]", "en_new": "[身份是起點。]"}, {"num": "018", "old": "能力限制身份。", "new": "身份創造能力。", "en_old": "[能力限制身份。]", "en_new": "[身份創造能力。]"}, {"num": "019", "old": "沒有方向。", "new": "身份就是方向。", "en_old": "[沒有方向。]", "en_new": "[身份就是方向。]"}, {"num": "020", "old": "不知道自己是誰。", "new": "知道自己要成為誰。", "en_old": "[不知道自己是誰。]", "en_new": "[知道自己要成為誰。]"}, {"num": "021", "old": "等待改變。", "new": "每天更新。", "en_old": "[等待改變。]", "en_new": "[每天更新。]"}, {"num": "022", "old": "身份模糊。", "new": "身份清楚。", "en_old": "[身份模糊。]", "en_new": "[身份清楚。]"}, {"num": "023", "old": "沒有願景。", "new": "建立願景。", "en_old": "[沒有願景。]", "en_new": "[建立願景。]"}, {"num": "024", "old": "一直修補。", "new": "重新設計。", "en_old": "[一直修補。]", "en_new": "[重新設計。]"}, {"num": "025", "old": "人生推著身份走。", "new": "身份帶著人生走。", "en_old": "[人生推著身份走。]", "en_new": "[身份帶著人生走。]"}, {"num": "026", "old": "相信命運。", "new": "設計命運。", "en_old": "[相信命運。]", "en_new": "[設計命運。]"}, {"num": "027", "old": "相信天賦。", "new": "相信複利。", "en_old": "[相信天賦。]", "en_new": "[相信複利。]"}, {"num": "028", "old": "身份來自環境。", "new": "身份影響環境。", "en_old": "[身份來自環境。]", "en_new": "[身份影響環境。]"}, {"num": "029", "old": "身份只是名稱。", "new": "身份是一套行為系統。", "en_old": "[身份只是名稱。]", "en_new": "[身份是一套行為系統。]"}, {"num": "030", "old": "活成昨天。", "new": "活成未來的自己。", "en_old": "[活成昨天。]", "en_new": "[活成未來的自己。]"}]}, {"num": "030", "chinese": "人生設計能力", "english": "Life Design", "items": [{"num": "001", "old": "接受人生。", "new": "設計人生。", "en_old": "[接受人生。]", "en_new": "[設計人生。]"}, {"num": "002", "old": "等待改變。", "new": "創造改變。", "en_old": "[等待改變。]", "en_new": "[創造改變。]"}, {"num": "003", "old": "沒有方向。", "new": "建立人生藍圖。", "en_old": "[沒有方向。]", "en_new": "[建立人生藍圖。]"}, {"num": "004", "old": "只有目標。", "new": "建立系統。", "en_old": "[只有目標。]", "en_new": "[建立系統。]"}, {"num": "005", "old": "只努力。", "new": "找槓桿。", "en_old": "[只努力。]", "en_new": "[找槓桿。]"}, {"num": "006", "old": "每天忙碌。", "new": "每天前進。", "en_old": "[每天忙碌。]", "en_new": "[每天前進。]"}, {"num": "007", "old": "被環境影響。", "new": "設計環境。", "en_old": "[被環境影響。]", "en_new": "[設計環境。]"}, {"num": "008", "old": "被習慣控制。", "new": "建立好習慣。", "en_old": "[被習慣控制。]", "en_new": "[建立好習慣。]"}, {"num": "009", "old": "一直救火。", "new": "建立預防系統。", "en_old": "[一直救火。]", "en_new": "[建立預防系統。]"}, {"num": "010", "old": "人生沒有架構。", "new": "人生有OS。", "en_old": "[人生沒有架構。]", "en_new": "[人生有OS。]"}, {"num": "011", "old": "想到什麼做什麼。", "new": "依目標函數決策。", "en_old": "[想到什麼做什麼。]", "en_new": "[依目標函數決策。]"}, {"num": "012", "old": "一直修補人生。", "new": "重新建構人生。", "en_old": "[一直修補人生。]", "en_new": "[重新建構人生。]"}, {"num": "013", "old": "等待機會。", "new": "創造機會。", "en_old": "[等待機會。]", "en_new": "[創造機會。]"}, {"num": "014", "old": "一直追求成功。", "new": "持續創造價值。", "en_old": "[一直追求成功。]", "en_new": "[持續創造價值。]"}, {"num": "015", "old": "一直解決問題。", "new": "建立解決問題能力。", "en_old": "[一直解決問題。]", "en_new": "[建立解決問題能力。]"}, {"num": "016", "old": "一直追求效率。", "new": "追求意義。", "en_old": "[一直追求效率。]", "en_new": "[追求意義。]"}, {"num": "017", "old": "一直追求收入。", "new": "建立價值。", "en_old": "[一直追求收入。]", "en_new": "[建立價值。]"}, {"num": "018", "old": "一直追求自由。", "new": "建立能力。", "en_old": "[一直追求自由。]", "en_new": "[建立能力。]"}, {"num": "019", "old": "一直追求幸福。", "new": "建立幸福能力。", "en_old": "[一直追求幸福。]", "en_new": "[建立幸福能力。]"}, {"num": "020", "old": "一直追求結果。", "new": "建立生成系統。", "en_old": "[一直追求結果。]", "en_new": "[建立生成系統。]"}, {"num": "021", "old": "沒有反思。", "new": "每天更新。", "en_old": "[沒有反思。]", "en_new": "[每天更新。]"}, {"num": "022", "old": "沒有願景。", "new": "每天校正方向。", "en_old": "[沒有願景。]", "en_new": "[每天校正方向。]"}, {"num": "023", "old": "一直消耗。", "new": "一直複利。", "en_old": "[一直消耗。]", "en_new": "[一直複利。]"}, {"num": "024", "old": "沒有模型。", "new": "建立Life OS。", "en_old": "[沒有模型。]", "en_new": "[建立Life OS。]"}, {"num": "025", "old": "知識很多。", "new": "能力很多。", "en_old": "[知識很多。]", "en_new": "[能力很多。]"}, {"num": "026", "old": "能力很多。", "new": "價值很多。", "en_old": "[能力很多。]", "en_new": "[價值很多。]"}, {"num": "027", "old": "價值很多。", "new": "影響力很多。", "en_old": "[價值很多。]", "en_new": "[影響力很多。]"}, {"num": "028", "old": "一直活著。", "new": "持續創造。", "en_old": "[一直活著。]", "en_new": "[持續創造。]"}, {"num": "029", "old": "人生是命運。", "new": "人生是設計。", "en_old": "[人生是命運。]", "en_new": "[人生是設計。]"}, {"num": "030", "old": "改變生活。", "new": "重建生命操作系統（Life Operating System）。", "en_old": "[改變生活。]", "en_new": "[重建生命操作系統（Life Operating System）。]"}]}];
+
+    function initApp() {
+      renderVolumes();
+      setupEventListeners();
+    }
+
+    function renderVolumes() {
+      const container = document.getElementById('volumeContainer');
+      container.innerHTML = '';
+
+      abilitiesData.forEach(ability => {
+        const card = createVolumeCard(ability);
+        container.appendChild(card);
+      });
+    }
+
+    function createVolumeCard(ability) {
+      const card = document.createElement('div');
+      card.className = 'volume-card';
+      
+      const headerContent = document.createElement('div');
+      headerContent.style.flex = '1';
+      
+      const title = document.createElement('div');
+      title.className = 'volume-title';
+      title.textContent = `${ability.num} ${ability.chinese}`;
+      
+      const subtitle = document.createElement('div');
+      subtitle.className = 'volume-subtitle';
+      subtitle.textContent = ability.english;
+      
+      headerContent.appendChild(title);
+      headerContent.appendChild(subtitle);
+      
+      const header = document.createElement('div');
+      header.className = 'volume-header';
+      header.appendChild(headerContent);
+      
+      const icon = document.createElement('span');
+      icon.className = 'expand-icon';
+      icon.textContent = '▼';
+      header.appendChild(icon);
+      
+      header.addEventListener('click', () => toggleContent(card));
+      card.appendChild(header);
+
+      const content = document.createElement('div');
+      content.className = 'volume-content';
+      const list = document.createElement('div');
+      list.className = 'ability-list';
+      
+      ability.items.forEach(item => {
+        const itemEl = createAbilityItem(item);
+        list.appendChild(itemEl);
+      });
+
+      content.appendChild(list);
+      card.appendChild(content);
+      return card;
+    }
+
+    function createAbilityItem(item) {
+      const itemEl = document.createElement('div');
+      itemEl.className = 'ability-item';
+      
+      const numDiv = document.createElement('div');
+      numDiv.className = 'ability-num';
+      numDiv.textContent = `Item ${item.num}`;
+      
+      const pairDiv = document.createElement('div');
+      pairDiv.className = 'ability-pair';
+      
+      // OLD WAY
+      const oldDiv = document.createElement('div');
+      oldDiv.className = 'old-way';
+      oldDiv.innerHTML = `
+        <div class="old-label">舊 OLD</div>
+        <div class="lang-section zh"><strong>中文：</strong> ${item.old}</div>
+        <div class="lang-section en">
+          <strong>English：</strong> ${item.en_old}
+          <button class="tts-btn" data-text="${item.en_old}" data-lang="en-US">🔊 Say</button>
+        </div>
+      `;
+      
+      // NEW WAY
+      const newDiv = document.createElement('div');
+      newDiv.className = 'new-way';
+      newDiv.innerHTML = `
+        <div class="new-label">新 NEW</div>
+        <div class="lang-section zh"><strong>中文：</strong> ${item.new}</div>
+        <div class="lang-section en">
+          <strong>English：</strong> ${item.en_new}
+          <button class="tts-btn" data-text="${item.en_new}" data-lang="en-US">🔊 Say</button>
+        </div>
+      `;
+      
+      pairDiv.appendChild(oldDiv);
+      pairDiv.appendChild(newDiv);
+      
+      itemEl.appendChild(numDiv);
+      itemEl.appendChild(pairDiv);
+
+      // Add TTS listeners
+      const ttsBtns = itemEl.querySelectorAll('.tts-btn');
+      ttsBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          speakText(btn.dataset.text, btn);
+        });
+      });
+
+      itemEl.addEventListener('click', () => {
+        itemEl.classList.toggle('expanded');
+      });
+
+      return itemEl;
+    }
+
+    function toggleContent(card) {
+      card.classList.toggle('expanded');
+      const content = card.querySelector('.volume-content');
+      content.classList.toggle('active');
+    }
+
+    function speakText(text, btn) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        btn.classList.add('playing');
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.85;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+        
+        utterance.onend = () => {
+          btn.classList.remove('playing');
+        };
+        
+        utterance.onerror = () => {
+          btn.classList.remove('playing');
+        };
+        
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function setupEventListeners() {
+      document.getElementById('expandAllBtn').addEventListener('click', () => {
+        document.querySelectorAll('.volume-card').forEach(card => {
+          card.classList.add('expanded');
+          card.querySelector('.volume-content').classList.add('active');
+        });
+      });
+
+      document.getElementById('collapseAllBtn').addEventListener('click', () => {
+        document.querySelectorAll('.volume-card').forEach(card => {
+          card.classList.remove('expanded');
+          card.querySelector('.volume-content').classList.remove('active');
+        });
+      });
+
+      document.getElementById('searchInput').addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.volume-card');
+        
+        cards.forEach(card => {
+          const title = card.querySelector('.volume-title').textContent.toLowerCase();
+          const subtitle = card.querySelector('.volume-subtitle').textContent.toLowerCase();
+          
+          if (title.includes(query) || subtitle.includes(query)) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+
+      window.addEventListener('scroll', () => {
+        const btn = document.getElementById('scrollTopBtn');
+        btn.classList.toggle('show', window.scrollY > 300);
+      });
+
+      document.getElementById('scrollTopBtn').addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', initApp);
+  </script>
+<!-- FBPOST:START 臉書貼文＋圖卡（痛點→能力更新→智慧，雙語） -->
+<script>
+/* ═══ 臉書貼文＋圖卡 產生器（離線，不串接 AI / API）═══ */
+(function(){
+'use strict';
+const P=(zh,en)=>({zh:zh,en:en||''});
+
+// 三種語氣領域的共用素材
+const D={
+comm:{
+  why:P('因為我們從小學會說話，卻很少學會溝通。我們學會回應，卻沒學會理解；學會表達立場，卻沒學會表達需求；學會忍耐，卻沒學會修復。',
+        'Because we learned to talk as children, but rarely learned to communicate. We learned to react, not to understand; to state positions, not needs; to endure, not to repair.'),
+  shift:[P('少一點猜測，多一點確認。','Less guessing, more checking.'),P('少一點防衛，多一點好奇。','Less defending, more curiosity.'),P('少一點爭輸贏，多一點被理解。','Less winning, more being understood.'),P('少一點冷戰，多一點修復。','Less silence, more repair.')],
+  gold:[P('話說得對，不如話說得到。','Being right matters less than being received.'),P('愛沒有抵達，就還不算說完。','If love has not arrived, the sentence is not finished.'),P('關係不是贏來的，是修來的。','Relationships are not won; they are repaired.'),P('先連結，再糾正。','Connect before you correct.'),P('聽懂一個人，勝過說服一個人。','Understanding someone beats persuading them.'),P('溫柔不是軟弱，是有力量的選擇。','Gentleness is not weakness; it is a powerful choice.')],
+  practice:[P('① 先停三秒，再開口。','1) Pause three seconds before you speak.'),P('② 先說「我理解的是…」，再說「我的想法是…」。','2) Say "What I understand is…" before "What I think is…".'),P('③ 每天對一個人，說一句真心的感謝。','3) Give one sincere thank-you to someone every day.')],
+  note:P('親愛的你：你不是不會愛，你只是還沒找到讓愛抵達的路。你不需要變成另一個人，只需要多練一個能力。你今天多聽懂一句，關係就多鬆開一點；你今天多說清楚一句，誤會就少累積一點；你今天多修復一次，信任就多存進一點。',
+         'Dear you: it is not that you cannot love; you simply have not yet found the road by which love arrives. You do not need to become someone else — only to practise one more ability. Each sentence you truly hear loosens the relationship a little; each sentence you say clearly leaves one less misunderstanding; each repair you make deposits a little more trust.'),
+  find:[P('你會發現：被理解的人，才聽得進去。','You will find: only those who feel understood can truly listen.'),P('你會發現：安全的關係，才說得出真話。','You will find: only a safe relationship can hold the truth.'),P('你會發現：先修復的人，不是輸的人，是更有力量的人。','You will find: the one who repairs first is not the loser, but the stronger one.')],
+  tags:'#溝通 #關係 #親密關係'
+},
+think:{
+  why:P('因為我們一直很努力，卻很少停下來更新自己的模型。我們學會了答案，卻沒學會提問；學會了堅持，卻沒學會修正；學會了忙碌，卻沒學會看見。',
+        'Because we work hard but seldom pause to update our own models. We learned answers, not questions; persistence, not correction; busyness, not seeing.'),
+  shift:[P('少一點慌亂，多一點清楚。','Less panic, more clarity.'),P('少一點重複，多一點看見。','Less repetition, more insight.'),P('少一點硬撐，多一點方法。','Less forcing, more method.'),P('少一點自責，多一點修正。','Less self-blame, more correction.')],
+  gold:[P('你看見的世界，是你模型的樣子。','The world you see is shaped by your model.'),P('更新，比堅持更需要勇氣。','Updating takes more courage than insisting.'),P('問題不是敵人，是老師。','Problems are not enemies; they are teachers.'),P('走得慢沒關係，方向對就好。','Slow is fine, as long as the direction is right.'),P('看懂結構，才不會被事件淹沒。','See the structure, and events will not drown you.'),P('今天的修正，是明天的自由。','Today\'s correction is tomorrow\'s freedom.')],
+  practice:[P('① 寫下今天卡住的一件事。','1) Write down one thing you got stuck on today.'),P('② 問自己：「我的假設是什麼？」','2) Ask yourself: "What am I assuming?"'),P('③ 只修正一個小地方，明天再看一次。','3) Fix one small thing, and review it tomorrow.')],
+  note:P('親愛的你：你不是不夠聰明，你只是還沒換一副看世界的眼鏡。你不需要知道所有答案，只需要多練一個能力。你今天多看懂一層，焦慮就少一點；你今天多修正一次，方向就準一點；你今天多問一個好問題，世界就大一點。',
+         'Dear you: it is not that you are not smart enough; you simply have not yet changed the lenses through which you see the world. You do not need every answer — only to practise one more ability. Each layer you understand eases the anxiety a little; each correction sharpens your direction; each good question makes your world a little larger.'),
+  find:[P('你會發現：看清楚，比跑得快重要。','You will find: seeing clearly matters more than running fast.'),P('你會發現：問對問題，比找到答案重要。','You will find: asking the right question matters more than finding an answer.'),P('你會發現：願意修正的人，走得最遠。','You will find: those willing to correct go the farthest.')],
+  tags:'#思維升級 #認知 #終身學習'
+},
+faith:{
+  why:P('因為我們習慣靠自己，卻忘了自己是被愛的。我們學會了努力，卻沒學會安息；學會了守規矩，卻沒學會領受恩典；學會了知道，卻沒學會相信。',
+        'Because we are used to relying on ourselves and forget that we are loved. We learned to strive, not to rest; to keep rules, not to receive grace; to know, not to believe.'),
+  shift:[P('少一點懼怕，多一點平安。','Less fear, more peace.'),P('少一點靠自己硬撐，多一點交託。','Less striving alone, more trust.'),P('少一點定罪，多一點恩典。','Less condemnation, more grace.'),P('少一點比較，多一點感恩。','Less comparing, more thanksgiving.')],
+  gold:[P('你不是靠表現被愛，你是因著恩典被愛。','You are not loved for your performance; you are loved by grace.'),P('重擔交出去，手才空得出來領受。','Hand over the burden, and your hands are free to receive.'),P('神沒有遲到，祂正在預備。','God is not late; He is preparing.'),P('安靜不是什麼都不做，是把位置還給神。','Stillness is not doing nothing; it is giving God His place back.'),P('不是你抓住神，是神抓住你。','It is not you holding on to God; God is holding on to you.'),P('身份先於行為，恩典先於改變。','Identity comes before behavior; grace comes before change.')],
+  practice:[P('① 安靜三分鐘，把重擔說給神聽。','1) Be still for three minutes and tell God your burden.'),P('② 讀一節經文，慢慢讀三遍。','2) Read one verse slowly, three times.'),P('③ 為一個人禱告，並且讓他知道。','3) Pray for one person, and let them know.')],
+  note:P('親愛的你：你不是被忘記了，你只是太久沒有停下來聽。你不需要先變好才能來到神面前，只需要照著本相來。你今天多交託一件事，重擔就輕一點；你今天多相信一句話，心就穩一點；你今天多感謝一次，眼睛就亮一點。',
+         'Dear you: you have not been forgotten; you have simply gone too long without stopping to listen. You do not need to become better before you come to God — only to come as you are. Each thing you entrust today lightens the load; each word you believe steadies the heart; each thanksgiving brightens your eyes.'),
+  find:[P('你會發現：恩典早就在那裡。','You will find: grace was there all along.'),P('你會發現：你從來不是一個人。','You will find: you were never alone.'),P('你會發現：最深的安息，是知道自己被愛。','You will find: the deepest rest is knowing you are loved.')],
+  tags:'#信仰 #福音 #恩典'
+}};
+
+const TURN=[
+ n=>P('其實，不是你不夠好，是「'+n.zh+'」還沒有人好好教過你。','The truth is, you are not "not good enough" — no one ever really taught you '+n.en+'.'),
+ n=>P('不是你太差，是你還在用舊版本的自己，面對新版本的人生。這一次，要更新的是「'+n.zh+'」。','You are not failing — you are meeting a new chapter of life with an old version of yourself. This time, the update is '+n.en+'.'),
+ n=>P('痛點不是你的缺陷，是「'+n.zh+'」正在敲門。','The pain is not your flaw; it is '+n.en+' knocking at the door.'),
+ n=>P('卡住的地方，不是終點，是「'+n.zh+'」要長出來的地方。','Where you are stuck is not the end; it is where '+n.en+' is about to grow.')
+];
+const WISDOM=[
+ [P('更新一個能力，就多一種選擇。','Update one ability, and you gain one more choice.'),P('多一種選擇，就少一分無力。','One more choice means a little less helplessness.'),P('少一分無力，就多一分智慧。','A little less helplessness means a little more wisdom.')],
+ [P('能力不是天生的，是一次一次練出來的。','Ability is not inborn; it is built one practice at a time.'),P('智慧不是知道更多，是願意更新自己。','Wisdom is not knowing more; it is being willing to update yourself.'),P('你不需要一夜改變，只需要今天比昨天多懂一點。','You do not need to change overnight — only to understand a little more than yesterday.')],
+ [P('痛，不是懲罰，是提醒。','Pain is not punishment; it is a reminder.'),P('卡住，不是終點，是更新的入口。','Being stuck is not the end; it is the doorway to an update.'),P('每一次不舒服，都在把你帶向更大的自己。','Every discomfort is carrying you toward a larger self.')],
+ [P('看見，是改變的開始。','Seeing is where change begins.'),P('命名，是整理的開始。','Naming is where order begins.'),P('練習，是自由的開始。','Practice is where freedom begins.')]
+];
+const CLOSE=[
+ P('願你今天，對自己溫柔一點，對成長誠實一點。','May you be a little gentler with yourself today, and a little more honest about growing.'),
+ P('你不是壞掉了，你只是正在更新。','You are not broken — you are simply updating.'),
+ P('慢慢來，比較快；一點點，就很多。','Go slowly; it is faster. A little is already a lot.'),
+ P('把這篇留給今天的自己，也分享給那個正在努力的人。','Keep this for yourself today, and share it with someone who is trying hard.')
+];
+
+const clean=s=>String(s==null?'':s).trim().replace(/^[「『"“]+/,'').replace(/[」』"”]+$/,'').replace(/[。．.；;，,\s]+$/,'');
+const fin=(s,dot)=>/[？！?!」』”"]$/.test(s)?s:s+dot;
+const q=s=>'「'+clean(s)+'」';
+const qe=s=>'"'+clean(s)+'"';
+function count(t){return (t.match(/[一-鿿]/g)||[]).length+(t.match(/[A-Za-z][A-Za-z'’\-]*/g)||[]).length;}
+
+function build(it,v){
+  const d=D[it.domain],k=it.idx+(v||0),L=[];
+  const add=(zh,en)=>{if(zh)L.push(zh);if(en)L.push(en);};
+  const gap=()=>L.push('');
+  const rot=(arr,n,off)=>{const o=[];for(let i=0;i<Math.min(n,arr.length);i++)o.push(arr[(k+(off||0)+i)%arr.length]);return o;};
+  const name={zh:it.zh,en:'"'+it.en+'"'};
+
+  add('【'+it.hook.zh+'】',it.hook.en);gap();
+  add('你是不是也這樣？','Does this sound like you?');
+  it.pains.forEach(p=>add('・'+p.zh,p.en?'· '+p.en:''));gap();
+  const t=TURN[k%TURN.length](name);add(t.zh,t.en);gap();
+
+  add('▍為什麼會這樣｜Why it happens');add(d.why.zh,d.why.en);gap();
+
+  add('▍核心｜The core：'+it.zh+' '+it.en);
+  add(it.core.zh,it.core.en);
+  if(it.core2)add(it.core2.zh,it.core2.en);gap();
+
+  add('▍從舊模式，到新能力｜From old pattern to new ability');
+  const pairLines=(it.pairs||[]).map(p=>P('不是'+q(p.o.zh)+'，而是'+q(p.n.zh)+'。',(p.o.en&&p.n.en)?'Not '+qe(p.o.en)+' — but '+qe(p.n.en)+'.':''));
+  pairLines.forEach(p=>add(p.zh,p.en));
+  const sh=rot(d.shift,pairLines.length?3:4,0);
+  add('當你開始練習「'+it.zh+'」——','When you begin to practise '+name.en+' —');
+  sh.forEach(p=>add(p.zh,p.en));d.find.forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍金句｜Words to keep');
+  const gq=x=>P('「'+fin(clean(x.zh),'。')+'」',x.en?'"'+fin(clean(x.en),'.')+'"':'');
+  const gold=(it.quotes||[]).map(gq).concat(rot(d.gold,4,1).map(gq));
+  gold.forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍三個小練習｜Three small practices');
+  d.practice.forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍能力更新，智慧長出來｜Ability updated, wisdom grows');
+  WISDOM[k%WISDOM.length].concat(WISDOM[(k+1)%WISDOM.length]).forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍寫給你｜A note to you');add(d.note.zh,d.note.en);gap();
+
+  add('🌱 今天的小步｜'+it.step.zh,it.step.en?'🌱 Today\'s small step: '+it.step.en:'');gap();
+  const c=CLOSE[k%CLOSE.length];add(c.zh,c.en);gap();
+  const tagName='#'+it.zh.replace(/[\s、，—\-·．.]/g,'');
+  L.push(['#心靈雞湯','#自我成長',tagName,d.tags,(it.tags||[]).map(x=>'#'+String(x).replace(/\s/g,'')).join(' '),'#HealingWords #LifeOS'].filter(Boolean).join(' '));
+
+  const cq=(it.quotes&&it.quotes.length)?it.quotes[k%it.quotes.length]:it.core;
+  const first=s=>{const m=String(s).match(/^.*?[。！？!?.](?=\s|$|[^\d])/);return clean(m?m[0]:s);};
+  const short=(s,n,dot)=>String(s).trim().length<=n?fin(String(s).trim().replace(/[。.]$/,''),dot):fin(first(s),dot);
+  return {text:L.join('\n'),card:{
+    hook:it.hook.zh,
+    quote:short(cq.zh,34,'。'),
+    quoteEn:cq.en?short(cq.en,90,'.'):'',
+    lines:(pairLines.length?pairLines:sh).slice(0,3).map(p=>p.zh),
+    step:it.cardStep||short(it.step.zh,44,'。'),
+    name:it.zh+'｜'+it.en
+  }};
+}
+
+/* ── 圖卡（1080×1350 Canvas）── */
+const ZH='"Microsoft JhengHei","PingFang TC","Noto Sans TC","Heiti TC",sans-serif';
+function wrap(ctx,text,maxW){
+  const tk=String(text).match(/[A-Za-z0-9'’\-]+[.,!?;:]?\s?|\s+|[^\sA-Za-z0-9]/g)||[];
+  const noHead='，。！？、；：」』）)…—';
+  const noTail='「『（(“"';
+  const out=[];let cur=[];
+  const push=()=>{const s=cur.join('').trim();if(s)out.push(s);};
+  tk.forEach(w=>{
+    if(cur.join('').trim()&&ctx.measureText(cur.join('')+w).width>maxW){
+      // 標點不放行首、上引號不放行尾：把前一個字一起帶到下一行
+      const carry=[];
+      if(noHead.indexOf(w)>=0&&cur.length>1)carry.unshift(cur.pop());
+      while(cur.length>1&&noTail.indexOf(cur[cur.length-1].trim())>=0)carry.unshift(cur.pop());
+      push();cur=carry.concat(w.replace(/^\s+/,''));
+    }else cur.push(w);
+  });
+  push();
+  return out;
+}
+function drawCard(cv,card,theme){
+  const W=1080,H=1350,ctx=cv.getContext('2d');cv.width=W;cv.height=H;
+  const X=80,MW=W-160;
+  function lay(s,paint){
+    const f=(px,wt,fam)=>{ctx.font=(wt||'')+' '+Math.round(px*s)+'px '+(fam||ZH);};
+    const text=(arr,x,y,lh,col)=>{if(paint){ctx.fillStyle=col;arr.forEach((l,i)=>ctx.fillText(l,x,y+i*lh));}return y+arr.length*lh;};
+    ctx.textBaseline='top';
+    // 標頭：痛點
+    f(46,'bold');const hk=wrap(ctx,card.hook,MW);
+    const headH=Math.round(70+44*s+18+hk.length*62*s+48);
+    if(paint){ctx.fillStyle='#FAF6EF';ctx.fillRect(0,0,W,H);ctx.fillStyle=theme.color;ctx.fillRect(0,0,W,headH);
+      f(30,'');ctx.fillStyle='rgba(255,255,255,.85)';ctx.fillText('你是不是也這樣？',X,70);}
+    f(46,'bold');let y=text(hk,X,70+44*s+18,62*s,'#fff');
+    y=headH+90*s;
+    // 金句
+    f(66,'bold');const ql=wrap(ctx,card.quote,MW);y=text(ql,X,y,92*s,'#2B2622')+18*s;
+    if(card.quoteEn){f(30,'italic','Georgia,"Times New Roman",serif');y=text(wrap(ctx,card.quoteEn,MW),X,y,42*s,'#8A7F76');}
+    y+=50*s;
+    // 排比框
+    f(34,'');const bl=[];card.lines.forEach(l=>wrap(ctx,l,MW-110).forEach(x=>bl.push(x)));
+    const bh=bl.length*56*s+64*s;
+    if(paint){ctx.fillStyle=theme.tint;rr(ctx,X-20,y,MW+40,bh,28);ctx.fill();ctx.fillStyle=theme.color;ctx.fillRect(X-20,y+24,10,bh-48);}
+    text(bl,X+32,y+34*s,56*s,'#3A332E');y+=bh+48*s;
+    // 今天的小步
+    f(27,'');const pw=ctx.measureText('今天的小步').width+48,ph=54*s;
+    if(paint){ctx.fillStyle=theme.color;rr(ctx,X,y,pw,ph,ph/2);ctx.fill();ctx.fillStyle='#fff';ctx.fillText('今天的小步',X+24,y+(ph-27*s)/2-2);}
+    y+=ph+22*s;
+    f(34,'bold');y=text(wrap(ctx,card.step,MW),X,y,52*s,'#2B2622');
+    return y;
+  }
+  let s=1.3;while(s>0.55&&lay(s,false)>H-170)s-=0.03;
+  lay(s,true);
+  ctx.fillStyle='#E4DAD0';ctx.fillRect(X,H-130,MW,3);
+  ctx.textBaseline='top';ctx.font='bold 32px '+ZH;ctx.fillStyle=theme.color;ctx.fillText(theme.brand,X,H-96);
+  ctx.font='28px '+ZH;ctx.fillStyle='#8A7F76';const tg='#心靈雞湯';ctx.fillText(tg,W-X-ctx.measureText(tg).width,H-94);
+}
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+/* ── 介面 ── */
+let CFG=null,ITEMS=[],cur=null,ver=0;
+const $=id=>document.getElementById(id);
+function ui(){
+  const st=document.createElement('style');
+  st.textContent=`
+.fbp-btn{display:inline-flex;align-items:center;gap:4px;margin:8px 0 0;padding:6px 12px;border:0;border-radius:999px;background:var(--fbp-c);color:#fff;font:600 13px/1.2 ${ZH};cursor:pointer;white-space:nowrap}
+.fbp-btn:hover{filter:brightness(1.1)}
+#fbpFab{position:fixed;left:16px;bottom:76px;z-index:9998;margin:0;padding:11px 16px;font-size:14px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+#fbpMask{position:fixed;inset:0;z-index:9999;background:rgba(20,16,12,.6);display:none;align-items:center;justify-content:center;padding:12px}
+#fbpMask.on{display:flex}
+#fbpBox{background:#FAF6EF;color:#2B2622;width:min(1040px,100%);max-height:94vh;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;font:14px/1.6 ${ZH};text-align:left}
+#fbpTop{display:flex;gap:8px;align-items:center;padding:12px 14px;background:var(--fbp-c);color:#fff}
+#fbpTop b{flex:1;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#fbpSearch{flex:0 1 260px;min-width:110px;padding:7px 12px;border:0;border-radius:999px;font:14px ${ZH};color:#2B2622;background:#fff}
+#fbpX{background:none;border:0;color:#fff;font-size:22px;cursor:pointer;line-height:1}
+#fbpList{max-height:132px;overflow-x:hidden;overflow-y:auto;flex:none;padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #E4DAD0;background:#fff}
+#fbpList button{border:1px solid #E4DAD0;background:#FAF6EF;color:#2B2622;border-radius:999px;padding:3px 10px;font:12px ${ZH};cursor:pointer}
+#fbpList button.on{background:var(--fbp-c);color:#fff;border-color:var(--fbp-c)}
+#fbpMain{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;padding:14px;overflow:auto}
+#fbpText{width:100%;height:52vh;min-height:260px;box-sizing:border-box;padding:12px;border:1px solid #E4DAD0;border-radius:12px;background:#fff;color:#2B2622;font:14px/1.75 ${ZH};resize:vertical}
+#fbpCanvas{width:100%;height:auto;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15);display:block}
+#fbpBar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+#fbpBar .fbp-btn{margin:0}
+#fbpBar .fbp-g{background:#fff;color:var(--fbp-c);border:1px solid var(--fbp-c)}
+#fbpCnt{font-size:12px;color:#8A7F76;margin-left:auto}
+@media(max-width:760px){#fbpMain{grid-template-columns:minmax(0,1fr)}#fbpText{height:38vh}#fbpCanvas{max-width:300px;margin:0 auto}}
+@media print{#fbpFab,#fbpMask,.fbp-btn{display:none!important}}`;
+  document.head.appendChild(st);
+  document.documentElement.style.setProperty('--fbp-c',CFG.color);
+  const fab=document.createElement('button');fab.id='fbpFab';fab.className='fbp-btn';fab.textContent='📣 臉書貼文＋圖卡';
+  fab.onclick=()=>open((cur||ITEMS[0]).id);document.body.appendChild(fab);
+  const m=document.createElement('div');m.id='fbpMask';
+  m.innerHTML='<div id="fbpBox"><div id="fbpTop"><b id="fbpTitle"></b><input id="fbpSearch" type="search" placeholder="搜尋欄位 / Search…"><button id="fbpX" title="關閉">×</button></div>'+
+   '<div id="fbpList"></div><div id="fbpMain"><div><textarea id="fbpText" spellcheck="false"></textarea><div id="fbpBar">'+
+   '<button class="fbp-btn" id="fbpCopy">📋 複製貼文</button><button class="fbp-btn" id="fbpPng">🖼️ 下載圖卡</button>'+
+   '<button class="fbp-btn fbp-g" id="fbpNext">🔄 換一版</button><button class="fbp-btn fbp-g" id="fbpTxt">💾 貼文 TXT</button>'+
+   '<button class="fbp-btn fbp-g" id="fbpAll">📦 全部貼文 TXT</button><span id="fbpCnt"></span></div></div>'+
+   '<div><canvas id="fbpCanvas"></canvas></div></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',e=>{if(e.target===m)close();});
+  $('fbpX').onclick=close;
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+  $('fbpSearch').addEventListener('input',list);
+  $('fbpNext').onclick=()=>{ver++;show();};
+  $('fbpCopy').onclick=function(){const t=$('fbpText');const done=()=>flash(this,'✅ 已複製');
+    if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t.value).then(done,()=>{t.select();document.execCommand('copy');done();});
+    else{t.select();document.execCommand('copy');done();}};
+  $('fbpPng').onclick=()=>$('fbpCanvas').toBlob(b=>save(b,fname()+'.png'));
+  $('fbpTxt').onclick=()=>save(new Blob(['﻿'+$('fbpText').value],{type:'text/plain;charset=utf-8'}),fname()+'.txt');
+  $('fbpAll').onclick=()=>save(new Blob(['﻿'+ITEMS.map(it=>'════ '+it.no+' '+it.zh+' ════\n\n'+build(it,0).text).join('\n\n\n')],{type:'text/plain;charset=utf-8'}),CFG.brand+'_全部臉書貼文.txt');
+}
+function flash(b,t){const o=b.textContent;b.textContent=t;setTimeout(()=>b.textContent=o,1200);}
+function fname(){return (CFG.brand+'_'+cur.no+'_'+cur.zh).replace(/[\\/:*?"<>|\s]+/g,'_');}
+function save(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);}
+function list(){
+  const kw=$('fbpSearch').value.trim().toLowerCase();
+  const box=$('fbpList');box.innerHTML='';
+  ITEMS.filter(it=>!kw||(it.no+' '+it.zh+' '+it.en).toLowerCase().indexOf(kw)>=0).forEach(it=>{
+    const b=document.createElement('button');b.textContent=it.no+' '+it.zh;if(cur&&it.id===cur.id)b.className='on';
+    b.onclick=()=>open(it.id);box.appendChild(b);
+  });
+}
+function show(){
+  const r=build(cur,ver);
+  $('fbpTitle').textContent='📣 '+cur.no+' '+cur.zh+'｜'+cur.en;
+  $('fbpText').value=r.text;$('fbpText').scrollTop=0;
+  $('fbpCnt').textContent='約 '+count(r.text)+' 字（中文字＋英文單字）';
+  drawCard($('fbpCanvas'),r.card,{color:CFG.color,tint:CFG.tint,brand:CFG.brand});
+}
+function open(id){
+  const it=ITEMS.find(x=>String(x.id)===String(id));if(!it)return;
+  if(!cur||cur.id!==it.id)ver=0;cur=it;
+  $('fbpMask').classList.add('on');list();show();
+  const on=$('fbpList').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
+}
+function close(){$('fbpMask').classList.remove('on');}
+function mount(){
+  (CFG.mounts()||[]).forEach(m=>{
+    if(!m||!m.el||m.el.querySelector(':scope > .fbp-btn'))return;
+    const b=document.createElement('button');b.type='button';b.className='fbp-btn';b.textContent='📣 貼文＋圖卡';
+    b.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();open(m.id);});
+    m.el.appendChild(b);
+  });
+}
+function init(cfg){
+  CFG=cfg;
+  const go=()=>{
+    ITEMS=cfg.items().map((it,i)=>{it.idx=i;it.domain=cfg.domain;return it;});
+    ui();mount();
+    let tm=null;new MutationObserver(()=>{clearTimeout(tm);tm=setTimeout(mount,150);}).observe(document.body,{childList:true,subtree:true});
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(go,0));else setTimeout(go,0);
+}
+window.FBPost={init:init,build:build,count:count,P:P,open:open,items:()=>ITEMS};
+})();
+
+</script>
+<script>
+/* 語言升維手冊：30 項能力（每項取前 4 組 舊→新） */
+(function(){
+const P=FBPost.P;
+// 原檔英文尚未翻譯的句子，在這裡補上對照
+const T={
+'「我就是這樣。」':'"This is just how I am."','「我可以改變。」':'"I can change."',
+'只有一種答案。':'There is only one answer.','同時看見多種可能。':'See several possibilities at once.','只站在自己角度。':'Stand only in your own position.','能站在別人角度。':'Be able to stand in another\'s position.',
+'只看事件。':'Look only at the event.','看事件背後結構。':'See the structure behind the event.','只看現在。':'Look only at the present.','同時看短期與長期。':'See the short term and the long term together.',
+'看現象。':'Look at the phenomenon.','看本質。':'Look at the essence.','只看結果。':'Look only at the result.','看原因。':'Look at the cause.','只看答案。':'Look only at the answer.','看問題。':'Look at the question.','看機制。':'See the mechanism.',
+'接受答案。':'Accept the answer.','自己推導答案。':'Derive the answer yourself.','相信權威。':'Trust authority.','驗證原理。':'Verify the principle.','模仿別人。':'Imitate others.','理解本質。':'Understand the essence.','背公式。':'Memorise the formula.','理解公式怎麼來。':'Understand where the formula comes from.',
+'犯錯就自責。':'Blame yourself for every mistake.','犯錯先分析。':'Analyse the mistake first.','逃避錯誤。':'Avoid mistakes.','面對錯誤。':'Face mistakes.','替自己找理由。':'Find excuses for yourself.','替自己找原因。':'Find the causes for yourself.','怕承認錯誤。':'Fear admitting mistakes.','勇於修正錯誤。':'Dare to correct mistakes.',
+'看系統。':'See the system.','只看人。':'Look only at the person.','看關係。':'See the relationships.','看流程。':'See the process.','只看症狀。':'Look only at the symptom.','看根因。':'See the root cause.',
+'只看事情。':'Look only at the matter.','看結構。':'See the structure.','只看表象。':'Look only at the surface.','看底層。':'See the underlying layer.','看生成機制。':'See the generating mechanism.','只看問題。':'Look only at the problem.','找根因。':'Find the root cause.',
+'急著找答案。':'Rush to find an answer.','先定義問題。':'Define the problem first.','解錯問題。':'Solve the wrong problem.','解真正問題。':'Solve the real problem.','看到症狀。':'See the symptom.','找到根因。':'Find the root cause.','一直治標。':'Keep treating symptoms.','開始治本。':'Begin treating the root.',
+'記住案例。':'Remember the cases.','找共同規律。':'Find the common pattern.','記故事。':'Remember the stories.','理解模型。':'Understand the model.','只看個案。':'Look only at single cases.','看所有案例。':'Look across all the cases.','事情彼此無關。':'Things seem unrelated.','找共同模式。':'Find the shared pattern.',
+'事情每次都不同。':'Everything seems different each time.','快速找到共同模式。':'Quickly find the common pattern.','每次重新開始。':'Start from zero every time.','快速辨識規律。':'Recognise the regularity quickly.','看到偶然。':'See coincidence.','看到必然。':'See necessity.','看模式。':'See the pattern.',
+'二元思考。':'Binary thinking.','系統思考。':'Systems thinking.','只有對錯。':'Only right and wrong.','理解限制條件。':'Understand the constraints.','看整個系統。':'See the whole system.','看長期演化。':'See the long-term evolution.',
+'被情緒控制。':'Be controlled by emotion.','辨識情緒。':'Recognise the emotion.','討厭情緒。':'Dislike emotion.','理解情緒。':'Understand emotion.','壓抑情緒。':'Suppress emotion.','接納情緒。':'Accept emotion.','情緒就是事實。':'Emotion is fact.','情緒只是訊號。':'Emotion is only a signal.',
+'直接爆發。':'Explode right away.','翻譯情緒。':'Translate the emotion.','情緒等於事實。':'Emotion equals fact.','情緒等於訊號。':'Emotion equals signal.','焦慮就是不好。':'Anxiety is simply bad.','焦慮代表不確定。':'Anxiety signals uncertainty.','憤怒就是討厭。':'Anger is simply dislike.','憤怒代表界線。':'Anger signals a boundary.',
+'一直怪別人。':'Keep blaming others.','先檢查自己。':'Check yourself first.','看到別人的錯。':'See others\' mistakes.','先看自己的盲點。':'See your own blind spots first.','一直解釋。':'Keep explaining.','一直反思。':'Keep reflecting.','一直防衛。':'Keep defending.','願意修正。':'Be willing to correct.',
+'相信所有想法。':'Believe every thought.','驗證所有想法。':'Verify every thought.','信念就是事實。':'Belief is fact.','信念只是模型。':'Belief is only a model.','不檢查信念。':'Never examine beliefs.','定期更新信念。':'Update beliefs regularly.','一直相信過去。':'Keep trusting the past.','相信證據。':'Trust the evidence.',
+'失敗就是失敗。':'Failure is just failure.','失敗是回饋。':'Failure is feedback.','問題就是阻礙。':'A problem is an obstacle.','問題是教材。':'A problem is teaching material.','困難就是痛苦。':'Difficulty is suffering.','困難是能力訓練。':'Difficulty is ability training.','挑戰就是壓力。':'A challenge is pressure.','挑戰是成長。':'A challenge is growth.',
+'只想表達自己。':'Only want to express yourself.','先理解對方。':'Understand the other first.','一直說。':'Keep talking.','懂得停。':'Know when to stop.','只說事實。':'State only the facts.','兼顧感受。':'Attend to feelings as well.','一直講道理。':'Keep reasoning.','建立連結。':'Build connection.',
+'等對方說完。':'Wait for them to finish.','真正理解對方。':'Truly understand them.','一直準備回答。':'Keep preparing your reply.','專心理解。':'Focus on understanding.','只聽內容。':'Hear only the content.','聽情緒。':'Hear the emotion.','只聽情緒。':'Hear only the emotion.','聽需求。':'Hear the need.',
+'一直回答。':'Keep answering.','先提問。':'Ask first.','問對錯。':'Ask who is right.','問原因。':'Ask about the cause.','問結果。':'Ask about the result.','問過程。':'Ask about the process.','問事件。':'Ask about the event.','問結構。':'Ask about the structure.',
+'控制別人。':'Control others.','影響別人。':'Influence others.','靠權威。':'Rely on authority.','靠信任。':'Rely on trust.','靠命令。':'Rely on orders.','靠願景。':'Rely on vision.','一直要求。':'Keep demanding.','先示範。':'Model it first.',
+'只想贏。':'Only want to win.','一起贏。':'Win together.','競爭第一。':'Competition first.','合作第一。':'Collaboration first.','只看自己。':'Look only at yourself.','看團隊。':'See the team.','各做各的。':'Each does their own thing.','共同完成。':'Finish it together.',
+'一定要贏。':'Must win.','一起解決問題。':'Solve the problem together.','找誰錯。':'Look for who is wrong.','找真正原因。':'Look for the real cause.','情緒對抗。':'Emotional confrontation.','理性對話。':'Reasoned dialogue.','急著反擊。':'Rush to strike back.','先理解。':'Understand first.',
+'靠情緒決定。':'Decide by emotion.','靠目標函數決定。':'Decide by your objective function.','想到就做。':'Act on impulse.','分析後行動。':'Act after analysis.','看眼前利益。':'Look at immediate gain.','看長期複利。':'Look at long-term compounding.','看機率。':'Look at the probabilities.',
+'背知識。':'Memorise knowledge.','更新模型。':'Update the model.','一直輸入。':'Keep taking in.','輸入＋輸出。':'Input plus output.','知道很多。':'Know a lot.','做到很多。':'Do a lot.','看很多書。':'Read many books.','改變很多行為。':'Change many behaviors.',
+'身份固定。':'Identity is fixed.','身份可以設計。':'Identity can be designed.','我是這樣的人。':'I am this kind of person.','我要成為這樣的人。':'I will become this kind of person.','身份來自過去。':'Identity comes from the past.','身份來自選擇。':'Identity comes from choice.','身份來自他人評價。':'Identity comes from others\' opinions.','身份來自價值。':'Identity comes from values.',
+'接受人生。':'Accept life as it is.','設計人生。':'Design your life.','等待改變。':'Wait for change.','創造改變。':'Create change.','沒有方向。':'No direction.','建立人生藍圖。':'Build a blueprint for life.','只有目標。':'Only goals.','建立系統。':'Build a system.'
+};
+const en=(zh,raw)=>(raw&&!/^\[/.test(raw))?raw:(T[zh]||'');
+const GOLD=[P('語言一換，世界就跟著換。','Change the language, and the world changes with it.'),P('你常說的話，會變成你常過的日子。','The words you repeat become the days you live.'),
+ P('舊句子養出舊人生，新句子長出新能力。','Old sentences raise an old life; new sentences grow new abilities.'),P('先改口，再改心；先改一句，再改一生。','Change the words, then the heart; one sentence first, then a lifetime.')];
+const c=s=>String(s).replace(/[。.\s]+$/,'').replace(/^[「"]|[」"]$/g,'');
+FBPost.init({
+  brand:'語言升維 LifeOS',color:'#6D3FC4',tint:'#EFE8FB',domain:'think',
+  items:()=>abilitiesData.map((a,i)=>{
+    const it=a.items.slice(0,4).map(x=>({o:P(x.old,en(x.old,x.en_old)),n:P(x.new,en(x.new,x.en_new))}));
+    const short=a.chinese.replace(/能力$/,'');
+    const hooks=[
+      P('一直「'+c(it[3].o.zh)+'」，難怪同樣的事一再發生。','Always "'+c(it[3].o.en)+'" — no wonder the same things keep happening.'),
+      P('很努力了，卻還是卡在「'+short+'」。','You have tried so hard, yet you are still stuck at '+a.english+'.'),
+      P('你不是不夠好，你只是還在用舊的句子，過新的日子。','You are not lacking — you are living new days with old sentences.')];
+    return {id:a.num,no:a.num,zh:a.chinese,en:a.english,hook:hooks[i%3],pains:it.slice(0,3).map(x=>P('還在習慣「'+c(x.o.zh)+'」。','Still in the habit: "'+c(x.o.en)+'."')),
+      core:P('「'+a.chinese+'」不是換一個說法，是換一種看世界的方式：從「'+c(it[0].o.zh)+'」，走到「'+c(it[0].n.zh)+'」。',
+             a.english+' is not a change of wording; it is a change in how you see the world: from "'+c(it[0].o.en)+'" to "'+c(it[0].n.en)+'".'),
+      pairs:it,quotes:[GOLD[i%4],GOLD[(i+1)%4]],
+      step:P('今天抓到一次舊句子「'+c(it[1].o.zh)+'」，當場換成「'+c(it[1].n.zh)+'」。','Catch the old line "'+c(it[1].o.en)+'" once today, and swap it on the spot for "'+c(it[1].n.en)+'".')};
+  }),
+  mounts:()=>Array.from(document.querySelectorAll('.volume-card')).map(card=>{
+    const t=card.querySelector('.volume-title'),num=t?t.textContent.trim().split(/\s+/)[0]:'';
+    return {el:card.querySelector('.volume-header > div')||card,id:num};
+  })
+});
+})();
+
+</script>
+<!-- FBPOST:END -->
+</body>
+</html>

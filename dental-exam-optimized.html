@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>牙醫國考 Master OS｜精簡版</title>
+<style>
+:root{--ink:#182033;--muted:#667085;--bg:#f6f8fb;--panel:#fff;--soft:#f8fafc;--line:#d8dee8;--nav:#102033;--nav2:#183451;--teal:#0f8b8d;--tealbg:#e7f7f6;--bluebg:#eef6ff;--goldbg:#fff7e6;--okbg:#edfdf3;--ok:#2f9e56;--badbg:#fff1f0;--bad:#e5484d;--r:8px}
+@media(prefers-color-scheme:dark){:root{--ink:#e6edf5;--muted:#9aa8ba;--bg:#0e1622;--panel:#16212f;--soft:#1b2838;--line:#2b3a4d;--nav:#0a121c;--nav2:#101c2b;--teal:#2fb5b7;--tealbg:#123536;--bluebg:#16293f;--goldbg:#3a2f14;--okbg:#12331f;--badbg:#3b1a1a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Microsoft JhengHei","Noto Sans TC",system-ui,sans-serif;line-height:1.65}
+button,input,select{font:inherit;color:inherit}
+button{border:0;background:none;cursor:pointer}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+aside{position:sticky;top:0;height:100vh;overflow:auto;background:linear-gradient(180deg,var(--nav),var(--nav2));color:#eef6ff;padding:18px 12px}
+.brand{padding:4px 10px 14px;border-bottom:1px solid rgba(255,255,255,.15);font-size:19px;font-weight:900}
+.brand small{display:block;margin-top:4px;color:#bbcee4;font-size:12px;font-weight:400}
+.nav-btn{width:100%;display:flex;gap:10px;align-items:center;padding:9px 10px;margin-top:4px;border-radius:var(--r);text-align:left}
+.nav-btn.active,.nav-btn:hover{background:rgba(255,255,255,.13)}
+.nav-btn i{width:20px;text-align:center;font-style:normal;opacity:.8}
+.nav-btn b{margin-left:auto;font-size:12px;background:var(--bad);border-radius:99px;padding:0 7px}
+main{min-width:0;padding:0 24px 60px}
+.top{position:sticky;top:0;z-index:5;margin:0 -24px 18px;padding:12px 24px;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center}
+.search{flex:1;max-width:720px;display:flex;gap:8px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:9px 12px}
+.search:focus-within{border-color:var(--teal)}
+.search input{flex:1;min-width:0;border:0;outline:0;background:none}
+#menu{display:none;font-size:20px;padding:6px 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel)}
+h1{font-size:28px;line-height:1.2;margin:0 0 6px}h2{font-size:21px;margin:0 0 10px}h3{font-size:16px;margin:0 0 6px}p{margin:0 0 6px}
+.muted{color:var(--muted);font-size:14px}
+.sec{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.card{display:block;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px;text-align:left;scroll-margin-top:80px}
+button.card:hover{border-color:var(--teal)}
+.card.flash{outline:3px solid var(--teal)}
+.card.known{background:var(--okbg)}
+.badge{display:inline-block;padding:2px 9px;margin:0 4px 4px 0;border-radius:99px;background:var(--bluebg);font-size:12px;font-weight:700}
+.badge.t{background:var(--tealbg)}.badge.g{background:var(--goldbg)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{padding:6px 12px;border-radius:99px;background:var(--soft);border:1px solid var(--line);font-size:14px;font-weight:700}
+.chip.active{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn{padding:8px 14px;border-radius:var(--r);background:var(--teal);color:#fff;font-weight:700}
+.btn.ghost{background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+.trap{border-left:3px solid #d9902a;background:var(--goldbg);padding:6px 9px;border-radius:0 6px 6px 0;font-size:14px;margin-top:6px}
+.kn{display:flex;gap:6px;align-items:center;margin-top:8px;font-size:13px;color:var(--muted);cursor:pointer}
+.bar{height:8px;background:var(--soft);border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:8px}
+.bar span{display:block;height:100%;background:var(--teal)}
+.steps{display:grid;gap:8px;counter-reset:s}
+.steps div{counter-increment:s;display:flex;gap:10px;background:var(--soft);border:1px solid var(--line);border-radius:var(--r);padding:8px 10px}
+.steps div:before{content:counter(s);flex:0 0 26px;height:26px;display:grid;place-items:center;border-radius:50%;background:var(--teal);color:#fff;font-weight:900;font-size:13px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tw{overflow:auto;border:1px solid var(--line);border-radius:var(--r)}
+table{width:100%;border-collapse:collapse}th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:14px}th{background:var(--bluebg);white-space:nowrap}
+svg{width:100%;height:auto;display:block}
+svg text{fill:var(--ink);font-weight:800}
+.say{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--teal);color:#fff;font-size:11px;vertical-align:middle;margin-right:6px}
+.q{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.opt{display:block;width:100%;margin-top:7px;padding:9px 11px;border:1px solid var(--line);border-radius:var(--r);background:var(--soft);text-align:left}
+.opt:hover:not(:disabled){border-color:var(--teal)}
+.opt:disabled{cursor:default}
+.opt.pick{border-color:var(--teal);background:var(--tealbg);font-weight:700}
+select{padding:7px 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);max-width:100%}
+.opt.ok{background:var(--okbg);border-color:var(--ok);font-weight:700}
+.opt.no{background:var(--badbg);border-color:var(--bad)}
+.exp{display:none;margin-top:10px;padding:9px 11px;border-left:4px solid var(--teal);background:var(--soft);font-size:14px}
+.q.done .exp{display:block}
+mark{background:#ffe58a;color:#182033;border-radius:3px;padding:0 1px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}
+@media(max-width:900px){.app{grid-template-columns:1fr}aside{position:fixed;z-index:20;inset:0 auto 0 0;width:250px;transform:translateX(-102%);transition:transform .2s}aside.open{transform:none}#menu{display:block}main{padding:0 14px 50px}.top{margin:0 -14px 14px;padding:10px 14px}.two{grid-template-columns:1fr}h1{font-size:23px}}
+@media print{aside,.top,.kn,.btn{display:none!important}.app{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside id="aside"><div class="brand">牙醫國考 Master OS<small>一階打底・二階解題・測驗與錯題本</small></div><nav id="nav"></nav></aside>
+<main>
+<div class="top"><button id="menu" aria-label="選單">☰</button><label class="search">⌕<input id="search" type="search" autocomplete="off" placeholder="搜尋全部內容：考點、疾病、藥物、影像、英文縮寫（按 / 聚焦）"></label></div>
+<div id="view"></div>
+</main>
+</div>
+<script>
+/* ===== 資料 ===== */
+// [id, 階段, 名稱, 範圍, 考點: '標題|重點|陷阱']
+const S=[
+['anatomy',1,'口腔解剖胚胎組織','牙齒、牙周、顎骨、唾液腺、頭頸神經血管、牙胚發育',[
+'三叉神經 V3|下齒槽神經經下顎孔入下顎管，支配下顎牙；舌神經負責舌前 2/3 一般感覺。|舌前 2/3 的味覺是顏面神經的鼓索（chorda tympani）搭舌神經便車，不是舌神經本身。',
+'顏面神經 VII|支配表情肌；鼓索管舌前 2/3 味覺與頜下腺、舌下腺分泌。|腮腺分泌由舌咽神經（IX）經耳神經節支配；顏面神經只是穿過腮腺。',
+'牙胚發育|蕾期→帽期→鐘期。造釉器形成琺瑯質；牙乳頭形成牙本質與牙髓；牙囊形成牙骨質、PDL、齒槽骨。|只有琺瑯質來自外胚層，其餘牙組織來自外胚間葉（神經脊）。',
+'琺瑯質|約 96% 無機質，由造釉細胞形成，萌出後無細胞、不可再生；臨界 pH 約 5.5。|Retzius 線是生長線；Hunter-Schreger 帶是釉柱走向造成的光學現象。',
+'牙本質|造牙本質細胞終生形成：原發、續發、第三（修復性／反應性）牙本質。敏感痛以流體動力學說解釋。|管周牙本質礦化度高於管間牙本質。',
+'牙骨質與牙周膜|無細胞牙骨質在頸側 1/3 主司附著；有細胞牙骨質在根尖 1/3。Sharpey 纖維埋入牙骨質與骨。|PDL 主纖維以斜行纖維最多，負責抵抗咬合垂直力。',
+'唾液腺|腮腺純漿液性（Stensen 管開口在上顎第二大臼齒對面）；頜下腺混合偏漿液（Wharton 管）；舌下腺混合偏黏液。|靜止時唾液主要來自頜下腺；刺激時腮腺比例才上升。',
+'顳顎關節 TMJ|關節盤分上下腔：下腔轉動、上腔滑動。外翼肌附著於關節盤與髁頸。|關節面覆蓋的是纖維軟骨，不是透明軟骨。']],
+['physio',1,'口腔生理與基礎醫學','咀嚼、吞嚥、唾液、疼痛、骨代謝、凝血、發炎與癒合',[
+'唾液緩衝|主要是重碳酸鹽系統；流速越高，pH 與重碳酸鹽濃度越高。|Stephan 曲線：吃糖後數分鐘 pH 掉到 5.5 以下，約 30–60 分鐘才回升。',
+'牙髓痛覺纖維|Aδ：快、銳痛、牙本質刺激；C：慢、鈍痛、持續，與不可逆性牙髓炎有關。|C 纖維耐缺氧，牙髓接近壞死時仍可能痛。',
+'咀嚼肌|閉口：咬肌、顳肌、內翼肌；開口與前突：外翼肌。|顳肌後束負責下顎後縮。',
+'吞嚥|口腔期（隨意）→咽期→食道期（不隨意）。|嬰兒型吞嚥（舌前推）持續存在與前牙開咬有關。',
+'骨重塑|RANKL 促進破骨細胞分化，OPG 抑制；PTH 升血鈣，calcitonin 降血鈣。|矯正牙移動：壓力側骨吸收、張力側骨生成。',
+'凝血檢查|外在路徑看 PT/INR（第 VII 因子）；內在路徑看 aPTT。warfarin 抑制維生素 K 依賴因子 II、VII、IX、X。|血友病 A 缺第 VIII 因子：aPTT 延長、PT 正常。',
+'拔牙窩癒合|血塊→肉芽組織→編織骨→成熟骨。|血塊喪失會變成乾性齒槽炎，不是感染化膿。',
+'味覺支配|舌前 2/3：VII；舌後 1/3：IX；會厭：X。|一般感覺與味覺的神經不同，題目常混在一起問。']],
+['micro',1,'口腔微生物免疫','生物膜、齲齒菌、牙周致病菌、病毒黴菌與宿主免疫',[
+'生物膜形成|獲得性薄膜→早期定殖菌（S. sanguinis、Actinomyces）→橋接菌 Fusobacterium nucleatum→晚期厭氧革蘭陰性菌。|獲得性薄膜（pellicle）是唾液醣蛋白，本身不含細菌。',
+'Streptococcus mutans|用蔗糖經 glucosyltransferase 合成不溶性葡聚醣，產酸且耐酸，是齲齒起始主要菌。|Lactobacillus 與齲齒「進展」較相關，不是起始。',
+'牙周致病菌|紅色複合體：P. gingivalis、T. forsythia、T. denticola。|A. actinomycetemcomitans 不在紅色複合體，與臼齒門齒型牙周炎相關，會產生 leukotoxin。',
+'LPS 內毒素|革蘭陰性菌外膜成分，經 TLR4 引發 IL-1、TNF-α、PGE2，造成骨吸收。|牙周破壞大部分來自宿主發炎反應，不只是細菌直接破壞。',
+'分泌型 IgA|唾液主要抗體，雙體，阻止細菌黏附。|牙齦溝液中主要抗體是 IgG。',
+'中性球|牙齦溝第一線防禦。功能缺陷（LAD、Papillon-Lefèvre、Chédiak-Higashi）會早發嚴重牙周破壞。|看到兒童嚴重牙周破壞要想到全身性疾病。',
+'口腔病毒|HSV-1：原發性皰疹性齦口炎，復發於唇與角化黏膜；Coxsackie A：皰疹性咽峽炎、手足口病；EBV：毛狀白斑。|復發性皰疹在角化黏膜，阿弗他潰瘍在非角化黏膜。',
+'念珠菌|Candida albicans；偽膜型白膜可刮除。誘因：抗生素、吸入型類固醇、義齒、口乾、免疫低下。|「刮得掉」是與白斑最大的差別。']],
+['path',1,'口腔病理','癌前病變、口腔癌、囊腫、齒源性腫瘤與黏膜疾病',[
+'白斑 leukoplakia|刮不掉、無法歸類為其他疾病的白色斑塊，是排除性臨床診斷，需切片看有無上皮異生。|口底、舌腹側緣、軟顎是高風險部位。',
+'紅斑 erythroplakia|鮮紅絨布狀斑塊，惡性轉化風險遠高於白斑。|多數切片時已是重度異生或原位癌。',
+'口腔鱗狀細胞癌|最常見口腔惡性腫瘤。危險因子：菸、酒、檳榔；台灣頰黏膜與舌最常見。|潰瘍超過 2 週不癒合且有硬結就要切片。',
+'根尖囊腫|最常見的顎骨囊腫，源自 Malassez 上皮殘留，病因牙牙髓已壞死。|牙髓有活性就不會是根尖囊腫。',
+'含齒囊腫|包住未萌牙牙冠、附著於 CEJ，源自縮餘釉上皮；好發下顎第三大臼齒與上顎犬齒。|圍冠透亮也可能是 OKC 或單囊型成釉細胞瘤。',
+'齒源性角化囊腫 OKC|源自牙板殘留；副角化上皮、表面波浪狀、基底層柵狀排列；復發率高。|沿骨髓腔前後向生長、膨隆不明顯；多發要想到 Gorlin 症候群。',
+'成釉細胞瘤|良性但局部侵襲，好發下顎後部，多房性「肥皂泡」影像，需含安全邊緣切除。|單囊型多見於年輕人，預後較好。',
+'扁平苔癬|雙側頰黏膜 Wickham 紋；T 細胞媒介，基底層液化變性、上皮下帶狀淋巴球浸潤。|糜爛型需長期追蹤。']],
+['pharm',1,'牙科藥理與全身醫學','局麻、止痛、抗生素、抗凝血與內科病患風險',[
+'局麻機轉|阻斷電壓依賴性鈉通道。未解離的鹼基型穿過神經膜，進入後以離子型作用。|發炎組織 pH 低，鹼基型變少，所以麻不起來。',
+'Amide 與 Ester|Amide（lidocaine、articaine、mepivacaine、bupivacaine）肝代謝；Ester（procaine、benzocaine）由血漿酯酶代謝，過敏較多。|articaine 是 amide 但帶酯基，部分在血漿代謝，半衰期短。',
+'Lidocaine 劑量|2% = 20 mg/mL，一支 1.8 mL 含 36 mg。含 epinephrine 上限約 7 mg/kg（不超過 500 mg）；Malamed 保守建議 4.4 mg/kg。|算題先把 % 換成 mg/mL：百分比 ×10。',
+'血管收縮劑|1:100,000 = 0.01 mg/mL。心血管高風險病人上限 0.04 mg（約 2 支）。|與非選擇性 β 阻斷劑併用會血壓上升、反射性心搏過緩。',
+'止痛藥|NSAID 抑制 COX，有腸胃、腎、出血風險；acetaminophen 無抗發炎作用，過量傷肝（解毒劑 N-acetylcysteine）。|牙科急性痛首選 NSAID，不是鴉片類。',
+'抗生素選擇|牙源性感染首選 penicillin 類；過敏改 clindamycin 或 azithromycin；metronidazole 只對厭氧菌。|抗生素是輔助，去除病因與引流才是治療。',
+'感染性心內膜炎預防|只給高風險者（人工瓣膜、曾患 IE、特定先天性心臟病、心臟移植後瓣膜病變）。術前 30–60 分鐘口服 amoxicillin 2 g（兒童 50 mg/kg）。|2021 AHA 已不建議以 clindamycin 作為替代藥。',
+'抗凝血與抗骨吸收藥|warfarin 看 INR，在治療範圍內（多數指引 ≤3.5）簡單拔牙不停藥、加強局部止血。雙磷酸鹽與 denosumab 要評估 MRONJ 風險。|擅自停抗凝血藥的血栓風險大於拔牙出血風險。']],
+['public',1,'公共衛生倫理法規','齲齒指數、氟化物、流行病學、感染控制與告知同意',[
+'DMFT|恆牙齲蝕經驗指數（Decayed、Missing、Filled），只增不減；乳牙用 dmft／deft。|M 只計因齲齒而拔除的牙。',
+'氟化物機轉|形成氟磷灰石使臨界 pH 降到約 4.5、促進再礦化、抑制細菌醣解。飲水加氟建議濃度 0.7 ppm。|主要效果來自萌出後的局部作用，不是全身性吸收。',
+'氟中毒|可能中毒劑量（PTD）為 5 mg F/kg；氟斑牙發生在牙齒發育期（約 8 歲前）攝取過量。|急性誤食處置：給牛奶或鈣劑後送醫。',
+'窩溝封填|對小窩裂溝齲最有效，成功關鍵是隔濕。|脫落的封填劑要補，否則邊緣更容易蛀。',
+'篩檢指標|敏感度 = TP/(TP+FN)；特異度 = TN/(TN+FP)。|陽性預測值會隨盛行率上升；敏感度與特異度不受盛行率影響。',
+'研究設計|證據等級：系統性回顧/RCT ＞ 世代研究 ＞ 病例對照 ＞ 橫斷 ＞ 病例報告。|世代研究算相對危險性（RR），病例對照只能算勝算比（OR）。',
+'感染控制|標準防護措施適用所有病人。Spaulding：critical 器械需滅菌；semi-critical 滅菌或高層次消毒。高壓蒸氣滅菌的生物指示劑是 Geobacillus stearothermophilus。|牙科手機屬於每位病人用後都要加熱滅菌的器械。',
+'針扎與告知同意|針扎感染風險 HBV ＞ HCV（約 1.8%）＞ HIV（約 0.3%）。告知同意要件：充分說明、理解、自願、有決定能力。|同意書簽名不等於完成告知同意。']],
+['rest',2,'牙體復形','齲齒診斷、窩洞分類、黏著、樹脂與玻璃離子',[
+'齲齒診斷|鄰接面齲首選咬翼片。未成洞的白斑病灶可以再礦化，不必鑽。|X 光會低估實際齲蝕深度。',
+'Black 窩洞分類|I 小窩裂溝；II 後牙鄰接面；III 前牙鄰接面未及切角；IV 前牙鄰接面含切角；V 頸部 1/3；VI 牙尖或切緣。|III 和 IV 的差別只在切角有沒有被波及。',
+'酸蝕與黏著|37% 磷酸酸蝕琺瑯質 15–30 秒形成微機械固位；牙本質靠混合層（hybrid layer）。|牙本質過度吹乾會讓膠原塌陷，黏著失敗。',
+'聚合收縮與 C-factor|C-factor = 黏著面數 / 未黏著面數，Class I 最高。斜向分層、每層 ≤2 mm 可降低收縮應力。|C-factor 越高，收縮應力越大。',
+'樹脂與玻璃離子比較|樹脂美觀、強度佳但技術敏感；玻璃離子與鈣化學鍵結、釋氟、熱膨脹係數接近牙體，但強度較差。|高齲齒風險、無法隔濕時反而選玻璃離子。',
+'銀粉 Amalgam|高銅銀粉消除 γ2 相（Sn-Hg），腐蝕與潛變下降。靠窩洞倒凹機械固位。|銀粉不黏牙，窩洞設計與樹脂不同。',
+'橡皮障|隔濕、防誤吞誤吸、保護軟組織、提升黏著品質；根管治療標準配備。|乳膠過敏病人改用非乳膠橡皮障。',
+'護髓治療|間接覆髓保留近髓的軟化牙本質；直接覆髓限小的機械性露髓、無症狀、出血可控，材料用 MTA 或氫氧化鈣。|齲蝕性露髓合併自發痛，不適合直接覆髓。']],
+['endo',2,'牙髓病與根管治療','牙髓與根尖診斷、根管清創沖洗、充填、急症與外傷',[
+'牙髓診斷|可逆性：刺激痛、移除刺激數秒內消失；症狀性不可逆性：自發痛、夜間痛、延遲痛；壞死：冷測與 EPT 無反應。|分界在「痛會不會自己來、會不會拖」。',
+'根尖診斷|症狀性根尖周炎：叩痛；急性根尖膿瘍：腫脹、快速發作；慢性根尖膿瘍：有竇道、多無症狀。|竇道來源用馬來膠針插入後照 X 光追蹤。',
+'活髓測試|冷測最常用也最可靠。EPT 只測神經反應，不代表血流。|外傷牙與未成熟恆牙的 EPT 容易偽陰性。',
+'工作長度|止於根尖狹窄處，約距影像根尖 0.5–1 mm；電子根尖定位儀搭配 X 光確認。|根尖孔常不在解剖根尖正中央。',
+'根管沖洗|NaOCl 溶解有機組織並殺菌；17% EDTA 去除塗抹層無機成分；CHX 沒有溶解組織能力。|NaOCl 與 CHX 混合會產生橘褐色沉澱。',
+'根管解剖|上顎第一大臼齒 MB2 發生率過半；下顎第一大臼齒常 3–4 根管；C 形根管好發於下顎第二大臼齒。|下顎門齒約四成有兩個根管，舌側根管易漏。',
+'根管充填|馬來膠加 sealer，側方或垂直加壓。|冠部封閉品質與根管充填品質一樣影響預後。',
+'急症與外傷|急性根尖膿瘍以引流為主，有全身症狀或擴散才加抗生素。恆牙脫落立即再植最好，保存液 HBSS ＞ 牛奶 ＞ 生理食鹽水。|乳牙脫落不再植；脫落牙不可乾放或泡自來水。']],
+['perio',2,'牙周病學','診斷指標、新分類、治療順序、再生與植體周圍疾病',[
+'牙齦炎與牙周炎|差別在有無附連喪失與骨喪失；牙齦炎可逆。|只看牙齦紅腫出血無法診斷牙周炎。',
+'探測指標|CAL = 探測深度 + 牙齦退縮（CEJ 到溝底），是破壞的金標準。|BOP 陰性代表穩定（陰性預測值高）；陽性不一定代表正在破壞。',
+'2017 分期分級|分期 I–IV 看嚴重度與複雜度（鄰面 CAL 1–2 / 3–4 / ≥5 mm、失牙數）；分級 A–C 看進展速率。|每天吸菸 ≥10 支或 HbA1c ≥7% 直接升為 C 級。',
+'根分叉 Glickman|I 初期凹陷；II 部分穿入未貫通；III 貫通但被牙齦覆蓋；IV 貫通且臨床可見。|III 與 IV 骨破壞相同，差別只在牙齦有沒有退縮。',
+'動搖度 Miller|1 度略大於生理；2 度水平約 1 mm 以內；3 度超過 1 mm 或可垂直下壓。|動搖度增加也可能來自咬合創傷，不一定是骨喪失。',
+'治療順序|急症→第一階段（口衛、SRP、去除因子）→4–6 週再評估→手術期→補綴期→維持期（多為每 3 個月）。|沒做好第一階段與再評估就不該進手術。',
+'骨缺損與再生|三壁骨缺損再生預後最好。GTR 用屏障膜阻擋上皮優先下長。|水平骨喪失不適合再生手術。',
+'齒槽嵴上附連組織與植體|舊稱生物寬度，約 2 mm（結締組織附連 + 接合上皮）。植體周圍黏膜炎可逆；植體周圍炎已有骨喪失。|補綴邊緣侵犯這 2 mm 會造成慢性發炎或骨吸收。']],
+['prostho',2,'補綴學','固定補綴、活動義齒、全口義齒與印模材',[
+'支台齒修形|聚合角理想約 6°（臨床常 10–20°）；軸壁越高越平行固位越好；ferrule 至少 1.5–2 mm。|根管治療牙的預後關鍵是 ferrule，不是 post 的長度。',
+'邊緣設計|chamfer 用於全金屬與氧化鋯；shoulder 用於全瓷與金屬燒瓷唇側。|齦上邊緣對牙周最健康，齦下邊緣只在必要時用。',
+'Ante 法則|支台齒牙周膜面積總和應大於等於缺牙的牙周膜面積。|長跨距牙橋彎曲量與跨距長度三次方成正比。',
+'橋體設計|卵圓形最美觀；改良式蓋嵴最常用；衛生型用於下顎後牙。|鞍狀（saddle）橋體無法清潔，禁用。',
+'Kennedy 分類|I 雙側遊離端；II 單側遊離端；III 單側缺牙前後皆有牙；IV 跨中線的前牙缺牙。|以最後方的缺牙區決定分類；IV 類沒有修飾區。',
+'局部活動義齒元件|大小連接體、rest（支持）、直接固位體（clasp）、間接固位體（抗遊離端翹起）。|RPI（近心 rest、鄰面板、I-bar）用來減少遊離端對支台齒的扭力。',
+'全口義齒|上顎主承壓區是齒槽嵴頂與硬顎；下顎是頰棚。後堤區設在顫動線。咬合垂直高度 = 息止垂直高度 − 息止間隙（2–4 mm）。|垂直高度太高：咬合音、肌肉酸痛；太低：嘴角下垂、口角炎。',
+'印模材|alginate 會離水收縮與吸水膨脹，要立刻灌模；加成型矽膠 PVS 尺寸最穩定；polyether 親水但較硬。|乳膠手套與含硫止血劑會抑制 PVS 聚合。']],
+['surgery',2,'口腔顎面外科','拔牙、阻生齒、感染、切片、內科病患與骨折',[
+'阻生齒分類|Winter 分類看傾斜（下顎近心傾斜最常見）；Pell & Gregory 看與下顎枝關係（Class I–III）與深度（Position A–C）。|遠心傾斜、Class III、Position C 最難拔。',
+'下齒槽神經風險|全景片警訊：牙根變暗、根彎曲、下顎管白線中斷、管道轉向或變窄，出現就加照 CBCT。|舌神經傷害與舌側翻瓣、舌側骨板穿破有關。',
+'乾性齒槽炎|拔牙後 3–5 天劇痛、血塊喪失、惡臭、無化膿。危險因子：下顎第三大臼齒、吸菸、口服避孕藥。|處置是沖洗加鎮痛敷料，不要搔刮齒槽窩，也不是靠抗生素。',
+'筋膜間隙感染|Ludwig 咽峽炎：雙側頜下、舌下、頦下間隙蜂窩性組織炎，首重呼吸道。|根尖在下頜舌骨肌線下方→頜下間隙；上方→舌下間隙。',
+'感染治療原則|去除病因、切開引流、抗生素三者並行。|張口受限、吞嚥困難、呼吸困難、發燒是住院警訊。',
+'切片原則|大於 1 cm 或疑似惡性做切取切片，取病灶與正常交界；小的良性病灶做切除切片。標本泡 10% 福馬林。|疑似惡性不要整顆切除，會讓後續手術範圍難以判定。',
+'內科病患|糖尿病控制差→感染與癒合不良；洗腎病人安排在透析隔天；頭頸放療後拔牙有放射性骨壞死風險。|需要拔的牙最好在放療前 2–3 週拔完。',
+'顏面骨折|下顎骨折好發髁突、角部、聯合旁。Le Fort I 水平、II 錐形、III 顱顏分離。|雙側髁突骨折會出現前牙開咬。']],
+['pedo',2,'兒童牙科','萌牙、乳牙牙髓治療、空間維持、行為管理與外傷',[
+'萌牙時序|乳牙約 6 個月開始、2.5–3 歲長齊 20 顆，順序 A-B-D-C-E；約 6 歲長第一顆恆牙。|乳犬齒比第一乳臼齒晚萌出。',
+'乳牙形態|琺瑯質薄、髓腔大髓角高（近心頰側最高）、牙根分叉大、頸部縮窄明顯、接觸面寬平。|所以乳牙齲齒很快就到牙髓，窩洞要淺。',
+'乳牙牙髓切斷術|適應症：齲蝕露髓但根髓健康（無自發痛、無腫脹、出血可止）。材料 MTA、ferric sulfate，之後做不鏽鋼冠。|切斷後出血止不住代表根髓已發炎，要改做牙髓摘除。',
+'乳牙牙髓摘除術|用於根髓不可逆發炎或壞死。充填用可吸收材料（ZOE、Vitapex）。|不可用馬來膠，會妨礙恆牙萌出。',
+'不鏽鋼冠|多面齲、牙髓治療後、發育缺陷的乳臼齒首選。|Hall technique 是不修形、不去齲直接黏著。',
+'空間維持器|單側單顆：band and loop；第二乳臼齒早失且第一大臼齒未萌：distal shoe；下顎雙側：lingual arch；上顎雙側：Nance。|lingual arch 要等下顎恆門齒萌出後才放。',
+'行為管理|Tell-show-do、正向增強、聲音控制、分散注意。Frankl 量表 1–4 分，4 分為絕對合作。|Frankl 1 分是絕對不合作，方向不要記反。',
+'乳牙外傷|好發上顎乳門齒，以脫位為主。嵌入型多可觀察等待自行再萌。|乳牙脫落不再植，避免傷到恆牙胚。']],
+['ortho',2,'齒顎矯正','咬合分類、頭影測量、生長、牙移動與治療時機',[
+'Angle 分類|看上顎第一大臼齒近心頰側咬頭與下顎第一大臼齒頰側溝：I 正對；II 在其前方；III 在其後方。|II 類 div 1 門齒前傾；div 2 中門齒後傾併深咬。',
+'頭影測量|SNA 82°、SNB 80°、ANB 2°。ANB 大於 4° 為骨性 II 類，小於 0° 為骨性 III 類。|ANB 只說明上下顎相對關係，要再看 SNA、SNB 才知道是誰的問題。',
+'生長發育|Scammon 曲線：神經型最早完成；淋巴型青春期前達高峰後下降；一般型 S 形；生殖型最晚。|評估生長高峰用頸椎成熟度或手腕骨 X 光。',
+'空間分析|Bolton 比例：前牙 77.2%、全牙列 91.3%。Moyers 與 Tanaka-Johnston 用來預測未萌犬齒與小臼齒寬度。|Leeway space：上顎每側約 1.5 mm、下顎約 2.5 mm。',
+'牙移動生物學|壓力側破骨吸收、張力側成骨，輕而持續的力最好。|力量過大造成玻璃樣變與潛掘性吸收，牙移動反而延遲。',
+'錨定|抵抗不想要的牙移動。加強方式：橫顎弓、Nance、口外頭套、迷你骨釘（TADs）。|拔牙關閉空間時，錨定設計決定前牙後退量。',
+'治療時機|前牙錯咬、伴功能性偏移的後牙錯咬要早期處理。骨性 III 類上顎不足用面罩前牽引（約 8–10 歲前）。|骨性 II 類功能性矯正器要配合青春期生長高峰。',
+'維持與復發|牙齦上纖維重塑最慢（約 1 年），旋轉牙最容易復發。|下顎前牙擁擠長期容易復發，常需長期維持。']],
+['diag',2,'口腔診斷影像','投照技術、影像判讀、鑑別診斷與輻射防護',[
+'投照技術|平行法失真最小。等分角法垂直角度太大影像縮短，太小影像拉長。|水平角度錯誤造成的是鄰接面重疊。',
+'SLOB 法則|Same Lingual, Opposite Buccal：球管移動時，影像與球管同方向移動的物體在舌側。|至少要兩張不同水平角度的片子才能判斷。',
+'咬翼片|鄰接面齲與齒槽嵴高度首選。正常齒槽嵴頂在 CEJ 下方 1–2 mm。|頸部燒灼（cervical burnout）是正常假影，別當成根面齲。',
+'全景片|斷層原理，有固定焦點槽。鬼影出現在對側、位置較高、較模糊。|病人位置太前：前牙變窄；太後：前牙變寬；舌頭沒貼上顎：上顎根尖有透亮帶。',
+'CBCT|三維看硬組織，劑量高於傳統片、低於醫用 CT。|軟組織對比差、金屬會有散射假影；要符合 ALARA 才照。',
+'病灶描述|依序描述位置、邊界、內部密度、對周圍構造的影響。|邊界清楚有皮質化多為良性慢性；模糊蟲蛀狀要想感染或惡性。',
+'影像鑑別|多房性透亮：成釉細胞瘤、OKC、中心性巨細胞肉芽腫、黏液瘤。毛玻璃樣：纖維性異常增生。|圍冠透亮除了含齒囊腫，還有 OKC、單囊型成釉細胞瘤、AOT。',
+'輻射生物與防護|隨機效應（致癌、遺傳）沒有閾值；確定效應有閾值。防護：矩形準直、高感度受像器、甲狀腺鉛領。|最敏感的是淋巴球與骨髓；神經與肌肉最不敏感。']]
+].map(x=>({id:x[0],stage:x[1],name:x[2],focus:x[3],pts:x[4].map(p=>p.split('|'))}));
+
+// 名稱|定位|典型線索|處置
+const DIS=['齲齒|硬組織|白斑到成洞；咬翼片鄰接面三角形透亮|風險控制與氟化物；成洞才復形',
+'可逆性牙髓炎|牙髓|冷刺激引起短暫銳痛，移除刺激即消失|去除病因後復形，不需根管治療',
+'不可逆性牙髓炎|牙髓|自發痛、夜間痛、冷熱刺激後延遲不退的痛|根管治療或拔牙；抗生素無效',
+'牙髓壞死|牙髓|冷測與 EPT 無反應，牙冠可能變色|根管治療',
+'急性根尖膿瘍|根尖|劇痛、叩痛、腫脹、牙齒浮起感，發作快|引流（經根管或切開）；有全身症狀才加抗生素',
+'慢性根尖周炎|根尖|無症狀、根尖透亮、牙髓無活性|根管治療並追蹤影像癒合',
+'牙周炎|牙周|附連喪失、囊袋、探診出血、影像骨喪失|口衛與 SRP→再評估→手術→維持',
+'壞死性牙周病|牙周|牙間乳頭壞死呈火山口狀、自發出血、劇痛、口臭；壓力、吸菸、免疫低下|清創、CHX 漱口、止痛；有全身症狀加 metronidazole',
+'牙齦炎|牙周|牙齦紅腫出血，無附連喪失|牙菌斑控制與洗牙，可逆',
+'智齒冠周炎|軟組織|部分萌出下顎智齒周圍牙齦腫痛、張口受限|沖洗清創；擴散才用抗生素；急性期後評估拔除',
+'乾性齒槽炎|顎骨|拔牙後 3–5 天劇痛、齒槽窩空虛、惡臭、無化膿|沖洗加鎮痛敷料，不搔刮',
+'口腔蜂窩性組織炎|筋膜間隙|瀰漫性硬腫、發燒、張口或吞嚥困難|呼吸道優先、切開引流、抗生素、處理病因牙',
+'白斑|黏膜|刮不掉的白色斑塊，排除其他診斷|去除刺激因子，切片確認有無異生',
+'紅斑|黏膜|鮮紅絨布狀斑塊，邊界清楚|一律切片，惡性風險高',
+'口腔鱗狀細胞癌|黏膜|超過 2 週不癒合的硬結潰瘍；菸酒檳榔史|切取切片確診後轉診治療',
+'復發性阿弗他潰瘍|黏膜|非角化黏膜上圓形淺潰瘍、黃白底紅暈，1–2 週自癒|局部類固醇與症狀治療',
+'扁平苔癬|黏膜|雙側頰黏膜網狀白紋（Wickham 紋）|有症狀用局部類固醇；糜爛型長期追蹤',
+'念珠菌感染|黏膜|可刮除的白膜，或義齒下紅斑、口角炎|nystatin 或 fluconazole，並處理誘因',
+'顎骨骨髓炎|顎骨|下顎深部痛、腫、瘻管；影像蟲蛀狀透亮與死骨|抗生素加清創、死骨切除',
+'根尖囊腫|顎骨|無活性牙根尖的圓形、邊界清楚透亮|根管治療；不癒合再做根尖手術',
+'含齒囊腫|顎骨|包住未萌牙牙冠、附著在 CEJ 的單房透亮|摘除囊腫並拔除或導萌患牙',
+'齒源性角化囊腫|顎骨|下顎後部沿骨髓腔前後向延伸的透亮，膨隆少、易復發|摘除加周邊骨處理，長期追蹤',
+'成釉細胞瘤|顎骨|下顎後部多房性肥皂泡樣透亮、牙根吸收|含安全邊緣的切除',
+'顳顎障礙|咬合/TMJ|關節彈響、咀嚼肌痛、張口受限或偏斜|先用保守可逆治療：衛教、軟食、熱敷、咬合板',
+'藥物相關顎骨壞死|顎骨|用過抗骨吸收或抗血管新生藥物、骨暴露超過 8 週、無頭頸放療史|CHX 漱口、抗生素、保守清創；重在預防',
+'幼兒早發性齲齒|硬組織|上顎乳門齒最先受侵犯，下顎乳門齒較少（舌與唾液保護）|改變餵食習慣、氟化物、復形或不鏽鋼冠',
+'牙齒脫落（外傷）|牙周|恆牙整顆脫出齒槽窩|立即再植、彈性固定約 2 週、追蹤牙髓',
+'植體周圍炎|牙周|植體周圍探診出血或化膿、囊袋加深、影像骨喪失|清創去污、必要時手術；黏膜炎階段可逆',
+'唾液腺結石|唾液腺|進食時頜下區腫痛，好發頜下腺|小結石擠出或取石；反覆發作考慮腺體切除',
+'纖維性異常增生|顎骨|年輕人無痛性單側膨隆，影像毛玻璃樣、邊界不清|生長停止後修形；不可放射治療'].map(x=>x.split('|'));
+
+// 英文|中文|類別|重點|注意
+const MAT=['lidocaine|利多卡因|局麻|標準 amide 局麻藥；2% 含 1:100,000 epinephrine，牙髓麻醉約 60 分鐘|肝代謝；過量時中樞先興奮後抑制',
+'articaine|阿替卡因|局麻|4% 濃度，含 thiophene 環，脂溶性高、骨穿透佳|4 歲以下不建議使用',
+'epinephrine|腎上腺素|血管收縮劑|延長麻醉時間、止血、降低局麻藥全身吸收|心血管病患上限 0.04 mg；過敏性休克用 1:1000 肌肉注射',
+'ibuprofen|布洛芬|止痛|牙科急性疼痛首選之一，400–600 mg|潰瘍、腎病、懷孕後期、抗凝血病人避免',
+'acetaminophen|乙醯胺酚|止痛|NSAID 禁忌時的替代，可與 NSAID 併用加強止痛|成人每日上限 4 g，肝病更低',
+'amoxicillin|阿莫西林|抗生素|牙源性感染首選；心內膜炎預防 2 g|penicillin 過敏者禁用',
+'metronidazole|甲硝唑|抗生素|只對厭氧菌，用於壞死性牙周病，常與 amoxicillin 併用|忌酒；會增強 warfarin 作用',
+'clindamycin|克林黴素|抗生素|penicillin 過敏時的替代，骨穿透佳|偽膜性腸炎（C. difficile）',
+'chlorhexidine|氯己定|抗菌漱口|0.12–0.2% 漱口，陽離子吸附在口腔表面持續作用|染色、味覺改變；與含 SLS 牙膏間隔 30 分鐘',
+'fluoride varnish|氟漆|預防|5% NaF（22,600 ppm），高風險者每 3–6 個月塗一次|塗後當天避免刷牙與硬食',
+'composite resin|複合樹脂|復形|Bis-GMA 基質、填料、矽烷偶合劑|聚合收縮；必須隔濕',
+'GIC|玻璃離子體|復形|氟鋁矽酸玻璃加聚丙烯酸，與牙體化學鍵結並釋氟|初期怕水也怕乾，強度低',
+'RMGIC|樹脂改良玻璃離子體|復形|加入 HEMA 可光固化，強度與操作性比傳統型好|仍有少量聚合收縮',
+'ZOE|氧化鋅丁香油|暫時填補|鎮靜牙髓，用於暫時填補與乳牙根管充填|丁香油抑制樹脂聚合，樹脂下方不可用',
+'calcium hydroxide|氫氧化鈣|護髓|pH 約 12.5，殺菌並誘導牙本質橋；也作根管內藥|溶解度高；長期放置使牙根變脆',
+'MTA|三氧礦物聚合物|護髓|矽酸鈣類，封閉性與生物相容性佳，潮濕環境可硬化；用於覆髓、穿孔修補、根尖屏障|硬化時間長；灰色型會讓牙變色',
+'Biodentine|生物牙本質|護髓|矽酸鈣類牙本質替代材，約 12 分鐘硬化|顯影性較差',
+'gutta-percha|馬來膠|根管充填|根管核心充填材，主成分其實是氧化鋅|需搭配 sealer；不可用於乳牙',
+'NaOCl|次氯酸鈉|根管沖洗|溶解有機組織並殺菌|不可壓出根尖；與 CHX 混合產生沉澱',
+'EDTA|乙二胺四乙酸|根管沖洗|17% 螯合鈣離子，去除塗抹層無機成分|最後沖洗約 1 分鐘，過久會侵蝕牙本質',
+'alginate|藻膠|印模|不可逆水膠，用於初印模與研究模型|離水收縮、吸水膨脹，要立刻灌模',
+'PVS|加成型矽膠|印模|尺寸最穩定，可延後或重複灌模|疏水；乳膠與硫會抑制聚合',
+'zirconia|氧化鋯|陶瓷|強度最高的牙科陶瓷，具相變韌化|不能用氫氟酸酸蝕；噴砂加 MDP 黏著',
+'lithium disilicate|二矽酸鋰|陶瓷|美觀，可用氫氟酸加 silane 做黏著|強度低於氧化鋯，不適合長跨距牙橋',
+'titanium implant|鈦植體|植牙|表面氧化層具生物相容性，可形成骨整合|與骨之間沒有牙周膜',
+'bisphosphonate|雙磷酸鹽|抗骨吸收|抑制破骨細胞，用於骨鬆與骨轉移|顎骨壞死風險；靜脈注射遠高於口服',
+'warfarin|華法林|抗凝血|維生素 K 拮抗劑|術前查 INR；NSAID、metronidazole、azole 會增強作用',
+'aspirin|阿斯匹靈|抗血小板|不可逆抑制 COX-1，影響持續血小板壽命 7–10 天|低劑量一般不停藥，加強局部止血',
+'DOAC|直接口服抗凝血劑|抗凝血|dabigatran 抗凝血酶；rivaroxaban、apixaban 抗 Xa 因子|不看 INR；是否調整劑量需依處方醫師',
+'midazolam|咪達唑侖|鎮靜|benzodiazepine，鎮靜並有順行性失憶|呼吸抑制；拮抗劑 flumazenil'].map(x=>x.split('|'));
+
+// 英文|中文|判讀重點
+const IMG=['bitewing|咬翼片|看鄰接面齲與齒槽嵴高度；正常嵴頂在 CEJ 下 1–2 mm',
+'periapical|根尖片|看根尖病變、根管形態、工作長度',
+'panoramic|全景片|看全貌、阻生齒、骨折與大型病灶；細節差、有放大與重疊',
+'CBCT|錐狀束電腦斷層|三維評估：植牙、阻生齒與下顎管、根管解剖、病灶範圍',
+'PDL widening|牙周膜變寬|根尖發炎、咬合創傷、矯正；全口廣泛變寬想硬皮症，不對稱變寬要警覺骨肉瘤',
+'loss of lamina dura|硬骨板消失|局部消失多為根尖周炎；全口性消失想副甲狀腺機能亢進',
+'periapical radiolucency|根尖透亮|肉芽腫、囊腫、膿瘍影像上無法區分；活髓牙的根尖透亮要想解剖構造或牙骨質骨異常增生',
+'horizontal bone loss|水平骨喪失|骨嵴與相鄰 CEJ 連線平行；屬骨上囊袋',
+'vertical bone loss|垂直骨喪失|角形缺損、骨下囊袋；依剩餘骨壁數判斷再生潛力',
+'furcation involvement|根分叉病變|可來自牙周或牙髓；乳臼齒因副根管，分叉區透亮常源自牙髓',
+'impacted third molar|阻生智齒|看傾斜方向、深度、與下顎枝及下顎管的關係',
+'multilocular radiolucency|多房性透亮|成釉細胞瘤、OKC、中心性巨細胞肉芽腫、黏液瘤',
+'radiopaque lesion|不透亮病灶|特發性骨硬化（活髓無症狀）、緻密性骨炎（牙髓發炎牙的根尖）、牙骨質母細胞瘤（與牙根融合有透亮暈）、齒瘤',
+'root resorption|牙根吸收|外吸收：缺損不規則、根管輪廓仍在；內吸收：根管對稱膨大、輪廓消失',
+'calcified canal|根管鈣化|外傷或老化所致，牙冠偏黃；無症狀無根尖病變不必治療'].map(x=>x.split('|'));
+
+// 英文|中文|說明
+const TERMS=['occlusion|咬合|上下牙接觸關係','periodontitis|牙周炎|牙周支持組織發炎與破壞','gingivitis|牙齦炎|局限於牙齦的可逆性發炎','pulpitis|牙髓炎|分可逆與不可逆','caries|齲齒|牙菌斑產酸造成硬組織脫礦','endodontics|牙髓病學|處理牙髓與根尖周圍疾病','prosthodontics|補綴學|固定、活動、全口與植牙補綴','orthodontics|齒顎矯正學|處理咬合與齒列排列','periodontal ligament|牙周膜|牙根與齒槽骨之間的支持組織','alveolar bone|齒槽骨|支持牙齒的顎骨','lamina dura|硬骨板|X 光上齒槽窩周圍的白線','radiolucency|放射線透亮|影像較黑','radiopacity|放射線不透亮|影像較白','periapical|根尖周圍|牙根尖周邊區域','furcation|根分叉|多根牙的牙根分叉區','mobility|動搖度|牙周支持喪失或咬合創傷造成','biopsy|切片檢查|病灶確診的依據','debridement|清創|移除感染或壞死組織','pulpotomy|牙髓切斷術|只移除冠髓','pulpectomy|牙髓摘除術|移除全部牙髓','apicoectomy|根尖切除術|外科根尖處置','osseointegration|骨整合|植體與骨直接結合','impression|印模|取得口腔形態供補綴製作','abutment|支台齒|承受補綴物的牙或植體支台','pontic|橋體|牙橋中取代缺牙的部分','margin|邊緣|補綴物與牙體的交界','microleakage|微滲漏|復形邊緣滲漏造成敏感或二次齲','polymerization shrinkage|聚合收縮|樹脂固化時體積縮小','working length|工作長度|根管清創與充填的長度','avulsion|牙齒脫落|外傷使牙整顆脫出','ankylosis|骨性黏連|牙根與骨直接融合','dehiscence|骨裂|牙根面骨板裂開至邊緣','fenestration|骨開窗|牙根面骨板局部缺損但邊緣完整','xerostomia|口乾症|唾液減少','trismus|牙關緊閉|張口受限','paresthesia|感覺異常|神經受損後麻木刺痛','malocclusion|咬合不正|牙齒或顎骨關係異常','diastema|牙間隙|常指上顎正中門齒縫','bruxism|磨牙症|夜間磨牙或緊咬','sequestrum|死骨|骨髓炎中壞死分離的骨塊'].map(x=>x.split('|'));
+const ROOTS=['peri-|周圍','endo-|內部','ortho-|矯正、直','odont-|牙','stomat-|口腔','gingiv-|牙齦','apic-|根尖','osteo-|骨','myo-|肌肉','gloss-|舌','cheil-|唇','sial-|唾液','-itis|發炎','-ectomy|切除','-otomy|切開','-plasty|成形修補','-algia|疼痛','-oma|腫瘤'].map(x=>x.split('|'));
+const ABBR={TMJ:'顳顎關節',TMD:'顳顎障礙',CBCT:'錐狀束電腦斷層',PDL:'牙周膜',CEJ:'牙骨質牙釉質交界',IAN:'下齒槽神經',LA:'局部麻醉',NSAID:'非類固醇消炎止痛藥',GIC:'玻璃離子體水門汀',RMGIC:'樹脂改良玻璃離子體',RPD:'局部活動義齒',FPD:'固定局部義齒（牙橋）',CD:'全口義齒',CAL:'臨床附連喪失',PPD:'牙周囊袋探測深度',BOP:'探診出血',SRP:'牙結石刮除與牙根整平',GTR:'引導組織再生',EPT:'電活髓測試',WL:'工作長度',RCT:'根管治療',NaOCl:'次氯酸鈉',EDTA:'乙二胺四乙酸',CHX:'氯己定',MTA:'三氧礦物聚合物',ZOE:'氧化鋅丁香油',PVS:'加成型矽膠印模材',SSC:'不鏽鋼冠',ECC:'幼兒早發性齲齒',SCC:'鱗狀細胞癌',OKC:'齒源性角化囊腫',MRONJ:'藥物相關顎骨壞死',ORN:'放射性骨壞死','I&D':'切開引流',DOAC:'直接口服抗凝血劑',INR:'國際標準化凝血比值',IE:'感染性心內膜炎',DM:'糖尿病',HTN:'高血壓',VDO:'咬合垂直高度',TAD:'暫時性錨定裝置（迷你骨釘）'};
+
+// 精選題：[科目, 題幹, 正解, 誘答×3, 解析]
+const Q=[
+['anatomy','顳顎關節的關節面覆蓋何種組織？','纖維軟骨','透明軟骨','彈性軟骨','沒有軟骨覆蓋','TMJ 與多數滑液關節不同，覆蓋的是纖維軟骨，修復能力較好。'],
+['path','病人有多發性齒源性角化囊腫，應聯想到？','Gorlin 症候群','Gardner 症候群','Peutz-Jeghers 症候群','Sjögren 症候群','Gorlin（痣樣基底細胞癌症候群）：多發 OKC、基底細胞癌、肋骨分叉。Gardner 是多發骨瘤與腸息肉。'],
+['public','疾病盛行率上升時，同一篩檢工具的哪項指標會上升？','陽性預測值','敏感度','特異度','陰性預測值','敏感度與特異度是工具本身特性；盛行率上升時 PPV 上升、NPV 下降。'],
+['public','牙科高速手機在每位病人使用後應如何處理？','清潔後加熱滅菌','酒精擦拭表面','浸泡低層次消毒劑','只更換車針','手機內部會回吸污染物，必須每次滅菌。'],
+['rest','前牙鄰接面齲蝕且波及切角，屬 Black 第幾類？','IV','III','II','V','III 類未及切角，IV 類含切角。'],
+['endo','去除根管塗抹層無機成分應使用？','17% EDTA','NaOCl','生理食鹽水','氯己定','NaOCl 處理有機物，EDTA 螯合鈣處理無機物。'],
+['prostho','戴乳膠手套調拌，可能抑制哪種印模材聚合？','加成型矽膠（PVS）','alginate','polyether','polysulfide','乳膠中的硫會毒化 PVS 的鉑催化劑。'],
+['surgery','下顎智齒拔除後第 3 天劇痛加重，齒槽窩空虛有惡臭，無發燒化膿，最可能是？','乾性齒槽炎','術後膿瘍','顎骨骨髓炎','正常癒合過程','血塊喪失、骨壁暴露；處置為沖洗加鎮痛敷料。'],
+['pedo','乳牙牙髓摘除術後，不可使用哪種根管充填材？','馬來膠','ZOE','Vitapex','碘仿糊劑','乳牙根會生理性吸收，充填材必須可吸收。'],
+['ortho','ANB 為 7° 代表？','骨性 II 類','骨性 I 類','骨性 III 類','垂直向過度生長','ANB 正常約 2°，大於 4° 為骨性 II 類。'],
+['ortho','上顎第一大臼齒近心頰側咬頭咬在下顎第一大臼齒頰側溝的前方，屬 Angle 第幾類？','Class II','Class I','Class III','無法判斷','下顎相對在後方，為遠心咬合。'],
+['diag','等分角法拍攝時垂直角度過大，影像會？','縮短','拉長','鄰接面重疊','出現錐切','垂直角太大縮短、太小拉長；重疊是水平角度問題。'],
+['diag','全口性硬骨板消失應優先聯想？','副甲狀腺機能亢進','糖尿病','甲狀腺機能低下','缺鐵性貧血','還可見毛玻璃樣骨質與棕色瘤。'],
+// —— 增建題 ——
+['anatomy','腮腺的副交感分泌纖維來自哪條腦神經？','舌咽神經（經耳神經節）','顏面神經的鼓索','迷走神經','三叉神經下顎支','顏面神經穿過腮腺但不支配其分泌；鼓索管的是頜下腺與舌下腺。'],
+['anatomy','牙周膜主纖維中數量最多、負責抵抗咬合垂直力的是？','斜行纖維','水平纖維','根尖纖維','齒槽嵴纖維','斜行纖維把咬合壓力轉為對齒槽骨的張力。'],
+['physio','血友病 A 病人的凝血檢查表現為？','aPTT 延長、PT 正常','PT 延長、aPTT 正常','PT 與 aPTT 都延長','只有血小板數下降','缺第 VIII 因子屬內在路徑，只影響 aPTT。'],
+['physio','依 Stephan 曲線，攝取糖後牙菌斑 pH 如何變化？','數分鐘內降到臨界 pH 以下，約 30–60 分鐘回升','緩慢下降並持續數小時','立刻上升','幾乎不變','所以進食頻率比總糖量更影響齲齒風險。'],
+['micro','牙菌斑成熟過程中，連接早期與晚期定殖菌的「橋接菌」是？','Fusobacterium nucleatum','Streptococcus sanguinis','Porphyromonas gingivalis','Streptococcus mutans','S. sanguinis 是早期定殖菌，P. gingivalis 是晚期定殖菌。'],
+['micro','獲得性薄膜（pellicle）的主要成分是？','唾液醣蛋白','細菌胞外多醣','食物殘渣','脫落的上皮細胞','薄膜本身無細菌，是細菌附著的基礎。'],
+['micro','復發性單純皰疹的口內病灶好發於？','附著牙齦與硬顎等角化黏膜','頰黏膜','口底','軟顎','非角化黏膜上的潰瘍比較像阿弗他潰瘍。'],
+['micro','口腔毛狀白斑與哪種病毒有關？','EBV','HSV-1','HPV','CMV','好發舌側緣，常見於免疫低下者。'],
+['path','根尖囊腫的上皮來源是？','Malassez 上皮殘留','縮餘釉上皮','牙板殘留','鼻腭管上皮','縮餘釉上皮→含齒囊腫；牙板殘留→OKC。'],
+['path','齒源性角化囊腫（OKC）的組織學特徵是？','副角化上皮、表面波浪狀、基底層柵狀排列','非角化上皮內含 Rushton 小體','上皮島內有星狀網狀細胞','上皮內有鈣化的鬼細胞','Rushton 小體見於根尖囊腫；星狀網→成釉細胞瘤；鬼細胞→鈣化性齒源性囊腫。'],
+['path','口腔扁平苔癬的組織學特徵是？','基底層液化變性、上皮下帶狀淋巴球浸潤','棘層鬆解與 Tzanck 細胞','上皮下水疱且基底層完整','角化珠形成','棘層鬆解是天疱瘡；上皮下水疱是類天疱瘡；角化珠是 SCC。'],
+['path','年輕病人單側顎骨無痛性膨隆，影像呈毛玻璃樣、邊界不清，最可能是？','纖維性異常增生','Paget 骨病','骨肉瘤','巨頜症（cherubism）','Paget 骨病見於老年人、棉絮狀；巨頜症為雙側、多房性。'],
+['pharm','下列哪一個是 ester 類局部麻醉藥？','benzocaine','lidocaine','articaine','bupivacaine','常見 amide 類藥名在 -caine 前面多有一個 i。'],
+['rest','酸蝕後把牙本質過度吹乾會造成？','膠原纖維網塌陷，樹脂無法滲入','琺瑯質過度脫鈣','塗抹層變厚','聚合收縮增加','所以全酸蝕系統要保持牙本質微濕。'],
+['rest','玻璃離子體與牙體的黏著機轉是？','羧基與鈣離子螯合的化學鍵結','形成混合層的微機械固位','靠窩洞倒凹','矽烷偶合','混合層是樹脂黏著系統的機轉。'],
+['rest','下列何者適合做直接覆髓？','小的機械性露髓、無症狀、出血可控制','齲蝕露髓且有自發痛','牙髓已壞死','根尖已有透亮病灶','直接覆髓的前提是牙髓健康或僅可逆性發炎。'],
+['endo','恆牙外傷後一週，電活髓測試沒有反應、無其他症狀，最適當的處置是？','暫不做根管治療，定期追蹤','立即根管治療','拔除','給予抗生素','外傷後牙髓神經可能暫時休克數週到數月，不能單憑一次測試判定壞死。'],
+['endo','要確認牙齦竇道的來源牙，應該？','從竇道口插入馬來膠針後照 X 光','做電活髓測試','做冷測','觸診','竇道開口位置不一定在病因牙旁邊。'],
+['endo','C 形根管最好發於哪顆牙？','下顎第二大臼齒','上顎第一小臼齒','下顎門齒','上顎第一大臼齒','亞洲人發生率特別高。'],
+['perio','維持期回診時，某位點探診出血持續為陰性，代表？','該位點穩定的可靠指標','正在進行破壞','需要立即手術','沒有臨床意義','BOP 的陰性預測值很高，陽性預測值則不高。'],
+['perio','根分叉已貫通但仍被牙齦覆蓋，Glickman 分類為？','III','I','II','IV','IV 是貫通且牙齦退縮、臨床直接可見。'],
+['perio','牙結石刮除與牙根整平後，多久做再評估？','約 4–6 週','隔天','1 週','6 個月','需要時間讓發炎消退與長接合上皮癒合。'],
+['prostho','單側缺牙區前後都有自然牙，屬 Kennedy 第幾類？','III','I','II','IV','前後皆有牙支持，屬牙支持式。'],
+['prostho','遊離端局部活動義齒中，間接固位體的功能是？','防止義齒基底以支點線為軸向咬合面方向翹起','提供主要固位力','連接左右兩側','增加咀嚼效率','間接固位體要放在支點線對側、離得越遠越有效。'],
+['prostho','黏著氧化鋯牙冠時，內面應如何處理？','噴砂後塗含 MDP 的 primer','氫氟酸酸蝕後塗 silane','磷酸酸蝕','不需任何處理','氧化鋯沒有玻璃相，氫氟酸無效；氫氟酸加 silane 用於玻璃陶瓷。'],
+['surgery','下顎第二、三大臼齒根尖感染穿破舌側骨板後，最容易擴散到？','頜下間隙','舌下間隙','頰間隙','犬齒間隙','這兩顆牙的根尖位在下頜舌骨肌附著線下方。'],
+['surgery','切片標本應放入哪種固定液？','10% 中性福馬林','生理食鹽水','75% 酒精','蒸餾水','體積約為標本的 10–20 倍。'],
+['surgery','雙側髁突骨折的典型咬合變化是？','前牙開咬','前牙深咬','單側後牙開咬','咬合不變','下顎枝高度變短，後牙先接觸。單側骨折則下顎偏向患側。'],
+['pedo','乳臼齒修形時最容易露髓的髓角是？','近心頰側','遠心頰側','近心舌側','遠心舌側','近心頰側髓角最高最突。'],
+['pedo','乳牙牙髓切斷後，根管口出血無法止住，代表？','根髓已發炎，應改做牙髓摘除或拔牙','繼續放 MTA 完成切斷術','改做直接覆髓','暫時填補觀察','出血止不住表示發炎已超出冠髓。'],
+['pedo','下顎雙側乳臼齒早失，下顎恆門齒已萌出，選用哪種空間維持器？','lingual arch','distal shoe','Nance','transpalatal arch','Nance 與 TPA 用於上顎。'],
+['pedo','Frankl 行為量表 4 分代表？','絕對合作','絕對不合作','不合作','合作','1 絕對不合作、2 不合作、3 合作、4 絕對合作。'],
+['ortho','Scammon 生長曲線中，最早完成生長的是哪一型？','神經型','淋巴型','一般型','生殖型','腦與顱頂在 6–7 歲已達成人的九成。'],
+['ortho','Bolton 分析的前牙比例正常值約為？','77.2%','91.3%','65%','100%','91.3% 是全牙列比例。'],
+['diag','根尖片上鄰接面嚴重重疊，原因是？','水平角度錯誤','垂直角度過大','垂直角度過小','曝光不足','中心射線沒有通過鄰接面接觸區。'],
+['diag','全景片的前牙窄小模糊，表示病人位置？','太前','太後','頭部歪斜','下巴太高','太後則前牙變寬模糊。'],
+['diag','輻射的隨機效應特徵是？','沒有閾值，發生機率隨劑量增加','有閾值','嚴重度隨劑量增加','只發生在高劑量','有閾值、嚴重度隨劑量增加的是確定效應。'],
+['diag','活髓、無症狀的下顎小臼齒根尖下方有邊界清楚的不透亮區，與牙根不相連，最可能是？','特發性骨硬化','緻密性骨炎','牙骨質母細胞瘤','根尖囊腫','緻密性骨炎的牙髓有發炎或壞死；牙骨質母細胞瘤與牙根融合且有透亮暈。'],
+// —— 併入測驗版題庫 ——
+['anatomy','下顎第一大臼齒最常見的牙根與根管數為何？','2 根、3 根管（近心 2、遠心 1）','2 根、2 根管','3 根、3 根管','3 根、4 根管','下顎第一大臼齒典型為近心、遠心兩根；近心根有 MB、ML 兩根管，遠心根通常一根管。三根（radix entomolaris）屬變異。'],
+['anatomy','琺瑯質是由下列哪一種細胞形成？','成釉細胞（ameloblast）','成牙本質細胞（odontoblast）','成牙骨質細胞（cementoblast）','纖維母細胞（fibroblast）','琺瑯質由內琺瑯上皮分化的 ameloblast 分泌，來源為外胚層；牙萌出後 ameloblast 消失，所以琺瑯質無法再生。'],
+['anatomy','牙本質與牙髓在胚胎上來自牙胚的哪一部分？','牙乳頭（dental papilla）','琺瑯器（enamel organ）','牙囊（dental follicle）','牙板（dental lamina）','琺瑯器→琺瑯質；牙乳頭（神經嵴來源的外胚間葉）→牙本質與牙髓；牙囊→牙骨質、牙周膜、齒槽骨。'],
+['anatomy','牙骨質、牙周膜與固有齒槽骨來自下列何者？','牙囊（dental follicle / sac）','牙乳頭（dental papilla）','內琺瑯上皮','星狀網（stellate reticulum）','牙周支持組織（cementum、PDL、alveolar bone proper）皆由牙囊分化而來。'],
+['anatomy','四條咀嚼肌的運動神經支配為何？','三叉神經下顎支（V3）','顏面神經（VII）','舌下神經（XII）','三叉神經上顎支（V2）','masseter、temporalis、medial 與 lateral pterygoid 皆由 V3 支配；顏面神經支配的是表情肌。'],
+['anatomy','舌前三分之二的「味覺」由哪條神經傳導？','顏面神經的鼓索（chorda tympani）','舌神經本身的三叉神經纖維','舌咽神經（IX）','舌下神經（XII）','舌前 2/3：味覺＝VII 鼓索、一般感覺＝V3 舌神經；舌後 1/3 味覺與感覺＝IX；舌運動＝XII。'],
+['anatomy','四條咀嚼肌中，主要負責下顎前突並協助開口的是哪一條？','外翼肌（lateral pterygoid）','咬肌（masseter）','顳肌（temporalis）','內翼肌（medial pterygoid）','外翼肌下頭將髁頭與關節盤往前拉，負責前突、側方運動與開口；其餘三條為閉口肌。'],
+['anatomy','Hertwig 上皮根鞘（HERS）的主要功能為何？','決定牙根的形狀與數目，並誘導牙根牙本質形成','形成琺瑯質','形成牙髓血管','形成齒槽骨','HERS 由內、外琺瑯上皮在 cervical loop 延伸形成；斷裂後殘留於牙周膜者稱 Malassez 上皮殘餘，可為根尖囊腫上皮來源。'],
+['anatomy','腮腺導管（Stensen’s duct）開口於口腔何處？','上顎第二大臼齒相對的頰黏膜','舌下阜（sublingual caruncle）','下顎第二大臼齒舌側','軟腭後緣','Stensen’s duct 穿過頰肌，開口於上顎第二大臼齒對面頰黏膜；Wharton’s duct（頜下腺）開口於舌下阜。'],
+['anatomy','牙胚發育的形態分期，正確順序為何？','蕾狀期 → 帽狀期 → 鐘狀期','帽狀期 → 蕾狀期 → 鐘狀期','鐘狀期 → 帽狀期 → 蕾狀期','蕾狀期 → 鐘狀期 → 帽狀期','bud → cap → bell。組織分化（histodifferentiation）與形態分化主要發生在鐘狀期。'],
+['anatomy','上顎第一大臼齒的 Carabelli 咬頭位於何處？','近心舌側咬頭的舌側面','近心頰側咬頭的頰側面','遠心舌側咬頭的舌側面','遠心頰側咬頭的頰側面','Carabelli cusp（第五咬頭）位在上顎第一大臼齒 mesiolingual cusp 的舌側，為其辨識特徵。'],
+['anatomy','俗稱「六歲齒」、通常最早萌出的恆牙是哪一顆？','第一大臼齒','中門齒','第一小臼齒','犬齒','恆牙第一大臼齒約 6 歲於第二乳臼齒後方萌出，不取代任何乳牙，常被家長誤認為乳牙而忽略照護。'],
+['physio','唾液中最主要的緩衝系統為何？','重碳酸鹽（bicarbonate）系統','磷酸鹽系統','蛋白質系統','尿素系統','重碳酸鹽為主要緩衝系統，且濃度隨唾液流速上升而增加，因此刺激性唾液緩衝能力較好。'],
+['physio','靜止（未受刺激）狀態下，全唾液分泌量主要來自哪個腺體？','頜下腺','腮腺','舌下腺','小唾液腺','靜止時頜下腺約佔 65%；受刺激（咀嚼）時腮腺比例明顯上升。'],
+['physio','琺瑯質開始脫礦的臨界 pH 值約為多少？','5.5','7.0','6.5','4.0','Stephan curve：進食糖後菌斑 pH 快速下降，低於約 5.5 時琺瑯質脫礦；牙本質與牙骨質臨界 pH 較高（約 6.2–6.7），故根面較易齲。'],
+['physio','目前最被接受用來解釋牙本質敏感的學說為何？','流體動力學說（hydrodynamic theory）','神經直接支配學說','成牙本質細胞傳導學說','閘門控制學說','Brännström 提出：刺激造成牙本質小管內液體流動，牽動牙髓端 A-δ 神經末梢而產生短暫尖銳痛。'],
+['physio','牙髓中傳導「尖銳、快速、定位較清楚」疼痛的神經纖維為何？','A-δ 纖維','C 纖維','A-β 纖維','交感神經節後纖維','A-δ 為有髓鞘、閾值低，位於牙髓牙本質交界，負責尖銳痛；C 纖維無髓鞘、位於牙髓中央，負責鈍痛與持續痛（不可逆性牙髓炎）。'],
+['physio','下列何者會促進破骨細胞的分化與活化？','RANKL 與 RANK 結合','OPG 與 RANKL 結合','降鈣素（calcitonin）','雌激素','成骨細胞表現 RANKL，與破骨前驅細胞的 RANK 結合促進骨吸收；OPG 為誘餌受體，抑制此路徑。'],
+['physio','維生素 K 依賴性凝血因子為下列何者？','II、VII、IX、X','I、V、VIII、XIII','III、IV、XI、XII','VIII、IX、XI、XII','Warfarin 抑制維生素 K 還原，使 II、VII、IX、X（及 protein C、S）無法活化，臨床以 PT/INR 監測。'],
+['physio','吞嚥過程中，哪一期屬於隨意（可自主控制）階段？','口腔期','咽期','食道期','咽期與食道期','口腔期由舌頭將食團後送，為隨意動作；進入咽期後即為反射控制。'],
+['physio','拔牙後齒槽窩癒合的第一個步驟是什麼？','血塊形成','編織骨形成','上皮覆蓋完成','層狀骨重塑','順序：血塊 → 肉芽組織 → 結締組織／編織骨 → 骨重塑。血塊喪失即為乾性齒槽炎。'],
+['physio','副甲狀腺素（PTH）對血鈣與骨的主要作用為何？','增加骨吸收、提高血鈣','增加骨沉積、降低血鈣','抑制腎臟鈣再吸收','抑制維生素 D 活化','PTH 提高血鈣：促進骨吸收、增加腎鈣再吸收並促進維生素 D 活化；降鈣素作用相反。'],
+['physio','下顎姿勢休息位時，上下牙之間的息止間隙（freeway space）約為多少？','2–4 mm','0 mm（牙齒輕觸）','6–8 mm','10 mm 以上','息止垂直距離減去咬合垂直距離＝freeway space，約 2–4 mm，是全口義齒決定垂直距離的重要依據。'],
+['physio','A 型血友病缺乏哪一個凝血因子？','第 VIII 因子','第 IX 因子','第 XI 因子','von Willebrand 因子','血友病 A 缺 VIII、血友病 B 缺 IX，皆為 X 染色體性聯隱性遺傳，aPTT 延長而 PT 正常。'],
+['micro','與琺瑯質齲齒「起始」關係最密切的細菌為何？','Streptococcus mutans','Lactobacillus','Porphyromonas gingivalis','Enterococcus faecalis','S. mutans 產酸、耐酸並可合成黏性葡聚醣，與齲齒起始最相關；Lactobacillus 與齲齒進展（深部牙本質齲）相關。'],
+['micro','Socransky 的「紅色複合體」（red complex）包含哪些細菌？','P. gingivalis、T. forsythia、T. denticola','S. mutans、S. sobrinus、Lactobacillus','A. actinomycetemcomitans、E. corrodens、Capnocytophaga','F. nucleatum、P. intermedia、C. rectus','紅色複合體與深囊袋、探診出血高度相關；F. nucleatum、P. intermedia 屬橘色複合體，為橋接菌。'],
+['micro','Aggregatibacter actinomycetemcomitans 最具代表性的毒力因子為何？','白血球毒素（leukotoxin）','葡萄糖基轉移酶（glucosyltransferase）','gingipain','尿素酶','A.a. 與年輕族群門齒／第一大臼齒型快速進展牙周炎相關，其 leukotoxin 可殺死中性球與單核球。gingipain 屬 P. gingivalis。'],
+['micro','唾液中含量最多、負責黏膜免疫的抗體為何？','分泌型 IgA','IgG','IgM','IgE','secretory IgA 為雙體，可阻止細菌附著；牙齦溝液中則以來自血清的 IgG 為主。'],
+['micro','牙菌斑形成時，最早附著於獲得性薄膜（pellicle）的早期殖民菌主要為何？','革蘭氏陽性兼性厭氧球菌（如 S. sanguinis）','革蘭氏陰性絕對厭氧桿菌','螺旋體','念珠菌','早期殖民者為鏈球菌與放線菌；隨菌斑成熟，逐漸轉為革蘭氏陰性厭氧菌為主。'],
+['micro','S. mutans 利用蔗糖合成黏性胞外多醣（glucan）的酵素為何？','葡萄糖基轉移酶（glucosyltransferase, GTF）','乳酸去氫酶','膠原酶','玻尿酸酶','GTF 將蔗糖轉為不溶性葡聚醣，有助細菌附著與菌斑堆積，這是蔗糖致齲性最高的原因。'],
+['micro','口腔念珠菌症最常見的致病菌種為何？','Candida albicans','Candida glabrata','Aspergillus fumigatus','Actinomyces israelii','C. albicans 為口腔常在菌，於免疫低下、口乾、戴義齒、使用抗生素或類固醇時伺機感染。'],
+['micro','高壓蒸氣滅菌鍋的生物指示劑，使用哪一種細菌的孢子？','Geobacillus stearothermophilus','Bacillus atrophaeus（B. subtilis）','Clostridium tetani','Mycobacterium tuberculosis','蒸氣與化學蒸氣滅菌用 G. stearothermophilus；乾熱與 EO 氣體滅菌用 B. atrophaeus。'],
+['micro','針扎後未免疫者的感染風險，由高至低排列何者正確？','HBV ＞ HCV ＞ HIV','HIV ＞ HBV ＞ HCV','HCV ＞ HIV ＞ HBV','HIV ＞ HCV ＞ HBV','概略風險：HBV（HBeAg 陽性）可達約 30%、HCV 約 1.8%、HIV 約 0.3%，可用「30–3–0.3」記憶。'],
+['micro','根管治療失敗、頑固性根尖周炎的病例中最常被分離出的細菌為何？','Enterococcus faecalis','Streptococcus mutans','Treponema denticola','Staphylococcus epidermidis','E. faecalis 可耐高 pH（對氫氧化鈣有抗性）、能在營養缺乏環境存活並侵入牙本質小管。'],
+['micro','壞死性牙齦炎（NUG）典型相關的細菌組合為何？','梭形桿菌與螺旋體（fusospirochetal）','鏈球菌與乳酸桿菌','葡萄球菌與念珠菌','放線菌與奈瑟氏菌','NUG 特徵：牙間乳頭壞死呈火山口狀、疼痛、出血、口臭，與壓力、抽菸、免疫低下相關。'],
+['micro','脂多醣（LPS，內毒素）存在於何處？','革蘭氏陰性菌的外膜','革蘭氏陽性菌的細胞壁肽聚醣層','所有細菌的細胞質','黴菌的細胞壁','LPS 為革蘭氏陰性菌外膜成分，可經 TLR4 活化巨噬細胞釋出 IL-1、TNF-α、PGE2，促成牙周骨吸收。'],
+['path','顎骨中最常見的囊腫為何？','根尖囊腫（radicular cyst）','含齒囊腫（dentigerous cyst）','齒源性角化囊腫（OKC）','鼻腭管囊腫','根尖囊腫為發炎性囊腫，源自壞死牙髓刺激 Malassez 上皮殘餘，患牙必為失活牙。'],
+['path','含齒囊腫在影像上的典型特徵為何？','透射病灶包圍未萌出牙的牙冠，附著於牙骨質琺瑯質交界（CEJ）','位於失活牙根尖的透射病灶','位於上顎中線門齒孔的心形透射病灶','下顎角下方、下齒槽管之下的透射病灶','含齒囊腫最常見於下顎第三大臼齒與上顎犬齒；下顎角下方者為 Stafne 骨缺損。'],
+['path','關於齒源性角化囊腫（OKC），下列敘述何者正確？','復發率高，多發時需考慮 Gorlin 症候群','必定與失活牙相關','上皮為厚層非角化上皮並有明顯上皮釘','好發於上顎前牙區且幾乎不復發','OKC 上皮薄、副角化、表面波浪狀、基底層柵狀排列；沿骨髓腔前後向生長，膨隆不明顯。多發 OKC ＋基底細胞癌 ＝ Gorlin（PTCH 基因）。'],
+['path','成釉細胞瘤（ameloblastoma）最常發生的位置與影像表現為何？','下顎後牙區與升枝，多房性「肥皂泡」透射','上顎前牙區，單房不透射','下顎前牙根尖，混合性病灶','上顎結節，毛玻璃樣','成釉細胞瘤為良性但具局部侵襲性，常造成牙根吸收與皮質膨隆，需較廣泛切除。'],
+['path','口腔惡性腫瘤中最常見的組織型為何？','鱗狀細胞癌（SCC）','黏液表皮樣癌','惡性黑色素瘤','淋巴瘤','口腔癌九成以上為 SCC；危險因子為檳榔、菸、酒；好發於舌側緣、口底、頰黏膜（台灣）。'],
+['path','白斑（leukoplakia）與紅斑（erythroplakia）相比，下列何者正確？','紅斑的惡性轉化風險較高','白斑的惡性轉化風險較高','兩者都不需要切片','兩者皆可用紗布擦掉','紅斑切片時絕大多數已為重度上皮異生或原位癌以上。白斑為排除性的臨床診斷，擦不掉；可擦掉者要想到偽膜性念珠菌症。'],
+['path','頰黏膜出現雙側對稱的白色網狀條紋（Wickham striae），最可能的診斷為何？','口腔扁平苔癬（lichen planus）','白色海綿狀母斑','念珠菌症','白斑','網狀型扁平苔癬多無症狀、雙側對稱；糜爛型會疼痛。組織學可見基底層液化變性與帶狀淋巴球浸潤。'],
+['path','自體抗體攻擊 desmoglein 3，造成上皮內水疱與棘層鬆解的疾病為何？','尋常性天疱瘡（pemphigus vulgaris）','黏膜類天疱瘡（mucous membrane pemphigoid）','多形性紅斑','疱疹性齦口炎','天疱瘡：上皮內（基底層上）裂開、Tzanck cell、Nikolsky sign 陽性；類天疱瘡：抗體攻擊半橋粒，為上皮下水疱。'],
+['path','最常見的唾液腺腫瘤為何？','多形性腺瘤（pleomorphic adenoma）','Warthin 瘤','黏液表皮樣癌','腺樣囊狀癌','多形性腺瘤為最常見良性腫瘤，好發於腮腺；最常見的惡性唾液腺腫瘤為黏液表皮樣癌；腺樣囊狀癌以沿神經侵犯著稱。'],
+['path','黏液囊腫（mucocele）最好發的部位為何？','下唇','上唇','硬腭','舌背','mucocele 多為外傷造成小唾液腺導管破裂、黏液外滲，好發下唇；發生於口底者稱 ranula。上唇腫塊反而要懷疑唾液腺腫瘤。'],
+['path','長期嚼食檳榔、進行性張口受限、頰黏膜蒼白並可摸到纖維帶，最可能的診斷為何？','口腔黏膜下纖維化（OSF）','顳顎關節強直','扁平苔癬','硬皮症','OSF 為口腔潛在惡性疾病，與檳榔中檳榔鹼刺激膠原堆積相關；需戒除檳榔並長期追蹤。'],
+['path','最常見的齒源性腫瘤（多視為過誤瘤）為何？','齒瘤（odontoma）','成釉細胞瘤','齒源性黏液瘤','牙骨質母細胞瘤','複合型（compound）齒瘤好發上顎前牙區、呈多個小牙狀；複雜型（complex）好發下顎後牙區、呈不規則不透射團塊，周圍有透射帶。'],
+['pharm','局部麻醉藥的作用機轉為何？','阻斷神經細胞膜的電壓門控鈉離子通道','活化鉀離子通道','阻斷乙醯膽鹼受體','抑制環氧合酶（COX）','局麻藥以非離子態穿過細胞膜，在細胞內轉為離子態後由內側結合鈉通道，阻止去極化。'],
+['pharm','醯胺類（amide）局部麻醉藥主要在何處代謝？','肝臟','血漿（假性膽鹼酯酶）','腎臟','肺臟','醯胺類（lidocaine、mepivacaine、bupivacaine）在肝代謝；酯類在血漿由 pseudocholinesterase 水解。'],
+['pharm','下列哪一個醯胺類局麻藥因含酯基，大部分在血漿中被水解、半衰期最短？','Articaine','Lidocaine','Bupivacaine','Mepivacaine','Articaine 含 thiophene 環與酯基側鏈，約 90% 在血漿水解，半衰期約 20–30 分鐘。'],
+['pharm','一支 1.8 mL 的 2% lidocaine 卡式安瓿含有多少 lidocaine？','36 mg','18 mg','20 mg','54 mg','2% ＝ 20 mg/mL，20 × 1.8 ＝ 36 mg。計算最大劑量時先換算每支毫克數。'],
+['pharm','1:100,000 的 epinephrine，一支 1.8 mL 卡式安瓿含多少 epinephrine？','0.018 mg','0.18 mg','0.0018 mg','1.8 mg','1:100,000 ＝ 0.01 mg/mL，× 1.8 ＝ 0.018 mg。心血管疾病患者建議上限 0.04 mg，約 2 支。'],
+['pharm','下列哪一種局麻藥大劑量使用時較可能引起變性血紅素血症（methemoglobinemia）？','Prilocaine','Lidocaine','Bupivacaine','Mepivacaine','Prilocaine 代謝物 o-toluidine 會氧化血紅素；治療用 methylene blue。表面麻醉劑 benzocaine 也有此風險。'],
+['pharm','服用 warfarin 的病人，拔牙前最應確認的檢驗值為何？','INR','aPTT','出血時間','血小板數','Warfarin 以 PT/INR 監測；一般 INR 在治療範圍內（約 ≤3.5）的簡單拔牙多不需停藥，以局部止血措施處理。'],
+['pharm','有感染性心內膜炎高風險的成人，侵入性牙科處置前的標準預防性抗生素為何？','Amoxicillin 2 g，術前 30–60 分鐘口服','Amoxicillin 500 mg，術後連續服用 7 天','Metronidazole 500 mg，術前 1 小時口服','Tetracycline 250 mg，術前一天開始服用','IE 預防為術前單一劑量。適用對象：人工瓣膜、曾患 IE、特定先天性心臟病、心臟移植後瓣膜病變。'],
+['pharm','Aspirin 抗血小板作用的機轉為何？','不可逆抑制 COX，減少 thromboxane A2 合成','可逆抑制 COX-2','阻斷 ADP 的 P2Y12 受體','抑制維生素 K 環氧化物還原酶','Aspirin 乙醯化 COX-1，作用持續整個血小板壽命（約 7–10 天）；clopidogrel 才是 P2Y12 抑制劑。'],
+['pharm','Acetaminophen 過量最主要的毒性與解毒劑為何？','肝毒性；N-acetylcysteine','腎毒性；naloxone','胃出血；misoprostol','呼吸抑制；flumazenil','過量時毒性代謝物 NAPQI 耗盡 glutathione 造成肝壞死；NAC 可補充 glutathione。'],
+['pharm','Benzodiazepine（如 midazolam）鎮靜過深時的拮抗劑為何？','Flumazenil','Naloxone','Atropine','Neostigmine','Flumazenil 拮抗 BZD；naloxone 拮抗鴉片類。'],
+['pharm','Tetracycline 類抗生素不建議用於 8 歲以下兒童與孕婦，主要原因為何？','與鈣螯合沉積於牙齒與骨，造成牙齒內因性染色','造成牙齦增生','造成唾液腺腫大','造成琺瑯質氟斑','Tetracycline 在牙齒鈣化期沉積於牙本質，造成黃灰褐色帶狀染色，紫外光下可見螢光。'],
+['pharm','發炎或膿瘍部位局部麻醉效果較差，主要原因為何？','組織 pH 較低，可穿膜的非離子態藥物比例下降','發炎部位血流減少，藥物無法到達','發炎使鈉通道數目減少','細菌會直接分解麻醉藥','局麻藥為弱鹼，酸性環境下多呈離子態，無法穿過神經膜；加上血管擴張使藥物被帶走更快。'],
+['pharm','服用 metronidazole 期間應衛教病人避免何者？','飲酒（會產生 disulfiram 樣反應）','食用乳製品','日曬','攝取深綠色蔬菜','Metronidazole 抑制乙醛去氫酶，併用酒精會潮紅、噁心、心悸；另外它會增強 warfarin 作用。'],
+['public','DMFT 指數中的「M」代表什麼？','因齲齒而喪失的恆牙','所有缺失的牙齒（含先天缺牙與矯正拔牙）','動搖的牙齒','有牙菌斑的牙齒','D＝未治療齲齒、M＝因齲缺失、F＝因齲填補；大寫用於恆牙，小寫 dmft／deft 用於乳牙。'],
+['public','篩檢工具的敏感度（sensitivity）如何計算？','真陽性 ÷（真陽性＋偽陰性）','真陰性 ÷（真陰性＋偽陽性）','真陽性 ÷（真陽性＋偽陽性）','真陰性 ÷（真陰性＋偽陰性）','敏感度＝有病者中檢查為陽性的比例。真陽性÷（真陽性＋偽陽性）是陽性預測值。'],
+['public','特異度（specificity）代表什麼？','沒有病的人當中，檢查結果為陰性的比例','有病的人當中，檢查結果為陽性的比例','檢查陽性的人當中真正有病的比例','檢查陰性的人當中真正沒病的比例','特異度＝TN÷（TN＋FP）。特異度高的檢查陽性時可用來「確診」（SpPin）。'],
+['public','美國公共衛生署（2015）建議的社區飲水加氟濃度為多少？','0.7 ppm','0.1 ppm','2.0 ppm','4.0 ppm','原建議 0.7–1.2 ppm，因氟化物來源增加，2015 年統一為 0.7 ppm，以兼顧防齲並降低氟斑牙。'],
+['public','氟化物的「可能中毒劑量」（probably toxic dose, PTD）為多少？','5 mg F／kg 體重','0.05 mg F／kg 體重','0.5 mg F／kg 體重','50 mg F／kg 體重','誤食達 5 mg F/kg 需立即處理（給予鈣劑如牛奶、送醫）。0.05–0.07 mg/kg/day 是每日適當攝取量。'],
+['public','窩溝封填劑（sealant）最適合施作於下列何種情況？','剛萌出、窩溝深且無齲洞的恆牙大臼齒','鄰接面已有齲洞的臼齒','已有大範圍填補物的牙齒','即將脫落的乳牙','封填劑阻絕窩溝處菌斑堆積，屬初級預防；必須有良好隔濕，否則易脫落。'],
+['public','下列何者屬於「初級預防」（primary prevention）？','氟化物使用與窩溝封填','早期齲齒的填補治療','根管治療','製作活動義齒恢復咀嚼功能','初級＝防止疾病發生；次級＝早期診斷與治療；三級＝限制殘障與復健。'],
+['public','依我國醫療法，一般成年病人的病歷至少應保存多久？','7 年','3 年','5 年','永久保存','醫療法第 70 條：病歷至少保存 7 年；未成年者至少保存至成年後 7 年；人體試驗病歷永久保存。'],
+['public','下列何者是有效告知同意的必要條件？','病人具決定能力，在充分說明風險、效益與替代方案後自願同意','只要病人簽名即成立，說明內容不重要','由醫師依專業替病人決定即可','只需說明成功率，不必提併發症','告知同意的要素：決定能力、充分告知、理解、自願、同意。簽名只是紀錄，重點在說明過程。'],
+['public','高壓蒸氣滅菌（重力式）的標準條件為何？','121°C、約 15 psi、15–20 分鐘','100°C、常壓、10 分鐘','160°C、乾熱、5 分鐘','60°C、30 分鐘','重力式 121°C 15–20 分鐘；預真空式 132–134°C 約 3–4 分鐘。乾熱滅菌需 160–170°C、1–2 小時。'],
+['public','依 Spaulding 分類，會穿透軟組織或接觸骨的器械（如拔牙鉗、手術刀）應如何處理？','屬重要醫療物品（critical），必須滅菌','屬半重要醫療物品，中程度消毒即可','屬非重要醫療物品，清潔即可','以酒精擦拭即可','critical 一律滅菌；semi-critical（接觸黏膜，如口鏡）也應盡量熱滅菌；牙科手機每位病人使用後均應熱滅菌。'],
+['public','WHO 社區牙周指數所用的 CPI 探針，其特徵為何？','尖端為 0.5 mm 圓球，黑色帶位於 3.5–5.5 mm','尖端銳利，每 1 mm 一刻度至 15 mm','彎曲雙刻度，專測根分叉','尖端為 1.5 mm 圓球，黑色帶位於 1–2 mm','CPI 探針的圓球可避免刺傷並協助偵測牙結石；黑色帶完全看不見表示囊袋 ≥6 mm。專測根分叉的是 Nabers 探針。'],
+['public','下列研究設計與其常用的關聯性指標，何者配對正確？','世代研究（cohort）— 相對危險性（RR）','病例對照研究 — 發生率','橫斷面研究 — 相對危險性','病例報告 — 勝算比','世代研究可算發生率與 RR；病例對照研究無法算發生率，使用勝算比（OR）；橫斷面研究得到盛行率。'],
+['rest','依 G.V. Black 分類，發生於後牙鄰接面的齲洞屬於哪一類？','Class II','Class I','Class III','Class V','I：窩溝；II：後牙鄰接面；III：前牙鄰接面未含切角；IV：前牙鄰接面含切角；V：頰舌側齒頸三分之一；VI：咬頭尖或切緣。'],
+['rest','琺瑯質黏著前的標準酸蝕方式為何？','約 37% 磷酸，酸蝕 15–30 秒','10% 聚丙烯酸，10 秒','5% 氫氟酸，2 分鐘','17% EDTA，1 分鐘','磷酸酸蝕產生微機械固位；聚丙烯酸為 GIC 的 conditioner；氫氟酸用於玻璃陶瓷內面處理。'],
+['rest','下列哪一種窩洞的 C-factor（黏著面÷自由面）最高、聚合收縮應力最大？','Class I 窩洞','Class IV 窩洞','Class III 窩洞','Class II 窩洞','Class I 有 5 個黏著面、1 個自由面（C-factor＝5）。以斜向分層填補、每層 ≤2 mm 可降低收縮應力。'],
+['rest','下列何者是玻璃離子體（GIC）的優點？','可釋放氟離子並與牙體產生化學鍵結','耐磨性與抗折強度優於複合樹脂','美觀與拋光性最佳','初期完全不怕水分與乾燥','GIC 的羧基與牙齒鈣離子螯合，熱膨脹係數接近牙體；缺點是強度與耐磨性差，初期對水分污染與脫水都敏感。'],
+['rest','傳統低銅汞齊中強度最弱、最容易腐蝕的相是哪一個？','γ2 相（Sn-Hg）','γ 相（Ag3Sn）','γ1 相（Ag-Hg）','η 相（Cu6Sn5）','高銅汞齊以銅與錫反應形成 η 相，消除 γ2 相，因此抗腐蝕性與邊緣完整性較佳。'],
+['rest','牙本質黏著中的混合層（hybrid layer）是指什麼？','樹脂單體滲入去礦化牙本質膠原纖維網後聚合形成的結構','殘留在牙本質表面的塗抹層','琺瑯質酸蝕後的蜂巢狀結構','樹脂與金屬之間的氧化層','Nakabayashi 提出。酸蝕後牙本質需保持濕潤（wet bonding），避免膠原塌陷影響樹脂滲入。'],
+['rest','氫氧化鈣作為覆髓材料的主要作用為何？','高鹼性（pH 約 12.5）具抗菌性並刺激修復性牙本質形成','釋放氟離子','與牙本質化學鍵結並提供高強度','麻醉牙髓','氫氧化鈣可誘導 dentin bridge，但溶解度高、強度差且有 tunnel defect；MTA 的封閉性與生物相容性較佳。'],
+['rest','含丁香油酚的材料（如 ZOE）為何不宜作為複合樹脂的基底或暫時填補？','Eugenol 會抑制樹脂的自由基聚合','會造成牙髓壞死','會使牙齒變色','與樹脂產生劇烈放熱反應','Eugenol 為自由基清除劑，會使樹脂聚合不全。ZOE 對牙髓其實具鎮靜作用。'],
+['rest','偵測後牙鄰接面早期齲齒，最適合的影像為何？','咬翼片（bitewing）','根尖片','全景片','咬合片','咬翼片的中心射線與鄰接面平行，重疊少，亦可評估齒槽骨嵴高度；影像呈現的深度通常低估實際病灶。'],
+['rest','光聚合複合樹脂最常用的光起始劑與其吸收波峰為何？','Camphorquinone，約 468 nm（藍光）','Benzoyl peroxide，約 365 nm','Camphorquinone，約 650 nm（紅光）','三級胺，約 254 nm','CQ 配合三級胺為共起始劑。Benzoyl peroxide 是化學聚合（自聚）樹脂的起始劑。'],
+['rest','因咬合應力集中於齒頸部，造成的楔狀非齲性缺損稱為什麼？','Abfraction','Attrition','Erosion','Abrasion','Attrition：牙對牙磨耗；abrasion：外物機械磨損（如刷牙）；erosion：非細菌性酸的化學溶解；abfraction：應力造成齒頸部琺瑯柱斷裂。'],
+['rest','複合樹脂填補時使用橡皮障，最主要的目的為何？','隔絕唾液、血液與濕氣，確保黏著品質','增加樹脂的聚合深度','減少聚合收縮','取代黏著劑','橡皮障同時可保護軟組織、防止誤吞誤吸並改善視野；黏著對水分污染極為敏感。'],
+['endo','冷刺激引起短暫尖銳痛，刺激移除後數秒內消失，且無自發痛。最可能的牙髓診斷為何？','可逆性牙髓炎','症狀性不可逆性牙髓炎','牙髓壞死','症狀性根尖周炎','可逆性牙髓炎去除病因（齲齒、裂縫、暴露牙本質）後牙髓可恢復，不需根管治療。'],
+['endo','下列哪一組症狀最支持「症狀性不可逆性牙髓炎」？','自發痛、夜間痛、熱刺激後疼痛持續不退','只有咬合痛，對冷熱皆無反應','冷刺激短暫痛，數秒即消失','牙齦膿腫且牙齒活髓測試正常','lingering pain（刺激移除後持續 30 秒以上）、自發痛與轉移痛是不可逆的指標，需根管治療或拔牙。'],
+['endo','冷測與電活髓測試（EPT）皆無反應，根尖片有根尖透射影像，牙髓診斷最可能為何？','牙髓壞死','可逆性牙髓炎','正常牙髓','症狀性不可逆性牙髓炎','診斷需同時寫牙髓診斷（壞死）與根尖診斷（如無症狀性根尖周炎）。注意鈣化、外傷不久或未成熟牙可能出現偽陰性。'],
+['endo','根管治療工作長度的理想終點為何？','根尖狹窄處（apical constriction），約距影像根尖 0.5–1 mm','影像根尖（radiographic apex）','超出根尖孔 1 mm','根管中三分之一','根尖狹窄處接近牙骨質牙本質交界，是根管最窄處；可用電子根尖定位器配合 X 光決定。'],
+['endo','次氯酸鈉（NaOCl）作為根管沖洗液的最主要特性為何？','可溶解有機組織並具強效殺菌力','可去除塗抹層的無機成分','具持續性抗菌的殘留效果（substantivity）','具麻醉效果','NaOCl 溶解壞死與活髓組織；EDTA（17%）螯合鈣以去除 smear layer 的無機成分；具 substantivity 的是 chlorhexidine。'],
+['endo','NaOCl 與 chlorhexidine 直接混合會產生什麼結果？','產生橘褐色沉澱（含 para-chloroaniline），可能阻塞牙本質小管','產生大量氯氣造成爆裂','使兩者殺菌力相加而無副作用','產生白色沉澱並完全去除塗抹層','兩種沖洗液之間應以生理食鹽水或 EDTA 沖洗隔開。EDTA 與 CHX 混合則產生白色沉澱。'],
+['endo','局部性急性根尖膿瘍、無發燒且無蜂窩性組織炎，最重要的處置為何？','建立引流（開髓清創或切開引流）','只開抗生素，不做局部處置','立即進行根尖切除手術','只給止痛藥並觀察一週','原則是去除感染源並引流；抗生素僅用於有全身症狀、感染擴散或免疫低下者。'],
+['endo','上顎第一大臼齒最常被遺漏的根管是哪一個？','近心頰側第二根管（MB2）','遠心頰側根管','腭側根管','第二腭側根管','MB2 開口通常位於 MB1 的腭側偏近心處，需修整髓腔並配合放大設備尋找；遺漏是該牙治療失敗常見原因。'],
+['endo','牙根尚未發育完成的恆牙，牙髓仍具活性但有露髓。首選的治療目標為何？','Apexogenesis（保留活髓，讓牙根繼續發育）','Apexification（誘導根尖鈣化屏障）','直接進行傳統根管治療與馬來膠充填','立即拔除','活髓→apexogenesis（覆髓或斷髓）；壞死→apexification（MTA 根尖栓）或再生性牙髓治療。'],
+['endo','恆牙完全脫出（avulsion）且無法立即再植時，下列何者是現場最容易取得且合適的保存液？','冰牛奶','自來水','乾淨的衛生紙包覆','酒精','最佳是立即再植。保存液以牛奶、HBSS、生理食鹽水或唾液為宜；自來水為低張液會使牙周膜細胞溶解；口外乾燥超過 60 分鐘預後差。'],
+['endo','根管治療過的牙齒出現單一點狹窄而深的牙周囊袋，影像見 J 形（暈狀）透射。最應懷疑何者？','垂直牙根斷裂（vertical root fracture）','廣泛型牙周炎','咬合創傷','側方牙周囊腫','VRF 常見於有 post 或過度擴大的根管治療牙，預後差，通常需拔除或截根。'],
+['endo','依 ISO 規格，#25 K-file 的尖端直徑（D0）與錐度為何？','0.25 mm，錐度 0.02','0.25 mm，錐度 0.04','2.5 mm，錐度 0.02','0.025 mm，錐度 0.06','ISO 手用 file 編號＝尖端直徑 × 100，每往柄部 1 mm 直徑增加 0.02 mm，刃部長 16 mm。'],
+['endo','SLOB 法則（同舌異頰）在根尖片的應用是什麼？','X 光管水平移動時，與管球同方向移動的物體位於舌側','與管球同方向移動的物體位於頰側','用來判斷影像的放大率','用來計算工作長度','Same Lingual, Opposite Buccal：改變水平角度拍第二張片，可分辨重疊的頰舌側根管。'],
+['perio','2017 年牙周炎新分類中，「Stage」與「Grade」分別代表什麼？','Stage：嚴重度與治療複雜度；Grade：進展速率與風險','Stage：進展速率；Grade：嚴重度','Stage：菌種；Grade：年齡','Stage：侵犯範圍；Grade：口腔衛生','Stage I–IV 看 CAL、骨喪失、失牙數與複雜度；Grade A–C 看進展證據，並以抽菸與糖尿病作為修飾因子。'],
+['perio','鄰接面 CAL ≥5 mm、因牙周炎失牙 ≤4 顆，屬於牙周炎第幾期？','Stage III','Stage I','Stage II','Stage IV','Stage I：CAL 1–2 mm；II：3–4 mm；III：≥5 mm 且失牙 ≤4 顆；IV：≥5 mm 且失牙 ≥5 顆，並有咀嚼功能障礙等複雜因素。'],
+['perio','下列哪一項會使牙周炎分級直接歸為 Grade C？','每天抽菸 ≥10 支，或糖尿病 HbA1c ≥7%','不抽菸且血糖正常','每天抽菸少於 10 支','5 年內沒有骨喪失','Grade B 為預設值；每天抽菸 <10 支或 HbA1c <7% 的糖尿病為 B；≥10 支或 HbA1c ≥7% 升為 C。'],
+['perio','傳統所稱的生物寬度（現稱 supracrestal tissue attachment）是指什麼？平均約多少？','結合上皮＋結締組織附連，約 2 mm','牙齦溝＋結合上皮，約 5 mm','只有結締組織附連，約 0.5 mm','角化牙齦寬度，約 3 mm','Gargiulo：結合上皮約 0.97 mm＋結締組織附連約 1.07 mm ≈ 2.04 mm。補綴邊緣侵犯會造成發炎與骨吸收，需做牙冠增長術。'],
+['perio','某牙探測深度 4 mm，牙齦邊緣位於 CEJ 根尖側 2 mm（牙齦退縮）。臨床附連喪失（CAL）為多少？','6 mm','2 mm','4 mm','8 mm','CAL＝CEJ 到囊袋底的距離。牙齦退縮時 CAL＝PPD＋退縮量；牙齦邊緣在 CEJ 冠方時則 PPD 減去該距離。'],
+['perio','探針可水平伸入根分叉但未貫穿到對側，屬於 Glickman 根分叉病變第幾級？','Grade II','Grade I','Grade III','Grade IV','I：初期，僅可觸及凹陷；II：部分骨喪失，未貫穿；III：貫穿但被牙齦覆蓋；IV：貫穿且臨床可直接看見。'],
+['perio','牙齒除頰舌向明顯動搖外，還可被垂直壓入齒槽窩，屬 Miller 動搖度第幾級？','第 III 級','第 I 級','第 II 級','第 0 級','I：略大於生理動度；II：水平動搖約 1 mm 以內；III：水平動搖超過 1 mm 或有垂直方向動搖。'],
+['perio','牙根整平（SRP）後，牙周組織最常見的癒合形式為何？','長結合上皮（long junctional epithelium）','新牙骨質、牙周膜與齒槽骨的完全再生','骨性黏連（ankylosis）','牙根吸收','非手術治療與一般翻瓣手術的癒合屬修復（repair）；真正的再生需新牙骨質、PDL 與骨同時形成。'],
+['perio','引導組織再生術（GTR）使用屏障膜的原理為何？','阻擋上皮與牙齦結締組織，讓牙周膜來源細胞優先進入缺損','直接刺激成骨細胞分泌骨基質','釋放抗生素殺死牙周病菌','增加角化牙齦寬度','Melcher 概念：癒合型式取決於先佔據牙根面的細胞；上皮長得最快，須以膜阻擋。'],
+['perio','下列哪一組藥物與藥物性牙齦增生相關？','Phenytoin、cyclosporine、nifedipine','Aspirin、warfarin、clopidogrel','Amoxicillin、metronidazole、clindamycin','Alendronate、denosumab、zoledronate','抗癲癇藥、免疫抑制劑、鈣離子通道阻斷劑三大類。菌斑控制不良會加重；最後一組藥物與 MRONJ 相關。'],
+['perio','植體周圍炎（peri-implantitis）與植體周圍黏膜炎的主要差異為何？','植體周圍炎伴隨支持骨的進行性喪失','黏膜炎才會有探診出血','黏膜炎不可逆','植體周圍炎不會有囊袋加深','黏膜炎侷限於軟組織，去除菌斑後可逆；植體周圍炎有探診出血／化膿、囊袋加深與影像上骨喪失。'],
+['perio','牙周再生手術中，下列哪一種骨缺損的預後最好？','三壁骨缺損','一壁骨缺損','二壁骨缺損','水平性骨喪失','剩餘骨壁越多，越能穩定血塊並提供細胞與血液來源；窄而深的三壁缺損再生效果最佳。'],
+['perio','關於抽菸對牙周的影響，下列何者正確？','抽菸者探診出血常較少，容易低估發炎程度','抽菸者的探診出血一定比非抽菸者多','抽菸不影響牙周治療效果','抽菸只影響牙齒染色，不影響骨喪失','尼古丁造成血管收縮並抑制中性球功能，掩蓋發炎徵象；抽菸者骨喪失更多、治療與植牙預後較差。'],
+['prostho','雙側後牙游離端缺牙屬於 Kennedy 分類第幾類？','Class I','Class II','Class III','Class IV','I：雙側游離端；II：單側游離端；III：單側有界缺牙；IV：跨越中線的單一前牙缺牙區（無 modification）。'],
+['prostho','根管治療後牙齒製作牙冠時，建議的 ferrule（箍效應）高度為何？','至少 1.5–2 mm 的健康齒質被牙冠環繞','0.5 mm 即足夠','必須 5 mm 以上','不需要，只要 post 夠長即可','足夠的 ferrule 是抗牙根斷裂最重要的因素，比 post 的種類更重要；不足時考慮牙冠增長術或矯正牽引。'],
+['prostho','固定補綴牙體預備時，兼顧固位與可就位性的理想總聚合角度（taper）約為多少？','約 6 度','0 度（完全平行）','約 30 度','約 45 度','軸壁越接近平行固位越好，理論理想值約 6°；臨床實際多落在 10–20°。聚合角過大時固位力快速下降。'],
+['prostho','藻膠（alginate）印模取下後應盡快灌模，主要原因為何？','會因離水（syneresis）與吸水（imbibition）而變形','會持續聚合並釋放乙醇','會與石膏發生化學反應而無法硬化','放置越久強度越高，會難以脫模','Alginate 為不可逆水膠體，含水量高、尺寸穩定性差，建議 10–15 分鐘內灌模。釋放乙醇的是縮合型矽膠。'],
+['prostho','下列哪一種彈性印模材的尺寸穩定性最佳？','加成型矽膠（PVS）','藻膠（alginate）','縮合型矽膠','多硫化物（polysulfide）','PVS 聚合無副產物，可延後或重複灌模。注意乳膠手套中的硫化物會抑制其聚合。'],
+['prostho','Ante’s law 的內容為何？','支台齒的牙周膜總面積應大於或等於被取代缺牙的牙周膜面積','支台齒數目應為缺牙數目的兩倍','牙橋長度不可超過三個牙位','支台齒冠根比必須為 1:2','用於評估固定牙橋支台齒是否足夠。理想冠根比 2:3，可接受的最低限為 1:1。'],
+['prostho','上顎全口義齒的後腭封閉區（posterior palatal seal）應設定於何處？','顫動線（vibrating line）附近','切齒乳頭','硬腭中縫','上顎結節頰側','後緣放在硬軟腭交界、可動與不可動組織之間，可請病人發「啊」音或用 Valsalva 法定位，以補償樹脂收縮並維持邊緣封閉。'],
+['prostho','全口義齒咬合垂直距離設定「過高」時，可能出現何種情形？','說話時牙齒碰撞、肌肉痠痛疲勞、息止間隙消失','口角下垂、口角炎、下顏面變短','咀嚼效率下降但非常舒適','發 s 音時上下牙間隙過大','過高：牙齒碰撞聲、肌肉疲勞、黏膜痠痛；過低：下顏面短、口角炎、顯老、咬合無力。'],
+['prostho','活動局部義齒（RPD）中，主要提供「支持」（對抗朝向組織的咬合力）的組件為何？','支托（rest）','固位臂（retentive clasp arm）','小連接體','間接固位體','支持＝rest（與游離端的義齒基底）；固位＝固位臂尖端進入倒凹；穩定＝對抗臂、小連接體；間接固位體防止游離端翹起。'],
+['prostho','關於中心關係（centric relation, CR），下列何者正確？','是髁頭與關節盤在關節窩前上位的顎位，與牙齒接觸無關且可重複','是上下牙最大咬頭嵌合的位置','是下顎完全前突的位置','會隨補綴物形態改變','CR 是骨對骨的關係，全口重建或無牙病人以此為參考；最大咬頭嵌合位（MIP／CO）是牙對牙的關係。'],
+['prostho','兩支相鄰植體之間、以及植體與鄰近天然牙之間，建議至少保留多少距離？','植體間 3 mm；植體與天然牙 1.5 mm','植體間 1 mm；植體與天然牙 0.5 mm','植體間 7 mm；植體與天然牙 5 mm','兩者皆 0 mm 即可','距離不足會造成植體間骨嵴吸收與牙間乳頭喪失；頰側骨板建議至少保留約 2 mm。'],
+['prostho','下列哪一種橋體（pontic）設計因組織面呈凹面、無法清潔而不建議使用？','鞍狀型（saddle / ridge lap）','衛生型（sanitary）','卵圓型（ovate）','改良蓋嵴型（modified ridge lap）','鞍狀型凹面包覆牙嵴，牙線無法清潔。後牙非美觀區可用衛生型；前牙美觀區用改良蓋嵴型或卵圓型。'],
+['prostho','全口義齒通常採用哪一種咬合型式，以增加義齒穩定性？','雙側平衡咬合（bilateral balanced occlusion）','犬齒保護咬合','前牙引導並使後牙完全離開','單側群體功能咬合','側方與前突運動時工作側與平衡側同時接觸，可避免義齒翹動；天然齒列與固定補綴則偏好犬齒保護或群體功能。'],
+['surgery','拔牙後第 3–5 天出現劇烈放射性疼痛，齒槽窩空虛、骨面裸露並有惡臭，但無明顯腫脹或化膿。最適當的處置為何？','溫和沖洗齒槽窩並置入鎮痛敷料，給予止痛','大範圍搔刮齒槽窩直到重新大量出血','以高劑量抗生素為主要治療','立即住院進行切開引流','此為乾性齒槽炎（alveolar osteitis），屬血塊溶解而非細菌感染為主，以症狀治療為原則；危險因子：抽菸、口服避孕藥、下顎智齒、手術創傷大。'],
+['surgery','下顎第三大臼齒拔除手術最常造成哪一條神經的感覺異常？','下齒槽神經','顏面神經','舌下神經','頰神經','最常見為下齒槽神經，其次是舌神經。全景片上牙根變暗、管壁白線中斷或管道轉向等為高風險徵象，可加照 CBCT。'],
+['surgery','下顎阻生第三大臼齒依 Winter 分類，最常見的型態為何？','近心傾斜型（mesioangular）','遠心傾斜型（distoangular）','水平型','垂直型','下顎以 mesioangular 最常見也相對容易；下顎最困難的是 distoangular（上顎則相反，mesioangular 最難）。'],
+['surgery','Ludwig’s angina 侵犯哪些筋膜間隙？處置的第一優先為何？','雙側下頜下、舌下與頦下間隙；首要維持呼吸道','單側頰間隙；首要止痛','翼下頜間隙；首要改善張口','犬齒間隙；首要冰敷','此為快速擴散的蜂窩性組織炎，舌頭被抬高後推造成呼吸道阻塞，需確保呼吸道、靜脈抗生素、切開引流並去除病灶牙。'],
+['surgery','Le Fort II 型骨折的骨折線型態為何？','錐形骨折，經鼻骨、眼眶內側與下緣至翼突板','水平骨折，位於上顎齒槽突上方','顱顏分離，經鼻額縫與顴額縫','僅顴骨弓骨折','Le Fort I：水平（floating palate）；II：錐形（floating maxilla）；III：顱顏分離（floating face）。三者皆涉及翼突板。'],
+['surgery','藥物相關顎骨壞死（MRONJ）的診斷條件不包括下列何者？','曾接受頭頸部放射線治療','目前或曾經使用抗骨吸收或抗血管新生藥物','顎顏面區有暴露骨或可經瘻管探及骨，持續超過 8 週','無顎骨轉移性疾病','有頭頸部放療史者應歸為放射性骨壞死（ORN）。MRONJ 相關藥物包括雙磷酸鹽、denosumab 與抗血管新生藥。'],
+['surgery','頭頸部放射線治療「之前」，對於預後不良的牙齒應如何處理？','放療開始前約 2–3 週完成拔除，讓傷口初步癒合','等放療結束後一個月再拔','放療期間同步拔除','不需處理，放療會使病灶消失','放療後骨組織低血管、低細胞、低氧，拔牙易引發放射性骨壞死；必須拔牙時考慮高壓氧與微創處理。'],
+['surgery','口腔黏膜病灶直徑約 3 cm 且臨床懷疑惡性時，應採何種切片方式？','切取式切片（incisional biopsy），取具代表性區域','切除式切片，把整個病灶直接切除','只做刷取細胞學檢查即可','先觀察三個月再決定','小於約 1 cm 且看似良性者可切除式切片；大型或疑惡性病灶做切取式，避開壞死中心，深度要足夠。超過 2 週未癒的潰瘍即應切片。'],
+['surgery','下齒槽神經阻斷麻醉後，病人同側出現無法閉眼、嘴角下垂。最可能原因為何？','針尖過於後方，將麻藥注入腮腺而麻醉顏面神經','麻藥注入血管內','麻藥過敏','針頭斷裂','此為暫時性顏面神經麻痺，藥效退後恢復；期間需保護角膜（閉眼貼護、人工淚液）。預防：針尖須先碰到骨再注射。'],
+['surgery','拔除哪一顆牙最容易造成口竇相通（oroantral communication）？','上顎第一大臼齒','上顎犬齒','下顎第一大臼齒','上顎中門齒','上顎第一大臼齒牙根最貼近上顎竇底。小於 2 mm 多可自行癒合；較大者需以頰側推進瓣等關閉，並囑咐勿擤鼻、勿用吸管。'],
+['surgery','病人在局部麻醉注射後臉色蒼白、冒冷汗、短暫失去意識。最可能的診斷與第一步處置為何？','血管迷走神經性暈厥；將病人放平並抬高雙腳','過敏性休克；立即口服抗組織胺','局麻藥中毒；立即給予 flumazenil','過度換氣；給予高流量氧氣','暈厥是牙科最常見急症，因腦血流不足；採仰臥抬腿、維持呼吸道、給氧並監測生命徵象。'],
+['surgery','顳顎關節「可復位性關節盤前移位」的典型表現為何？','開口與閉口各有一聲彈響（reciprocal click），開口度正常','開口受限且開口時下顎偏向健側','完全沒有關節音且開口受限 <25 mm','開口末期卡住無法閉口','不可復位性前移位（closed lock）：無彈響、開口受限、開口偏向患側。開口後無法閉合則是髁頭脫臼。'],
+['pedo','乳牙最典型的萌出順序為何？（A 中門齒、B 側門齒、C 犬齒、D 第一乳臼齒、E 第二乳臼齒）','A → B → D → C → E','A → B → C → D → E','A → D → B → C → E','D → A → B → C → E','第一乳臼齒早於乳犬齒萌出。下顎乳中門齒約 6 個月最先萌出，乳牙列約 2.5–3 歲完成，共 20 顆。'],
+['pedo','乳牙牙髓切斷術（pulpotomy）的適應症為何？','齲蝕露髓但發炎侷限於冠髓，無自發痛、無瘻管或根尖病變','有自發性夜間痛且有牙齦瘻管','牙根已吸收超過三分之二','牙齒有病理性動搖與根分叉透射','去除冠髓後根髓止血良好才可進行，藥劑可用 MTA、硫酸鐵或 formocresol。根髓已發炎或壞死則做 pulpectomy 或拔除。'],
+['pedo','乳臼齒接受牙髓治療後，或有多面大範圍齲齒時，首選的復形方式為何？','不鏽鋼牙冠（SSC）','大型複合樹脂填補','玻璃離子體填補','銀汞齊填補','SSC 耐用、失敗率最低，適用於牙髓治療後、多面齲、高齲齒風險或發育缺陷的乳臼齒。'],
+['pedo','恆牙第一大臼齒尚未萌出時第二乳臼齒就提早喪失，應選用哪一種空間維持器？','Distal shoe','Band and loop','舌側弓（lingual arch）','Nance 裝置','Distal shoe 伸入牙齦下引導第一大臼齒萌出。單顆第一乳臼齒早失用 band and loop；下顎雙側用舌側弓（需待恆門齒萌出）；上顎雙側用 Nance 或 TPA。'],
+['pedo','Leeway space 是指什麼？','乳犬齒與第一、第二乳臼齒的近遠心寬度總和，大於繼生恆犬齒與小臼齒的差值','乳門齒之間的生理性間隙','上顎乳側門齒與乳犬齒之間的間隙','息止時上下牙之間的距離','Leeway space 上顎每側約 1.5 mm、下顎每側約 2.5 mm，可用於緩解輕度擁擠並讓大臼齒近心移動。'],
+['pedo','靈長類間隙（primate space）在上、下顎的位置分別為何？','上顎：乳側門齒與乳犬齒之間；下顎：乳犬齒與第一乳臼齒之間','上下顎皆在乳犬齒與第一乳臼齒之間','上顎：乳犬齒與第一乳臼齒之間；下顎：乳側門齒與乳犬齒之間','上下顎皆在兩顆乳中門齒之間','記憶法：上顎在乳犬齒近心、下顎在乳犬齒遠心。'],
+['pedo','Frankl 行為量表中，Rating 1（− −）代表什麼？','絕對負向：拒絕治療、強烈哭鬧抗拒','負向：不情願、不合作但未強烈反抗','正向：接受治療但略顯謹慎','絕對正向：關係良好且樂在其中','Frankl 1–4 分：1 絕對負向、2 負向、3 正向、4 絕對正向，為兒牙紀錄行為最常用的量表。'],
+['pedo','常用的 5% 氟化鈉氟漆，其氟離子濃度約為多少？','22,600 ppm','1,000 ppm','5,000 ppm','12,300 ppm','5% NaF ＝ 22,600 ppm F。1.23% APF 凝膠為 12,300 ppm；一般含氟牙膏約 1,000–1,500 ppm。'],
+['pedo','乳門齒完全脫出（avulsion）時，處置原則為何？','不再植，以免傷害繼生恆牙胚','立即再植並固定 2 週','再植後立即做根管治療','再植並固定 3 個月','乳牙脫出不再植。乳牙嵌入（intrusion）若未傷及恆牙胚，多可觀察等待自行再萌出。'],
+['pedo','早發性兒童齲齒（奶瓶性齲齒）的典型分布為何？','上顎乳門齒最先且最嚴重，下顎乳門齒通常不受侵犯','下顎乳門齒最先受侵犯','只侵犯第二乳臼齒','上下顎乳門齒同樣嚴重','下顎門齒受舌頭覆蓋與舌下腺、頜下腺唾液保護。與含奶瓶睡覺、夜間頻繁哺餵相關。'],
+['pedo','乳牙列第二乳臼齒遠心面的終端平面關係，最常見的型態為何？','齊平終端平面（flush terminal plane）','近心階梯（mesial step）','遠心階梯（distal step）','三者機率相同','齊平型最常見，恆牙第一大臼齒先呈咬頭對咬頭，之後利用 leeway space 與下顎生長轉為 Class I；遠心階梯則發展為 Class II。'],
+['pedo','依一般建議，3–6 歲兒童每次刷牙的含氟牙膏用量為何？','豌豆大小，使用含氟 1,000 ppm 以上的牙膏','擠滿整個刷頭','不應使用含氟牙膏','米粒大小、不含氟的牙膏','3 歲以下用薄薄一層（米粒大小），3–6 歲用豌豆大小，皆建議含氟 1,000 ppm 以上，並由家長協助、避免吞食。'],
+['ortho','Angle Class I 臼齒關係的定義為何？','上顎第一大臼齒的近心頰側咬頭，咬在下顎第一大臼齒的頰溝','上顎第一大臼齒的遠心頰側咬頭，咬在下顎第一大臼齒的頰溝','上顎第一大臼齒的近心頰側咬頭，咬在下顎第一大臼齒頰溝的近心','上顎犬齒咬在下顎犬齒與側門齒之間','Class II：下顎第一大臼齒頰溝位於上顎近心頰側咬頭的遠心；Class III：頰溝位於其近心。'],
+['ortho','Angle Class II division 2 的典型特徵為何？','上顎中門齒舌傾（後傾）並伴隨深咬','上顎門齒唇傾、水平覆咬（overjet）很大','前牙開咬','前牙反咬','Division 1：上顎門齒前突、overjet 大；Division 2：中門齒後傾、側門齒常唇傾、深咬，overjet 不大。'],
+['ortho','頭顱測量中，SNA、SNB、ANB 的正常平均值約為多少？','SNA 82°、SNB 80°、ANB 2°','SNA 80°、SNB 82°、ANB −2°','SNA 90°、SNB 85°、ANB 5°','SNA 75°、SNB 75°、ANB 0°','ANB 變大代表骨性 Class II，負值代表骨性 Class III；SNA 看上顎、SNB 看下顎相對於顱底的前後位置。'],
+['ortho','矯正牙齒移動時，牙周膜「壓力側」發生什麼變化？','破骨細胞活化造成骨吸收','成骨細胞活化造成骨沉積','牙骨質增生','牙周膜纖維被拉長','壓力側骨吸收、張力側骨沉積。以輕而持續的力量產生直接（frontal）吸收最理想。'],
+['ortho','矯正力過大時，壓力側牙周膜會出現何種現象？','玻璃樣變性（hyalinization），之後發生穿掘性吸收（undermining resorption）','直接性骨吸收加快，牙齒移動更快','張力側骨吸收','牙髓立即壞死','過大力量使牙周膜血流中斷形成無細胞區，牙齒移動延遲，且疼痛與牙根吸收風險上升。'],
+['ortho','下列哪一種牙齒移動在矯正後最容易復發？','牙齒旋轉（rotation）的矯正','整體移動（bodily movement）','牙根轉矩（torque）','伸長（extrusion）','旋轉復發與齒槽嵴上牙齦纖維重塑緩慢有關，可施行環狀齒槽嵴上纖維切斷術（CSF）並延長維持。'],
+['ortho','評估青少年是否處於生長高峰期，下列何者最常用？','手腕骨 X 光或頸椎成熟度（CVM）','實際年齡','身高體重當下的數值','恆牙萌出顆數','骨齡比年齡或牙齡更能反映生長高峰；功能性矯正器的介入時機要配合生長高峰。'],
+['ortho','序列拔牙（serial extraction）的典型拔牙順序為何？','乳犬齒 → 第一乳臼齒 → 第一小臼齒','第一乳臼齒 → 乳犬齒 → 第二小臼齒','第一小臼齒 → 乳犬齒 → 第一乳臼齒','乳門齒 → 乳犬齒 → 恆犬齒','簡記 C → D → 4。適用於骨性 Class I、嚴重牙弓長度不足（約 10 mm 以上）的混合齒列，之後通常仍需固定矯正。'],
+['ortho','生長期兒童，因上顎後縮造成的骨性 Class III，首選的矯形裝置為何？','面罩（facemask，上顎前方牽引）','頸帶式頭帽（headgear）','Twin block','下顎舌側弓','Facemask 最佳時機約在 8–10 歲之前，常合併快速擴張。Headgear 抑制上顎生長，用於上顎過度生長的 Class II；Twin block 等功能性矯正器用於下顎後縮。'],
+['ortho','快速上顎擴張（RPE）主要是打開哪一個構造？','正中腭縫（midpalatal suture）','切齒孔','鼻額縫','翼上顎縫','RPE 在青春期腭縫骨化前效果最好，擴張時上顎中門齒間會出現縫隙；成人因骨縫密合常需手術輔助（SARPE）。'],
+['ortho','Bolton 分析的用途為何？','評估上下顎牙齒近遠心寬度總和的比例是否協調','評估上下顎骨的前後位置關係','評估混合齒列未萌牙所需空間','評估顏面垂直比例','全牙比（12 顆）約 91.3%、前牙比（6 顆）約 77.2%。比例不合時需鄰面修磨或以補綴增寬。混合齒列空間分析用的是 Moyers 或 Tanaka-Johnston。'],
+['ortho','長期吸吮拇指的習慣，最典型會造成何種咬合不正？','前牙開咬、上顎門齒唇傾、上顎牙弓狹窄','前牙深咬','前牙反咬','下顎門齒唇傾併 Class III','若在恆門齒萌出前（約 4–5 歲）停止，多可自行改善；持續者可考慮提醒療法或習慣破除裝置。'],
+['ortho','下列哪一種牙齒移動所需的矯正力最小？','壓入（intrusion）','整體移動（bodily movement）','牙根直立（root uprighting）','傾斜移動（tipping）','壓入時力量集中於根尖小面積，僅需約 10–20 g，過大易造成牙根吸收；整體移動需力最大。'],
+['diag','牙科放射線防護的 ALARA 原則是什麼意思？','在合理可達成的範圍內，使輻射劑量盡量降低','所有病人每半年例行拍攝全口 X 光','孕婦絕對禁止拍攝任何 X 光','劑量越低越好，即使影像無法診斷也無妨','As Low As Reasonably Achievable：依個別需要開立檢查、使用高感度接收器、矩形準直並保護甲狀腺。'],
+['diag','根尖片拍攝時，影像出現「牙齒被拉長」（elongation），原因為何？','垂直角度不足','垂直角度過大','水平角度錯誤','曝光時間過長','垂直角度不足→拉長；過大→縮短（foreshortening）；水平角度錯誤→鄰接面重疊；中心射線未對準接收器→錐狀切割（cone cut）。'],
+['diag','平行法（paralleling technique）相較於分角線法的主要優點為何？','影像形變較少、尺寸較準確','不需使用持片器','需要的曝光量較少','更適合口底很淺的病人','平行法使接收器與牙長軸平行、射線垂直兩者，需持片器並採較長的射源–物體距離以減少放大。'],
+['diag','全景片上的「鬼影」（ghost image）特徵為何？','出現在對側、位置較高、模糊且放大','出現在同側、位置較低、清晰','與實際物體等大且銳利','只會出現在影像正中央','鬼影是位於射源與旋轉中心之間的物體（如耳環、對側下顎角）被投射到對側所致，因此拍攝前要取下金屬飾品。'],
+['diag','下列何種細胞對放射線最敏感？','淋巴球與骨髓造血細胞','成熟神經細胞','肌肉細胞','成熟骨細胞','Bergonié–Tribondeau 法則：分裂旺盛、未分化的細胞最敏感；淋巴球雖已分化卻是高度敏感的例外。神經與肌肉最不敏感。'],
+['diag','用來比較不同放射檢查「致癌等隨機效應風險」的有效劑量，單位為何？','西弗（Sv）','戈雷（Gy）','侖琴（R）','貝克（Bq）','吸收劑量單位為 Gy；等價劑量與有效劑量為 Sv；放射活度為 Bq；曝露量為 R。'],
+['diag','正常根尖片上，下列何者呈現放射線透射（影像較黑）？','牙周膜腔與牙髓腔','琺瑯質','硬骨板（lamina dura）','銀汞齊填補物','琺瑯質是人體最不透射的組織；硬骨板為牙槽窩周圍連續的白線，其中斷或消失是根尖或牙周病變的早期徵象。'],
+['diag','下顎後牙區的「多房性」放射線透射病灶，鑑別診斷最不可能包括下列何者？','根尖囊腫','成釉細胞瘤','齒源性角化囊腫','中心性巨細胞肉芽腫','多房性透射病灶：成釉細胞瘤、OKC、中心性巨細胞肉芽腫、齒源性黏液瘤、動脈瘤性骨囊腫等；根尖囊腫典型為單房、位於失活牙根尖。'],
+['diag','中年女性，下顎前牙根尖多處透射至混合性病灶，牙齒活髓測試皆正常且無症狀。最適當的處置為何？','診斷為根尖周牙骨質骨異常增生，定期追蹤即可','所有下顎前牙進行根管治療','立即手術刮除並送病理','拔除所有受侵犯的牙齒','Periapical cemento-osseous dysplasia 病灶由透射期→混合期→不透射期；牙齒為活髓，是與根尖病變鑑別的關鍵，不需治療。'],
+['diag','大範圍齲齒的下顎第一大臼齒根尖周圍出現邊界不清的放射線「不透射」區，最可能為何？','緻密性骨炎（condensing osteitis）','根尖囊腫','根尖肉芽腫','牙骨質母細胞瘤','緻密性骨炎是低度慢性牙髓發炎刺激造成的骨硬化；若牙齒健康活髓而有類似不透射區，則考慮特發性骨硬化。牙骨質母細胞瘤會與牙根融合且有透射外圈。'],
+['diag','提高 X 光機的 kVp，對影像與射束的影響為何？','射束穿透力增加，影像對比降低（灰階變長）','射束穿透力下降，對比增加','只改變光子數量，不影響能量','影像一定變得更黑且更銳利','kVp 決定射束能量（質）與對比；mA 與曝光時間決定光子數量與影像密度。高 kVp 呈長灰階、低對比。'],
+['diag','X 光機中鋁濾片（filtration）的功能為何？','濾除低能量、無診斷價值的長波長光子，降低病人皮膚劑量','限制射束的大小與形狀','提高影像對比','將 X 光轉為可見光','濾片處理的是射束的質；限制射束大小形狀的是準直器（collimator），矩形準直可比圓形準直再減少約六成的照射面積。'],
+['diag','下列何種情況最適合加照 CBCT？','全景片顯示下顎阻生智齒牙根與下齒槽管重疊，需評估相對位置','例行檢查是否有鄰接面早期齲齒','每位初診病人的常規檢查','追蹤輕度牙齦炎','CBCT 劑量高於傳統二維影像，應在二維影像不足以回答臨床問題時使用，如植牙規劃、阻生齒與神經管關係、複雜根管解剖、顎骨病灶範圍。']];
+
+/* ===== 工具 ===== */
+const $=s=>document.querySelector(s),view=$('#view'),aside=$('#aside'),searchBox=$('#search');
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const KEY='dental-exam-lite-v1';
+let store={known:{},wrong:[],stats:{}};
+try{Object.assign(store,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}};
+const subj=id=>S.find(s=>s.id===id);
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const others=(list,me,n=3)=>shuffle([...new Set(list)].filter(x=>x!==me)).slice(0,n);
+function speak(t){if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;speechSynthesis.speak(u)}
+const say=t=>`<button class="say" data-say="${esc(t)}" title="發音">▶</button>`;
+const steps=a=>`<div class="steps">${a.map(x=>`<div><span>${x}</span></div>`).join('')}</div>`;
+const table=(h,rows)=>`<div class="tw"><table><thead><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+function mind(title,labels){const it=labels.slice(0,8);return `<svg viewBox="0 0 720 290" role="img" aria-label="${esc(title)}心智圖">${it.map((x,i)=>{const a=-Math.PI/2+i*Math.PI*2/it.length,x2=360+262*Math.cos(a),y2=145+108*Math.sin(a);return `<line x1="360" y1="145" x2="${x2}" y2="${y2}" stroke="var(--line)" stroke-width="2"/><rect x="${x2-86}" y="${y2-20}" width="172" height="40" rx="8" fill="var(--${i%2?'bluebg':'tealbg'})" stroke="var(--line)"/><text x="${x2}" y="${y2+5}" text-anchor="middle" font-size="14">${esc(x.length>11?x.slice(0,10)+'…':x)}</text>`}).join('')}<ellipse cx="360" cy="145" rx="98" ry="36" fill="var(--teal)"/><text x="360" y="151" text-anchor="middle" font-size="16" style="fill:#fff">${esc(title)}</text></svg>`}
+
+/* ===== 路由 ===== */
+const NAV=[['home','⌂','首頁'],['roadmap','◎','解題架構'],['subjects','▤','科目考點'],['diseases','✚','疾病速查'],['materials','◈','牙材藥理'],['images','▣','影像判讀'],['english','A','牙科英文'],['quiz','?','測驗'],['wrong','!','錯題本']];
+let pending=null;
+function go(v,a,anchor){searchBox.value='';pending=anchor||null;const h='#'+v+(a?'/'+a:'');if(location.hash===h)render();else location.hash=h}
+function renderNav(v){$('#nav').innerHTML=NAV.map(n=>`<button class="nav-btn ${n[0]===v?'active':''}" data-go="${n[0]}"><i>${n[1]}</i>${n[2]}${n[0]==='wrong'&&store.wrong.length?`<b>${store.wrong.length}</b>`:''}</button>`).join('')}
+function render(){
+  let [v,a]=decodeURIComponent(location.hash.slice(1)).split('/');if(!VIEWS[v])v='home';
+  view.innerHTML=VIEWS[v](a||'');
+  renderNav(v);
+  aside.classList.remove('open');showScore();
+  const el=pending&&document.getElementById(pending);pending=null;
+  if(el){el.scrollIntoView({block:'center'});el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),1800)}else scrollTo(0,0);
+}
+
+/* ===== 各頁 ===== */
+const knownCount=s=>s.pts.filter((_,i)=>store.known[s.id+':'+i]).length;
+const VIEWS={
+home(){
+  const total=S.reduce((n,s)=>n+s.pts.length,0),done=S.reduce((n,s)=>n+knownCount(s),0);
+  const col=st=>`<div><h3>第${st===1?'一':'二'}階</h3><div class="grid">${S.filter(s=>s.stage===st).map(s=>{const k=knownCount(s);return `<button class="card" data-go="subjects|${s.id}"><strong>${s.name}</strong><div class="muted">${s.focus}</div><div class="bar"><span style="width:${k/s.pts.length*100}%"></span></div><div class="muted">已熟 ${k}/${s.pts.length}</div></button>`}).join('')}</div></div>`;
+  return `<div class="sec"><h1>牙醫國考 Master OS</h1><p class="muted">${S.length} 科 ${total} 個核心考點、${DIS.length} 個疾病、${MAT.length} 項牙材藥物、${IMG.length} 個影像徵象、${Q.length} 題精選題與自動出題。全部內容都能用上方搜尋欄找到。</p><div class="bar"><span style="width:${done/total*100}%"></span></div><p class="muted">總進度：已熟 ${done}/${total} 考點・錯題 ${store.wrong.length} 題</p><p style="margin-top:10px"><button class="btn" data-go="quiz">開始測驗</button> <button class="btn ghost" data-go="wrong">複習錯題</button> <button class="btn ghost" data-go="roadmap">看解題架構</button></p></div><div class="sec">${col(1)}</div><div class="sec">${col(2)}</div>`},
+roadmap(){
+  return `<div class="sec"><h1>解題架構</h1><p class="muted">第一階問「為什麼會這樣」，第二階問「下一步做什麼」。</p><div class="two" style="margin-top:12px"><div><h3>每一題的六步</h3>${steps(['主訴：痛、腫、出血、白斑、影像異常','定位：牙髓／牙周／顎骨／黏膜／咬合／材料','證據：X 光、CBCT、活髓測試、探測、切片','診斷：先分類再命名','處置：急症與禁忌優先，再選材料與藥物','追蹤：症狀、功能、影像癒合'])}</div><div>${mind('六大定位',['牙髓','牙周','顎骨','黏膜','咬合/TMJ','牙材/補綴'])}</div></div></div>
+<div class="sec"><h2>六大定位差異表</h2>${table(['定位','典型線索','檢查','常見陷阱'],[['牙髓','冷熱痛、夜間痛、叩痛','冷測、EPT、根尖片','把所有牙痛都當牙周'],['牙周','囊袋、出血、鬆動、骨喪失','探測、附連喪失、X 光','只看牙齦紅腫'],['顎骨','膨隆、透亮或不透亮、麻木','全景片、CBCT、切片','只憑影像下診斷'],['黏膜','白斑、紅斑、潰瘍、硬結','視診、觸診、切片','紅斑比白斑更危險'],['咬合/TMJ','彈響、張口受限、肌痛','觸診、開口量、關節音','先做不可逆的咬合調整'],['牙材/補綴','邊緣滲漏、破裂、二次齲','臨床檢查、X 光、咬合紙','只怪材料不檢討操作']])}</div>
+<div class="sec"><h2>第一階 vs 第二階</h2>${table(['比較','第一階','第二階'],[['核心問題','為什麼會發生？機制是什麼？','下一步做什麼？禁忌是什麼？'],['內容',S.filter(s=>s.stage===1).map(s=>s.name).join('、'),S.filter(s=>s.stage===2).map(s=>s.name).join('、')],['起手式','正常結構→功能→失衡→檢查','主訴→定位→證據→鑑別→處置'],['最常錯','背名詞但說不出機制','太早治療，忽略影像、病史、禁忌']])}</div>`},
+subjects(a){
+  const s=subj(a)||S[0];
+  return `<div class="chips">${S.map(x=>`<button class="chip ${x.id===s.id?'active':''}" data-go="subjects|${x.id}">${x.stage===1?'Ⅰ':'Ⅱ'} ${x.name}</button>`).join('')}</div>
+<div class="sec"><div class="row"><div><span class="badge ${s.stage===1?'':'t'}">第${s.stage===1?'一':'二'}階</span><h1>${s.name}</h1><p class="muted">${s.focus}</p></div><button class="btn" data-go="quiz|${s.id}">測驗本科</button></div>${mind(s.name,s.pts.map(p=>p[0]))}</div>
+<div class="grid">${s.pts.map((p,i)=>{const k=s.id+':'+i;return `<div class="card ${store.known[k]?'known':''}" id="p-${s.id}-${i}"><h3>${i+1}. ${esc(p[0])}</h3><p>${esc(p[1])}</p><div class="trap"><b>陷阱：</b>${esc(p[2])}</div><label class="kn"><input type="checkbox" data-known="${k}" ${store.known[k]?'checked':''}>已熟</label></div>`}).join('')}</div>`},
+diseases(){
+  return `<div class="sec"><h1>疾病速查</h1><p class="muted">定位→線索→處置，一張卡一個疾病。</p></div><div class="grid">${DIS.map((d,i)=>`<div class="card" id="d-${i}"><span class="badge t">${d[1]}</span><h3>${esc(d[0])}</h3><p><b>線索：</b>${esc(d[2])}</p><p><b>處置：</b>${esc(d[3])}</p></div>`).join('')}</div>`},
+materials(){
+  return `<div class="sec"><h1>牙材藥理</h1><p class="muted">用途與注意事項一起背。按 ▶ 聽英文發音。</p></div><div class="grid">${MAT.map((m,i)=>`<div class="card" id="m-${i}"><span class="badge g">${m[2]}</span><h3>${say(m[0])}${esc(m[0])}｜${esc(m[1])}</h3><p>${esc(m[3])}</p><div class="trap"><b>注意：</b>${esc(m[4])}</div></div>`).join('')}</div>`},
+images(){
+  return `<div class="sec"><h1>影像判讀</h1><p class="muted">判讀順序：位置→邊界→內部密度→對牙根與周圍構造的影響→配合臨床症狀。影像不能單獨下診斷。</p></div><div class="grid">${IMG.map((m,i)=>`<div class="card" id="i-${i}"><h3>${say(m[0])}${esc(m[1])}</h3><p class="muted">${esc(m[0])}</p><p>${esc(m[2])}</p></div>`).join('')}</div>`},
+english(){
+  return `<div class="sec"><h1>牙科英文</h1><p class="muted">按 ▶ 發音。</p></div>
+<div class="sec"><h2>字根字首</h2>${ROOTS.map(r=>`<span class="badge">${r[0]} ${r[1]}</span>`).join('')}</div>
+<div class="sec"><h2>專業名詞</h2><div class="grid">${TERMS.map((t,i)=>`<div class="card" id="t-${i}">${say(t[0])}<b>${t[0]}</b>｜${t[1]}<div class="muted">${t[2]}</div></div>`).join('')}</div></div>
+<div class="sec"><h2>常考縮寫</h2><div class="grid">${Object.entries(ABBR).map(([k,v],i)=>`<div class="card" id="a-${i}"><b>${esc(k)}</b>｜${v}</div>`).join('')}</div></div>`},
+quiz(a){
+  const scope=a||'all';if(!quiz||quiz.scope!==scope)newRound(scope);
+  const cnt=f=>Q.filter(f).length;
+  const scopes=[['all','綜合（考題＋自動出題）'],['exam',`全部考題（${Q.length}）`],['s1',`第一階考題（${cnt(q=>subj(q[0]).stage===1)}）`],['s2',`第二階考題（${cnt(q=>subj(q[0]).stage===2)}）`],...S.map(s=>[s.id,`${s.name}（${cnt(q=>q[0]===s.id)}）`]),['terms','英文與縮寫'],['dis','疾病'],['mats','牙材藥理']];
+  if(scope==='wrong')scopes.unshift(['wrong','錯題重做']);
+  const sel=(id,label,opts,cur)=>`<select id="${id}" aria-label="${label}">${opts.map(x=>`<option value="${x[0]}" ${String(x[0])===String(cur)?'selected':''}>${x[1]}</option>`).join('')}</select>`;
+  const pct=v=>v&&v[1]?Math.round(v[0]/v[1]*100)+'%':'—',any=Object.keys(store.stats).length;
+  return `<div class="sec"><div class="row"><h1>測驗</h1><button class="btn" data-act="round">換一組</button></div><div class="chips">${sel('scope','出題範圍',scopes,scope)}${sel('qn','題數',[[10,'10 題'],[20,'20 題'],[50,'50 題'],[0,'全部']],cfg.n)}${sel('qmode','模式',[['practice','練習：答完立刻看解析'],['exam','模擬考：交卷後才看答案']],cfg.mode)}</div><p class="muted" id="score"></p></div>
+${quiz.qs.length?quiz.qs.map((q,i)=>qHtml(q,i)).join(''):'<div class="sec">這個範圍沒有題目。</div>'}
+${quiz.mode==='exam'&&quiz.qs.length?'<div class="sec" id="finbox"><button class="btn" data-act="finish">交卷</button> <span class="muted" id="warn"></span></div>':''}
+<div class="sec"><div class="row"><h2>各科答對率</h2>${any?'<button class="btn ghost" data-act="resetstats">清除統計</button>':''}</div>${table(['階段','科目','題數','已作答','答對率'],S.map(s=>{const v=store.stats[s.id];return[s.stage===1?'一':'二',s.name,cnt(q=>q[0]===s.id),v?v[1]:0,pct(v)]}))}</div>`},
+wrong(){
+  if(!store.wrong.length)return `<div class="sec"><h1>錯題本</h1><p class="muted">目前沒有錯題。測驗時答錯的題目會自動收進來，答對後可以移除。</p><button class="btn" data-go="quiz">開始測驗</button></div>`;
+  return `<div class="sec"><div class="row"><h1>錯題本（${store.wrong.length}）</h1><div><button class="btn" data-go="quiz|wrong">重做錯題</button> <button class="btn ghost" data-act="clear">全部清空</button></div></div><p class="muted">重做時答對會自動從錯題本移除。</p></div>
+${store.wrong.map((w,i)=>`<div class="q"><span class="badge">${esc(w.sub)}</span><h3>${esc(w.stem)}</h3><p><b>正解：</b>${esc(w.opts[0])}</p>${w.exp?`<p class="muted">${esc(w.exp)}</p>`:''}<button class="btn ghost" data-act="rm" data-i="${i}">移除</button></div>`).join('')}`}
+};
+
+/* ===== 測驗 ===== */
+let quiz=null,cfg={n:10,mode:'practice'};
+const mkq=(sub,stem,ok,ds,exp)=>{const opts=shuffle([ok,...ds]),s=S.find(x=>x.name===sub);return{sub,sid:s?s.id:'',stem,opts,a:opts.indexOf(ok),raw:[ok,...ds],exp:exp||''}};
+function pool(scope){
+  if(scope==='wrong')return store.wrong.map(w=>mkq(w.sub,w.stem,w.opts[0],w.opts.slice(1),w.exp));
+  const st=scope==='s1'?1:scope==='s2'?2:0;
+  const cur=Q.filter(q=>scope==='all'||scope==='exam'||q[0]===scope||subj(q[0]).stage===st).map(q=>mkq(subj(q[0]).name,q[1],q[2],q.slice(3,6),q[6]));
+  if(st||scope==='exam')return cur;
+  const pt=s=>s.pts.map(p=>mkq(s.name,`「${p[1].split(p[0]).join('＿＿')}」說的是哪個考點？`,p[0],others(s.pts.map(x=>x[0]),p[0]),'陷阱：'+p[2]));
+  const terms=()=>[...TERMS.map(t=>mkq('牙科英文',`${t[0]} 的中文是？`,t[1],others(TERMS.map(x=>x[1]),t[1]),t[2])),...Object.entries(ABBR).map(([k,v])=>mkq('縮寫',`縮寫 ${k} 代表？`,v,others(Object.values(ABBR),v)))];
+  const dis=()=>DIS.map(d=>mkq('疾病',`臨床線索「${d[2]}」最可能是？`,d[0],others(DIS.map(x=>x[0]),d[0]),'處置：'+d[3]));
+  const mats=()=>MAT.map(m=>mkq('牙材藥理',`「${m[3]}」描述的是？`,m[0]+'（'+m[1]+'）',others(MAT.map(x=>x[0]+'（'+x[1]+'）'),m[0]+'（'+m[1]+'）'),'注意：'+m[4]));
+  if(scope==='terms')return terms();if(scope==='dis')return dis();if(scope==='mats')return mats();
+  if(scope==='all')return [...cur,...S.flatMap(pt),...terms(),...dis(),...mats()];
+  return subj(scope)?[...cur,...pt(subj(scope))]:[];
+}
+function newRound(scope){const seen=new Set(),all=shuffle(pool(scope)).filter(q=>!seen.has(q.stem)&&seen.add(q.stem));quiz={scope,mode:cfg.mode,right:0,done:0,fin:false,t0:Date.now(),secs:0,qs:cfg.n?all.slice(0,cfg.n):all}}
+const qHtml=(q,i)=>`<div class="q" data-q="${i}"><span class="badge">${esc(q.sub)}</span><span class="badge g">第 ${i+1} 題</span><h3>${esc(q.stem)}</h3>${q.opts.map((o,k)=>`<button class="opt" data-opt="${k}">${'ABCD'[k]}. ${esc(o)}</button>`).join('')}<div class="exp"><b>答案 ${'ABCD'[q.a]}。</b>${esc(q.exp)}</div></div>`;
+const fmt=s=>Math.floor(s/60)+' 分 '+(s%60)+' 秒';
+function showScore(){
+  const el=$('#score');if(!el||!quiz)return;const n=quiz.qs.length;
+  if(quiz.mode==='exam'&&!quiz.fin){el.textContent=`模擬考・本組 ${n} 題・已作答 ${quiz.qs.filter(q=>q.pick!=null).length}・交卷後才顯示答案`;return}
+  el.textContent=`本組 ${n} 題・已答 ${quiz.done}・答對 ${quiz.right}`+(quiz.done===n&&n?`・正確率 ${Math.round(quiz.right/n*100)}%`:'')+(quiz.fin?`・用時 ${fmt(quiz.secs)}`:'');
+}
+function grade(box,q,k){
+  box.classList.add('done');box.querySelectorAll('.opt').forEach((b,i)=>{b.disabled=true;b.classList.remove('pick');if(i===q.a)b.classList.add('ok');else if(i===k)b.classList.add('no')});
+  quiz.done++;const ok=k===q.a,at=store.wrong.findIndex(w=>w.stem===q.stem);
+  if(ok){quiz.right++;if(quiz.scope==='wrong'&&at>=0)store.wrong.splice(at,1)}
+  else if(at<0)store.wrong.unshift({sub:q.sub,stem:q.stem,opts:q.raw,exp:q.exp});
+  if(q.sid){const v=store.stats[q.sid]||(store.stats[q.sid]=[0,0]);v[1]++;if(ok)v[0]++}
+}
+function answer(box,k){
+  const q=quiz.qs[+box.dataset.q];if(box.classList.contains('done'))return;
+  if(quiz.mode==='exam'){q.pick=k;box.querySelectorAll('.opt').forEach((b,i)=>b.classList.toggle('pick',i===k));return showScore()}
+  grade(box,q,k);save();showScore();renderNav('quiz');
+}
+function finish(){
+  const left=quiz.qs.filter(q=>q.pick==null).length,w=$('#warn');
+  if(left&&!quiz.warned){quiz.warned=true;w.textContent=`還有 ${left} 題沒作答，再按一次就交卷（未答算錯）`;return}
+  document.querySelectorAll('#view .q').forEach(box=>{const q=quiz.qs[+box.dataset.q];grade(box,q,q.pick==null?-1:q.pick)});
+  quiz.fin=true;quiz.secs=Math.round((Date.now()-quiz.t0)/1000);save();$('#finbox').remove();showScore();renderNav('quiz');scrollTo(0,0);
+}
+
+/* ===== 搜尋 ===== */
+let INDEX=null;
+function buildIndex(){
+  INDEX=[];const add=(tag,title,text,go)=>INDEX.push({tag,title,text,go,hay:(tag+' '+title+' '+text).toLowerCase()});
+  S.forEach(s=>{add('科目',s.name,s.focus,['subjects',s.id]);s.pts.forEach((p,i)=>add(s.name,p[0],p[1]+' 陷阱：'+p[2],['subjects',s.id,`p-${s.id}-${i}`]))});
+  DIS.forEach((d,i)=>add('疾病',d[0],d[1]+'｜'+d[2]+'｜處置：'+d[3],['diseases','','d-'+i]));
+  MAT.forEach((m,i)=>add('牙材藥理',m[0]+'｜'+m[1],m[2]+'｜'+m[3]+' 注意：'+m[4],['materials','','m-'+i]));
+  IMG.forEach((m,i)=>add('影像',m[1]+'｜'+m[0],m[2],['images','','i-'+i]));
+  TERMS.forEach((t,i)=>add('英文',t[0]+'｜'+t[1],t[2],['english','','t-'+i]));
+  Object.entries(ABBR).forEach(([k,v],i)=>add('縮寫',k,v,['english','','a-'+i]));
+  Q.forEach(q=>add('考題・'+subj(q[0]).name,q[1],'答案：'+q[2]+'｜'+q[6],['quiz',q[0]]));
+}
+function doSearch(raw){
+  const ws=raw.toLowerCase().split(/\s+/).filter(Boolean);if(!ws.length)return render();
+  if(!INDEX)buildIndex();
+  const hits=INDEX.filter(x=>ws.every(w=>x.hay.includes(w)));
+  const re=new RegExp('('+ws.map(w=>esc(w).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','gi'),hl=s=>esc(s).replace(re,'<mark>$1</mark>');
+  view.innerHTML=`<div class="sec"><h2>搜尋「${esc(raw)}」</h2><p class="muted">${hits.length} 筆${hits.length>60?'，顯示前 60 筆，可加關鍵字縮小範圍（空白分隔）':''}</p></div><div class="grid">${hits.slice(0,60).map(h=>`<button class="card" data-go="${h.go.join('|')}"><span class="badge">${esc(h.tag)}</span><h3>${hl(h.title)}</h3><p class="muted">${hl(h.text)}</p></button>`).join('')||'<div class="card">找不到結果，換個關鍵字試試。</div>'}</div>`;
+  scrollTo(0,0);
+}
+
+/* ===== 事件 ===== */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-go],[data-say],[data-opt],[data-act],#menu');if(!t)return;
+  if(t.id==='menu')return aside.classList.toggle('open');
+  if(t.dataset.say)return speak(t.dataset.say);
+  if(t.dataset.go){const[v,a,an]=t.dataset.go.split('|');if(v==='quiz')quiz=null;return go(v,a,an)}
+  if(t.dataset.opt)return answer(t.closest('.q'),+t.dataset.opt);
+  const act=t.dataset.act;
+  if(act==='round'){quiz=null;render()}
+  if(act==='finish')finish();
+  if(act==='resetstats'&&confirm('確定清除各科答對率統計？')){store.stats={};save();render()}
+  if(act==='rm'){store.wrong.splice(+t.dataset.i,1);save();render()}
+  if(act==='clear'&&confirm('確定清空全部錯題？')){store.wrong=[];save();render()}
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset.known){if(t.checked)store.known[t.dataset.known]=1;else delete store.known[t.dataset.known];save();t.closest('.card').classList.toggle('known',t.checked)}
+  if(t.id==='scope'){quiz=null;go('quiz',t.value==='all'?'':t.value)}
+  if(t.id==='qn'){cfg.n=+t.value;quiz=null;render()}
+  if(t.id==='qmode'){cfg.mode=t.value;quiz=null;render()}
+});
+let timer;searchBox.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(()=>doSearch(searchBox.value.trim()),120)});
+document.addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement!==searchBox){e.preventDefault();searchBox.focus()}if(e.key==='Escape'&&searchBox.value){searchBox.value='';render()}});
+addEventListener('hashchange',render);
+render();
+</script>
+</body>
+</html>

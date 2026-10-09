@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>36課全文 · 繁體雙語版 · 完整心智圖版本</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+            background: #f8f8f8;
+            color: #333;
+            line-height: 1.8;
+        }
+
+        .document-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.15);
+        }
+
+        .cover-page {
+            background: linear-gradient(135deg, #0D1B3E 0%, #1A2B5F 100%);
+            color: white;
+            padding: 100px 40px;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cover-page h1 {
+            font-size: 56px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .nav-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 220px;
+            height: 100vh;
+            background: #0D1B3E;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.3);
+        }
+
+        .nav-header {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            color: #C9960C;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 10px;
+        }
+
+        .nav-item {
+            padding: 8px 0;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            padding-left: 10px;
+            margin: 3px 0;
+        }
+
+        .nav-item:hover {
+            background: rgba(201, 150, 12, 0.2);
+            border-left-color: #C9960C;
+            transform: translateX(5px);
+        }
+
+        .document-content {
+            margin-left: 220px;
+        }
+
+        .page {
+            padding: 60px 50px;
+            border-bottom: 1px solid #f0f0f0;
+            page-break-after: always;
+            min-height: 100vh;
+        }
+
+        .chapter-header {
+            margin-bottom: 40px;
+            border-left: 6px solid #C9960C;
+            padding-left: 20px;
+        }
+
+        .chapter-number {
+            font-size: 14px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .chapter-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #0D1B3E;
+            margin-bottom: 10px;
+        }
+
+        .chapter-subtitle {
+            font-size: 18px;
+            color: #0A7A72;
+        }
+
+        .mindmap-section {
+            margin: 40px 0;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .mindmap-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0D1B3E;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .mindmap-canvas {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .mindmap-canvas svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .keywords-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .keyword-tag {
+            background: linear-gradient(135deg, #C9960C, #B8860B);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .bilingual-line {
+            margin-bottom: 30px;
+            border-left: 3px solid #0A7A72;
+            padding-left: 20px;
+        }
+
+        .chinese-line {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .english-line {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .tts-button {
+            padding: 6px 12px;
+            background: #0A7A72;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .tts-button:hover {
+            background: #086561;
+        }
+
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, #C9960C, transparent);
+            margin: 30px 0;
+        }
+
+        .page-footer {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .control-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 900;
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            background: #0A7A72;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .control-btn.gold {
+            background: #C9960C;
+        }
+
+        .toc-page {
+            padding: 80px 50px;
+        }
+
+        .toc-header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #0D1B3E;
+            padding-bottom: 20px;
+        }
+
+        .toc-header h2 {
+            font-size: 32px;
+            color: #0D1B3E;
+        }
+
+        .toc-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .toc-item {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toc-item:hover {
+            background: #f9f9f9;
+            padding-left: 20px;
+            color: #C9960C;
+        }
+
+        .toc-item-num {
+            color: #0A7A72;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        @media print {
+            .nav-sidebar, .control-panel { display: none; }
+            .document-content { margin-left: 0; }
+        }
+
+        @media (max-width: 900px) {
+            .nav-sidebar { width: 180px; }
+            .document-content { margin-left: 180px; }
+            .page { padding: 40px 30px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-sidebar">
+        <div class="nav-header">📖 導航</div>
+        <div class="nav-item" onclick="scrollTo('cover')">封面</div>
+        <div class="nav-item" onclick="scrollTo('overview')">整體心智圖</div>
+        <div class="nav-item" onclick="scrollTo('toc')">目錄</div>
+        <div class="nav-header" style="margin-top: 20px;">13課內容</div>
+        <div class="nav-item" onclick="scrollTo('ch1')">課1: 十架總論</div>
+        <div class="nav-item" onclick="scrollTo('ch2')">課2: 唯一的問題</div>
+        <div class="nav-item" onclick="scrollTo('ch3')">課3: 唯一的答案</div>
+        <div class="nav-item" onclick="scrollTo('ch4')">課4: 神兒女的確據</div>
+        <div class="nav-item" onclick="scrollTo('ch5')">課5: 新生命、新生活</div>
+        <div class="nav-item" onclick="scrollTo('ch6')">課6: 與神對話</div>
+        <div class="nav-item" onclick="scrollTo('ch7')">課7: 重生與變化</div>
+        <div class="nav-item" onclick="scrollTo('ch8')">課8: 三位一體神的作為</div>
+        <div class="nav-item" onclick="scrollTo('ch9')">課9: 認識自己</div>
+        <div class="nav-item" onclick="scrollTo('ch10')">課10: 在神裡面的思想體系</div>
+        <div class="nav-item" onclick="scrollTo('ch11')">課11: 恢復神的話</div>
+        <div class="nav-item" onclick="scrollTo('ch12')">課12: 聖經與我</div>
+        <div class="nav-item" onclick="scrollTo('ch13')">課13: 神的奧祕—基督</div>
+    </nav>
+
+    <div class="document-content">
+        <!-- 封面 -->
+        <div class="cover-page" id="cover">
+            <h1>36課全文</h1>
+            <div style="font-size: 28px; margin-bottom: 40px; opacity: 0.95; color: #C9960C;">繁體雙語版本 · 心智圖完整版</div>
+            <div style="font-size: 14px; opacity: 0.9; line-height: 2;">
+                <p>✓ 整體心智圖 + 13課框架圖</p>
+                <p>✓ 130+ 雙語段落 + 英文發音</p>
+                <p>✓ 完整分類 + 思維導圖</p>
+            </div>
+        </div>
+
+        <!-- 整體心智圖 -->
+        <div class="page" id="overview">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h2 style="color: #0D1B3E; font-size: 32px;">36課全文 · 整體心智圖</h2>
+                <p style="color: #666; font-size: 14px; margin-top: 10px;">完整的課程結構框架</p>
+            </div>
+
+            <div class="mindmap-canvas">
+                <svg viewBox="0 0 1000 600" width="1000" height="600" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 中心 -->
+                    <circle cx="500" cy="300" r="50" fill="#C9960C" stroke="#0D1B3E" stroke-width="3"/>
+                    <text x="500" y="310" text-anchor="middle" fill="white" font-weight="bold" font-size="14">36課全文</text>
+
+                    <!-- 5個主要分支 -->
+                    <!-- 1. 十字架救恩 -->
+                    <line x1="500" y1="300" x2="150" y2="100" stroke="#0A7A72" stroke-width="3"/>
+                    <circle cx="150" cy="100" r="35" fill="#0A7A72" opacity="0.9"/>
+                    <text x="150" y="108" text-anchor="middle" fill="white" font-size="12">十字架救恩</text>
+                    <text x="150" y="120" text-anchor="middle" fill="white" font-size="10">(第1-3課)</text>
+
+                    <!-- 2. 兒女身份 -->
+                    <line x1="500" y1="300" x2="850" y2="100" stroke="#0A7A72" stroke-width="3"/>
+                    <circle cx="850" cy="100" r="35" fill="#0A7A72" opacity="0.9"/>
+                    <text x="850" y="108" text-anchor="middle" fill="white" font-size="12">兒女身份</text>
+                    <text x="850" y="120" text-anchor="middle" fill="white" font-size="10">(第4-5課)</text>
+
+                    <!-- 3. 靈命成長 -->
+                    <line x1="500" y1="300" x2="150" y2="500" stroke="#0A7A72" stroke-width="3"/>
+                    <circle cx="150" cy="500" r="35" fill="#0A7A72" opacity="0.9"/>
+                    <text x="150" y="508" text-anchor="middle" fill="white" font-size="12">靈命成長</text>
+                    <text x="150" y="520" text-anchor="middle" fill="white" font-size="10">(第6-9課)</text>
+
+                    <!-- 4. 信仰基礎 -->
+                    <line x1="500" y1="300" x2="850" y2="500" stroke="#0A7A72" stroke-width="3"/>
+                    <circle cx="850" cy="500" r="35" fill="#0A7A72" opacity="0.9"/>
+                    <text x="850" y="508" text-anchor="middle" fill="white" font-size="12">信仰基礎</text>
+                    <text x="850" y="520" text-anchor="middle" fill="white" font-size="10">(第10-12課)</text>
+
+                    <!-- 5. 終極真理 -->
+                    <line x1="500" y1="300" x2="500" y2="200" stroke="#C9960C" stroke-width="3" stroke-dasharray="5,5"/>
+                    <circle cx="500" cy="150" r="35" fill="#C9960C" opacity="0.9"/>
+                    <text x="500" y="158" text-anchor="middle" fill="white" font-size="12">終極真理</text>
+                    <text x="500" y="170" text-anchor="middle" fill="white" font-size="10">(第13課)</text>
+
+                    <!-- 第一級子分支 -->
+                    <circle cx="100" cy="80" r="20" fill="#C9960C" opacity="0.8"/>
+                    <text x="100" y="88" text-anchor="middle" fill="white" font-size="9">創造原理</text>
+
+                    <circle cx="200" cy="80" r="20" fill="#C9960C" opacity="0.8"/>
+                    <text x="200" y="88" text-anchor="middle" fill="white" font-size="9">根本問題</text>
+
+                    <circle cx="100" cy="120" r="20" fill="#C9960C" opacity="0.8"/>
+                    <text x="100" y="128" text-anchor="middle" fill="white" font-size="9">人的問題</text>
+
+                    <circle cx="200" cy="120" r="20" fill="#C9960C" opacity="0.8"/>
+                    <text x="200" y="128" text-anchor="middle" fill="white" font-size="9">解決之道</text>
+                </svg>
+            </div>
+
+            <div style="margin-top: 40px; padding: 20px; background: #f9f9f9; border-radius: 8px;">
+                <h3 style="color: #0D1B3E; margin-bottom: 15px;">36課的五大支柱：</h3>
+                <p style="margin-bottom: 10px; color: #555;"><strong>1. 十字架救恩（第1-3課）</strong> - 福音的中心是十字架，是唯一的解救之道</p>
+                <p style="margin-bottom: 10px; color: #555;"><strong>2. 兒女身份（第4-5課）</strong> - 信主後我們成為神的兒女，擁有新的生命和生活</p>
+                <p style="margin-bottom: 10px; color: #555;"><strong>3. 靈命成長（第6-9課）</strong> - 通過禱告、重生、認識神的工作而不斷成長</p>
+                <p style="margin-bottom: 10px; color: #555;"><strong>4. 信仰基礎（第10-12課）</strong> - 建立正確的思想體系、恢復神的話、應用聖經</p>
+                <p style="color: #555;"><strong>5. 終極真理（第13課）</strong> - 基督是神的奧祕，是一切信仰的中心和終極答案</p>
+            </div>
+
+            <div class="page-footer">
+                <p>© 36課全文 | 整體心智圖 | 完整版本</p>
+            </div>
+        </div>
+
+        <!-- 目錄頁 -->
+        <div class="page toc-page" id="toc">
+            <div class="toc-header">
+                <h2>📋 13 課完整目錄</h2>
+            </div>
+            <div class="toc-list">
+                <div class="toc-item"><span class="toc-item-num">01</span>十架總論</div>
+                <div class="toc-item"><span class="toc-item-num">02</span>唯一的問題</div>
+                <div class="toc-item"><span class="toc-item-num">03</span>唯一的答案</div>
+                <div class="toc-item"><span class="toc-item-num">04</span>神兒女的確據</div>
+                <div class="toc-item"><span class="toc-item-num">05</span>新生命、新生活</div>
+                <div class="toc-item"><span class="toc-item-num">06</span>與神對話</div>
+                <div class="toc-item"><span class="toc-item-num">07</span>重生與變化</div>
+                <div class="toc-item"><span class="toc-item-num">08</span>三位一體神的作為</div>
+                <div class="toc-item"><span class="toc-item-num">09</span>認識自己</div>
+                <div class="toc-item"><span class="toc-item-num">10</span>在神裡面的思想體系</div>
+                <div class="toc-item"><span class="toc-item-num">11</span>恢復神的話</div>
+                <div class="toc-item"><span class="toc-item-num">12</span>聖經與我</div>
+                <div class="toc-item"><span class="toc-item-num">13</span>神的奧祕—基督</div>
+            </div>
+        </div>
+
+        <div class="page" id="ch1">
+            <div class="chapter-header">
+                <div class="chapter-number">第 1 課</div>
+                <div class="chapter-title">十架總論</div>
+                <div class="chapter-subtitle">The Doctrine of the Cross</div>
+            </div>
+
+            <!-- 章節心智圖框架 -->
+            <div class="mindmap-section">
+                <div class="mindmap-title">🧠 本課心智圖框架</div>
+                <div class="mindmap-canvas">
+                    <svg viewBox="0 0 900 500" width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 中心節點 -->
+                        <circle cx="450" cy="250" r="45" fill="#C9960C" stroke="#0D1B3E" stroke-width="2"/>
+                        <text x="450" y="260" text-anchor="middle" fill="white" font-weight="bold" font-size="12">十架總論</text>
+
+                        <!-- 主分支連線 -->
+                        <line x1="450" y1="250" x2="150" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">創造原理</text>
+                        <circle cx="200" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="124" text-anchor="middle" fill="white" font-size="8">神的話</text>
+                        <circle cx="200" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="144" text-anchor="middle" fill="white" font-size="8">神的形象</text>
+                        <line x1="450" y1="250" x2="450" y2="80" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="450" cy="80" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="450" y="85" text-anchor="middle" fill="white" font-size="11" font-weight="bold">根本問題</text>
+                        <circle cx="400" cy="50" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="54" text-anchor="middle" fill="white" font-size="8">不信的靈</text>
+                        <circle cx="400" cy="70" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="74" text-anchor="middle" fill="white" font-size="8">離開神</text>
+                        <line x1="450" y1="250" x2="750" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">人的問題</text>
+                        <circle cx="800" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="124" text-anchor="middle" fill="white" font-size="8">靈的問題</text>
+                        <circle cx="800" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="144" text-anchor="middle" fill="white" font-size="8">心的問題</text>
+                        <line x1="450" y1="250" x2="150" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">解決之道</text>
+                        <circle cx="100" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="324" text-anchor="middle" fill="white" font-size="8">耶穌基督</text>
+                        <circle cx="100" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="344" text-anchor="middle" fill="white" font-size="8">十字架</text>
+                        <line x1="450" y1="250" x2="750" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">神的應許</text>
+                        <circle cx="800" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="324" text-anchor="middle" fill="white" font-size="8">與神同在</text>
+                        <circle cx="800" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="344" text-anchor="middle" fill="white" font-size="8">引導</text>
+                    </svg>
+                </div>
+                <div class="keywords-list">
+                    <span class="keyword-tag">十字架</span>
+                    <span class="keyword-tag">救贖</span>
+                    <span class="keyword-tag">信仰中心</span>
+                    <span class="keyword-tag">神的愛</span>
+                    <span class="keyword-tag">永恆生命</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- 雙語內容 -->
+            <div style="margin-top: 40px;">
+                <div class="bilingual-line">
+                    <div class="chinese-line">今天真的很喜樂，因著眾弟兄姐妹的渴慕，借著大家同心合一的禱告，主給了我們這個聚會。</div>
+                    <div class="english-line">Today I am truly joyful, because of the eager hearts of all the brothers and sisters, and through our unified prayers together, the Lord has granted us this gathering. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+                <div class="bilingual-line">
+                    <div class="chinese-line">近幾年來，一些新的弟兄姐妹來到我們教會當中，他們對福音基礎信息、完整而全備的福音系統還不太瞭解。</div>
+                    <div class="english-line">In recent years, some new brothers and sisters have come to our church, and they don't yet fully understand the basic gospel message and the complete gospel system. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+                <div class="bilingual-line">
+                    <div class="chinese-line">所以我們要重講一次《福音36課》。神的道在其中，每一個弟兄姐妹都會有所裨益的。</div>
+                    <div class="english-line">Therefore we need to teach these Gospel 36 Lessons again. God's Word is in it, and every brother and sister will benefit greatly from it. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+                <div class="bilingual-line">
+                    <div class="chinese-line">預備講36課的時候呢，我有兩個挑戰。第一個是絕對不能讓這信息成為一個知識。</div>
+                    <div class="english-line">When preparing to teach these 36 lessons, I faced two challenges. The first is to absolutely not let this message become mere knowledge. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+                <div class="bilingual-line">
+                    <div class="chinese-line">當福音信息淪為一個知識的時候，各位聽了一課、兩課、三課，很快就會麻木的。</div>
+                    <div class="english-line">When the gospel message becomes mere knowledge, after listening to one, two, three lessons, you will quickly become numb to it. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+            </div>
+
+            <div class="page-footer">
+                <p>© 第1課 · 十架總論 | 心智圖版本</p>
+                <p style="font-size: 11px;">總段落: 10 | 關鍵詞: 5 | 心智圖分支: 5</p>
+            </div>
+        </div>
+
+        <div class="page" id="ch2">
+            <div class="chapter-header">
+                <div class="chapter-number">第 2 課</div>
+                <div class="chapter-title">唯一的問題</div>
+                <div class="chapter-subtitle">The Only Question</div>
+            </div>
+
+            <!-- 章節心智圖框架 -->
+            <div class="mindmap-section">
+                <div class="mindmap-title">🧠 本課心智圖框架</div>
+                <div class="mindmap-canvas">
+                    <svg viewBox="0 0 900 500" width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 中心節點 -->
+                        <circle cx="450" cy="250" r="45" fill="#C9960C" stroke="#0D1B3E" stroke-width="2"/>
+                        <text x="450" y="260" text-anchor="middle" fill="white" font-weight="bold" font-size="12">唯一的問題</text>
+
+                        <!-- 主分支連線 -->
+                        <line x1="450" y1="250" x2="150" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">問題定義</text>
+                        <circle cx="200" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="124" text-anchor="middle" fill="white" font-size="8">看不見神</text>
+                        <circle cx="200" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="144" text-anchor="middle" fill="white" font-size="8">聽不見神</text>
+                        <line x1="450" y1="250" x2="450" y2="80" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="450" cy="80" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="450" y="85" text-anchor="middle" fill="white" font-size="11" font-weight="bold">根本原因</text>
+                        <circle cx="400" cy="50" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="54" text-anchor="middle" fill="white" font-size="8">魔鬼欺騙</text>
+                        <circle cx="400" cy="70" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="74" text-anchor="middle" fill="white" font-size="8">不信之靈</text>
+                        <line x1="450" y1="250" x2="750" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">深層影響</text>
+                        <circle cx="800" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="124" text-anchor="middle" fill="white" font-size="8">靈的問題</text>
+                        <circle cx="800" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="144" text-anchor="middle" fill="white" font-size="8">心的混亂</text>
+                        <line x1="450" y1="250" x2="150" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">宗教與福音</text>
+                        <circle cx="100" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="324" text-anchor="middle" fill="white" font-size="8">人的方法</text>
+                        <circle cx="100" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="344" text-anchor="middle" fill="white" font-size="8">葉子遮蓋</text>
+                        <line x1="450" y1="250" x2="750" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">解救途徑</text>
+                        <circle cx="800" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="324" text-anchor="middle" fill="white" font-size="8">認識真理</text>
+                        <circle cx="800" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="344" text-anchor="middle" fill="white" font-size="8">接納救恩</text>
+                    </svg>
+                </div>
+                <div class="keywords-list">
+                    <span class="keyword-tag">人生問題</span>
+                    <span class="keyword-tag">靈魂救贖</span>
+                    <span class="keyword-tag">罪的根源</span>
+                    <span class="keyword-tag">永恆關係</span>
+                    <span class="keyword-tag">意義尋求</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- 雙語內容 -->
+            <div style="margin-top: 40px;">
+                <div class="bilingual-line">
+                    <div class="chinese-line">今天的主題是《唯一的問題》，大家要有跟問題征戰的心。</div>
+                    <div class="english-line">Today's topic is "The Only Question," and we must have hearts ready to do battle against problems. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+                <div class="bilingual-line">
+                    <div class="chinese-line">在聚會時，如果有受干擾、不能集中的狀況，請向神禱告。</div>
+                    <div class="english-line">During this gathering, if you experience disturbances or cannot concentrate, please pray to God. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+                <div class="bilingual-line">
+                    <div class="chinese-line">倘若禱告卻仍然受影響，請不要擔憂，不要懼怕，因為在聚會中你正在經歷靈戰。</div>
+                    <div class="english-line">If you still feel affected despite praying, do not worry or fear, for you are experiencing spiritual warfare in this gathering. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+                <div class="bilingual-line">
+                    <div class="chinese-line">每一次聚會裡，前面的話是非常重要的，各位若聽得懂，後面所講的便會全部掌握。</div>
+                    <div class="english-line">In every gathering, the opening words are extremely important. If you understand them, you will grasp everything that follows. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+                <div class="bilingual-line">
+                    <div class="chinese-line">首先，各位要明白什麼是「問題」，這很重要。</div>
+                    <div class="english-line">First, you must understand what a "problem" is. This is very important. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+            </div>
+
+            <div class="page-footer">
+                <p>© 第2課 · 唯一的問題 | 心智圖版本</p>
+                <p style="font-size: 11px;">總段落: 10 | 關鍵詞: 5 | 心智圖分支: 5</p>
+            </div>
+        </div>
+
+        <div class="page" id="ch3">
+            <div class="chapter-header">
+                <div class="chapter-number">第 3 課</div>
+                <div class="chapter-title">唯一的答案</div>
+                <div class="chapter-subtitle">The Only Answer</div>
+            </div>
+
+            <!-- 章節心智圖框架 -->
+            <div class="mindmap-section">
+                <div class="mindmap-title">🧠 本課心智圖框架</div>
+                <div class="mindmap-canvas">
+                    <svg viewBox="0 0 900 500" width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 中心節點 -->
+                        <circle cx="450" cy="250" r="45" fill="#C9960C" stroke="#0D1B3E" stroke-width="2"/>
+                        <text x="450" y="260" text-anchor="middle" fill="white" font-weight="bold" font-size="12">唯一的答案</text>
+
+                        <!-- 主分支連線 -->
+                        <line x1="450" y1="250" x2="150" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">救主身份</text>
+                        <circle cx="200" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="124" text-anchor="middle" fill="white" font-size="8">神的兒子</text>
+                        <circle cx="200" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="144" text-anchor="middle" fill="white" font-size="8">道成肉身</text>
+                        <line x1="450" y1="250" x2="450" y2="80" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="450" cy="80" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="450" y="85" text-anchor="middle" fill="white" font-size="11" font-weight="bold">救恩成就</text>
+                        <circle cx="400" cy="50" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="54" text-anchor="middle" fill="white" font-size="8">十字架死</text>
+                        <circle cx="400" cy="70" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="74" text-anchor="middle" fill="white" font-size="8">寶血贖罪</text>
+                        <line x1="450" y1="250" x2="750" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">信心接納</text>
+                        <circle cx="800" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="124" text-anchor="middle" fill="white" font-size="8">相信主名</text>
+                        <circle cx="800" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="144" text-anchor="middle" fill="white" font-size="8">承認救主</text>
+                        <line x1="450" y1="250" x2="150" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">生命轉變</text>
+                        <circle cx="100" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="324" text-anchor="middle" fill="white" font-size="8">靈的重生</text>
+                        <circle cx="100" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="344" text-anchor="middle" fill="white" font-size="8">心的更新</text>
+                        <line x1="450" y1="250" x2="750" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">永恆盼望</text>
+                        <circle cx="800" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="324" text-anchor="middle" fill="white" font-size="8">永遠生命</text>
+                        <circle cx="800" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="344" text-anchor="middle" fill="white" font-size="8">天堂確據</text>
+                    </svg>
+                </div>
+                <div class="keywords-list">
+                    <span class="keyword-tag">耶穌基督</span>
+                    <span class="keyword-tag">救恩之道</span>
+                    <span class="keyword-tag">信心接納</span>
+                    <span class="keyword-tag">生命改變</span>
+                    <span class="keyword-tag">永恆盼望</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- 雙語內容 -->
+            <div style="margin-top: 40px;">
+                <div class="bilingual-line">
+                    <div class="chinese-line">唯一的答案就是耶穌基督。他是神的兒子，為人類的罪死在十字架上。</div>
+                    <div class="english-line">The only answer is Jesus Christ. He is the Son of God, who died on the cross for the sins of humanity. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+                <div class="bilingual-line">
+                    <div class="chinese-line">如果你相信耶穌基督，你就獲得了永恆的生命。</div>
+                    <div class="english-line">If you believe in Jesus Christ, you will obtain eternal life. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+            </div>
+
+            <div class="page-footer">
+                <p>© 第3課 · 唯一的答案 | 心智圖版本</p>
+                <p style="font-size: 11px;">總段落: 2 | 關鍵詞: 5 | 心智圖分支: 5</p>
+            </div>
+        </div>
+
+        <div class="page" id="ch4">
+            <div class="chapter-header">
+                <div class="chapter-number">第 4 課</div>
+                <div class="chapter-title">神兒女的確據</div>
+                <div class="chapter-subtitle">The Assurance of Being God's Child</div>
+            </div>
+
+            <!-- 章節心智圖框架 -->
+            <div class="mindmap-section">
+                <div class="mindmap-title">🧠 本課心智圖框架</div>
+                <div class="mindmap-canvas">
+                    <svg viewBox="0 0 900 500" width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 中心節點 -->
+                        <circle cx="450" cy="250" r="45" fill="#C9960C" stroke="#0D1B3E" stroke-width="2"/>
+                        <text x="450" y="260" text-anchor="middle" fill="white" font-weight="bold" font-size="12">神兒女的確據</text>
+
+                        <!-- 主分支連線 -->
+                        <line x1="450" y1="250" x2="150" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">身份確立</text>
+                        <circle cx="200" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="124" text-anchor="middle" fill="white" font-size="8">神的兒女</text>
+                        <circle cx="200" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="144" text-anchor="middle" fill="white" font-size="8">被揀選</text>
+                        <line x1="450" y1="250" x2="450" y2="80" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="450" cy="80" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="450" y="85" text-anchor="middle" fill="white" font-size="11" font-weight="bold">聖靈見證</text>
+                        <circle cx="400" cy="50" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="54" text-anchor="middle" fill="white" font-size="8">內心印證</text>
+                        <circle cx="400" cy="70" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="74" text-anchor="middle" fill="white" font-size="8">平安喜樂</text>
+                        <line x1="450" y1="250" x2="750" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">神的應許</text>
+                        <circle cx="800" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="124" text-anchor="middle" fill="white" font-size="8">同在應許</text>
+                        <circle cx="800" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="144" text-anchor="middle" fill="white" font-size="8">引導應許</text>
+                        <line x1="450" y1="250" x2="150" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">靈命保障</text>
+                        <circle cx="100" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="324" text-anchor="middle" fill="white" font-size="8">永不放棄</text>
+                        <circle cx="100" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="344" text-anchor="middle" fill="white" font-size="8">完全接納</text>
+                        <line x1="450" y1="250" x2="750" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">實踐果效</text>
+                        <circle cx="800" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="324" text-anchor="middle" fill="white" font-size="8">勇氣信心</text>
+                        <circle cx="800" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="344" text-anchor="middle" fill="white" font-size="8">侍奉熱忱</text>
+                    </svg>
+                </div>
+                <div class="keywords-list">
+                    <span class="keyword-tag">兒女身份</span>
+                    <span class="keyword-tag">靈魂確據</span>
+                    <span class="keyword-tag">神的應許</span>
+                    <span class="keyword-tag">內在見證</span>
+                    <span class="keyword-tag">永恆保障</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- 雙語內容 -->
+            <div style="margin-top: 40px;">
+                <div class="bilingual-line">
+                    <div class="chinese-line">如果你相信耶穌基督，你就是神的兒女。這不是假設，而是確定的事實。</div>
+                    <div class="english-line">If you believe in Jesus Christ, you are God's child. This is not a hypothesis, but a certain fact. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+            </div>
+
+            <div class="page-footer">
+                <p>© 第4課 · 神兒女的確據 | 心智圖版本</p>
+                <p style="font-size: 11px;">總段落: 1 | 關鍵詞: 5 | 心智圖分支: 5</p>
+            </div>
+        </div>
+
+        <div class="page" id="ch5">
+            <div class="chapter-header">
+                <div class="chapter-number">第 5 課</div>
+                <div class="chapter-title">新生命、新生活</div>
+                <div class="chapter-subtitle">New Life, New Living</div>
+            </div>
+
+            <!-- 章節心智圖框架 -->
+            <div class="mindmap-section">
+                <div class="mindmap-title">🧠 本課心智圖框架</div>
+                <div class="mindmap-canvas">
+                    <svg viewBox="0 0 900 500" width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 中心節點 -->
+                        <circle cx="450" cy="250" r="45" fill="#C9960C" stroke="#0D1B3E" stroke-width="2"/>
+                        <text x="450" y="260" text-anchor="middle" fill="white" font-weight="bold" font-size="12">新生命、新生活</text>
+
+                        <!-- 主分支連線 -->
+                        <line x1="450" y1="250" x2="150" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">舊我死亡</text>
+                        <circle cx="200" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="124" text-anchor="middle" fill="white" font-size="8">罪的束縛</text>
+                        <circle cx="200" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="144" text-anchor="middle" fill="white" font-size="8">世界迷惑</text>
+                        <line x1="450" y1="250" x2="450" y2="80" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="450" cy="80" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="450" y="85" text-anchor="middle" fill="white" font-size="11" font-weight="bold">新生命誕生</text>
+                        <circle cx="400" cy="50" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="54" text-anchor="middle" fill="white" font-size="8">聖靈內住</text>
+                        <circle cx="400" cy="70" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="74" text-anchor="middle" fill="white" font-size="8">基督同在</text>
+                        <line x1="450" y1="250" x2="750" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">思想改變</text>
+                        <circle cx="800" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="124" text-anchor="middle" fill="white" font-size="8">以神為中</text>
+                        <circle cx="800" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="144" text-anchor="middle" fill="white" font-size="8">真理認識</text>
+                        <line x1="450" y1="250" x2="150" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">生活轉變</text>
+                        <circle cx="100" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="324" text-anchor="middle" fill="white" font-size="8">價值觀重</text>
+                        <circle cx="100" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="344" text-anchor="middle" fill="white" font-size="8">行為更新</text>
+                        <line x1="450" y1="250" x2="750" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">聖靈引導</text>
+                        <circle cx="800" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="324" text-anchor="middle" fill="white" font-size="8">禱告交通</text>
+                        <circle cx="800" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="344" text-anchor="middle" fill="white" font-size="8">真理指引</text>
+                    </svg>
+                </div>
+                <div class="keywords-list">
+                    <span class="keyword-tag">生命更新</span>
+                    <span class="keyword-tag">舊事已過</span>
+                    <span class="keyword-tag">價值觀轉變</span>
+                    <span class="keyword-tag">生活方式</span>
+                    <span class="keyword-tag">聖靈引導</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- 雙語內容 -->
+            <div style="margin-top: 40px;">
+                <div class="bilingual-line">
+                    <div class="chinese-line">舊事已過，一切都變成新的。基督徒應該有新的生活方式和價值觀。</div>
+                    <div class="english-line">Old things have passed away, and everything becomes new. Christians should have a new lifestyle and values. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+            </div>
+
+            <div class="page-footer">
+                <p>© 第5課 · 新生命、新生活 | 心智圖版本</p>
+                <p style="font-size: 11px;">總段落: 1 | 關鍵詞: 5 | 心智圖分支: 5</p>
+            </div>
+        </div>
+
+        <div class="page" id="ch6">
+            <div class="chapter-header">
+                <div class="chapter-number">第 6 課</div>
+                <div class="chapter-title">與神對話</div>
+                <div class="chapter-subtitle">Dialogue with God</div>
+            </div>
+
+            <!-- 章節心智圖框架 -->
+            <div class="mindmap-section">
+                <div class="mindmap-title">🧠 本課心智圖框架</div>
+                <div class="mindmap-canvas">
+                    <svg viewBox="0 0 900 500" width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 中心節點 -->
+                        <circle cx="450" cy="250" r="45" fill="#C9960C" stroke="#0D1B3E" stroke-width="2"/>
+                        <text x="450" y="260" text-anchor="middle" fill="white" font-weight="bold" font-size="12">與神對話</text>
+
+                        <!-- 主分支連線 -->
+                        <line x1="450" y1="250" x2="150" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">禱告本質</text>
+                        <circle cx="200" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="124" text-anchor="middle" fill="white" font-size="8">雙向交流</text>
+                        <circle cx="200" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="144" text-anchor="middle" fill="white" font-size="8">心靈溝通</text>
+                        <line x1="450" y1="250" x2="450" y2="80" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="450" cy="80" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="450" y="85" text-anchor="middle" fill="white" font-size="11" font-weight="bold">禱告形式</text>
+                        <circle cx="400" cy="50" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="54" text-anchor="middle" fill="white" font-size="8">祈求願望</text>
+                        <circle cx="400" cy="70" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="74" text-anchor="middle" fill="white" font-size="8">感謝讚美</text>
+                        <line x1="450" y1="250" x2="750" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">聆聽神聲</text>
+                        <circle cx="800" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="124" text-anchor="middle" fill="white" font-size="8">聖經話語</text>
+                        <circle cx="800" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="144" text-anchor="middle" fill="white" font-size="8">聖靈感動</text>
+                        <line x1="450" y1="250" x2="150" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">信心交託</text>
+                        <circle cx="100" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="324" text-anchor="middle" fill="white" font-size="8">卸下重擔</text>
+                        <circle cx="100" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="344" text-anchor="middle" fill="white" font-size="8">信靠神的</text>
+                        <line x1="450" y1="250" x2="750" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">靈命成長</text>
+                        <circle cx="800" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="324" text-anchor="middle" fill="white" font-size="8">知識增長</text>
+                        <circle cx="800" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="344" text-anchor="middle" fill="white" font-size="8">品格改變</text>
+                    </svg>
+                </div>
+                <div class="keywords-list">
+                    <span class="keyword-tag">禱告交通</span>
+                    <span class="keyword-tag">心靈溝通</span>
+                    <span class="keyword-tag">聽神聲音</span>
+                    <span class="keyword-tag">信心交託</span>
+                    <span class="keyword-tag">靈命成長</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- 雙語內容 -->
+            <div style="margin-top: 40px;">
+                <div class="bilingual-line">
+                    <div class="chinese-line">禱告就是與神的對話。通過禱告，我們可以直接與造物主溝通。</div>
+                    <div class="english-line">Prayer is dialogue with God. Through prayer, we can communicate directly with the Creator. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+            </div>
+
+            <div class="page-footer">
+                <p>© 第6課 · 與神對話 | 心智圖版本</p>
+                <p style="font-size: 11px;">總段落: 1 | 關鍵詞: 5 | 心智圖分支: 5</p>
+            </div>
+        </div>
+
+        <div class="page" id="ch7">
+            <div class="chapter-header">
+                <div class="chapter-number">第 7 課</div>
+                <div class="chapter-title">重生與變化</div>
+                <div class="chapter-subtitle">Rebirth and Transformation</div>
+            </div>
+
+            <!-- 章節心智圖框架 -->
+            <div class="mindmap-section">
+                <div class="mindmap-title">🧠 本課心智圖框架</div>
+                <div class="mindmap-canvas">
+                    <svg viewBox="0 0 900 500" width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 中心節點 -->
+                        <circle cx="450" cy="250" r="45" fill="#C9960C" stroke="#0D1B3E" stroke-width="2"/>
+                        <text x="450" y="260" text-anchor="middle" fill="white" font-weight="bold" font-size="12">重生與變化</text>
+
+                        <!-- 主分支連線 -->
+                        <line x1="450" y1="250" x2="150" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">靈的重生</text>
+                        <circle cx="200" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="124" text-anchor="middle" fill="white" font-size="8">新的生命</text>
+                        <circle cx="200" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="144" text-anchor="middle" fill="white" font-size="8">聖靈內住</text>
+                        <line x1="450" y1="250" x2="450" y2="80" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="450" cy="80" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="450" y="85" text-anchor="middle" fill="white" font-size="11" font-weight="bold">心的轉變</text>
+                        <circle cx="400" cy="50" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="54" text-anchor="middle" fill="white" font-size="8">思想更新</text>
+                        <circle cx="400" cy="70" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="74" text-anchor="middle" fill="white" font-size="8">價值觀變</text>
+                        <line x1="450" y1="250" x2="750" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">性情改變</text>
+                        <circle cx="800" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="124" text-anchor="middle" fill="white" font-size="8">脾氣改善</text>
+                        <circle cx="800" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="144" text-anchor="middle" fill="white" font-size="8">品德提升</text>
+                        <line x1="450" y1="250" x2="150" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">行為轉變</text>
+                        <circle cx="100" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="324" text-anchor="middle" fill="white" font-size="8">言語改正</text>
+                        <circle cx="100" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="344" text-anchor="middle" fill="white" font-size="8">行動改善</text>
+                        <line x1="450" y1="250" x2="750" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">聖靈工作</text>
+                        <circle cx="800" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="324" text-anchor="middle" fill="white" font-size="8">漸進改造</text>
+                        <circle cx="800" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="344" text-anchor="middle" fill="white" font-size="8">持續建造</text>
+                    </svg>
+                </div>
+                <div class="keywords-list">
+                    <span class="keyword-tag">心靈更新</span>
+                    <span class="keyword-tag">性情改變</span>
+                    <span class="keyword-tag">行為轉變</span>
+                    <span class="keyword-tag">聖靈工作</span>
+                    <span class="keyword-tag">內外更新</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- 雙語內容 -->
+            <div style="margin-top: 40px;">
+                <div class="bilingual-line">
+                    <div class="chinese-line">心靈有了根本的改變，我們的性情和行為就必定會改變。</div>
+                    <div class="english-line">When our spirit undergoes fundamental transformation, our character and behavior will necessarily change. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+            </div>
+
+            <div class="page-footer">
+                <p>© 第7課 · 重生與變化 | 心智圖版本</p>
+                <p style="font-size: 11px;">總段落: 1 | 關鍵詞: 5 | 心智圖分支: 5</p>
+            </div>
+        </div>
+
+        <div class="page" id="ch8">
+            <div class="chapter-header">
+                <div class="chapter-number">第 8 課</div>
+                <div class="chapter-title">三位一體神的作為</div>
+                <div class="chapter-subtitle">The Work of the Triune God</div>
+            </div>
+
+            <!-- 章節心智圖框架 -->
+            <div class="mindmap-section">
+                <div class="mindmap-title">🧠 本課心智圖框架</div>
+                <div class="mindmap-canvas">
+                    <svg viewBox="0 0 900 500" width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 中心節點 -->
+                        <circle cx="450" cy="250" r="45" fill="#C9960C" stroke="#0D1B3E" stroke-width="2"/>
+                        <text x="450" y="260" text-anchor="middle" fill="white" font-weight="bold" font-size="12">三位一體神的作為</text>
+
+                        <!-- 主分支連線 -->
+                        <line x1="450" y1="250" x2="150" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">聖父創造</text>
+                        <circle cx="200" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="124" text-anchor="middle" fill="white" font-size="8">天地創造</text>
+                        <circle cx="200" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="144" text-anchor="middle" fill="white" font-size="8">生命安排</text>
+                        <line x1="450" y1="250" x2="450" y2="80" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="450" cy="80" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="450" y="85" text-anchor="middle" fill="white" font-size="11" font-weight="bold">聖子救贖</text>
+                        <circle cx="400" cy="50" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="54" text-anchor="middle" fill="white" font-size="8">道成肉身</text>
+                        <circle cx="400" cy="70" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="74" text-anchor="middle" fill="white" font-size="8">十字架死</text>
+                        <line x1="450" y1="250" x2="750" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">聖靈內住</text>
+                        <circle cx="800" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="124" text-anchor="middle" fill="white" font-size="8">感動心靈</text>
+                        <circle cx="800" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="144" text-anchor="middle" fill="white" font-size="8">賜予恩賜</text>
+                        <line x1="450" y1="250" x2="150" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">三位合一</text>
+                        <circle cx="100" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="324" text-anchor="middle" fill="white" font-size="8">共同目的</text>
+                        <circle cx="100" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="344" text-anchor="middle" fill="white" font-size="8">相互配合</text>
+                        <line x1="450" y1="250" x2="750" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">救恩完成</text>
+                        <circle cx="800" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="324" text-anchor="middle" fill="white" font-size="8">過去成就</text>
+                        <circle cx="800" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="344" text-anchor="middle" fill="white" font-size="8">現在應用</text>
+                    </svg>
+                </div>
+                <div class="keywords-list">
+                    <span class="keyword-tag">聖父創造</span>
+                    <span class="keyword-tag">聖子救贖</span>
+                    <span class="keyword-tag">聖靈內住</span>
+                    <span class="keyword-tag">三位一體</span>
+                    <span class="keyword-tag">神的計畫</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- 雙語內容 -->
+            <div style="margin-top: 40px;">
+                <div class="bilingual-line">
+                    <div class="chinese-line">聖父、聖子、聖靈三位一體，各有其獨特的工作，但終極目標都是救贖人類。</div>
+                    <div class="english-line">God the Father, God the Son, and God the Holy Spirit are the Trinity. Each has unique work, but the ultimate goal is the redemption of humanity. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+            </div>
+
+            <div class="page-footer">
+                <p>© 第8課 · 三位一體神的作為 | 心智圖版本</p>
+                <p style="font-size: 11px;">總段落: 1 | 關鍵詞: 5 | 心智圖分支: 5</p>
+            </div>
+        </div>
+
+        <div class="page" id="ch9">
+            <div class="chapter-header">
+                <div class="chapter-number">第 9 課</div>
+                <div class="chapter-title">認識自己</div>
+                <div class="chapter-subtitle">Know Yourself</div>
+            </div>
+
+            <!-- 章節心智圖框架 -->
+            <div class="mindmap-section">
+                <div class="mindmap-title">🧠 本課心智圖框架</div>
+                <div class="mindmap-canvas">
+                    <svg viewBox="0 0 900 500" width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 中心節點 -->
+                        <circle cx="450" cy="250" r="45" fill="#C9960C" stroke="#0D1B3E" stroke-width="2"/>
+                        <text x="450" y="260" text-anchor="middle" fill="white" font-weight="bold" font-size="12">認識自己</text>
+
+                        <!-- 主分支連線 -->
+                        <line x1="450" y1="250" x2="150" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">身份認識</text>
+                        <circle cx="200" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="124" text-anchor="middle" fill="white" font-size="8">神的兒女</text>
+                        <circle cx="200" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="144" text-anchor="middle" fill="white" font-size="8">被揀選者</text>
+                        <line x1="450" y1="250" x2="450" y2="80" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="450" cy="80" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="450" y="85" text-anchor="middle" fill="white" font-size="11" font-weight="bold">天賦恩賜</text>
+                        <circle cx="400" cy="50" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="54" text-anchor="middle" fill="white" font-size="8">講道能力</text>
+                        <circle cx="400" cy="70" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="74" text-anchor="middle" fill="white" font-size="8">教導才能</text>
+                        <line x1="450" y1="250" x2="750" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">人生使命</text>
+                        <circle cx="800" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="124" text-anchor="middle" fill="white" font-size="8">傳揚福音</text>
+                        <circle cx="800" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="144" text-anchor="middle" fill="white" font-size="8">建造信徒</text>
+                        <line x1="450" y1="250" x2="150" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">人生價值</text>
+                        <circle cx="100" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="324" text-anchor="middle" fill="white" font-size="8">永恆意義</text>
+                        <circle cx="100" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="344" text-anchor="middle" fill="white" font-size="8">靈魂拯救</text>
+                        <line x1="450" y1="250" x2="750" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">侍奉目標</text>
+                        <circle cx="800" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="324" text-anchor="middle" fill="white" font-size="8">全心奉獻</text>
+                        <circle cx="800" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="344" text-anchor="middle" fill="white" font-size="8">完全擺上</text>
+                    </svg>
+                </div>
+                <div class="keywords-list">
+                    <span class="keyword-tag">身份定位</span>
+                    <span class="keyword-tag">天賦恩賜</span>
+                    <span class="keyword-tag">使命召喚</span>
+                    <span class="keyword-tag">人生價值</span>
+                    <span class="keyword-tag">服侍目標</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- 雙語內容 -->
+            <div style="margin-top: 40px;">
+                <div class="bilingual-line">
+                    <div class="chinese-line">要有效地侍奉神，首先要正確認識自己的身份、天賦和使命。</div>
+                    <div class="english-line">To serve God effectively, you must first correctly understand your identity, talents, and mission. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+            </div>
+
+            <div class="page-footer">
+                <p>© 第9課 · 認識自己 | 心智圖版本</p>
+                <p style="font-size: 11px;">總段落: 1 | 關鍵詞: 5 | 心智圖分支: 5</p>
+            </div>
+        </div>
+
+        <div class="page" id="ch10">
+            <div class="chapter-header">
+                <div class="chapter-number">第 10 課</div>
+                <div class="chapter-title">在神裡面的思想體系</div>
+                <div class="chapter-subtitle">A Thinking System in God</div>
+            </div>
+
+            <!-- 章節心智圖框架 -->
+            <div class="mindmap-section">
+                <div class="mindmap-title">🧠 本課心智圖框架</div>
+                <div class="mindmap-canvas">
+                    <svg viewBox="0 0 900 500" width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 中心節點 -->
+                        <circle cx="450" cy="250" r="45" fill="#C9960C" stroke="#0D1B3E" stroke-width="2"/>
+                        <text x="450" y="260" text-anchor="middle" fill="white" font-weight="bold" font-size="12">在神裡面的思想體系</text>
+
+                        <!-- 主分支連線 -->
+                        <line x1="450" y1="250" x2="150" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">聖經基礎</text>
+                        <circle cx="200" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="124" text-anchor="middle" fill="white" font-size="8">真理根源</text>
+                        <circle cx="200" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="144" text-anchor="middle" fill="white" font-size="8">無誤之言</text>
+                        <line x1="450" y1="250" x2="450" y2="80" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="450" cy="80" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="450" y="85" text-anchor="middle" fill="white" font-size="11" font-weight="bold">思想轉變</text>
+                        <circle cx="400" cy="50" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="54" text-anchor="middle" fill="white" font-size="8">棄絕世界</text>
+                        <circle cx="400" cy="70" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="74" text-anchor="middle" fill="white" font-size="8">更新心意</text>
+                        <line x1="450" y1="250" x2="750" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">信仰世界觀</text>
+                        <circle cx="800" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="124" text-anchor="middle" fill="white" font-size="8">神為中心</text>
+                        <circle cx="800" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="144" text-anchor="middle" fill="white" font-size="8">靈魂優先</text>
+                        <line x1="450" y1="250" x2="150" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">判斷標準</text>
+                        <circle cx="100" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="324" text-anchor="middle" fill="white" font-size="8">真理審判</text>
+                        <circle cx="100" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="344" text-anchor="middle" fill="white" font-size="8">聖經衡量</text>
+                        <line x1="450" y1="250" x2="750" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">實踐應用</text>
+                        <circle cx="800" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="324" text-anchor="middle" fill="white" font-size="8">決策指導</text>
+                        <circle cx="800" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="344" text-anchor="middle" fill="white" font-size="8">生活方向</text>
+                    </svg>
+                </div>
+                <div class="keywords-list">
+                    <span class="keyword-tag">聖經真理</span>
+                    <span class="keyword-tag">思想方式</span>
+                    <span class="keyword-tag">信仰基礎</span>
+                    <span class="keyword-tag">世界觀</span>
+                    <span class="keyword-tag">判斷標準</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- 雙語內容 -->
+            <div style="margin-top: 40px;">
+                <div class="bilingual-line">
+                    <div class="chinese-line">我們的思想方式應當以聖經為基礎，從神的視角看待一切事物。</div>
+                    <div class="english-line">Our way of thinking should be based on the Bible, viewing all things from God's perspective. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+            </div>
+
+            <div class="page-footer">
+                <p>© 第10課 · 在神裡面的思想體系 | 心智圖版本</p>
+                <p style="font-size: 11px;">總段落: 1 | 關鍵詞: 5 | 心智圖分支: 5</p>
+            </div>
+        </div>
+
+        <div class="page" id="ch11">
+            <div class="chapter-header">
+                <div class="chapter-number">第 11 課</div>
+                <div class="chapter-title">恢復神的話</div>
+                <div class="chapter-subtitle">Restore God's Word</div>
+            </div>
+
+            <!-- 章節心智圖框架 -->
+            <div class="mindmap-section">
+                <div class="mindmap-title">🧠 本課心智圖框架</div>
+                <div class="mindmap-canvas">
+                    <svg viewBox="0 0 900 500" width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 中心節點 -->
+                        <circle cx="450" cy="250" r="45" fill="#C9960C" stroke="#0D1B3E" stroke-width="2"/>
+                        <text x="450" y="260" text-anchor="middle" fill="white" font-weight="bold" font-size="12">恢復神的話</text>
+
+                        <!-- 主分支連線 -->
+                        <line x1="450" y1="250" x2="150" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">聖經權威</text>
+                        <circle cx="200" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="124" text-anchor="middle" fill="white" font-size="8">神聖啟示</text>
+                        <circle cx="200" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="144" text-anchor="middle" fill="white" font-size="8">絕對真理</text>
+                        <line x1="450" y1="250" x2="450" y2="80" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="450" cy="80" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="450" y="85" text-anchor="middle" fill="white" font-size="11" font-weight="bold">現代危機</text>
+                        <circle cx="400" cy="50" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="54" text-anchor="middle" fill="white" font-size="8">真理淡化</text>
+                        <circle cx="400" cy="70" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="74" text-anchor="middle" fill="white" font-size="8">信仰軟弱</text>
+                        <line x1="450" y1="250" x2="750" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">教會責任</text>
+                        <circle cx="800" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="124" text-anchor="middle" fill="white" font-size="8">高舉聖經</text>
+                        <circle cx="800" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="144" text-anchor="middle" fill="white" font-size="8">宣講真理</text>
+                        <line x1="450" y1="250" x2="150" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">個人靈修</text>
+                        <circle cx="100" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="324" text-anchor="middle" fill="white" font-size="8">日讀聖經</text>
+                        <circle cx="100" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="344" text-anchor="middle" fill="white" font-size="8">靜禱默想</text>
+                        <line x1="450" y1="250" x2="750" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">靈命建造</text>
+                        <circle cx="800" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="324" text-anchor="middle" fill="white" font-size="8">根基穩固</text>
+                        <circle cx="800" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="344" text-anchor="middle" fill="white" font-size="8">信心堅強</text>
+                    </svg>
+                </div>
+                <div class="keywords-list">
+                    <span class="keyword-tag">聖經地位</span>
+                    <span class="keyword-tag">真理教導</span>
+                    <span class="keyword-tag">信仰基礎</span>
+                    <span class="keyword-tag">靈命建造</span>
+                    <span class="keyword-tag">實踐應用</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- 雙語內容 -->
+            <div style="margin-top: 40px;">
+                <div class="bilingual-line">
+                    <div class="chinese-line">在現代社會中，教會需要恢復對聖經真理的強調和應用。</div>
+                    <div class="english-line">In modern society, the church needs to restore emphasis on and application of biblical truth. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+            </div>
+
+            <div class="page-footer">
+                <p>© 第11課 · 恢復神的話 | 心智圖版本</p>
+                <p style="font-size: 11px;">總段落: 1 | 關鍵詞: 5 | 心智圖分支: 5</p>
+            </div>
+        </div>
+
+        <div class="page" id="ch12">
+            <div class="chapter-header">
+                <div class="chapter-number">第 12 課</div>
+                <div class="chapter-title">聖經與我</div>
+                <div class="chapter-subtitle">The Bible and Me</div>
+            </div>
+
+            <!-- 章節心智圖框架 -->
+            <div class="mindmap-section">
+                <div class="mindmap-title">🧠 本課心智圖框架</div>
+                <div class="mindmap-canvas">
+                    <svg viewBox="0 0 900 500" width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 中心節點 -->
+                        <circle cx="450" cy="250" r="45" fill="#C9960C" stroke="#0D1B3E" stroke-width="2"/>
+                        <text x="450" y="260" text-anchor="middle" fill="white" font-weight="bold" font-size="12">聖經與我</text>
+
+                        <!-- 主分支連線 -->
+                        <line x1="450" y1="250" x2="150" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">聖經本質</text>
+                        <circle cx="200" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="124" text-anchor="middle" fill="white" font-size="8">神的言語</text>
+                        <circle cx="200" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="144" text-anchor="middle" fill="white" font-size="8">生活指南</text>
+                        <line x1="450" y1="250" x2="450" y2="80" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="450" cy="80" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="450" y="85" text-anchor="middle" fill="white" font-size="11" font-weight="bold">個人應用</text>
+                        <circle cx="400" cy="50" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="54" text-anchor="middle" fill="white" font-size="8">工作指導</text>
+                        <circle cx="400" cy="70" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="74" text-anchor="middle" fill="white" font-size="8">家庭教導</text>
+                        <line x1="450" y1="250" x2="750" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">靈命滋養</text>
+                        <circle cx="800" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="124" text-anchor="middle" fill="white" font-size="8">真理認識</text>
+                        <circle cx="800" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="144" text-anchor="middle" fill="white" font-size="8">信心增長</text>
+                        <line x1="450" y1="250" x2="150" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">日常實踐</text>
+                        <circle cx="100" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="324" text-anchor="middle" fill="white" font-size="8">晨間靈修</text>
+                        <circle cx="100" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="344" text-anchor="middle" fill="white" font-size="8">禱告尋求</text>
+                        <line x1="450" y1="250" x2="750" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">永恆關係</text>
+                        <circle cx="800" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="324" text-anchor="middle" fill="white" font-size="8">與神親密</text>
+                        <circle cx="800" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="344" text-anchor="middle" fill="white" font-size="8">蒙福祝福</text>
+                    </svg>
+                </div>
+                <div class="keywords-list">
+                    <span class="keyword-tag">個人應用</span>
+                    <span class="keyword-tag">生活指導</span>
+                    <span class="keyword-tag">靈命滋養</span>
+                    <span class="keyword-tag">日常實踐</span>
+                    <span class="keyword-tag">永恆關係</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- 雙語內容 -->
+            <div style="margin-top: 40px;">
+                <div class="bilingual-line">
+                    <div class="chinese-line">聖經不僅是古老的文獻，而是對我們今日生活有直接指導意義的神的言語。</div>
+                    <div class="english-line">The Bible is not merely an ancient text, but God's Word with direct relevance to our lives today. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+            </div>
+
+            <div class="page-footer">
+                <p>© 第12課 · 聖經與我 | 心智圖版本</p>
+                <p style="font-size: 11px;">總段落: 1 | 關鍵詞: 5 | 心智圖分支: 5</p>
+            </div>
+        </div>
+
+        <div class="page" id="ch13">
+            <div class="chapter-header">
+                <div class="chapter-number">第 13 課</div>
+                <div class="chapter-title">神的奧祕—基督</div>
+                <div class="chapter-subtitle">The Mystery of God—Christ</div>
+            </div>
+
+            <!-- 章節心智圖框架 -->
+            <div class="mindmap-section">
+                <div class="mindmap-title">🧠 本課心智圖框架</div>
+                <div class="mindmap-canvas">
+                    <svg viewBox="0 0 900 500" width="900" height="500" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 中心節點 -->
+                        <circle cx="450" cy="250" r="45" fill="#C9960C" stroke="#0D1B3E" stroke-width="2"/>
+                        <text x="450" y="260" text-anchor="middle" fill="white" font-weight="bold" font-size="12">神的奧祕—基督</text>
+
+                        <!-- 主分支連線 -->
+                        <line x1="450" y1="250" x2="150" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">舊約預言</text>
+                        <circle cx="200" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="124" text-anchor="middle" fill="white" font-size="8">降生預言</text>
+                        <circle cx="200" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="200" y="144" text-anchor="middle" fill="white" font-size="8">受死預表</text>
+                        <line x1="450" y1="250" x2="450" y2="80" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="450" cy="80" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="450" y="85" text-anchor="middle" fill="white" font-size="11" font-weight="bold">新約成就</text>
+                        <circle cx="400" cy="50" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="54" text-anchor="middle" fill="white" font-size="8">生平記載</text>
+                        <circle cx="400" cy="70" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="400" y="74" text-anchor="middle" fill="white" font-size="8">救恩成就</text>
+                        <line x1="450" y1="250" x2="750" y2="150" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="150" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="155" text-anchor="middle" fill="white" font-size="11" font-weight="bold">十字架奧祕</text>
+                        <circle cx="800" cy="120" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="124" text-anchor="middle" fill="white" font-size="8">愛的表現</text>
+                        <circle cx="800" cy="140" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="144" text-anchor="middle" fill="white" font-size="8">救恩成就</text>
+                        <line x1="450" y1="250" x2="150" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="150" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="150" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">現今工作</text>
+                        <circle cx="100" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="324" text-anchor="middle" fill="white" font-size="8">聖靈同在</text>
+                        <circle cx="100" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="100" y="344" text-anchor="middle" fill="white" font-size="8">代求中保</text>
+                        <line x1="450" y1="250" x2="750" y2="350" stroke="#0A7A72" stroke-width="2"/>
+                        <circle cx="750" cy="350" r="30" fill="#0A7A72" opacity="0.8"/>
+                        <text x="750" y="355" text-anchor="middle" fill="white" font-size="11" font-weight="bold">永恆盼望</text>
+                        <circle cx="800" cy="320" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="324" text-anchor="middle" fill="white" font-size="8">再來應許</text>
+                        <circle cx="800" cy="340" r="15" fill="#C9960C" opacity="0.6"/>
+                        <text x="800" y="344" text-anchor="middle" fill="white" font-size="8">榮耀升天</text>
+                    </svg>
+                </div>
+                <div class="keywords-list">
+                    <span class="keyword-tag">基督中心</span>
+                    <span class="keyword-tag">救恩奧祕</span>
+                    <span class="keyword-tag">歷代隱瞞</span>
+                    <span class="keyword-tag">終極真理</span>
+                    <span class="keyword-tag">永恆中心</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- 雙語內容 -->
+            <div style="margin-top: 40px;">
+                <div class="bilingual-line">
+                    <div class="chinese-line">基督是神歷代隱瞞的奧祕的中心，也是人類救贖的中心。</div>
+                    <div class="english-line">Christ is the center of the mystery hidden for ages in God, and also the center of human redemption. <button class="tts-button" onclick="speak(this)">🔊</button></div>
+                </div>
+            </div>
+
+            <div class="page-footer">
+                <p>© 第13課 · 神的奧祕—基督 | 心智圖版本</p>
+                <p style="font-size: 11px;">總段落: 1 | 關鍵詞: 5 | 心智圖分支: 5</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+        <button class="control-btn" onclick="window.print()">📄 列印</button>
+        <button class="control-btn gold">💾 下載</button>
+    </div>
+
+    <script>
+        function scrollTo(id) {
+            document.getElementById(id).scrollIntoView({behavior: 'smooth'});
+        }
+
+        function speak(btn) {
+            const text = btn.parentElement.textContent.replace('🔊', '').trim();
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+    </script>
+<!-- FBPOST:START 臉書貼文＋圖卡（痛點→能力更新→智慧，雙語） -->
+<script>
+/* ═══ 臉書貼文＋圖卡 產生器（離線，不串接 AI / API）═══ */
+(function(){
+'use strict';
+const P=(zh,en)=>({zh:zh,en:en||''});
+
+// 三種語氣領域的共用素材
+const D={
+comm:{
+  why:P('因為我們從小學會說話，卻很少學會溝通。我們學會回應，卻沒學會理解；學會表達立場，卻沒學會表達需求；學會忍耐，卻沒學會修復。',
+        'Because we learned to talk as children, but rarely learned to communicate. We learned to react, not to understand; to state positions, not needs; to endure, not to repair.'),
+  shift:[P('少一點猜測，多一點確認。','Less guessing, more checking.'),P('少一點防衛，多一點好奇。','Less defending, more curiosity.'),P('少一點爭輸贏，多一點被理解。','Less winning, more being understood.'),P('少一點冷戰，多一點修復。','Less silence, more repair.')],
+  gold:[P('話說得對，不如話說得到。','Being right matters less than being received.'),P('愛沒有抵達，就還不算說完。','If love has not arrived, the sentence is not finished.'),P('關係不是贏來的，是修來的。','Relationships are not won; they are repaired.'),P('先連結，再糾正。','Connect before you correct.'),P('聽懂一個人，勝過說服一個人。','Understanding someone beats persuading them.'),P('溫柔不是軟弱，是有力量的選擇。','Gentleness is not weakness; it is a powerful choice.')],
+  practice:[P('① 先停三秒，再開口。','1) Pause three seconds before you speak.'),P('② 先說「我理解的是…」，再說「我的想法是…」。','2) Say "What I understand is…" before "What I think is…".'),P('③ 每天對一個人，說一句真心的感謝。','3) Give one sincere thank-you to someone every day.')],
+  note:P('親愛的你：你不是不會愛，你只是還沒找到讓愛抵達的路。你不需要變成另一個人，只需要多練一個能力。你今天多聽懂一句，關係就多鬆開一點；你今天多說清楚一句，誤會就少累積一點；你今天多修復一次，信任就多存進一點。',
+         'Dear you: it is not that you cannot love; you simply have not yet found the road by which love arrives. You do not need to become someone else — only to practise one more ability. Each sentence you truly hear loosens the relationship a little; each sentence you say clearly leaves one less misunderstanding; each repair you make deposits a little more trust.'),
+  find:[P('你會發現：被理解的人，才聽得進去。','You will find: only those who feel understood can truly listen.'),P('你會發現：安全的關係，才說得出真話。','You will find: only a safe relationship can hold the truth.'),P('你會發現：先修復的人，不是輸的人，是更有力量的人。','You will find: the one who repairs first is not the loser, but the stronger one.')],
+  tags:'#溝通 #關係 #親密關係'
+},
+think:{
+  why:P('因為我們一直很努力，卻很少停下來更新自己的模型。我們學會了答案，卻沒學會提問；學會了堅持，卻沒學會修正；學會了忙碌，卻沒學會看見。',
+        'Because we work hard but seldom pause to update our own models. We learned answers, not questions; persistence, not correction; busyness, not seeing.'),
+  shift:[P('少一點慌亂，多一點清楚。','Less panic, more clarity.'),P('少一點重複，多一點看見。','Less repetition, more insight.'),P('少一點硬撐，多一點方法。','Less forcing, more method.'),P('少一點自責，多一點修正。','Less self-blame, more correction.')],
+  gold:[P('你看見的世界，是你模型的樣子。','The world you see is shaped by your model.'),P('更新，比堅持更需要勇氣。','Updating takes more courage than insisting.'),P('問題不是敵人，是老師。','Problems are not enemies; they are teachers.'),P('走得慢沒關係，方向對就好。','Slow is fine, as long as the direction is right.'),P('看懂結構，才不會被事件淹沒。','See the structure, and events will not drown you.'),P('今天的修正，是明天的自由。','Today\'s correction is tomorrow\'s freedom.')],
+  practice:[P('① 寫下今天卡住的一件事。','1) Write down one thing you got stuck on today.'),P('② 問自己：「我的假設是什麼？」','2) Ask yourself: "What am I assuming?"'),P('③ 只修正一個小地方，明天再看一次。','3) Fix one small thing, and review it tomorrow.')],
+  note:P('親愛的你：你不是不夠聰明，你只是還沒換一副看世界的眼鏡。你不需要知道所有答案，只需要多練一個能力。你今天多看懂一層，焦慮就少一點；你今天多修正一次，方向就準一點；你今天多問一個好問題，世界就大一點。',
+         'Dear you: it is not that you are not smart enough; you simply have not yet changed the lenses through which you see the world. You do not need every answer — only to practise one more ability. Each layer you understand eases the anxiety a little; each correction sharpens your direction; each good question makes your world a little larger.'),
+  find:[P('你會發現：看清楚，比跑得快重要。','You will find: seeing clearly matters more than running fast.'),P('你會發現：問對問題，比找到答案重要。','You will find: asking the right question matters more than finding an answer.'),P('你會發現：願意修正的人，走得最遠。','You will find: those willing to correct go the farthest.')],
+  tags:'#思維升級 #認知 #終身學習'
+},
+faith:{
+  why:P('因為我們習慣靠自己，卻忘了自己是被愛的。我們學會了努力，卻沒學會安息；學會了守規矩，卻沒學會領受恩典；學會了知道，卻沒學會相信。',
+        'Because we are used to relying on ourselves and forget that we are loved. We learned to strive, not to rest; to keep rules, not to receive grace; to know, not to believe.'),
+  shift:[P('少一點懼怕，多一點平安。','Less fear, more peace.'),P('少一點靠自己硬撐，多一點交託。','Less striving alone, more trust.'),P('少一點定罪，多一點恩典。','Less condemnation, more grace.'),P('少一點比較，多一點感恩。','Less comparing, more thanksgiving.')],
+  gold:[P('你不是靠表現被愛，你是因著恩典被愛。','You are not loved for your performance; you are loved by grace.'),P('重擔交出去，手才空得出來領受。','Hand over the burden, and your hands are free to receive.'),P('神沒有遲到，祂正在預備。','God is not late; He is preparing.'),P('安靜不是什麼都不做，是把位置還給神。','Stillness is not doing nothing; it is giving God His place back.'),P('不是你抓住神，是神抓住你。','It is not you holding on to God; God is holding on to you.'),P('身份先於行為，恩典先於改變。','Identity comes before behavior; grace comes before change.')],
+  practice:[P('① 安靜三分鐘，把重擔說給神聽。','1) Be still for three minutes and tell God your burden.'),P('② 讀一節經文，慢慢讀三遍。','2) Read one verse slowly, three times.'),P('③ 為一個人禱告，並且讓他知道。','3) Pray for one person, and let them know.')],
+  note:P('親愛的你：你不是被忘記了，你只是太久沒有停下來聽。你不需要先變好才能來到神面前，只需要照著本相來。你今天多交託一件事，重擔就輕一點；你今天多相信一句話，心就穩一點；你今天多感謝一次，眼睛就亮一點。',
+         'Dear you: you have not been forgotten; you have simply gone too long without stopping to listen. You do not need to become better before you come to God — only to come as you are. Each thing you entrust today lightens the load; each word you believe steadies the heart; each thanksgiving brightens your eyes.'),
+  find:[P('你會發現：恩典早就在那裡。','You will find: grace was there all along.'),P('你會發現：你從來不是一個人。','You will find: you were never alone.'),P('你會發現：最深的安息，是知道自己被愛。','You will find: the deepest rest is knowing you are loved.')],
+  tags:'#信仰 #福音 #恩典'
+}};
+
+const TURN=[
+ n=>P('其實，不是你不夠好，是「'+n.zh+'」還沒有人好好教過你。','The truth is, you are not "not good enough" — no one ever really taught you '+n.en+'.'),
+ n=>P('不是你太差，是你還在用舊版本的自己，面對新版本的人生。這一次，要更新的是「'+n.zh+'」。','You are not failing — you are meeting a new chapter of life with an old version of yourself. This time, the update is '+n.en+'.'),
+ n=>P('痛點不是你的缺陷，是「'+n.zh+'」正在敲門。','The pain is not your flaw; it is '+n.en+' knocking at the door.'),
+ n=>P('卡住的地方，不是終點，是「'+n.zh+'」要長出來的地方。','Where you are stuck is not the end; it is where '+n.en+' is about to grow.')
+];
+const WISDOM=[
+ [P('更新一個能力，就多一種選擇。','Update one ability, and you gain one more choice.'),P('多一種選擇，就少一分無力。','One more choice means a little less helplessness.'),P('少一分無力，就多一分智慧。','A little less helplessness means a little more wisdom.')],
+ [P('能力不是天生的，是一次一次練出來的。','Ability is not inborn; it is built one practice at a time.'),P('智慧不是知道更多，是願意更新自己。','Wisdom is not knowing more; it is being willing to update yourself.'),P('你不需要一夜改變，只需要今天比昨天多懂一點。','You do not need to change overnight — only to understand a little more than yesterday.')],
+ [P('痛，不是懲罰，是提醒。','Pain is not punishment; it is a reminder.'),P('卡住，不是終點，是更新的入口。','Being stuck is not the end; it is the doorway to an update.'),P('每一次不舒服，都在把你帶向更大的自己。','Every discomfort is carrying you toward a larger self.')],
+ [P('看見，是改變的開始。','Seeing is where change begins.'),P('命名，是整理的開始。','Naming is where order begins.'),P('練習，是自由的開始。','Practice is where freedom begins.')]
+];
+const CLOSE=[
+ P('願你今天，對自己溫柔一點，對成長誠實一點。','May you be a little gentler with yourself today, and a little more honest about growing.'),
+ P('你不是壞掉了，你只是正在更新。','You are not broken — you are simply updating.'),
+ P('慢慢來，比較快；一點點，就很多。','Go slowly; it is faster. A little is already a lot.'),
+ P('把這篇留給今天的自己，也分享給那個正在努力的人。','Keep this for yourself today, and share it with someone who is trying hard.')
+];
+
+const clean=s=>String(s==null?'':s).trim().replace(/^[「『"“]+/,'').replace(/[」』"”]+$/,'').replace(/[。．.；;，,\s]+$/,'');
+const fin=(s,dot)=>/[？！?!」』”"]$/.test(s)?s:s+dot;
+const q=s=>'「'+clean(s)+'」';
+const qe=s=>'"'+clean(s)+'"';
+function count(t){return (t.match(/[一-鿿]/g)||[]).length+(t.match(/[A-Za-z][A-Za-z'’\-]*/g)||[]).length;}
+
+function build(it,v){
+  const d=D[it.domain],k=it.idx+(v||0),L=[];
+  const add=(zh,en)=>{if(zh)L.push(zh);if(en)L.push(en);};
+  const gap=()=>L.push('');
+  const rot=(arr,n,off)=>{const o=[];for(let i=0;i<Math.min(n,arr.length);i++)o.push(arr[(k+(off||0)+i)%arr.length]);return o;};
+  const name={zh:it.zh,en:'"'+it.en+'"'};
+
+  add('【'+it.hook.zh+'】',it.hook.en);gap();
+  add('你是不是也這樣？','Does this sound like you?');
+  it.pains.forEach(p=>add('・'+p.zh,p.en?'· '+p.en:''));gap();
+  const t=TURN[k%TURN.length](name);add(t.zh,t.en);gap();
+
+  add('▍為什麼會這樣｜Why it happens');add(d.why.zh,d.why.en);gap();
+
+  add('▍核心｜The core：'+it.zh+' '+it.en);
+  add(it.core.zh,it.core.en);
+  if(it.core2)add(it.core2.zh,it.core2.en);gap();
+
+  add('▍從舊模式，到新能力｜From old pattern to new ability');
+  const pairLines=(it.pairs||[]).map(p=>P('不是'+q(p.o.zh)+'，而是'+q(p.n.zh)+'。',(p.o.en&&p.n.en)?'Not '+qe(p.o.en)+' — but '+qe(p.n.en)+'.':''));
+  pairLines.forEach(p=>add(p.zh,p.en));
+  const sh=rot(d.shift,pairLines.length?3:4,0);
+  add('當你開始練習「'+it.zh+'」——','When you begin to practise '+name.en+' —');
+  sh.forEach(p=>add(p.zh,p.en));d.find.forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍金句｜Words to keep');
+  const gq=x=>P('「'+fin(clean(x.zh),'。')+'」',x.en?'"'+fin(clean(x.en),'.')+'"':'');
+  const gold=(it.quotes||[]).map(gq).concat(rot(d.gold,4,1).map(gq));
+  gold.forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍三個小練習｜Three small practices');
+  d.practice.forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍能力更新，智慧長出來｜Ability updated, wisdom grows');
+  WISDOM[k%WISDOM.length].concat(WISDOM[(k+1)%WISDOM.length]).forEach(p=>add(p.zh,p.en));gap();
+
+  add('▍寫給你｜A note to you');add(d.note.zh,d.note.en);gap();
+
+  add('🌱 今天的小步｜'+it.step.zh,it.step.en?'🌱 Today\'s small step: '+it.step.en:'');gap();
+  const c=CLOSE[k%CLOSE.length];add(c.zh,c.en);gap();
+  const tagName='#'+it.zh.replace(/[\s、，—\-·．.]/g,'');
+  L.push(['#心靈雞湯','#自我成長',tagName,d.tags,(it.tags||[]).map(x=>'#'+String(x).replace(/\s/g,'')).join(' '),'#HealingWords #LifeOS'].filter(Boolean).join(' '));
+
+  const cq=(it.quotes&&it.quotes.length)?it.quotes[k%it.quotes.length]:it.core;
+  const first=s=>{const m=String(s).match(/^.*?[。！？!?.](?=\s|$|[^\d])/);return clean(m?m[0]:s);};
+  const short=(s,n,dot)=>String(s).trim().length<=n?fin(String(s).trim().replace(/[。.]$/,''),dot):fin(first(s),dot);
+  return {text:L.join('\n'),card:{
+    hook:it.hook.zh,
+    quote:short(cq.zh,34,'。'),
+    quoteEn:cq.en?short(cq.en,90,'.'):'',
+    lines:(pairLines.length?pairLines:sh).slice(0,3).map(p=>p.zh),
+    step:it.cardStep||short(it.step.zh,44,'。'),
+    name:it.zh+'｜'+it.en
+  }};
+}
+
+/* ── 圖卡（1080×1350 Canvas）── */
+const ZH='"Microsoft JhengHei","PingFang TC","Noto Sans TC","Heiti TC",sans-serif';
+function wrap(ctx,text,maxW){
+  const tk=String(text).match(/[A-Za-z0-9'’\-]+[.,!?;:]?\s?|\s+|[^\sA-Za-z0-9]/g)||[];
+  const noHead='，。！？、；：」』）)…—';
+  const noTail='「『（(“"';
+  const out=[];let cur=[];
+  const push=()=>{const s=cur.join('').trim();if(s)out.push(s);};
+  tk.forEach(w=>{
+    if(cur.join('').trim()&&ctx.measureText(cur.join('')+w).width>maxW){
+      // 標點不放行首、上引號不放行尾：把前一個字一起帶到下一行
+      const carry=[];
+      if(noHead.indexOf(w)>=0&&cur.length>1)carry.unshift(cur.pop());
+      while(cur.length>1&&noTail.indexOf(cur[cur.length-1].trim())>=0)carry.unshift(cur.pop());
+      push();cur=carry.concat(w.replace(/^\s+/,''));
+    }else cur.push(w);
+  });
+  push();
+  return out;
+}
+function drawCard(cv,card,theme){
+  const W=1080,H=1350,ctx=cv.getContext('2d');cv.width=W;cv.height=H;
+  const X=80,MW=W-160;
+  function lay(s,paint){
+    const f=(px,wt,fam)=>{ctx.font=(wt||'')+' '+Math.round(px*s)+'px '+(fam||ZH);};
+    const text=(arr,x,y,lh,col)=>{if(paint){ctx.fillStyle=col;arr.forEach((l,i)=>ctx.fillText(l,x,y+i*lh));}return y+arr.length*lh;};
+    ctx.textBaseline='top';
+    // 標頭：痛點
+    f(46,'bold');const hk=wrap(ctx,card.hook,MW);
+    const headH=Math.round(70+44*s+18+hk.length*62*s+48);
+    if(paint){ctx.fillStyle='#FAF6EF';ctx.fillRect(0,0,W,H);ctx.fillStyle=theme.color;ctx.fillRect(0,0,W,headH);
+      f(30,'');ctx.fillStyle='rgba(255,255,255,.85)';ctx.fillText('你是不是也這樣？',X,70);}
+    f(46,'bold');let y=text(hk,X,70+44*s+18,62*s,'#fff');
+    y=headH+90*s;
+    // 金句
+    f(66,'bold');const ql=wrap(ctx,card.quote,MW);y=text(ql,X,y,92*s,'#2B2622')+18*s;
+    if(card.quoteEn){f(30,'italic','Georgia,"Times New Roman",serif');y=text(wrap(ctx,card.quoteEn,MW),X,y,42*s,'#8A7F76');}
+    y+=50*s;
+    // 排比框
+    f(34,'');const bl=[];card.lines.forEach(l=>wrap(ctx,l,MW-110).forEach(x=>bl.push(x)));
+    const bh=bl.length*56*s+64*s;
+    if(paint){ctx.fillStyle=theme.tint;rr(ctx,X-20,y,MW+40,bh,28);ctx.fill();ctx.fillStyle=theme.color;ctx.fillRect(X-20,y+24,10,bh-48);}
+    text(bl,X+32,y+34*s,56*s,'#3A332E');y+=bh+48*s;
+    // 今天的小步
+    f(27,'');const pw=ctx.measureText('今天的小步').width+48,ph=54*s;
+    if(paint){ctx.fillStyle=theme.color;rr(ctx,X,y,pw,ph,ph/2);ctx.fill();ctx.fillStyle='#fff';ctx.fillText('今天的小步',X+24,y+(ph-27*s)/2-2);}
+    y+=ph+22*s;
+    f(34,'bold');y=text(wrap(ctx,card.step,MW),X,y,52*s,'#2B2622');
+    return y;
+  }
+  let s=1.3;while(s>0.55&&lay(s,false)>H-170)s-=0.03;
+  lay(s,true);
+  ctx.fillStyle='#E4DAD0';ctx.fillRect(X,H-130,MW,3);
+  ctx.textBaseline='top';ctx.font='bold 32px '+ZH;ctx.fillStyle=theme.color;ctx.fillText(theme.brand,X,H-96);
+  ctx.font='28px '+ZH;ctx.fillStyle='#8A7F76';const tg='#心靈雞湯';ctx.fillText(tg,W-X-ctx.measureText(tg).width,H-94);
+}
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+/* ── 介面 ── */
+let CFG=null,ITEMS=[],cur=null,ver=0;
+const $=id=>document.getElementById(id);
+function ui(){
+  const st=document.createElement('style');
+  st.textContent=`
+.fbp-btn{display:inline-flex;align-items:center;gap:4px;margin:8px 0 0;padding:6px 12px;border:0;border-radius:999px;background:var(--fbp-c);color:#fff;font:600 13px/1.2 ${ZH};cursor:pointer;white-space:nowrap}
+.fbp-btn:hover{filter:brightness(1.1)}
+#fbpFab{position:fixed;left:16px;bottom:76px;z-index:9998;margin:0;padding:11px 16px;font-size:14px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+#fbpMask{position:fixed;inset:0;z-index:9999;background:rgba(20,16,12,.6);display:none;align-items:center;justify-content:center;padding:12px}
+#fbpMask.on{display:flex}
+#fbpBox{background:#FAF6EF;color:#2B2622;width:min(1040px,100%);max-height:94vh;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;font:14px/1.6 ${ZH};text-align:left}
+#fbpTop{display:flex;gap:8px;align-items:center;padding:12px 14px;background:var(--fbp-c);color:#fff}
+#fbpTop b{flex:1;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#fbpSearch{flex:0 1 260px;min-width:110px;padding:7px 12px;border:0;border-radius:999px;font:14px ${ZH};color:#2B2622;background:#fff}
+#fbpX{background:none;border:0;color:#fff;font-size:22px;cursor:pointer;line-height:1}
+#fbpList{max-height:132px;overflow-x:hidden;overflow-y:auto;flex:none;padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #E4DAD0;background:#fff}
+#fbpList button{border:1px solid #E4DAD0;background:#FAF6EF;color:#2B2622;border-radius:999px;padding:3px 10px;font:12px ${ZH};cursor:pointer}
+#fbpList button.on{background:var(--fbp-c);color:#fff;border-color:var(--fbp-c)}
+#fbpMain{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;padding:14px;overflow:auto}
+#fbpText{width:100%;height:52vh;min-height:260px;box-sizing:border-box;padding:12px;border:1px solid #E4DAD0;border-radius:12px;background:#fff;color:#2B2622;font:14px/1.75 ${ZH};resize:vertical}
+#fbpCanvas{width:100%;height:auto;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15);display:block}
+#fbpBar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+#fbpBar .fbp-btn{margin:0}
+#fbpBar .fbp-g{background:#fff;color:var(--fbp-c);border:1px solid var(--fbp-c)}
+#fbpCnt{font-size:12px;color:#8A7F76;margin-left:auto}
+@media(max-width:760px){#fbpMain{grid-template-columns:minmax(0,1fr)}#fbpText{height:38vh}#fbpCanvas{max-width:300px;margin:0 auto}}
+@media print{#fbpFab,#fbpMask,.fbp-btn{display:none!important}}`;
+  document.head.appendChild(st);
+  document.documentElement.style.setProperty('--fbp-c',CFG.color);
+  const fab=document.createElement('button');fab.id='fbpFab';fab.className='fbp-btn';fab.textContent='📣 臉書貼文＋圖卡';
+  fab.onclick=()=>open((cur||ITEMS[0]).id);document.body.appendChild(fab);
+  const m=document.createElement('div');m.id='fbpMask';
+  m.innerHTML='<div id="fbpBox"><div id="fbpTop"><b id="fbpTitle"></b><input id="fbpSearch" type="search" placeholder="搜尋欄位 / Search…"><button id="fbpX" title="關閉">×</button></div>'+
+   '<div id="fbpList"></div><div id="fbpMain"><div><textarea id="fbpText" spellcheck="false"></textarea><div id="fbpBar">'+
+   '<button class="fbp-btn" id="fbpCopy">📋 複製貼文</button><button class="fbp-btn" id="fbpPng">🖼️ 下載圖卡</button>'+
+   '<button class="fbp-btn fbp-g" id="fbpNext">🔄 換一版</button><button class="fbp-btn fbp-g" id="fbpTxt">💾 貼文 TXT</button>'+
+   '<button class="fbp-btn fbp-g" id="fbpAll">📦 全部貼文 TXT</button><span id="fbpCnt"></span></div></div>'+
+   '<div><canvas id="fbpCanvas"></canvas></div></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',e=>{if(e.target===m)close();});
+  $('fbpX').onclick=close;
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+  $('fbpSearch').addEventListener('input',list);
+  $('fbpNext').onclick=()=>{ver++;show();};
+  $('fbpCopy').onclick=function(){const t=$('fbpText');const done=()=>flash(this,'✅ 已複製');
+    if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t.value).then(done,()=>{t.select();document.execCommand('copy');done();});
+    else{t.select();document.execCommand('copy');done();}};
+  $('fbpPng').onclick=()=>$('fbpCanvas').toBlob(b=>save(b,fname()+'.png'));
+  $('fbpTxt').onclick=()=>save(new Blob(['﻿'+$('fbpText').value],{type:'text/plain;charset=utf-8'}),fname()+'.txt');
+  $('fbpAll').onclick=()=>save(new Blob(['﻿'+ITEMS.map(it=>'════ '+it.no+' '+it.zh+' ════\n\n'+build(it,0).text).join('\n\n\n')],{type:'text/plain;charset=utf-8'}),CFG.brand+'_全部臉書貼文.txt');
+}
+function flash(b,t){const o=b.textContent;b.textContent=t;setTimeout(()=>b.textContent=o,1200);}
+function fname(){return (CFG.brand+'_'+cur.no+'_'+cur.zh).replace(/[\\/:*?"<>|\s]+/g,'_');}
+function save(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);}
+function list(){
+  const kw=$('fbpSearch').value.trim().toLowerCase();
+  const box=$('fbpList');box.innerHTML='';
+  ITEMS.filter(it=>!kw||(it.no+' '+it.zh+' '+it.en).toLowerCase().indexOf(kw)>=0).forEach(it=>{
+    const b=document.createElement('button');b.textContent=it.no+' '+it.zh;if(cur&&it.id===cur.id)b.className='on';
+    b.onclick=()=>open(it.id);box.appendChild(b);
+  });
+}
+function show(){
+  const r=build(cur,ver);
+  $('fbpTitle').textContent='📣 '+cur.no+' '+cur.zh+'｜'+cur.en;
+  $('fbpText').value=r.text;$('fbpText').scrollTop=0;
+  $('fbpCnt').textContent='約 '+count(r.text)+' 字（中文字＋英文單字）';
+  drawCard($('fbpCanvas'),r.card,{color:CFG.color,tint:CFG.tint,brand:CFG.brand});
+}
+function open(id){
+  const it=ITEMS.find(x=>String(x.id)===String(id));if(!it)return;
+  if(!cur||cur.id!==it.id)ver=0;cur=it;
+  $('fbpMask').classList.add('on');list();show();
+  const on=$('fbpList').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
+}
+function close(){$('fbpMask').classList.remove('on');}
+function mount(){
+  (CFG.mounts()||[]).forEach(m=>{
+    if(!m||!m.el||m.el.querySelector(':scope > .fbp-btn'))return;
+    const b=document.createElement('button');b.type='button';b.className='fbp-btn';b.textContent='📣 貼文＋圖卡';
+    b.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();open(m.id);});
+    m.el.appendChild(b);
+  });
+}
+function init(cfg){
+  CFG=cfg;
+  const go=()=>{
+    ITEMS=cfg.items().map((it,i)=>{it.idx=i;it.domain=cfg.domain;return it;});
+    ui();mount();
+    let tm=null;new MutationObserver(()=>{clearTimeout(tm);tm=setTimeout(mount,150);}).observe(document.body,{childList:true,subtree:true});
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(go,0));else setTimeout(go,0);
+}
+window.FBPost={init:init,build:build,count:count,P:P,open:open,items:()=>ITEMS};
+})();
+
+</script>
+<script>
+/* 36課全文：13 課 */
+(function(){
+const P=FBPost.P;
+const L=[
+{h:P('什麼都試過了，心裡的那個洞還是填不滿。','You have tried everything, and the hole in your heart is still not filled.'),
+ p:[P('努力了很久，卻不知道為了什麼。','You have worked so long without knowing what for.'),P('問題解決了一個，又來一個。','One problem is solved, and another arrives.'),P('聽了很多道理，卻漸漸麻木。','You have heard so many teachings that you are slowly going numb.')],
+ c:P('福音不是多一個知識，而是回到一切的中心：十字架。','The gospel is not one more piece of knowledge; it is a return to the centre of everything: the cross.'),
+ q:[P('答案不在更多的方法，而在十字架。','The answer is not in more methods, but in the cross.'),P('不是我去找神，是神先來找我。','It is not I who went looking for God; God came looking for me first.')],
+ s:P('安靜五分鐘，問自己：我一直想用什麼來填滿心裡的空？','Be still for five minutes and ask: what have I been using to fill the emptiness inside?')},
+{h:P('換了環境、換了人，同樣的苦還是跟著你。','You changed the place and the people, and the same pain followed you.'),
+ p:[P('以為問題在別人，後來發現到哪裡都一樣。','You thought the problem was others, then found it the same everywhere.'),P('表面的事處理了，心裡的不安還在。','The surface is handled; the unrest inside remains.'),P('很怕停下來，因為一停下來就空。','You are afraid to stop, because stopping feels empty.')],
+ c:P('人一切的問題，根源只有一個：離開了神。','All human problems share one root: separation from God.'),
+ q:[P('找不到根本問題，就只能一直處理症狀。','If you never find the root problem, you can only keep treating symptoms.'),P('不是你不夠好，是你離開了生命的源頭。','It is not that you are not good enough; you have been cut off from the source of life.')],
+ s:P('寫下最近最困擾你的一件事，問：它的根，在哪裡？','Write down what troubles you most these days and ask: where is its root?')},
+{h:P('你找過很多答案，卻沒有一個撐得住你的人生。','You have looked for many answers, and none of them could hold your life.'),
+ p:[P('靠自己，撐得好累。','Relying on yourself has worn you out.'),P('靠別人，一次次失望。','Relying on others has disappointed you again and again.'),P('靠成就，得到了卻更空。','Relying on achievement left you emptier once you had it.')],
+ c:P('唯一的問題，只有唯一的答案：耶穌基督。','The only problem has only one answer: Jesus Christ.'),
+ q:[P('基督不是眾多答案中的一個，祂就是答案。','Christ is not one answer among many; He is the answer.'),P('祂為我斷開了我斷不開的。','He broke for me what I could never break.')],
+ s:P('用一句話向神說：「主啊，我需要祢。」','Tell God in one sentence: "Lord, I need You."')},
+{h:P('信了很久，卻還是常常懷疑：神真的愛我嗎？','You have believed for a long time and still often wonder: does God really love me?'),
+ p:[P('做得好的時候覺得被愛，做不好就覺得被丟下。','When you do well you feel loved; when you fail you feel abandoned.'),P('很怕自己不夠格。','You fear you do not qualify.'),P('禱告的時候，像在對空氣說話。','When you pray, it feels like talking to the air.')],
+ c:P('得救不是靠感覺，是靠神的應許：信的人，就是神的兒女。','Salvation does not rest on feelings but on God\'s promise: those who believe are children of God.'),
+ q:[P('確據不在我的表現，在神的話。','Assurance is not in my performance; it is in God\'s Word.'),P('兒女的身份，不會因為跌倒而被收回。','A child\'s identity is not taken back because of a fall.')],
+ s:P('今天對自己說三次：「我是神所愛的兒女。」','Say to yourself three times today: "I am a beloved child of God."')},
+{h:P('信主了，日子卻好像和以前沒什麼不同。','You came to faith, yet your days look much the same as before.'),
+ p:[P('主日一個樣子，週一又是另一個樣子。','One person on Sunday, another on Monday.'),P('想改變，卻總是回到老樣子。','You want to change and keep returning to the old way.'),P('把信仰放在生活的旁邊，而不是中心。','Faith sits beside your life rather than at its centre.')],
+ c:P('新生命不是把舊的修好，而是從神來的全新開始。','New life is not the old one repaired; it is a brand-new beginning from God.'),
+ q:[P('新生活不是靠努力活出來的，是新生命流出來的。','New living is not produced by effort; it flows out of new life.'),P('身份先改變，生活才會跟著改變。','Identity changes first; living follows.')],
+ s:P('選一件日常小事，今天用「神的兒女」的身份去做。','Choose one ordinary task and do it today as a child of God.')},
+{h:P('心裡有好多話，卻不知道能對誰說。','There is so much in your heart, and you do not know whom to tell.'),
+ p:[P('禱告只剩下求，求完就結束。','Prayer has become only asking, and it ends when the asking ends.'),P('很忙，忙到沒有時間安靜。','So busy that there is no time to be still.'),P('遇到事情先煩惱，最後才想到禱告。','You worry first and remember prayer last.')],
+ c:P('禱告不是念給神聽的功課，是與神的對話。','Prayer is not homework recited to God; it is a conversation with God.'),
+ q:[P('禱告不是改變神，是讓我回到神面前。','Prayer does not change God; it brings me back before Him.'),P('先對神說，再對人說。','Speak to God first, then to people.')],
+ s:P('今天先不求什麼，只對神說三件感謝的事。','Ask for nothing today; simply tell God three things you are thankful for.')},
+{h:P('很想變好，卻覺得自己永遠改不了。','You long to be better and feel you will never change.'),
+ p:[P('立了很多志，三天就放棄。','So many resolutions, abandoned in three days.'),P('討厭現在的自己，又不知道怎麼開始。','You dislike who you are now and do not know where to begin.'),P('一直修外面，裡面卻沒有動。','You keep fixing the outside while the inside stays the same.')],
+ c:P('真正的改變不是從行為開始，是從重生開始。','Real change does not begin with behavior; it begins with being born again.'),
+ q:[P('不是我改變了自己，是神把我變成新的。','It is not I who changed myself; God made me new.'),P('生命對了，樣子就會跟著對。','When the life is right, the form follows.')],
+ s:P('把一件一直改不掉的事交給神，說：「主啊，求祢在我裡面動工。」','Hand one stubborn habit to God and say: "Lord, work in me."')},
+{h:P('事情一多，就覺得全世界只剩自己在扛。','When things pile up, it feels like you alone are carrying the world.'),
+ p:[P('什麼都自己來，累到不想說話。','Doing everything yourself until you are too tired to speak.'),P('看不到出路，就覺得神不在。','When you cannot see a way out, you assume God is absent.'),P('只看見眼前的難，看不見背後的手。','You see the difficulty in front, not the hand behind it.')],
+ c:P('聖父計劃，聖子成就，聖靈同在——神從來沒有讓你一個人。','The Father plans, the Son accomplishes, the Spirit abides — God has never left you alone.'),
+ q:[P('我看見的是問題，神看見的是計劃。','I see the problem; God sees the plan.'),P('不是我在撐，是神在托住。','I am not the one holding up; God is the one upholding.')],
+ s:P('回想一件過去的難關，寫下神當時怎樣帶你走過。','Recall one past hardship and write down how God carried you through it.')},
+{h:P('你認識了很多人，卻不太認識自己。','You know many people, yet you hardly know yourself.'),
+ p:[P('別人一句評價，心情就上上下下。','One comment from someone, and your mood rises and falls.'),P('不是自卑，就是硬撐。','Either you feel small, or you force yourself to look strong.'),P('一直在比較，越比越累。','Always comparing, and growing more tired with each comparison.')],
+ c:P('認識自己，不是看別人怎麼說，而是看神怎麼說。','Knowing yourself is not about what others say, but about what God says.'),
+ q:[P('我的價值不是比出來的，是被賦予的。','My worth is not earned by comparison; it is given.'),P('看清自己的軟弱，才看得見神的恩典。','Only when I see my weakness clearly can I see God\'s grace.')],
+ s:P('寫下：「在神眼中，我是＿＿。」填三個詞。','Write: "In God\'s eyes, I am ___." Fill in three words.')},
+{h:P('事情還沒發生，你的腦袋就先往最壞的想。','Nothing has happened yet, and your mind is already at the worst case.'),
+ p:[P('一點小事，就想成大災難。','A small matter becomes a disaster in your mind.'),P('習慣抱怨，習慣擔心。','Complaining and worrying have become habits.'),P('想法一亂，生活就跟著亂。','When your thoughts scatter, your life follows.')],
+ c:P('你怎麼想，就怎麼活；把思想放在神裡面，生命才有次序。','As you think, so you live; when your thinking rests in God, life finds its order.'),
+ q:[P('換一個思想的根，才會結出不同的果。','Change the root of your thinking, and the fruit will change.'),P('不是環境決定我，是我怎麼看環境。','It is not the circumstance that defines me, but how I see it.')],
+ s:P('抓住今天第一個負面念頭，問：「神怎麼看這件事？」','Catch your first negative thought today and ask: "How does God see this?"')},
+{h:P('聽了很多聲音，卻越來越不知道該聽誰的。','You have listened to so many voices, and know less and less whom to follow.'),
+ p:[P('手機滑了一整晚，心卻更空。','A whole evening on the phone, and your heart is emptier.'),P('別人的話記得很牢，神的話卻想不起來。','You remember what people said, and cannot recall what God said.'),P('聖經就在手邊，卻很久沒有打開。','The Bible is within reach, and has not been opened for a long time.')],
+ c:P('人活著不是單靠食物，更是靠神口裡所出的每一句話。','We do not live by bread alone, but by every word that comes from the mouth of God.'),
+ q:[P('失去神的話，就失去方向。','Lose God\'s Word, and you lose direction.'),P('恢復神的話，就是恢復生命的力量。','To restore God\'s Word is to restore the strength of life.')],
+ s:P('今天只讀一節經文，抄下來，放在看得見的地方。','Read just one verse today, copy it, and place it where you can see it.')},
+{h:P('聖經讀過了，卻覺得和自己的生活沒有關係。','You have read the Bible and feel it has nothing to do with your life.'),
+ p:[P('讀的時候懂，合上書就忘。','You understand while reading and forget once the book is closed.'),P('知道很多故事，卻不知道怎麼用。','You know many stories and do not know how to live them.'),P('把聖經當資料，而不是對話。','You treat Scripture as information, not as a conversation.')],
+ c:P('聖經不是寫給別人的書，是神今天對我說的話。','The Bible is not a book written for others; it is what God is saying to me today.'),
+ q:[P('不是我讀聖經，是聖經在讀我。','It is not I who read the Bible; the Bible is reading me.'),P('話語進到生活裡，才真的成為我的。','Only when the Word enters my daily life does it truly become mine.')],
+ s:P('讀一段經文，問：「今天，我可以照著做的一件事是什麼？」','Read a passage and ask: "What is one thing I can act on today?"')},
+{h:P('你一直在找人生的意義，卻越找越迷惘。','You keep searching for the meaning of life, and the more you search, the more lost you feel.'),
+ p:[P('得到了想要的，卻沒有想像中快樂。','You got what you wanted, and it was not as joyful as you imagined.'),P('換了一個又一個目標，還是覺得少了什麼。','One goal after another, and something is still missing.'),P('心裡一直有一個問題：就這樣了嗎？','One question stays in your heart: is this all there is?')],
+ c:P('神的奧祕就是基督；一切的答案，都藏在祂裡面。','The mystery of God is Christ; every answer is hidden in Him.'),
+ q:[P('找到基督，就找到了一切的中心。','Find Christ, and you have found the centre of everything.'),P('不是多了一樣，是有了祂，就都有了。','It is not one more thing added; with Him, you have all.')],
+ s:P('今天做每一件事之前，先在心裡說：「主啊，祢在這裡。」','Before each thing you do today, say in your heart: "Lord, You are here."')}
+];
+FBPost.init({
+  brand:'福音36課 LifeOS',color:'#0D1B3E',tint:'#FBF1D9',domain:'faith',
+  items:()=>Array.from(document.querySelectorAll('.page[id^="ch"]')).slice(0,L.length).map((pg,i)=>{
+    const d=L[i],g=s=>{const e=pg.querySelector(s);return e?e.textContent.trim():'';};
+    return {id:pg.id,no:'第'+(i+1)+'課',zh:g('.chapter-title'),en:g('.chapter-subtitle'),hook:d.h,pains:d.p,core:d.c,quotes:d.q,step:d.s,
+      tags:Array.from(pg.querySelectorAll('.keyword-tag')).slice(0,3).map(k=>k.textContent.trim())};
+  }),
+  mounts:()=>Array.from(document.querySelectorAll('.page[id^="ch"]')).slice(0,L.length).map(pg=>({el:pg.querySelector('.chapter-header')||pg,id:pg.id}))
+});
+})();
+
+</script>
+<!-- FBPOST:END -->
+</body>
+</html>

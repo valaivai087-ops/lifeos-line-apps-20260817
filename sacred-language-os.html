@@ -1,0 +1,2424 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Language OS｜神聖語言</title>
+<style>
+:root{
+  --bg:#f6f3ec; --surface:#fffdf8; --ink:#26231e; --muted:#7a7366; --line:#e4ddcf;
+  --accent:#1f6f6b; --accent-soft:#e3f0ee; --old:#a8502f; --old-soft:#f6e7df; --mark:#ffe08a;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#171614; --surface:#201f1c; --ink:#ece7dc; --muted:#9c9486; --line:#34312b;
+    --accent:#6fc3bc; --accent-soft:#1d3331; --old:#e09a78; --old-soft:#3a271f; --mark:#7a5c00;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.75 "Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+.app{display:grid;grid-template-columns:270px minmax(0,1fr);min-height:100vh}
+aside{position:sticky;top:0;height:100vh;overflow:auto;padding:22px 14px;border-right:1px solid var(--line);background:var(--surface)}
+.brand{font:700 22px/1.3 "Noto Serif TC","PMingLiU",serif;padding:0 8px;letter-spacing:.02em}
+.brand small{display:block;font:400 12px/1.6 inherit;color:var(--muted);margin-top:4px;letter-spacing:0}
+nav{margin-top:16px;display:flex;flex-direction:column;gap:2px}
+nav button{all:unset;cursor:pointer;display:flex;gap:10px;padding:7px 8px;border-radius:8px;font-size:14.5px;line-height:1.45;color:var(--ink)}
+nav button:hover{background:var(--bg)}
+nav button:focus-visible,.btn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+nav button.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+nav button i{font-style:normal;color:var(--muted);min-width:2.2em;font-variant-numeric:tabular-nums}
+nav button.on i{color:var(--accent)}
+main{padding:0 32px 80px;max-width:1000px;width:100%}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);padding:16px 0 12px;display:flex;gap:10px;align-items:center}
+.search{flex:1;position:relative}
+.search input{width:100%;padding:11px 38px 11px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit}
+.search input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.search button{all:unset;cursor:pointer;position:absolute;right:6px;top:50%;transform:translateY(-50%);padding:4px 9px;color:var(--muted);font-size:18px;line-height:1}
+.count{font-size:13px;color:var(--muted);white-space:nowrap}
+h1{font:700 27px/1.35 "Noto Serif TC","PMingLiU",serif;margin:18px 0 18px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+h1 i{font-style:normal;font-size:14px;color:var(--accent);border:1px solid var(--accent);border-radius:99px;padding:1px 11px;font-family:inherit;font-weight:600}
+section+section{margin-top:44px;padding-top:8px;border-top:1px solid var(--line)}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
+.hero{font:600 20px/1.7 "Noto Serif TC","PMingLiU",serif;background:var(--accent-soft);color:var(--accent);border-radius:14px;padding:20px 24px;margin:10px 0}
+.hero.sub{background:none;color:var(--muted);font:400 14px/1.6 inherit;padding:0 2px;margin:0}
+.say{margin:10px 0;padding:6px 0 6px 16px;border-left:3px solid var(--accent)}
+.kv{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 16px;margin:10px 0}
+.k{font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.04em;margin-bottom:3px}
+.flow{display:flex;flex-wrap:wrap;gap:6px 4px;align-items:center}
+.flow span{background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:1px 11px;font-size:14px;white-space:nowrap}
+.flow b{color:var(--muted);font-weight:400}
+.li{display:flex;gap:12px;padding:9px 2px;border-bottom:1px dashed var(--line);align-items:baseline;flex-wrap:wrap}
+.li .lk{font-weight:700;min-width:11em;color:var(--ink)}
+.li .lv{flex:1;min-width:14em}
+.li.dot::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);transform:translateY(-3px);flex:none}
+.o{color:var(--old)} .n{color:var(--accent);font-weight:600} .ar{color:var(--muted);margin:0 2px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 14px}
+.btn{cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:6px 13px;font:inherit;font-size:14px}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.on{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.hint{font-size:13px;color:var(--muted)}
+.tbl{columns:3 260px;column-gap:14px}
+.tr{break-inside:avoid;display:grid;grid-template-columns:2.4em 1fr auto 1fr;gap:6px;align-items:baseline;padding:6px 8px;border-bottom:1px solid var(--line);font-size:14.5px;line-height:1.5}
+.tr.head{font-size:12px;font-weight:700;color:var(--muted);column-span:all}
+.tr s{text-decoration:none;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.tbl.quiz .tr:not(.head){cursor:pointer}
+.tbl.quiz .tr:not(.head):not(.show) .n{filter:blur(6px);user-select:none}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.card h2{font:700 17px/1.45 "Noto Serif TC","PMingLiU",serif;margin:0 0 10px;display:flex;gap:10px;align-items:baseline}
+.card h2 s{text-decoration:none;font:600 12px/1 inherit;color:var(--muted);font-variant-numeric:tabular-nums}
+.card .row{margin-top:8px;font-size:14.5px;line-height:1.65}
+.card .row .k{font-size:11.5px;margin-bottom:1px;color:var(--muted)}
+.card .row.old .v{color:var(--old)}
+.card .row.new{background:var(--accent-soft);border-radius:10px;padding:8px 12px}
+.card .row.new .k{color:var(--accent)}
+.card .row.new .v{font-weight:600}
+.card p{margin:0;font-size:14.5px;line-height:1.65}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 16px;margin:10px 0}
+.q .qh{display:flex;gap:10px;align-items:baseline}
+.q .qh s{text-decoration:none;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.q .qh b{flex:1;color:var(--old)}
+.q select{font:inherit;font-size:14px;padding:3px 6px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--ink)}
+textarea{display:block;width:100%;margin-top:8px;padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-size:15px;line-height:1.6;resize:none;overflow:hidden;min-height:40px}
+textarea:focus,select:focus,input[type=date]:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.field{display:grid;grid-template-columns:13.5em 1fr;gap:10px;align-items:start;margin:6px 0}
+.field label{font-size:14px;font-weight:600;padding-top:15px}
+.field textarea{margin-top:6px}
+input[type=date]{font:inherit;font-size:14px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.score{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:var(--accent-soft);border-radius:12px;padding:12px 18px;margin:12px 0}
+.score strong{font:700 28px/1 "Noto Serif TC",serif;color:var(--accent);font-variant-numeric:tabular-nums}
+.score span{font-size:14px}
+.tabs{display:flex;gap:6px;margin:-4px 0 18px;border-bottom:1px solid var(--line);padding-bottom:12px;flex-wrap:wrap}
+.post{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 26px;white-space:pre-wrap;font-size:16px;line-height:1.9;max-width:680px}
+h3.sub{font-size:14px;color:var(--accent);margin:26px 0 4px;letter-spacing:.06em}
+.fcs{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.fc{margin:0;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.fc canvas{width:100%;height:auto;border-radius:10px;border:1px solid var(--line);display:block}
+.pager{display:flex;justify-content:space-between;gap:10px;margin-top:40px}
+.empty{color:var(--muted);padding:40px 0;text-align:center}
+@media (max-width:820px){
+  .app{display:block}
+  aside{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:14px 16px 10px}
+  nav{flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:6px;margin-top:10px}
+  nav button{white-space:nowrap;border:1px solid var(--line);padding:4px 11px;border-radius:99px;font-size:13.5px;gap:6px}
+  nav button i{min-width:0}
+  main{padding:0 16px 60px}
+  h1{font-size:23px}
+  .field{grid-template-columns:1fr;gap:0}
+  .field label{padding-top:8px}
+  .li .lk{min-width:0;width:100%}
+}
+@media print{aside,.top,.pager,.tools{display:none}.app{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand">Language OS<small id="brandSub"></small></div>
+    <nav id="nav"></nav>
+  </aside>
+  <main>
+    <div class="top">
+      <div class="search">
+        <input id="q" type="search" placeholder="搜尋全部內容…（按 / 聚焦，Esc 清除）" autocomplete="off">
+        <button id="clr" title="清除" hidden>×</button>
+      </div>
+      <span class="count" id="count"></span>
+    </div>
+    <div id="view"></div>
+  </main>
+</div>
+
+<script>
+const LINES = ["[Title] Language OS｜神聖語言・語言轉換・Language Compiler","[P] 本次對話完整彙整版｜從舊語言到可被 Reality 修正的更新語言","[P] 核心母句：真正的神聖語言，不是永遠說對，而是每一句重要的話，都替 Reality 保留推翻自己的權利。","[Heading1] 一｜Language OS 核心母體","[P] 核心不是把「負面的話」換成「正面的話」，而是把封閉模型的語言，轉成可以觀察、驗證、行動、回饋與更新的語言。","[P] 完整母公式｜Reality → Observation → Representation → Language → Attention → Evidence Selection → Prediction → Emotion → Action → Feedback → Prediction Error → Language Reconstruction → Model Update → Language Upgrade → Retest → Capability → Freedom。","[P] 最短公式｜Language → Attention → Evidence → Prediction → Action → Reality Data → Update。","[P] 舊系統｜Language → Attention Lock → Evidence Selection → Model Reinforcement → 更深的舊 Language。","[P] 新系統｜Language → Attention Expansion → Counter-Evidence → Prediction Error → Model Update → New Language → New Action → New Reality Data。","[P] 關鍵差異｜舊系統是 self-proving；新系統是 self-updating。","[Heading1] 二｜神聖語言的定義與邊界","[P] 神聖語言 ≠ 永遠說正面的話。","[P] 神聖語言 ≠ 好聽、漂亮、安慰人的話。","[P] 神聖語言 ≠ 把負面判斷換成正面判斷。","[P] 神聖語言＝不把暫時狀態宣判成本體；不把一次事件壓縮成永久身分；不把一個解釋冒充 Reality；保留系統重新生成的可能性；讓語言保持可驗證、可修正、可更新。","[P] 神聖語言的最高原則｜我可以非常相信一個模型，卻仍然允許 Reality 推翻它；我可以非常投入一個選擇，卻仍然允許 Feedback 修正它。","[P] 神聖語言＝一種不霸占 Reality、不凍結 Identity、不消滅 Possibility、不拒絕 Prediction Error，而且永遠保留 Model Update 入口的語言。","[ListBullet] 不把狀態變身分。","[ListBullet] 不把感受變事實。","[ListBullet] 不把解釋變真相。","[ListBullet] 不把預測變命運。","[ListBullet] 不把錯誤變羞恥。","[ListBullet] 不把現在變永遠。","[Heading1] 三｜語言的本質","[ListBullet] 語言是模型輸出｜說出的話暴露目前運作的世界模型。","[ListBullet] 語言是注意力指令｜怎麼命名，大腦就開始搜尋什麼。","[ListBullet] 語言是資訊壓縮｜一句「我失敗了」可能把幾百個變數壓縮成一個標籤。","[ListBullet] 語言是權重配置｜一句話會讓某些 Evidence 變重要、其他 Evidence 變背景。","[ListBullet] 語言是預測介面｜「一定會失敗」其實是在輸出 Prediction。","[ListBullet] 語言是情緒調節器｜不同表徵產生不同威脅預測與身體狀態。","[ListBullet] 語言是行動控制器｜不同句子打開或關閉不同策略。","[ListBullet] 語言是回饋迴路｜語言改變行動，行動改變環境回饋。","[ListBullet] 語言是模型訓練資料｜反覆使用某種說法會持續強化同一認知路徑。","[ListBullet] 語言是更新介面｜好的語言保留 Prediction Error 進入系統的入口。","[ListBullet] 語言是可能性生成器｜高維語言增加可選策略，而不是提前關閉答案。","[ListBullet] 語言是自由介面｜自由不是想說什麼，而是不被第一個自動生成的句子綁架。","[Heading1] 四｜語言升維：核心轉換母表","[TABLE]","[ROW] 編號 ║ 舊語言 ║ 升維語言","[ROW] 1 ║ 身分語言 ║ 狀態語言","[ROW] 2 ║ 固定人格語言 ║ 模式語言","[ROW] 3 ║ 本質語言 ║ 情境語言","[ROW] 4 ║ 永久語言 ║ 暫時語言","[ROW] 5 ║ 標籤語言 ║ 描述語言","[ROW] 6 ║ 自我否定語言 ║ 能力缺口語言","[ROW] 7 ║ 價值否定語言 ║ 表現評估語言","[ROW] 8 ║ 人格定罪語言 ║ 行為描述語言","[ROW] 9 ║ 單一自我語言 ║ 多狀態自我語言","[ROW] 10 ║ 宿命身分語言 ║ 版本語言","[ROW] 11 ║ 評價語言 ║ 觀察語言","[ROW] 12 ║ 解釋語言 ║ 事實語言","[ROW] 13 ║ 感覺即事實 ║ 感覺與事實分離","[ROW] 14 ║ 故事語言 ║ 資料語言","[ROW] 15 ║ 模糊語言 ║ 可測量語言","[ROW] 16 ║ 印象語言 ║ 證據語言","[ROW] 17 ║ 單點語言 ║ 時間序列語言","[ROW] 18 ║ 結果截圖語言 ║ 過程影片語言","[ROW] 19 ║ 表象語言 ║ 變數語言","[ROW] 20 ║ Reality判決 ║ Reality取樣","[ROW] 21 ║ 絕對語言 ║ 機率語言","[ROW] 22 ║ 必然語言 ║ 條件語言","[ROW] 23 ║ 預言語言 ║ 假設語言","[ROW] 24 ║ 確定語言 ║ 信心水準語言","[ROW] 25 ║ 二元語言 ║ 連續尺度語言","[ROW] 26 ║ 對錯語言 ║ 誤差語言","[ROW] 27 ║ 成功失敗語言 ║ 命中率語言","[ROW] 28 ║ 單一預測 ║ 多情境預測","[ROW] 29 ║ 無條件預測 ║ 條件式預測","[ROW] 30 ║ 相信語言 ║ 可反駁語言","[ROW] 31 ║ 確認語言 ║ 反證語言","[ROW] 32 ║ 選擇性證據 ║ 全樣本語言","[ROW] 33 ║ 負面放大 ║ 權重校準","[ROW] 34 ║ 單一證據 ║ 證據組合","[ROW] 35 ║ 記憶語言 ║ 當下資料語言","[ROW] 36 ║ 支持搜尋 ║ 差異搜尋","[ROW] 37 ║ 證明自己 ║ 校準自己","[ROW] 38 ║ 忽略例外 ║ 研究例外","[ROW] 39 ║ 噪音語言 ║ 訊號語言","[ROW] 40 ║ 資訊累積 ║ 資訊增益","[ROW] 41 ║ 情緒語言 ║ 需求語言","[ROW] 42 ║ 情緒身分 ║ 神經狀態","[ROW] 43 ║ 情緒判決 ║ 情緒訊號","[ROW] 44 ║ 壓抑語言 ║ 容納語言","[ROW] 45 ║ 情緒服從 ║ 情緒觀察","[ROW] 46 ║ 情緒合理化 ║ 來源追蹤","[ROW] 47 ║ 情緒消除 ║ 情緒調節","[ROW] 48 ║ 痛苦語言 ║ 差異資訊","[ROW] 49 ║ 羞恥語言 ║ 修正語言","[ROW] 50 ║ 自責語言 ║ 責任語言","[ROW] 51 ║ 問題語言 ║ 結構語言","[ROW] 52 ║ 人物語言 ║ 系統語言","[ROW] 53 ║ 單因語言 ║ 多變數語言","[ROW] 54 ║ 線性因果 ║ 回饋迴路","[ROW] 55 ║ 事件語言 ║ 模式語言","[ROW] 56 ║ 模式語言 ║ 結構語言","[ROW] 57 ║ 結構語言 ║ 機制語言","[ROW] 58 ║ 症狀語言 ║ 生成機制","[ROW] 59 ║ 局部最佳 ║ 系統最佳","[ROW] 60 ║ 靜態語言 ║ 動態語言","[ROW] 61 ║ 結果語言 ║ 機制語言","[ROW] 62 ║ 目標語言 ║ 瓶頸語言","[ROW] 63 ║ 努力語言 ║ 槓桿語言","[ROW] 64 ║ 平均用力 ║ 約束解除","[ROW] 65 ║ 症狀修補 ║ 根因干預","[ROW] 66 ║ 更多行動 ║ 關鍵行動","[ROW] 67 ║ 資源不足 ║ 配置語言","[ROW] 68 ║ 意志力語言 ║ 環境設計","[ROW] 69 ║ 動機語言 ║ 摩擦力語言","[ROW] 70 ║ 大改變語言 ║ 最小槓桿語言","[ROW] 71 ║ 命運語言 ║ 實驗語言","[ROW] 72 ║ 空想語言 ║ 測試語言","[ROW] 73 ║ 完美方案 ║ 最小實驗","[ROW] 74 ║ 承諾語言 ║ 行為語言","[ROW] 75 ║ 意圖語言 ║ 執行條件","[ROW] 76 ║ 抽象改善 ║ 操作變數","[ROW] 77 ║ 一次定生死 ║ 迭代語言","[ROW] 78 ║ 大計畫 ║ 下一步語言","[ROW] 79 ║ 等待確定 ║ 邊做邊學","[ROW] 80 ║ 高成本承諾 ║ 可逆試驗","[ROW] 81 ║ 失敗語言 ║ 回饋語言","[ROW] 82 ║ 錯誤語言 ║ Prediction Error","[ROW] 83 ║ 防衛語言 ║ 更新語言","[ROW] 84 ║ 找藉口 ║ 找誤差來源","[ROW] 85 ║ 責怪語言 ║ 診斷語言","[ROW] 86 ║ 懊悔語言 ║ 學習語言","[ROW] 87 ║ 經驗語言 ║ 模型更新","[ROW] 88 ║ 答案語言 ║ 版本語言","[ROW] 89 ║ 結論語言 ║ 更新條件","[ROW] 90 ║ 一次驗證 ║ 重測語言","[ROW] 91 ║ 指責語言 ║ 影響語言","[ROW] 92 ║ 讀心語言 ║ 詢問語言","[ROW] 93 ║ 要求服從 ║ 需求協商","[ROW] 94 ║ 輸贏語言 ║ 共同問題語言","[ROW] 95 ║ 人格攻擊 ║ 行為回饋","[ROW] 96 ║ 控制語言 ║ 界線語言","[ROW] 97 ║ 期待猜測 ║ 明確請求","[ROW] 98 ║ 關係判決 ║ 互動模式","[ROW] 99 ║ 誰改變 ║ 系統改變","[ROW] 100 ║ 關係永久化 ║ 階段評估","[ROW] 101 ║ 分數語言 ║ 能力語言","[ROW] 102 ║ 不會語言 ║ 尚未掌握","[ROW] 103 ║ 背答案 ║ 建模型","[ROW] 104 ║ 做題量 ║ 錯誤類型","[ROW] 105 ║ 重複練習 ║ 差異練習","[ROW] 106 ║ 短期答對 ║ 遷移能力","[ROW] 107 ║ 記憶語言 ║ 提取語言","[ROW] 108 ║ 知道語言 ║ 能力證據","[ROW] 109 ║ 老師給答案 ║ 學生生成","[ROW] 110 ║ 被糾錯 ║ 取得 Difference","[ROW] 111 ║ 現在語言 ║ 趨勢語言","[ROW] 112 ║ 短期語言 ║ 長期複利語言","[ROW] 113 ║ 結果延遲 ║ Leading Indicator","[ROW] 114 ║ 速度語言 ║ 方向語言","[ROW] 115 ║ 年齡語言 ║ 可塑性語言","[ROW] 116 ║ 沉沒成本 ║ 未來價值","[ROW] 117 ║ 過去決定現在 ║ 過去提供 Prior","[ROW] 118 ║ 終點語言 ║ 迭代語言","[ROW] 119 ║ 比較語言 ║ 自身基準線","[ROW] 120 ║ 成長感覺 ║ 成長證據","[ROW] 121 ║ 好壞語言 ║ 適配語言","[ROW] 122 ║ 正確答案 ║ 條件最佳解","[ROW] 123 ║ 得失語言 ║ 機會成本","[ROW] 124 ║ 恐懼決策 ║ 風險拆解","[ROW] 125 ║ 全押語言 ║ 選擇權語言","[ROW] 126 ║ 感覺決策 ║ 權重決策","[ROW] 127 ║ 猜未來 ║ 情境推演","[ROW] 128 ║ 害怕犯錯 ║ 可逆性語言","[ROW] 129 ║ 一次決定 ║ 停損點語言","[ROW] 130 ║ 決策焦慮 ║ 資訊價值","[ROW] 131 ║ 忙碌語言 ║ 資源配置語言","[ROW] 132 ║ 缺乏語言 ║ 約束語言","[ROW] 133 ║ 累積語言 ║ 流動語言","[ROW] 134 ║ 混亂語言 ║ 熵語言","[ROW] 135 ║ 控制全部 ║ 降低關鍵不確定性","[ROW] 136 ║ 複雜化 ║ 壓縮語言","[ROW] 137 ║ 增加規則 ║ 降低摩擦","[ROW] 138 ║ 庫存思維 ║ 流量思維","[ROW] 139 ║ 局部效率 ║ 整體吞吐量","[ROW] 140 ║ 維持穩定 ║ 適應能力","[ROW] 141 ║ 內容語言 ║ 模型語言","[ROW] 142 ║ 模型語言 ║ 模型來源語言","[ROW] 143 ║ 模型來源 ║ 適用邊界","[ROW] 144 ║ 單模型 ║ 模型競爭","[ROW] 145 ║ 模型競爭 ║ 預測競爭","[ROW] 146 ║ 預測競爭 ║ Reality裁決","[ROW] 147 ║ 模型保護 ║ 模型淘汰","[ROW] 148 ║ 自我＝模型 ║ 自我使用模型","[ROW] 149 ║ 更新＝否定自己 ║ 更新＝提高解析度","[ROW] 150 ║ 答案自由 ║ 更新自由","[/TABLE]","[Heading1] 五｜15條最高階母轉換","[ListBullet] Identity → State｜身分→狀態。","[ListBullet] Judgment → Observation｜評價→觀察。","[ListBullet] Interpretation → Hypothesis｜解釋→假設。","[ListBullet] Absolute → Probability｜絕對→機率。","[ListBullet] Emotion → Information｜情緒→資訊。","[ListBullet] Problem → Structure｜問題→結構。","[ListBullet] Event → Pattern｜事件→模式。","[ListBullet] Pattern → Mechanism｜模式→機制。","[ListBullet] Cause → Feedback Loop｜單因→回饋迴路。","[ListBullet] Goal → Bottleneck｜目標→瓶頸。","[ListBullet] Effort → Leverage｜努力→槓桿。","[ListBullet] Failure → Feedback｜失敗→回饋。","[ListBullet] Belief → Prediction｜信念→預測。","[ListBullet] Prediction → Experiment｜預測→實驗。","[ListBullet] Error → Model Update｜錯誤→模型更新。","[Heading1] 六｜Language Compiler：任何舊語言的12步重新編譯","[ListBullet] 01 Identity Check｜我是不是把狀態說成身分？","[ListBullet] 02 Fact Check｜攝影機真正拍得到什麼？","[ListBullet] 03 Certainty Check｜我是不是把 Prediction 說成 Reality？","[ListBullet] 04 Evidence Check｜我選了哪些證據？漏了哪些反證？","[ListBullet] 05 Alternative Check｜至少還有哪三種解釋？","[ListBullet] 06 Structure Check｜哪些 Node 共同生成結果？","[ListBullet] 07 Mechanism Check｜它們透過什麼機制作用？","[ListBullet] 08 Bottleneck Check｜目前最高限制因子是哪個？","[ListBullet] 09 Prediction Check｜如果模型正確，下一步應看到什麼？","[ListBullet] 10 Experiment Check｜24小時內最小可測試行動是什麼？","[ListBullet] 11 Feedback Check｜Reality 實際回了什麼？","[ListBullet] 12 Update Check｜哪個 Model 權重需要修改？","[P] Compiler總公式｜Old Language → De-identify → Fact → Alternative Representations → Evidence → Pattern → Structure → Mechanism → Bottleneck → Prediction → Experiment → Feedback → Prediction Error → Model Update → New Language。","[Heading1] 七｜30個 Language Compiler 實例","[Heading2] 01｜我就是很懶","[P] 錯誤結構｜Identity Lock","[P] 重新編譯｜我目前某類任務啟動率低，我要找出真正的啟動瓶頸。","[P] 轉換路徑｜Identity→State→Mechanism→Experiment","[Heading2] 02｜我英文很差","[P] 錯誤結構｜Global Label","[P] 重新編譯｜我的英文不是『差』，而是某些能力 Node 尚未建立。","[P] 轉換路徑｜Label→Structure→Bottleneck","[Heading2] 03｜我數學就是沒有天分","[P] 錯誤結構｜Ability→Destiny","[P] 重新編譯｜先找失分機制，再判斷哪個能力需要訓練。","[P] 轉換路徑｜Destiny→Diagnosis","[Heading2] 04｜沒有人喜歡我","[P] 錯誤結構｜局部Evidence→全域結論","[P] 重新編譯｜我現在感受到拒絕，但目前 Evidence 不足以推出『沒有人喜歡我』。","[P] 轉換路徑｜Emotion→Evidence Calibration","[Heading2] 05｜他根本不在乎我","[P] 錯誤結構｜Mind Reading","[P] 重新編譯｜目前他的聯絡行為下降；原因還需要更多資料。","[P] 轉換路徑｜Mind Reading→Observation→Hypothesis","[Heading2] 06｜他就是故意針對我","[P] 錯誤結構｜Intent Assumption","[P] 重新編譯｜他的行為對我造成負面影響，但我還不知道他的真正意圖。","[P] 轉換路徑｜Intent→Observable Behavior","[Heading2] 07｜學生就是不想讀書","[P] 錯誤結構｜Motivation Label","[P] 重新編譯｜目前完成率低，我要區分能力、動機與環境摩擦。","[P] 轉換路徑｜Blame→Structure","[Heading2] 08｜這個學生就是沒救了","[P] 錯誤結構｜Current State→Permanent Future","[P] 重新編譯｜目前介入方法效果有限，不等於所有介入方法都失效。","[P] 轉換路徑｜Permanent→Updateable","[Heading2] 09｜這個班很難帶","[P] 錯誤結構｜模糊問題","[P] 重新編譯｜這個班目前主要瓶頸是任務啟動與課堂轉場。","[P] 轉換路徑｜Vague Problem→Operational Variables","[Heading2] 10｜他永遠不會改","[P] 錯誤結構｜Absolute Prediction","[P] 重新編譯｜依目前 Evidence，我先假設短期不會明顯改變，再決定自己的界線。","[P] 轉換路徑｜Absolute→Probability→Decision","[Heading2] 11｜都是我的錯","[P] 錯誤結構｜Total Responsibility","[P] 重新編譯｜我要承擔我的部分，但不把整個系統結果全部歸因於自己。","[P] 轉換路徑｜Self-Blame→Responsibility Allocation","[Heading2] 12｜都是他的錯","[P] 錯誤結構｜Single Cause","[P] 重新編譯｜他的行為是一個重要變數，但我要看完整互動迴路。","[P] 轉換路徑｜Blame→System","[Heading2] 13｜我一定做不到","[P] 錯誤結構｜Prediction→Reality","[P] 重新編譯｜目前我不知道能不能，但可以測出限制成功率最大的變數。","[P] 轉換路徑｜Certainty→Probability→Experiment","[Heading2] 14｜我一定要成功","[P] 錯誤結構｜Outcome Control Illusion","[P] 重新編譯｜我不能保證成功，但可以持續提高成功機率。","[P] 轉換路徑｜Outcome Control→Process Control","[Heading2] 15｜我失敗了","[P] 錯誤結構｜Outcome→Identity","[P] 重新編譯｜這次結果沒有達標，它提供了一個 Prediction Error。","[P] 轉換路徑｜Failure→Feedback","[Heading2] 16｜這個方法沒有用","[P] 錯誤結構｜一次結果→普遍結論","[P] 重新編譯｜在目前條件下沒有觀察到預期效果，我要找適用邊界。","[P] 轉換路徑｜Binary Judgment→Boundary Conditions","[Heading2] 17｜我已經很努力了","[P] 錯誤結構｜Effort＝Effectiveness","[P] 重新編譯｜下一步不是增加努力，而是確認努力是否打在最高槓桿位置。","[P] 轉換路徑｜Effort→Leverage","[Heading2] 18｜我沒有時間","[P] 錯誤結構｜Resource Scarcity","[P] 重新編譯｜這件事目前沒有得到足夠時間權重。","[P] 轉換路徑｜Scarcity→Allocation","[Heading2] 19｜我沒有自制力","[P] 錯誤結構｜Environment Problem→Character Problem","[P] 重新編譯｜我要先重新設計環境，而不是一直要求意志力硬撐。","[P] 轉換路徑｜Willpower→Environment Design","[Heading2] 20｜我最近人生很亂","[P] 錯誤結構｜High Entropy Compression","[P] 重新編譯｜目前幾個系統同時失序，我先處理最高外溢效應的 Node。","[P] 轉換路徑｜Chaos→System Decomposition→Priority","[Heading2] 21｜我好焦慮","[P] 錯誤結構｜Emotion取得決策權","[P] 重新編譯｜我的系統正在預測風險，我先辨認威脅是真實風險還是不確定性。","[P] 轉換路徑｜Emotion→Information","[Heading2] 22｜我不應該難過","[P] 錯誤結構｜Emotion Suppression","[P] 重新編譯｜難過可以存在；我要理解它指向什麼失落。","[P] 轉換路徑｜Suppression→Signal Reading","[Heading2] 23｜我選錯就完蛋了","[P] 錯誤結構｜Decision→Irreversible Catastrophe","[P] 重新編譯｜我要先區分可逆與不可逆部分，再降低不可逆風險。","[P] 轉換路徑｜Catastrophe→Reversibility","[Heading2] 24｜我不知道該選哪一個","[P] 錯誤結構｜缺少Decision Structure","[P] 重新編譯｜我不是沒有答案，而是還沒有建立比較模型。","[P] 轉換路徑｜Confusion→Decision Model","[Heading2] 25｜我後悔死了","[P] 錯誤結構｜用現在資訊審判過去決策","[P] 重新編譯｜這次經驗增加了資訊；我要更新下一次 Decision Rule。","[P] 轉換路徑｜Regret→Learning","[Heading2] 26｜為什麼這種事總是發生在我身上","[P] 錯誤結構｜Victim Narrative＋Absolute","[P] 重新編譯｜如果 Pattern 真的存在，我要找共同生成它的結構。","[P] 轉換路徑｜Victim Story→Pattern Detection","[Heading2] 27｜我要徹底改變自己","[P] 錯誤結構｜High-Cost Global Change","[P] 重新編譯｜先改一個高槓桿變數，觀察它是否帶動其他 Node。","[P] 轉換路徑｜Revolution→Leverage","[Heading2] 28｜我知道了","[P] 錯誤結構｜Knowledge＝Capability","[P] 重新編譯｜我現在只是理解；陌生情境仍能做出來才叫能力。","[P] 轉換路徑｜Knowing→Transfer→Capability","[Heading2] 29｜老師一直糾正我","[P] 錯誤結構｜Correction→Threat","[P] 重新編譯｜糾錯不是人格否定，而是在標記 Prediction Error。","[P] 轉換路徑｜Threat→Difference Information→Update","[Heading2] 30｜我就是這樣，改不了","[P] 錯誤結構｜Model＝Self","[P] 重新編譯｜這是我的系統目前最容易進入的模式，不是唯一可以存在的模式。","[P] 轉換路徑｜Identity→Pattern→Attractor→Experiment→Update","[Heading1] 八｜語言升維診斷測驗","[P] 作答規則｜每題把原句改寫成「更高維、但不自我欺騙」的版本。評分不是看正不正向，而是看是否增加 Reality 解析度、可能性與可更新性。","[P] 01｜我就是很懶。 / 我的升維版本：____________________________________________","[P] 02｜我的學生就是不想讀書。 / 我的升維版本：____________________________________________","[P] 03｜他根本不在乎我。 / 我的升維版本：____________________________________________","[P] 04｜我一定做不到。 / 我的升維版本：____________________________________________","[P] 05｜我今天心情很差，所以今天什麼都做不好。 / 我的升維版本：____________________________________________","[P] 06｜我已經這個年紀了，不可能改變。 / 我的升維版本：____________________________________________","[P] 07｜我明明已經很努力，為什麼還是沒有結果？ / 我的升維版本：____________________________________________","[P] 08｜這個學生就是英文很差。 / 我的升維版本：____________________________________________","[P] 09｜他每次都這樣，他永遠不會改。 / 我的升維版本：____________________________________________","[P] 10｜這次失敗證明我的方法不行。 / 我的升維版本：____________________________________________","[P] 11｜我最近事情太多，完全沒有時間。 / 我的升維版本：____________________________________________","[P] 12｜我要更加努力才會成功。 / 我的升維版本：____________________________________________","[P] 13｜這個班真的很難帶。 / 我的升維版本：____________________________________________","[P] 14｜沒有人喜歡我。 / 我的升維版本：____________________________________________","[P] 15｜我就是沒有自制力。 / 我的升維版本：____________________________________________","[P] 16｜如果選錯，我的人生就完了。 / 我的升維版本：____________________________________________","[P] 17｜我很焦慮，所以一定有問題。 / 我的升維版本：____________________________________________","[P] 18｜我知道這個方法沒有用。 / 我的升維版本：____________________________________________","[P] 19｜他就是故意針對我。 / 我的升維版本：____________________________________________","[P] 20｜事情已經變成這樣，沒有辦法了。 / 我的升維版本：____________________________________________","[Heading1] 九｜測驗評分規準","[ListBullet] 0分｜只是換漂亮說法，例如「我很笨」→「我其實很棒」。","[ListBullet] 1分｜去掉負面詞，但仍沒有新資訊。","[ListBullet] 2分｜成功把 Identity 改成 State。","[ListBullet] 3分｜能拆出 Fact／Interpretation／Evidence。","[ListBullet] 4分｜能找到 Structure／Mechanism／Bottleneck。","[ListBullet] 5分｜能生成 Prediction→Experiment→Feedback→Update。","[P] 20題滿分100分｜0–30：容易把語言當Reality判決；31–50：能察覺標籤但易停在正向改寫；51–70：開始具備結構語言；71–85：具備模型語言；86–100：具備更新語言。","[Heading1] 十｜七刀拆句法","[ListBullet] 第一刀 Fact｜真正發生什麼？","[ListBullet] 第二刀 Interpretation｜哪一部分只是我的解釋？","[ListBullet] 第三刀 Model｜什麼舊模型生成這個解釋？","[ListBullet] 第四刀 Evidence｜支持與反對 Evidence 各是什麼？","[ListBullet] 第五刀 Mechanism｜什麼機制可能生成現在的結果？","[ListBullet] 第六刀 Prediction｜如果模型正確，接下來應該看到什麼？","[ListBullet] 第七刀 Experiment｜我能做什麼最小實驗驗證？","[Heading1] 十一｜每日5分鐘 Language OS 訓練","[ListBullet] Step 1 原句｜我剛才對自己說了什麼？","[ListBullet] Step 2 分類｜Identity／Absolute／Judgment／Emotion／Blame／Destiny／其他？","[ListBullet] Step 3 Fact｜攝影機真正拍得到什麼？","[ListBullet] Step 4 Alternative｜至少產生3個可能解釋。","[ListBullet] Step 5 Mechanism｜哪個機制最值得測？","[ListBullet] Step 6 Prediction｜如果它是真的，應該看到什麼？","[ListBullet] Step 7 Minimum Experiment｜24小時內可以測什麼？","[ListBullet] Step 8 Feedback｜Reality 回了什麼？","[ListBullet] Step 9 Update｜原句現在要改成什麼？","[Heading1] 十二｜每日 Language OS 紀錄模板","[P] 原始語言｜____________________________________________________________","[P] 語言類型｜____________________________________________________________","[P] Fact｜____________________________________________________________","[P] Interpretation｜____________________________________________________________","[P] Emotion｜____________________________________________________________","[P] Hidden Prediction｜____________________________________________________________","[P] Evidence For｜____________________________________________________________","[P] Evidence Against｜____________________________________________________________","[P] Alternative Representation 1｜____________________________________________________________","[P] Alternative Representation 2｜____________________________________________________________","[P] Alternative Representation 3｜____________________________________________________________","[P] Pattern｜____________________________________________________________","[P] Structure｜____________________________________________________________","[P] Mechanism｜____________________________________________________________","[P] Bottleneck｜____________________________________________________________","[P] Controllable Variable｜____________________________________________________________","[P] Minimum Experiment｜____________________________________________________________","[P] Expected Result｜____________________________________________________________","[P] Actual Feedback｜____________________________________________________________","[P] Prediction Error｜____________________________________________________________","[P] Model Update｜____________________________________________________________","[P] 升維後語言｜____________________________________________________________","[Heading1] 十三｜真正的畢業考試","[P] 看到任何一句話，都能在10秒內問出五句：","[ListBullet] 這是 Fact 還是 Interpretation？","[ListBullet] 這是 State 還是 Identity？","[ListBullet] 還有什麼 Alternative Representation？","[ListBullet] 什麼 Evidence 會證明我的模型不完整？","[ListBullet] 下一個 Minimum Experiment 是什麼？","[P] 如果這五個問題開始自動出現，你就不是在背語言轉換，而是在形成新的認知 Attractor。","[Heading1] 十四｜能力成熟度 Level 0–10","[ListBullet] Level 0｜直接相信自己說出的第一句話。","[ListBullet] Level 1｜發現自己的語言可能有問題。","[ListBullet] Level 2｜能把 Identity 改成 State。","[ListBullet] Level 3｜能把 Interpretation 拆回 Fact。","[ListBullet] Level 4｜能生成 Alternative Representation。","[ListBullet] Level 5｜能找到 Pattern／Structure／Mechanism。","[ListBullet] Level 6｜能把 Belief 轉成 Prediction。","[ListBullet] Level 7｜能設計 Minimum Experiment。","[ListBullet] Level 8｜能利用 Prediction Error 更新 Model。","[ListBullet] Level 9｜在壓力、衝突、失敗當下，也能完成上述轉換。","[ListBullet] Level 10｜不需刻意正向思考，系統已形成 Fact→Alternative→Structure→Mechanism→Prediction→Experiment→Feedback→Update。","[Heading1] 十五｜本次對話中的個人語言診斷","[Heading2] 高確定性語言","[P] 常出現「一定、全部、所有、完全、永遠、就是、只能、必須、最大化、最完整」。優點是決策快；風險是把 Probability 壓成 Certainty。","[P] 槓桿句｜我目前有幾成把握？","[Heading2] Identity Fusion","[P] 容易把表現或能力狀態黏到身分。","[P] 槓桿句｜這是在描述我，還是在描述目前能力？","[Heading2] Catastrophic Compression","[P] 容易把當下問題壓成最壞未來。","[P] 槓桿句｜真的不可逆嗎？","[Heading2] Control Language","[P] 傾向先想清楚、預測完整再行動。","[P] 槓桿句｜我不需要知道全部；我需要知道下一個可逆步驟。","[Heading2] Overthinking＝Safety","[P] 思考若沒有停止條件，可能形成資訊→更多模型→更多不確定→更多思考。","[P] 槓桿句｜再取得哪一項資訊真的會改變我的決定？","[Heading2] Problem→Person","[P] 系統問題容易被壓縮成人格標籤。","[P] 槓桿句｜如果不准使用人格形容詞，我會怎麼描述？","[Heading2] Single Cause","[P] 重視根源，但複雜系統常是多 Node、多權重與交互作用。","[P] 槓桿句｜這是唯一原因，還是目前高權重 Node 之一？","[Heading2] 最大化語言","[P] 常追求最大化、全部收入、最多資料。風險是 Knowledge Entropy。","[P] 槓桿句｜這個新資料會改變哪個 Node？","[Heading2] 一次到位語言","[P] 常追求完整、全部補齊。","[P] 槓桿句｜最小可運作閉環是什麼？","[Heading2] Effort Bias","[P] 容易把更多努力視為解法。","[P] 槓桿句｜如果只能做一件事，哪件事最可能改變 Outcome？","[Heading2] Achievement＝Worth","[P] 成果與自我價值可能被語言黏合。","[P] 槓桿句｜我可以嚴格評估成果，而不必用成果定義整個自己。","[Heading2] Should Language","[P] 「應該」常隱藏未說出口的 Prediction。","[P] 槓桿句｜我原本預測X，但 Reality 回Y；模型錯在哪裡？","[Heading2] Binary Language","[P] 好／壞、對／錯、有用／沒用等二元分類容易刪掉 Gradient。","[P] 槓桿句｜如果不是0或1，而是0～100，現在是多少？","[Heading2] Urgency Language","[P] 看到問題容易立即處理，但有時需要 Observation Window。","[P] 槓桿句｜現在最有價值的是行動，還是多取得一輪資料？","[Heading2] 高維詞彙也可能低維化","[P] 「舊模型、Prediction Error、Attractor、Bottleneck」若沒有 Evidence，也可能只是新標籤。","[P] 槓桿句｜Evidence是什麼？Alternative是什麼？怎麼Test？什麼結果會讓我Update？","[Heading1] 十六｜個人下一版 Language Compiler","[ListBullet] 一定 → 目前機率。","[ListBullet] 就是 → 目前呈現。","[ListBullet] 全部 → 關鍵樣本。","[ListBullet] 根源 → 高權重 Node。","[ListBullet] 最大化 → Information Gain 最大化。","[ListBullet] 完整 → 最小完整閉環。","[ListBullet] 應該 → 我的 Prediction。","[ListBullet] 我知道 → 我要怎麼 Test？","[P] 個人核心升級｜高 Agency 不減速，而是在高速推演中加入 Uncertainty → Counter-Evidence → Update Gate。","[P] 舊流程｜快速理解 → 快速下結論 → 快速行動。","[P] 新版流程｜快速建模 → 保留不確定性 → 主動找反證 → 小步測試 → 快速更新 → 再行動。","[Heading1] 十七｜神聖語言的七道 Reality Gate","[ListBullet] 這是 Fact，還是我的 Interpretation？","[ListBullet] 我有多少 Evidence？","[ListBullet] 我有幾成把握，而不是『一定』？","[ListBullet] 還有哪個 Alternative 也能解釋？","[ListBullet] 什麼 Evidence 出現，我會承認目前模型不完整？","[ListBullet] 怎麼讓 Reality 測試這句話？","[ListBullet] 如果 Reality 不同意，我願不願意 Update？","[P] 判準｜如果「什麼證據會讓我改變看法？」完全答不出來，這句話很可能已從可更新模型變成封閉信念。","[Heading1] 十八｜最終智慧與母句","[P] 不要讓語言替 Reality 下最後判決；讓語言成為持續接近 Reality、修正模型、重新生成自己的工具。","[P] 升維不是換一句比較漂亮的話，而是把語言從「模型強化器」升級成「模型更新器」。","[P] 語言品質 ≠ 說對多少；語言品質＝被現實修正的能力。","[P] 語言負責提出模型；行動負責進行實驗；Reality 負責提供答案；Prediction Error 負責指出差異；智慧負責允許更新。","[P] 自由，就是我不必永遠效忠昨天的答案。","[P] 真正的神聖語言，不是永遠說對，而是每一句重要的話，都替 Reality 保留推翻自己的權利。","[P] 智慧不是永遠正確；智慧是永遠保留更新自己的能力。","[P] 不要問『我要說什麼才正向？』；要問『我要怎麼說，才能讓系統看見更多 Reality、保留更多可能、產生更好的行動，並在錯誤出現時仍然可以更新？』","[P] 語言的最高能力，不是把世界說成你想要的樣子，而是讓你永遠有能力修正自己看世界的方式。"];
+const POSTS = [
+{
+t:`同一句話說了十年，人生就重播了十年。`,
+zh:`你有沒有發現——
+你最常對自己說的那句話，後來都變成真的？
+
+「我就是不行。」於是你只看得見自己不行的證據。
+「他就是這樣。」於是你只記得他讓你失望的那幾次。
+「反正沒用。」於是你連試都不試，然後果然沒用。
+
+不是你的命不好。
+是你的語言，一直在替舊的自己蒐證。
+
+一句話說出口，注意力就被它帶走。
+注意力去哪裡，證據就在哪裡。
+證據在哪裡，預測就在哪裡。
+預測在哪裡，行動就在哪裡。
+行動在哪裡，人生就在哪裡。
+
+這就是舊系統：
+語言鎖住注意力，注意力挑選證據，證據加固模型，模型再生出更深的舊語言。
+它不需要現實同意，它只需要自己證明自己。
+
+而新系統只多做一件事：
+讓反證進來。
+
+讓注意力打開，而不是鎖死。
+讓差異被看見，而不是被解釋掉。
+讓模型被修正，而不是被保護。
+讓下一句話，比上一句話更接近現實。
+
+真正的改變，從來不是把「負面的話」換成「正面的話」。
+把「我很糟」換成「我很棒」，只是換了一個牢房的壁紙。
+
+真正的改變，是把一句封閉的話，
+變成一句可以觀察、可以驗證、可以行動、可以被現實回饋的話。
+
+舊語言問：我要怎麼證明我是對的？
+新語言問：現實正在告訴我什麼？
+
+舊語言是自我證明。
+新語言是自我更新。
+
+從今天起，別急著相信腦中自動冒出來的第一句話。
+先問它一句：
+你是在描述現實，還是在重播昨天？
+
+你不必永遠說對。
+你只需要，永遠還能更新。`,
+en:`Say the same sentence for ten years, and your life replays for ten years.
+
+"I'm just not good enough." So you only notice proof that you're not.
+"Nothing ever works." So you never try — and nothing works.
+
+It isn't fate. It's your language, quietly collecting evidence for your old self.
+
+Where language goes, attention follows.
+Where attention goes, evidence appears.
+Where evidence piles up, prediction hardens.
+Where prediction points, action walks.
+
+The old system is self-proving: it never needs reality to agree.
+The new system does one extra thing: it lets counter-evidence in.
+
+Real change is not swapping negative words for positive ones.
+That only repaints the walls of the same cell.
+Real change turns a closed sentence into one you can observe, test, act on, and update.
+
+Old language asks: How do I prove I'm right?
+New language asks: What is reality telling me?
+
+You don't have to be right forever.
+You only have to stay updatable.`,
+tags:`#LanguageOS #神聖語言 #自我更新 #SelfUpdating #語言即系統`,
+cards:[
+[`同一句話說了十年，\n人生就重播了十年。`,`Say the same sentence for ten years, and your life replays for ten years.`],
+[`不是你的命不好。\n是你的語言，\n一直在替舊的自己蒐證。`,`It isn't fate. It's your language collecting evidence for your old self.`],
+[`舊語言是自我證明。\n新語言是自我更新。`,`Old language is self-proving. New language is self-updating.`],
+[`你不必永遠說對。\n你只需要，永遠還能更新。`,`You don't have to be right forever. You only have to stay updatable.`]
+]},
+{
+t:`你以為的「正能量」，可能只是另一種不誠實。`,
+zh:`很多人以為，神聖的語言就是好聽的語言。
+
+所以難過的時候說「我很好」。
+失敗的時候說「一切都是最好的安排」。
+害怕的時候說「我一定可以」。
+
+說完之後，心裡更空。
+因為身體知道，你沒有說真話。
+
+神聖語言，不是永遠說正面的話。
+神聖語言，不是漂亮、好聽、安慰人的話。
+神聖語言，更不是把「我很爛」直接改成「我很棒」。
+
+那只是把一個判決，換成另一個判決。
+
+真正神聖的語言，守的是六條界線：
+
+不把狀態變成身分。
+不把感受變成事實。
+不把解釋變成真相。
+不把預測變成命運。
+不把錯誤變成羞恥。
+不把現在變成永遠。
+
+「我今天很累」是狀態，「我就是沒用」是判刑。
+「我覺得被忽略」是感受，「他不愛我」是結論。
+「這次沒做到」是事件，「我永遠做不到」是詛咒。
+
+一句話神不神聖，不看它多溫柔，
+看它有沒有替「可能性」留一扇門。
+
+你可以非常相信一個想法，卻仍然允許現實推翻它。
+你可以非常投入一個選擇，卻仍然允許回饋修正它。
+
+這不是軟弱，這是最高級的誠實。
+這不是沒有立場，這是不霸占現實。
+
+不凍結自己是誰。
+不消滅還沒發生的可能。
+不拒絕那個讓你不舒服的差異。
+
+所謂神聖，
+不是你把話說得多滿，
+而是你把門留得多開。
+
+今天，試著把一句「我就是」改成「我目前」。
+兩個字的距離，就是一個人重新生成的空間。`,
+en:`What you call "positivity" may just be another kind of dishonesty.
+
+Sacred language is not always-positive language.
+It is not pretty, soothing, or comforting language.
+It is not replacing "I'm terrible" with "I'm amazing" — that only swaps one verdict for another.
+
+Sacred language keeps six boundaries:
+Don't turn a state into an identity.
+Don't turn a feeling into a fact.
+Don't turn an interpretation into the truth.
+Don't turn a prediction into destiny.
+Don't turn a mistake into shame.
+Don't turn now into forever.
+
+"I'm tired today" is a state. "I'm useless" is a sentence passed on yourself.
+
+A sentence is sacred not because it is gentle, but because it leaves a door open for possibility.
+
+You can believe a model deeply and still let reality overturn it.
+You can commit fully to a choice and still let feedback correct it.
+
+Sacredness is not how full your words are.
+It is how open you leave the door.
+
+Today, change one "I am" into "I am currently."`,
+tags:`#LanguageOS #神聖語言 #不是正向思考 #SacredLanguage #保留可能性`,
+cards:[
+[`你以為的「正能量」，\n可能只是另一種不誠實。`,`What you call "positivity" may just be another kind of dishonesty.`],
+[`不把狀態變身分。\n不把感受變事實。\n不把現在變永遠。`,`Don't turn a state into an identity, a feeling into a fact, or now into forever.`],
+[`所謂神聖，\n不是把話說得多滿，\n而是把門留得多開。`,`Sacredness is not how full your words are. It is how open you leave the door.`],
+[`把「我就是」改成「我目前」。\n兩個字的距離，\n是重新生成的空間。`,`Change "I am" into "I am currently." That small gap is room to be remade.`]
+]},
+{
+t:`你不是被現實困住，你是被自己的命名困住。`,
+zh:`一句「我失敗了」，只有四個字。
+但它把幾百個變數，壓成了一個標籤。
+
+睡眠、時機、方法、資源、對手、運氣、準備程度……
+全部消失，只剩下一個字：我。
+
+這就是語言最危險、也最強大的地方。
+它不只是在「說」，它在「運作」。
+
+語言是模型的輸出——你說出口的話，暴露了你正在用哪一張世界地圖。
+語言是注意力的指令——你怎麼命名，大腦就開始搜尋什麼。
+語言是資訊的壓縮——一個標籤，可以刪掉一整片現實。
+語言是權重的配置——一句話，決定哪些證據重要、哪些變成背景。
+語言是預測的介面——「一定會失敗」不是事實，是預測。
+語言是情緒的調節器——不同的說法，身體給出不同的反應。
+語言是行動的控制器——有些句子打開策略，有些句子關上所有的門。
+語言是訓練資料——同一句話說一千次，就是把同一條路走一千次。
+
+所以，你不是嘴巴說說而已。
+你每天都在用語言，訓練明天的自己。
+
+好消息是：
+既然語言能把你鎖住，語言也能把你放出來。
+
+好的語言，保留差異進入系統的入口。
+好的語言，增加可以選擇的策略。
+好的語言，不提前關閉答案。
+
+自由，不是想說什麼就說什麼。
+自由，是不被腦中第一個自動生成的句子綁架。
+
+下一次，當那句熟悉的話又冒出來，
+請停一秒，問自己：
+
+這句話，讓我看見更多，還是看見更少？
+這句話，打開了路，還是關上了門？
+這句話，是我選的，還是它選了我？
+
+你說出的每一句話，都是一個方向盤。
+握好它。`,
+en:`You are not trapped by reality. You are trapped by what you named it.
+
+"I failed" is two words — and it compresses hundreds of variables into one label. Sleep, timing, method, resources, luck: all erased. Only "I" remains.
+
+Language doesn't just speak. It operates.
+
+Language is model output — it reveals the map you are using.
+Language is an attention command — what you name, your brain starts searching for.
+Language is compression — one label can delete a whole landscape.
+Language is a prediction interface — "I'll surely fail" is a forecast, not a fact.
+Language is training data — say it a thousand times, and you walk the same road a thousand times.
+
+Every day, you are training tomorrow's self with today's words.
+
+The good news: what can lock you in can also let you out.
+
+Freedom is not saying whatever you want.
+Freedom is not being hijacked by the first sentence your mind generates.
+
+Does this sentence help me see more, or less?
+Does it open a path, or close a door?
+Did I choose it, or did it choose me?
+
+Every sentence is a steering wheel. Hold it well.`,
+tags:`#LanguageOS #語言的本質 #注意力 #AttentionIsDirection #自由介面`,
+cards:[
+[`你不是被現實困住，\n你是被自己的命名困住。`,`You are not trapped by reality. You are trapped by what you named it.`],
+[`你每天都在用語言，\n訓練明天的自己。`,`Every day, you are training tomorrow's self with today's words.`],
+[`自由，是不被腦中\n第一個自動生成的句子綁架。`,`Freedom is not being hijacked by the first sentence your mind generates.`],
+[`這句話，\n打開了路，還是關上了門？`,`Does this sentence open a path, or close a door?`]
+]},
+{
+t:`一句話換一個說法，不是文字遊戲，是換一條命運的軌道。`,
+zh:`「我很懶。」
+「我不會。」
+「我失敗了。」
+「我沒時間。」
+「他就是這種人。」
+
+這些話你說得很順，順到你以為它們是事實。
+其實它們只是——最省力的說法。
+
+省力的代價是：路越說越窄。
+
+150 組語言轉換，其實只在做同一件事：
+把一句「關門的話」，換成一句「開門的話」。
+
+身分語言，換成狀態語言。
+永久語言，換成暫時語言。
+標籤語言，換成描述語言。
+絕對語言，換成機率語言。
+預言語言，換成假設語言。
+情緒判決，換成情緒訊號。
+失敗語言，換成回饋語言。
+努力語言，換成槓桿語言。
+命運語言，換成實驗語言。
+責怪語言，換成診斷語言。
+
+「我不會」→「我尚未掌握」。
+「我沒時間」→「這件事還沒得到足夠的時間權重」。
+「我失敗了」→「這次結果給了我一個差異」。
+「他不在乎我」→「他最近的聯絡變少了，原因我還不知道」。
+
+你看，事實沒有變。
+變的是：下一步出現了。
+
+舊語言讓你停在原地感受。
+新語言讓你往前一步行動。
+
+舊語言給你一個結論。
+新語言給你一個問題。
+
+舊語言說：就這樣了。
+新語言說：然後呢？
+
+不必一次背完 150 組。
+你只要記得一個方向——
+
+從「是什麼」走向「怎麼運作」，
+從「誰的錯」走向「哪裡可以調」，
+從「永遠」走向「目前」，
+從「一定」走向「可以試試」。
+
+一句話的升維，就是一個人生路口的重新選擇。
+今天，挑一句你最常說的話，替它開一扇門。`,
+en:`Rephrasing one sentence is not wordplay. It is switching the track your life runs on.
+
+"I'm lazy." "I can't." "I failed." "I have no time."
+They roll off your tongue so smoothly you mistake them for facts. They are simply the cheapest way to say it — and the price is a narrower road.
+
+All 150 conversions do one thing: turn a door-closing sentence into a door-opening one.
+
+Identity into state.
+Permanent into temporary.
+Label into description.
+Absolute into probability.
+Prophecy into hypothesis.
+Failure into feedback.
+Effort into leverage.
+Fate into experiment.
+Blame into diagnosis.
+
+"I can't" becomes "I haven't mastered it yet."
+"I have no time" becomes "This hasn't been given enough weight yet."
+
+The facts did not change. What changed is that a next step appeared.
+
+Old language gives you a conclusion. New language gives you a question.
+Old language says: That's it. New language says: And then?
+
+From "always" to "currently." From "certainly" to "let's test it."
+
+Pick the sentence you say most. Open a door for it today.`,
+tags:`#LanguageOS #語言升維 #150組轉換 #ReframeToUpdate #開門的話`,
+cards:[
+[`一句話換一個說法，\n是換一條命運的軌道。`,`Rephrasing one sentence is switching the track your life runs on.`],
+[`「我不會」\n↓\n「我尚未掌握」`,`"I can't" becomes "I haven't mastered it yet."`],
+[`舊語言給你一個結論。\n新語言給你一個問題。`,`Old language gives you a conclusion. New language gives you a question.`],
+[`事實沒有變。\n變的是：下一步出現了。`,`The facts did not change. What changed is that a next step appeared.`]
+]},
+{
+t:`你卡住的地方，往往只差一個「轉換」。`,
+zh:`有時候，人不是沒有能力。
+是被一句話卡在原地。
+
+卡在「我就是這樣」。
+卡在「一定不行」。
+卡在「都是因為他」。
+卡在「我已經很努力了」。
+
+十五條母轉換，像十五把鑰匙。
+每一把，開一種卡住。
+
+身分 → 狀態：你不是那個標籤，你只是正處在一個狀態。
+評價 → 觀察：先看見發生了什麼，再決定它代表什麼。
+解釋 → 假設：你的想法是一個版本，不是唯一的版本。
+絕對 → 機率：沒有「一定」，只有「幾成」。
+情緒 → 資訊：情緒不是命令，是訊號。
+問題 → 結構：問題不是一團霧，是可以拆開的零件。
+事件 → 模式：一次是意外，三次是規律。
+模式 → 機制：知道它重複還不夠，要知道它為什麼重複。
+單因 → 回饋迴路：不是誰害了誰，是什麼在互相餵養。
+目標 → 瓶頸：別只盯著終點，找出卡住水流的那一段。
+努力 → 槓桿：不是更用力，是用在對的位置。
+失敗 → 回饋：結果沒有羞辱你，它在回答你。
+信念 → 預測：把「我相信」說成「我預測」，它才可以被檢驗。
+預測 → 實驗：別猜，去試。
+錯誤 → 模型更新：錯了不是終點，是地圖該改版的通知。
+
+你會發現，這十五條講的是同一件事：
+
+把「定案」鬆開，變成「待驗證」。
+把「我這個人」鬆開，變成「這個系統」。
+把「為什麼是我」鬆開，變成「它怎麼發生」。
+
+能力，不是懂得更多道理。
+能力，是在卡住的那一秒，手上有鑰匙。
+
+智慧，不是永遠不卡。
+智慧，是卡住時知道：
+這不是牆，這是一道還沒轉換的門。`,
+en:`Where you are stuck, you are often just one conversion away.
+
+Sometimes it isn't a lack of ability. It is one sentence holding you in place: "That's just how I am." "It will never work." "It's all because of them."
+
+Fifteen master conversions are fifteen keys.
+
+Identity to state: you are not the label; you are in a condition.
+Judgment to observation: see what happened before deciding what it means.
+Absolute to probability: there is no "certainly," only "how likely."
+Emotion to information: a feeling is a signal, not a command.
+Goal to bottleneck: stop staring at the finish line; find where the flow is blocked.
+Effort to leverage: not harder — better placed.
+Failure to feedback: the result isn't shaming you; it is answering you.
+Belief to prediction: say "I predict" instead of "I believe," and it becomes testable.
+Error to model update: a mistake is a notice that the map needs a new edition.
+
+They all say one thing: loosen "settled" into "to be verified."
+
+Capability is not knowing more principles. It is holding a key at the very second you get stuck.
+Wisdom is knowing: this is not a wall. It is a door not yet converted.`,
+tags:`#LanguageOS #十五條母轉換 #卡住不是牆 #FromBeliefToPrediction #槓桿`,
+cards:[
+[`你卡住的地方，\n往往只差一個「轉換」。`,`Where you are stuck, you are often just one conversion away.`],
+[`情緒不是命令，是訊號。\n結果沒有羞辱你，\n它在回答你。`,`A feeling is a signal, not a command. The result isn't shaming you; it is answering you.`],
+[`不是更用力，\n是用在對的位置。`,`Not harder — better placed.`],
+[`這不是牆。\n這是一道還沒轉換的門。`,`This is not a wall. It is a door not yet converted.`]
+]},
+{
+t:`腦中那句傷人的話，不用刪掉，重新編譯就好。`,
+zh:`你試過叫自己「不要亂想」嗎？
+結果是，想得更兇。
+
+因為舊語言不是垃圾，刪不掉。
+它是一段寫得太粗糙的程式——
+跑得很快，錯得也很快。
+
+你不需要刪除它。
+你需要重新編譯它。
+
+十二個檢查點，一步一步來：
+
+一、我是不是把狀態說成了身分？
+二、如果有一台攝影機，它真正拍得到什麼？
+三、我是不是把預測，說成了已經發生的事實？
+四、我選了哪些證據？又漏了哪些反證？
+五、至少還有哪三種解釋？
+六、是哪些因素，一起造成了這個結果？
+七、它們是怎麼互相作用的？
+八、現在最卡的，是哪一個？
+九、如果我的想法是對的，接下來應該看到什麼？
+十、二十四小時內，我能做的最小測試是什麼？
+十一、現實實際回了我什麼？
+十二、我的哪一個想法，需要調整比重？
+
+看起來很長，其實只是三個動作：
+
+先把自己從句子裡拿出來。
+再把現實放回句子裡。
+最後把下一步交給行動。
+
+「我就是很懶」——
+重新編譯後：
+「我在某一類任務上啟動率很低，我要找出真正卡住啟動的地方。」
+
+前一句，讓你躺得更久。
+後一句，讓你知道明天早上可以試什麼。
+
+差別不在語氣，在於：
+前一句沒有出口，後一句有。
+
+難過的時候，不必逼自己立刻想通。
+你只要多問一題。
+一題就好。
+
+每多問一題，
+那句話對你的控制，就鬆開一點。
+
+舊語言不是敵人，它只是舊版本。
+而你，是可以釋出新版本的人。`,
+en:`You don't need to delete the sentence that hurts you. You need to recompile it.
+
+Tell yourself "stop overthinking," and you think harder. Old language isn't trash to be erased. It is rough code — it runs fast and fails fast.
+
+Twelve checkpoints:
+Am I calling a state an identity?
+What would a camera actually record?
+Am I stating a prediction as if it already happened?
+Which evidence did I pick — and which counter-evidence did I skip?
+What are at least three other explanations?
+Which factors produced this together, and how do they interact?
+Which one is the real bottleneck?
+If I'm right, what should I see next?
+What is the smallest test I can run within 24 hours?
+What did reality actually answer?
+Which belief needs its weight adjusted?
+
+It is really three moves:
+Take yourself out of the sentence.
+Put reality back in.
+Hand the next step to action.
+
+"I'm just lazy" recompiles into "My start-up rate is low for one type of task; I'll find what truly blocks it."
+The first has no exit. The second does.
+
+Old language is not your enemy. It is an old version — and you are the one who can ship a new release.`,
+tags:`#LanguageOS #LanguageCompiler #重新編譯 #十二步 #RecompileDontDelete`,
+cards:[
+[`腦中那句傷人的話，\n不用刪掉，\n重新編譯就好。`,`You don't need to delete the sentence that hurts you. Recompile it.`],
+[`先把自己從句子裡拿出來。\n再把現實放回句子裡。\n最後把下一步交給行動。`,`Take yourself out of the sentence. Put reality back in. Hand the next step to action.`],
+[`如果有一台攝影機，\n它真正拍得到什麼？`,`What would a camera actually record?`],
+[`舊語言不是敵人，\n它只是舊版本。\n而你可以釋出新版本。`,`Old language is not your enemy. It is an old version — and you can ship a new release.`]
+]},
+{
+t:`這 30 句話，你一定說過其中幾句。`,
+zh:`「我就是很懶。」
+「我英文很差。」
+「沒有人喜歡我。」
+「他根本不在乎我。」
+「都是我的錯。」
+「我一定做不到。」
+「我沒有時間。」
+「我選錯就完蛋了。」
+「我就是這樣，改不了。」
+
+哪一句，像是從你嘴裡說出來的？
+
+這些話之所以傷人，不是因為它們殘忍，
+而是因為它們聽起來——很像事實。
+
+可是請看清楚它們的結構：
+
+「沒有人喜歡我」，是把一次被拒絕，放大成全世界。
+「他根本不在乎我」，是把看不見的心，當成看得見的事。
+「都是我的錯」，是把一整個系統的結果，一個人扛。
+「我一定做不到」，是把還沒發生的事，說成已經發生。
+「我選錯就完蛋了」，是把可以回頭的路，說成懸崖。
+「我知道了」，是把聽懂，當成做得到。
+「我就是這樣」，是把最常走的那條路，當成唯一的路。
+
+每一句舊語言，都有一個看不見的錯誤結構。
+看見結構，話就鬆了。
+
+於是——
+「我失敗了」變成：這次沒有達標，它給了我一個差異。
+「我沒有自制力」變成：我要先重新設計環境，而不是一直硬撐。
+「我好焦慮」變成：我的系統在預測風險，我先分辨那是真的風險，還是不確定。
+「我後悔死了」變成：這次經驗增加了資訊，我要更新下一次的決定方式。
+「我就是這樣」變成：這是我目前最容易進入的模式，不是唯一能存在的模式。
+
+沒有一句是在騙自己。
+每一句都比原來更誠實，也更有路。
+
+升維的語言，不是比較好聽。
+是比較準確。
+是比較溫柔地準確。
+
+你對自己說的話，是你住得最久的房子。
+今天，至少把其中一面牆，換成窗。`,
+en:`Thirty sentences. You have surely said a few of them.
+
+"I'm just lazy." "Nobody likes me." "He doesn't care about me." "It's all my fault." "I'll never make it." "This is just who I am."
+
+They hurt not because they are cruel, but because they sound like facts.
+
+Look at their structure:
+"Nobody likes me" stretches one rejection across the whole world.
+"He doesn't care" treats an invisible heart as a visible fact.
+"It's all my fault" makes one person carry a whole system.
+"I'll never make it" reports the future as if it already happened.
+"If I choose wrong, I'm finished" calls a reversible road a cliff.
+"This is just who I am" mistakes the most-travelled road for the only road.
+
+See the structure, and the sentence loosens.
+
+"I failed" becomes "This result missed the target — it handed me a difference."
+"I'm so anxious" becomes "My system is predicting risk; let me tell real risk from uncertainty."
+
+None of these is self-deception. Each is more honest, and each has a way forward.
+
+Upgraded language is not prettier. It is more accurate — gently accurate.
+
+The words you say to yourself are the house you live in longest. Today, turn one wall into a window.`,
+tags:`#LanguageOS #30個實例 #看見結構 #GentlyAccurate #把牆換成窗`,
+cards:[
+[`這些話傷人，\n不是因為殘忍，\n而是因為聽起來很像事實。`,`They hurt not because they are cruel, but because they sound like facts.`],
+[`「我就是這樣」\n是把最常走的那條路，\n當成唯一的路。`,`"This is just who I am" mistakes the most-travelled road for the only road.`],
+[`升維的語言不是比較好聽，\n是比較溫柔地準確。`,`Upgraded language is not prettier. It is gently accurate.`],
+[`你對自己說的話，\n是你住得最久的房子。\n今天，把一面牆換成窗。`,`The words you say to yourself are the house you live in longest. Turn one wall into a window.`]
+]},
+{
+t:`敢不敢測一次：你說的話，是在開路，還是在封路？`,
+zh:`我們很少檢查自己的語言。
+
+我們檢查體重、檢查存款、檢查手機電量，
+卻從來不檢查——
+那句每天對自己說上百次的話。
+
+現在有二十句話，等你改寫。
+
+「我就是很懶。」
+「我一定做不到。」
+「我已經這個年紀了，不可能改變。」
+「我明明很努力，為什麼還是沒有結果？」
+「這次失敗證明我的方法不行。」
+「如果選錯，我的人生就完了。」
+「事情已經變成這樣，沒有辦法了。」
+
+規則只有一條：
+改成更高維，但不能自我欺騙。
+
+不能把「我很笨」改成「我其實很棒」。
+那不是升維，那是化妝。
+
+要看的不是正不正向。
+要看的是三件事：
+
+有沒有看見更多現實？
+有沒有保留更多可能？
+有沒有留下可以更新的入口？
+
+你會發現，這比想像中難。
+因為我們太習慣兩種反應——
+不是相信那句話，就是反駁那句話。
+
+很少有人練過第三種：
+拆開它。
+
+拆開「年紀」和「不可能」之間，那條沒被檢查過的線。
+拆開「努力」和「結果」之間，那個被跳過的位置問題。
+拆開「選錯」和「完了」之間，那些其實可以回頭的部分。
+
+測驗的目的，不是給你一個分數。
+是讓你第一次看見：
+原來我一直這樣對自己說話。
+
+看見，就是更新的開始。
+
+不必考好。
+只要誠實作答。
+
+二十句話寫完，你會多認識自己一點——
+不是你有多糟，
+而是你的語言，還有多少空間可以打開。`,
+en:`Dare to test it once: do your words open roads, or seal them?
+
+We check our weight, our savings, our battery level — but never the sentence we tell ourselves a hundred times a day.
+
+Twenty sentences are waiting for you to rewrite.
+"I'm just lazy." "I'll never make it." "At my age, change is impossible." "This failure proves my method is wrong." "If I choose wrong, my life is over."
+
+One rule: make it higher-dimensional, without lying to yourself.
+Turning "I'm stupid" into "I'm actually great" is not an upgrade. It is makeup.
+
+Don't ask whether it sounds positive. Ask three things:
+Does it reveal more of reality?
+Does it keep more possibilities alive?
+Does it leave an entrance for updating?
+
+It is harder than it looks, because we only know two reactions: believe the sentence, or argue with it. Few have practised the third — taking it apart.
+
+Take apart the unexamined line between "age" and "impossible."
+Take apart the skipped question between "effort" and "result."
+
+The test is not about a score. It is the first time you see how you have been speaking to yourself.
+
+Seeing is where updating begins. You don't need to do well. You only need to answer honestly.`,
+tags:`#LanguageOS #語言升維測驗 #誠實作答 #NotMakeup #看見就是開始`,
+cards:[
+[`你說的話，\n是在開路，還是在封路？`,`Do your words open roads, or seal them?`],
+[`把「我很笨」改成「我很棒」\n不是升維，是化妝。`,`Turning "I'm stupid" into "I'm great" is not an upgrade. It is makeup.`],
+[`不是相信它，\n也不是反駁它。\n是拆開它。`,`Don't believe the sentence. Don't argue with it. Take it apart.`],
+[`看見，\n就是更新的開始。`,`Seeing is where updating begins.`]
+]},
+{
+t:`把「我很爛」改成「我很棒」，為什麼只能拿 0 分？`,
+zh:`很多人努力了很久的「正向思考」，
+在這份評分表裡，只拿 0 分。
+
+不是因為正向不好。
+是因為它什麼都沒有改變。
+
+「我很笨」→「我其實很棒」。
+聽起來舒服，但現實一點都沒有變清楚。
+你還是不知道哪裡卡住，還是不知道明天要做什麼。
+
+評分只有六階，每一階都是一次真正的成長：
+
+0 分｜只是換了漂亮的說法。
+1 分｜拿掉負面的詞，但沒有新資訊。
+2 分｜把「我是」改成「我目前」。
+3 分｜分得出什麼是事實、什麼是解釋、什麼是證據。
+4 分｜找得到結構、機制、與卡住的那一點。
+5 分｜能提出預測、設計實驗、接收回饋、更新自己。
+
+你看出來了嗎？
+分數越高，不是越樂觀。
+分數越高，是越靠近現實。
+
+0 分的人在安慰自己。
+2 分的人不再審判自己。
+3 分的人開始看清楚。
+4 分的人知道從哪裡下手。
+5 分的人已經在路上。
+
+從「好聽」到「看清」，是誠實。
+從「看清」到「下手」，是能力。
+從「下手」到「更新」，是智慧。
+
+如果你現在的分數不高，別急著難過。
+那不是你差，
+那只是你的語言，一直停在「安慰」的那一層。
+
+沒有人教過我們，話可以這樣說：
+說得不逃避，也不自責。
+說得不誇大，也不貶低。
+說得剛剛好，剛好夠你走下一步。
+
+真正的溫柔，不是告訴自己「我很好」。
+真正的溫柔，是願意陪自己把事情看清楚。`,
+en:`Why does turning "I'm terrible" into "I'm great" score zero?
+
+Not because positivity is bad — because nothing changed. It feels nice, but reality is no clearer. You still don't know where you're stuck or what to do tomorrow.
+
+Six levels, each a real step of growth:
+0 — Just a prettier phrase.
+1 — The negative word is gone, but no new information.
+2 — "I am" becomes "I currently am."
+3 — You can separate fact, interpretation, and evidence.
+4 — You can find structure, mechanism, and the bottleneck.
+5 — You can predict, experiment, receive feedback, and update.
+
+A higher score is not more optimistic. It is closer to reality.
+
+At 0, you comfort yourself.
+At 2, you stop sentencing yourself.
+At 3, you start to see clearly.
+At 4, you know where to begin.
+At 5, you are already on the road.
+
+From "sounds nice" to "sees clearly" is honesty.
+From "sees clearly" to "knows where to act" is capability.
+From "acts" to "updates" is wisdom.
+
+Real kindness is not telling yourself "I'm fine."
+Real kindness is staying with yourself until things become clear.`,
+tags:`#LanguageOS #評分規準 #正向思考的盲點 #CloserToReality #真正的溫柔`,
+cards:[
+[`把「我很爛」改成「我很棒」，\n為什麼只能拿 0 分？`,`Why does turning "I'm terrible" into "I'm great" score zero?`],
+[`分數越高，不是越樂觀。\n是越靠近現實。`,`A higher score is not more optimistic. It is closer to reality.`],
+[`從好聽到看清，是誠實。\n從看清到下手，是能力。\n從下手到更新，是智慧。`,`Seeing clearly is honesty. Knowing where to act is capability. Updating is wisdom.`],
+[`真正的溫柔，\n是願意陪自己\n把事情看清楚。`,`Real kindness is staying with yourself until things become clear.`]
+]},
+{
+t:`一句話壓得你喘不過氣？給它七刀。`,
+zh:`有些話很短，卻很重。
+
+「我搞砸了。」
+「他不要我了。」
+「我完了。」
+
+短短幾個字，像一塊石頭壓在胸口。
+你搬不動它，因為它是一整塊。
+
+那就不要搬。
+切開它。
+
+第一刀，切出事實：真正發生了什麼？
+第二刀，切出解釋：哪一部分，其實只是我的解讀？
+第三刀，切出模型：是哪一個舊想法，生出了這個解讀？
+第四刀，切出證據：支持的有什麼？反對的又有什麼？
+第五刀，切出機制：是什麼樣的運作，造成了現在的結果？
+第六刀，切出預測：如果我想的是對的，接下來應該看到什麼？
+第七刀，切出實驗：我能做哪一件最小的事，去驗證它？
+
+七刀下去，你會發現——
+那塊壓著你的石頭，其實是七片薄薄的東西疊在一起。
+
+一片是事實，很小。
+一片是解釋，很大。
+一片是舊模型，很舊。
+剩下的，都是還沒有被檢查的猜測。
+
+痛苦常常不是來自事實。
+痛苦來自：事實和解釋黏在一起，分不開。
+
+「他已讀不回」是事實。
+「他不在乎我」是解釋。
+「我不值得被在乎」是舊模型。
+
+三句話黏在一起，就是一個失眠的夜晚。
+三句話切開之後，只剩下一件可以明天去問的事。
+
+你不需要更堅強。
+你只需要一把刀。
+
+不是用來傷害自己，
+是用來把自己，從那句話裡救出來。
+
+下次被一句話壓住的時候，記得：
+不要整塊吞下去。
+一刀一刀來。`,
+en:`A sentence so heavy you can't breathe? Give it seven cuts.
+
+"I ruined it." "He's done with me." "I'm finished."
+A few words, like a stone on your chest. You can't lift it because it is one solid block. So don't lift it. Slice it.
+
+Cut one — Fact: what actually happened?
+Cut two — Interpretation: which part is only my reading?
+Cut three — Model: which old belief produced that reading?
+Cut four — Evidence: what supports it, and what contradicts it?
+Cut five — Mechanism: what process could have generated this result?
+Cut six — Prediction: if I'm right, what should I see next?
+Cut seven — Experiment: what is the smallest thing I can do to test it?
+
+After seven cuts, the stone turns out to be seven thin layers.
+One is fact — small. One is interpretation — large. One is an old model — very old. The rest are unexamined guesses.
+
+Pain rarely comes from the fact itself. It comes from fact and interpretation being glued together.
+
+"He read it and didn't reply" is fact.
+"He doesn't care" is interpretation.
+"I'm not worth caring about" is an old model.
+
+You don't need to be stronger. You need a knife — not to hurt yourself, but to free yourself from the sentence.`,
+tags:`#LanguageOS #七刀拆句法 #事實與解釋 #SliceTheSentence #把自己救出來`,
+cards:[
+[`一句話壓得你喘不過氣？\n給它七刀。`,`A sentence so heavy you can't breathe? Give it seven cuts.`],
+[`痛苦常常不是來自事實。\n是事實和解釋黏在一起，\n分不開。`,`Pain rarely comes from the fact. It comes from fact and interpretation glued together.`],
+[`你不需要更堅強。\n你只需要一把刀。`,`You don't need to be stronger. You need a knife.`],
+[`不要整塊吞下去。\n一刀一刀來。`,`Don't swallow it whole. One cut at a time.`]
+]},
+{
+t:`每天 5 分鐘，比一次大徹大悟更有用。`,
+zh:`我們都等過那個「頓悟的瞬間」。
+
+等一本書、一堂課、一句話，
+讓我們從此變成不一樣的人。
+
+然後呢？
+感動三天，回到原樣。
+
+不是道理沒用。
+是大腦不靠感動改變，大腦靠重複改變。
+
+所以真正有用的，是每天五分鐘，九個小步驟：
+
+一、我剛才對自己說了什麼？
+二、這是哪一種話？身分、絕對、評價、情緒、責怪、還是宿命？
+三、攝影機真正拍得到什麼？
+四、至少還有哪三種可能的解釋？
+五、哪一個機制最值得去測？
+六、如果它是真的，我應該看到什麼？
+七、二十四小時內，我可以測什麼？
+八、現實回了我什麼？
+九、原來那句話，現在要改成什麼？
+
+五分鐘，就做這九件事。
+一天一句就好。
+
+一天一句，一個月三十句。
+三十句之後，你會發現自己開始「聽得見」了——
+聽得見自己說話的方式，
+聽得見哪一句話又在關門。
+
+改變不是一場革命。
+改變是一種衛生習慣。
+
+像刷牙一樣，不需要激動，只需要每天。
+像記帳一樣，不需要完美，只需要誠實。
+像走路一樣，不需要很快，只需要不停。
+
+不要等到崩潰才整理自己的語言。
+不要等到失去才檢查自己的想法。
+
+小小地做，天天地做。
+錯了就改，改了再試。
+
+大徹大悟讓人感動。
+每日五分鐘，讓人不同。
+
+今天的五分鐘，從一個問題開始：
+我剛才，對自己說了什麼？`,
+en:`Five minutes a day does more than one grand awakening.
+
+We have all waited for that moment — a book, a class, a line that changes us forever. And then? Three days of inspiration, and back to who we were.
+
+The brain doesn't change through being moved. It changes through repetition.
+
+Five minutes, nine small steps:
+What did I just say to myself?
+What kind of sentence is it — identity, absolute, judgment, emotion, blame, or destiny?
+What would a camera actually record?
+What are at least three other explanations?
+Which mechanism is most worth testing?
+If it's true, what should I see?
+What can I test within 24 hours?
+What did reality answer?
+How should the original sentence read now?
+
+One sentence a day. Thirty a month. After thirty, you begin to hear yourself — to hear which sentence is closing a door again.
+
+Change is not a revolution. It is hygiene.
+Like brushing your teeth: no drama, just daily.
+Like keeping accounts: not perfect, just honest.
+Like walking: not fast, just not stopping.
+
+Awakenings move you. Five daily minutes change you.
+
+Start with one question: what did I just say to myself?`,
+tags:`#LanguageOS #每日五分鐘 #微習慣 #ChangeIsHygiene #重複的力量`,
+cards:[
+[`每天 5 分鐘，\n比一次大徹大悟更有用。`,`Five minutes a day does more than one grand awakening.`],
+[`大腦不靠感動改變。\n大腦靠重複改變。`,`The brain doesn't change through being moved. It changes through repetition.`],
+[`改變不是一場革命。\n改變是一種衛生習慣。`,`Change is not a revolution. It is hygiene.`],
+[`今天的五分鐘，\n從一個問題開始：\n我剛才，對自己說了什麼？`,`Start with one question: what did I just say to myself?`]
+]},
+{
+t:`沒寫下來的想法，會一直在腦中假裝是事實。`,
+zh:`你有沒有這種夜晚——
+同一件事，在腦子裡轉了三個小時。
+
+越想越真，越想越大，越想越沒有出路。
+
+想法留在腦中的時候，它沒有邊界。
+它可以同時是事實、是感覺、是預言、是判決。
+它不必負責，也不必被檢查。
+
+可是一旦你把它寫下來，
+它就必須站到正確的格子裡。
+
+這一句，是原始語言。
+這一句，是事實。
+這一句，只是我的解釋。
+這一句，是情緒。
+這一句，是我偷偷做的預測。
+
+支持它的證據，寫在這一格。
+反對它的證據，寫在那一格。
+另外三種可能的說法，一格一格填上。
+
+然後往下走：
+重複出現的模式是什麼？
+背後的結構是什麼？
+運作的機制是什麼？
+真正卡住的是哪一點？
+我可以控制的變數是哪一個？
+
+再往下：
+最小的實驗是什麼？
+我預期看到什麼？
+實際發生了什麼？
+差在哪裡？
+我要更新什麼？
+
+最後一格，寫下升維後的那句話。
+
+二十二個格子，看起來很多。
+但每填一格，腦中那團霧就少一塊。
+
+寫，不是為了記錄。
+寫，是為了讓想法現出原形。
+
+腦中的想法會膨脹，紙上的想法會落地。
+腦中的恐懼沒有形狀，紙上的恐懼有大小。
+腦中的問題無解，紙上的問題有下一步。
+
+你不必每天都寫滿。
+但請在最亂的那一天，至少寫下第一格。
+
+把話從腦中請出來，
+你才第一次，真正站在它的對面。`,
+en:`A thought you haven't written down keeps pretending to be a fact.
+
+You know those nights — one thing circling your mind for three hours, growing truer, bigger, and more hopeless with each lap.
+
+Inside your head, a thought has no borders. It can be fact, feeling, prophecy, and verdict all at once. It answers to no one.
+
+Once you write it down, it has to stand in the right box.
+This line is the raw sentence. This one is fact. This one is only my interpretation. This one is emotion. This one is a prediction I made in secret.
+
+Evidence for goes here. Evidence against goes there. Three alternative readings, one box each.
+
+Then go further: the pattern, the structure, the mechanism, the bottleneck, the variable I can control. The smallest experiment, what I expect, what actually happened, the gap, and what I will update.
+
+In the last box, write the upgraded sentence.
+
+Writing is not for keeping records. Writing is for making a thought show its true shape.
+
+In the mind, thoughts swell; on paper, they land.
+In the mind, fear has no shape; on paper, it has a size.
+In the mind, a problem has no answer; on paper, it has a next step.
+
+On your messiest day, fill in just the first box.`,
+tags:`#LanguageOS #每日紀錄 #寫下來 #WriteItDown #讓想法現出原形`,
+cards:[
+[`沒寫下來的想法，\n會一直在腦中假裝是事實。`,`A thought you haven't written down keeps pretending to be a fact.`],
+[`腦中的想法會膨脹。\n紙上的想法會落地。`,`In the mind, thoughts swell. On paper, they land.`],
+[`腦中的恐懼沒有形狀。\n紙上的恐懼有大小。`,`In the mind, fear has no shape. On paper, it has a size.`],
+[`把話從腦中請出來，\n你才第一次，\n真正站在它的對面。`,`Bring the sentence out of your head, and you finally stand across from it.`]
+]},
+{
+t:`真正的畢業，不是背起來，而是在最難的時候還想得起來。`,
+zh:`平靜的時候，誰都很有智慧。
+
+道理都懂，金句都會，
+朋友來訴苦，我們還能說得頭頭是道。
+
+可是輪到自己——
+被否定的那一秒，被拒絕的那一秒，搞砸的那一秒，
+所有的道理，一句都想不起來。
+
+所以真正的畢業考，不在考卷上。
+在那十秒鐘裡。
+
+十秒鐘內，你問不問得出這五句話：
+
+這是事實，還是我的解釋？
+這是狀態，還是身分？
+還有沒有別的說法？
+什麼證據，會證明我的想法不完整？
+下一個最小的實驗是什麼？
+
+五句話，十秒鐘。
+不是要你立刻有答案。
+是要你在自動反應和下一個行動之間，放進一個空隙。
+
+那個空隙，就是自由。
+
+沒有空隙的人，被第一句話帶著走。
+有了空隙的人，可以選擇第二句話。
+
+一開始，你會在事情過後三天才想起來。
+後來，是當天晚上。
+再後來，是一個小時後。
+然後有一天，就在那句話冒出來的同時，
+五個問題也跟著出現了。
+
+那一天，你就不是在「背」語言轉換。
+你是長出了一條新的路。
+
+學會，不是知道。
+學會，是它自己會出現。
+
+能力，不是記得。
+能力，是壓力之下還在。
+
+智慧，不是沒有情緒。
+智慧，是情緒來的時候，問題也跟著來。
+
+不必急。
+每一次事後想起，都是在鋪那條路。
+
+總有一天，路會比舊習慣更寬。
+到那時候，你不需要提醒自己升維——
+你已經住在那裡了。`,
+en:`Real graduation is not memorising it. It is remembering it at the hardest moment.
+
+When calm, everyone is wise. We know the principles and can counsel a friend beautifully. But when it's our turn — the second we are rejected, criticised, or fail — every principle vanishes.
+
+So the real exam is not on paper. It is in ten seconds.
+
+Can you ask these five questions within ten seconds?
+Is this a fact, or my interpretation?
+Is this a state, or an identity?
+Is there another way to see it?
+What evidence would show my model is incomplete?
+What is the next minimum experiment?
+
+The point is not instant answers. The point is a gap between the automatic reaction and the next action. That gap is freedom.
+
+At first you'll remember three days later. Then that same night. Then an hour later. And one day, the five questions arrive together with the sentence itself.
+
+On that day you are no longer memorising. You have grown a new path.
+
+Learning is not knowing. Learning is when it shows up on its own.
+Capability is not remembering. Capability is still being there under pressure.
+Wisdom is not having no emotion. Wisdom is when the questions arrive with the emotion.`,
+tags:`#LanguageOS #畢業考試 #十秒五問 #TheGapIsFreedom #壓力下的能力`,
+cards:[
+[`真正的畢業，不是背起來，\n而是在最難的時候\n還想得起來。`,`Real graduation is remembering it at the hardest moment.`],
+[`在自動反應和下一個行動之間，\n放進一個空隙。\n那個空隙，就是自由。`,`Put a gap between reaction and action. That gap is freedom.`],
+[`學會，不是知道。\n學會，是它自己會出現。`,`Learning is not knowing. Learning is when it shows up on its own.`],
+[`智慧不是沒有情緒。\n是情緒來的時候，\n問題也跟著來。`,`Wisdom is when the questions arrive together with the emotion.`]
+]},
+{
+t:`成長不是變成另一個人，是一層一層看得更清楚。`,
+zh:`我們常常以為，成長是某一天突然「變好了」。
+
+其實成長更像爬樓梯。
+你不會突然到頂樓，
+但你可以知道，自己現在站在哪一階。
+
+第 0 階：腦中冒出什麼，就相信什麼。
+第 1 階：開始懷疑——我說的話，好像有點問題。
+第 2 階：能把「我就是」改成「我目前」。
+第 3 階：能把解釋，拆回事實。
+第 4 階：能想出另一種說法。
+第 5 階：看得見模式、結構、與運作的機制。
+第 6 階：能把「我相信」，改成「我預測」。
+第 7 階：能設計一個最小的實驗。
+第 8 階：能讓落差，更新自己的想法。
+第 9 階：在壓力、衝突、失敗的當下，仍然做得到。
+第 10 階：不必刻意，它已經是你看世界的方式。
+
+請注意——
+沒有任何一階，寫著「從此不再難過」。
+沒有任何一階，寫著「永遠正面積極」。
+
+因為成熟，從來不是沒有情緒。
+成熟，是情緒來的時候，你還有選擇。
+
+也請注意——
+第 1 階，已經很了不起。
+大多數人一輩子都住在第 0 階，
+把腦中的第一句話，當成世界的真相。
+
+你會懷疑自己的語言，
+就代表你已經離開了那個地方。
+
+不要跟別人比你在第幾階。
+只要問：今天的我，比昨天多看清楚了什麼？
+
+成長不是往上爬給誰看。
+成長是解析度越來越高。
+
+以前只看得到「我很糟」。
+後來看得到「我這次沒做好」。
+再後來看得到「是這個環節卡住了」。
+最後看得到「我明天可以試這個」。
+
+同一件事，
+看得越清楚，就越不可怕。
+
+一階一階來。
+你不趕時間。`,
+en:`Growth is not becoming someone else. It is seeing more clearly, layer by layer.
+
+Growth is like stairs. You don't suddenly reach the top, but you can know which step you're on.
+
+Level 0: believe whatever your mind produces.
+Level 1: begin to doubt your own sentences.
+Level 2: turn "I am" into "I currently am."
+Level 3: break interpretation back into fact.
+Level 4: generate another representation.
+Level 5: see pattern, structure, and mechanism.
+Level 6: turn belief into prediction.
+Level 7: design a minimum experiment.
+Level 8: let prediction error update your model.
+Level 9: do all of this under pressure, conflict, and failure.
+Level 10: no effort needed — it is simply how you see.
+
+No level says "never sad again." No level says "always positive."
+Maturity is not the absence of emotion. Maturity is still having a choice when emotion arrives.
+
+And Level 1 is already remarkable. Most people live at Level 0 for life.
+
+Don't compare levels. Ask only: what do I see more clearly today than yesterday?
+
+Growth is rising resolution.
+The more clearly you see a thing, the less frightening it becomes.
+
+One step at a time. You are not in a hurry.`,
+tags:`#LanguageOS #能力成熟度 #Level0到10 #RisingResolution #一階一階來`,
+cards:[
+[`成長不是變成另一個人，\n是一層一層看得更清楚。`,`Growth is not becoming someone else. It is seeing more clearly, layer by layer.`],
+[`成熟不是沒有情緒。\n成熟是情緒來的時候，\n你還有選擇。`,`Maturity is still having a choice when emotion arrives.`],
+[`同一件事，\n看得越清楚，就越不可怕。`,`The more clearly you see a thing, the less frightening it becomes.`],
+[`一階一階來。\n你不趕時間。`,`One step at a time. You are not in a hurry.`]
+]},
+{
+t:`越聰明、越努力的人，越容易被這幾句話困住。`,
+zh:`有一種累，不是因為做得不夠。
+是因為腦子停不下來。
+
+想得很快，結論也下得很快。
+要求很高，標準永遠是「全部」「最完整」「一次到位」。
+一有問題，就想立刻解決。
+一沒做好，就覺得是自己不夠。
+
+如果你也是這樣的人，
+也許困住你的不是能力，而是這些語言習慣：
+
+太確定——「一定」「永遠」「就是」。
+槓桿句：我目前有幾成把握？
+
+把表現黏在身分上。
+槓桿句：這是在描述我，還是在描述目前的能力？
+
+把眼前的問題，想成最壞的未來。
+槓桿句：真的不可逆嗎？
+
+要想清楚全部，才敢動。
+槓桿句：我不需要知道全部，我只需要知道下一個可以回頭的步驟。
+
+用「想更多」來換安全感。
+槓桿句：再多知道哪一件事，真的會改變我的決定？
+
+把「更努力」當成唯一的解法。
+槓桿句：如果只能做一件事，哪一件最可能改變結果？
+
+把成果當成自己的價值。
+槓桿句：我可以嚴格評估成果，而不必用成果定義整個自己。
+
+非黑即白。
+槓桿句：如果不是 0 或 1，而是 0 到 100，現在是多少？
+
+還有最隱微的一個——
+連「模型」「瓶頸」「更新」這些高級的詞，
+如果沒有證據，也只是新的標籤。
+
+聰明不是問題。
+太快把聰明變成定論，才是問題。
+
+努力不是問題。
+把努力當成唯一的答案，才是問題。
+
+你不需要放慢腳步。
+你只需要在每一次高速推演裡，
+多留一道門：
+
+我可能是錯的。
+而那沒有關係。`,
+en:`The smarter and harder-working you are, the more easily these sentences trap you.
+
+There is a tiredness that comes not from doing too little, but from a mind that will not stop. Fast thinking, fast conclusions. Standards of "everything," "complete," "all at once."
+
+Perhaps what traps you is not ability, but habits of language.
+
+Too certain — "always," "definitely." Ask: how confident am I, really?
+Performance fused with identity. Ask: is this describing me, or my current skill?
+Today's problem turned into the worst future. Ask: is it truly irreversible?
+Needing the whole picture before moving. Say: I only need the next reversible step.
+Thinking more to feel safe. Ask: which piece of information would actually change my decision?
+More effort as the only answer. Ask: if I could do just one thing, which would most change the outcome?
+Achievement as worth. Say: I can judge results strictly without letting them define all of me.
+Black or white. Ask: on a scale of 0 to 100, where is it now?
+
+Even advanced words — model, bottleneck, update — are just new labels without evidence.
+
+Intelligence is not the problem. Turning it into verdicts too quickly is.
+You don't need to slow down. You only need one more door in every fast inference:
+I might be wrong. And that is all right.`,
+tags:`#LanguageOS #個人語言診斷 #槓桿句 #給高標準的你 #IMightBeWrong`,
+cards:[
+[`越聰明、越努力的人，\n越容易被這幾句話困住。`,`The smarter and harder-working you are, the more easily these sentences trap you.`],
+[`我不需要知道全部。\n我只需要知道\n下一個可以回頭的步驟。`,`I don't need the whole picture. I only need the next reversible step.`],
+[`我可以嚴格評估成果，\n而不必用成果\n定義整個自己。`,`I can judge results strictly without letting them define all of me.`],
+[`我可能是錯的。\n而那沒有關係。`,`I might be wrong. And that is all right.`]
+]},
+{
+t:`換掉八個詞，你會變成一個更自由的人。`,
+zh:`有些詞，我們每天都在用。
+用得太順，順到沒發現它們正在替我們做決定。
+
+「一定。」
+「就是。」
+「全部。」
+「應該。」
+
+每一個詞，都很小。
+每一個詞，都在悄悄關門。
+
+試試看，把它們換掉：
+
+「一定」→「目前的機率是」。
+「就是」→「目前呈現出來的是」。
+「全部」→「關鍵的那幾個」。
+「根源」→「比重最高的因素之一」。
+「最大化」→「最有資訊價值的那一步」。
+「完整」→「最小、但能跑完一圈的版本」。
+「應該」→「我原本的預測是」。
+「我知道」→「我要怎麼驗證？」
+
+你聽聽看差別——
+
+「他應該要懂我。」
+「我原本預測他會懂，但現實不是這樣。我的預測哪裡需要調整？」
+
+前一句只有失望。
+後一句有了下一步。
+
+「我一定要做到完整。」
+「我先做出最小、能跑完一圈的版本。」
+
+前一句讓你遲遲不敢開始。
+後一句讓你今天就能動手。
+
+這不是叫你放慢，也不是叫你降低標準。
+是在速度裡，加上一個方向盤。
+
+舊的流程：很快理解，很快下結論，很快行動。
+新的流程：很快建立想法，保留不確定，主動找反證，小步測試，很快更新，再行動。
+
+多出來的那幾步，不會讓你變慢。
+它們讓你不必走回頭路。
+
+有主見，同時可以被修正。
+有速度，同時看得見反證。
+有標準，同時允許版本更新。
+
+真正厲害的人，不是從不出錯。
+是錯了之後，更新得比誰都快。
+
+今天，先換掉一個詞就好。`,
+en:`Replace eight words, and you become a freer person.
+
+Some words we use so smoothly we never notice they are deciding for us. "Definitely." "Just is." "Everything." "Should." Each one is small. Each one quietly closes a door.
+
+Try replacing them:
+"Definitely" becomes "the current probability is."
+"It just is" becomes "what currently shows up is."
+"Everything" becomes "the key few."
+"The root cause" becomes "one of the heaviest factors."
+"Maximise" becomes "the step with the most information value."
+"Complete" becomes "the smallest version that runs a full loop."
+"Should" becomes "my prediction was."
+"I know" becomes "how would I test it?"
+
+"He should understand me" holds only disappointment.
+"I predicted he would; reality answered differently — where should my prediction change?" holds a next step.
+
+This is not slowing down or lowering standards. It is adding a steering wheel to your speed.
+
+Old flow: understand fast, conclude fast, act fast.
+New flow: model fast, keep uncertainty, look for counter-evidence, test small, update fast, act again.
+
+Those extra steps don't slow you. They save you from walking back.
+
+The truly capable are not those who never err. They are the ones who update fastest.
+
+Today, replace just one word.`,
+tags:`#LanguageOS #換掉八個詞 #UpdateFast #應該是一種預測 #個人Compiler`,
+cards:[
+[`換掉八個詞，\n你會變成一個更自由的人。`,`Replace eight words, and you become a freer person.`],
+[`「應該」\n↓\n「我原本的預測是」`,`"Should" becomes "my prediction was."`],
+[`「我知道」\n↓\n「我要怎麼驗證？」`,`"I know" becomes "how would I test it?"`],
+[`真正厲害的人，\n不是從不出錯。\n是錯了之後，更新得最快。`,`The truly capable are not those who never err. They update fastest.`]
+]},
+{
+t:`在你相信一句話之前，先讓它過七道門。`,
+zh:`我們對外面的訊息很小心。
+看到傳言，會問：真的嗎？來源是哪裡？
+
+可是對腦中的聲音，我們幾乎不設防。
+
+「他一定是討厭我。」
+「我這輩子就這樣了。」
+「這件事不可能有轉機。」
+
+這些話沒有來源，沒有查證，
+卻直接通關，住進心裡，一住就是好幾年。
+
+從今天起，替重要的話，設七道門：
+
+第一道：這是事實，還是我的解釋？
+第二道：我手上有多少證據？
+第三道：我有幾成把握，而不是「一定」？
+第四道：還有哪一種說法，也能解釋這件事？
+第五道：出現什麼證據，我會承認自己想得不完整？
+第六道：我要怎麼讓現實來測試這句話？
+第七道：如果現實不同意，我願不願意更新？
+
+七道門，不是為了懷疑一切。
+是為了不讓任何一句話，未經檢查就統治你。
+
+其中最重要的，是第五道門。
+
+如果有人問你：
+「什麼樣的證據，會讓你改變看法？」
+而你完全答不出來——
+
+那句話很可能已經不是想法。
+它是一個信仰，一個關上的房間。
+
+想法會呼吸，信念會僵硬。
+想法歡迎檢驗，執念害怕檢驗。
+想法說「我目前這樣看」，執念說「本來就是這樣」。
+
+通過七道門的話，你可以放心相信。
+因為它不是你抓著不放的，
+而是現實也點了頭的。
+
+相信，不該是因為不敢懷疑。
+相信，應該是因為經得起懷疑。
+
+讓每一句重要的話，都先過門。
+你的心，值得有門禁。`,
+en:`Before you believe a sentence, make it pass through seven gates.
+
+We are careful with outside information. We ask: is that true? What's the source? Yet the voice inside our head walks in unchecked.
+
+"He must hate me." "My life will always be like this." "There's no way this turns around."
+No source, no verification — and they move in and stay for years.
+
+Seven gates for every important sentence:
+One: is this fact, or my interpretation?
+Two: how much evidence do I have?
+Three: how confident am I — instead of "certain"?
+Four: what alternative could also explain it?
+Five: what evidence would make me admit my model is incomplete?
+Six: how can I let reality test this sentence?
+Seven: if reality disagrees, am I willing to update?
+
+The gates are not for doubting everything. They ensure no sentence rules you unexamined.
+
+The fifth gate matters most. If you cannot name any evidence that would change your mind, the sentence is no longer an idea. It is a closed room.
+
+Ideas breathe; fixed beliefs stiffen.
+Ideas welcome testing; obsessions fear it.
+
+Belief should not come from being afraid to doubt.
+Belief should come from surviving doubt.
+
+Your mind deserves a gatekeeper.`,
+tags:`#LanguageOS #七道RealityGate #經得起懷疑 #SevenGates #可更新的信念`,
+cards:[
+[`在你相信一句話之前，\n先讓它過七道門。`,`Before you believe a sentence, make it pass through seven gates.`],
+[`什麼樣的證據，\n會讓你改變看法？\n答不出來，那就是關上的房間。`,`What evidence would change your mind? If none, it is a closed room.`],
+[`相信，\n不該是因為不敢懷疑。\n應該是因為經得起懷疑。`,`Belief should not come from fearing doubt. It should come from surviving doubt.`],
+[`你的心，\n值得有門禁。`,`Your mind deserves a gatekeeper.`]
+]},
+{
+t:`自由，就是我不必永遠效忠昨天的答案。`,
+zh:`我們花了很多力氣，想當一個「對的人」。
+
+說對的話，做對的選擇，
+堅持對的立場，守住對的答案。
+
+可是，你有沒有發現——
+最讓人疲憊的，不是犯錯。
+是明明已經不合用了，還要捍衛昨天的自己。
+
+捍衛一個早就該修改的看法。
+捍衛一段早就不適合的做法。
+捍衛一句說出口就不敢收回的話。
+
+我們以為那叫堅定。
+其實那叫不敢更新。
+
+所以，請記得最後這幾句話：
+
+不要讓語言，替現實下最後的判決。
+讓語言，成為持續接近現實的工具。
+
+升維，不是換一句比較漂亮的話。
+升維，是把語言從「加固想法的機器」，變成「更新想法的機器」。
+
+語言的品質，不在於說對了多少。
+語言的品質，在於能不能被現實修正。
+
+語言，負責提出想法。
+行動，負責進行實驗。
+現實，負責給出答案。
+落差，負責指出差異。
+智慧，負責允許更新。
+
+不要問：我要說什麼才正向？
+要問：我要怎麼說，才能看見更多現實、保留更多可能、產生更好的行動，
+並且在錯誤出現時，仍然可以更新？
+
+智慧，不是永遠正確。
+智慧，是永遠保留更新自己的能力。
+
+語言最高的能力，
+不是把世界說成你想要的樣子，
+而是讓你永遠有能力，修正自己看世界的方式。
+
+真正的神聖語言，不是永遠說對。
+而是每一句重要的話，
+都替現實，保留推翻自己的權利。
+
+願你從今天起——
+說話，但不被自己的話困住。
+相信，但不被自己的相信鎖住。
+前進，但永遠留一扇門，給更真實的明天。`,
+en:`Freedom means I don't have to stay loyal to yesterday's answer.
+
+We spend so much strength trying to be "right." Yet what exhausts us most is not making mistakes — it is defending yesterday's self long after it stopped fitting.
+
+We call it being firm. Often it is being afraid to update.
+
+So remember these:
+
+Don't let language pass the final verdict on reality.
+Let language be a tool for moving closer to it.
+
+Upgrading is not finding a prettier sentence.
+It is turning language from a machine that reinforces models into one that updates them.
+
+The quality of language is not how often it is right.
+It is how well it can be corrected by reality.
+
+Language proposes the model.
+Action runs the experiment.
+Reality gives the answer.
+Prediction error points to the difference.
+Wisdom allows the update.
+
+Wisdom is not being right forever. Wisdom is keeping, forever, the ability to update yourself.
+
+The highest power of language is not to describe the world as you wish it were, but to keep you able to revise the way you see it.
+
+Truly sacred language is not always correct. It is language in which every important sentence reserves for reality the right to overturn it.
+
+Speak, without being trapped by your words.
+Believe, without being locked by your beliefs.`,
+tags:`#LanguageOS #最終智慧 #神聖語言 #StayUpdatable #不效忠昨天的答案`,
+cards:[
+[`自由，\n就是我不必永遠效忠\n昨天的答案。`,`Freedom means I don't have to stay loyal to yesterday's answer.`],
+[`語言品質不在於說對多少，\n而在於能不能被現實修正。`,`The quality of language is how well it can be corrected by reality.`],
+[`智慧不是永遠正確。\n智慧是永遠保留\n更新自己的能力。`,`Wisdom is keeping, forever, the ability to update yourself.`],
+[`每一句重要的話，\n都替現實保留\n推翻自己的權利。`,`Every important sentence reserves for reality the right to overturn it.`]
+]}
+];
+
+/* ---------- 解析文件 ---------- */
+const doc = {title:'', secs:[]};
+(function parse(){
+  let sec=null, card=null, tbl=null; const pre=[];
+  for(const ln of LINES){
+    const m = ln.match(/^\[([^\]]+)\] ?(.*)$/); if(!m) continue;
+    const tag=m[1], t=m[2];
+    if(tag==='Title'){doc.title=t; continue}
+    if(tag==='Heading1'){
+      const i=t.indexOf('｜');
+      sec={num:t.slice(0,i), name:t.slice(i+1), items:[]}; doc.secs.push(sec); card=null;
+      if(doc.secs.length===1) pre.forEach((p,k)=>sec.items.push({type:'hero',text:p,sub:k===0}));
+      continue;
+    }
+    if(!sec){pre.push(t); continue}
+    if(tag==='TABLE'){tbl={type:'table',head:null,rows:[]}; sec.items.push(tbl); continue}
+    if(tag==='/TABLE'){tbl=null; continue}
+    if(tag==='ROW'){const c=t.split(' ║ '); if(!tbl.head) tbl.head=c; else tbl.rows.push(c); continue}
+    if(tag==='Heading2'){card={type:'card',title:t,lines:[]}; sec.items.push(card); continue}
+    if(card){card.lines.push(t); continue}
+    sec.items.push({type: tag==='ListBullet'?'li':'p', text:t});
+  }
+})();
+
+/* ---------- 儲存（僅存在這台電腦的瀏覽器） ---------- */
+const KEY='languageOS.v1';
+let store={quiz:{}, logs:{}};
+try{ store=Object.assign(store, JSON.parse(localStorage.getItem(KEY)||'{}')); }catch(e){}
+const save=()=>{ try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){} };
+const today=()=>{const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+let logDate=today();
+
+/* ---------- 工具 ---------- */
+let Q='';
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function hl(s){
+  s=esc(s); if(!Q) return s;
+  const re=new RegExp(esc(Q).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+  return s.replace(re,m=>'<mark>'+m+'</mark>');
+}
+const hit=s=>!Q || s.toLowerCase().includes(Q.toLowerCase());
+const cut=t=>{const i=t.indexOf('｜'); return i<0?[null,t]:[t.slice(0,i),t.slice(i+1)]};
+const flow=b=>'<div class="flow">'+b.replace(/。$/,'').split(/\s*→\s*/).map(x=>'<span>'+hl(x)+'</span>').join('<b>→</b>')+'</div>';
+const arrows=b=>(b.match(/→/g)||[]).length;
+
+/* ---------- 測驗分數 ---------- */
+let bands=[];
+doc.secs.forEach(s=>s.items.forEach(it=>{
+  if(it.type==='p' && it.text.includes('滿分')) bands=cut(it.text)[1].split('；').map(x=>x.match(/(\d+)\D(\d+)：(.+?)。?$/)).filter(Boolean).map(m=>[+m[1],+m[2],m[3]]);
+}));
+const quizCount=doc.secs.reduce((n,s)=>n+s.items.filter(isQuiz).length,0);
+function isQuiz(it){return it.type==='p' && it.text.includes('____') && /^\d+｜/.test(it.text)}
+function isField(it){return it.type==='p' && it.text.includes('____') && !isQuiz(it)}
+function scoreHTML(){
+  let sum=0, n=0;
+  for(const k in store.quiz){const s=store.quiz[k].s; if(s!==''&&s!=null){sum+=+s;n++}}
+  const b=bands.find(x=>sum>=x[0]&&sum<=x[1]);
+  return '<strong>'+sum+'</strong><span>／'+quizCount*5+' 分　已自評 '+n+'／'+quizCount+' 題'+(n&&b?'　｜　'+esc(b[2]):'')+'</span>';
+}
+
+/* ---------- 各種區塊 ---------- */
+function renderItem(it, sec){
+  if(it.type==='hero') return hit(it.text)?'<div class="hero'+(it.sub?' sub':'')+'">'+hl(it.text)+'</div>':'';
+  if(it.type==='table') return renderTable(it);
+  if(it.type==='card') return renderCard(it);
+  if(!hit(it.text)) return '';
+  const [k,b]=cut(it.text);
+  if(isQuiz(it)){
+    const sent=b.split(' / ')[0], a=store.quiz[k]||{};
+    let opts='<option value="">自評</option>';
+    for(let i=0;i<=5;i++) opts+='<option value="'+i+'"'+(String(a.s)===String(i)?' selected':'')+'>'+i+' 分</option>';
+    return '<div class="q"><div class="qh"><s>'+k+'</s><b>'+hl(sent)+'</b><select data-q="'+k+'" aria-label="第'+k+'題自評分數">'+opts+'</select></div>'+
+      '<textarea data-q="'+k+'" rows="1" placeholder="我的升維版本…">'+esc(a.a||'')+'</textarea></div>';
+  }
+  if(isField(it)){
+    const v=(store.logs[logDate]||{})[k]||'';
+    return '<div class="field"><label>'+hl(k)+'</label><textarea data-f="'+esc(k)+'" rows="1">'+esc(v)+'</textarea></div>';
+  }
+  if(it.type==='p'){
+    if(k===null) return '<p class="say">'+hl(b)+'</p>';
+    const body=(arrows(b)>=2 && !b.includes('，')) ? flow(b) : hl(b);
+    return '<div class="kv"><div class="k">'+hl(k)+'</div><div class="v">'+body+'</div></div>';
+  }
+  // 條列
+  if(k!==null) return '<div class="li"><span class="lk">'+hl(k)+'</span><span class="lv">'+hl(b)+'</span></div>';
+  const p=b.split(' → ');
+  if(p.length===2) return '<div class="li dot"><span class="o">'+hl(p[0])+'</span><span class="ar">→</span><span class="n">'+hl(p[1].replace(/。$/,''))+'</span></div>';
+  return '<div class="li dot"><span class="lv">'+hl(b)+'</span></div>';
+}
+function renderTable(t){
+  const rows=t.rows.filter(r=>hit(r.join(' ')));
+  if(!rows.length) return '';
+  return '<div class="tools"><button class="btn" id="practice">練習模式：遮住升維語言</button><span class="hint">共 '+t.rows.length+' 組'+(Q?'，符合 '+rows.length+' 組':'')+'。練習模式下點一列即可揭曉。</span></div>'+
+    '<div class="tbl" id="tbl"><div class="tr head"><s>'+esc(t.head[0])+'</s><span>'+esc(t.head[1])+'</span><span></span><span>'+esc(t.head[2])+'</span></div>'+
+    rows.map(r=>'<div class="tr"><s>'+r[0]+'</s><span class="o">'+hl(r[1])+'</span><span class="ar">→</span><span class="n">'+hl(r[2])+'</span></div>').join('')+'</div>';
+}
+function renderCard(c){
+  if(!hit(c.title+' '+c.lines.join(' '))) return '';
+  const [n,name]=cut(c.title);
+  let h='<div class="card"><h2>'+(n!==null&&/^\d+$/.test(n)?'<s>'+n+'</s><span class="o">'+hl(name)+'</span>':'<span>'+hl(c.title)+'</span>')+'</h2>';
+  for(const l of c.lines){
+    const [k,b]=cut(l);
+    if(k===null){h+='<p>'+hl(b)+'</p>'; continue}
+    const cls=(k==='重新編譯'||k==='槓桿句')?' new':(k==='錯誤結構'?' old':'');
+    h+='<div class="row'+cls+'"><div class="k">'+hl(k)+'</div><div class="v">'+(k==='轉換路徑'?flow(b):hl(b))+'</div></div>';
+  }
+  return h+'</div>';
+}
+/* ---------- 臉書貼文與圖卡 ---------- */
+let tab='doc';
+const TABS=[['doc','章節內容'],['post','臉書貼文'],['card','圖卡']];
+const tabsHTML=()=>'<div class="tabs">'+TABS.map(t=>'<button class="btn'+(tab===t[0]?' on':'')+'" data-tab="'+t[0]+'">'+t[1]+'</button>').join('')+'</div>';
+const MORE = [
+[`【帶走這三句】
+語言去哪裡，注意力就去哪裡。
+會自我證明的話，讓人原地打轉；會自我更新的話，讓人往前走。
+不必說得漂亮，只要說得可以被現實修正。
+
+【今天的小練習】
+抓出一句你今天說了不只一次的話。
+不用改它，先問它一題：有沒有哪一個反例，是我一直沒有算進去的？
+找到一個就好。一個反例，就是一道裂縫；有裂縫，光才進得來。
+
+【寫給正在辛苦的你】
+你不是沒有進步，是舊語言一直沒讓你看見進步。
+你不是沒有選擇，是舊語言一直替你先選了。
+你不是不夠好，是那句話太久沒有更新。
+換一句話，不會立刻換一個人生；
+但它會讓你明天早上，多看見一條路。`,
+`Take these with you:
+Where language goes, attention follows.
+Self-proving sentences keep you circling; self-updating sentences move you forward.
+Your words need not be beautiful — only correctable by reality.
+
+Today's practice:
+Catch one sentence you said more than once today. Don't change it yet. Ask it one question: which counter-example have I never counted? One is enough. One counter-example is a crack, and a crack is how the light gets in.
+
+For you, in the hard days:
+It's not that you haven't grown; your old language never let you see it.
+It's not that you have no choice; your old language chose first.
+It's not that you aren't enough; that sentence simply hasn't been updated in a long time.`],
+[`【帶走這三句】
+安慰自己，和欺騙自己，只差一個「證據」。
+溫柔不是把話說甜，是不把話說死。
+留一扇門，比說一句好話更有力量。
+
+【今天的小練習】
+找一句你今天說的「我就是……」，把它改成「我目前……」。
+再補上半句：「……而這是可以改變的，因為……」
+寫不出「因為」也沒關係，那正是你接下來可以去找的東西。
+
+【寫給正在辛苦的你】
+你不必假裝沒事，才算堅強。
+你不必立刻想開，才算成熟。
+你不必永遠正面，才算有智慧。
+你只需要，不替自己把話說死。
+難過可以是真的，「永遠這樣」不必是真的。
+今天很糟可以是真的，「我很糟」不必是真的。`,
+`Take these with you:
+Between comforting yourself and deceiving yourself, the only difference is evidence.
+Gentleness is not sweetening your words; it is refusing to make them final.
+Leaving a door open is stronger than saying something nice.
+
+Today's practice:
+Find one "I am just…" you said today and rewrite it as "I am currently…". Then add: "…and this can change, because…". If you can't finish the "because," that is exactly what to look for next.
+
+For you, in the hard days:
+You don't have to pretend you're fine to be strong.
+You don't have to get over it at once to be mature.
+Sadness can be true; "it will always be like this" need not be.
+A bad day can be true; "I am bad" need not be.`],
+[`【帶走這三句】
+命名，就是下指令。
+你餵給大腦什麼句子，大腦就還給你什麼世界。
+換一個說法，不是逃避現實，是換一個看現實的解析度。
+
+【今天的小練習】
+今天只觀察，不修改。
+留意自己說出口的三句話，在心裡替每一句貼上標籤：
+這句是在描述、在預測、還是在判決？
+光是分得出來，你就已經不再被它牽著走。
+
+【寫給正在辛苦的你】
+如果你覺得人生越來越窄，先別怪自己不夠努力。
+也許只是你用來描述人生的詞，越來越少。
+詞少了，路就少了。
+詞多了，選擇就多了。
+你值得更多的詞，來形容你自己。
+不只是「失敗」和「成功」，
+還有「正在學」、「還沒到」、「這次不行」、「換個方法」。`,
+`Take these with you:
+To name something is to issue a command.
+Whatever sentences you feed your brain, it hands you back that world.
+Rephrasing is not escaping reality; it is changing the resolution you see it in.
+
+Today's practice:
+Observe only; change nothing. Notice three sentences you say aloud and label each one silently: is it describing, predicting, or sentencing? Simply telling them apart means you are no longer being led by them.
+
+For you, in the hard days:
+If life feels narrower, don't blame your effort first. Perhaps the words you use to describe your life have grown fewer. Fewer words, fewer roads. More words, more choices.
+You deserve more words for yourself — not only "failure" and "success," but also "still learning," "not there yet," and "another way."`],
+[`【帶走這三句】
+關門的話讓人休息，開門的話讓人前進。
+「永遠」和「目前」之間，隔著一整個未來。
+你不必換掉事實，只要換掉句型。
+
+【今天的小練習】
+挑三組你最有感覺的轉換，寫在手機備忘錄的第一行。
+例如：「我不會 → 我尚未掌握」、「我失敗了 → 這次給了我回饋」、「我沒時間 → 我還沒給它位置」。
+今天只要用上其中一次，就算完成。
+
+【寫給正在辛苦的你】
+你說「我做不到」的時候，其實是在說「我很怕」。
+你說「沒有用」的時候，其實是在說「我好累」。
+你說「算了」的時候，其實是在說「我不想再失望」。
+這些都可以被理解。
+但請不要讓疲憊的那一刻，替你決定整個人生的句型。
+累了可以休息，句子不必寫成結局。`,
+`Take these with you:
+Door-closing words let you rest; door-opening words let you move.
+Between "forever" and "for now" lies an entire future.
+You don't need to change the facts — only the sentence pattern.
+
+Today's practice:
+Choose the three conversions that speak to you most and put them on the first line of your phone notes. For example: "I can't → I haven't mastered it yet," "I failed → this gave me feedback," "No time → I haven't made room for it." Use just one of them once today, and you are done.
+
+For you, in the hard days:
+When you say "I can't," you often mean "I'm scared."
+When you say "it's useless," you often mean "I'm exhausted."
+All of that is understandable. But don't let one tired moment set the grammar of your whole life. You may rest. The sentence need not become an ending.`],
+[`【帶走這三句】
+卡住，是因為把「暫時的」說成了「定案的」。
+問題拆得開，就不再是一整片烏雲。
+每一把鑰匙，都是一個更好的問題。
+
+【今天的小練習】
+想一件最近卡住你的事，只用一把鑰匙：目標 → 瓶頸。
+不要問「我怎麼還沒做到」，改問「是哪一小段，卡住了整件事」。
+寫下那一小段。只寫那一段。
+你會發現，要面對的東西，比想像中小很多。
+
+【寫給正在辛苦的你】
+你不是不夠用力，你可能只是一直推著一扇要用拉的門。
+你不是沒有天分，你可能只是還沒找到那個卡住的地方。
+你不是走不出去，你可能只是一直用同一把鑰匙，開不同的鎖。
+換一把鑰匙，不丟臉。
+換一個問法，不是認輸。
+那是一個人，開始對自己溫柔而且有辦法的樣子。`,
+`Take these with you:
+You are stuck because something temporary was spoken as something settled.
+A problem you can take apart is no longer a whole dark sky.
+Every key is simply a better question.
+
+Today's practice:
+Think of one thing that has you stuck, and use only one key: goal to bottleneck. Don't ask "why haven't I done it yet?" Ask "which small section is holding up the whole thing?" Write down that section — only that. What you must face is far smaller than you imagined.
+
+For you, in the hard days:
+It's not that you aren't pushing hard enough; you may be pushing a door that opens by pulling.
+It's not that you lack talent; you may not have found the blocked spot yet.
+Changing keys is no disgrace. Changing the question is not surrender.`],
+[`【帶走這三句】
+壓不下去的念頭，就不要壓，改寫它。
+每多問一題，那句話就少一分力氣。
+出口不在句子外面，出口在句子的下一個版本。
+
+【今天的小練習】
+今天只做十二步裡的第二步：攝影機檢查。
+當你覺得「他在針對我」、「我搞砸了」，停一下，問：
+如果有一台攝影機在現場，它真正錄到的畫面是什麼？
+只寫畫面，不寫形容詞。
+你會訝異，事實原來那麼少，而你加上去的那麼多。
+
+【寫給正在辛苦的你】
+你不需要打敗腦中的聲音。
+你只需要，不再把它的每一句話，都當成判決書。
+它說得很快，不代表它說得對。
+它說得很大聲，不代表它說的是全部。
+你可以聽見它，同時問它：然後呢？證據呢？還有別的可能嗎？
+會發問的人，不會被一句話關住。`,
+`Take these with you:
+A thought you can't push down doesn't need pushing — rewrite it.
+Each extra question drains a little strength from the sentence.
+The exit is not outside the sentence; it is the sentence's next version.
+
+Today's practice:
+Do only step two of the twelve: the camera check. When you feel "he's targeting me" or "I ruined it," pause and ask: if a camera had been there, what exactly would it have recorded? Write the picture only — no adjectives. You may be surprised how little is fact and how much you added.
+
+For you, in the hard days:
+You don't need to defeat the voice in your head. You only need to stop treating each of its lines as a verdict. Speaking fast doesn't make it right. Speaking loudly doesn't make it complete.`],
+[`【帶走這三句】
+聽起來像事實的話，最需要被檢查。
+看見一句話的結構，你就不再住在那句話裡面。
+比較誠實的說法，往往也比較有路。
+
+【今天的小練習】
+從三十句裡，挑出最像你的那一句。
+不要急著看「重新編譯」的答案，先自己寫一個版本。
+然後對照，看看差在哪裡：
+是少了事實？少了機率？還是少了下一步？
+差的那一塊，就是你這陣子最值得練的地方。
+
+【寫給正在辛苦的你】
+如果你常說「都是我的錯」，謝謝你這麼願意負責，但你不必一個人扛整個系統。
+如果你常說「沒有人喜歡我」，那份孤單是真的，但「沒有人」不是真的。
+如果你常說「我就是這樣」，那是你最熟悉的路，但不是你唯一的路。
+你可以對自己嚴格，但請先對自己準確。`,
+`Take these with you:
+Sentences that sound like facts most need checking.
+Once you see the structure of a sentence, you no longer live inside it.
+The more honest wording usually has more of a way forward.
+
+Today's practice:
+From the thirty, choose the one that sounds most like you. Don't look at the recompiled answer yet; write your own version first. Then compare: is it missing facts, probability, or a next step? The missing piece is what is most worth practising right now.
+
+For you, in the hard days:
+If you often say "it's all my fault," thank you for being so willing to take responsibility — but you needn't carry the whole system alone.
+If you often say "nobody likes me," the loneliness is real; "nobody" is not.
+Be strict with yourself if you wish, but be accurate first.`],
+[`【帶走這三句】
+沒有檢查過的語言，會默默替你做決定。
+反駁一句話，和拆開一句話，是兩種完全不同的力量。
+誠實地寫，比漂亮地寫，更能改變你。
+
+【今天的小練習】
+不必一次寫完二十題。
+今天只寫三題，每題給自己兩分鐘。
+寫完之後不要急著打分數，先問自己一件事：
+哪一題我寫得最卡？
+最卡的那一題，通常就是你平常最相信的那句話。
+
+【寫給正在辛苦的你】
+你不必一開始就寫得很好。
+寫不出來，不代表你笨，代表你正碰到一句從來沒被質疑過的話。
+寫得很卡，不代表你退步，代表你第一次不再照單全收。
+每一題的空白，都不是失敗。
+是一個你終於停下來、重新看自己的地方。
+停下來看，本身就是勇氣。`,
+`Take these with you:
+Language you never examine quietly makes your decisions for you.
+Arguing with a sentence and taking it apart are two entirely different powers.
+Writing honestly changes you more than writing beautifully.
+
+Today's practice:
+You don't need all twenty at once. Do three today, two minutes each. Don't score them yet. First ask: which one was hardest to write? The hardest one is usually the sentence you believe most in daily life.
+
+For you, in the hard days:
+You don't have to write well from the start. Being unable to write doesn't mean you're slow; it means you've met a sentence that was never questioned. Every blank line is not a failure. It is a place where you finally stopped to look at yourself again — and stopping to look is itself courage.`],
+[`【帶走這三句】
+好聽的話讓人舒服，準確的話讓人自由。
+評分不是比誰樂觀，是比誰看得清楚。
+安慰是起點，不是終點。
+
+【今天的小練習】
+拿一句你常用來安慰自己的話，例如「沒關係，下次會更好」。
+問它三題：
+有沒有說出事實？有沒有指出卡在哪裡？有沒有下一步？
+三題都沒有，它就是 0 分的句子。
+試著替它加上一個具體的下一步，讓它至少升到 4 分。
+
+【寫給正在辛苦的你】
+你已經很會安慰自己了，那很好，那讓你撐到今天。
+但你值得比安慰更多的東西。
+你值得知道問題在哪裡。
+你值得知道可以從哪裡開始。
+你值得一句既不責備你、也不敷衍你的話。
+不騙你，也不傷你。
+這樣的話，你可以學會對自己說。`,
+`Take these with you:
+Pleasant words make you comfortable; accurate words make you free.
+Scoring is not about who is more optimistic, but who sees more clearly.
+Comfort is a starting point, not a destination.
+
+Today's practice:
+Take a line you often use to soothe yourself, such as "it's okay, next time will be better." Ask it three things: does it state a fact? Does it point to where things are stuck? Does it contain a next step? If none, it is a zero-point sentence. Add one concrete next step and lift it to at least four.
+
+For you, in the hard days:
+You are already good at comforting yourself, and that has carried you this far. But you deserve more than comfort. You deserve to know where the problem is, and where to begin — words that neither blame you nor brush you off.`],
+[`【帶走這三句】
+整塊吞下去的話，會噎住人；切開來，才嚥得下。
+事實通常很小，解釋通常很大。
+把自己從一句話裡救出來，不需要力氣，需要順序。
+
+【今天的小練習】
+今天只下前兩刀。
+拿一件讓你不舒服的事，畫一條線，分成左右兩邊：
+左邊寫「真正發生的事」，右邊寫「我對它的解讀」。
+寫完看一看，哪一邊比較長？
+光是看見右邊那麼長，心就會鬆一點。
+
+【寫給正在辛苦的你】
+你不是太脆弱，你只是一次扛了太多層。
+一層是事情本身，一層是你怎麼看它，
+一層是你怎麼看自己，還有一層，是你以為別人怎麼看你。
+疊在一起，誰都會喘不過氣。
+一層一層放下來。
+你會發現，真正需要面對的那一層，
+其實你扛得動。`,
+`Take these with you:
+A sentence swallowed whole will choke you; sliced, it goes down.
+Facts are usually small; interpretations are usually large.
+Freeing yourself from a sentence takes not strength, but sequence.
+
+Today's practice:
+Make only the first two cuts. Take something that upset you and draw a line down a page. On the left, write "what actually happened." On the right, write "how I read it." Then look: which side is longer? Just seeing how long the right side is will loosen something.
+
+For you, in the hard days:
+You are not too fragile. You were simply carrying too many layers at once — the event itself, how you see it, how you see yourself, and how you imagine others see you. Stacked together, anyone would struggle to breathe. Set them down one at a time. The layer you truly need to face is one you can carry.`],
+[`【帶走這三句】
+感動會退，習慣會留。
+一天一句，比一次讀完一本書更能改變你。
+小到不可能失敗的練習，才是做得久的練習。
+
+【今天的小練習】
+替這五分鐘找一個固定的位置。
+刷牙之後、通勤路上、睡前關燈之前，選一個就好。
+時間到了，只問第一題：我今天對自己說了什麼？
+答得出來就繼續，答不出來也算完成。
+先讓「每天出現」這件事成立，其他的會自己長出來。
+
+【寫給正在辛苦的你】
+你不必一次變好。
+你不必每天都有進步。
+你不必做到完美才算開始。
+你只要今天做了五分鐘，明天再做五分鐘。
+斷了也沒關係，接回來就好。
+會回來的人，比從不中斷的人，更知道怎麼走遠。
+慢慢來，比較快。`,
+`Take these with you:
+Inspiration fades; habits stay.
+One sentence a day changes you more than finishing a book in one sitting.
+A practice too small to fail is the practice that lasts.
+
+Today's practice:
+Give these five minutes a fixed place — after brushing your teeth, on the commute, or just before turning off the light. When the time comes, ask only the first question: what did I say to myself today? If you can answer, continue. If you can't, it still counts. Establish "showing up daily" first; the rest will grow by itself.
+
+For you, in the hard days:
+You don't have to get better all at once. You don't have to improve every day. Do five minutes today, and five tomorrow. If you break the chain, just pick it up again. Those who come back know more about going far than those who never stopped.`],
+[`【帶走這三句】
+想法在腦中是霧，寫到紙上才是地圖。
+格子不是限制，是替混亂找到位置。
+寫下來的那一刻，你從「被想法包圍」變成「看著想法」。
+
+【今天的小練習】
+今天只填三格：原始語言、事實、升維後語言。
+中間十九格先空著，沒有關係。
+重點不是填滿，而是讓這三格排在一起——
+你會親眼看到，同一件事，可以有兩種說法，
+而兩種說法，都沒有說謊。
+
+【寫給正在辛苦的你】
+如果今晚腦子又停不下來，不要跟它講道理。
+拿一張紙，把它正在說的話，一字不改地抄下來。
+抄完，你會發現它其實只有那幾句，一直在重複。
+它之所以那麼大聲，是因為從來沒有人把它好好寫下來、好好看過。
+被看見的念頭，會安靜下來。
+你也是。`,
+`Take these with you:
+In the mind a thought is fog; on paper it becomes a map.
+The boxes are not limits; they give chaos a place to sit.
+The moment you write it down, you go from being surrounded by a thought to looking at it.
+
+Today's practice:
+Fill in only three boxes: the raw sentence, the fact, and the upgraded sentence. Leave the other nineteen empty. The point is not completion but putting these three side by side — to see with your own eyes that one event can be told two ways, and neither is a lie.
+
+For you, in the hard days:
+If your mind won't stop tonight, don't reason with it. Take a sheet of paper and copy down exactly what it is saying. You will find it has only a few lines, on repeat. A thought that is seen grows quiet. So do you.`],
+[`【帶走這三句】
+知道，是在平靜的時候；會了，是在慌亂的時候。
+十秒的空隙，足夠換掉一個反應。
+事後想起來不是失敗，是新路正在鋪。
+
+【今天的小練習】
+今天只帶一個問題出門：「這是事實，還是我的解釋？」
+把它設成手機桌布，或寫在手背上。
+不用每次都答得出來，只要今天想起它三次。
+三次裡面，有一次是在情緒當下想起來的，
+你就已經通過今天的小考。
+
+【寫給正在辛苦的你】
+你會在最需要的時候忘記，這很正常。
+人在害怕的時候，本來就會退回最熟悉的反應。
+所以不要因為「又忘了」而責怪自己。
+每一次事後想起，都算數。
+每一次慢了一拍，都比上一次快。
+有一天你會發現，那個從前會把你打倒的瞬間，
+你竟然站著，還問了一個問題。`,
+`Take these with you:
+Knowing happens in calm; mastery shows in panic.
+A ten-second gap is enough to replace a reaction.
+Remembering afterwards is not failure; it is a new road being laid.
+
+Today's practice:
+Carry only one question out the door today: "Is this a fact, or my interpretation?" Make it your phone wallpaper or write it on the back of your hand. You don't need an answer every time — just recall it three times. If one of those three comes in the middle of an emotion, you have passed today's quiz.
+
+For you, in the hard days:
+Forgetting when you need it most is normal. Under fear, people fall back to their most familiar reaction. So don't blame yourself for "forgetting again." Every late remembering counts. One day you will find that the moment that used to knock you down leaves you standing — and asking a question.`],
+[`【帶走這三句】
+成長不是往上爬，是越看越細。
+能懷疑自己的第一句話，已經是很大的一步。
+階梯沒有期限，只有下一階。
+
+【今天的小練習】
+誠實地替自己選一階：我現在大概在哪裡？
+然後只看上面那一階，問：那一階的人，會多做哪一個動作？
+今天就做那一個動作一次。
+不必跳階。
+一次只往上一階的人，走得最穩。
+
+【寫給正在辛苦的你】
+如果你覺得自己「怎麼還在這裡」，請回頭看一眼。
+以前的你，連自己在說什麼都聽不見。
+現在的你，至少會停下來想一想。
+這不是原地踏步，這是你已經換了一層樓在看同一件事。
+風景還沒變，但你的眼睛已經不一樣了。
+眼睛先變，路才會跟著變。
+你正在路上，而且沒有遲到。`,
+`Take these with you:
+Growth is not climbing higher; it is seeing finer.
+Being able to doubt your own first sentence is already a great step.
+The staircase has no deadline — only a next step.
+
+Today's practice:
+Honestly choose your level: where am I, roughly? Then look only at the step above and ask: what one extra move does a person on that step make? Do that move once today. No skipping. Those who climb one step at a time walk the steadiest.
+
+For you, in the hard days:
+If you wonder why you are "still here," look back once. The old you couldn't even hear what you were saying. The present you at least pauses to think. That is not standing still; you are viewing the same thing from a different floor. The scenery hasn't changed yet, but your eyes have. Eyes change first; the road follows. You are on your way, and you are not late.`],
+[`【帶走這三句】
+高標準不是問題，把高標準當成判決才是。
+停不下來的思考，需要的不是更多答案，是一個停止條件。
+允許自己可能是錯的，是最高級的自信。
+
+【今天的小練習】
+從這些槓桿句裡，只選一句，當作今天的口袋問題。
+推薦這一句：「再多知道哪一件事，真的會改變我的決定？」
+每次發現自己又在反覆想同一件事，就拿出來問一次。
+如果答案是「沒有」，那就代表——可以動手了。
+
+【寫給正在辛苦的你】
+你一直很努力，努力到忘了問：這份努力放對位置了嗎？
+你一直很負責，負責到把不屬於你的也扛了起來。
+你一直想得很清楚，清楚到不敢在沒把握的時候出發。
+這些都是你的優點，只是用得太滿。
+鬆一點，不是變差。
+鬆一點，是讓你的能力，有地方轉身。`,
+`Take these with you:
+High standards are not the problem; treating them as verdicts is.
+Thinking that won't stop doesn't need more answers. It needs a stopping condition.
+Allowing yourself to be wrong is the highest form of confidence.
+
+Today's practice:
+Choose just one leverage question as today's pocket question. I suggest this one: "Which further piece of information would actually change my decision?" Whenever you catch yourself circling the same thing, ask it once. If the answer is "none," then it is time to act.
+
+For you, in the hard days:
+You have worked so hard that you forgot to ask whether the effort is well placed. You have been so responsible that you picked up what was never yours. These are your strengths, only used too fully. Loosening a little is not getting worse. It gives your ability room to turn around.`],
+[`【帶走這三句】
+小小的詞，決定大大的方向。
+把「應該」說成「我原本預測」，失望就變成了資訊。
+快，不是問題；快而不能修正，才是問題。
+
+【今天的小練習】
+今天只抓一個詞：「應該」。
+每聽見自己說一次「他應該」、「我應該」、「事情應該」，
+就在心裡補一句：「這是我的預測。現實給了什麼答案？」
+抓到三次，今天就完成了。
+你會發現，很多的氣，其實是預測落空的聲音。
+
+【寫給正在辛苦的你】
+你不必放棄你的速度。
+你不必放棄你的標準。
+你不必放棄你的主見。
+你只需要在每一個「一定」的後面，留一個小小的問號。
+那個問號不會讓你變弱。
+它讓你在發現走錯的時候，回得了頭。
+回得了頭的人，才敢走得更遠。`,
+`Take these with you:
+Small words set large directions.
+Say "I had predicted" instead of "should," and disappointment turns into information.
+Speed is not the problem. Speed that cannot be corrected is.
+
+Today's practice:
+Catch only one word today: "should." Each time you hear yourself say "he should," "I should," or "things should," add silently: "That was my prediction. What did reality answer?" Catch it three times, and today is complete. You will notice that much anger is simply the sound of a prediction failing.
+
+For you, in the hard days:
+You don't have to give up your speed, your standards, or your convictions. You only need to leave a small question mark after every "definitely." That question mark does not weaken you. It lets you turn back when you discover you have gone the wrong way — and those who can turn back dare to go further.`],
+[`【帶走這三句】
+腦中的聲音，也需要查證。
+答不出「什麼會讓我改觀」的想法，已經不是想法。
+能被檢驗的相信，才是踏實的相信。
+
+【今天的小練習】
+挑一個你很確定的看法，關於自己、關於某個人、或關於未來。
+只過第五道門：
+「出現什麼證據，我會承認自己想得不完整？」
+把答案寫下來。
+寫得出來，這個看法是活的；
+寫不出來，就先在它旁邊打一個小小的問號。
+
+【寫給正在辛苦的你】
+那些讓你最痛的話，往往是最沒有被檢查過的話。
+「我不值得。」「我沒救了。」「不會好了。」
+它們沒有來源，沒有證據，只是說得很久。
+說得很久，不等於是真的。
+從今天起，請它們也排隊過門。
+你會發現，有些話，一道門都過不了。
+而你，竟然相信了它這麼多年。`,
+`Take these with you:
+The voice in your head needs fact-checking too.
+An idea that cannot answer "what would change my mind?" is no longer an idea.
+Belief that can be tested is belief you can stand on.
+
+Today's practice:
+Choose one view you feel certain about — about yourself, someone else, or the future. Send it through the fifth gate only: "What evidence would make me admit my thinking is incomplete?" Write the answer down. If you can, the view is alive. If you can't, place a small question mark beside it for now.
+
+For you, in the hard days:
+The sentences that hurt you most are often the least examined. "I'm not worth it." "I'm beyond help." "It won't get better." They have no source and no evidence; they have only been repeated for a long time. Long repetition is not truth. From today, make them queue at the gates too. Some will not pass even one.`],
+[`【帶走這三句】
+捍衛昨天，很累；更新今天，很輕。
+不必永遠正確，只要永遠可以修正。
+最好的一句話，是還願意被下一句話改寫的話。
+
+【今天的小練習】
+寫下一個你曾經很堅持、後來改變了的看法。
+然後問自己：改變之後，我失去了什麼？又得到了什麼？
+你會發現，更新從來沒有讓你變小。
+每一次更新，都是你把世界看得更大了一點。
+把這個答案留著，下次不敢改變的時候，拿出來看。
+
+【寫給正在辛苦的你】
+願你說話，但不被自己的話綁住。
+願你相信，但不被自己的相信鎖住。
+願你努力，但不被自己的努力定義。
+願你犯錯，而且知道那只是一次更新的通知。
+願你記得，你不是你昨天說過的那句話。
+你是那個，今天還能重新說一次的人。`,
+`Take these with you:
+Defending yesterday is heavy; updating today is light.
+You need not be right forever — only forever correctable.
+The best sentence is one still willing to be rewritten by the next.
+
+Today's practice:
+Write down one view you once held firmly and later changed. Then ask: after changing, what did I lose, and what did I gain? You will find that updating never made you smaller. Each update let you see a slightly larger world. Keep that answer, and read it the next time you are afraid to change.
+
+For you, in the hard days:
+May you speak without being bound by your words.
+May you believe without being locked by your beliefs.
+May you work hard without being defined by your effort.
+May you err, and know it is only a notice to update.
+You are not the sentence you said yesterday. You are the one who can still say it anew today.`]
+];
+const postText=i=>{const p=POSTS[i], m=MORE[i]||['','']; return p ? [p.t,p.zh,m[0],'— English —',p.en,m[1],p.tags].filter(Boolean).join('\n\n') : ''};
+// 比照 Word 字數：中文字與全形標點各算一字，英文以單字計
+const wordCount=s=>(s.replace(/#\S+/g,'').match(/[一-鿿、-】！-～「」——…]/g)||[]).length+(s.replace(/#\S+/g,'').match(/[A-Za-z0-9][A-Za-z0-9'’-]*/g)||[]).length;
+function renderPost(i){
+  if(!POSTS[i]) return '';
+  const txt=postText(i);
+  return '<div class="tools"><button class="btn" data-copy="'+i+'">複製貼文</button><span class="hint">約 '+wordCount(txt)+' 字（中英合計，英文以單字計）</span></div><div class="post">'+hl(txt)+'</div>';
+}
+function renderCards(i){
+  if(!POSTS[i]) return '';
+  return '<div class="tools"><button class="btn" data-dlall="'+i+'">下載本章全部圖卡</button><span class="hint">1080×1080 PNG，可直接上傳臉書／IG。</span></div><div class="fcs">'+
+    POSTS[i].cards.map((c,j)=>'<figure class="fc"><canvas width="1080" height="1080" data-c="'+i+','+j+'" role="img" aria-label="'+esc(c[0].replace(/\n/g,''))+'"></canvas><button class="btn" data-dl="'+i+','+j+'">下載 PNG</button></figure>').join('')+'</div>';
+}
+const THEMES=[['#1f6f6b','#fffdf8','#bfe3df'],['#f6f3ec','#26231e','#1f6f6b'],['#a8502f','#fffdf8','#f6d9cb'],['#26231e','#f6f3ec','#6fc3bc']];
+const SERIF='"Noto Serif TC","Microsoft JhengHei","PingFang TC",serif', SANS='"Noto Sans TC","Microsoft JhengHei","PingFang TC",sans-serif';
+function wrap(ctx,text,maxW){
+  const lines=[];
+  for(const para of text.split('\n')){
+    let line='';
+    for(const tk of para.match(/[A-Za-z0-9'’\-]+|\s|[^\sA-Za-z0-9]/gu)||[]){
+      if(ctx.measureText(line+tk).width>maxW && line && !'，。、；：！？」）,.;:!?'.includes(tk)){lines.push(line.trimEnd()); line=tk.trim()}
+      else line+=tk;
+    }
+    lines.push(line);
+  }
+  return lines;
+}
+function drawCard(cv){
+  const [i,j]=cv.dataset.c.split(',').map(Number), ctx=cv.getContext('2d'), W=1080, [bg,fg,ac]=THEMES[j%THEMES.length], [zh,en]=POSTS[i].cards[j], s=doc.secs[i];
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,W);
+  ctx.textBaseline='top'; ctx.textAlign='left';
+  ctx.fillStyle=ac; ctx.fillRect(90,92,64,8);
+  ctx.font='600 30px '+SANS; ctx.fillText('Language OS｜'+s.num+'・'+s.name,90,124);
+  let size=80, zl;
+  for(;;){ ctx.font='700 '+size+'px '+SERIF; zl=wrap(ctx,zh,900); if((zl.length*size*1.55<=440 && Math.max(...zl.map(l=>ctx.measureText(l).width))<=900)||size<=44) break; size-=4; }
+  const zh_h=zl.length*size*1.55;
+  ctx.font='italic 400 36px Georgia,"Times New Roman",serif';
+  const el=wrap(ctx,en,900), en_h=el.length*52, total=zh_h+70+en_h;
+  let y=210+Math.max(0,(730-total)/2);
+  ctx.fillStyle=fg; ctx.font='700 '+size+'px '+SERIF;
+  zl.forEach(l=>{ctx.fillText(l,90,y); y+=size*1.55});
+  ctx.fillStyle=ac; ctx.fillRect(90,y+22,120,3); y+=70;
+  ctx.fillStyle=fg; ctx.globalAlpha=.86; ctx.font='italic 400 36px Georgia,"Times New Roman",serif';
+  el.forEach(l=>{ctx.fillText(l,90,y); y+=52});
+  ctx.globalAlpha=1; ctx.fillStyle=ac; ctx.font='500 26px '+SANS;
+  ctx.fillText('神聖語言・Language Compiler',90,968);
+  ctx.textAlign='right'; ctx.fillText((j+1)+' / '+POSTS[i].cards.length,W-90,968);
+}
+function dlCard(key){
+  const cv=document.querySelector('canvas[data-c="'+key+'"]'); if(!cv) return;
+  const [i,j]=key.split(',').map(Number);
+  cv.toBlob(b=>{const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='LanguageOS_'+doc.secs[i].num+'_圖卡'+(j+1)+'.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000)});
+}
+
+function renderSec(sec, idx){
+  const head='<h1><i>'+esc(sec.num)+'</i><span>'+hl(sec.name)+'</span></h1>';
+  if(!Q && tab!=='doc') return {n:1, html:'<section>'+head+tabsHTML()+(tab==='post'?renderPost(idx):renderCards(idx))+'</section>'};
+  const postHit=Q && POSTS[idx] && hit(postText(idx));
+  let parts=sec.items.map(it=>renderItem(it,sec)), n=0;
+  if(Q && hit(sec.num+'｜'+sec.name) && !parts.some(Boolean)){ const q=Q; Q=''; parts=sec.items.map(it=>renderItem(it,sec)); Q=q; }
+  // 表格以列計數，其餘以區塊計數
+  sec.items.forEach((it,i)=>{ if(!parts[i]) return; n += it.type==='table' ? it.rows.filter(r=>hit(r.join(' '))).length : 1; });
+  if(!n && !postHit) return {html:'',n:0};
+  if(!n) return {n:1, html:'<section>'+head+'<h3 class="sub">臉書貼文</h3>'+renderPost(idx)+'</section>'};
+  let body='', inCards=false;
+  sec.items.forEach((it,i)=>{
+    if(!parts[i]) return;
+    const isC=it.type==='card';
+    if(isC&&!inCards){body+='<div class="cards">';inCards=true}
+    if(!isC&&inCards){body+='</div>';inCards=false}
+    body+=parts[i];
+  });
+  if(inCards) body+='</div>';
+  let extra='';
+  if(sec.items.some(isQuiz)||bands.length&&sec.items.some(it=>it.type==='p'&&it.text.includes('滿分'))) extra='<div class="score">'+scoreHTML()+'</div>';
+  if(sec.items.some(isField)){
+    const dates=Object.keys(store.logs).filter(d=>Object.values(store.logs[d]).some(v=>v)).sort().reverse();
+    extra+='<div class="tools"><input type="date" id="logDate" value="'+logDate+'" aria-label="紀錄日期"><button class="btn" id="copyLog">複製本日紀錄</button><button class="btn" id="clearLog">清空本日</button>'+
+      '<span class="hint">自動儲存於這台電腦的瀏覽器'+(dates.length?'；已有紀錄：':'')+'</span>'+
+      dates.slice(0,14).map(d=>'<button class="btn'+(d===logDate?' on':'')+'" data-date="'+d+'">'+d.slice(5)+'</button>').join('')+'</div>';
+  }
+  if(postHit){ body+='<h3 class="sub">臉書貼文</h3>'+renderPost(idx); n++; }
+  return {n, html:'<section>'+head+(Q?'':tabsHTML())+extra+body+'</section>'};
+}
+
+/* ---------- 畫面 ---------- */
+const $=id=>document.getElementById(id);
+let cur=Math.min(Math.max(parseInt(location.hash.slice(1))||0,0),doc.secs.length-1);
+document.title=doc.title;
+$('brandSub').textContent=doc.title.split('｜').slice(1).join('｜');
+$('nav').innerHTML=doc.secs.map((s,i)=>'<button data-i="'+i+'"><i>'+esc(s.num)+'</i><span>'+esc(s.name)+'</span></button>').join('');
+
+function grow(t){t.style.height='auto'; t.style.height=(t.scrollHeight+2)+'px'}
+function render(){
+  const view=$('view'); let html='', total=0;
+  if(Q){
+    doc.secs.forEach((s,i)=>{const r=renderSec(s,i); html+=r.html; total+=r.n});
+    $('count').textContent=total?'找到 '+total+' 筆':'';
+    if(!total) html='<div class="empty">找不到「'+esc(Q)+'」</div>';
+  }else{
+    html=renderSec(doc.secs[cur],cur).html+
+      '<div class="pager">'+(cur>0?'<button class="btn" data-go="'+(cur-1)+'">← '+esc(doc.secs[cur-1].name)+'</button>':'<span></span>')+
+      (cur<doc.secs.length-1?'<button class="btn" data-go="'+(cur+1)+'">'+esc(doc.secs[cur+1].name)+' →</button>':'<span></span>')+'</div>';
+    $('count').textContent=(cur+1)+' / '+doc.secs.length;
+  }
+  view.innerHTML=html;
+  view.querySelectorAll('textarea').forEach(grow);
+  view.querySelectorAll('canvas[data-c]').forEach(drawCard);
+  document.querySelectorAll('#nav button').forEach((b,i)=>b.classList.toggle('on',!Q&&i===cur));
+  $('clr').hidden=!Q;
+}
+function go(i){cur=i; Q=''; $('q').value=''; history.replaceState(null,'','#'+i); render(); window.scrollTo(0,0);
+  const b=document.querySelector('#nav button.on'); if(b) b.scrollIntoView({block:'nearest',inline:'center'});}
+
+$('nav').addEventListener('click',e=>{const b=e.target.closest('button'); if(b) go(+b.dataset.i)});
+$('q').addEventListener('input',e=>{Q=e.target.value.trim(); render()});
+$('clr').addEventListener('click',()=>{Q='';$('q').value='';render();$('q').focus()});
+document.addEventListener('keydown',e=>{
+  if(e.key==='/' && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){e.preventDefault();$('q').focus()}
+  if(e.key==='Escape' && Q){Q='';$('q').value='';render()}
+});
+$('view').addEventListener('input',e=>{
+  const t=e.target;
+  if(t.dataset.q){
+    const a=store.quiz[t.dataset.q]||(store.quiz[t.dataset.q]={});
+    if(t.tagName==='SELECT'){a.s=t.value; document.querySelectorAll('.score').forEach(x=>x.innerHTML=scoreHTML())}
+    else {a.a=t.value; grow(t)}
+    save();
+  }else if(t.dataset.f){
+    (store.logs[logDate]||(store.logs[logDate]={}))[t.dataset.f]=t.value; grow(t); save();
+  }
+});
+$('view').addEventListener('change',e=>{ if(e.target.id==='logDate' && e.target.value){logDate=e.target.value; render()} });
+$('view').addEventListener('click',e=>{
+  const b=e.target.closest('button');
+  if(b){
+    if(b.dataset.go) return go(+b.dataset.go);
+    if(b.dataset.date){logDate=b.dataset.date; return render()}
+    if(b.dataset.tab){tab=b.dataset.tab; return render()}
+    if(b.dataset.dl) return dlCard(b.dataset.dl);
+    if(b.dataset.dlall){POSTS[+b.dataset.dlall].cards.forEach((c,j)=>setTimeout(()=>dlCard(b.dataset.dlall+','+j),j*400)); return}
+    if(b.dataset.copy){
+      const txt=postText(+b.dataset.copy), done=()=>{b.textContent='已複製';setTimeout(()=>b.textContent='複製貼文',1500)};
+      if(navigator.clipboard) navigator.clipboard.writeText(txt).then(done,()=>prompt('請手動複製：',txt)); else prompt('請手動複製：',txt);
+      return;
+    }
+    if(b.id==='practice'){const on=$('tbl').classList.toggle('quiz'); b.classList.toggle('on',on); $('tbl').querySelectorAll('.show').forEach(x=>x.classList.remove('show')); return}
+    if(b.id==='clearLog'){ if(confirm('確定清空 '+logDate+' 的紀錄？')){delete store.logs[logDate]; save(); render()} return}
+    if(b.id==='copyLog'){
+      const log=store.logs[logDate]||{};
+      const txt=logDate+'\n'+[...document.querySelectorAll('textarea[data-f]')].map(t=>t.dataset.f+'｜'+(log[t.dataset.f]||'')).join('\n');
+      const done=()=>{b.textContent='已複製';setTimeout(()=>b.textContent='複製本日紀錄',1500)};
+      if(navigator.clipboard) navigator.clipboard.writeText(txt).then(done,()=>prompt('請手動複製：',txt)); else prompt('請手動複製：',txt);
+      return;
+    }
+  }
+  const tr=e.target.closest('.tbl.quiz .tr:not(.head)'); if(tr) tr.classList.toggle('show');
+});
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LifeOS 人生改變母體｜64關卡 × 128策略</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#22252b;--mut:#6b7280;--line:#e3dfd5;--acc:#0f766e;--acc2:#e6f4f1;--old:#b45309;--oldbg:#fdf3e3;--new:#0f766e;--newbg:#e6f4f1;--warn:#9a6700}
+@media (prefers-color-scheme:dark){:root{--bg:#15171b;--card:#1f2228;--ink:#e8e6e1;--mut:#9aa1ac;--line:#30343c;--acc:#4fd1c0;--acc2:#17302d;--old:#f0b360;--oldbg:#33281a;--new:#4fd1c0;--newbg:#17302d;--warn:#e3b341}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px 0}
+.top{display:flex;gap:12px;align-items:center;flex-wrap:wrap;max-width:1080px;margin:0 auto}
+h1{font-size:18px;margin:0;flex:1;min-width:200px}
+#q{flex:1;min-width:200px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}
+nav{display:flex;gap:4px;overflow-x:auto;max-width:1080px;margin:8px auto 0}
+nav button{border:0;background:none;color:var(--mut);font:inherit;padding:8px 12px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+nav button.on{color:var(--acc);border-color:var(--acc);font-weight:700}
+main{max-width:1080px;margin:0 auto;padding:16px}
+section{display:none}
+section.on{display:block}
+body.searching section{display:block}
+body.searching section.empty{display:none}
+h2{font-size:20px;margin:22px 0 10px}
+h3{font-size:16px;margin:0 0 6px}
+.formula{background:var(--acc2);border-left:4px solid var(--acc);padding:12px 14px;border-radius:6px;margin:10px 0;font-weight:600}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.id{display:inline-block;font-size:12px;font-weight:700;color:var(--acc);background:var(--acc2);border-radius:4px;padding:1px 7px;margin-right:6px}
+.mut{color:var(--mut);font-size:14px}
+.row{display:flex;gap:8px;margin-top:6px;font-size:15px}
+.row b{flex:0 0 5em;font-size:13px;color:var(--mut);font-weight:600;padding-top:2px}
+.old{background:var(--oldbg);color:var(--old);border-radius:6px;padding:4px 8px;margin-top:8px;font-size:15px}
+.new{background:var(--newbg);color:var(--new);border-radius:6px;padding:4px 8px;margin-top:4px;font-size:15px}
+.quote{border-left:3px solid var(--acc);padding-left:10px;margin-top:10px;font-weight:600}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.chips button,.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:14px;padding:6px 12px;border-radius:999px;cursor:pointer}
+.chips button.on{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+.btn:hover{border-color:var(--acc)}
+.dom{display:none}
+.dom.on{display:block}
+body.searching .dom{display:block}
+body.searching .dom.empty{display:none}
+.miss{border:1px dashed var(--line);border-radius:10px;padding:14px;color:var(--warn);font-size:14px}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;font-size:15px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:13px;color:var(--mut);white-space:nowrap}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--card);border:1px solid var(--line);border-radius:8px;margin-bottom:8px;cursor:pointer}
+.chk input{margin-top:6px;transform:scale(1.3)}
+.chk.done span{text-decoration:line-through;color:var(--mut)}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin:8px 0 14px}
+.bar i{display:block;height:100%;background:var(--acc);width:0;transition:width .2s}
+.post{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.post summary{cursor:pointer;line-height:1.5}
+.post canvas{display:block;width:100%;max-width:420px;height:auto;border-radius:10px;margin:14px 0 4px}
+.pb p{white-space:pre-line;margin:0 0 6px}
+.pb .zh{margin-top:16px}
+.pb .en{color:var(--mut);font-size:15px}
+.pb .hk{font-weight:700;font-size:18px}
+body.lz .pb .en,body.le .pb .zh{display:none}
+body.le .pb .en{color:var(--ink);font-size:16px;margin-top:16px}
+.hide{display:none!important}
+#none{display:none;text-align:center;color:var(--mut);padding:40px}
+ol.steps{padding-left:1.3em;margin:6px 0}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <h1>LifeOS 人生改變母體</h1>
+    <input id="q" type="search" placeholder="搜尋關卡、策略、金句…（例：拖延、信任、N14）">
+  </div>
+  <nav id="nav"></nav>
+</header>
+<main>
+  <section id="s0"></section>
+  <section id="s1"></section>
+  <section id="s2"></section>
+  <section id="s3"></section>
+  <section id="s4"></section>
+  <section id="s5"></section>
+  <section id="s6"></section>
+  <div id="none">找不到符合的內容</div>
+</main>
+<script>
+const TABS=['總覽','八大關卡','64 Node × 128策略','診斷工具','打卡表','公式與智慧','臉書貼文圖卡'];
+const P={};
+P.N01={h:["道理都懂，日子卻一模一樣？你不是不夠努力，你只是還沒找到卡住的那一點。","You know all the principles, yet nothing changes? You are not lazy. You just have not found the one spot where you are stuck."],
+q:["你缺的可能不是知識，而是找出真正卡點的能力。","What you lack may not be knowledge, but the ability to find the real sticking point."],
+tags:"#LifeOS #知行落差 #找到卡點 #心靈雞湯 #人生更新 #KnowingDoingGap",
+b:[
+["書買了，課上了，筆記寫了三大本。\n道理你都懂，影片你都看過，別人卡關時，你還能講得頭頭是道。\n可是輪到自己，日子還是一模一樣。","You bought the books, took the courses, filled three notebooks.\nYou understand the principles. You can even coach a friend through the same problem.\nBut when it is your turn, your days look exactly the same."],
+["於是你開始罵自己：我就是不夠努力，我就是沒毅力，我就是沒用。\n罵完之後，又去找下一本書、下一堂課、下一個方法。\n越學越多，越學越慌。","So you scold yourself: I am not trying hard enough, I have no willpower, I am useless.\nThen you go looking for the next book, the next course, the next method.\nThe more you learn, the more anxious you feel."],
+["親愛的，請先停一下。\n有一個很重要的差異，你可能一直沒看見：\n知識多，不等於行動能力強。","Dear one, please pause for a moment.\nThere is an important difference you may have missed:\nhaving more knowledge is not the same as having more ability to act."],
+["知道，是腦袋的事。\n做到，是卡點被解開之後的事。\n你一直在加強已經夠強的那一邊，卻沒有去看真正卡住的那一邊。","Knowing happens in the head.\nDoing happens after the sticking point is released.\nYou keep strengthening the side that is already strong, and never look at the side that is actually stuck."],
+["你不是缺資訊，你是缺一個入口。\n你不是缺道理，你是缺一個今天就能做的小動作。\n你不是缺決心，你是缺一次誠實地看見自己卡在哪裡。","You do not lack information; you lack an entry point.\nYou do not lack principles; you lack one small action you can do today.\nYou do not lack determination; you lack one honest look at where you are stuck."],
+["所以，換一種方式看自己吧。\n不是「我不夠努力」，而是「我還沒找到真正的卡點」。\n卡點可能是不知道怎麼開始，可能是怕做不好，可能是步驟太大，也可能只是你太累了。","So try seeing yourself in a new way.\nNot: I am not trying hard enough. But: I have not yet found the real sticking point.\nIt may be not knowing how to start, fear of doing it badly, a step that is too big, or simply being exhausted."],
+["接著，把重要性重新排一次。\n少收集一點，多實作一點。\n少問「還有什麼方法」，多問「我到底卡在哪一步」。","Then re-rank what matters.\nCollect a little less; practice a little more.\nAsk less often: what other method is there? Ask more often: which step exactly am I stuck on?"],
+["這就是你要長出來的新能力：找卡點的能力。\n會找卡點的人，不必等到完全想通才出發。\n會找卡點的人，把大問題拆成小實驗。\n會找卡點的人，把失敗當成線索，而不是判決。","This is the new ability to grow: finding the sticking point.\nPeople who can find it do not wait for perfect clarity before starting.\nPeople who can find it break big problems into small experiments.\nPeople who can find it treat failure as a clue, not a verdict."],
+["知識給你地圖，行動才給你路。\n懂一百個道理，不如解開一個卡點。\n改變不是從知道更多開始，而是從做對一小步開始。","Knowledge gives you a map; only action gives you a road.\nUnderstanding a hundred principles is worth less than releasing one sticking point.\nChange does not begin with knowing more. It begins with one small step done right."],
+["你不需要再證明自己很用功。\n你需要的，是對自己溫柔一點，然後精準一點。\n溫柔，是不再用「懶」來解釋一切；精準，是願意問：到底是哪裡過不去？","You do not need to prove again that you work hard.\nYou need to be a little gentler with yourself, and a little more precise.\nGentle means no longer explaining everything with the word lazy. Precise means asking: where exactly can I not get through?"],
+["今天的小練習：\n挑一件你「知道卻做不到」的事，把它拆成今天五分鐘內做得完的最小行動。\n做完，看看發生了什麼，再決定下一步。","Today's small practice:\nPick one thing you know but cannot do, and shrink it into the smallest action you can finish in five minutes today.\nDo it, notice what happens, then decide the next step."],
+["不要把現在當成命運，把現在當成下一次更新的起點。\n你不是沒救，你只是還沒找到那個入口。\n今天，就從一小步開始。","Do not treat the present as fate. Treat it as the starting point of your next update.\nYou are not beyond help. You simply have not found the entry point yet.\nToday, begin with one small step."]
+]};
+
+P.N02={h:["換了工作、換了朋友、換了伴侶，為什麼同樣的劇情又演一次？","New job, new friends, new partner. So why is the same story playing again?"],
+q:["當問題不斷重複，值得檢查的除了別人，還有自己熟悉的反應模式。","When a problem keeps repeating, look not only at others, but also at your own familiar pattern of reacting."],
+tags:"#LifeOS #重複模式 #看見模式 #界線 #心靈雞湯 #BreakThePattern",
+b:[
+["你以為離開那個主管，就不會再被壓榨。\n你以為換了一個伴侶，就不會再被忽略。\n你以為換了一群朋友，就不會再當那個默默付出的人。\n結果，換了人，劇情還是一樣。","You thought leaving that boss would end the exploitation.\nYou thought a new partner would end the neglect.\nYou thought a new circle of friends would end your role as the silent giver.\nYet with new people, the plot stayed the same."],
+["你忍不住想：我怎麼這麼倒楣，老是遇到這種人？\n都是他們的錯，都是我運氣不好。\n這樣想的時候，心裡有委屈，也有一點點無力。","You cannot help thinking: why am I so unlucky, always meeting people like this?\nIt is all their fault. It is all bad luck.\nBehind that thought there is hurt, and a quiet sense of helplessness."],
+["你的委屈是真的，別人的責任也是真的。\n但是有一個差異資訊，值得你溫柔地看一眼：\n不同的對象，卻出現了相似的互動。","Your hurt is real, and other people's responsibility is real too.\nBut there is one piece of difference worth a gentle look:\ndifferent people, yet strikingly similar interactions."],
+["這不是在說「都是你的錯」。\n這是在說：這齣戲裡，有一個角色每一場都在，那就是你。\n而你，是整齣戲裡唯一可以改劇本的人。","This is not saying it is all your fault.\nIt is saying: one character appears in every scene of this play, and that is you.\nAnd you are the only one in the play who can rewrite the script."],
+["也許是你太快說「沒關係」。\n也許是你太晚說「我不要」。\n也許是你太習慣先照顧別人，最後才想到自己。","Maybe you say it is fine too quickly.\nMaybe you say no too late.\nMaybe you are so used to caring for others first that you think of yourself last."],
+["換一種方式看吧。\n不是「我老是遇到壞人」，而是「我有一個熟悉的反應模式，一再把我帶回同一個位置」。\n模式不是罪，模式只是你過去為了保護自己學會的方法。","See it another way.\nNot: I always meet bad people. But: I have a familiar pattern that keeps leading me back to the same place.\nA pattern is not a sin. It is simply a method you once learned to protect yourself."],
+["把注意力的權重調一下。\n少花一點力氣研究別人為什麼這樣，多花一點力氣看見自己怎麼回應。\n因為別人你管不了，自己的回應，你練得了。","Shift the weight of your attention.\nSpend less energy analyzing why they are like that, and more energy noticing how you respond.\nYou cannot control others. You can train your own response."],
+["這就是辨識模式的能力。\n看得見觸發點，就不會每次都被同一句話刺傷。\n看得見自己的反應，就多了一秒鐘可以選擇。\n看得見結果，就知道哪一條界線該畫在哪裡。","This is the ability to recognize patterns.\nSee the trigger, and the same sentence will not wound you every time.\nSee your reaction, and you gain one second in which to choose.\nSee the result, and you know where each boundary belongs."],
+["你不改變模式，模式就會替你決定人生。\n重複不是命運在懲罰你，重複是生命在提醒你。\n看見模式的那一刻，你就不再只是受害者，而是作者。","If you do not change the pattern, the pattern will decide your life for you.\nRepetition is not fate punishing you. It is life reminding you.\nThe moment you see the pattern, you stop being only a victim and become an author."],
+["同樣的課，生命會一直重開，直到你學會為止。\n這不是殘忍，這是耐心。\n而你，值得畢業。","Life keeps reopening the same class until you have learned it.\nThat is not cruelty. It is patience.\nAnd you deserve to graduate."],
+["今天的小練習：\n寫下三次相似的事件，各用一句話記錄：什麼觸發了我？我怎麼反應？最後結果如何？\n三件事擺在一起，共同點會自己浮出來。","Today's small practice:\nWrite down three similar events, one line each: what triggered me, how did I react, what was the result?\nPlace the three side by side, and the common thread will surface on its own."],
+["你不是注定重演。\n你只是需要一次看清楚，然後一次不一樣的回應。\n新的故事，從你下一次的回應開始。","You are not destined to replay it.\nYou need one clear look, and then one different response.\nA new story begins with your next response."]
+]};
+
+P.N03={h:["明知道不適合，為什麼還是放不下？因為你把捨不得，當成了愛。","You know it does not fit, so why can you not let go? Because you have mistaken reluctance for love."],
+q:["捨不得不一定代表適合；熟悉也不等於安全。","Reluctance to leave does not mean it fits; familiar does not mean safe."],
+tags:"#LifeOS #離不開 #依附 #安全與福祉 #心靈雞湯 #LettingGo",
+b:[
+["朋友都勸過了，你自己也知道。\n這段關係、這份工作、這個環境，一直在消耗你。\n可是每次想走，心就揪起來，腳就軟下去。","Your friends have all said it, and you know it yourself.\nThis relationship, this job, this environment keeps draining you.\nYet every time you think of leaving, your heart tightens and your legs go weak."],
+["你對自己說：我這麼捨不得，一定是因為還有愛吧。\n我這麼痛，一定是因為這裡還是我的歸屬吧。\n於是你又留下來，又多忍了一年。","You tell yourself: if it is this hard to leave, there must still be love.\nIf it hurts this much, this must still be where I belong.\nSo you stay, and endure one more year."],
+["親愛的，請容我輕輕地說一句：\n捨不得，是真的。但捨不得，不一定是愛。\n有時候它是習慣，是恐懼，是責任，是不知道離開以後自己是誰。","Dear one, let me say this softly:\nyour reluctance is real. But reluctance is not always love.\nSometimes it is habit, fear, duty, or not knowing who you would be after leaving."],
+["真正的差異資訊在這裡：\n留下的代價，和離開的代價，其實並不一樣。\n只是離開的痛很大聲，留下的痛很安靜，安靜到你以為它不存在。","Here is the real difference:\nthe cost of staying and the cost of leaving are not the same.\nThe pain of leaving is loud. The pain of staying is quiet, so quiet you think it is not there."],
+["熟悉的，不一定安全。\n習慣的，不一定適合。\n放不下的，不一定值得。\n最痛的，不一定是最愛的。","What is familiar is not always safe.\nWhat is habitual is not always right for you.\nWhat you cannot put down is not always worth holding.\nWhat hurts most is not always what you love most."],
+["所以換一個看法吧。\n不是「我離不開，所以我應該留下」，而是「我離不開，是因為有幾條線綁著我，我可以一條一條看清楚」。\n哪一條是感情？哪一條是害怕？哪一條是責任？哪一條是現實的限制？","So look at it differently.\nNot: I cannot leave, so I should stay. But: I cannot leave because several threads hold me, and I can examine them one by one.\nWhich is affection? Which is fear? Which is duty? Which is a practical limit?"],
+["權重也要重新放。\n把幻想放輕一點：他會變的，以後會好的，再撐一下就好。\n把安全與長期的幸福放重一點：我的身體好嗎？我的心還有光嗎？五年後的我會感謝今天的決定嗎？","Re-weigh things too.\nLighten the fantasies: they will change, it will get better, just hold on a little longer.\nGive more weight to safety and long-term wellbeing: is my body well? Is there still light in my heart? Will I thank myself for today's decision five years from now?"],
+["你要長出的能力，不是狠心，而是分辨。\n分辨愛與依賴，分辨責任與綁架，分辨堅持與害怕。\n能分辨的人，留下是選擇，離開也是選擇。","The ability to grow is not hardness of heart, but discernment.\nDiscern love from dependence, duty from being held hostage, perseverance from fear.\nFor those who can discern, staying is a choice, and leaving is a choice too."],
+["你不必今天就走。\n但你值得擁有一扇開得了的門。\n有支持的人，有存下來的錢，有可以去的地方，有可以求助的電話。\n有了退路的人，才真的自由。","You do not have to leave today.\nBut you deserve a door that can open.\nPeople who support you, money set aside, a place to go, a number to call for help.\nOnly someone with an exit is truly free."],
+["愛不該讓你越來越小。\n家不該讓你越來越怕。\n對的地方，會讓你越來越像自己。","Love should not make you smaller and smaller.\nHome should not make you more and more afraid.\nThe right place lets you become more and more yourself."],
+["今天的小練習：\n拿一張紙分成五格：感情、恐懼、責任、現實限制、安全風險。\n把綁住你的理由一條一條放進去。\n如果安全那一格有東西，請先告訴一位你信任的人。","Today's small practice:\nDivide a page into five boxes: affection, fear, duty, practical limits, safety risks.\nPlace each reason that binds you into its box.\nIf anything lands in the safety box, tell someone you trust first."],
+["你不是軟弱，你只是被綁了太久。\n看清楚每一條線，你就會知道哪一條可以先鬆開。\n願你留下時是因為愛，離開時也是因為愛，愛你自己。","You are not weak. You have simply been bound for too long.\nSee each thread clearly, and you will know which one can loosen first.\nMay you stay out of love, and leave out of love as well: love for yourself."]
+]};
+
+P.N04={h:["他說得那麼真誠，為什麼最後受傷的還是你？因為你聽了話，卻沒有看行為。","They sounded so sincere, so why were you hurt again? Because you listened to the words and did not watch the behavior."],
+q:["信任不是聽他說得多好，而是看他在不同情況下怎麼做。","Trust is not about how well someone speaks, but about what they do in different situations."],
+tags:"#LifeOS #信任判斷 #看行為不看話 #界線 #心靈雞湯 #TrustWisely",
+b:[
+["他說：相信我，我不會再這樣了。\n他說：我是真的在乎你。\n他說得眼眶都紅了，你的心也軟了。\n然後，同樣的事又發生一次。","They said: trust me, it will not happen again.\nThey said: I truly care about you.\nTheir eyes welled up, and your heart softened.\nThen the same thing happened again."],
+["你開始懷疑自己：是我太笨嗎？是我太好騙嗎？\n還是我以後乾脆誰都不要相信？\n被辜負過的人，常常在「全信」和「全不信」之間來回擺盪。","You begin to doubt yourself: am I foolish? Am I too easy to fool?\nOr should I simply trust no one from now on?\nPeople who have been let down often swing between trusting completely and trusting nothing."],
+["其實你不笨，你只是太善良，善良到把感動當成證據。\n這裡有一個關鍵的差異：\n承諾和行為，可能並不一致。","You are not foolish. You are kind, so kind that you took being moved as evidence.\nHere is the key difference:\npromises and behavior may not match."],
+["話，是一瞬間的。\n行為，是一段時間的。\n感動，是當下的。\n可靠，是累積的。","Words take a moment.\nBehavior takes time.\nBeing moved happens now.\nReliability is accumulated."],
+["所以換一個看法吧。\n不是「他說得很感人，所以值得相信」，而是「他持續怎麼做，才決定他值不值得相信」。\n信任不是一種感覺，信任是一份紀錄。","So change the lens.\nNot: they spoke movingly, so they deserve trust. But: what they consistently do decides whether they deserve trust.\nTrust is not a feeling. Trust is a record."],
+["把證據的權重重新分配。\n說了什麼，放輕一點。\n做了什麼，放重一點。\n做了一次，放輕一點。\n在不同情況下都這樣做，放重一點。","Redistribute the weight of evidence.\nWhat they said: lighter.\nWhat they did: heavier.\nDone once: lighter.\nDone the same way across different situations: heavier."],
+["看三件事就好。\n承諾，有沒有兌現？\n界線，有沒有被尊重？\n犯錯之後，有沒有真的修正？\n三件事都看得見的人，才慢慢放進心裡。","Just watch three things.\nAre promises kept?\nAre boundaries respected?\nAfter a mistake, is there real correction?\nOnly when all three are visible does someone slowly earn a place in your heart."],
+["這就是校準信任的能力。\n它不是多疑，而是清醒。\n它不是冷漠，而是對自己負責。\n它不是不給機會，而是把機會分成小份，一份一份地給。","This is the ability to calibrate trust.\nIt is not suspicion; it is clarity.\nIt is not coldness; it is responsibility toward yourself.\nIt is not refusing chances; it is giving chances in small portions, one at a time."],
+["信任可以給，但不必一次給完。\n先給小事，再給大事。\n先給時間，再給真心。\n先看他怎麼對待你的「不」，再決定要不要給他你的「好」。","Trust can be given, but not all at once.\nSmall matters first, then large ones.\nTime first, then your whole heart.\nWatch how they treat your no before deciding to give them your yes."],
+["甜言蜜語是最便宜的禮物，持續的行動才是最貴的承諾。\n會讓你安心的人，不需要一直叫你相信他。\n時間不會說謊，行為不會演戲太久。","Sweet words are the cheapest gift; consistent action is the most precious promise.\nSomeone who makes you feel safe does not keep asking you to trust them.\nTime does not lie, and behavior cannot act for long."],
+["今天的小練習：\n想一個你正在猶豫要不要相信的人。\n寫下三項他實際做過的行為，不是他說過的話。\n看著這三項證據，再問自己：現在適合給他多大範圍的信任？","Today's small practice:\nThink of someone you are unsure whether to trust.\nWrite three things they have actually done, not things they have said.\nLooking at those three pieces of evidence, ask: how much trust fits right now?"],
+["你不需要把心鎖起來。\n你只需要學會，讓對的人慢慢走進來。\n願你的善良有眼睛，願你的信任有根據。","You do not need to lock your heart.\nYou only need to learn to let the right people walk in slowly.\nMay your kindness have eyes, and your trust have grounds."]
+]};
+
+P.N05={h:["每次做決定都怕做錯？其實你怕的不是選錯，而是事後被自己責備。","Afraid of getting every decision wrong? What you fear is not the wrong choice, but blaming yourself afterward."],
+q:["好決定不保證好結果，但應有清楚的理由、風險評估與修正空間。","A good decision does not guarantee a good outcome, but it should have clear reasons, a risk assessment, and room to adjust."],
+tags:"#LifeOS #決策品質 #不怕選錯 #複盤 #心靈雞湯 #DecideWell",
+b:[
+["要不要換工作？要不要搬家？要不要開口？要不要結束？\n你想了又想，問了又問，查了又查。\n夜深了，還是不敢按下那個鍵。","Should I change jobs? Move? Speak up? End it?\nYou think and think, ask and ask, search and search.\nLate at night, you still cannot press the button."],
+["你怕的是：萬一選錯了怎麼辦？\n萬一結果不好，是不是就證明我很糟？\n於是你把「不決定」當成最安全的決定。\n可是不決定，也是一種決定，只是把方向盤交給了時間。","What you fear is: what if I choose wrong?\nIf the outcome is bad, does that prove I am bad?\nSo you treat not deciding as the safest decision.\nBut not deciding is also a decision. It simply hands the steering wheel to time."],
+["讓我告訴你一個可以鬆一口氣的差異：\n決策的品質，不等於單次的結果。\n結果裡面有運氣，有別人，有你當時根本不可能知道的事。","Let me offer a difference that lets you breathe:\nthe quality of a decision is not the same as a single outcome.\nOutcomes contain luck, other people, and things you could not possibly have known."],
+["結果好，不代表決定好，可能只是運氣好。\n結果壞，不代表決定壞，可能只是運氣差。\n用結果審判自己的人，永遠活在恐懼裡。\n用過程檢視自己的人，才會越選越穩。","A good outcome does not prove a good decision; it may be luck.\nA bad outcome does not prove a bad decision; it may be bad luck.\nThose who judge themselves by outcomes live in fear.\nThose who review their process grow steadier with each choice."],
+["所以換一個定義吧。\n不是「結果好才叫做對」，而是「以我當時知道的資訊、看見的風險、在乎的價值，我做了一個說得出理由的選擇」。\n這樣的決定，無論結果如何，你都對得起自己。","So change the definition.\nNot: it was right only if it turned out well. But: with the information I had, the risks I saw, and the values I hold, I made a choice I can explain.\nWith such a decision, whatever the outcome, you have been true to yourself."],
+["把權重從「猜結果」移到「顧過程」。\n我蒐集了該蒐集的資訊嗎？\n我想過最壞的情況，而且承受得起嗎？\n這個選擇，符合我真正在乎的事嗎？","Move the weight from guessing outcomes to tending the process.\nDid I gather the information I should?\nHave I considered the worst case, and can I bear it?\nDoes this choice match what I truly care about?"],
+["這就是建立可檢驗決策的能力。\n事前，寫下目標、選項、風險和預測。\n事中，留一條可以修正的路。\n事後，不問「我怎麼這麼笨」，而問「我學到了什麼」。","This is the ability to build decisions that can be tested.\nBefore: write down the goal, options, risks, and prediction.\nDuring: keep a path open for adjustment.\nAfter: do not ask why am I so foolish. Ask what did I learn."],
+["沒有完美的決定，只有可以修正的決定。\n沒有不會後悔的人生，只有願意複盤的人生。\n沒有保證成功的路，只有越走越清楚的路。","There is no perfect decision, only decisions that can be adjusted.\nThere is no life without regret, only a life willing to review.\nThere is no road that guarantees success, only a road that grows clearer as you walk."],
+["勇敢不是不怕選錯，而是選了之後願意負責、願意調整。\n成熟不是每次都對，而是錯了之後不再把自己打趴。\n你可以選錯，但你不可以因此放棄選擇的權利。","Courage is not the absence of fear, but willingness to own and adjust after choosing.\nMaturity is not being right every time, but no longer flattening yourself when wrong.\nYou may choose wrongly. You may not give up your right to choose because of it."],
+["決定，是把未來從別人手上拿回來的方式。\n每一次認真的選擇，都是在告訴自己：我的人生，我願意負責。","Deciding is how you take your future back from other hands.\nEvery sincere choice tells you: I am willing to be responsible for my life."],
+["今天的小練習：\n為一個你卡住的決定，寫下五行字：\n我的目標是什麼？我有哪些選項？各自的風險是什麼？我預測會怎樣？什麼情況發生時，我就停下來重新評估？","Today's small practice:\nFor one decision you are stuck on, write five lines:\nWhat is my goal? What are my options? What is the risk of each? What do I predict? What would make me stop and reassess?"],
+["寫完，你會發現恐懼變小了。\n因為你不再賭一個結果，而是在走一個過程。\n願你做決定時有理由，面對結果時有溫柔。","When you finish, you will find the fear has shrunk.\nYou are no longer betting on an outcome; you are walking a process.\nMay you decide with reasons, and meet outcomes with gentleness."]
+]};
+
+P.N06={h:["已經付出這麼多，怎麼能現在放棄？這句話，困住了多少個明天。","I have already given so much, how can I quit now? That one sentence has trapped so many tomorrows."],
+q:["不要因為昨天已經付出很多，就把明天也交給同一個錯誤。","Do not hand tomorrow to the same mistake just because yesterday already cost you so much."],
+tags:"#LifeOS #沉沒成本 #堅持或執著 #重新評估 #心靈雞湯 #SunkCost",
+b:[
+["讀了四年的科系，其實不喜歡。\n做了八年的工作，其實很空。\n愛了十年的人，其實早就不快樂。\n可是你說：都走到這裡了，現在放棄，前面不就白費了嗎？","Four years in a major you do not actually like.\nEight years in a job that actually feels empty.\nTen years with someone, long unhappy.\nYet you say: I have come this far. If I quit now, was it not all wasted?"],
+["於是你咬著牙，再多投入一點。\n多一年，多一筆錢，多一次原諒。\n你以為這叫毅力，心裡卻隱隱知道，這更像是不甘心。","So you grit your teeth and invest a little more.\nOne more year, one more sum, one more forgiveness.\nYou call it perseverance, yet somewhere inside you know it feels more like refusing to accept the loss."],
+["親愛的，有一個差異會讓你自由：\n過去的投入，不等於未來的價值。\n已經花掉的時間、金錢和眼淚，不管你留下還是離開，都拿不回來了。","Dear one, here is a difference that sets you free:\npast investment is not the same as future value.\nThe time, money, and tears already spent cannot be recovered whether you stay or go."],
+["真正還在你手上的，只有接下來的日子。\n問題從來不是「我已經付出多少」，而是「接下來的付出，還值不值得」。","What truly remains in your hands is only the days ahead.\nThe question was never how much have I given, but is what I give next still worth it?"],
+["堅持，是因為看得見未來。\n執著，是因為放不下過去。\n堅持，是越走越有力氣。\n執著，是越走越沒有自己。","Perseverance is staying because you can see a future.\nAttachment is staying because you cannot release the past.\nPerseverance gives you more strength as you go.\nAttachment leaves less of you as you go."],
+["所以換一個看法吧。\n不是「投入這麼多，不能放棄」，而是「過去的投入已經完成了它的任務，它教會我的東西，我帶得走」。\n沒有白走的路，只有還沒被整理的經驗。","So see it another way.\nNot: I invested so much, I cannot quit. But: my past investment has done its work, and what it taught me comes with me.\nNo road is wasted; some experiences are simply not yet sorted."],
+["把權重重新放好。\n已經付出的成本，放輕。\n未來能得到的效益，放重。\n別人會怎麼看，放輕。\n我往後的人生想怎麼過，放重。","Reset the weights.\nCosts already paid: lighter.\nBenefits still possible: heavier.\nWhat others will think: lighter.\nHow I want to live the rest of my life: heavier."],
+["這就是重新評估的能力。\n它讓你敢問一個很誠實的問題：\n如果今天才第一次遇見這份工作、這段關係、這個計畫，我還會選它嗎？","This is the ability to reassess.\nIt lets you ask a very honest question:\nif I were meeting this job, this relationship, this project for the first time today, would I still choose it?"],
+["如果答案是會，那就安心地繼續，這是毅力。\n如果答案是不會，那就溫柔地承認，這是清醒。\n不管哪一個答案，你都比昨天更自由。","If the answer is yes, continue with peace. That is perseverance.\nIf the answer is no, admit it gently. That is clarity.\nEither way, you are freer than yesterday."],
+["停損不是認輸，是把剩下的自己救回來。\n放手不是否定過去，是不再讓過去綁架未來。\n及時轉身的人，不是失敗者，是對明天負責的人。","Cutting losses is not surrender; it is rescuing what remains of you.\nLetting go does not deny the past; it stops the past from holding the future hostage.\nThose who turn in time are not failures. They are responsible for tomorrow."],
+["今天的小練習：\n挑一件你一直在撐的事，先把過去的投入放到一邊。\n寫下：繼續下去的條件是什麼？出現什麼訊號，我就停下來？\n有了停止條件，堅持才不會變成沒有盡頭的消耗。","Today's small practice:\nPick one thing you keep holding on to, and set past investment aside.\nWrite: under what conditions do I continue? What signal tells me to stop?\nWith a stopping condition, perseverance will not become endless depletion."],
+["昨天的你已經盡力了，謝謝他。\n今天的你，可以為明天重新選一次。\n願你堅持的，都值得；願你放下的，都成為養分。","Yesterday's you did their best. Thank them.\nToday's you may choose again for tomorrow.\nMay what you persist in be worthy, and may what you release become nourishment."]
+]};
+
+P.N07={h:["明明知道走錯了，為什麼還不敢轉彎？因為你以為轉彎就是失敗。","You know it is the wrong road, so why are you afraid to turn? Because you believe turning means failing."],
+q:["真正的勇敢不是突然推翻一切，而是替自己建立安全的轉換能力。","Real courage is not suddenly overturning everything, but building your own capacity to change course safely."],
+tags:"#LifeOS #低成本換路 #安全轉換 #小步測試 #心靈雞湯 #PivotSafely",
+b:[
+["你早就知道這條路不對了。\n每天醒來的沉重，星期天晚上的胸悶，身體比你誠實。\n可是你還是照常出門，照常微笑，照常說「還可以」。","You have long known this road is wrong.\nThe heaviness each morning, the tight chest on Sunday night: your body is more honest than you are.\nYet you still go out as usual, smile as usual, and say it is fine."],
+["你不是不想換，你是不敢換。\n你怕別人說你沒定性，怕家人失望，怕收入歸零，怕一切重來。\n更怕的是：轉彎，就等於承認自己走錯了。","It is not that you do not want to change. You do not dare.\nYou fear being called flaky, disappointing your family, losing your income, starting from zero.\nMost of all you fear that turning means admitting you were wrong."],
+["可是親愛的，你有沒有發現一個差異？\n你想像中的轉彎只有一種：辭職、分手、搬走，全部砍掉重來。\n但真實的轉換，其實有很多種，成本和風險也都不一樣。","But dear one, have you noticed a difference?\nIn your imagination there is only one kind of turn: resign, break up, move away, tear it all down.\nReal transitions come in many forms, each with a different cost and risk."],
+["有一百八十度的急轉，也有十五度的微調。\n有一次跳過去，也有一步一步走過去。\n有回不了頭的，也有試了不行還能回來的。","There are sharp U-turns, and there are fifteen-degree adjustments.\nThere is leaping across, and there is walking across step by step.\nThere are moves you cannot undo, and moves you can reverse if they fail."],
+["所以換一個看法吧。\n不是「轉彎就是失敗」，而是「轉彎是導航更新了路線」。\n導航發現走錯，從來不罵你，它只說：正在為您重新規劃路線。","So see it differently.\nNot: turning is failing. But: turning is the navigation updating its route.\nWhen navigation finds a wrong turn it never scolds you. It simply says: recalculating your route."],
+["把權重調整一下。\n一次到位，放輕一點。\n可以回頭，放重一點。\n別人的掌聲，放輕一點。\n自己的安全，放重一點。","Adjust the weights.\nGetting it done in one move: lighter.\nBeing able to turn back: heavier.\nOther people's applause: lighter.\nYour own safety: heavier."],
+["這就是設計轉換的能力。\n先盤點：我有多少存款、多少時間、哪些人可以幫我？\n再測試：能不能先兼著做、先試一個月、先上一堂課、先找一個過來人聊聊？\n最後才移動：一階段、一階段地換過去。","This is the ability to design a transition.\nFirst take stock: how much savings, how much time, who can help me?\nThen test: can I try it on the side, for one month, with one class, with one talk with someone who has done it?\nOnly then move: one stage at a time."],
+["衝動的人說：不管了，我明天就走。\n害怕的人說：算了，我就這樣吧。\n有智慧的人說：我先搭一座橋，再過河。","The impulsive say: forget it, I am leaving tomorrow.\nThe fearful say: never mind, I will stay as I am.\nThe wise say: I will build a bridge first, then cross the river."],
+["轉彎不丟臉，硬撐到撞牆才可惜。\n換路不是否定過去，而是不想辜負未來。\n小步的勇敢，比大聲的決心走得更遠。","Turning is no shame; forcing on until you hit the wall is the real pity.\nChanging roads does not deny the past; it refuses to fail the future.\nSmall-step courage travels farther than loud resolve."],
+["你不需要一夜之間變成另一個人。\n你只需要今天比昨天，多靠近想去的地方一點點。\n一點點加一點點，就是一條新的路。","You do not need to become another person overnight.\nYou only need to be a little closer today than yesterday to where you want to go.\nA little plus a little becomes a new road."],
+["今天的小練習：\n為你想換的那條路，寫下四樣東西：我現有的資源、最大的風險、一個可以回頭的小測試、萬一不行的備援方案。\n然後，只做那個小測試。","Today's small practice:\nFor the road you want to change to, write four things: my current resources, the biggest risk, one reversible small test, and a backup if it fails.\nThen do only that small test."],
+["你不是沒勇氣，你只是需要一個安全的方式勇敢。\n橋搭好了，腳自然就敢踏出去。\n願你轉彎時，不慌不忙，穩穩地走向更適合你的地方。","You do not lack courage. You need a safe way to be brave.\nOnce the bridge is built, your feet will dare to step.\nMay you turn without panic, and walk steadily toward a place that fits you better."]
+]};
+
+P.N08={h:["覺得人生已經沒有路了嗎？請記得：沒看到，不等於沒有。","Does it feel like there is no road left? Please remember: not seeing one is not the same as there being none."],
+q:["自由不是永遠知道答案，而是遇到困難時，仍能產生下一個可行選擇。","Freedom is not always knowing the answer, but still being able to generate a next workable option when things are hard."],
+tags:"#LifeOS #永遠有下一步 #生成選項 #求助也是能力 #心靈雞湯 #AlwaysANextStep",
+b:[
+["有些夜晚，你覺得自己被逼到牆角。\n錢不夠，時間不夠，力氣不夠，連希望也不夠。\n你對自己說：我已經沒有辦法了。","Some nights you feel backed into a corner.\nNot enough money, not enough time, not enough strength, not even enough hope.\nYou tell yourself: there is nothing more I can do."],
+["那句話很重，重到像一扇關上的門。\n門一關，你就不再找了，不再問了，不再試了。\n不是因為真的沒有路，而是因為你太累了，累到看不見。","That sentence is heavy, heavy as a door closing.\nOnce it closes you stop searching, stop asking, stop trying.\nNot because there is truly no road, but because you are too tired to see."],
+["先抱一抱這樣的自己吧。\n走到這裡，你已經很努力了。\n然後，請讓我放一個小小的差異在你手心：\n目前沒看到，不等於沒有其他選項。","First, hold this version of yourself.\nTo have come this far, you have already tried so hard.\nThen let me place one small difference in your palm:\nnot seeing an option right now does not mean no other option exists."],
+["你看不到，可能是因為太累。\n你看不到，可能是因為只有一個人在想。\n你看不到，可能是因為你只允許自己有「完美的答案」。\n選項不是不存在，是還沒被生出來。","You may not see it because you are exhausted.\nYou may not see it because you are thinking alone.\nYou may not see it because you only allow yourself a perfect answer.\nThe options are not absent. They have not yet been generated."],
+["所以換一個說法吧。\n不是「我已經沒有辦法了」，而是「我目前想到的辦法都不夠好，我需要再多生出幾個」。\n前一句是句號，後一句是逗號。","So change the sentence.\nNot: there is nothing I can do. But: the options I have thought of so far are not good enough, and I need to generate a few more.\nThe first ends with a period. The second ends with a comma."],
+["把權重重新放。\n找到唯一正解，放輕一點。\n多想幾條可行的路，放重一點。\n一個人硬撐，放輕一點。\n開口求助，放重一點。","Re-weigh things.\nFinding the one right answer: lighter.\nThinking of several workable roads: heavier.\nEnduring alone: lighter.\nAsking for help: heavier."],
+["這就是生成下一步的能力。\nA路：最直接的做法是什麼？\nB路：如果A不行，退一步可以怎麼做？\nC路：如果我去問一個人，他可能會建議什麼？\n三條路都不必完美，只要可行。","This is the ability to generate a next step.\nPath A: what is the most direct approach?\nPath B: if A fails, what can I do one step back?\nPath C: if I asked someone, what might they suggest?\nNone of the three needs to be perfect, only workable."],
+["求助不是軟弱，是把別人的眼睛借來用。\n休息不是放棄，是讓看路的力氣回來。\n小步不是沒用，是讓絕望沒有機會把你完全停下來。","Asking for help is not weakness; it is borrowing another pair of eyes.\nResting is not giving up; it is letting the strength to see the road return.\nA small step is not useless; it denies despair the chance to stop you completely."],
+["人不是被困難打敗的，是被「只有一條路」打敗的。\n手上有兩個選項的人，就不會被任何一個選項綁架。\n只要還能問「還有呢？」，人生就還沒有走到底。","People are not defeated by hardship, but by the belief that there is only one road.\nSomeone holding two options cannot be held hostage by either.\nAs long as you can still ask what else, life has not reached its end."],
+["舊路不通的時候，不是世界關上了門。\n是生命在邀請你，長出找路的能力。\n這個能力，一旦長出來，誰也拿不走。","When the old road is blocked, the world has not shut its door.\nLife is inviting you to grow the ability to find roads.\nOnce grown, no one can take it from you."],
+["今天的小練習：\n把眼前最困擾你的一件事寫下來，然後硬是寫出A、B、C三條路。\n寫不出第三條，就傳訊息問一個人：如果是你，你會怎麼做？\n如果你現在真的很難撐，請今天就告訴一位信任的人，或尋求專業協助。","Today's small practice:\nWrite down the one thing troubling you most, then make yourself write paths A, B, and C.\nIf you cannot find the third, message someone: if it were you, what would you do?\nIf you are truly struggling to hold on right now, please tell a trusted person today or seek professional help."],
+["你不是走投無路，你是正在路口。\n不把現在當命運，把現在當成下一次更新的起點。\n願你永遠記得：你，永遠還有下一步。","You are not at a dead end. You are at a crossroads.\nDo not treat the present as fate; treat it as the start of your next update.\nMay you always remember: you always have a next step."]
+]};
+
+P.N09={h:["你說「我沒事」的時候，其實最有事。","When you say I am fine, that is often when you are least fine."],
+q:["承認感受不是軟弱，而是讓自己終於被自己聽見。","Admitting a feeling is not weakness; it is finally letting yourself be heard by yourself."],
+tags:"#LifeOS #情緒否認 #我沒事 #命名情緒 #心靈雞湯 #NameYourFeelings",
+b:[
+["有人問你：還好嗎？\n你笑一笑說：沒事啊，我很好。\n可是關上門之後，胸口悶悶的，肩膀硬硬的，眼淚莫名其妙就掉下來。","Someone asks: are you okay?\nYou smile and say: I am fine, really.\nBut once the door closes, your chest feels tight, your shoulders stiff, and tears fall for no clear reason."],
+["你太習慣當那個懂事的人。\n不想麻煩別人，不想讓人擔心，不想被說太敏感。\n久而久之，「我沒事」不只是說給別人聽，連你自己都信了。","You are so used to being the sensible one.\nYou do not want to trouble anyone, worry anyone, or be called too sensitive.\nOver time, I am fine is no longer only for others. Even you believe it."],
+["可是親愛的，這裡有一個差異：\n說沒事，和真的沒事，是兩件事。\n被壓下去的情緒不會消失，它只是換一個地方出現。","But dear one, there is a difference here:\nsaying you are fine and being fine are two different things.\nA feeling pushed down does not vanish. It simply appears somewhere else."],
+["它變成失眠。\n它變成胃痛。\n它變成對最親的人發的那一頓脾氣。\n它變成某一天，突然什麼都不想做了。","It becomes insomnia.\nIt becomes a stomachache.\nIt becomes the temper you lose with the person closest to you.\nIt becomes the day you suddenly do not want to do anything at all."],
+["所以換一個看法吧。\n不是「有情緒就是不夠堅強」，而是「情緒是身體寄給我的信」。\n不拆信，信不會停；信只會越寄越多，越寄越急。","So see it differently.\nNot: having feelings means I am not strong enough. But: feelings are letters my body sends me.\nLeave them unopened and they do not stop. They only come more often and more urgently."],
+["把權重調整一下。\n看起來沒事，放輕一點。\n真的知道自己怎麼了，放重一點。\n讓別人放心，放輕一點。\n讓自己被看見，放重一點。","Adjust the weights.\nLooking fine: lighter.\nTruly knowing what is going on inside: heavier.\nPutting others at ease: lighter.\nLetting yourself be seen: heavier."],
+["這就是承認感受的能力。\n承認難過，不等於被難過淹沒。\n承認生氣，不等於要去傷害誰。\n承認害怕，不等於你就是膽小。\n承認，只是把燈打開。","This is the ability to acknowledge feelings.\nAdmitting sadness does not mean drowning in it.\nAdmitting anger does not mean hurting anyone.\nAdmitting fear does not mean you are a coward.\nAdmitting only turns on the light."],
+["說得出口的情緒，就不必用身體來喊。\n被自己接住的人，才有力氣接住別人。\n真正的堅強，不是沒有感覺，而是敢感覺。","A feeling that can be spoken no longer needs the body to shout it.\nOnly someone caught by themselves has the strength to catch others.\nTrue strength is not feeling nothing, but daring to feel."],
+["你不需要對全世界誠實。\n你只需要先對自己誠實。\n在心裡小小聲地說一句：其實，我有點累了。","You do not need to be honest with the whole world.\nYou only need to be honest with yourself first.\nSay quietly inside: actually, I am a little tired."],
+["今天的小練習：\n睡前花一分鐘，寫下今天出現過的三種情緒，再寫下身體哪裡有感覺。\n例如：委屈，喉嚨緊緊的；焦慮，胃在翻；開心，肩膀鬆了。\n不必分析，只要命名。","Today's small practice:\nBefore sleep, take one minute to write three feelings that showed up today, and where your body felt each one.\nFor example: hurt, a tight throat; anxiety, a churning stomach; joy, loose shoulders.\nNo analysis needed. Just name them."],
+["你有事的時候，可以有事。\n願你不再需要用「我沒事」來保護自己。\n願你成為第一個，真正聽見你的人。","When something is wrong, it is allowed to be wrong.\nMay you no longer need I am fine as armor.\nMay you become the first person who truly hears you."]
+]};
+
+P.N10={h:["你很害怕，所以覺得一定很危險？感覺是真的，但感覺不等於事實。","You feel afraid, so it must be dangerous? The feeling is real, but a feeling is not a fact."],
+q:["感受值得被尊重，但結論需要被檢查。","Feelings deserve respect, but conclusions need to be checked."],
+tags:"#LifeOS #情緒等於事實 #分開感受與證據 #心靈雞湯 #FeelingsAreNotFacts",
+b:[
+["他已讀不回，你覺得：他一定討厭我了。\n主管皺一下眉，你覺得：我一定要被罵了。\n考前心跳很快，你覺得：我一定會考砸。","They read your message and did not reply, and you think: they must dislike me now.\nYour boss frowns, and you think: I am about to be scolded.\nYour heart races before the exam, and you think: I am going to fail."],
+["那個「一定」，來得又快又篤定。\n快到你來不及問：真的嗎？\n於是你為了一件還沒發生的事，先難過了一整晚。","That must arrives fast and certain.\nSo fast that you have no time to ask: is it really so?\nAnd you spend a whole night grieving over something that has not happened."],
+["親愛的，這裡有一個很重要的差異：\n我感覺到害怕，是事實。\n事情真的危險，是另一個需要證據的問題。\n感受是真的，但感受不是判決書。","Dear one, here is an important difference:\nI feel afraid is a fact.\nThe situation is truly dangerous is a separate question that needs evidence.\nThe feeling is real, but a feeling is not a verdict."],
+["情緒像煙霧警報器。\n它響了，可能是失火，也可能只是有人在煎魚。\n你不必把警報器拆掉，你只需要走去廚房看一眼。","Emotion is like a smoke alarm.\nWhen it sounds, there may be a fire, or someone may just be frying fish.\nYou need not tear the alarm down. You only need to walk to the kitchen and look."],
+["所以換一個看法吧。\n不是「我害怕，所以一定危險」，而是「我害怕，所以我要去看看實際的狀況」。\n前一句讓你被情緒帶走，後一句讓你帶著情緒走。","So see it differently.\nNot: I am afraid, so it must be dangerous. But: I am afraid, so I will go check what is actually happening.\nThe first lets emotion carry you away. The second lets you walk on, carrying the emotion."],
+["把觀察和猜測分開。\n觀察是：他三個小時沒有回訊息。\n猜測是：他討厭我。\n觀察是：我心跳很快。\n猜測是：我會失敗。","Separate observation from guess.\nObservation: they have not replied for three hours.\nGuess: they dislike me.\nObservation: my heart is beating fast.\nGuess: I will fail."],
+["把權重重新放。\n腦中最可怕的畫面，放輕一點。\n眼前看得見的證據，放重一點。\n「一定」「總是」「完了」，放輕一點。\n「目前」「可能」「我去確認」，放重一點。","Re-weigh things.\nThe scariest picture in your mind: lighter.\nThe evidence you can actually see: heavier.\nMust, always, it is over: lighter.\nFor now, maybe, let me check: heavier."],
+["這就是分開感受與證據的能力。\n有了它，你不必壓抑情緒，也不必被情緒指揮。\n有了它，你可以一邊心跳很快，一邊把事情做好。\n有了它，你的世界會從災難片，變回日常。","This is the ability to separate feeling from evidence.\nWith it you need not suppress emotion, nor take orders from it.\nWith it your heart can race while you still do the thing well.\nWith it your world shifts from a disaster film back to ordinary life."],
+["情緒是訊號，不是結論。\n害怕告訴你「請注意」，沒有告訴你「你完了」。\n先安撫感覺，再查證事實；兩個都做，才是真的照顧自己。","Emotion is a signal, not a conclusion.\nFear says please pay attention. It does not say you are finished.\nSoothe the feeling first, then check the facts. Doing both is real self-care."],
+["今天的小練習：\n挑一件讓你不安的事，畫兩欄。\n左邊寫「我觀察到的」，右邊寫「我猜的」。\n然後問：實際的風險有多大？我可以怎麼確認？","Today's small practice:\nPick one thing that unsettles you and draw two columns.\nOn the left write what I observed; on the right, what I guessed.\nThen ask: how large is the actual risk? How can I check?"],
+["你的感覺值得被溫柔對待，你的人生值得被事實引導。\n願你害怕的時候，還記得走去廚房看一眼。\n很多時候，真的只是有人在煎魚。","Your feelings deserve gentleness, and your life deserves to be guided by facts.\nMay you remember, when afraid, to walk to the kitchen and look.\nVery often, someone is simply frying fish."]
+]};
+
+P.N11={h:["一句氣話三秒鐘，一道傷口好幾年。你需要的不是忍，而是那一個暫停。","A sharp word takes three seconds; the wound can last for years. What you need is not suppression, but one pause."],
+q:["在刺激與回應之間留一口氣，那裡住著你的自由。","Leave one breath between the trigger and your response; your freedom lives there."],
+tags:"#LifeOS #衝動反應 #先調節再回應 #暫停的力量 #心靈雞湯 #PauseBeforeYouReact",
+b:[
+["話一出口，你就後悔了。\n你看見對方的眼神暗下去，看見孩子縮了一下，看見訊息顯示已讀。\n可是說出去的話，收不回來。","The moment the words leave your mouth, you regret them.\nYou see the light go out of their eyes, the child flinch, the message marked as read.\nBut spoken words cannot be taken back."],
+["你不是壞人。\n你只是那一刻太氣、太痛、太委屈，身體比腦袋先動了。\n事後你罵自己：我怎麼又這樣？下次一定要忍住。","You are not a bad person.\nIn that moment you were too angry, too hurt, too wronged, and your body moved before your mind.\nAfterward you scold yourself: why did I do it again? Next time I must hold it in."],
+["可是「忍」常常沒有用。\n因為忍，是把蓋子壓得更緊；壓得越緊，爆得越大。\n真正的差異在這裡：\n反應，是自動的；回應，是選擇的。","But holding it in often fails.\nSuppression presses the lid tighter, and the tighter the lid, the bigger the blast.\nThe real difference is this:\na reaction is automatic; a response is chosen."],
+["生氣本身沒有錯。\n生氣是在告訴你：有一條界線被踩到了，有一個需要沒被看見。\n問題不在於你生氣，而在於你在最氣的那三秒鐘做了決定。","Anger itself is not wrong.\nAnger tells you a boundary was crossed, or a need went unseen.\nThe problem is not that you are angry, but that you made the decision in the three angriest seconds."],
+["所以換一個看法吧。\n不是「我要把情緒壓下去」，而是「我要先讓身體降溫，再讓嘴巴開口」。\n先調節，再回應。\n順序對了，同樣的話，會有完全不同的結果。","So see it differently.\nNot: I must push the emotion down. But: I will let my body cool first, then let my mouth speak.\nRegulate first, respond second.\nWith the order right, the same message lands completely differently."],
+["把權重調一下。\n馬上贏這一局，放輕一點。\n守住這段關係，放重一點。\n當下出一口氣，放輕一點。\n事後不後悔，放重一點。","Adjust the weights.\nWinning this round right now: lighter.\nProtecting this relationship: heavier.\nVenting in the moment: lighter.\nHaving no regret afterward: heavier."],
+["這就是先調節再回應的能力。\n可以說：我現在很生氣，我需要十分鐘，等一下再談。\n可以離開現場，去洗把臉，喝一口水。\n可以把氣吐得比吸得更長，慢慢地，做五次。","This is the ability to regulate before responding.\nYou can say: I am very angry right now. I need ten minutes, then we will talk.\nYou can leave the room, wash your face, drink some water.\nYou can breathe out longer than you breathe in, slowly, five times."],
+["暫停不是逃避，是為了把話說對。\n離開不是冷戰，是為了回來好好談。\n慢一點不是輸，是不讓三秒鐘毀掉三年。","A pause is not avoidance; it is how you say it right.\nStepping away is not the silent treatment; it is how you come back and talk well.\nSlowing down is not losing; it keeps three seconds from destroying three years."],
+["脾氣來的時候，智慧通常不在家。\n最有力量的人，不是聲音最大的人，而是能讓自己安靜下來的人。\n你管得住那三秒，就守得住你最在乎的人。","When temper arrives, wisdom is usually not at home.\nThe strongest person is not the loudest, but the one who can quiet themselves.\nHold those three seconds, and you protect the people you care about most."],
+["今天的小練習：\n先和自己約定一句暫停的話，例如：我需要先冷靜一下，晚點再談。\n下次火上來的時候，只做兩件事：說出這句話，然後慢慢吐氣五次。\n其他的，等身體回來再說。","Today's small practice:\nAgree with yourself on one pause sentence, such as: I need to calm down first; let us talk later.\nNext time the fire rises, do only two things: say that sentence, then exhale slowly five times.\nLeave the rest until your body has returned."],
+["你不是脾氣不好，你只是還沒有一個暫停鍵。\n今天，就幫自己裝上一個。\n願你說出口的每一句話，都是你事後仍然願意認的話。","You do not have a bad temper. You simply have not had a pause button.\nToday, install one for yourself.\nMay every word you speak be one you would still stand by afterward."]
+]};
+
+P.N12={h:["只會說「心情不好」？說不清楚的情緒，就照顧不到。","Can you only say I am in a bad mood? A feeling you cannot name is a feeling you cannot care for."],
+q:["把情緒說得越準確，就越知道該怎麼照顧自己。","The more precisely you name a feeling, the better you know how to care for yourself."],
+tags:"#LifeOS #情緒混亂 #情緒詞彙 #分辨細微情緒 #心靈雞湯 #EmotionalGranularity",
+b:[
+["今天怎麼了？\n不知道，就是心情不好。\n哪裡不好？\n說不上來，就是煩。","What is wrong today?\nI do not know. I am just in a bad mood.\nBad how?\nI cannot say. Just irritated."],
+["你不是不想說，你是真的說不清楚。\n心裡像一團打結的毛線，分不出頭尾。\n於是你吃東西、滑手機、睡覺，希望那一團東西自己消失。","It is not that you will not say. You truly cannot say.\nInside is a knot of yarn with no visible end.\nSo you eat, scroll, sleep, hoping the knot will disappear on its own."],
+["可是這裡有一個差異：\n「心情不好」只是一個大箱子。\n箱子裡面裝的，可能是生氣，可能是委屈，可能是害怕，可能是失望，也可能只是累。","But here is a difference:\na bad mood is only a big box.\nInside may be anger, or hurt, or fear, or disappointment, or simply tiredness."],
+["生氣，是界線被踩到了。\n委屈，是付出沒被看見。\n害怕，是覺得不安全。\n失望，是期待落空了。\n孤單，是想被陪伴。","Anger means a boundary was crossed.\nHurt means your effort went unseen.\nFear means you do not feel safe.\nDisappointment means a hope fell through.\nLoneliness means you long for company."],
+["每一種情緒，需要的藥都不一樣。\n生氣需要表達，委屈需要被理解，害怕需要安全，累需要休息。\n如果只知道「不好」，就像只知道「身體不舒服」，卻不知道是頭痛還是胃痛。","Each feeling needs a different medicine.\nAnger needs expression, hurt needs understanding, fear needs safety, tiredness needs rest.\nKnowing only bad is like knowing only that you are unwell, without knowing if it is your head or your stomach."],
+["所以換一個看法吧。\n不是「我就是情緒化、莫名其妙」，而是「我的情緒有很多層，我正在學習把它們分開」。\n說不清楚不是你的錯，只是從來沒有人教過你這些詞。","So see it differently.\nNot: I am just moody and unreasonable. But: my feelings have many layers, and I am learning to tell them apart.\nNot being able to say it is not your fault. No one ever taught you these words."],
+["把權重調一下。\n趕快讓情緒消失，放輕一點。\n先弄清楚它是什麼，放重一點。\n一個字帶過，放輕一點。\n多問一句「還有呢」，放重一點。","Adjust the weights.\nMaking the feeling go away quickly: lighter.\nFinding out what it is first: heavier.\nBrushing it off in one word: lighter.\nAsking once more, what else: heavier."],
+["這就是分辨細微情緒的能力。\n說得出「我不是生氣，我是委屈」的人，不會吵錯架。\n說得出「我不是討厭你，我是害怕」的人，不會推開愛的人。\n說得出「我不是懶，我是累」的人，不會錯怪自己。","This is the ability to distinguish fine shades of feeling.\nThose who can say I am not angry, I am hurt do not fight the wrong fight.\nThose who can say I do not dislike you, I am afraid do not push away the ones they love.\nThose who can say I am not lazy, I am tired do not misjudge themselves."],
+["情緒被命名的那一刻，就開始鬆開了。\n叫得出名字的，你才牽得住它。\n詞彙多一個，內心就亮一盞燈。","The moment a feeling is named, it begins to loosen.\nOnly what you can call by name can you take by the hand.\nEach new word lights one more lamp inside."],
+["今天的小練習：\n下次想說「心情不好」的時候，試著從這些詞裡挑一到兩個：生氣、委屈、害怕、失望、孤單、羞愧、嫉妒、疲累、擔心、無力。\n然後接一句：因為……","Today's small practice:\nNext time you want to say I am in a bad mood, choose one or two of these instead: angry, hurt, afraid, disappointed, lonely, ashamed, jealous, tired, worried, powerless.\nThen add: because..."],
+["你的內心不是一團亂，它只是很豐富。\n慢慢來，一個詞一個詞地認識自己。\n願你越來越懂自己，也因此越來越溫柔。","Your inner world is not a mess. It is simply rich.\nTake your time, and come to know yourself one word at a time.\nMay you understand yourself more and more, and grow gentler because of it."]
+]};
+
+P.N13={h:["你抱怨了這麼久，有沒有人問過你：你真正要的是什麼？","You have complained for so long. Has anyone ever asked what you truly want?"],
+q:["每一句抱怨的背後，都住著一個還沒說出口的需要。","Behind every complaint lives a need that has not yet been spoken."],
+tags:"#LifeOS #需求不明 #把抱怨變請求 #說出需要 #心靈雞湯 #AskForWhatYouNeed",
+b:[
+["你都不幫忙。\n你從來不關心我。\n這個家只有我在撐。\n這些話你說了好多次，每次說完，對方不是沉默，就是反擊。","You never help.\nYou never care about me.\nI am the only one holding this family together.\nYou have said these many times, and each time the other person either goes silent or fights back."],
+["你越說越氣，越氣越說。\n心裡想的是：我講得還不夠清楚嗎？\n可是事情一點都沒有變，只有你越來越累，越來越孤單。","The more you say it the angrier you get, and the angrier you get the more you say it.\nYou think: have I not been clear enough?\nYet nothing changes. You only grow more tired and more alone."],
+["親愛的，你的累是真的，你的不滿也是有道理的。\n只是有一個差異，可能一直沒被看見：\n抱怨，說的是「我不要什麼」。\n需要，說的是「我要什麼」。","Dear one, your tiredness is real and your frustration is justified.\nBut one difference may have gone unseen:\na complaint says what I do not want.\nA need says what I do want."],
+["對方聽見抱怨，聽到的是指責，所以忙著防衛。\n對方聽見請求，聽到的是機會，才知道怎麼靠近。\n同樣的心情，換一種說法，門就開了。","When someone hears a complaint, they hear blame, and rush to defend.\nWhen someone hears a request, they hear an opening, and know how to come closer.\nSame feeling, different wording, and the door opens."],
+["「你都不幫忙」的背後，是：我需要有人分擔。\n「你從來不關心我」的背後，是：我需要被在乎。\n「只有我在撐」的背後，是：我需要休息，也需要被感謝。","Behind you never help is: I need someone to share the load.\nBehind you never care about me is: I need to matter.\nBehind I am the only one holding on is: I need rest, and I need to be thanked."],
+["所以換一個看法吧。\n不是「他應該要懂」，而是「我先弄懂自己要什麼，再清楚地告訴他」。\n很多時候，不是對方不願意，而是連你自己都還沒說清楚。","So see it differently.\nNot: they should just understand. But: I will first understand what I want, then tell them clearly.\nOften it is not that they are unwilling; it is that even you have not yet made it clear."],
+["把權重調一下。\n證明他錯了，放輕一點。\n讓我的需要被滿足，放重一點。\n說他哪裡不好，放輕一點。\n說我希望怎樣，放重一點。","Adjust the weights.\nProving them wrong: lighter.\nGetting my need met: heavier.\nSaying what is wrong with them: lighter.\nSaying what I hope for: heavier."],
+["這就是找出需求的能力。\n先問自己：我真正需要的是什麼？\n是幫忙？是陪伴？是肯定？是空間？還是休息？\n然後把它變成一句具體、做得到的請求。","This is the ability to find the need.\nFirst ask yourself: what do I truly need?\nHelp? Company? Recognition? Space? Rest?\nThen turn it into one specific, doable request."],
+["例如：\n不說「你都不幫忙」，改說「今天晚上可以請你洗碗嗎？我真的很累。」\n不說「你都不關心我」，改說「我今天很難過，可以聽我說十分鐘嗎？」","For example:\nInstead of you never help, try: could you do the dishes tonight? I am really tired.\nInstead of you never care about me, try: I am sad today. Could you listen to me for ten minutes?"],
+["抱怨把人推開，請求把人拉近。\n說出需要不是示弱，是給愛你的人一張地圖。\n你不說，他只能猜；你說了，他才有機會做對。","Complaints push people away; requests draw them near.\nStating a need is not weakness; it is handing a map to those who love you.\nIf you do not say it, they can only guess. If you do, they have a chance to get it right."],
+["今天的小練習：\n寫下你最近最常說的一句抱怨。\n在它下面寫：我真正需要的是……\n再寫一句請求：可以請你……嗎？","Today's small practice:\nWrite down the complaint you have said most often lately.\nBeneath it write: what I truly need is...\nThen write one request: could you please...?"],
+["你值得被好好對待，也值得把話好好說出來。\n願你不再用抱怨喊痛，而是用請求讓愛進來。","You deserve to be treated well, and you deserve to say it well.\nMay you stop crying out through complaints, and let love in through requests."]
+]};
+
+P.N14={h:["同一件事在腦中繞了一百圈，你不是想太多，你是一直沒有走到出口。","The same thought has circled your mind a hundred times. You are not overthinking; you have never reached the exit."],
+q:["想一百遍不如做一小步；思考要走向行動，才算真的想過。","Thinking it a hundred times is worth less than one small step; thought must walk toward action to count."],
+tags:"#LifeOS #反覆內耗 #停止內耗 #可控行動 #心靈雞湯 #StopRuminating",
+b:[
+["洗澡的時候在想，吃飯的時候在想，躺在床上還在想。\n他那句話是什麼意思？我當時為什麼不那樣回？如果怎樣怎樣，會不會就不一樣？\n一圈，又一圈。","You think about it in the shower, at meals, lying in bed.\nWhat did they mean by that? Why did I not answer differently? If only this or that, would things be different?\nRound and round."],
+["你也知道想這些沒有用。\n可是腦袋像一台關不掉的洗衣機，把同一件事翻來覆去地攪。\n天亮了，事情沒有解決，你卻已經累壞了。","You know these thoughts are useless.\nBut your mind is a washing machine that will not switch off, tumbling the same thing over and over.\nBy dawn nothing is solved, and you are worn out."],
+["別人說：你就不要想啊。\n要是做得到，誰願意這樣呢？\n所以請先別怪自己。你的腦袋不是壞掉，它只是很努力地想保護你。","Others say: just stop thinking about it.\nIf that were possible, who would choose this?\nSo please do not blame yourself. Your mind is not broken. It is working hard to protect you."],
+["只是這裡有一個差異：\n反覆想，和解決問題，看起來很像，其實不一樣。\n反覆想，問的是「為什麼會這樣」。\n解決問題，問的是「接下來我可以怎麼做」。","But here is a difference:\nruminating and problem solving look alike, yet they are not the same.\nRumination asks why did this happen.\nProblem solving asks what can I do next."],
+["內耗沒有終點，所以永遠繞不出來。\n解決有下一步，所以走得到出口。\n一個是原地打轉，一個是往前移動。","Rumination has no endpoint, so the circling never ends.\nProblem solving has a next step, so it can reach the exit.\nOne spins in place; the other moves forward."],
+["所以換一個看法吧。\n不是「我要逼自己不要想」，而是「我要幫這些想法找一個出口」。\n想法不是敵人，它只是一直沒有被好好處理。","So see it differently.\nNot: I must force myself to stop thinking. But: I will give these thoughts an exit.\nThoughts are not the enemy. They simply have not been properly handled."],
+["把權重調一下。\n改變不了的過去，放輕一點。\n今天能做的一件小事，放重一點。\n別人怎麼想，放輕一點。\n我能掌握的部分，放重一點。","Adjust the weights.\nThe past you cannot change: lighter.\nOne small thing you can do today: heavier.\nWhat others think: lighter.\nThe part within your control: heavier."],
+["這就是把思考轉成解決的能力。\n第一步：給煩惱一個時間，例如每天晚上八點，想十五分鐘，時間到就停。\n第二步：把想的內容寫下來，分成兩堆，我控制得了的，我控制不了的。\n第三步：只為控制得了的那一堆，各寫一個小行動。","This is the ability to turn thinking into solving.\nStep one: give worry a time slot, say fifteen minutes at eight each evening, and stop when it ends.\nStep two: write the thoughts down in two piles: what I can control and what I cannot.\nStep three: for the pile you can control, write one small action each."],
+["寫在紙上的煩惱，就不必一直背在腦子裡。\n能做的就去做，不能做的就放著。\n放著不是放棄，是把力氣留給用得上的地方。","A worry written on paper no longer has to be carried in your head.\nDo what can be done; set down what cannot.\nSetting it down is not giving up. It saves your strength for where it can be used."],
+["過去不會因為你想得夠多而改變。\n未來卻會因為你做了一小步而不同。\n心累，常常不是事情太多，而是同一件事想了太多次。","The past will not change because you thought about it enough.\nThe future will differ because you took one small step.\nExhaustion often comes not from too many things, but from thinking one thing too many times."],
+["今天的小練習：\n把正在繞的那件事寫下來，底下列出三個「我可以控制的行動」，再圈出一個今天就做。\n做完之後，告訴腦袋：謝謝你提醒我，這件事我處理了。","Today's small practice:\nWrite down the thing you keep circling, list three actions within my control beneath it, and circle one to do today.\nAfterward tell your mind: thank you for the reminder. I have handled it."],
+["你不是想太多的人，你是很認真的人。\n把這份認真，從繞圈換成前進。\n願你的心，今晚可以安靜一點點。","You are not someone who thinks too much. You are someone who takes things seriously.\nTurn that seriousness from circling into moving forward.\nMay your heart be a little quieter tonight."]
+]};
+
+P.N15={h:["難過的時候，你還要再罵自己一次「不該難過」嗎？","When you are already sad, must you also scold yourself for being sad?"],
+q:["情緒不需要被批准才存在；你要負責的是行為，不是感受。","A feeling needs no permission to exist; you are responsible for your actions, not for what you feel."],
+tags:"#LifeOS #自我責備 #允許情緒 #自我接納 #心靈雞湯 #SelfCompassion",
+b:[
+["你嫉妒了，然後罵自己小心眼。\n你生氣了，然後罵自己修養差。\n你難過了，然後罵自己太脆弱。\n本來只有一份痛，被你罵完，變成了兩份。","You felt jealous, then called yourself petty.\nYou felt angry, then called yourself ill-mannered.\nYou felt sad, then called yourself fragile.\nThere was one pain. After the scolding, there were two."],
+["你從小聽到的是：不可以哭，不可以生氣，要懂事，要正面。\n於是你以為，有負面情緒的人就是不好的人。\n你努力當一個永遠平靜、永遠體貼、永遠陽光的人，卻越來越喘不過氣。","Growing up you heard: do not cry, do not get angry, be sensible, be positive.\nSo you came to believe that anyone with negative feelings is a bad person.\nYou try to be always calm, always considerate, always sunny, and find it harder and harder to breathe."],
+["親愛的，這裡有一個可以讓你鬆開的差異：\n有情緒，和做了什麼，是兩件事。\n情緒是自己來的，就像天氣；行為才是你選的，就像要不要帶傘。","Dear one, here is a difference that can loosen the grip:\nhaving a feeling and what you do are two separate things.\nFeelings arrive on their own, like weather. Actions are what you choose, like whether to carry an umbrella."],
+["你不必為下雨道歉。\n你不必為嫉妒道歉。\n你不必為難過道歉。\n你只需要為你怎麼對待別人、怎麼對待自己負責。","You need not apologize for rain.\nYou need not apologize for jealousy.\nYou need not apologize for sadness.\nYou are responsible only for how you treat others and how you treat yourself."],
+["所以換一個看法吧。\n不是「有負面情緒就是不好」，而是「情緒沒有好壞，它只是在告訴我一些事」。\n嫉妒在說：我也想要。\n生氣在說：我不能接受。\n難過在說：這對我很重要。","So see it differently.\nNot: negative feelings make me bad. But: feelings are neither good nor bad; they are telling me something.\nJealousy says: I want that too.\nAnger says: I cannot accept this.\nSadness says: this matters to me."],
+["把權重調一下。\n當一個沒有情緒的好人，放輕一點。\n當一個真實而負責的人，放重一點。\n檢討感覺，放輕一點。\n選擇行為，放重一點。","Adjust the weights.\nBeing a good person with no feelings: lighter.\nBeing a real and responsible person: heavier.\nPolicing the feeling: lighter.\nChoosing the action: heavier."],
+["這就是允許情緒存在的能力。\n允許，不是放縱。\n允許，是不再和自己打仗。\n當你不再花力氣趕走情緒，情緒反而來得快，去得也快。","This is the ability to allow feelings to exist.\nAllowing is not indulging.\nAllowing means no longer waging war on yourself.\nWhen you stop spending strength chasing feelings away, they come quickly and leave quickly too."],
+["對自己說話的方式，會變成你住的房子。\n罵自己的人，住在冰冷的房子裡。\n接納自己的人，走到哪裡都有家。","The way you speak to yourself becomes the house you live in.\nThose who scold themselves live in a cold house.\nThose who accept themselves are at home wherever they go."],
+["你對朋友說得出：沒關係，你會難過很正常。\n那麼，也請對自己說一次。\n你值得你給別人的那一份溫柔。","To a friend you can say: it is okay, of course you feel sad.\nThen please say it once to yourself.\nYou deserve the same gentleness you give to others."],
+["今天的小練習：\n情緒來的時候，對自己說三句話：\n我現在覺得……\n有這個感覺是可以的。\n接下來，我選擇這樣做……","Today's small practice:\nWhen a feeling comes, say three sentences to yourself:\nRight now I feel...\nIt is okay to feel this.\nNext, I choose to do this..."],
+["你不需要完美才值得被愛。\n你可以有情緒，同時還是一個很好的人。\n願你從今天起，站在自己這一邊。","You do not need to be perfect to be worthy of love.\nYou can have feelings and still be a very good person.\nMay you stand on your own side from today."]
+]};
+
+P.N16={h:["你一直很會忍，可是忍，不是照顧自己的方法。","You have always been good at enduring. But endurance is not a way of caring for yourself."],
+q:["只會忍的人終究會斷；會調節的人，才走得長遠。","Those who only endure eventually break; those who can regulate go the distance."],
+tags:"#LifeOS #情緒失衡 #調節工具箱 #求助與休息 #心靈雞湯 #EmotionalToolbox",
+b:[
+["壓力來了，忍。\n委屈來了，忍。\n累到不行了，還是忍。\n大家都說你很堅強，只有你知道，自己快要撐不住了。","Pressure comes: endure.\nHurt comes: endure.\nExhausted beyond limit: still endure.\nEveryone says you are strong. Only you know you are close to breaking."],
+["忍，曾經幫你度過很多難關。\n所以你只有這一招，遇到什麼都用這一招。\n可是橡皮筋一直拉、一直拉，總有一天會斷。","Enduring once carried you through many hard times.\nSo it became your only move, used for everything.\nBut a rubber band stretched again and again will one day snap."],
+["斷掉的樣子，可能是突然大哭。\n可能是對小事爆炸。\n可能是什麼都提不起勁。\n可能是身體直接替你喊停。","Snapping may look like sudden sobbing.\nOr exploding over something small.\nOr losing interest in everything.\nOr your body calling a halt on your behalf."],
+["這裡有一個差異值得看見：\n忍耐，是不讓情緒出來。\n調節，是幫情緒找到出口。\n忍耐，靠的是意志力；調節，靠的是方法。","Here is a difference worth seeing:\nenduring keeps the feeling in.\nRegulating helps the feeling find a way out.\nEnduring runs on willpower; regulating runs on methods."],
+["意志力是會用完的。\n方法，卻可以越用越熟。\n你不是不夠堅強，你只是工具太少。","Willpower runs out.\nMethods grow more familiar with use.\nYou are not lacking strength. You simply have too few tools."],
+["所以換一個看法吧。\n不是「我要更能忍」，而是「我要有一個自己的調節工具箱」。\n頭痛有頭痛的藥，胃痛有胃痛的藥；不同的情緒，也需要不同的照顧。","So see it differently.\nNot: I must endure more. But: I need my own regulation toolbox.\nHeadaches and stomachaches have different remedies; different feelings need different care too."],
+["把權重調一下。\n撐住，放輕一點。\n恢復，放重一點。\n不麻煩別人，放輕一點。\n讓人有機會幫我，放重一點。","Adjust the weights.\nHolding on: lighter.\nRecovering: heavier.\nNot troubling others: lighter.\nGiving people a chance to help me: heavier."],
+["這就是建立調節工具箱的能力。\n身體的工具：走路、伸展、深呼吸、好好睡一覺。\n心裡的工具：寫下來、哭一場、聽一首歌、安靜十分鐘。\n關係的工具：找一個人說說話，或是請專業的人幫忙。","This is the ability to build a regulation toolbox.\nTools for the body: walking, stretching, deep breathing, a good night of sleep.\nTools for the heart: writing it down, a good cry, a song, ten quiet minutes.\nTools of relationship: talking with someone, or asking a professional for help."],
+["休息不是偷懶，是保養。\n求助不是丟臉，是智慧。\n照顧自己不是自私，是讓你愛的人，可以擁有你更久。","Rest is not laziness; it is maintenance.\nAsking for help is not shameful; it is wisdom.\nCaring for yourself is not selfish; it lets those you love have you for longer."],
+["車子沒油了，不會有人罵它不夠努力。\n手機沒電了，不會有人叫它再忍一下。\n那麼你，為什麼不能充電呢？","When a car runs out of fuel, no one scolds it for not trying.\nWhen a phone battery dies, no one tells it to hold on a bit longer.\nSo why should you not be allowed to recharge?"],
+["今天的小練習：\n寫下三個「曾經真的讓我好一點」的方法，貼在看得到的地方。\n再寫下：我累到什麼程度就要休息？我可以找誰？\n如果低落已經持續很久，請讓醫師或心理專業人員陪你一起看。","Today's small practice:\nWrite three methods that have truly helped me feel a little better, and post them where you can see them.\nThen write: at what level of tiredness will I rest? Whom can I reach out to?\nIf the low mood has lasted a long time, please let a doctor or mental health professional look at it with you."],
+["你已經忍得夠久了。\n從今天起，不只要撐，還要好好地活。\n願你的堅強裡，從此多一份對自己的疼惜。","You have endured long enough.\nFrom today, do not only hold on. Live well.\nMay your strength now carry tenderness toward yourself."]
+]};
+
+P.N25={h:["讀了三小時，闔上書卻一片空白？你不是記性差，你只是一直在「看」，沒有在「想起來」。","Three hours of study and a blank mind when the book closes? Your memory is not poor. You have been looking, not recalling."],
+q:["讀進去不算學會，想得起來才算。","Taking it in is not learning; being able to bring it back is."],
+tags:"#LifeOS #學習無效 #提取練習 #間隔複習 #心靈雞湯 #LearnSmarter",
+b:[
+["螢光筆畫滿了整頁，重點抄了一遍又一遍。\n你坐在書桌前的時間，比誰都長。\n可是考卷發下來，腦袋像被清空一樣。","The page is covered in highlighter, the key points copied again and again.\nYou sit at your desk longer than anyone.\nBut when the test paper arrives, your mind feels wiped clean."],
+["你很難過，也很不服氣：我明明很認真啊。\n然後你下了一個很傷的結論：我就是笨，我就是記性不好。\n於是下次，你決定讀更久。","You feel sad, and also indignant: I really did work hard.\nThen you reach a painful conclusion: I am just dumb. My memory is just bad.\nSo next time, you decide to study even longer."],
+["孩子，請先不要這樣說自己。\n有一個差異，學校很少教，卻非常重要：\n覺得熟悉，不等於記得住。\n讀了很久，不等於學得有效。","Please do not speak about yourself that way.\nThere is a difference schools rarely teach, yet it matters greatly:\nfeeling familiar is not the same as remembering.\nStudying for a long time is not the same as studying effectively."],
+["一直看、一直畫、一直抄，大腦會覺得：這個我看過，我會了。\n其實那只是眼熟，不是學會。\n就像你看了一百次別人游泳，自己下水還是會沉。","Rereading, highlighting, copying: the brain says I have seen this, I know it.\nBut that is only recognition, not learning.\nIt is like watching others swim a hundred times and still sinking when you enter the water."],
+["所以換一個看法吧。\n不是「我記性不好」，而是「我用的方法，沒有讓大腦練習把東西拿出來」。\n記憶不是倉庫，記憶是一條路；越常走，才越好走。","So see it differently.\nNot: my memory is bad. But: my method never let my brain practice pulling things out.\nMemory is not a warehouse. Memory is a path, and it becomes easier the more often you walk it."],
+["把權重調一下。\n讀了幾個小時，放輕一點。\n闔上書能說出多少，放重一點。\n一次讀到爛熟，放輕一點。\n隔幾天再回來想一次，放重一點。","Adjust the weights.\nHow many hours you studied: lighter.\nHow much you can say with the book closed: heavier.\nCramming it all at once: lighter.\nComing back a few days later to recall it again: heavier."],
+["這就是有效學習的能力，只有兩招。\n第一招叫提取：闔上書，把剛讀的寫出來、講出來、考自己。\n第二招叫間隔：今天讀，明天想一次，三天後想一次，一週後再想一次。","This is the ability to learn effectively, and it has just two moves.\nThe first is retrieval: close the book and write it out, say it aloud, test yourself.\nThe second is spacing: study today, recall tomorrow, again in three days, again in a week."],
+["想不起來的那一刻，很不舒服。\n可是正是那一點點吃力，在幫你把記憶刻深。\n輕鬆的學習，常常留不住；有點費力的回想，才真的長在腦子裡。","The moment you cannot recall is uncomfortable.\nBut that small strain is what carves the memory deeper.\nEasy learning often slips away; slightly effortful recall is what truly takes root."],
+["努力要用在對的地方，才叫努力。\n方法對了，一小時勝過三小時。\n你不是不夠用功，你是值得更好的方法。","Effort counts as effort only when placed where it works.\nWith the right method, one hour beats three.\nYou do not lack diligence. You deserve a better method."],
+["今天的小練習：\n讀完一個段落，闔上書，拿一張白紙，把記得的全部寫下來。\n再打開書，用不同顏色的筆補上漏掉的。\n那些補上去的，就是你明天要再想一次的地方。","Today's small practice:\nAfter one section, close the book, take a blank page, and write down everything you remember.\nThen open the book and fill in what you missed with a different color.\nWhat you filled in is exactly what to recall again tomorrow."],
+["你不笨，你只是一直用很辛苦的方式在學。\n換一個方法，給自己兩個星期。\n願你的認真，終於被成果看見。","You are not dumb. You have simply been learning the hard way.\nChange the method and give yourself two weeks.\nMay your hard work finally be seen in your results."]
+]};
+
+P.N26={h:["書才打開五分鐘，手已經摸到手機？不是你沒定力，是你的環境在跟你搶注意力。","Five minutes into studying and your hand is already on your phone? It is not weak willpower. Your environment is competing for your attention."],
+q:["專心不是靠忍，而是靠安排。","Focus is not a matter of resisting; it is a matter of arranging."],
+tags:"#LifeOS #注意力分散 #降低干擾 #環境設計 #心靈雞湯 #ProtectYourFocus",
+b:[
+["你告訴自己：只看一下就好。\n一個通知，一則限動，一支短影片。\n再抬頭，四十分鐘不見了，書還停在同一頁。","You tell yourself: just a quick look.\nOne notification, one story, one short video.\nWhen you look up, forty minutes are gone and the book is on the same page."],
+["接著是熟悉的懊惱：我怎麼這麼沒用，連專心都做不到。\n你發誓明天一定不會這樣。\n明天，又一樣。","Then comes the familiar frustration: I am useless. I cannot even focus.\nYou swear it will not happen tomorrow.\nTomorrow, it happens again."],
+["請先不要急著罵自己。\n有一個差異，你一定要知道：\n你對抗的不是一支手機，而是一群世界上最聰明的人，花了很多年設計出來、專門吸引你的東西。","Please do not rush to scold yourself.\nThere is a difference you must know:\nyou are not up against a phone, but against something designed over many years by some of the cleverest people in the world to capture you."],
+["所以，這不是一場公平的比賽。\n拿意志力去硬拚，就像把蛋糕放在面前，然後叫自己不要吃。\n不是你太弱，是誘惑太近。","So this is not a fair contest.\nFighting it with willpower alone is like placing a cake in front of you and ordering yourself not to eat.\nYou are not too weak. The temptation is too close."],
+["換一個看法吧。\n不是「我沒有定力」，而是「我的環境裡，分心太容易，專心太困難」。\n問題不在你這個人，在於東西擺的位置。","See it differently.\nNot: I have no self-control. But: in my environment, distraction is too easy and focus is too hard.\nThe problem is not you as a person. It is where things are placed."],
+["把權重調一下。\n靠意志力撐住，放輕一點。\n把干擾拿遠，放重一點。\n責怪自己，放輕一點。\n重新佈置桌面，放重一點。","Adjust the weights.\nHolding on by willpower: lighter.\nMoving distractions far away: heavier.\nBlaming yourself: lighter.\nRearranging your desk: heavier."],
+["這就是保護注意力的能力。\n手機，放到另一個房間，不是放在桌上蓋起來。\n通知，全部關掉，只留真正重要的人。\n桌面，只留現在要用的這一本。\n時間，先專心二十五分鐘，再休息五分鐘。","This is the ability to protect your attention.\nPhone: in another room, not face down on the desk.\nNotifications: all off, except for the people who truly matter.\nDesk: only the one book you are using now.\nTime: focus for twenty-five minutes, then rest for five."],
+["讓好的事情容易一點，讓分心的事情麻煩一點。\n多走二十步才拿得到手機，你就多了二十步的清醒。\n聰明的人不是比較會忍，而是比較會安排。","Make the good thing a little easier and the distracting thing a little harder.\nIf the phone is twenty steps away, you gain twenty steps of clarity.\nSmart people are not better at resisting; they are better at arranging."],
+["你的注意力，是你最珍貴的東西。\n你把它給了誰，你的人生就長成誰的樣子。\n把它搶回來，就是把自己的時間搶回來。","Your attention is the most precious thing you have.\nWhatever you give it to, your life grows to resemble.\nTaking it back is taking back your own time."],
+["今天的小練習：\n讀書前，把手機拿到另一個房間，設定二十五分鐘的計時器。\n只做這一件事，鈴響之前不離開座位。\n結束後，記錄一下：我完成了多少？感覺如何？","Today's small practice:\nBefore studying, put your phone in another room and set a timer for twenty-five minutes.\nDo only this one thing, and stay seated until it rings.\nAfterward note: how much did I finish? How did it feel?"],
+["你不是不能專心的人。\n你只是需要一個願意幫你專心的環境。\n願你把最好的注意力，留給最重要的事。","You are not someone who cannot focus.\nYou simply need an environment that helps you focus.\nMay you save your best attention for what matters most."]
+]};
+
+P.N27={h:["背得滾瓜爛熟，題目一變就不會？因為你記住了字，卻還沒真的懂。","Memorized perfectly, yet lost when the question changes? You remembered the words, but have not yet understood."],
+q:["能用自己的話講出來，才是真的懂。","You truly understand only what you can say in your own words."],
+tags:"#LifeOS #理解不足 #舉例與解釋 #真的懂 #心靈雞湯 #UnderstandDontMemorize",
+b:[
+["公式背了，定義背了，文法規則也背了。\n老師問：這是什麼意思？你答得出來。\n老師問：那這題為什麼這樣解？你愣住了。","You memorized the formulas, the definitions, the grammar rules.\nThe teacher asks: what does this mean? You can answer.\nThe teacher asks: then why is this problem solved this way? You freeze."],
+["你心裡很慌：我明明都背起來了啊。\n於是你回去，背得更用力。\n可是下一次，題目換了一個說法，你又卡住了。","Inside you panic: but I memorized all of it.\nSo you go back and memorize harder.\nBut next time the question is phrased differently, and you are stuck again."],
+["這不是你不夠聰明。\n只是有一個差異，一直沒人幫你點出來：\n背起來，是把字放進腦袋。\n理解，是知道它為什麼是這樣，還能用在別的地方。","This is not about being less smart.\nThere is a difference no one has pointed out to you:\nmemorizing puts the words into your head.\nUnderstanding means knowing why it is so, and being able to use it elsewhere."],
+["背，像是記住一條回家的路。\n懂，像是腦中有一張地圖。\n路被擋住的時候，只記路的人回不了家，有地圖的人可以繞過去。","Memorizing is like knowing one route home.\nUnderstanding is like holding a map in your mind.\nWhen the road is blocked, the one who knows only the route cannot get home; the one with the map finds a way around."],
+["所以換一個看法吧。\n不是「我背得不夠熟」，而是「我還沒有把它變成自己的話」。\n知識要經過你的嘴巴、你的例子、你的生活，才會變成你的。","So see it differently.\nNot: I have not memorized it well enough. But: I have not yet turned it into my own words.\nKnowledge becomes yours only after passing through your mouth, your examples, your life."],
+["把權重調一下。\n一字不漏，放輕一點。\n講得出為什麼，放重一點。\n背下課本的例子，放輕一點。\n自己想一個新例子，放重一點。","Adjust the weights.\nWord-for-word accuracy: lighter.\nBeing able to say why: heavier.\nMemorizing the textbook example: lighter.\nComing up with a new example of your own: heavier."],
+["這就是真正理解的能力。\n問自己三個問題：\n這是什麼？請用國小生聽得懂的話說。\n為什麼是這樣？\n可以舉一個課本以外的例子嗎？","This is the ability to truly understand.\nAsk yourself three questions:\nWhat is this? Say it so a child could follow.\nWhy is it so?\nCan I give an example that is not in the textbook?"],
+["講得卡卡的地方，不是丟臉的地方。\n那正是你還沒懂的地方，也是最值得回去看的地方。\n卡住，是在幫你指路。","The place where your explanation stumbles is not a place of shame.\nIt is exactly where you do not yet understand, and where it is most worth going back.\nGetting stuck is showing you the way."],
+["背的東西會忘，懂的東西會留。\n背的東西怕變化，懂的東西不怕。\n學習不是把腦袋裝滿，而是把腦袋點亮。","What is memorized fades; what is understood stays.\nWhat is memorized fears variation; what is understood does not.\nLearning is not filling the mind, but lighting it."],
+["今天的小練習：\n挑一個你「背過」的觀念，假裝要教給一個小學生。\n大聲說出來，或寫下來，並且舉一個生活中的例子。\n說不下去的地方，打開課本只查那一點，再說一次。","Today's small practice:\nPick one concept you have memorized and pretend to teach it to a young child.\nSay it aloud or write it down, with one example from daily life.\nWhere you get stuck, open the book for only that point, then explain again."],
+["你不是學不會，你只是一直被要求背，沒有被邀請去懂。\n從今天起，多問一句為什麼。\n願你學過的每一樣東西，都真正成為你的力量。","You are not unable to learn. You were always asked to memorize, never invited to understand.\nFrom today, ask why once more.\nMay everything you learn truly become your strength."]
+]};
+
+P.N28={h:["同一種題目，錯了第五次？你不是粗心，你是還沒看懂自己是怎麼錯的。","Wrong for the fifth time on the same kind of question? You are not careless. You have not yet understood how you go wrong."],
+q:["錯誤不是能力的判決書，而是下一次練習的地圖。","A mistake is not a verdict on your ability; it is a map for your next practice."],
+tags:"#LifeOS #錯誤重複 #錯誤分類 #訂正的智慧 #心靈雞湯 #LearnFromMistakes",
+b:[
+["考卷發回來，你一眼就看到那個紅色的叉。\n又是這種題目。\n上次錯，上上次也錯，明明訂正過了，怎麼又錯？","The paper comes back and you spot the red mark at once.\nThis kind of question again.\nWrong last time, wrong the time before. You corrected it, so why again?"],
+["你嘆一口氣說：唉，我就是粗心。\n把正確答案抄上去，闔起來，下一張。\n「粗心」兩個字，像一張萬用的OK繃，貼上去就當作處理好了。","You sigh and say: I am just careless.\nYou copy the right answer, close it, and move to the next.\nThe word careless is a universal bandage: stick it on and call it treated."],
+["可是孩子，這裡有一個差異：\n把答案改對，不等於知道自己為什麼錯。\n沒有找到原因的錯誤，下一次會原封不動地回來。","But here is a difference:\ncorrecting the answer is not the same as knowing why you got it wrong.\nA mistake whose cause is never found returns next time, unchanged."],
+["同樣是錯，原因其實很不一樣。\n有的是題目沒看完。\n有的是觀念根本不懂。\n有的是會，但是算錯。\n有的是時間不夠，用猜的。","Mistakes look alike, yet their causes differ greatly.\nSome come from not reading the whole question.\nSome from not understanding the concept at all.\nSome from knowing it but miscalculating.\nSome from running out of time and guessing."],
+["原因不同，藥就不同。\n沒看完題目的，要練習圈關鍵字。\n觀念不懂的，要回去重學。\n算錯的，要練習驗算。\n時間不夠的，要練習配速。","Different causes need different remedies.\nNot reading fully: practice circling key words.\nNot understanding: go back and relearn.\nMiscalculating: practice checking your work.\nShort on time: practice pacing."],
+["所以換一個看法吧。\n不是「我又錯了，我真糟」，而是「我的錯有固定的類型，我可以一類一類地解決」。\n錯誤不是敵人，錯誤是最誠實的老師。","So see it differently.\nNot: wrong again, I am terrible. But: my mistakes fall into types, and I can solve them type by type.\nMistakes are not the enemy. They are the most honest teacher."],
+["把權重調一下。\n錯了幾題，放輕一點。\n錯的是哪一類，放重一點。\n趕快寫下一張，放輕一點。\n把這一張真的弄懂，放重一點。","Adjust the weights.\nHow many you got wrong: lighter.\nWhich type you got wrong: heavier.\nRushing to the next paper: lighter.\nTruly understanding this one: heavier."],
+["這就是建立錯誤分類的能力。\n每一題錯的，旁邊標一個記號：\n看錯題目、觀念不懂、計算失誤、時間不夠。\n兩個星期後數一數，哪一類最多，就先處理哪一類。","This is the ability to classify mistakes.\nBeside each wrong answer, mark a label:\nmisread, concept gap, calculation slip, out of time.\nAfter two weeks, count them, and work first on whichever type is largest."],
+["會分類的人，錯一題，學一類。\n不分類的人，錯十題，還是十題。\n分數告訴你現在在哪裡，錯題告訴你下一步往哪裡。","Those who classify learn a whole type from one mistake.\nThose who do not get ten wrong and still have ten.\nThe score tells you where you are; the wrong answers tell you where to go next."],
+["今天的小練習：\n拿出最近一張考卷，為每一題錯的寫上錯誤類型。\n找出數量最多的那一類，只針對它，做三題類似的題目。","Today's small practice:\nTake your most recent test and write the mistake type beside each wrong answer.\nFind the most frequent type and do three similar problems aimed only at it."],
+["你的每一個錯，都不是白錯的。\n它們在幫你畫一張地圖，告訴你寶藏在哪裡。\n願你從此看見紅叉，不再心慌，而是知道：下一步在這裡。","None of your mistakes is wasted.\nThey are drawing you a map that shows where the treasure lies.\nMay a red mark no longer make you panic, but tell you: the next step is here."]
+]};
+
+P.N29={h:["練了這麼久，為什麼就是不進步？因為你一直在練已經會的地方。","So much practice, so little progress? Because you keep practicing what you can already do."],
+q:["進步停下來的地方，不是終點，是在告訴你：該換練法了。","Where progress stops is not the finish line; it is telling you to change how you practice."],
+tags:"#LifeOS #能力高原 #找出瓶頸 #刻意練習 #心靈雞湯 #BreakThePlateau",
+b:[
+["你沒有偷懶。\n每天練，每週練，題本寫了一本又一本。\n可是成績像被釘住一樣，一動也不動。","You have not been slacking.\nYou practice daily, weekly, workbook after workbook.\nYet your results seem nailed in place, not moving at all."],
+["你開始懷疑：是不是我的極限就到這裡了？\n是不是我天分就這麼多？\n這個念頭很冷，冷到讓你想放下筆。","You begin to wonder: is this my limit?\nIs this all the talent I have?\nThe thought is cold, cold enough to make you want to put down the pen."],
+["請等一下，先不要下結論。\n有一個差異，很多人都不知道：\n練很久，和練對地方，是兩件事。\n停滯，通常不是因為到了極限，而是因為一直在舒適的地方打轉。","Wait. Do not conclude yet.\nThere is a difference many people do not know:\npracticing a long time and practicing the right spot are two things.\nA plateau usually means not a limit reached, but circling in the comfortable zone."],
+["我們都喜歡練自己會的。\n因為會的寫起來順，順了就有成就感。\n可是會的東西再練一百次，還是會；不會的那一塊，一次都沒有碰到。","We all like practicing what we already know.\nIt flows, and flow feels like achievement.\nBut what you know stays known after a hundred more repetitions, while the part you do not know is never touched."],
+["一個水桶能裝多少水，看的是最短的那一塊木板。\n你把長的木板擦得再亮，水位也不會上升。\n真正決定你進步的，是那一塊你最不想面對的短板。","How much water a bucket holds depends on its shortest plank.\nPolish the long planks all you like; the water level will not rise.\nWhat truly decides your progress is the short plank you least want to face."],
+["所以換一個看法吧。\n不是「我沒有天分」，而是「我遇到了一個瓶頸，它有一個明確的位置」。\n瓶頸不是牆，瓶頸是一個很窄的口；找到它，才能把它撐開。","So see it differently.\nNot: I have no talent. But: I have met a bottleneck, and it has a specific location.\nA bottleneck is not a wall. It is a narrow opening, and once found it can be widened."],
+["把權重調一下。\n練了多少，放輕一點。\n練的是不是弱點，放重一點。\n寫起來很順，放輕一點。\n寫起來有點吃力，放重一點。","Adjust the weights.\nHow much you practiced: lighter.\nWhether you practiced your weak spot: heavier.\nPractice that flows easily: lighter.\nPractice that takes some strain: heavier."],
+["這就是找出瓶頸的能力。\n把一項能力拆成幾個小部分，一個一個檢查。\n例如英文閱讀：是單字不夠？句子太長看不懂？速度太慢？還是題目問法不熟？\n找到最弱的那一項，接下來兩週，只專心練它。","This is the ability to find the bottleneck.\nBreak a skill into smaller parts and check each one.\nFor English reading: is it vocabulary? Long sentences? Speed? Unfamiliar question types?\nFind the weakest one and, for the next two weeks, practice only that."],
+["舒服的練習讓你維持，吃力的練習才讓你成長。\n高原不是命運的天花板，而是方法的提醒。\n你不需要更多的汗水，你需要更準的方向。","Comfortable practice maintains you; effortful practice grows you.\nA plateau is not fate's ceiling but a reminder about method.\nYou do not need more sweat. You need better aim."],
+["今天的小練習：\n挑一項你停滯的能力，把它拆成四到五個小技能。\n為每一個打一到五分，找出分數最低的那一個。\n今天只花二十分鐘，專門練它。","Today's small practice:\nPick one skill where you have plateaued and break it into four or five sub-skills.\nRate each from one to five and find the lowest.\nSpend just twenty minutes today practicing only that."],
+["你沒有到極限，你只是到了該換方法的地方。\n願你有勇氣面對最弱的那一塊，\n因為那裡，藏著你下一次的突破。","You have not reached your limit, only the place where the method must change.\nMay you have the courage to face your weakest part,\nfor your next breakthrough is hidden there."]
+]};
+
+P.N30={h:["越怕考不好，越不敢打開書？你逃避的不是讀書，是那個「萬一我不行」的感覺。","The more you fear failing, the less you dare open the book? You are not avoiding study; you are avoiding the feeling of what if I am not good enough."],
+q:["成績不是你這個人的分數，它只是幾項還可以再練的技能。","A grade is not a score on you as a person; it is just a few skills that can still be practiced."],
+tags:"#LifeOS #學習焦慮 #把成績拆成技能 #不逃避 #心靈雞湯 #BeatTestAnxiety",
+b:[
+["考試越近，你越不想碰書。\n明明知道該讀了，卻一直整理桌子、滑手機、看影片。\n每拖一天，心裡的石頭就重一點。","The closer the exam, the less you want to touch the books.\nYou know you should study, yet you tidy the desk, scroll, watch videos.\nEach day of delay, the stone in your chest grows heavier."],
+["別人以為你不在乎。\n只有你知道，你是太在乎了。\n在乎到一打開書，就會看見自己不會的地方；看見不會的地方，就會聽見一個聲音：你完了。","Others think you do not care.\nOnly you know you care too much.\nSo much that opening the book shows you what you do not know, and seeing that, you hear a voice: you are doomed."],
+["所以你不打開。\n不打開，就不必面對。\n這不是懶惰，這是害怕。\n請先對自己說一句：原來我這麼害怕，辛苦了。","So you do not open it.\nIf it stays closed, you need not face it.\nThis is not laziness. It is fear.\nPlease first say to yourself: so I have been this afraid. That has been hard."],
+["然後，讓我告訴你一個差異：\n「我成績不好」是一個很大、很模糊、很可怕的東西。\n但是成績，其實是由很多個小技能加起來的。\n大石頭搬不動，小石頭卻可以一顆一顆拿走。","Then let me share a difference:\nmy grades are bad is something huge, vague, and frightening.\nBut a grade is really the sum of many small skills.\nYou cannot move a boulder, but you can carry small stones one at a time."],
+["英文不好，拆開來是：單字、文法、閱讀、寫作、聽力。\n閱讀不好，再拆開是：找主旨、看懂長句、推論、掌握時間。\n拆到夠小，你就會發現：喔，這一小塊，我今天可以練。","Bad at English breaks into: vocabulary, grammar, reading, writing, listening.\nBad at reading breaks further into: finding the main idea, parsing long sentences, inference, timing.\nBreak it small enough and you find: oh, this little piece I can practice today."],
+["所以換一個看法吧。\n不是「考不好就代表我不行」，而是「考試在告訴我，哪幾項技能還需要練」。\n分數不是在評價你這個人，它只是一份體檢報告。","So see it differently.\nNot: failing means I am not good enough. But: the test tells me which skills still need practice.\nThe score does not judge you as a person. It is only a check-up report."],
+["把權重調一下。\n最後會考幾分，放輕一點。\n今天練哪一個小技能，放重一點。\n別人怎麼看我，放輕一點。\n我比昨天多會了什麼，放重一點。","Adjust the weights.\nWhat score I will get in the end: lighter.\nWhich small skill I practice today: heavier.\nHow others see me: lighter.\nWhat I can do today that I could not yesterday: heavier."],
+["這就是把焦慮變成練習的能力。\n焦慮說：你會失敗。\n你回答：謝謝提醒，那我今天先練這一小塊。\n焦慮最怕的，不是你很厲害，而是你開始動了。","This is the ability to turn anxiety into practice.\nAnxiety says: you will fail.\nYou answer: thanks for the warning. Today I will practice this small piece first.\nWhat anxiety fears most is not that you are brilliant, but that you have started moving."],
+["逃避讓害怕變大，面對讓害怕變小。\n你不需要先不怕才開始，你是開始了才會不怕。\n每完成一小塊，你就拿回一點對自己的相信。","Avoidance makes fear grow; facing it makes fear shrink.\nYou do not need to be unafraid before you start. You become unafraid by starting.\nEach small piece completed returns a little of your trust in yourself."],
+["今天的小練習：\n挑你最怕的一科，把它拆成五個小技能。\n圈出一個「今天練二十分鐘就會有感覺」的。\n只做那二十分鐘，做完就給自己一個肯定。","Today's small practice:\nTake the subject you fear most and break it into five small skills.\nCircle one where twenty minutes today would make a felt difference.\nDo only those twenty minutes, then give yourself credit."],
+["你的價值，從來不在那張成績單上。\n但你的努力，值得用一個不那麼可怕的方式開始。\n願你打開書的時候，心裡不再是恐懼，而是：我今天練這一塊就好。","Your worth was never on that report card.\nBut your effort deserves a less frightening way to begin.\nMay you open the book not with dread, but with: today I only need to practice this one piece."]
+]};
+
+P.N31={h:["學了這麼多，為什麼腦袋還是一盤散沙？因為你一直在收集，卻沒有在連結。","You have learned so much, so why does it feel like loose sand? Because you keep collecting and never connecting."],
+q:["知識的力量不在多，而在連得起來。","The power of knowledge lies not in how much, but in how well it connects."],
+tags:"#LifeOS #知識碎片化 #節點關係圖 #連結的力量 #心靈雞湯 #ConnectTheDots",
+b:[
+["你存了好多文章，買了好多課，筆記軟體裡有幾千則筆記。\n每一則當下都覺得好有道理。\n可是真的要用的時候，一則也想不起來。","You have saved so many articles, bought so many courses, and filled your note app with thousands of entries.\nEach one felt so right in the moment.\nBut when you actually need one, none comes to mind."],
+["你覺得自己像一個倉庫管理員。\n東西越堆越多，卻找不到要的那一樣。\n於是你更焦慮，又去收集更多。","You feel like a warehouse keeper.\nThings pile higher, yet you cannot find the one you need.\nSo you grow more anxious and go collect even more."],
+["其實你一點都不缺知識。\n你缺的是一個很關鍵的差異：\n知道很多個點，不等於擁有一張網。\n散開的點，風一吹就散；連起來的點，才撐得住重量。","In truth you are not short of knowledge at all.\nWhat you are missing is one key difference:\nknowing many points is not the same as having a web.\nScattered points blow away in the wind; connected points can bear weight."],
+["一顆一顆的珠子，放在抽屜裡，只是一堆珠子。\n用一條線串起來，才是一條項鍊。\n你不需要更多珠子，你需要那一條線。","Beads lying loose in a drawer are only a heap of beads.\nStrung on a thread, they become a necklace.\nYou do not need more beads. You need the thread."],
+["所以換一個看法吧。\n不是「我學得還不夠多」，而是「我學的東西，還沒有彼此認識」。\n新的知識，要去跟舊的知識握手，才會留下來。","So see it differently.\nNot: I have not learned enough. But: the things I have learned have not yet met each other.\nNew knowledge stays only after it shakes hands with what you already know."],
+["把權重調一下。\n今天又學了多少新東西，放輕一點。\n今天把哪兩樣東西連起來，放重一點。\n筆記的數量，放輕一點。\n筆記之間的關係，放重一點。","Adjust the weights.\nHow many new things I learned today: lighter.\nWhich two things I connected today: heavier.\nThe number of notes: lighter.\nThe relationships between notes: heavier."],
+["這就是建立節點關係的能力。\n每學到一個新觀念，問三個問題：\n它跟我已經知道的哪件事很像？\n它跟哪件事相反？\n它是哪件事的原因，或是哪件事的結果？","This is the ability to build relationships between nodes.\nFor each new idea, ask three questions:\nWhat that I already know is it like?\nWhat is it the opposite of?\nWhat does it cause, or what causes it?"],
+["然後，拿一張紙把它畫出來。\n中間寫主題，旁邊寫相關的觀念，用線連起來，線上寫關係。\n畫得醜沒關係，畫出來，它就是你的了。","Then take a sheet of paper and draw it.\nPut the topic in the center, related ideas around it, link them with lines, and write the relationship on each line.\nIt need not be pretty. Once drawn, it is yours."],
+["收集讓你覺得富有，連結才讓你真的有力量。\n記得住的不是資料，是關係。\n一個連得起來的人，學十樣，勝過別人學一百樣。","Collecting makes you feel rich; connecting gives you real power.\nWhat we remember is not data, but relationships.\nOne who connects gains more from ten things than others do from a hundred."],
+["今天的小練習：\n挑一個你最近學的主題，寫下五個相關的觀念。\n用線把它們連起來，每一條線上寫一個詞：因為、所以、例如、相反、屬於。\n畫完之後，試著看著圖，把整個主題講一遍。","Today's small practice:\nPick a topic you studied recently and write down five related ideas.\nConnect them with lines and label each: because, therefore, for example, opposite, part of.\nWhen done, look at the map and explain the whole topic aloud."],
+["你不是學得不夠，你是學得太散。\n停下來，把已經有的串起來。\n願你腦中的每一顆珠子，都找到它的線。","You have not learned too little. You have learned too scattered.\nPause, and string together what you already have.\nMay every bead in your mind find its thread."]
+]};
+
+P.N32={h:["例題都會，考題一換就不會？你學會的是那一題，還沒學會那個方法。","You can do every example, but not the exam version? You learned that one problem, not yet the method."],
+q:["真正學會，是換了題目、換了場景，你依然用得出來。","True learning means you can still use it when the question and the setting change."],
+tags:"#LifeOS #遷移不足 #跨情境應用 #活用所學 #心靈雞湯 #TransferYourLearning",
+b:[
+["老師講的時候，你聽得懂。\n課本的例題，你也都會算。\n可是考卷上，同樣的觀念換了一個包裝，你就像沒學過一樣。","When the teacher explains, you follow.\nYou can do every example in the textbook.\nBut on the test, the same concept in new packaging looks like something you never studied."],
+["你很挫折：我明明會啊，為什麼考試就不會？\n老師說：這題上課教過類似的。\n你心裡想：哪裡類似？我完全看不出來。","You are frustrated: I do know it, so why not on the test?\nThe teacher says: we did a similar one in class.\nYou think: similar how? I cannot see it at all."],
+["這不是你笨，也不是你不用功。\n只是有一個差異，需要被看見：\n在熟悉的題目裡會，不等於在新的情境裡會。\n把學到的東西搬到新地方用，這本身是一種需要練習的能力。","This is not being dumb, nor lacking effort.\nThere is simply a difference to be seen:\nbeing able in a familiar problem is not being able in a new situation.\nCarrying what you learned to a new place is itself a skill that needs practice."],
+["如果每次練的都是長得一樣的題目，大腦記住的是外表。\n數字換了，敘述換了，圖形轉了一個方向，它就認不出來。\n你認得的是那件衣服，不是穿衣服的那個人。","If every practice problem looks the same, the brain remembers the surface.\nChange the numbers, the wording, or rotate the figure, and it fails to recognize it.\nYou recognize the clothes, not the person wearing them."],
+["所以換一個看法吧。\n不是「我只會簡單的」，而是「我還沒有在夠多不同的情境裡練過這個方法」。\n方法要離開原來的題目，去別的地方走一走，才會真的長大。","So see it differently.\nNot: I can only do the easy ones. But: I have not yet practiced this method in enough different situations.\nA method must leave its original problem and travel elsewhere to truly grow."],
+["把權重調一下。\n同一種題目寫很多遍，放輕一點。\n不同樣子的題目各寫幾題，放重一點。\n記住這題怎麼解，放輕一點。\n說出這題用了什麼方法，放重一點。","Adjust the weights.\nMany repetitions of one problem type: lighter.\nA few each of differently shaped problems: heavier.\nRemembering how this one is solved: lighter.\nNaming the method this one uses: heavier."],
+["這就是跨情境應用的能力。\n每做完一題，多問自己三句：\n這一題用的核心方法是什麼？\n如果條件改掉一個，我還會嗎？\n這個方法，在別的科目或生活裡，哪裡也用得到？","This is the ability to apply across contexts.\nAfter each problem, ask yourself three more things:\nWhat is the core method here?\nIf one condition changed, could I still do it?\nWhere else, in another subject or in life, does this method apply?"],
+["會解一題，是學會了一條魚。\n看得出方法，是學會了釣魚。\n能把方法帶到新的池塘，才是真的會釣魚的人。","Solving one problem is having one fish.\nSeeing the method is learning to fish.\nCarrying the method to a new pond is what makes a real angler."],
+["活用，不是天分，是練出來的。\n題目會變，方法不變。\n看得見不變的人，就不怕變。","Flexible use is not talent; it is trained.\nQuestions change; methods do not.\nThose who see what stays the same do not fear what changes."],
+["今天的小練習：\n挑一題你已經會的題目，自己動手改它：換數字、換情境、把問題反過來問。\n試著解你自己改出來的題目。\n解得出來，這個方法才真的是你的。","Today's small practice:\nTake one problem you can already do and alter it yourself: change the numbers, the setting, or ask it in reverse.\nTry to solve your own altered version.\nIf you can, the method is truly yours."],
+["你不是只會例題的人。\n你只是需要帶著方法，多去幾個地方。\n願你學到的每一樣本事，走到哪裡都用得上。","You are not someone who can only do examples.\nYou simply need to take the method to more places.\nMay every skill you learn be usable wherever you go."]
+]};
+
+
+const CH=[
+{id:'N01',t:'知行落差',q:'知道很多，為什麼還是不知道怎麼辦？',sub:'知道很多，卻不會行動',goal:'找到真正卡點',old:'我不夠努力',diff:'知識多≠行動能力強',w:'降低收集資訊，增加實作',path:'找卡點、做小實驗',mech:'找到卡點',mq:'我為什麼知道卻做不到？',quote:'你缺的可能不是知識，而是找出真正卡點的能力。',prac:'把一個大問題拆成今天能做的最小行動。',chk:'找出一個「知道卻做不到」的真正卡點'},
+{id:'N02',t:'重複模式',q:'為什麼總是遇到同一種問題？',sub:'換了人，問題仍重演',goal:'辨識共同模式',old:'都是別人的錯',diff:'不同對象出現相似互動',w:'提高對自身反應模式的注意',path:'找共同觸發與界線',mech:'找到模式',mq:'為什麼問題一直重複？',quote:'當問題不斷重複，值得檢查的除了別人，還有自己熟悉的反應模式。',prac:'記錄三次相似事件，找出共同的觸發、反應與結果。',chk:'記錄三次相似問題的共同模式'},
+{id:'N03',t:'離不開',q:'明知道不適合，為什麼還離不開？',sub:'明知不適合仍難放手',goal:'重設依附與價值權重',old:'捨不得就是愛',diff:'留下與離開的實際代價不同',w:'降低幻想，提高安全與長期福祉',path:'建立支持與退出選項',mech:'辨識束縛',mq:'是什麼讓我不敢離開？',quote:'捨不得不一定代表適合；熟悉也不等於安全。',prac:'分開感情、恐懼、責任、現實限制與安全風險。',chk:'列出留下與離開各自的需求、風險和限制'},
+{id:'N04',t:'信任判斷',q:'怎樣判斷一個人值不值得相信？',sub:'不知道該相信誰',goal:'用行為證據校準信任',old:'他說得很感人',diff:'承諾與行為可能不一致',w:'提高持續行為的證據權重',path:'小範圍、分階段信任',mech:'校準信任',mq:'哪些行為值得相信？',quote:'信任不是聽他說得多好，而是看他在不同情況下怎麼做。',prac:'觀察承諾是否履行、界線是否尊重、犯錯是否修正。',chk:'用三項實際行為證據評估信任'},
+{id:'N05',t:'決策品質',q:'一個決定怎樣才算做對？',sub:'害怕做錯決定',goal:'建立可檢驗的決策',old:'結果好才叫做對',diff:'決策品質≠單次結果',w:'提高資訊、風險、價值的權重',path:'事前訂標準、事後複盤',mech:'重新決策',mq:'哪個選擇最符合我的目標？',quote:'好決定不保證好結果，但應有清楚的理由、風險評估與修正空間。',prac:'事前寫下目標、選項、風險、預測與停止條件。',chk:'寫下決策目標、選項和停止條件'},
+{id:'N06',t:'沉沒成本',q:'堅持是毅力，還是沉沒成本？',sub:'分不清堅持或執著',goal:'重新評估未來價值',old:'投入很多不能放棄',diff:'過去投入≠未來值得',w:'降低已付成本，提高未來效益',path:'設定停止或繼續條件',mech:'停止無效投入',mq:'現在繼續還值得嗎？',quote:'不要因為昨天已經付出很多，就把明天也交給同一個錯誤。',prac:'假設今天才開始，你還會選擇繼續嗎？',chk:'不計過去投入，重新評估繼續是否值得'},
+{id:'N07',t:'低成本換路',q:'走錯路，怎麼用最低代價換路？',sub:'知道錯路卻不敢轉彎',goal:'設計安全轉換',old:'轉彎就是失敗',diff:'轉換有不同成本與風險',w:'提高可逆性與安全性',path:'小規模測試、分階段換路',mech:'設計轉換',mq:'如何用較低風險換路？',quote:'真正的勇敢不是突然推翻一切，而是替自己建立安全的轉換能力。',prac:'先盤點資源、風險、可逆選項與備援方案。',chk:'設計一個低風險、可逆的轉換步驟'},
+{id:'N08',t:'永遠有下一步',q:'如何讓自己永遠還有下一步？',sub:'覺得人生沒有選擇',goal:'持續生成新路徑',old:'我已經沒有辦法',diff:'目前沒看到≠沒有其他選項',w:'提高選項生成與求助能力',path:'保留至少兩個可行下一步',mech:'生成下一步',mq:'如果這條路不通，還能怎麼做？',quote:'自由不是永遠知道答案，而是遇到困難時，仍能產生下一個可行選擇。',prac:'每遇到困難，練習寫出A、B、C三條路。',chk:'為眼前問題寫出三個可行下一步'}
+];
+
+const DOM=[
+{k:'A',n:'認知與決策',r:'N01–N08',s:'知道如何選擇',ab:'認知',abs:'看得更清楚',sh:'資訊→選擇',quote:'不是知道越多就越自由，而是能把知識變成選擇。',wt:'資訊數量 → 決策品質'},
+{k:'B',n:'情緒與內在',r:'N09–N16',s:'看懂自己的心',ab:'情緒',abs:'讀懂內在訊號',sh:'反應→調節',head:'從被情緒帶走到讀懂情緒',quote:'情緒是提醒你的訊號，不必讓它直接替你做決定。',wt:'立即反應 → 情緒理解與調節'},
+{k:'C',n:'關係與界線',r:'N17–N24',s:'建立健康互動',ab:'關係',abs:'尊重自己與他人',sh:'討好→界線',quote:'真正值得維持的關係，不應只靠一個人不斷犧牲。',wt:'讓別人滿意 → 相互尊重與安全'},
+{k:'D',n:'學習與能力',r:'N25–N32',s:'從知道變做到',ab:'學習',abs:'從錯誤中進步',sh:'死背→精練',quote:'錯誤不是能力的判決書，而是下一次練習的地圖。',wt:'分數標籤 → 能力與錯誤改善'},
+{k:'E',n:'習慣與行動',r:'N33–N40',s:'突破停滯',ab:'行動',abs:'把想法變成實踐',sh:'等待→開始',quote:'不必等到完全準備好，先找到安全可行的一小步。',wt:'完美準備 → 可行的小步驟'},
+{k:'F',n:'金錢與資源',r:'N41–N48',s:'做好資源選擇',ab:'財務',abs:'保有長期選擇',sh:'衝動→規劃',quote:'金錢智慧不是每次都賺最多，而是讓自己保有長期選擇。',wt:'眼前報酬 → 長期風險與選擇權'},
+{k:'G',n:'身分與意義',r:'N49–N56',s:'重新理解自己',ab:'意義',abs:'重新理解自己',sh:'標籤→成長',quote:'你現在的身分不是一輩子的限制。',wt:'固定身分 → 價值與成長'},
+{k:'H',n:'變化與韌性',r:'N57–N64',s:'永遠保留下一步',ab:'韌性',abs:'舊路不通再找路',sh:'僵化→更新',quote:'人生真正的自由，是舊路不通時，仍有能力尋找下一條路。',wt:'守住唯一道路 → 保留多種可行道路'}
+];
+
+// 各領域 Node：old=舊模式／問題差異，nw=新模式／新路徑，st=策略
+const NODES={
+A:CH.map(c=>({id:c.id,t:c.t,old:c.old,nw:c.path,diff:c.diff,w:c.w})),
+B:[
+{id:'N09',t:'情緒否認',old:'我沒事',nw:'承認真正感受',st:['每天命名三種情緒','記錄身體感覺']},
+{id:'N10',t:'情緒等於事實',old:'我害怕所以一定危險',nw:'分開感受與證據',st:['寫下觀察與猜測','檢查實際風險']},
+{id:'N11',t:'衝動反應',old:'生氣立刻回擊',nw:'先調節再回應',st:['暫停對話','做緩慢呼吸']},
+{id:'N12',t:'情緒混亂',old:'只知道心情不好',nw:'分辨細微情緒',st:['使用情緒詞表','區分生氣、委屈與害怕']},
+{id:'N13',t:'需求不明',old:'一直抱怨卻不知道要什麼',nw:'找出情緒背後需求',st:['問自己真正需要什麼','把抱怨改成請求']},
+{id:'N14',t:'反覆內耗',old:'一直想同一件事',nw:'把思考轉成問題解決',st:['設定思考時間','列可控行動']},
+{id:'N15',t:'自我責備',old:'有負面情緒就是不好',nw:'允許情緒存在',st:['練習自我接納語句','分開情緒與行為責任']},
+{id:'N16',t:'情緒失衡',old:'只靠忍耐',nw:'建立調節工具箱',st:['記錄有效的調節方法','建立求助與休息計畫']}
+],
+D:[
+{id:'N25',t:'學習無效',old:'讀很久卻記不住',nw:'改用提取與間隔練習'},
+{id:'N26',t:'注意力分散',old:'一下就想滑手機',nw:'降低環境干擾'},
+{id:'N27',t:'理解不足',old:'背了卻不會用',nw:'練習舉例與解釋'},
+{id:'N28',t:'錯誤重複',old:'同樣題目一直錯',nw:'建立錯誤分類'},
+{id:'N29',t:'能力高原',old:'練很久沒進步',nw:'找出能力瓶頸'},
+{id:'N30',t:'學習焦慮',old:'怕考不好就逃避',nw:'把成績拆成可練技能'},
+{id:'N31',t:'知識碎片化',old:'學很多卻連不起來',nw:'建立節點關係圖'},
+{id:'N32',t:'遷移不足',old:'換個題目就不會',nw:'練習跨情境應用'}
+]
+};
+
+const SIX=[['01 Difference 差異','哪裡不一樣？','現在與期待差多少？'],['02 Representation 表徵','我怎麼看？','有沒有第二種解釋？'],['03 Weight 權重','什麼最重要？','哪件事值得先處理？'],['04 Bottleneck 卡點','哪裡卡住？','是能力、資源、環境還是安全？'],['05 New Path 新路','還能怎麼做？','至少生成兩種行動'],['06 Feedback 回饋','做了有沒有用？','何時重測、如何修正？']];
+const REG=[['Source 來源','我的判斷從哪裡來？'],['Claim 主張','我認為是真的，還是已經有證據？'],['Node 節點','真正卡住的是哪個問題？'],['Relation 關係','哪些因素讓問題持續發生？'],['Evidence 證據','有什麼新差異值得我重新判斷？'],['Intervention 介入','下一個最小、安全、可行的行動是什麼？'],['Update 更新','行動後，我要重新調整什麼表徵與權重？']];
+const F12=[['Reality｜現況','真正發生什麼事？'],['Difference｜差異','和我希望的差在哪裡？'],['Old Representation｜舊表徵','我原本怎麼想？'],['New Representation｜新表徵','還能怎麼理解？'],['Old Weight｜舊權重','我以前把什麼看得太重？'],['New Weight｜新權重','現在什麼更值得重視？'],['Bottleneck｜卡點','真正卡住的地方是什麼？'],['Minimum Action｜最小行動','今天可以先做哪一步？'],['Prediction｜預測','我猜這樣做會發生什麼？'],['Feedback｜回饋','結果真的怎麼樣？'],['Error｜誤差','哪裡和原先猜的不一樣？'],['Update｜更新','下次要調整什麼？']];
+const DEMO=[['舊模式','我就是懶 → 覺得自己沒救 → 繼續拖延'],['差異資訊','發現自己不是所有事情都拖延，而是遇到看不懂的英文題目才拖延。'],['新表徵','我可能不是懶，而是題目太難、開始成本太高。'],['權重更新','從「責怪自己」改成「降低開始難度」。'],['新行動','每天先做一題會的題目，再做一題需要幫助的題目。'],['兩週重測','比較開始作業所需時間、完成率與錯題類型，判斷是否需要調整方法。']];
+
+const $=s=>document.querySelector(s), esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const tbl=(head,rows)=>`<div class="tw"><table><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr>${rows.map(r=>`<tr data-s>${r.map((c,i)=>`<td>${i?esc(c):'<b>'+esc(c)+'</b>'}</td>`).join('')}</tr>`).join('')}</table></div>`;
+
+// 0 總覽
+$('#s0').innerHTML=`
+<p class="mut">從「知道很多卻無法改變」，走向「看見差異、重新選擇、生成下一步」。</p>
+<div class="formula" data-s>發現有意義的差異 → 改變看事情的方法 → 調整重要性的排序 → 產生新選擇 → 用現實回饋修正</div>
+<div class="formula" data-s>Difference 差異資訊 → Representation 表徵（怎麼看）→ Weight 權重（什麼重要）→ New Path 新路徑（下一步怎麼走）</div>
+<h2>八章總心智圖｜人生改變生成母體</h2>
+<div class="grid">${CH.map((c,i)=>`<div class="card" data-s><span class="id">0${i+1}</span><b>${c.t}</b><div class="mut">${c.sub}</div><div class="new">${c.goal}</div></div>`).join('')}</div>
+<div class="formula" data-s>Reality Test｜現實測試 → Model Update｜重新生成生命路徑<br>新證據 → 新權重 → 新行動 → 新能力</div>
+<h2>64大人生改變節點｜八大領域</h2>
+<p class="mut">原本8大關卡保留為 N01～N08，再增加56個關卡，整理成8大領域，共64個 Node。這是一份跨領域的實用分類，不代表人生問題只有64種。</p>
+<div class="grid">${DOM.map(d=>`<div class="card" data-s><span class="id">${d.k}</span><b>${d.n}</b> <span class="mut">${d.r}</span><div class="mut">${d.s}</div><div class="row"><b>能力</b><span>${d.ab}｜${d.abs}（${d.sh}）</span></div></div>`).join('')}</div>`;
+
+// 1 八大關卡
+$('#s1').innerHTML=`<h2>八大人生關卡｜新舊表徵 × 權重 × 差異資訊</h2>
+<div class="grid">${CH.map((c,i)=>`<div class="card" data-s>
+<h3><span class="id">Ch${i+1}・${c.id}</span>${c.t}</h3>
+<div>${c.q}</div>
+<div class="old">舊表徵：${c.old}</div>
+<div class="new">新路徑：${c.path}</div>
+<div class="row"><b>差異資訊</b><span>${c.diff}</span></div>
+<div class="row"><b>權重調整</b><span>${c.w}</span></div>
+<div class="row"><b>生成機制</b><span>${c.mech}：${c.mq}</span></div>
+<div class="row"><b>實際練習</b><span>${c.prac}</span></div>
+<div class="quote">${c.quote}</div></div>`).join('')}</div>`;
+
+// 2 64 Node
+function nodeCard(n){
+  let h=`<div class="card" data-s><h3><span class="id">${n.id}</span>${n.t}</h3><div class="old">舊：${n.old}</div><div class="new">新：${n.nw}</div>`;
+  if(n.diff)h+=`<div class="row"><b>差異資訊</b><span>${n.diff}</span></div><div class="row"><b>權重調整</b><span>${n.w}</span></div>`;
+  if(n.st)h+=n.st.map((s,i)=>`<div class="row"><b>策略${'①②'[i]}</b><span>${s}</span></div>`).join('');
+  return h+'</div>';
+}
+$('#s2').innerHTML=`<h2>64大 Node × 128個策略</h2>
+<p class="mut">8大領域 × 每領域8組新舊差異 × 每組2個實作策略＝64組差異、128個策略。</p>
+<div class="chips" id="dchips">${DOM.map((d,i)=>`<button data-i="${i}">${d.k}｜${d.n}</button>`).join('')}</div>
+${DOM.map((d,i)=>`<div class="dom" data-i="${i}">
+<div class="card" data-s><h3><span class="id">${d.k}・${d.r}</span>${d.n}｜${d.s}</h3>
+${d.head?`<div>${d.ab}｜${d.head}</div>`:''}
+<div class="row"><b>能力</b><span>${d.ab}｜${d.abs}（${d.sh}）</span></div>
+<div class="row"><b>權重轉換</b><span>${d.wt}</span></div>
+<div class="quote">${d.quote}</div></div>
+<div class="grid" style="margin-top:12px">${NODES[d.k]?NODES[d.k].map(nodeCard).join(''):''}</div>
+${NODES[d.k]?(NODES[d.k][0].st?'':`<p class="miss">此領域的16個策略：貼上的原始資料未包含（原頁面只展開了「情緒」分頁）。</p>`):`<p class="miss">${d.r} 的8個 Node 與16個策略：貼上的原始資料未包含（原頁面只展開了 N25–N32 與「情緒」分頁）。</p>`}
+</div>`).join('')}
+<div class="chips"><button class="btn" id="cpN">複製全部 Node</button><button class="btn" id="cpS">複製全部策略</button></div>`;
+
+// 3 診斷工具
+$('#s3').innerHTML=`<h2>六步診斷｜64大 Node 共同使用</h2>
+${tbl(['步驟','國小白話','實際問題'],SIX)}
+<h2>LifeOS 七大 Registry</h2>
+${tbl(['Registry｜資料庫','八章共同要問的問題'],REG)}
+<h2>統一實作欄位｜12欄訓練表</h2>
+<p class="mut">每一個策略都使用同一套訓練表，才能比較哪一種方法真的有效。</p>
+${tbl(['欄位','國小白話問題'],F12)}
+<h2>示範｜學生一直拖延英文作業</h2>
+${tbl(['階段','內容'],DEMO)}`;
+
+// 4 打卡表
+$('#s4').innerHTML=`<h2>人生路徑更新練習 <span id="cnt" class="id">0/8</span></h2>
+<div class="bar"><i id="pb"></i></div>
+<div id="chks">${CH.map((c,i)=>`<label class="chk" data-s><input type="checkbox" data-i="${i}"><span>Ch${i+1}｜${c.chk}</span></label>`).join('')}</div>
+<div class="chips"><button class="btn" id="rst">重設</button><button class="btn" id="cpL">複製 LINE 打卡表</button></div>`;
+
+// 5 公式與智慧
+$('#s5').innerHTML=`<h2>最高階公式</h2>
+<div class="formula" data-s>八章公式：Difference（發現差異）→ Representation（重新解釋）→ Weight（調整重要性）→ Priority（選擇優先順序）→ Action（採取行動）→ Feedback（觀察結果）→ Prediction Error（找出誤差）→ Model Update（更新模型）→ New Path（生成新路徑）</div>
+<div class="formula" data-s>64 Node 母體公式：Reality → Difference → Representation → Weight → Bottleneck → Priority → New Path → Action → Feedback → Prediction Error → Reweight → Model Update → Retest</div>
+<div class="formula" data-s>128 策略公式：Reality → Difference → Representation → Weight → Priority → Strategy → Minimum Action → Feedback → Prediction Error → Reweighting → Model Update → New Path</div>
+<h2>八大領域核心金句與權重轉換</h2>
+${tbl(['領域','核心金句','最重要的權重轉換'],DOM.map(d=>[d.ab,d.quote,d.wt]))}
+<h2>核心智慧</h2>
+<div class="card" data-s>當舊路走不通時，不再只責怪自己或命運，而是找出哪個表徵需要改變、哪個權重需要調整，讓下一個行動從新的證據中生成。</div>
+<div class="card" data-s style="margin-top:8px"><div class="quote" style="margin:0">不把現在當命運，而是把現在當成下一次更新的起點。</div></div>
+<div class="card" data-s style="margin-top:8px"><div class="quote" style="margin:0">真正改變人生的，不只是看見自己和理想之間的差距，而是能把差異轉成新的理解、重新調整重要性，再用一個真實行動，走出下一條路。</div></div>
+<h2>使用提醒</h2>
+<div class="card mut" data-s>這64個節點可作為 LifeOS 的「人生問題診斷索引」。下一層可為每個 Node 建立舊表徵、新表徵、權重、差異證據、錯誤類型、槓桿、最小行動、兩週回饋與更新規則。</div>
+<div class="card mut" data-s style="margin-top:8px">128個策略是第一層的完整分類清單，不代表已窮盡所有可能的介入方法，也不是全部都具有相同程度的實證支持。實際使用時，要依個人情境、安全性、資源與回饋來選擇。</div>`;
+
+// 6 臉書貼文圖卡
+const NM={};Object.values(NODES).flat().forEach(n=>NM[n.id]=n);
+const pdom=id=>DOM[(+id.slice(1)-1)>>3];
+const ptext=(p,k)=>[p.h,...p.b].map(x=>k==2?x[0]+'\n'+x[1]:x[k]).join('\n\n')+'\n\n'+p.tags;
+$('#s6').innerHTML=`<h2>臉書貼文 × 圖卡｜${Object.keys(P).length} 篇雙語心靈雞湯</h2>
+<p class="mut">每個 Node 一篇：痛點吸引 → 差異資訊 → 更新表徵與權重 → 能力 → 智慧金句 → 小練習。點開即可看圖卡、下載 PNG、複製貼文。</p>
+<div class="chips" id="lang"><button data-l="" class="on">雙語</button><button data-l="lz">只看中文</button><button data-l="le">English only</button></div>
+${Object.keys(P).map(id=>{const p=P[id],d=pdom(id);return `<details class="post" data-s data-id="${id}"><summary><span class="id">${id}</span><b>${NM[id].t}</b> <span class="mut">${d.k}｜${d.n}</span><br>${esc(p.h[0])}</summary>
+<canvas width="1080" height="1080"></canvas>
+<div class="chips"><button class="btn" data-a="dl">下載圖卡 PNG</button><button class="btn" data-a="0">複製中文貼文</button><button class="btn" data-a="1">複製英文貼文</button><button class="btn" data-a="2">複製雙語貼文</button></div>
+<div class="pb"><p class="zh hk">${esc(p.h[0])}</p><p class="en">${esc(p.h[1])}</p>${p.b.map(x=>`<p class="zh">${esc(x[0])}</p><p class="en">${esc(x[1])}</p>`).join('')}<p class="mut" style="margin-top:16px">${p.tags}</p></div></details>`}).join('')}`;
+$('#lang').onclick=e=>{if(e.target.dataset.l==null)return;document.body.classList.remove('lz','le');if(e.target.dataset.l)document.body.classList.add(e.target.dataset.l);document.querySelectorAll('#lang button').forEach(b=>b.classList.toggle('on',b==e.target))};
+function wrap(c,t,x,y,w,lh){
+  let line='';
+  (t.match(/[A-Za-z0-9'’,.\-!?;:]+\s*|[\s\S]/g)||[]).forEach(k=>{
+    if(c.measureText(line+k).width>w&&line){c.fillText(line.trimEnd(),x,y);y+=lh;line=k.trimStart()}else line+=k});
+  if(line){c.fillText(line.trimEnd(),x,y);y+=lh}
+  return y;
+}
+function draw(cv,id){
+  const p=P[id],d=pdom(id),c=cv.getContext('2d'),F='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+  const g=c.createLinearGradient(0,0,1080,1080);g.addColorStop(0,'#0f3d3a');g.addColorStop(1,'#0b1f2a');
+  c.fillStyle=g;c.fillRect(0,0,1080,1080);
+  c.fillStyle='#4fd1c0';c.fillRect(80,84,8,56);
+  c.textBaseline='top';c.font='700 34px '+F;c.fillText(`LifeOS｜${id} ${NM[id].t}`,108,78);
+  c.fillStyle='#9fb8b5';c.font='26px '+F;c.fillText(`${d.n}・${d.s}`,108,122);
+  c.fillStyle='#fff';c.font='700 56px '+F;
+  let y=wrap(c,p.h[0],80,220,920,80)+36;
+  c.fillStyle='#4fd1c0';c.fillRect(80,y,120,4);y+=44;
+  c.fillStyle='#ffe9a8';c.font='700 42px '+F;y=wrap(c,'「'+p.q[0]+'」',80,y,920,62)+24;
+  c.fillStyle='#cfe3e0';c.font='italic 30px Georgia,serif';wrap(c,p.q[1],80,y,920,44);
+  c.fillStyle='#9fb8b5';c.font='24px '+F;c.fillText('Difference → Representation → Weight → New Path',80,990);
+}
+document.addEventListener('toggle',e=>{const t=e.target;if(t.classList&&t.classList.contains('post')&&t.open&&!t.dataset.d){draw(t.querySelector('canvas'),t.dataset.id);t.dataset.d=1}},true);
+$('#s6').addEventListener('click',e=>{
+  const a=e.target.dataset.a;if(a==null)return;
+  const el=e.target.closest('.post'),id=el.dataset.id;
+  if(a=='dl')el.querySelector('canvas').toBlob(b=>{const l=document.createElement('a');l.href=URL.createObjectURL(b);l.download=`LifeOS圖卡_${id}_${NM[id].t}.png`;l.click()});
+  else copy(ptext(P[id],+a),e.target);
+});
+
+// 分頁
+const nav=$('#nav');
+nav.innerHTML=TABS.map((t,i)=>`<button data-i="${i}">${t}</button>`).join('');
+function tab(i){document.querySelectorAll('section').forEach((s,j)=>s.classList.toggle('on',i==j));nav.querySelectorAll('button').forEach((b,j)=>b.classList.toggle('on',i==j))}
+nav.onclick=e=>{if(e.target.dataset.i){$('#q').value='';search();tab(+e.target.dataset.i);scrollTo(0,0)}};
+function dom(i){document.querySelectorAll('.dom').forEach((d,j)=>d.classList.toggle('on',i==j));document.querySelectorAll('#dchips button').forEach((b,j)=>b.classList.toggle('on',i==j))}
+$('#dchips').onclick=e=>{if(e.target.dataset.i)dom(+e.target.dataset.i)};
+tab(0);dom(0);
+
+// 搜尋
+function search(){
+  const q=$('#q').value.trim().toLowerCase();
+  document.body.classList.toggle('searching',!!q);
+  let total=0;
+  document.querySelectorAll('[data-s]').forEach(el=>{const m=!q||el.textContent.toLowerCase().includes(q);el.classList.toggle('hide',!m);if(m)total++});
+  document.querySelectorAll('section,.dom').forEach(s=>s.classList.toggle('empty',!!q&&!s.querySelector('[data-s]:not(.hide)')));
+  $('#none').style.display=q&&!total?'block':'none';
+}
+$('#q').oninput=search;
+
+// 打卡
+const KEY='lifeos64_checkin';
+let st=[];try{st=JSON.parse(localStorage.getItem(KEY))||[]}catch(e){}
+const boxes=[...document.querySelectorAll('#chks input')];
+function upd(save){
+  const n=boxes.filter(b=>b.checked).length;
+  boxes.forEach(b=>b.parentNode.classList.toggle('done',b.checked));
+  $('#cnt').textContent=n+'/8';$('#pb').style.width=n/8*100+'%';
+  if(save)try{localStorage.setItem(KEY,JSON.stringify(boxes.map(b=>b.checked)))}catch(e){}
+}
+boxes.forEach((b,i)=>{b.checked=!!st[i];b.onchange=()=>upd(1)});upd();
+$('#rst').onclick=()=>{boxes.forEach(b=>b.checked=false);upd(1)};
+
+// 複製
+function copy(t,btn){
+  const ok=()=>{const o=btn.textContent;btn.textContent='已複製 ✓';setTimeout(()=>btn.textContent=o,1500)};
+  const fb=()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();ok()};
+  navigator.clipboard?navigator.clipboard.writeText(t).then(ok,fb):fb();
+}
+$('#cpL').onclick=e=>copy(`人生路徑更新練習 ${boxes.filter(b=>b.checked).length}/8\n`+CH.map((c,i)=>`${boxes[i].checked?'✅':'⬜'} Ch${i+1}｜${c.chk}`).join('\n'),e.target);
+const all=f=>DOM.filter(d=>NODES[d.k]&&NODES[d.k].some(f)).map(d=>`【${d.k}｜${d.n} ${d.r}】\n`+NODES[d.k].map(f).filter(Boolean).join('\n')).join('\n\n');
+$('#cpN').onclick=e=>copy(all(n=>`${n.id}｜${n.t}：${n.old} → ${n.nw}`),e.target);
+$('#cpS').onclick=e=>copy(all(n=>n.st?`${n.id}｜${n.t}（${n.old} → ${n.nw}）\n  策略① ${n.st[0]}\n  策略② ${n.st[1]}`:''),e.target);
+</script>
+</body>
+</html>

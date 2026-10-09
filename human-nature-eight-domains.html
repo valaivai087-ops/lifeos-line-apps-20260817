@@ -1,0 +1,7731 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>人性八域作業系統</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#23262b;--sub:#6b7280;--line:#e2ddd3;--acc:#9a5b2c;--soft:#f4e9dc;--mark:#ffe58a}
+@media(prefers-color-scheme:dark){:root{--bg:#17191c;--card:#202328;--ink:#e6e3dc;--sub:#9aa0a8;--line:#343840;--acc:#e0a573;--soft:#2c2620;--mark:#7a5c00}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.75 "Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+header{position:sticky;top:0;z-index:5;display:flex;gap:8px;align-items:center;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--line)}
+header b{white-space:nowrap;color:var(--acc)}
+#q{flex:1;min-width:0;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+button{padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;cursor:pointer;white-space:nowrap}
+#mb{display:none}
+.wrap{display:flex;align-items:flex-start}
+aside{width:290px;flex:none;position:sticky;top:56px;height:calc(100vh - 56px);overflow:auto;padding:10px;border-right:1px solid var(--line);background:var(--card)}
+aside a{display:block;padding:5px 9px;border-radius:6px;cursor:pointer;color:var(--ink)}
+aside a:hover{background:var(--soft)}
+aside a.d{font-weight:700;margin-top:4px}
+aside a.d.on{background:var(--acc);color:#fff}
+aside a.s{font-size:13px;color:var(--sub);padding-left:18px}
+main{flex:1;min-width:0;max-width:900px;padding:18px 22px 80px}
+h1{font-size:22px;margin:4px 0 14px}
+section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:14px;scroll-margin-top:66px}
+h2{font-size:17px;margin:0 0 8px;color:var(--acc)}
+h3{font-size:14px;margin:14px 0 4px;padding:2px 9px;background:var(--soft);border-radius:6px;display:inline-block}
+p{margin:2px 0}
+p.kv b{color:var(--acc);margin-right:8px}
+p.ch{padding-left:16px;color:var(--sub)}
+p.q{border-left:3px solid var(--acc);padding:4px 10px;background:var(--soft);border-radius:0 6px 6px 0;margin:5px 0;font-weight:600}
+.ar{color:var(--sub);line-height:1.1;padding-left:12px}
+.tw{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;font-size:13px;min-width:100%}
+th,td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--soft);white-space:nowrap}
+pre{overflow-x:auto;font:13px/1.5 "MingLiU","Noto Sans Mono CJK TC",monospace;margin:6px 0}
+input.f,input.n{border:0;border-bottom:1px solid var(--acc);background:transparent;color:var(--ink);font:inherit;padding:0 4px}
+input.f{width:min(420px,70%)}
+input.n{width:52px;text-align:center}
+output{font-weight:700;color:var(--acc)}
+mark{background:var(--mark);color:inherit}
+.from{font-size:12px;color:var(--sub);cursor:pointer}
+.info{color:var(--sub)}
+.pb{float:right;font-size:13px;padding:3px 9px;margin-left:8px}
+.pt{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+.cards{display:flex;gap:10px;overflow-x:auto;padding:10px 0}
+.card{flex:none;width:280px;min-height:350px;border-radius:12px;padding:18px 16px 30px;background:linear-gradient(135deg,#fbf6ee,#f1e3d0);color:#2b2622;position:relative;font-size:13.5px;line-height:1.65}
+.card b{display:block;font-size:18px;line-height:1.4;color:#9a5b2c;margin-bottom:8px}
+.card.cv{background:linear-gradient(135deg,#9a5b2c,#5e3414);color:#fff}
+.card.cv b{color:#ffe2c2;font-size:22px}
+.card p{margin:3px 0}
+.card i{position:absolute;right:12px;bottom:8px;font-size:11px;opacity:.6;font-style:normal}
+@media(max-width:800px){#mb{display:block}header b{display:none}aside{position:fixed;left:0;top:56px;z-index:4;transform:translateX(-100%);transition:.2s;width:86%}body.open aside{transform:none}main{padding:14px 16px 80px}}
+</style>
+</head>
+<body>
+<header>
+<button id="mb">☰</button><b>人性八域 OS</b>
+<input id="q" type="search" placeholder="搜尋全部內容（例：信任、BATNA、嫉妒、D6）">
+<button id="clr" title="清除所有填寫內容">清除填寫</button>
+</header>
+<div class="wrap"><aside id="nav"></aside><main id="main"></main></div>
+
+<script type="text/plain" id="raw">
+# ① 人性八大Domain操作表
+我把它做成「不是拿來讀，而是遇到事情可以直接跑一次」的版本。每個Domain都統一成：辨識→診斷→Prediction Error→槓桿→最小行動→回饋→更新，也能直接接天道母體、Soul OS、商業、管理、談判與關係系統。
+核心目的｜把「懂人性」從知識變成可操作能力。
+總流程｜Reality→Fact→8 Domain Scan→Bottleneck→Generator→Prediction→Minimum Action→Feedback→Prediction Error→Model Update→Retest。
+## 一｜八大Domain一頁操作總表
+| Domain | 核心問題 | 快速辨識 | 常見失衡 | 第一診斷問題 | 核心槓桿 | 最小行動 | 回饋指標 |
+|---|---|---|---|---|---|---|---|
+| D1 Survival｜生存 | 我安全嗎？ | 怕、躲、僵、攻擊 | 過度警報、防衛 | 我到底怕失去什麼？ | 降低真實風險 | 把威脅寫成具體事件 | 警報是否下降？ |
+| D2 Need｜需求 | 我要什麼？ | 想要、爭取、不滿 | 貪婪、匱乏、短視 | 我真正需要的是什麼？ | Need／Value排序 | 找最高Weight需求 | 選擇是否更清楚？ |
+| D3 Self｜自我 | 我是誰？ | 自尊、防衛、證明 | 身份僵化 | 哪個身份正在被威脅？ | Self Distancing | 把「我是」改成「我現在」 | 防衛是否下降？ |
+| D4 Social｜群體 | 別人怎麼看我？ | 比較、嫉妒、從眾 | 被群體綁架 | 如果沒人看，我還會選嗎？ | Reference Reset | 換比較基準 | 自主性是否提高？ |
+| D5 Relationship｜關係 | 我能相信你嗎？ | 依附、討好、衝突 | 控制、依賴、失信 | 這是愛、需要、恐懼還是交換？ | Boundary＋Repair | 說清一個需求／界線 | 信任是否改善？ |
+| D6 Power｜權力 | 我有選擇嗎？ | 控制、依賴、無力 | 權力不對稱 | 誰掌握資源與退出權？ | Options | 增加一個替代方案 | Choice Space是否增加？ |
+| D7 Cognition｜認知 | 我看對了嗎？ | 絕對化、合理化、偏誤 | 把Model當Reality | 還有第二種解釋嗎？ | Second Representation | 生成3個解釋 | 預測是否更準？ |
+| D8 Evolution｜更新 | 我願意改嗎？ | 否認、重複、甩鍋 | 模型僵化 | Reality在哪裡不同意我？ | Prediction Error | 改一個Node再測 | 新模型是否更準？ |
+## 二｜D1 SURVIVAL｜生存／避害／安全
+核心Node｜Survival／Threat／Fear／Safety／Loss／Scarcity／Defense。
+生成鏈｜Signal→Threat Prediction→Predicted Loss→Fear→Attention Narrowing→Defense→Action。
+### 看到這些訊號就啟動D1
+我很怕。
+我一定要趕快處理。
+不能失去。
+事情一定會很糟。
+我要逃。
+我要反擊。
+我腦中一直想最壞結果。
+### 七步操作
+① FACT｜現在真正發生什麼？
+② THREAT｜真正威脅是什麼？
+③ LOSS｜我預測會失去什麼？
+④ PROBABILITY｜真的發生機率是多少？
+⑤ CAPACITY｜即使發生，我有哪些資源？
+⑥ ACTION｜現在最小可控行動是什麼？
+⑦ FEEDBACK｜做完後Risk真的下降嗎？
+### Prediction Error
+Prediction｜「如果X發生，我就完了。」
+Reality｜X真的發生後，可能只是造成部分損失。
+Update｜Threat存在≠全面崩潰。
+### 核心槓桿
+降低Uncertainty。
+增加Information。
+增加Resource Buffer。
+增加Options。
+增加Recovery Capacity。
+### 能力
+Threat Detection。
+Risk Assessment。
+Uncertainty Tolerance。
+Safety Building。
+Adaptive Capacity。
+### 金句
+安全感的最高階，不是確定壞事永遠不發生，而是知道發生變化後自己仍有能力應對。
+## 三｜D2 NEED／VALUE｜需求／慾望／利益
+核心Node｜Need／Desire／Value／Interest／Reward／Self-interest／Altruism／Reciprocity。
+生成鏈｜Need→Value→Weight→Reward Prediction→Priority→Choice。
+### 看到這些訊號就啟動D2
+我就是想要。
+為什麼都是他得到？
+這樣對我有什麼好處？
+我付出這麼多。
+為什麼沒有人回報？
+### 七步操作
+① WANT｜我表面想要什麼？
+② NEED｜底層真正需要什麼？
+③ VALUE｜這代表什麼價值？
+④ WEIGHT｜重要性0～10？
+⑤ COST｜我要付什麼成本？
+⑥ ALTERNATIVE｜還有其他滿足方式嗎？
+⑦ LONG TERM｜這個選擇三個月／三年後仍值得嗎？
+### 需求拆解
+我要錢→可能是Safety／Freedom／Status。
+我要被稱讚→可能是Recognition／Self Value。
+我要對方聽話→可能是Control／Certainty。
+我要成交→可能是Income／Achievement／Validation。
+### Prediction Error
+Prediction｜「得到X，我就會滿足。」
+Reality｜得到X後仍然空缺。
+Update｜表面Want≠核心Need。
+### 核心槓桿
+Need Clarification。
+Value Ranking。
+Delayed Reward。
+Mutual Value。
+Incentive Alignment。
+### 能力
+Need Detection。
+Value Mapping。
+Cost-Benefit Analysis。
+Long-term Optimization。
+Value Creation。
+### 金句
+成熟不是沒有慾望，而是知道哪一個需求值得被放大、哪一個需求不能掌握方向盤。
+## 四｜D3 SELF｜身份／自尊／自我模型
+核心Node｜Identity／Self-esteem／Self Model／World Model／Value Model／Meaning。
+生成鏈｜Experience→Memory→Belief→Self Model→Identity→Prediction→Behavior。
+### 看到這些訊號就啟動D3
+我就是不行。
+我一直都是這樣。
+他看不起我。
+我不能輸。
+我一定要證明自己。
+如果我做不到，我就沒有價值。
+### 七步操作
+① EVENT｜到底發生什麼？
+② IDENTITY｜我把事件解讀成「我是什麼人」？
+③ EVIDENCE｜證據真的足夠嗎？
+④ STATE｜這是Identity還是Temporary State？
+⑤ ALTERNATIVE｜還有哪些Self Representation？
+⑥ ACTION｜哪個小行動可以產生新Evidence？
+⑦ UPDATE｜新Evidence是否足以更新Self Model？
+### 語言轉換
+我是失敗者→這次結果沒有達標。
+我英文很差→目前某些英文Node還沒掌握。
+我沒能力→目前缺某項Skill。
+沒人愛我→這段關係目前沒有提供我需要的連結。
+### Prediction Error
+舊Model｜「我做不到。」
+Action｜完成一個小任務。
+Reality｜做到了。
+Error｜Self Model過度負面。
+Update｜「我不是不行，我有尚未建立的能力。」
+### 核心槓桿
+Self Distancing。
+Evidence。
+Identity Flexibility。
+Capability Building。
+### 能力
+Identity Awareness。
+Belief Updating。
+Value Clarification。
+Self Reconstruction。
+### 金句
+你不是你的舊模型；你是那個能看見模型、測試模型、更新模型的人。
+## 五｜D4 SOCIAL｜比較／地位／歸屬／群體
+核心Node｜Comparison／Jealousy／Status／Belonging／Conformity／Authority／Norm。
+生成鏈｜Social Input→Reference Point→Comparison→Status／Belonging Prediction→Emotion→Behavior。
+### 看到這些訊號就啟動D4
+大家都有。
+別人會怎麼看？
+為什麼他比我好？
+老師都這樣說。
+大家都這樣做。
+我怕被排擠。
+### 七步操作
+① REFERENCE｜我正在跟誰比較？
+② DIMENSION｜比較哪一個維度？
+③ FAIRNESS｜比較條件相同嗎？
+④ VALUE｜嫉妒透露我重視什麼？
+⑤ NORM｜這真的是我的Value，還是群體Norm？
+⑥ INDEPENDENT TEST｜如果沒有人知道，我還會選嗎？
+⑦ RESET｜換一個更合理Reference。
+### Prediction Error
+Prediction｜「大家都這樣，所以一定是對的。」
+Reality｜群體也可能集體判斷錯誤。
+Update｜Social Evidence≠Truth。
+### 嫉妒轉換
+嫉妒
+→不要先羞辱自己
+→問「他擁有什麼是我也重視的？」
+→Hidden Value
+→Skill Gap
+→Learning Target。
+### 核心槓桿
+Reference Reset。
+Norm Awareness。
+Independent Verification。
+### 能力
+Social Signal Reading。
+Comparison Calibration。
+Group Pressure Resistance。
+Independent Judgment。
+### 金句
+不要讓別人的位置決定你的價值；讓別人的結果成為你理解條件與可能性的資料。
+## 六｜D5 RELATIONSHIP｜依附／信任／愛／界線
+核心Node｜Attachment／Trust／Love／Reciprocity／Boundary／Conflict／Repair。
+生成鏈｜Need→Expectation→Prediction→Interaction→Feedback→Trust／Distrust→Pattern→Attractor。
+### 看到這些訊號就啟動D5
+為什麼他不懂我？
+我為他做這麼多。
+我怕他離開。
+我不敢拒絕。
+每次最後都變成這樣。
+### 七步操作
+① FACT｜他實際做了什麼？
+② NEED｜我真正需要什麼？
+③ EXPECTATION｜我原本期待什麼？
+④ BOUNDARY｜哪些是我的責任？哪些是他的？
+⑤ TRUST｜長期Behavior Evidence如何？
+⑥ PATTERN｜這是一次事件還是重複模式？
+⑦ REPAIR｜雙方有沒有修復能力？
+### 信任公式
+Trust≈Ability＋Integrity＋Consistency＋Repair。
+### 關係四分法
+有愛＋有界線→健康連結。
+有愛＋無界線→容易依賴／耗竭。
+無愛＋有界線→功能性關係。
+無愛＋無界線→高風險混亂。
+### Prediction Error
+Prediction｜「只要我付出更多，他就會改。」
+Reality｜更多付出可能反而強化原Pattern。
+Update｜Love≠Unlimited Responsibility。
+### 核心槓桿
+Clear Need。
+Boundary。
+Reciprocity。
+Trust Calibration。
+Repair。
+### 能力
+Attachment Awareness。
+Boundary Setting。
+Conflict Repair。
+Trust Calibration。
+Co-evolution。
+### 金句
+好的關係不是永遠沒有Prediction Error，而是雙方有能力利用Difference修復彼此的模型。
+## 七｜D6 POWER｜資源／控制／依賴／制度
+核心Node｜Resource／Information／Dependency／Control／Power／Options／Exit／Institution。
+生成鏈｜Resource Asymmetry→Dependency→Power→Choice Constraint→Behavior。
+### 看到這些訊號就啟動D6
+我沒有辦法。
+只能聽他的。
+他掌握所有資訊。
+我不敢拒絕。
+離開的成本太高。
+### 七步操作
+① RESOURCE｜誰掌握關鍵資源？
+② INFORMATION｜誰知道得更多？
+③ DEPENDENCY｜誰更依賴誰？
+④ OPTION｜我有哪些替代方案？
+⑤ EXIT｜如果退出，成本是多少？
+⑥ BOUNDARY｜最低可接受條件？
+⑦ BUILD｜如何增加自己的選擇權？
+### 權力公式
+Power≈Resources＋Information＋Alternatives＋Credibility＋Exit Capacity。
+### 降低依賴五法
+增加資訊。
+增加能力。
+增加資源。
+增加支持網絡。
+增加替代方案。
+### Prediction Error
+Prediction｜「我完全沒有選擇。」
+Reality｜可能只是目前Options太少。
+Update｜無力感≠零選項。
+### 核心槓桿
+Information。
+Resources。
+BATNA。
+Exit Option。
+Institution。
+Accountability。
+### 能力
+Power Mapping。
+Negotiation。
+Boundary Enforcement。
+Resource Building。
+Institution Design。
+### 金句
+真正的自由不只是敢說不，而是建立說不之後仍能活下去的能力與選項。
+## 八｜D7 COGNITION｜表徵／語言／偏誤／預測
+核心Node｜Attention／Representation／Language／Evidence／Bias／Rationalization／Prediction。
+生成鏈｜Reality→Observation→Representation→Language→Attention→Evidence Selection→Prediction。
+### 看到這些訊號就啟動D7
+一定是這樣。
+他就是故意的。
+永遠都不會變。
+大家都針對我。
+我早就知道。
+### 七步操作
+① FACT｜攝影機會拍到什麼？
+② REPRESENTATION｜我如何解釋？
+③ ALTERNATIVE｜至少生成3個可能解釋。
+④ EVIDENCE｜每個解釋有哪些支持／反證？
+⑤ PROBABILITY｜不要用一定，改成機率。
+⑥ PREDICTION｜如果模型正確，下一步應看到什麼？
+⑦ TEST｜讓Reality判定。
+### 語言Compiler
+他就是自私→這個行為目前讓他自己的利益優先。
+他不愛我→目前哪些Behavior讓我產生這個Prediction？
+我一定會失敗→依目前Evidence，我估計成功率是多少？
+他故意傷害我→故意是一個Hypothesis，需要Evidence。
+### Prediction Error
+Prediction｜「他一定會拒絕。」
+Reality｜他接受。
+Error｜舊Model錯。
+錯誤反應｜找理由維護舊Model。
+高階反應｜降低舊Model Weight。
+### 核心槓桿
+Second Representation。
+Probabilistic Language。
+Evidence Testing。
+Counterexample。
+### 能力
+Representation Fluidity。
+Bias Detection。
+Probabilistic Thinking。
+Prediction Calibration。
+### 金句
+不要把第一個表徵當Reality；真正的自由從第二個可能解釋開始。
+## 九｜D8 EVOLUTION｜回饋／誤差／更新／High Agency
+核心Node｜Feedback／Difference／Prediction Error／Diagnosis／Reweight／Model Update／Retest／High Agency。
+生成鏈｜Prediction→Action→Reality→Feedback→Error→Update→Retest。
+### 看到這些訊號就啟動D8
+怎麼又發生一樣的事？
+明明都是別人的問題。
+我知道，但是我做不到。
+以前就是這樣。
+沒有必要改。
+### 七步操作
+① PREDICTION｜我原本預測什麼？
+② REALITY｜實際發生什麼？
+③ DIFFERENCE｜差多少？
+④ LOCALIZE｜哪個Node猜錯？
+⑤ REWEIGHT｜哪個舊信念權重太高？
+⑥ UPDATE｜新模型是什麼？
+⑦ RETEST｜下一次如何驗證？
+### Prediction Error四級
+L1｜看不到Error。
+L2｜看到但怪別人。
+L3｜看到自己的Model Error。
+L4｜主動設計Experiment找Error。
+### High Agency公式
+Reality≠Prediction
+→不崩潰
+→不否認
+→找Difference
+→更新Model
+→生成New Action。
+### 核心槓桿
+Feedback Speed。
+Error Visibility。
+Small Experiment。
+Retest。
+### 能力
+Error Detection。
+Error Localization。
+Model Updating。
+Action Generation。
+High Agency。
+### 金句
+模型可以錯，但更新機制不能死。
+## 十｜八大Domain真正的操作順序
+不是每次都八個全部處理。
+先Scan。
+D1｜現在有真實安全威脅嗎？
+↓
+沒有重大威脅
+D2｜真正Need是什麼？
+↓
+D3｜是否碰到Identity？
+↓
+D4｜是否受到Comparison／Group影響？
+↓
+D5｜是否是Relationship Pattern？
+↓
+D6｜是否存在Power／Dependency問題？
+↓
+D7｜我的Representation準嗎？
+↓
+D8｜Reality提供什麼Error？
+這形成：
+Safety
+→Need
+→Self
+→Social
+→Relationship
+→Power
+→Cognition
+→Update。
+## 十一｜快速定位表
+恐懼／焦慮／逃避→先查D1。
+貪心／不滿／一直想得到→先查D2。
+自卑／自尊受傷／想證明→先查D3。
+嫉妒／比較／怕別人看法→先查D4。
+討好／依附／信任／衝突→先查D5。
+控制／無力／資源／談判→先查D6。
+誤解／偏誤／絕對化→先查D7。
+同樣問題反覆發生→先查D8。
+但一個事件可以同時啟動多個Domain。
+例如「不敢拒絕主管」：
+D1｜怕失去工作。
+D2｜需要收入。
+D3｜我是好員工。
+D4｜大家都不拒絕。
+D5｜怕破壞關係。
+D6｜主管掌握權力。
+D7｜我預測拒絕＝一定被討厭。
+D8｜過去一直順從，因此沒有新的Reality Evidence。
+這就是八域掃描的價值。
+## 十二｜八大Domain × 商業／銷售／管理／談判對照
+| Domain | 商業 | 銷售 | 管理 | 談判 |
+|---|---|---|---|---|
+| D1 | 降低風險 | 處理疑慮 | 心理安全 | 降低威脅 |
+| D2 | 找需求 | Value Fit | 誘因 | Interest |
+| D3 | 品牌身份 | 理想Self | 角色認同 | Face／Identity |
+| D4 | Social Proof | 見證 | 團隊Norm | 聲譽／聯盟 |
+| D5 | Trust | 關係成交 | 修復合作 | 長期關係 |
+| D6 | 市場權力 | 選擇權 | 權責配置 | BATNA |
+| D7 | Positioning | Value Communication | 溝通 | Framing |
+| D8 | Product Iteration | 客戶Feedback | Review | Agreement Review |
+## 十三｜八大Domain × Soul OS對照
+D1 Survival→Safety Weight。
+D2 Need→Value Weight。
+D3 Self→Self Model。
+D4 Social→Social Reference Model。
+D5 Relationship→Attachment／Trust Model。
+D6 Power→Agency／Control Model。
+D7 Cognition→Representation／World Model。
+D8 Evolution→Update Capacity。
+所以：
+Human Nature提供Architecture。
+Soul OS配置Weights。
+Cognition產生Prediction。
+Behavior把Prediction送進Reality。
+D8負責把Reality帶回來。
+## 十四｜八大Domain 0～10自我評分
+D1｜我能區分真實威脅與想像威脅嗎？__/10。
+D2｜我知道自己真正需要什麼嗎？__/10。
+D3｜我的Identity能被Evidence更新嗎？__/10。
+D4｜我能不被比較與群體綁架嗎？__/10。
+D5｜我能建立信任、界線與修復嗎？__/10。
+D6｜我有足夠選擇權與Exit Capacity嗎？__/10。
+D7｜我能產生第二表徵並測試Evidence嗎？__/10。
+D8｜Reality證明我錯時，我能更新嗎？__/10。
+總分｜__/80。
+不要只看總分。
+最低分Domain＝優先候選Bottleneck。
+但還要回到Reality驗證。
+## 十五｜八大Domain現場操作卡
+遇到任何事件，只填下面15格。
+事件｜________。
+FACT｜________。
+D1｜我怕失去什麼？________。
+D2｜我真正想得到什麼？________。
+D3｜哪個Identity被碰到？________。
+D4｜誰是我的Reference？________。
+D5｜這段關係的Need／Boundary是什麼？________。
+D6｜誰掌握Resource／Option？________。
+D7｜我的第一Representation是什麼？________。
+第二Representation｜________。
+第三Representation｜________。
+D8｜Reality可能如何證明我錯？________。
+目前最高Weight Domain｜________。
+Bottleneck Node｜________。
+Minimum Action｜________。
+觀察指標｜________。
+Retest時間｜________。
+## 十六｜進階版｜不要只診斷自己，也診斷系統
+個人層｜我的哪個Domain被啟動？
+雙人層｜我們形成什麼Feedback Loop？
+家庭層｜什麼Pattern一直被強化？
+班級層｜什麼Norm正在生成學生Behavior？
+組織層｜什麼Incentive正在獎勵錯誤行為？
+商業層｜哪個Human Need沒有被滿足？
+制度層｜Power與Resource如何配置？
+文化層｜哪些Representation被長期強化？
+所以八大Domain不只是「人格測驗」。
+它是一套Multi-level Diagnostic System。
+## 十七｜真正的高階操作：從改人→改Node→改Structure
+L1低槓桿｜叫自己不要害怕。
+L2｜辨識Fear。
+L3｜找到Threat Prediction。
+L4｜找Evidence。
+L5｜增加Resource。
+L6｜增加Options。
+L7｜改Environment。
+L8｜改Feedback Loop。
+L9｜改Structure。
+例如：
+「學生不讀書。」
+低階｜學生太懶。
+中階｜提高動機。
+高階診斷：
+D1｜怕失敗？
+D2｜沒有立即Value？
+D3｜「我就是不會英文」？
+D4｜同儕Norm不讀書？
+D5｜與老師缺乏Trust？
+D6｜沒有自主選擇？
+D7｜不知道怎麼學？
+D8｜沒有即時Feedback？
+這時才知道真正該改哪個Node。
+## 十八｜八域Prediction Error日誌
+每天只需要記一件。
+Situation｜發生什麼？________
+Activated Domain｜D__。
+Prediction｜我原本以為________。
+Reality｜結果________。
+Difference｜不同在________。
+Wrong Node｜我可能錯估________。
+Old Weight｜原本權重__/10。
+New Weight｜調整為__/10。
+New Model｜________。
+Next Action｜________。
+Retest｜________。
+這會把「懂人性」真正轉成Learning System。
+## 十九｜人性成熟度八級
+L0｜被人性Generator直接推著走。
+L1｜事後知道自己反應過度。
+L2｜能辨識是哪個Domain。
+L3｜能找到核心Need／Fear／Model。
+L4｜能在行動前產生第二表徵。
+L5｜能主動修改Environment／Structure。
+L6｜能利用Prediction Error更新。
+L7｜能跨情境遷移。
+L8｜High Agency｜舊Pattern被啟動時仍能生成新Action。
+真正成熟不是：
+「我已經沒有恐懼、慾望、嫉妒、比較。」
+而是：
+「這些Generator出現時，我仍有Choice。」
+## 二十｜人性八域總生成鏈
+Reality
+→D1 Threat／Safety
+→D2 Need／Value
+→D3 Self／Identity
+→D4 Social Reference
+→D5 Relationship Prediction
+→D6 Power／Constraint
+→D7 Representation／Prediction
+→Emotion
+→Choice
+→Behavior
+→Outcome
+→D8 Feedback／Prediction Error
+→Reweight
+→Model Update
+→Retest
+→New Choice。
+## 二十一｜最高階使用原則
+第一｜先Fact，後Interpretation。
+第二｜先找Domain，不急著判斷人格。
+第三｜先找Generator，再處理Behavior。
+第四｜先找Bottleneck，不要八個一起改。
+第五｜先改最小可控Node。
+第六｜每次介入都必須產生可觀察Feedback。
+第七｜Prediction Error不是失敗，是資料。
+第八｜任何Human Nature Model都必須保留被Reality推翻的權利。
+### 最終公式
+Human Nature Operation
+＝Observe Reality
+→Identify Domain
+→Locate Generator
+→Find Highest-weight Node
+→Generate Alternative Representation
+→Choose Minimum Intervention
+→Act
+→Measure Feedback
+→Detect Prediction Error
+→Reweight
+→Update
+→Retest。
+### 最後一句
+懂人性，不是看到一個人的行為就能替他下結論。
+真正懂人性，是看到Behavior之後，能一路往回找到Need、Fear、Identity、Relationship、Power、Representation與Structure；再用最小行動送回Reality測試。
+最高階的人性能力，不是「看穿別人」。
+而是當自己與別人的舊Generator開始運作時，仍然能看見它、理解它、重新配置它，最後生成一個原本不存在的新選擇。
+# ② 天道母體 × Human Nature OS｜人性完整對照
+你這套「天道母體」裡其實已經留好了人性的位置，只是之前「生命→靈魂→認知→行動」之間少了一個非常重要的中介層：Human Nature＝生命為了維持自己，在有限資源、不確定性與社會互動中形成的行為生成機制。
+所以人性不應和「天道、宗教、Soul OS」平行，而應放在生命母體→人性母體→靈魂母體／社會母體→認知→行動的位置。
+## 一｜先定位：人性到底應該掛在哪裡？
+人性不是另一套獨立母體。
+也不是最高層的Reality。
+更不是「善／惡」的固定本質。
+在你的天道母體裡，人性最適合放在：
+天道母體
+↓
+生命母體
+↓
+【Human Nature Matrix｜人性母體】
+↓
+Soul Matrix
+↓
+Cognitive Matrix
+↓
+Social／Relationship／Power
+↓
+Action
+↓
+Reality Test
+↓
+Feedback
+↓
+Prediction Error
+↓
+Model Update。
+因此可以正式定義：
+天道｜Reality有哪些生成、限制、變化規律？
+生命｜一個系統如何維持自身？
+人性｜人在維持自身、滿足需求、與他人互動時，容易生成哪些Behavior Pattern？
+靈魂｜對我而言，我是誰？什麼最重要？
+認知｜我如何Representation與Prediction Reality？
+行動｜我實際選擇什麼？
+更新｜Reality不同意我的模型時，我怎麼改？
+## 二｜人性與天道三大指令的直接對照
+你原來的三大最高指令：
+01｜對稱性 Symmetry。
+02｜利己性 Self-Preservation。
+03｜無常性 Impermanence。
+三者可以直接生成Human Nature的基本骨架。
+### 01｜對稱性→Pattern
+Reality存在重複結構。
+↓
+生命辨識Pattern。
+↓
+Pattern形成Model。
+↓
+Model產生Prediction。
+↓
+Prediction降低不確定性。
+因此人性會：
+分類。
+比較。
+類推。
+貼標籤。
+尋找因果。
+尋找規律。
+建立刻板印象。
+依靠過去經驗。
+這些都與Pattern Detection有關。
+所以：
+對稱性
+→Pattern
+→Model
+→Prediction
+→Human Behavior。
+### 02｜利己性→Value／Weight
+生命必須維持自身。
+↓
+資源有限。
+↓
+不能所有東西都同等重要。
+↓
+必須Value。
+↓
+必須Weight。
+↓
+必須Choice。
+因此產生：
+生存。
+避害。
+安全。
+利益。
+資源。
+慾望。
+獎賞。
+自利。
+競爭。
+合作。
+互惠。
+地位。
+權力。
+這些都是Human Nature的重要來源。
+所以：
+Self-Preservation
+→Need
+→Value
+→Weight
+→Priority
+→Choice
+→Behavior。
+### 03｜無常性→Prediction Error
+Reality持續改變。
+↓
+昨天有效的Model今天可能失效。
+↓
+Prediction≠Reality。
+↓
+產生Prediction Error。
+↓
+生命必須：
+適應。
+學習。
+修正。
+重新配置Weight。
+重新行動。
+因此：
+Impermanence
+→Difference
+→Prediction Error
+→Adaptation
+→Model Update。
+所以三大指令可以重新壓縮成：
+對稱性→讓人形成Model。
+利己性→讓人配置Weight。
+無常性→讓Model必須Update。
+### 天道→人性總公式
+Pattern＋Self-Preservation＋Change
+→Model＋Weight＋Update
+→Human Nature。
+## 三｜把人性八大Domain正式掛入天道母體
+### D1｜SURVIVAL｜生存
+天道對應｜Self-Preservation。
+生命問題｜我如何繼續存在？
+人性Node｜生存、避害、安全、恐懼、損失、匱乏、防衛。
+生成機制：
+Threat
+→Predicted Loss
+→Fear
+→Attention Narrowing
+→Protection
+→Behavior。
+天道智慧｜生命首先會維持自身。
+但Self-Preservation不是道德上的「自私」。
+它是生命系統維持自身的基本傾向。
+### D2｜NEED／VALUE｜需求與價值
+天道對應｜有限資源＋選擇。
+生命問題｜有限資源應配置到哪裡？
+人性Node｜需求、慾望、利益、獎賞、自利、利他、互惠、公平。
+生成機制：
+Scarcity
+→Need
+→Value
+→Weight
+→Priority
+→Choice。
+因此：
+人性中的「利益」其實可以往上追溯到Resource Allocation。
+沒有無限時間。
+沒有無限注意力。
+沒有無限能量。
+因此生命一定需要Weight。
+### D3｜SELF｜身份
+天道對應｜系統邊界＋持續性。
+生命問題｜哪一部分是「我」？
+人性Node｜Identity、Self-esteem、Self Model、World Model、Value Model、Meaning。
+生成機制：
+Experience
+→Memory
+→Pattern
+→Self Model
+→Identity
+→Prediction。
+人不只保護身體。
+也會保護「我是誰」。
+所以有時候Evidence威脅Identity，比威脅利益更容易引發防衛。
+### D4｜SOCIAL｜群體
+天道對應｜Interaction＋Emergence。
+生命問題｜多個Agent如何共同存在？
+人性Node｜比較、嫉妒、地位、歸屬、從眾、權威、Social Norm。
+生成機制：
+Agent
+＋Agent
+＋Agent
+→Interaction
+→Norm
+→Hierarchy
+→Culture
+→Emergent Social Structure。
+所以群體不是個人的簡單加總。
+群體本身會生成新的Behavior Constraint。
+這正好對應你的：
+Interaction→Self-Organization→Emergence。
+### D5｜RELATIONSHIP｜關係
+天道對應｜Coupling＋Feedback。
+生命問題｜兩個系統如何互相影響？
+人性Node｜依附、信任、愛、互惠、界線、衝突、修復。
+生成機制：
+A Action
+→B Prediction Error
+→B Response
+→A Prediction Error
+→A Response
+→Repeated Loop
+→Relationship Pattern
+→Attractor。
+因此關係不是：
+A人格＋B人格。
+更精確是：
+A System↔B System。
+反覆Feedback最後形成Relationship Attractor。
+### D6｜POWER｜權力
+天道對應｜Resource／Constraint／Asymmetry。
+生命問題｜誰能改變誰的Choice Space？
+人性Node｜資源、資訊、依賴、控制、權力、談判力、Exit Option、制度。
+生成機制：
+Resource Asymmetry
+→Dependency
+→Power Asymmetry
+→Choice Constraint
+→Behavior。
+所以Power不是單純「壞」。
+Power是Structure Variable。
+真正需要問：
+Power如何產生？
+如何集中？
+如何制衡？
+Feedback是否存在？
+Exit Option是否存在？
+### D7｜COGNITION｜認知
+天道對應｜Pattern／Information／Prediction。
+生命問題｜有限Agent如何理解無限Reality？
+人性Node｜Attention、Representation、Language、Bias、Rationalization、Prediction。
+生成機制：
+Reality
+→Signal
+→Selection
+→Representation
+→Model
+→Prediction。
+因為Agent不可能處理完整Reality。
+所以必須Compression。
+Compression必然失去資訊。
+因此Bias不是偶然例外。
+某種程度上，它也是有限認知系統進行快速運算的代價。
+### D8｜EVOLUTION｜更新
+天道對應｜Impermanence＋Difference。
+生命問題｜舊策略失效後怎麼辦？
+人性Node｜Feedback、Prediction Error、Learning、Model Update、Retest、High Agency。
+生成機制：
+Prediction
+→Action
+→Reality
+→Outcome
+→Difference
+→Prediction Error
+→Update
+→New Prediction。
+這是Human Nature OS與天道母體最重要的閉環。
+## 四｜八大人性Domain × 天道母體一頁總表
+| Human Domain | 天道來源 | 系統問題 | 人性核心 | 失衡模式 | 高階能力 |
+|---|---|---|---|---|---|
+| D1 Survival | Self-Preservation | 如何存活？ | 恐懼、安全、避害 | 過度防衛 | Risk Regulation |
+| D2 Need | Scarcity／Selection | 什麼重要？ | 需求、利益、獎賞 | 貪婪／短視 | Value Allocation |
+| D3 Self | Boundary／Continuity | 我是誰？ | Identity、自尊 | 身份僵化 | Identity Flexibility |
+| D4 Social | Interaction／Emergence | 如何群居？ | 比較、地位、從眾 | 群體綁架 | Social Calibration |
+| D5 Relationship | Coupling／Feedback | 如何連結？ | 信任、依附、互惠 | 控制／依賴 | Repair／Boundary |
+| D6 Power | Asymmetry／Constraint | 誰有選項？ | 權力、資源、控制 | 支配／無力 | Agency／Institution |
+| D7 Cognition | Pattern／Information | 如何理解？ | 表徵、語言、偏誤 | 模型僵化 | Representation Fluidity |
+| D8 Evolution | Change／Difference | 如何更新？ | Error、Feedback、Update | 否認Reality | High Agency |
+## 五｜人性與Soul OS不是同一層
+這裡非常重要。
+Human Nature回答：
+「人類這類生命系統通常有哪些Behavior Generator？」
+Soul OS回答：
+「這一個具體的人，目前把什麼設定成高Weight？」
+例如：
+人性共有機制｜Loss Aversion。
+↓
+某個人的Soul Weight｜家庭安全＝95。
+另一個人的Soul Weight｜自由＝95。
+另一個人的Soul Weight｜成就＝95。
+所以遇到同一事件：
+三個人會生成不同Prediction。
+不同Emotion。
+不同Action。
+因此：
+Human Nature＝Shared Architecture。
+Soul OS＝Individual Configuration。
+這是一個非常漂亮的區分。
+## 六｜人性→Soul OS的真正接口就是Weight
+Human Nature提供候選需求。
+↓
+Life Experience調整Weight。
+↓
+Religion／Culture／Family提供Meaning。
+↓
+形成Value Model。
+↓
+Value Model配置Weight。
+↓
+Weight控制Attention。
+↓
+Attention選擇Evidence。
+↓
+Evidence更新Model。
+↓
+Model產生Prediction。
+↓
+Prediction產生Emotion與Action。
+因此可以寫成：
+Human Architecture
+＋Personal Experience
+＋Culture
+＋Religion
+＋Environment
+→Soul Configuration。
+## 七｜Religion與Human Nature的關係
+宗教不是單純描述「人會怎麼做」。
+它通常進一步回答：
+人應該成為什麼？
+什麼值得追求？
+人的根本困境是什麼？
+生命最終朝向哪裡？
+所以：
+Human Nature偏向Descriptive。
+Religion包含Descriptive＋Normative＋Ultimate。
+Human Nature｜人通常如何行動？
+Ethics｜人應該如何行動？
+Religion｜人是誰？根本問題是什麼？如何轉化？最終朝向哪裡？
+Soul OS｜這些答案實際如何成為我的Weight？
+因此Religion可以直接修改Human Nature的輸出。
+例如：
+生存衝動存在。
+但Value Weight可以讓一個人為別人犧牲。
+利益存在。
+但道德／信仰可以提高Long-term／Collective Value Weight。
+憤怒存在。
+但Practice可以改變Action。
+所以：
+Human Nature≠Destiny。
+## 八｜基督信仰×人性Crosswalk
+Creation｜人具有生命與關係性。
+Fall／Sin｜神學上的罪與墮落。
+Human Nature OS可研究｜自利、防衛、權力、慾望、偏誤等Behavior Mechanism。
+Cross｜神學上的救贖核心。
+Grace｜恩典。
+New Identity｜新的身份理解。
+Sanctification｜生命持續轉化。
+Fruit｜生命結果。
+但仍然必須保留：
+Sin≠Selfishness。
+Sin≠Bias。
+Sin≠Prediction Error。
+Repentance≠Model Update。
+Grace≠Reward。
+Salvation≠Self Optimization。
+Holy Spirit≠Nervous System。
+可以Crosswalk。
+不能Ontology Collapse。
+## 九｜佛教×人性Crosswalk
+人性Domain可對照觀察：
+慾望。
+執著。
+比較。
+身份。
+情緒。
+痛苦。
+佛教提供另一套高階Representation：
+無常。
+緣起。
+無我。
+苦。
+貪瞋癡。
+慈悲。
+修習。
+其中最明顯的結構Crosswalk是：
+無常↔Change。
+執著↔Model／Value僵化的部分現象。
+覺察↔Metacognitive Observation。
+但同樣：
+無我≠Self Model Theory。
+業≠Feedback。
+解脫≠Model Update。
+只能結構對照。
+不能直接等同。
+## 十｜道家×人性Crosswalk
+人性容易：
+控制。
+爭奪。
+過度用力。
+身份執著。
+慾望膨脹。
+道家提出：
+道。
+自然。
+無為。
+守柔。
+知足。
+不爭。
+結構上可以Crosswalk：
+過度控制→降低強制干預。
+僵硬策略→提高Adaptive Flexibility。
+過度慾望→重新配置Value Weight。
+但：
+道≠物理定律。
+無為≠什麼都不做。
+自然≠放棄Model。
+## 十一｜儒家×人性Crosswalk
+Human Nature關心：
+Self。
+Relationship。
+Social。
+Norm。
+儒家特別強調：
+仁。
+義。
+禮。
+智。
+信。
+修身。
+齊家。
+角色倫理。
+因此儒家可以視為非常強的：
+Self→Relationship→Social Order轉化架構。
+Human Nature描述：
+人有比較、利益、地位、群體傾向。
+儒家回答：
+如何透過修身、禮與倫理把這些力量導向較穩定的Social Order。
+## 十二｜人性與量子母體的邊界
+這裡建議非常嚴格。
+Quantum Possibility不能直接推出Human Choice。
+量子不確定性不能直接等於心理自由。
+Wave Function不能等於Soul。
+Quantum Information不能直接等於靈魂資訊。
+可以做抽象結構類比：
+Possibility Space
+↔
+Behavioral Option Space。
+Probability Distribution
+↔
+Prediction Distribution。
+但這是Analogy。
+不是已證明的Causal Identity。
+這樣你的母體會更穩。
+## 十三｜人性與熱力學／熵母體
+這裡可以做更強的系統層Crosswalk。
+生命需要Energy維持Organization。
+人也需要資源維持：
+Body。
+Attention。
+Relationship。
+Organization。
+所以Stress、Information Overload、Conflict都可能增加維持成本。
+你原本的「高熵人性循環」：
+Fear
+→Hypervigilance
+→Emotional Reactivity
+→Defense
+→Conflict
+→More Uncertainty
+→More Fear。
+可以視為一種系統性惡性Feedback Loop。
+但心理「高熵」最好標記為Complexity／Disorder Analogy，而不是直接等同熱力學Entropy。
+## 十四｜人性與認知母體是最直接的接口
+Human Need
+↓
+Value
+↓
+Weight
+↓
+Attention
+↓
+Representation
+↓
+Prediction
+↓
+Emotion
+↓
+Action。
+所以很多我們叫「人性」的現象，其實是：
+Evolutionary／Biological Constraint
+＋Need
+＋Social Structure
+＋Learning History
+＋Cognitive Model
+共同生成。
+因此Human Behavior不能只寫：
+Behavior＝Human Nature。
+更精確是：
+Behavior＝f(State, Need, Value, Model, Social Context, Power, Environment, Incentive, Constraint, History)。
+## 十五｜人性如何進入你原來的L0～L12
+L0｜REALITY｜真實。
+↓
+L1｜DAO MATRIX｜生成／限制／變化規律。
+↓
+L2｜LIFE MATRIX｜維持、自組織、適應。
+↓
+【L3｜HUMAN NATURE MATRIX】
+生存＋需求＋Self＋Social＋Relationship＋Power。
+↓
+L4｜RELIGION／PHILOSOPHY｜人如何理解生命與Ultimate Reality。
+↓
+L5｜SOUL MATRIX｜Identity＋Value＋Meaning＋Weight。
+↓
+L6｜COGNITIVE MATRIX｜Representation＋Prediction。
+↓
+L7｜EMOTION／LANGUAGE｜狀態與表達。
+↓
+L8｜ACTION｜Choice＋Behavior。
+↓
+L9｜REALITY TEST｜Outcome＋Feedback。
+↓
+L10｜ERROR｜Difference＋Prediction Error。
+↓
+L11｜UPDATE｜Reweight＋Model Update＋Retest。
+↓
+L12｜WISDOM｜Generalization＋Boundary＋Compression。
+↓
+重新逼近Reality。
+## 十六｜新版天道母體一頁總表
+| 層 | Matrix | 回答什麼？ | 核心變數 |
+|---|---|---|---|
+| L0 | Reality | 真實是什麼？ | Reality |
+| L1 | Dao | 世界怎麼運作？ | Pattern／Constraint／Change |
+| L2 | Life | 如何維持存在？ | Energy／Resource／Adaptation |
+| L3 | Human Nature | 人為什麼這樣做？ | Need／Fear／Reward／Social／Power |
+| L4 | Religion／Philosophy | 人應如何理解存在與終向？ | Ontology／Problem／Practice／Telos |
+| L5 | Soul | 對我什麼最重要？ | Identity／Value／Meaning／Weight |
+| L6 | Cognition | 我如何理解Reality？ | Representation／Prediction |
+| L7 | Emotion／Language | 這對我意味什麼？ | Emotion／Narrative |
+| L8 | Action | 我要做什麼？ | Choice／Behavior |
+| L9 | Feedback | 發生什麼結果？ | Outcome／Feedback |
+| L10 | Error | 哪裡猜錯？ | Difference／Prediction Error |
+| L11 | Update | 如何修正？ | Reweight／Update／Retest |
+| L12 | Wisdom | 什麼能跨情境保留？ | Pattern／Boundary／Compression |
+## 十七｜把「銷售／說服／管理／影響／談判」也掛進來
+它們其實全部位於：
+Human Nature
+↓
+Soul／Cognition
+↓
+Social／Relationship／Power
+↓
+Action
+這一段。
+Sales｜利用Need／Value完成Exchange。
+Persuasion｜改變Representation。
+Influence｜改變Trust／Weight。
+Negotiation｜重新排列Interest／Options／Power。
+Management｜設計Environment／Incentive／Feedback。
+所以它們不是五套獨立學問。
+它們都是：
+Applied Human Nature。
+### 統一公式
+Human Nature
+→Understand Need
+→Understand Model
+→Understand Weight
+→Understand Interest
+→Understand Power
+→Change Information／Structure／Options
+→Choice
+→Behavior
+→Feedback。
+## 十八｜天道、人性、商業也可以直接接起來
+天道｜資源有限。
+↓
+生命｜必須選擇。
+↓
+人性｜形成Need／Value／Weight。
+↓
+商業｜發現未被滿足的Need。
+↓
+產品｜創造Value。
+↓
+銷售｜完成Exchange。
+↓
+客戶｜形成Prediction。
+↓
+使用｜Reality Test。
+↓
+Outcome｜Feedback。
+↓
+企業｜Model Update。
+因此商業本身也可以理解成Adaptive System。
+不是：
+找到一招永遠賺錢的方法。
+而是：
+Market Reality
+→Hypothesis
+→Product
+→Customer Behavior
+→Feedback
+→Prediction Error
+→Business Model Update。
+## 十九｜人性也可以接回你的「表徵流動性」
+人性的問題不是：
+人有Fear。
+人有Self-interest。
+人會Comparison。
+人需要Identity。
+這些很多都是正常Generator。
+真正容易讓系統陷住的是：
+Representation僵化。
+Weight僵化。
+Model僵化。
+Attractor僵化。
+例如：
+Fear＋流動Representation
+→「也許有風險，我先蒐集資訊。」
+Fear＋僵化Representation
+→「一定會失敗。」
+Comparison＋流動Representation
+→「他做到了，我可以研究條件。」
+Comparison＋僵化Representation
+→「他成功證明我很差。」
+Conflict＋流動Representation
+→「我們的Prediction不同。」
+Conflict＋僵化Representation
+→「他就是壞人。」
+所以真正高階的人性能力不是消滅Human Nature。
+而是提高：
+Representation Fluidity。
+Weight Flexibility。
+Model Update Capacity。
+Action Space。
+## 二十｜人性的新舊模式可以正式掛入天道
+舊模式｜人性本善／本惡。
+新模式｜人性包含多種在不同條件下被啟動的Behavior Generator。
+舊模式｜自私就是壞。
+新模式｜Self-Preservation是生命機制；問題在於如何配置Value與Boundary。
+舊模式｜恐懼應該消除。
+新模式｜恐懼提供Threat Prediction，需判斷Prediction是否準確。
+舊模式｜嫉妒很不好。
+新模式｜嫉妒可能暴露Comparison與Hidden Value。
+舊模式｜控制別人才能安全。
+新模式｜提高Adaptive Capacity與Options。
+舊模式｜相信好人。
+新模式｜建立Trust Model與制度。
+舊模式｜找到正確答案。
+新模式｜建立可被Reality更新的Model。
+## 二十一｜人性真正的Evolution Ladder
+L0｜Impulse｜衝動。
+我想要，所以行動。
+↓
+L1｜Emotion｜情緒。
+我感覺如此，所以相信。
+↓
+L2｜Narrative｜故事。
+我為自己的行為找到理由。
+↓
+L3｜Awareness｜覺察。
+我開始看見自己的Pattern。
+↓
+L4｜Mechanism｜機制。
+我知道這個Pattern怎麼生成。
+↓
+L5｜Prediction｜預測。
+我可以預測自己下一次可能怎麼反應。
+↓
+L6｜Intervention｜介入。
+我能在Pattern發生前改變一個Node。
+↓
+L7｜Model Update｜更新。
+Reality不同意時，我願意改Model。
+↓
+L8｜High Agency｜高能動性。
+我不再只能執行舊Pattern。
+↓
+L9｜Wisdom｜智慧。
+我能跨情境辨識Pattern、Boundary與適用條件。
+## 二十二｜天道×Soul OS×Religion×Human Nature統一母體
+```
+　　　　　　　　　【REALITY】
+　　　　　　　　　　　↓
+　　　　　　【DAO｜生成／限制／無常】
+　　　　　　　　　　　↓
+　　　　　　【LIFE｜維持／適應／演化】
+　　　　　　　　　　　↓
+　　　　　　【HUMAN NATURE】
+　　　Survival／Need／Self／Social
+　　 Relationship／Power／Cognition
+　　　　　　　　　　　↓
+　　　　　┌────────────┐
+　　　　　↓　　　　　　　　　↓
+【RELIGION／PHILOSOPHY】　【CULTURE／SOCIAL】
+終極詮釋　　　　　　　群體規範
+　　　　　↓　　　　　　　　　↓
+　　　　　└────────────┘
+　　　　　　　　　　　↓
+　　　　　　　　【SOUL OS】
+Self Model＋World Model＋Value Model＋Meaning＋Weight
+　　　　　　　　　　　↓
+　　　　　　　 【COGNITION】
+Attention→Evidence→Representation→Prediction
+　　　　　　　　　　　↓
+　　　　　　【EMOTION／LANGUAGE】
+　　　　　　　　　　　↓
+　　　　　　　　【CHOICE】
+　　　　　　　　　　　↓
+　　　　　　　　【ACTION】
+　　　　　　　　　　　↓
+　　　　　　　 【REALITY TEST】
+　　　　　　　　　　　↓
+　　　　　　　 【FEEDBACK】
+　　　　　　　　　　　↓
+　　　　　【PREDICTION ERROR】
+　　　　　　　　　　　↓
+　　　　　　【MODEL UPDATE】
+　　　　　　　　　　　↓
+　　　　　　　 【RETEST】
+　　　　　　　　　　　↓
+　　　　　　 【CAPABILITY】
+　　　　　　　　　　　↓
+　　　　　　　 【WISDOM】
+　　　　　　　　　　　↓
+　　　　　　　　　　　↺
+　　　　　　　　REALITY。
+```
+## 二十三｜這也解決「靈魂狀態是不是一切根源」的問題
+更精確的答案是：
+不是。
+Soul State不是最終第一因。
+因為Soul本身也受到：
+Biology。
+Human Nature。
+Development。
+Family。
+Culture。
+Religion。
+Experience。
+Environment。
+Social Structure。
+Reality。
+共同塑造。
+但在「個人當下行為生成」尺度上，Soul Configuration確實是一個非常高權重的中介層。
+因此不要寫：
+Soul→Everything。
+更精確寫：
+Reality／Biology／Human Nature／Experience／Culture
+→Soul Configuration
+→Attention／Prediction／Action
+→Feedback
+→Soul Update。
+這樣會比單向的「靈魂決定一切」更完整。
+## 二十四｜最高階的人性智慧
+第一層｜看Behavior。
+第二層｜看Emotion。
+第三層｜看Need。
+第四層｜看Value。
+第五層｜看Weight。
+第六層｜看Representation。
+第七層｜看Model。
+第八層｜看Environment。
+第九層｜看Structure。
+第十層｜看Constraint。
+第十一層｜看Feedback。
+第十二層｜看Evolution。
+所以：
+不要只問「他為什麼這樣？」
+往上一層問：
+「什麼Need生成它？」
+再上一層：
+「什麼Model讓這個行為看起來合理？」
+再上一層：
+「什麼Structure一直強化它？」
+再上一層：
+「什麼Constraint限制了其他選擇？」
+最後再問：
+「Reality回傳什麼Feedback，可以推翻我們現在的解釋？」
+這才是你的天道母體與Human Nature OS真正接上的地方。
+## 二十五｜整套系統最終總公式
+Reality
+→Dao Constraints
+→Possibility／Pattern／Change
+→Life
+→Self-Preservation
+→Human Nature
+→Need
+→Value
+→Social Interaction
+→Religion／Culture／Experience
+→Self Model
+→World Model
+→Value Model
+→Meaning
+→Weight
+→Attention
+→Evidence Selection
+→Representation
+→Prediction
+→Emotion
+→Language
+→Decision
+→Action
+→Outcome
+→Feedback
+→Difference
+→Prediction Error
+→Diagnosis
+→Reweight
+→Model Update
+→Retest
+→Capability
+→High Agency
+→Wisdom
+→更高解析度的Reality Model。
+### 最後壓縮成一句
+天道提供Constraint。
+生命要求Survival。
+人性生成Need與Behavior Tendency。
+宗教／文化提供Meaning與Telos。
+靈魂配置Identity、Value與Weight。
+認知把Reality壓縮成Representation與Prediction。
+情緒提供快速Signal。
+語言把Model轉成可傳遞的Narrative。
+行動把內在模型送進Reality。
+Reality用Outcome回覆。
+Prediction Error指出模型與Reality的Difference。
+Model Update重新配置Weight與Representation。
+Retest確認新模型是否更有效。
+反覆循環之後形成Capability。
+跨越多個情境仍能成立的Pattern，才逐漸被壓縮成Wisdom。
+### 最高階金句
+人性不是命運。
+人性是生命提供給我們的一組預設Generator。
+靈魂決定哪些Generator被賦予較高Weight。
+環境決定哪些Generator比較容易被啟動。
+制度決定哪些Behavior會被獎勵。
+認知決定我們如何解讀Reality。
+行動把Prediction送去接受Reality測試。
+而真正的自由，不是消滅人性，而是看見自己的Generator之後，仍然有能力重新配置Weight、生成第二表徵、擴大Action Space，並允許Reality教育自己。
+# ③ Human Influence OS｜人性×銷售×說服×管理×影響×談判
+這六個主題其實不該分成六套零散技巧；把人性母體放在最上游後，可以統一成一個「Human Influence OS」：人性解釋行為，銷售完成價值交換，說服改變表徵與判斷，影響累積長期權重，談判重組利益與選項，管理則設計整個行為環境。
+核心命題｜這六個領域表面不同，底層其實都在研究同一件事：人在什麼條件下，會改變Attention、Representation、Prediction、Choice與Behavior？
+因此不要把它們分別背成六套話術。
+應該建立一套共同的人類行為母體。
+總鏈｜Human Nature→Need→Value→Representation→Trust→Prediction→Choice→Behavior→Feedback→Model Update。
+## 一｜六大系統到底差在哪裡？
+| 系統 | 核心問題 | 主要改變對象 | 成功判準 | 最大風險 |
+|---|---|---|---|---|
+| 人性 Human Nature | 人為什麼這樣做？ | Behavior Generator | 預測更準 | 貼標籤 |
+| 銷售 Sales | 為什麼願意交換？ | Value Exchange | 雙方成交且有價值 | 操弄需求 |
+| 說服 Persuasion | 為什麼改變看法？ | Representation／Belief | 自主更新判斷 | 欺騙 |
+| 影響 Influence | 為什麼願意跟隨？ | Weight／Trust | 長期自願採納 | 權威依賴 |
+| 談判 Negotiation | 如何處理不同利益？ | Options／Terms | 創造並分配價值 | 脅迫 |
+| 管理 Management | 如何讓多人穩定協作？ | Environment／Incentive／Feedback | 系統持續產生成果 | 過度控制 |
+### 最重要的差異
+人性＝Understand。
+說服＝Reframe。
+影響＝Reweight。
+銷售＝Exchange。
+談判＝Reconfigure。
+管理＝Design。
+六者共同底層＝Behavior Generation。
+## 二｜共同上游｜八大人性Domain
+D1｜SURVIVAL｜安全、恐懼、損失、不確定性。
+D2｜NEED／VALUE｜需求、利益、慾望、獎賞、互惠。
+D3｜SELF｜身份、自尊、Self Model、Value Model。
+D4｜SOCIAL｜比較、地位、歸屬、權威、社會證據。
+D5｜RELATIONSHIP｜信任、依附、互惠、界線、修復。
+D6｜POWER｜資源、資訊、依賴、控制、選擇權、Exit Option。
+D7｜COGNITION｜注意、表徵、語言、偏誤、Prediction。
+D8｜EVOLUTION｜Feedback、Prediction Error、Model Update、Retest。
+任何銷售、管理、說服、影響、談判問題，都可以先問：
+現在真正被啟動的是哪個Domain？
+## 三｜Human Nature｜人性是所有系統的上游
+人性不是一套「如何看穿別人」的黑話。
+更精準的定義是：
+Human Behavior＝State×Need×Model×Environment×Incentive×Constraint×Feedback。
+看到Behavior不要直接跳到Character。
+先逆推：
+他現在處於什麼State？
+他在保護什麼？
+他想得到什麼？
+他害怕失去什麼？
+他怎麼Represent這件事？
+他的Prediction是什麼？
+目前Incentive是什麼？
+有哪些Constraint？
+有哪些Options？
+什麼Feedback正在強化這個Behavior？
+### 人性診斷七問
+01｜Need｜他需要什麼？
+02｜Fear｜他怕失去什麼？
+03｜Value｜什麼對他權重最高？
+04｜Identity｜他正在保護什麼身份？
+05｜Prediction｜他預測會發生什麼？
+06｜Power｜他有哪些／沒有什麼選項？
+07｜Feedback｜什麼結果一直強化現在的行為？
+理解這七題，後面五個系統才有基礎。
+## 四｜SALES｜銷售不是把東西塞給別人，而是完成價值交換
+低階銷售問：
+怎麼讓他買？
+高階銷售問：
+他的Problem與我的Solution真的Match嗎？
+核心鏈｜Problem→Need→Desired Outcome→Value→Trust→Risk→Friction→Decision→Exchange→Outcome。
+### 銷售八個Node
+01｜Problem｜真正問題。
+02｜Need｜真正需求。
+03｜Outcome｜想得到的結果。
+04｜Value｜結果有多重要。
+05｜Trust｜相信你嗎？
+06｜Risk｜怕什麼？
+07｜Friction｜什麼阻礙行動？
+08｜Timing｜為什麼現在行動？
+成交不是「話術夠強」。
+可以先用診斷式假設表示：
+Purchase Probability≈Need Fit×Value×Trust×Readiness÷Risk÷Friction。
+### 銷售最重要能力
+不是Talking。
+而是Diagnosis。
+差的業務一直介紹產品。
+好的業務一直理解問題。
+更好的業務甚至會告訴不適合的人：
+「這個目前可能不適合你。」
+短期少一筆成交。
+長期增加Trust。
+### 銷售Prediction Error
+你以為｜價格太高。
+Reality｜客戶其實不相信結果。
+你以為｜產品功能不夠。
+Reality｜客戶根本看不懂價值。
+你以為｜需要折扣。
+Reality｜真正缺的是Trust。
+所以沒有成交不是答案。
+沒有成交只是Feedback。
+## 五｜PERSUASION｜說服的本質是Representation Update
+低階說服＝把我的答案塞進你的腦。
+高階說服＝讓你看到原本沒有看到的Evidence、Perspective與Option。
+核心鏈｜Current Representation→New Evidence→Alternative Representation→Prediction Update→Choice。
+例如：
+舊表徵｜「這個APP又要叫我做更多題。」
+新表徵｜「它不是增加題量，而是減少你浪費在已經會的題目上的時間。」
+Reality沒變。
+Representation改變。
+Value Perception因此改變。
+### 說服七個Node
+01｜Attention｜先讓重要資訊被看到。
+02｜Understanding｜先理解對方模型。
+03｜Frame｜他現在如何表徵問題？
+04｜Evidence｜缺少什麼證據？
+05｜Alternative｜能否產生第二表徵？
+06｜Autonomy｜保留拒絕權。
+07｜Update｜讓對方自己形成新判斷。
+### 低階vs高階
+低階｜證明你錯。
+高階｜增加你可以看見的Evidence。
+低階｜製造Fear。
+高階｜降低Uncertainty。
+低階｜隱藏反證。
+高階｜說明Boundary。
+低階｜逼迫Yes。
+高階｜提高Decision Quality。
+真正穩定的說服不是讓對方「輸掉辯論」。
+而是讓Model得到更好的Information。
+## 六｜INFLUENCE｜影響不是一次說服，而是長期Weight形成
+說服可能發生一次。
+影響通常是Time Series。
+你長期說什麼。
+你長期做什麼。
+你如何處理錯誤。
+你是否一致。
+你是否真的產生成果。
+最後決定別人給你的訊息多高Weight。
+核心鏈｜Consistency→Credibility→Trust→Weight→Influence。
+### 影響力七個來源
+01｜Expertise｜專業能力。
+02｜Integrity｜誠信。
+03｜Consistency｜一致性。
+04｜Outcome｜實際成果。
+05｜Relationship｜關係。
+06｜Identification｜價值／身份認同。
+07｜Network｜社會證據。
+所以：
+Followers≠Influence。
+曝光≠Influence。
+聲量≠Influence。
+真正Influence＝你的訊息進入對方決策模型時，被賦予多少可信權重。
+### 最高階影響力
+不是讓別人越來越需要你。
+而是讓別人因為你的影響，Decision Quality與Agency提高。
+## 七｜NEGOTIATION｜談判不是打敗對方，而是重新設計交換結構
+表面談判：
+你要100。
+我只給60。
+底層談判其實包含：
+Interest。
+Constraint。
+Priority。
+Alternative。
+Information。
+Time。
+Risk。
+Power。
+Relationship。
+核心區分：
+Position＝我要什麼。
+Interest＝為什麼我要。
+只談Position容易形成零和。
+找到Interest才可能創造新Option。
+### 談判八個Node
+01｜Position｜表面要求。
+02｜Interest｜真正利益。
+03｜Priority｜哪些最重要？
+04｜Constraint｜什麼不能做？
+05｜BATNA｜談不成時最佳替代方案。
+06｜Reservation Point｜最低可接受邊界。
+07｜Option｜還有哪些交換組合？
+08｜Relationship｜這是一次交易還是長期合作？
+### 談判核心鏈
+Position
+↓
+Interest
+↓
+Priority
+↓
+Constraint
+↓
+BATNA
+↓
+Options
+↓
+Trade-offs
+↓
+Agreement／Exit。
+### 談判最重要的人性能力
+不要只聽「我要什麼」。
+要聽「為什麼這件事對他重要」。
+價格背後可能是公平。
+拒絕背後可能是Risk。
+強硬背後可能是Identity。
+拖延背後可能是Uncertainty。
+要求控制背後可能是Fear。
+找到Generator，Option Space才會增加。
+### Power核心
+談判力不只是聲音大。
+Negotiation Power≈Alternatives＋Information＋Resources＋Time＋Credibility＋Exit Capacity。
+所以最好的談判準備之一不是學一句厲害話術。
+而是增加BATNA。
+## 八｜MANAGEMENT｜管理不是控制人，而是設計Behavior Environment
+這是六個系統中最容易被誤解的一個。
+低階管理：
+盯人。
+催人。
+罵人。
+獎懲。
+高階管理：
+Goal。
+Role。
+Information。
+Resource。
+Incentive。
+Feedback。
+Boundary。
+Correction。
+Environment。
+管理者真正管理的不是「人格」。
+而是讓好行為更容易發生的Structure。
+### 管理八個Node
+01｜Goal｜目標清楚嗎？
+02｜Role｜誰負責什麼？
+03｜Capability｜他會做嗎？
+04｜Resource｜有資源嗎？
+05｜Incentive｜誘因是否對齊？
+06｜Friction｜什麼讓正確行動變困難？
+07｜Feedback｜多久知道做得對不對？
+08｜Correction｜錯了如何修正？
+### 員工不做，不要立刻判斷懶
+可能是：
+不知道要做。
+不知道怎麼做。
+沒有時間。
+沒有資源。
+優先順序衝突。
+做了沒有回饋。
+KPI獎勵錯誤行為。
+害怕犯錯。
+權責不對稱。
+認為做了沒有意義。
+這就是Character Judgment→Structural Diagnosis。
+## 九｜六大系統放在同一個案例就非常清楚
+假設：
+「學生不願意使用英文學習APP。」
+人性｜他為什麼不想用？
+可能是怕失敗、覺得麻煩、沒有立即獎賞。
+說服｜他現在怎麼Represent APP？
+「又多一份功課。」
+重新表徵：
+「幫你少做不必要的題目。」
+影響｜為什麼相信老師？
+來自長期公平、一致、能力與實際幫助。
+銷售｜即使學生沒有付錢，也存在Value Exchange。
+學生付出時間與Attention。
+系統必須回報足夠Learning Value。
+談判｜學生想要自由，老師想要練習。
+可以重新設計：
+完成核心Minimum Task後，後面保留選擇權。
+管理｜如何不用每天追？
+建立：
+固定入口→明確任務→即時Feedback→進度可見→錯題補強→Retest。
+這時「學生不使用APP」就從人格問題變成System Design Problem。
+## 十｜六大系統的共同20個Canonical Nodes
+01｜Need｜需求。
+02｜Fear｜恐懼。
+03｜Value｜價值。
+04｜Identity｜身份。
+05｜Interest｜利益。
+06｜Trust｜信任。
+07｜Attention｜注意。
+08｜Representation｜表徵。
+09｜Language｜語言。
+10｜Evidence｜證據。
+11｜Prediction｜預測。
+12｜Emotion｜情緒。
+13｜Incentive｜誘因。
+14｜Power｜權力。
+15｜Options｜選項。
+16｜Boundary｜界線。
+17｜Choice｜選擇。
+18｜Behavior｜行為。
+19｜Feedback｜回饋。
+20｜Update｜更新。
+這20個Node可以同時解釋Sales／Persuasion／Influence／Negotiation／Management。
+## 十一｜六大能力其實可以形成一條順序
+Human Nature｜先理解人。
+↓
+Persuasion｜再理解他如何看事情。
+↓
+Influence｜建立長期Trust與Weight。
+↓
+Negotiation｜處理雙方不同利益。
+↓
+Sales｜完成自願Value Exchange。
+↓
+Management｜把成功模式變成可重複Structure。
+↓
+Feedback。
+↓
+Model Update。
+這條鏈比單獨學「銷售話術」「管理技巧」「談判金句」穩定很多。
+## 十二｜六種人最容易犯的錯
+只懂人性的人｜容易變成犬儒，什麼都解釋成利益。
+只懂銷售的人｜容易過度追求成交。
+只懂說服的人｜容易把每件事變成辯論。
+只懂影響的人｜容易追求聲量與權威。
+只懂談判的人｜容易把所有關係理解成博弈。
+只懂管理的人｜容易把人當成流程零件。
+真正成熟是六者互相制衡。
+理解人性，但不失去善意。
+懂銷售，但不賣不適合的東西。
+懂說服，但保留對方拒絕權。
+有影響力，但不製造依賴。
+懂談判，但不破壞長期信任。
+會管理，但不剝奪人的Agency。
+## 十三｜六大系統新舊模式總表
+| 領域 | 舊模式 | 新模式 |
+|---|---|---|
+| 人性 | 判斷好人壞人 | 找Behavior Generator |
+| 銷售 | 想辦法成交 | 找Problem-Solution Fit |
+| 說服 | 證明我對 | 提供更好的Evidence／Representation |
+| 影響 | 讓人聽我的 | 建立可信Weight |
+| 談判 | 贏過對方 | 擴大並重組Value |
+| 管理 | 控制員工 | 設計高品質Behavior Environment |
+## 十四｜共同診斷八問
+遇到任何「為什麼他不做我要的事？」時，不要先加大說服力。
+先問：
+01｜STATE｜他現在處於什麼狀態？
+02｜NEED｜他真正需要什麼？
+03｜VALUE｜什麼對他權重最高？
+04｜MODEL｜他如何理解現在的Reality？
+05｜TRUST｜他相信誰、相信什麼Evidence？
+06｜INCENTIVE｜目前什麼行為對他最划算？
+07｜OPTION｜他有哪些選擇與退出方案？
+08｜FEEDBACK｜什麼結果正在強化他的行為？
+八題問完，通常問題已經比「他為什麼不聽我的」清楚很多。
+## 十五｜六大系統共同診斷公式
+如果對方「沒注意」。
+→查Attention。
+如果「注意了但看不懂」。
+→查Representation／Language。
+如果「看懂但不相信」。
+→查Evidence／Trust。
+如果「相信但不想要」。
+→查Need／Value。
+如果「想要但不行動」。
+→查Risk／Friction／Timing。
+如果「想行動但條件不允許」。
+→查Resource／Power／Constraint。
+如果「雙方都想要但談不攏」。
+→查Interest／BATNA／Options。
+如果「答應了卻不執行」。
+→查Capability／Environment／Incentive／Feedback。
+如果「執行一次但無法持續」。
+→查Reward／Habit／System。
+如果「一直重複同一錯誤」。
+→查Feedback／Prediction Error／Model Update。
+## 十六｜最重要的Influence Funnel
+Reality。
+↓
+Attention｜我有沒有看到？
+↓
+Representation｜我怎麼理解？
+↓
+Relevance｜跟我有什麼關係？
+↓
+Value｜值得嗎？
+↓
+Trust｜真的嗎？
+↓
+Risk｜會不會出事？
+↓
+Agency｜我有選擇嗎？
+↓
+Decision｜我要不要？
+↓
+Action｜我做不做？
+↓
+Feedback｜結果如何？
+↓
+Model Update｜下次我還信嗎？
+任何一層斷掉，後面都可能停止。
+## 十七｜影響別人的最高槓桿不是話術
+第一層｜改Language。
+第二層｜改Representation。
+第三層｜改Evidence。
+第四層｜改Incentive。
+第五層｜改Options。
+第六層｜改Environment。
+第七層｜改Feedback。
+越往下越接近Structure。
+因此：
+一直提醒＝低槓桿。
+一直說服＝仍偏低槓桿。
+讓正確行為變容易＝高槓桿。
+讓Feedback快速可見＝更高槓桿。
+讓人自己建立能力＝最高階之一。
+## 十八｜Influence Ethics｜影響力邊界
+所有六個領域都要通過五個檢查。
+Truth｜資訊是否真實？
+Transparency｜重要資訊是否透明？
+Autonomy｜對方是否可以自由拒絕？
+Value｜對方是否真正得到價值？
+Reversibility｜如果角色互換，我是否仍認為公平？
+五題有任何一題嚴重不成立，就可能已經從Influence滑向Manipulation。
+## 十九｜Manipulation與高階影響的差異
+Manipulation｜隱藏資訊。
+Influence｜增加理解。
+Manipulation｜製造不必要Fear。
+Influence｜降低真實Uncertainty。
+Manipulation｜限制選項。
+Influence｜增加Decision Quality。
+Manipulation｜製造依賴。
+Influence｜增加Capability。
+Manipulation｜只追求我的Outcome。
+Influence｜尋找Mutual Value。
+Manipulation｜不允許Prediction被Reality推翻。
+高階影響｜持續接受Feedback。
+## 二十｜Human Influence OS完整流程
+STEP 01｜Reality｜到底發生什麼？
+STEP 02｜Fact｜先移除評價。
+STEP 03｜State｜對方現在什麼狀態？
+STEP 04｜Need｜真正需要什麼？
+STEP 05｜Value｜什麼權重最高？
+STEP 06｜Identity｜正在保護什麼身份？
+STEP 07｜Representation｜他如何解讀問題？
+STEP 08｜Prediction｜他預測什麼？
+STEP 09｜Trust｜相信誰／什麼？
+STEP 10｜Interest｜真正利益是什麼？
+STEP 11｜Incentive｜什麼在推動行為？
+STEP 12｜Constraint｜什麼限制行動？
+STEP 13｜Power｜資源與依賴如何分布？
+STEP 14｜Options｜還有哪些選項？
+STEP 15｜Boundary｜不可接受的是什麼？
+STEP 16｜Minimum Intervention｜最小槓桿。
+STEP 17｜Action｜執行。
+STEP 18｜Feedback｜取得Reality資料。
+STEP 19｜Prediction Error｜哪裡猜錯？
+STEP 20｜Model Update｜更新。
+STEP 21｜Retest｜再測。
+## 二十一｜可以直接使用的六系統診斷表
+事件｜________。
+對象｜________。
+我的目標｜________。
+對方可能的目標｜________。
+### Human Nature
+Need｜________。
+Fear｜________。
+Value｜________。
+Identity｜________。
+Prediction｜________。
+### Sales
+Problem｜________。
+Desired Outcome｜________。
+Value｜________。
+Risk｜________。
+Friction｜________。
+### Persuasion
+Current Representation｜________。
+Missing Evidence｜________。
+Alternative Representation｜________。
+### Influence
+Trust Level｜__/10。
+我的可信Weight來自｜________。
+### Negotiation
+Position｜________。
+Interest｜________。
+BATNA｜________。
+Boundary｜________。
+Possible Options｜________。
+### Management
+Goal｜________。
+Role｜________。
+Capability｜________。
+Resource｜________。
+Incentive｜________。
+Feedback｜________。
+### Experiment
+目前Prediction｜________。
+Minimum Action｜________。
+預期Outcome｜________。
+實際Outcome｜________。
+Prediction Error｜________。
+Model Update｜________。
+Retest｜________。
+## 二十二｜最終母體
+Human Nature是地基。
+Sales是價值交換。
+Persuasion是表徵更新。
+Influence是信任權重。
+Negotiation是利益與選項重組。
+Management是行為環境設計。
+Feedback是Reality回來說話。
+Prediction Error是系統發現自己猜錯。
+Model Update是智慧真正發生的地方。
+所以六大領域最後可以壓縮成：
+Understand Human
+→Understand Need
+→Understand Model
+→Create Value
+→Build Trust
+→Improve Representation
+→Align Incentives
+→Expand Options
+→Negotiate Fair Exchange
+→Design Environment
+→Enable Action
+→Observe Feedback
+→Detect Error
+→Update Model
+→Retest。
+### 最終公式
+Human Influence＝Understanding×Trust×Value×Clarity×Agency×Structure×Feedback。
+如果Understanding＝0，再強的話術都可能說錯問題。
+如果Trust＝0，資訊很難取得足夠Weight。
+如果Value＝0，成交只能依賴壓力。
+如果Clarity＝0，對方不知道為何行動。
+如果Agency＝0，影響容易滑向控制。
+如果Structure＝0，行為難以持續。
+如果Feedback＝0，整套系統不知道自己到底有沒有用。
+### 最高階智慧
+最低階的問題是：「我要怎麼讓他聽我的？」
+再高一層是：「我要怎麼說服他？」
+再高一層是：「他真正需要什麼？」
+再高一層是：「他的Model為什麼產生現在的選擇？」
+再高一層是：「我們能不能重新設計Structure，讓雙方都得到更好的Outcome？」
+最高階則是：「Reality回來之後，如果證明我的人性判斷、銷售假設、說服方式、管理制度、影響策略或談判模型錯了，我能不能更新？」
+真正的高手不是永遠能說服別人。
+而是理解人性、創造價值、建立信任、尊重自主、設計結構，並且永遠保留讓Reality推翻自己模型的能力。
+# ④ 八大人性商業診斷表｜Business Diagnostic OS
+這版直接做成可以拿來診斷「團購、福利課程、英文APP、LINE IP、會員制、任何新產品」的母表。
+用途｜任何產品、服務、課程、APP、社群、團購、IP、會員制，都可以用同一張表診斷。
+核心原則｜不要先問「怎麼賣」，先問「哪個人性Node沒有被滿足？」
+總公式｜Human Nature→Need→Value→Trust→Decision→Exchange→Experience→Feedback→Retention→Referral。
+商業診斷總公式｜Business Performance≈Real Value×Trust×Need Fit×Clarity×Experience÷Friction。
+## 一頁總覽
+| Domain | 人性核心問題 | 商業核心問題 | 主要Node | 常見商業錯誤 | 核心槓桿 | 關鍵指標 |
+|---|---|---|---|---|---|---|
+| D1 Survival | 我安全嗎？ | 客戶怕什麼？ | 恐懼、安全、風險、損失 | 放大恐懼卻沒降低風險 | Risk Reduction | 退款／疑慮／試用率 |
+| D2 Need | 我要什麼？ | 客戶真正要什麼結果？ | 需求、利益、慾望、獎賞 | 賣功能而非Outcome | Value Fit | 轉換率／使用率 |
+| D3 Self | 我是誰？ | 客戶想成為誰？ | 身份、自尊、自我價值 | 只賣產品沒有Identity | Identity | 認同／主動分享 |
+| D4 Social | 別人怎麼看？ | 誰影響決策？ | 比較、群體、地位、社會證據 | 沒有可信Evidence | Social Proof | 推薦／見證／分享 |
+| D5 Relationship | 我相信你嗎？ | 為什麼跟你買？ | 信任、互惠、關係、修復 | 只有曝光沒有Trust | Trust | 回購／留存／客訴 |
+| D6 Power | 我有選擇嗎？ | 交易是否透明自主？ | 資源、資訊、控制、選擇權 | 利用資訊不對稱 | Agency | 取消率／決策摩擦 |
+| D7 Cognition | 我看懂了嗎？ | 客戶如何理解價值？ | 表徵、語言、注意、預測 | 專業但聽不懂 | Clarity | 點擊→成交漏斗 |
+| D8 Evolution | 真的有效嗎？ | Reality有沒有改善？ | 回饋、誤差、更新、能力 | 成交後停止學習 | Feedback Loop | 成果／續購／推薦 |
+## D1｜SURVIVAL｜安全與風險診斷
+本體｜人在預測到Loss時，首先不是追求最大收益，而是降低風險。
+診斷01｜客戶最怕失去什麼？
+診斷02｜不購買的風險是什麼？
+診斷03｜購買本身又有哪些風險？
+診斷04｜他怕沒效果嗎？
+診斷05｜怕浪費錢嗎？
+診斷06｜怕被騙嗎？
+診斷07｜怕買錯嗎？
+診斷08｜怕不會使用嗎？
+診斷09｜怕副作用／麻煩／時間成本嗎？
+診斷10｜我們有沒有真正降低這些不確定性？
+紅燈｜大量客戶詢問「真的嗎？」
+紅燈｜一直問安全性卻不下單。
+紅燈｜大量加入購物車但沒有付款。
+紅燈｜第一次購買阻力很大。
+錯誤策略｜製造更多恐懼。
+正確槓桿｜降低真實風險與資訊不確定性。
+策略｜透明說明。
+策略｜適用／不適用對象。
+策略｜FAQ。
+策略｜使用流程。
+策略｜合理承諾。
+策略｜案例與證據。
+策略｜降低第一次嘗試成本。
+D1分數｜__/10。
+核心問題｜我們是在利用Fear，還是在真正降低Risk？
+## D2｜NEED／VALUE｜需求與價值診斷
+本體｜客戶不是購買產品本身，而是購買自己預測產品能帶來的改變。
+診斷01｜客戶表面說要什麼？
+診斷02｜真正想得到什麼？
+診斷03｜功能背後的Outcome是什麼？
+診斷04｜這個需求有多急？
+診斷05｜現在不用會怎樣？
+診斷06｜現有替代方案是什麼？
+診斷07｜為什麼替代方案還不夠？
+診斷08｜哪一個Need Weight最高？
+診斷09｜我們是在增加價值還是增加功能？
+診斷10｜客戶能不能一句話說出我們替他解決什麼？
+紅燈｜功能很多但成交低。
+紅燈｜客戶覺得「好像很好，但我不需要」。
+紅燈｜產品持續增加功能，使用率卻沒有增加。
+錯誤策略｜繼續加功能。
+正確槓桿｜重新找Highest-weight Need。
+產品轉譯公式｜Feature→Mechanism→Benefit→Outcome。
+例｜「1000題題庫」不是最終價值。
+升級｜「快速找出你真正不會的Node，減少無效刷題。」
+D2分數｜__/10。
+核心問題｜客戶到底是在買Product，還是在買哪個Life Outcome？
+## D3｜SELF｜身份與自我價值診斷
+本體｜人不只購買功能，也可能購買Identity。
+診斷01｜使用產品後，客戶覺得自己成為什麼樣的人？
+診斷02｜產品支持哪個理想Self？
+診斷03｜產品是否威脅客戶自尊？
+診斷04｜我們的文案是在羞辱還是在賦能？
+診斷05｜客戶是否願意公開說自己使用？
+診斷06｜品牌代表什麼價值？
+診斷07｜加入會員代表什麼身份？
+診斷08｜這個Identity是否真實，而不是虛榮包裝？
+診斷09｜產品是否讓使用者能力增加？
+診斷10｜使用一段時間後Self Model有沒有改變？
+紅燈｜客戶使用產品卻不願意承認。
+紅燈｜品牌只能靠折價吸引。
+紅燈｜客戶沒有歸屬與Identity。
+錯誤策略｜硬貼高級標籤。
+正確槓桿｜讓真實能力與身份一起成長。
+身份鏈｜Action→Evidence→Capability→Identity。
+D3分數｜__/10。
+核心問題｜我的產品正在幫客戶證明「我是誰」？
+## D4｜SOCIAL｜社會證據與群體診斷
+本體｜人會利用他人的選擇降低決策不確定性。
+診斷01｜客戶做決策前會問誰？
+診斷02｜他信任哪一種人？
+診斷03｜朋友推薦重要嗎？
+診斷04｜專業人士重要嗎？
+診斷05｜同類使用者案例重要嗎？
+診斷06｜目前有哪些Social Proof？
+診斷07｜這些Evidence真實嗎？
+診斷08｜案例與目標客戶相似嗎？
+診斷09｜社群是否產生歸屬感？
+診斷10｜客戶有沒有自然推薦的理由？
+紅燈｜一直自己說自己很好。
+紅燈｜見證很多但可信度低。
+紅燈｜客戶滿意卻沒人分享。
+錯誤策略｜製造假人氣。
+正確槓桿｜累積真實Outcome Evidence。
+D4分數｜__/10。
+核心問題｜不是「有多少人說你好」，而是「什麼可信Evidence降低了新客戶的不確定性？」
+## D5｜RELATIONSHIP｜信任與關係診斷
+本體｜交易發生在產品與金錢之間，但長期商業發生在人與信任之間。
+診斷01｜客戶為什麼相信我們？
+診斷02｜我們說過的話有沒有做到？
+診斷03｜承諾與Reality一致嗎？
+診斷04｜資訊是否透明？
+診斷05｜不適合的產品敢不敢說不適合？
+診斷06｜出錯後如何修復？
+診斷07｜客戶問題有人處理嗎？
+診斷08｜成交前後態度一致嗎？
+診斷09｜關係建立在價值還是情緒依賴？
+診斷10｜如果停止促銷，客戶還願意留下嗎？
+信任公式｜Trust≈Ability＋Integrity＋Consistency＋Repair。
+紅燈｜第一次成交很多，第二次很少。
+紅燈｜客戶只在特價時出現。
+紅燈｜高曝光、低回購。
+錯誤策略｜增加更多話術。
+正確槓桿｜增加一致性與結果。
+D5分數｜__/10。
+核心問題｜我們擁有的是Traffic，還是Trust？
+## D6｜POWER｜自主、資訊與交易結構診斷
+本體｜健康商業不應靠降低客戶自由來維持。
+診斷01｜資訊是否對稱？
+診斷02｜價格清楚嗎？
+診斷03｜限制條件清楚嗎？
+診斷04｜客戶可以說不嗎？
+診斷05｜退出容易嗎？
+診斷06｜是否利用客戶不懂來提高利潤？
+診斷07｜是否製造不必要依賴？
+診斷08｜產品是在增加還是降低客戶能力？
+診斷09｜我們與客戶的利益是否對齊？
+診斷10｜如果客戶資訊完全充分，他仍然會購買嗎？
+紅燈｜資訊越少越容易成交。
+紅燈｜必須靠綁約才能留人。
+紅燈｜客戶離開產品後能力反而下降。
+錯誤策略｜Lock-in。
+正確槓桿｜Value-in。
+低階商業｜讓客戶離不開。
+高階商業｜讓客戶有能力離開，但因為價值而選擇留下。
+D6分數｜__/10。
+核心問題｜Retention來自Dependency，還是Value？
+## D7｜COGNITION｜表徵、語言與決策診斷
+本體｜產品真正進入市場前，必須先進入客戶的Representation。
+診斷01｜客戶知道我們是做什麼的嗎？
+診斷02｜10秒內能理解嗎？
+診斷03｜我們用了太多專業語言嗎？
+診斷04｜客戶理解的產品與我們想表達的一樣嗎？
+診斷05｜第一眼注意到什麼？
+診斷06｜最重要Value是否被埋掉？
+診斷07｜選項是不是太多？
+診斷08｜CTA清楚嗎？
+診斷09｜下一步是否清楚？
+診斷10｜客戶最大的認知誤差是什麼？
+紅燈｜需要解釋10分鐘才知道你在賣什麼。
+紅燈｜客戶常問已經寫在頁面上的事情。
+紅燈｜資訊很多但行動很少。
+錯誤策略｜再增加資訊。
+正確槓桿｜降低Cognitive Load。
+語言轉譯｜專業語言→客戶語言。
+成分→機制。
+機制→利益。
+利益→生活改變。
+抽象→具體。
+複雜→一個下一步。
+D7分數｜__/10。
+核心問題｜客戶是不想買，還是根本沒有正確理解？
+## D8｜EVOLUTION｜結果、回饋與更新診斷
+本體｜成交只是Prediction，使用結果才是Reality Test。
+診斷01｜產品承諾什麼Outcome？
+診斷02｜Outcome能測量嗎？
+診斷03｜多久應看到Feedback？
+診斷04｜我們有Baseline嗎？
+診斷05｜有沒有追蹤使用後結果？
+診斷06｜客戶為什麼續購？
+診斷07｜客戶為什麼停止？
+診斷08｜客訴透露哪個Prediction Error？
+診斷09｜我們多久更新一次產品模型？
+診斷10｜有沒有Retest？
+紅燈｜只看營收，不看Outcome。
+紅燈｜一直投廣告，卻不知道客戶為何流失。
+紅燈｜市場已經改變，產品仍然不變。
+錯誤策略｜把Reality不符歸因於客戶。
+正確槓桿｜把Reality當成Training Data。
+D8核心鏈｜Baseline→Action→Feedback→Prediction Error→Model Update→Retest。
+D8分數｜__/10。
+核心問題｜Reality正在告訴我們什麼，而我們還沒有更新？
+## 八大Domain｜80分商業體檢
+D1 Survival｜__/10。
+D2 Need／Value｜__/10。
+D3 Self｜__/10。
+D4 Social｜__/10。
+D5 Relationship｜__/10。
+D6 Power｜__/10。
+D7 Cognition｜__/10。
+D8 Evolution｜__/10。
+總分｜__/80。
+但不要只看總分。
+真正重要的是Minimum Score。
+因為最低Domain往往就是目前的Business Bottleneck。
+### 診斷判讀
+65～80｜結構相對完整｜開始尋找Scaling Bottleneck。
+50～64｜產品有價值，但存在明顯摩擦｜優先修最低兩個Domain。
+35～49｜價值、信任或定位可能尚未對齊｜先停止盲目放大流量。
+20～34｜商業模型仍高度依賴推銷｜重新驗證Need與Value。
+0～19｜先不要優化行銷｜重新做Problem-Solution Fit。
+分數不是Truth。
+分數只是建立Hypothesis的工具。
+真正判定仍要回到Behavior Data與Reality Feedback。
+### 最重要的診斷規則
+不要八個Domain一起改。
+先找最低分。
+再找最低分裡面的Highest-impact Node。
+再設計一個Minimum Intervention。
+然後重新測試。
+公式｜Lowest Domain→Bottleneck Node→Minimum Action→Metric→Feedback→Update。
+## 成交低｜快速診斷
+有流量、沒點擊→優先查D2＋D7。
+有點擊、沒詢問→優先查D2＋D7。
+很多詢問、不成交→優先查D1＋D5＋D6。
+第一次買、沒有第二次→優先查D2＋D5＋D8。
+一直要打折才買→優先查D2＋D3＋D5。
+客戶看不懂→優先查D7。
+客戶怕被騙→優先查D1＋D5。
+產品很好卻沒人推薦→優先查D3＋D4＋D8。
+會員很多但不使用→優先查D2＋D7＋D8。
+流失率高→優先查D5＋D6＋D8。
+只能靠老闆本人賣→優先查D5＋D7＋制度化。
+廣告越投越貴→不要先增加廣告｜先重新檢查D2～D5。
+## 產品設計八問
+D1｜它降低什麼風險？
+D2｜它創造什麼結果？
+D3｜它讓使用者成為誰？
+D4｜什麼Evidence證明別人也得到結果？
+D5｜為什麼值得相信？
+D6｜客戶是否保有自主與選擇？
+D7｜價值是否一看就懂？
+D8｜如何證明真的改善？
+八題回答不清楚，就先不要急著做更多功能。
+## 文案設計八問
+D1｜痛點是什麼？
+D2｜渴望結果是什麼？
+D3｜理想身份是什麼？
+D4｜有哪些可信案例？
+D5｜為什麼相信我們？
+D6｜如何讓決策自主透明？
+D7｜一句話怎麼說懂？
+D8｜結果如何驗證？
+## IP經營八問
+D1｜我的受眾正在害怕什麼？
+D2｜真正想得到什麼？
+D3｜想成為什麼人？
+D4｜想加入什麼樣的群體？
+D5｜為什麼願意長期相信我？
+D6｜我的IP讓人更自主，還是更依賴我？
+D7｜我是否能把複雜知識說成容易理解的模型？
+D8｜追蹤我半年後，他真的增加什麼能力？
+## 會員制八問
+D1｜加入後降低什麼不確定性？
+D2｜每個月持續得到什麼Value？
+D3｜會員身份代表什麼？
+D4｜會員之間是否形成正向Social Network？
+D5｜信任如何累積？
+D6｜退出是否自由？
+D7｜內容是否容易找到、理解、使用？
+D8｜會員是否真的持續成長？
+會員制最大錯誤不是內容不夠多。
+而是Content↑，Transformation沒有同步↑。
+## 團購八問
+D1｜安全與適用資訊清楚嗎？
+D2｜產品真正解決什麼問題？
+D3｜客戶為什麼覺得這適合自己？
+D4｜Evidence來源可信嗎？
+D5｜為什麼相信版主推薦？
+D6｜價格與資訊透明嗎？
+D7｜產品功效是否用白話說清楚？
+D8｜購買後是否追蹤Feedback？
+團購真正長期資產不是商品數量。
+是Trust Database＋Outcome Database。
+## 教育APP八問
+D1｜降低學生哪種失敗焦慮？
+D2｜學生真正想得到什麼？
+D3｜是否從「我不會」更新成「我能進步」？
+D4｜是否有適當Social Feedback？
+D5｜學生是否相信系統真的能幫他？
+D6｜是否增加自主學習能力？
+D7｜是否知道自己現在該做哪一題？
+D8｜是否形成Answer→Error→Correction→Retest？
+教育APP最高價值不是讓學生做更多題。
+而是讓學生用更少無效努力找到真正Bottleneck。
+## 高階商業診斷｜不要只診斷Customer
+第一層｜Customer Human Nature。
+第二層｜Founder Human Nature。
+第三層｜Team Human Nature。
+第四層｜Channel Human Nature。
+第五層｜Partner Human Nature。
+第六層｜Competitor Human Nature。
+第七層｜Institution／Market Structure。
+第八層｜Feedback／Evolution。
+很多公司以為客戶有問題。
+其實真正的Bottleneck可能是Founder Model。
+老闆捨不得砍功能。
+老闆過度相信自己的產品。
+團隊害怕回報壞消息。
+KPI誘因錯誤。
+通路利益與品牌利益衝突。
+這些全部都是Human Nature問題。
+## 商業熵增檢查
+資訊越來越多但決策越來越慢→熵上升。
+產品越來越多但價值越來越模糊→熵上升。
+會員越來越多但互動越來越低→熵上升。
+規則越來越多但責任越來越不清楚→熵上升。
+廣告越來越多但信任越來越低→熵上升。
+折扣越來越大但忠誠越來越低→熵上升。
+老闆越來越忙但系統越不能離開老闆→熵上升。
+真正的Business Optimization不只是Revenue↑。
+還要看Entropy是否下降。
+### 商業低熵化
+降低不必要產品。
+降低資訊摩擦。
+降低選擇複雜度。
+降低不透明。
+降低客戶依賴。
+提高Value Clarity。
+提高Trust。
+提高Feedback速度。
+提高Outcome可測量性。
+提高系統更新速度。
+## 完整診斷流程
+STEP 1｜寫出目前最重要的商業問題。
+STEP 2｜只寫Fact，不先解釋。
+STEP 3｜八大Domain各評0～10。
+STEP 4｜找到最低Domain。
+STEP 5｜找到該Domain的Bottleneck Node。
+STEP 6｜寫出目前Prediction。
+STEP 7｜找支持Evidence。
+STEP 8｜找反證Evidence。
+STEP 9｜設計Minimum Intervention。
+STEP 10｜設定一個Metric。
+STEP 11｜執行。
+STEP 12｜取得Feedback。
+STEP 13｜計算Prediction Error。
+STEP 14｜更新Business Model。
+STEP 15｜Retest。
+## 可直接填寫模板
+商業／產品｜________。
+目標客群｜________。
+目前問題｜________。
+FACT｜________。
+D1 Survival｜__/10｜問題：________。
+D2 Need｜__/10｜問題：________。
+D3 Self｜__/10｜問題：________。
+D4 Social｜__/10｜問題：________。
+D5 Relationship｜__/10｜問題：________。
+D6 Power｜__/10｜問題：________。
+D7 Cognition｜__/10｜問題：________。
+D8 Evolution｜__/10｜問題：________。
+總分｜__/80。
+最低Domain｜________。
+Bottleneck Node｜________。
+目前Prediction｜________。
+支持Evidence｜________。
+反證Evidence｜________。
+最小可控變數｜________。
+Minimum Action｜________。
+成功指標｜________。
+觀察期間｜________。
+實際Feedback｜________。
+Prediction Error｜________。
+Model Update｜________。
+下一輪Retest｜________。
+## 最終Business OS公式
+Human Nature
+→Need
+→Value
+→Identity
+→Social Evidence
+→Trust
+→Choice Architecture
+→Representation
+→Decision
+→Exchange
+→Experience
+→Outcome
+→Feedback
+→Prediction Error
+→Business Model Update
+→Retest
+→Retention
+→Referral
+→Compounding。
+## 最高階判準
+不要問「我的行銷夠不夠厲害？」
+問「我的Prediction準不準？」
+不要問「為什麼客戶不買？」
+問「Value、Trust、Risk、Clarity、Friction，哪個Node出了問題？」
+不要問「怎麼控制客戶？」
+問「怎麼讓客戶在充分資訊與自由選擇下仍然認為這筆交換值得？」
+不要問「怎麼讓會員離不開？」
+問「怎麼讓會員即使有能力離開，仍然因為持續得到Value而選擇留下？」
+不要把Conversion當終點。
+Conversion只是一次Prediction成功。
+Retention證明Value可能存在。
+Outcome證明產品真的有效。
+Referral證明Value高到客戶願意承擔自己的信用替你傳播。
+真正強大的商業不是最懂操控人性。
+而是最懂人性，因此最能建立「客戶得到結果、企業得到利潤、信任持續累積、系統可以更新」的正向飛輪。
+# ⑤ 為何越懂人性，越懂商業？
+因為商業表面上是在賣產品。
+更底層其實是在處理「人的需求如何轉化成選擇」。
+產品只是載體。
+價格只是交換條件。
+行銷只是資訊介面。
+成交只是Behavior。
+真正的上游是Human Nature。
+所以更完整的商業鏈不是「產品→廣告→成交」。
+而是「人性→需求→價值權重→痛點／渴望→預測→信任→選擇→交換→體驗→回購→推薦」。
+懂人性，不代表學會操控人。
+真正高階的懂人性，是更準確地知道「人真正需要什麼、害怕什麼、重視什麼、為什麼相信、為什麼不行動」。
+## 一｜本體層｜商業的本質其實是價值交換
+沒有人的需求，就沒有市場。
+沒有價值差異，就沒有交換。
+沒有交換，就沒有商業。
+所以商業最底層不是產品。
+而是Value Exchange。
+一個人願意付錢，是因為他主觀預測：
+「得到這個東西之後的價值＞我要付出的成本。」
+因此：
+購買＝Predicted Value＞Predicted Cost。
+這裡的Cost也不只是錢。
+時間是Cost。
+學習是Cost。
+麻煩是Cost。
+風險是Cost。
+不確定性是Cost。
+害怕被騙是Cost。
+改變習慣也是Cost。
+所以有時候不是產品不好。
+而是Customer Friction太高。
+## 二｜結構層｜人性八大Domain，其實都直接對應商業
+### D1｜SURVIVAL｜人想降低什麼風險？
+保險賣的是風險降低。
+健康商品賣的是健康風險管理。
+資安賣的是資料安全。
+防曬賣的是傷害降低。
+商業問題｜客戶害怕失去什麼？
+### D2｜NEED／VALUE｜人真正想得到什麼？
+省錢。
+省時間。
+方便。
+漂亮。
+健康。
+成就。
+自由。
+收入。
+能力。
+陪伴。
+商業問題｜客戶真正買的是什麼結果？
+### D3｜SELF｜這個產品讓我成為誰？
+精品不只是包包。
+健身不只是肌肉。
+課程不只是知識。
+教育APP不只是題目。
+人可能同時在購買一個Identity。
+「我是重視健康的人。」
+「我是願意投資孩子教育的父母。」
+「我是有能力進步的學生。」
+商業問題｜使用這個產品之後，客戶如何重新定義自己？
+### D4｜SOCIAL｜別人怎麼看我？
+評價。
+排行榜。
+見證。
+銷量。
+社群。
+朋友推薦。
+KOL。
+都在降低Social Uncertainty。
+商業問題｜有哪些可信的Social Evidence？
+### D5｜RELATIONSHIP｜我相信誰？
+人不是只買產品。
+人也在買Trust。
+所以同樣產品，不同的人介紹，成交率可能完全不同。
+IP商業真正累積的是：
+Consistency→Trust→Lower Perceived Risk→Exchange。
+商業問題｜為什麼客戶願意相信你？
+### D6｜POWER｜客戶有沒有選擇權？
+低階商業利用資訊不對稱。
+高階商業降低資訊不對稱。
+低階商業讓客戶依賴。
+高階商業增加客戶能力。
+因此長期品牌不能只問：
+「如何讓他離不開我？」
+更好的問題是：
+「如何讓他因為真的得到價值，所以主動回來？」
+### D7｜COGNITION｜客戶如何理解產品？
+再好的產品，如果Representation錯了，也賣不出去。
+專業名稱不等於客戶理解。
+功能不等於價值。
+成分不等於結果。
+因此商業需要做一個重要轉譯：
+Feature→Mechanism→Benefit→Life Outcome。
+不要只說「這裡有1000題」。
+要讓學生理解：
+「你不用再猜自己哪裡不會，系統會幫你找到最值得補的一個洞。」
+Representation一變，Value Perception就變。
+### D8｜EVOLUTION｜買完之後真的有效嗎？
+這是商業最容易被忽略的一層。
+第一次成交靠Prediction。
+第二次成交開始靠Feedback。
+客戶原本預測「這會幫助我」。
+使用後Reality回傳Feedback。
+如果Reality＞Prediction，就容易形成驚喜。
+如果Reality≈Prediction，就形成穩定信任。
+如果Reality＜Prediction，就產生負向Prediction Error。
+所以長期商業不是把Expectation拉到最高。
+而是讓Reality持續匹配甚至超越合理Expectation。
+## 三｜機制層｜為什麼懂人性的人比較容易看懂商業？
+因為他看到的不是「商品」。
+他看到的是商品背後的Behavior Generator。
+別人看到健身房。
+他看到健康、外貌、身份、社交與自我效能。
+別人看到補習班。
+他看到焦慮、競爭、未來、安全感與父母責任。
+別人看到精品。
+他看到身份、稀缺、地位、審美與Social Signal。
+別人看到遊戲。
+他看到即時Feedback、成就、挑戰、進度與掌控感。
+別人看到短影音。
+他看到Novelty、Variable Reward、Attention與Social Validation。
+別人看到AI。
+他看到降低認知成本、提高產出速度與擴張Agency。
+所以高手不是問：
+「這個產品有什麼功能？」
+而是問：
+「這個產品接上了人性的哪一個Node？」
+## 四｜同一個產品，其實可以接不同人性Node
+以英文學測APP為例。
+如果只從產品思維看：
+題庫很多。
+單字很多。
+有解析。
+有測驗。
+但從人性思維看：
+D1｜降低「考不好怎麼辦」的不確定性。
+D2｜滿足「我想提高分數」。
+D3｜從「我英文很爛」更新成「我其實可以進步」。
+D4｜看到自己的相對進度。
+D5｜得到老師與系統支持。
+D6｜學生擁有自主學習選擇權。
+D7｜知道自己真正錯在哪一個Node。
+D8｜作答→Feedback→Error→補強→Retest。
+這時你賣的已經不是「題庫APP」。
+你提供的是：
+「把不知道自己哪裡不會，變成知道下一步該練什麼。」
+這就是商業價值的升維。
+## 五｜痛點為什麼有效？
+因為Pain會提高Attention Weight。
+但這裡有一條非常重要的界線。
+低階行銷：
+放大恐懼→製造焦慮→逼迫成交。
+高階行銷：
+辨識真實問題→精準命名→提供可驗證解法。
+所以真正好的痛點文案不是：
+「你再不買就完了。」
+而是：
+「你可能不是不努力，而是一直在錯的Node上用力。」
+前者利用Threat。
+後者降低Model Error。
+## 六｜為什麼「信任」比流量更值錢？
+流量只是Attention。
+Attention不等於Trust。
+Trust不等於Purchase。
+Purchase也不等於Retention。
+完整鏈條應該是：
+Attention→Understanding→Relevance→Trust→Trial→Experience→Outcome→Retention→Referral。
+所以100萬陌生流量未必比1000個高度信任你的會員有價值。
+因為Trust會降低交易摩擦。
+Trust↑→Perceived Risk↓→Decision Cost↓→Trial Probability↑。
+但信任不是靠一直說「相信我」。
+信任來自：
+承諾與結果一致。
+資訊透明。
+不誇大。
+承認邊界。
+長期穩定。
+出錯願意修正。
+## 七｜為什麼懂「利益」就懂合作？
+因為合作不能只建立在善意。
+真正穩定的合作通常需要：
+A得到價值。
+B得到價值。
+客戶得到價值。
+系統仍然能持續運作。
+這叫Incentive Alignment。
+最差的商業模式是：
+公司贏、客戶輸。
+這種模式短期可能賺錢，但熵會持續增加。
+客訴增加。
+信任下降。
+流失增加。
+獲客成本上升。
+品牌耗損。
+比較好的模式是：
+公司贏＋客戶贏。
+更高階是：
+公司贏＋客戶贏＋合作夥伴贏＋系統總價值增加。
+這就是高維利他可以與商業真正接上的地方。
+## 八｜為什麼懂「身份」就懂品牌？
+商品回答：
+「你買了什麼？」
+品牌更深層回答：
+「你是哪一種人？」
+Apple早期不是只在賣電腦。
+Nike也不只是鞋。
+品牌強大的地方，在於商品逐漸與Identity綁定。
+因此品牌公式可以理解成：
+Product Value＋Meaning＋Identity＋Community＋Repeated Experience→Brand。
+小型IP也是如此。
+真正的IP不是一直曝光自己。
+而是讓某一群人看到你，就知道：
+「這裡代表某一套價值與解決問題的方法。」
+## 九｜為什麼懂「摩擦」就懂成交？
+很多人以為：
+沒有成交＝客戶不想要。
+其實可能只是Friction太高。
+不知道怎麼買。
+不知道怎麼付款。
+不知道適不適合自己。
+資訊太多。
+選項太多。
+步驟太多。
+害怕買錯。
+害怕被騙。
+不知道下一步。
+所以成交優化不一定是增加說服。
+有時候只是減少摩擦。
+公式：
+Conversion≈Value×Trust÷Friction。
+## 十｜為什麼懂「獎賞」就懂產品黏性？
+人喜歡知道：
+「我有沒有進步？」
+因此優秀產品通常都有Feedback。
+進度條。
+連續登入。
+完成率。
+積分。
+等級。
+測驗結果。
+前後比較。
+但真正高品質的設計不是讓人上癮。
+而是讓Feedback協助使用者建立能力。
+低階黏性＝讓人一直回來消耗Attention。
+高階黏性＝讓人一直回來完成Growth Loop。
+## 十一｜為什麼懂「預測誤差」就懂產品迭代？
+企業最大的錯誤之一是相信自己的想像。
+「客戶一定需要這個。」
+這只是Prediction。
+真正的商業需要Reality Test。
+Prediction｜客戶應該喜歡A。
+Action｜推出A。
+Feedback｜客戶很少使用。
+Prediction Error｜我們猜錯了。
+Model Update｜也許真正需要的是B。
+Retest｜推出最小版本B。
+所以創業本身就是：
+Hypothesis→Experiment→Feedback→Error→Update。
+真正危險的企業不是產品第一次做錯。
+而是Reality已經告訴它錯了，它還不更新。
+## 十二｜因此，人性其實是商業的上游母體
+Human Nature。
+↓
+Need。
+↓
+Pain／Desire。
+↓
+Value。
+↓
+Attention。
+↓
+Representation。
+↓
+Trust。
+↓
+Prediction。
+↓
+Decision。
+↓
+Exchange。
+↓
+Experience。
+↓
+Feedback。
+↓
+Retention。
+↓
+Referral。
+這就是為什麼越懂人性，通常越容易理解商業。
+因為商業最後不是企業跟市場交易。
+而是一群人的Need、Prediction、Trust與Value在進行交換。
+## 十三｜但真正高階的商業，不是「拿捏人性」
+「拿捏人性」仍然停留在控制論的低階版本。
+它的目標是：
+如何讓別人做我要他做的事？
+更高階的問題是：
+如何讓Customer Value與Business Value對齊？
+低階商業｜利用弱點。
+中階商業｜滿足需求。
+高階商業｜解決問題。
+更高階商業｜增加能力。
+最高階商業｜讓客戶、企業與生態系統共同增加價值。
+因此：
+Manipulation→短期Conversion。
+Value Creation→長期Compounding。
+## 十四｜你的人性八大Domain可以直接變成Business OS八問
+D1 Survival｜客戶怕失去什麼？
+D2 Need｜客戶真正想得到什麼？
+D3 Self｜客戶想成為什麼樣的人？
+D4 Social｜誰影響他的選擇？
+D5 Relationship｜他為什麼相信你？
+D6 Power｜誰掌握資訊、資源與選擇權？
+D7 Cognition｜他現在如何理解這個問題？
+D8 Evolution｜使用後是否真的得到可觀察的改善？
+只要一個商業模式能回答這八題，通常已經比只研究「怎麼寫廣告」高很多層。
+## 十五｜Human Nature→Business總公式
+Human Nature→Need。
+Need→Value。
+Value→Attention。
+Attention→Representation。
+Representation→Prediction。
+Prediction＋Trust→Decision。
+Decision→Exchange。
+Exchange→Experience。
+Experience→Feedback。
+Feedback→Trust Update。
+Trust Update→Retention／Exit。
+Retention＋Outcome→Referral。
+Referral→Network Effect。
+Network Effect→Brand。
+Brand→Lower Acquisition Friction。
+最後形成正向飛輪。
+## 十六｜商業真正的High Agency
+不是問：
+「我要怎麼讓更多人買？」
+而是連續問：
+「我正在解決什麼真實問題？」
+「客戶真正的Bottleneck在哪裡？」
+「哪個需求的Weight最高？」
+「客戶為什麼現在沒有行動？」
+「是Value不足、Trust不足，還是Friction太高？」
+「我的Solution真的改善Reality了嗎？」
+「什麼Feedback證明我的模型是錯的？」
+「下一輪要更新哪一個Node？」
+這時商業就不再只是銷售技巧。
+而是一套持續提高Prediction Accuracy的系統。
+## 十七｜最終結論
+越懂人性，不一定越會賺錢。
+真正的中間變數是：
+懂人性→更準確辨識需求→更準確創造價值→更低摩擦地傳遞價值→建立信任→取得Feedback→持續更新→形成複利。
+所以不是：
+懂人性＝會操控＝會賺錢。
+而是：
+Human Understanding→Better Prediction→Better Value Creation→Better Product→Better Communication→Better Trust→Better Exchange→Better Feedback→Better Business Model。
+商業最高階不是讓人買更多。
+而是更精準地找到「人真正需要的改變」，並建立一個企業有利潤、客戶有成果、關係有信任、系統能持續的交換結構。
+懂人性的人，看見需求。
+懂結構的人，看見交換。
+懂機制的人，看見槓桿。
+懂回饋的人，看見誤差。
+懂更新的人，才能穿越市場變化。
+所以真正值得追求的不是「最會拿捏人性」。
+而是「最能理解人性，又最能把理解轉化成長期共同價值」。
+# ⑥ Human Nature OS｜55節完整對照索引
+索引原則｜保留原55節編號，重新指定Primary Domain，必要時補Secondary Domain，避免同一篇內容因跨域而失去關聯。
+索引原則｜Primary＝主要生成機制所在Domain。
+索引原則｜Secondary＝會直接影響或被影響的相鄰Domain。
+索引原則｜55節不是55個孤立知識點，而是同一套Human Nature OS的55個觀察入口。
+## D1｜SURVIVAL｜生存・避害・安全系統
+03｜生存｜Primary D1｜Secondary D2｜核心：威脅出現後，短期生存權重會上升。
+09｜恐懼｜Primary D1｜Secondary D7｜核心：恐懼是系統對未來Loss的Prediction。
+10｜安全感｜Primary D1｜Secondary D5／D8｜核心：真正安全感不是環境永遠穩定，而是具有Adaptive Capacity。
+13｜損失厭惡｜Primary D1｜Secondary D2／D7｜核心：人可能不是追求最大收益，而是在避免主觀Loss。
+37｜如何防禦人性的惡｜Primary D1｜Secondary D6｜核心：不要只防壞人，更要辨識會放大破壞行為的Structure。
+D1核心鏈｜Threat→Predicted Loss→Fear→Protection→Behavior。
+D1對應原節｜03／09／10／13／37。
+## D2｜NEED｜需求・慾望・利益・獎賞系統
+04｜自利｜Primary D2｜Secondary D3｜核心：人會優先保護自己主觀認定的重要Value。
+05｜利益｜Primary D2｜Secondary D6｜核心：利益衝突是觀察真實權重的高資訊量情境。
+06｜價值交換｜Primary D2｜Secondary D5｜核心：關係交換的不只是金錢，也包含安全、情緒、知識、資源與成長。
+07｜利己→利他｜Primary D2｜Secondary D5／D8｜核心：時間尺度拉長後，高階利己可能轉化為合作與共同創造。
+08｜利他vs討好｜Primary D2｜Secondary D3／D5｜核心：利他增加對方能力，討好常用自我耗損交換認同。
+47｜Altruism OS連線｜Primary D2｜Secondary D5／D8｜核心：Self Stability→Surplus Capacity→Value Creation→Contribution→Network Effect。
+D2核心鏈｜Need→Value→Weight→Reward Prediction→Incentive→Choice。
+D2對應原節｜04／05／06／07／08／47。
+## D3｜SELF｜身份・自尊・內在模型系統
+14｜身份｜Primary D3｜Secondary D7｜核心：人不只保護利益，也保護「我是誰」。
+25｜原生家庭｜Primary D3｜Secondary D5／D7｜核心：早期家庭經驗提供最早期Self／World／Relationship Prior。
+29｜Self Model｜Primary D3｜Secondary D7／D8｜核心：「我是誰」是一套模型，不等於不可修改的Reality。
+30｜World Model｜Primary D3｜Secondary D7｜核心：「世界是什麼」會決定我們預測什麼、注意什麼。
+31｜Value Model｜Primary D3｜Secondary D2／D7｜核心：Value決定Weight，Weight決定Attention。
+D3核心鏈｜Experience→Prior→Self Model→Identity→Weight→Prediction→Behavior。
+D3對應原節｜14／25／29／30／31。
+## D4｜SOCIAL｜比較・地位・歸屬・群體系統
+11｜比較｜Primary D4｜Secondary D3／D7｜核心：Reference Point會改變主觀價值判斷。
+12｜嫉妒｜Primary D4｜Secondary D2／D3｜核心：嫉妒可能成為Hidden Value Detector。
+17｜從眾｜Primary D4｜Secondary D7｜核心：群體行為會被大腦當成Social Evidence。
+18｜權威｜Primary D4｜Secondary D6／D7｜核心：不確定性增加時，人容易借用External Prediction Model。
+38｜鬼谷子識人術系列｜Primary D4｜Secondary D2／D6｜核心：利用利益、壓力、失敗與時間提高人格Signal-to-Noise Ratio。
+D4核心鏈｜Social Input→Reference→Comparison→Status／Belonging→Norm→Behavior。
+D4對應原節｜11／12／17／18／38。
+## D5｜RELATIONSHIP｜依附・信任・交換・愛・界線系統
+21｜信任｜Primary D5｜Secondary D3／D8｜核心：Trust來自Ability＋Integrity＋Consistency＋Repair的時間序列。
+22｜人格｜Primary D5｜Secondary D3｜核心：真正高資訊量的人格證據出現在高成本情境。
+23｜關係｜Primary D5｜Secondary D8｜核心：Relationship是一個Dynamic Feedback System。
+24｜愛情｜Primary D5｜Secondary D1／D3｜核心：可預測性、安全感與依附共同影響靠近行為。
+43｜Relationship OS連線｜Primary D5｜Secondary D7／D8｜核心：Need→Expectation→Prediction→Interaction→Feedback→Pattern。
+D5核心鏈｜Need→Expectation→Interaction→Feedback→Trust／Distrust→Pattern→Attractor。
+D5對應原節｜21／22／23／24／43。
+## D6｜POWER｜資源・控制・資訊・權力系統
+19｜權力｜Primary D6｜Secondary D2／D4｜核心：權力是影響他人資源、選項、資訊與後果的能力。
+20｜控制｜Primary D6｜Secondary D1／D5｜核心：控制可能是降低Uncertainty的錯誤策略。
+36｜制度｜Primary D6｜Secondary D8｜核心：制度不能假設每個人永遠善良，而要建立Feedback與Correction。
+39｜人性黑話系列｜Primary D6｜Secondary D2／D5｜核心：從討好與依賴升級成原則、能力、界線與自主。
+46｜Power OS連線｜Primary D6｜Secondary D2／D8｜核心：Resource→Dependency→Bargaining Power→Choice Space。
+D6核心鏈｜Resource→Dependency→Power→Choice Architecture→Behavior。
+D6對應原節｜19／20／36／39／46。
+## D7｜COGNITION｜表徵・語言・偏誤・預測系統
+15｜合理化｜Primary D7｜Secondary D2／D3｜核心：表面Reason不一定等於真正Generator。
+16｜認知偏誤｜Primary D7｜Secondary D4｜核心：Heuristic可以降低運算成本，也可能產生系統性Prediction Error。
+26｜情緒｜Primary D7｜Secondary D1／D2｜核心：Emotion可以視為系統狀態與Prediction的壓縮訊號。
+27｜語言｜Primary D7｜Secondary D3｜核心：Language是Reality的Compression，不等於Reality本身。
+28｜表徵｜Primary D7｜Secondary D3｜核心：不同Representation可以讓相同事件生成不同Emotion與Action。
+32｜Prediction｜Primary D7｜Secondary D8｜核心：大腦會在行動前持續預測下一步可能發生什麼。
+42｜Inner Model OS連線｜Primary D7｜Secondary D3／D8｜核心：Self Model＋World Model＋Relationship Model→Prediction。
+44｜Language OS連線｜Primary D7｜Secondary D3／D8｜核心：Reality→Representation→Language→Attention→Prediction→Action。
+D7核心鏈｜Reality→Representation→Language→Attention→Evidence Selection→Prediction→Emotion→Action。
+D7對應原節｜15／16／26／27／28／32／42／44。
+## D8｜EVOLUTION｜回饋・誤差・模型更新・High Agency系統
+33｜Prediction Error｜Primary D8｜Secondary D7｜核心：Reality≠Prediction產生最重要的更新訊號。
+34｜High Agency｜Primary D8｜Secondary D3／D6｜核心：High Agency不是控制Reality，而是Reality改變後仍能產生Action。
+35｜選擇與後果｜Primary D8｜Secondary D6｜核心：Choice需要與Consequence形成Feedback Loop。
+40｜Human Nature OS原始APP｜Primary D8｜Secondary D1～D7｜核心：Knowledge→Understanding→Simulation→Prediction→Reflection→Action→Habit→Ability。
+41｜人性×Problem Diagnosis母體｜Primary D8｜Secondary D1～D7｜核心：Fact→Need→Prediction→Mechanism→Incentive→Behavior→Feedback→Update。
+45｜Predictive Coding OS連線｜Primary D8｜Secondary D7｜核心：Prior→Prediction→Input→Error→Update→Retest。
+48｜High Agency OS連線｜Primary D8｜Secondary D6／D7｜核心：Problem→Control Map→Bottleneck→Minimum Action→Feedback→Update。
+52｜舊人性模型vs新人性模型｜Primary D8｜Secondary D7｜核心：Character Judgment→Mechanism Diagnosis→Reality Testing。
+53｜人性智慧最高層｜Primary D8｜Secondary D1～D7｜核心：真正智慧不是模型永遠正確，而是模型永遠可以更新。
+55｜人性總公式｜Primary D8｜Secondary D1～D7｜核心：Human Behavior＝State×Need×Model×Environment×Incentive×Constraint×Feedback。
+D8核心鏈｜Prediction→Action→Reality→Feedback→Error→Update→Retest→New Action。
+D8對應原節｜33／34／35／40／41／45／48／52／53／55。
+## 跨Domain母體節點｜負責統整、不是單一Domain內容
+01｜整套人性母體最核心的一句話｜Meta｜D1～D8｜核心：不要急著問好人壞人，要找Behavior Generator。
+02｜人性本質｜Meta｜D1～D8｜核心：人性不是固定善惡，而是不同條件下產生不同策略的Adaptive System。
+49｜整合後的人性八大Domain｜Meta Architecture｜D1～D8｜核心：建立整套Human Nature OS分類架構。
+50｜人性母體32個Canonical Nodes｜Meta Node Registry｜D1～D8｜核心：建立Canonical Node字典。
+51｜人性總生成鏈｜Meta Causal Graph｜D1～D8｜核心：把八大Domain從分類變成動態生成系統。
+54｜舊貼文去重後核心母題｜Meta Knowledge Base｜D1～D8｜核心：完成舊內容去重與Canonicalization。
+## 55節逐號完整索引｜01→55
+01｜人性母體核心命題｜META｜八域總論。
+02｜人性本質｜META｜八域總論。
+03｜生存｜D1 SURVIVAL。
+04｜自利｜D2 NEED。
+05｜利益｜D2 NEED。
+06｜價值交換｜D2 NEED。
+07｜利己→利他｜D2 NEED。
+08｜利他vs討好｜D2 NEED。
+09｜恐懼｜D1 SURVIVAL。
+10｜安全感｜D1 SURVIVAL。
+11｜比較｜D4 SOCIAL。
+12｜嫉妒｜D4 SOCIAL。
+13｜損失厭惡｜D1 SURVIVAL。
+14｜身份｜D3 SELF。
+15｜合理化｜D7 COGNITION。
+16｜認知偏誤｜D7 COGNITION。
+17｜從眾｜D4 SOCIAL。
+18｜權威｜D4 SOCIAL。
+19｜權力｜D6 POWER。
+20｜控制｜D6 POWER。
+21｜信任｜D5 RELATIONSHIP。
+22｜人格｜D5 RELATIONSHIP。
+23｜關係｜D5 RELATIONSHIP。
+24｜愛情｜D5 RELATIONSHIP。
+25｜原生家庭｜D3 SELF。
+26｜情緒｜D7 COGNITION。
+27｜語言｜D7 COGNITION。
+28｜表徵｜D7 COGNITION。
+29｜Self Model｜D3 SELF。
+30｜World Model｜D3 SELF。
+31｜Value Model｜D3 SELF。
+32｜Prediction｜D7 COGNITION。
+33｜Prediction Error｜D8 EVOLUTION。
+34｜High Agency｜D8 EVOLUTION。
+35｜選擇與後果｜D8 EVOLUTION。
+36｜制度｜D6 POWER。
+37｜防禦人性的惡｜D1 SURVIVAL｜跨D6。
+38｜鬼谷子識人術｜D4 SOCIAL｜跨D2／D6。
+39｜人性黑話｜D6 POWER｜跨D2／D5。
+40｜Human Nature OS原始APP｜D8 EVOLUTION｜跨八域。
+41｜人性×Problem Diagnosis｜D8 EVOLUTION｜跨八域。
+42｜Inner Model OS｜D7 COGNITION｜跨D3／D8。
+43｜Relationship OS｜D5 RELATIONSHIP｜跨D7／D8。
+44｜Language OS｜D7 COGNITION｜跨D3／D8。
+45｜Predictive Coding OS｜D8 EVOLUTION｜跨D7。
+46｜Power OS｜D6 POWER｜跨D2／D8。
+47｜Altruism OS｜D2 NEED｜跨D5／D8。
+48｜High Agency OS｜D8 EVOLUTION｜跨D6／D7。
+49｜八大Domain｜META ARCHITECTURE。
+50｜32個Canonical Nodes｜META NODE REGISTRY。
+51｜人性總生成鏈｜META CAUSAL GRAPH。
+52｜舊人性模型vs新人性模型｜D8 EVOLUTION。
+53｜人性智慧最高層｜D8 EVOLUTION｜跨八域。
+54｜去重後核心母題｜META KNOWLEDGE BASE。
+55｜人性總公式｜D8 EVOLUTION｜跨八域。
+## 數量核對
+META｜01／02／49／50／51／54｜共6節。
+D1 SURVIVAL｜03／09／10／13／37｜共5節。
+D2 NEED｜04／05／06／07／08／47｜共6節。
+D3 SELF｜14／25／29／30／31｜共5節。
+D4 SOCIAL｜11／12／17／18／38｜共5節。
+D5 RELATIONSHIP｜21／22／23／24／43｜共5節。
+D6 POWER｜19／20／36／39／46｜共5節。
+D7 COGNITION｜15／16／26／27／28／32／42／44｜共8節。
+D8 EVOLUTION｜33／34／35／40／41／45／48／52／53／55｜共10節。
+總數｜6＋5＋6＋5＋5＋5＋5＋8＋10＝55節。
+## 八大Domain→55節快速導航
+D1｜03→09→10→13→37。
+D2｜04→05→06→07→08→47。
+D3｜14→25→29→30→31。
+D4｜11→12→17→18→38。
+D5｜21→22→23→24→43。
+D6｜19→20→36→39→46。
+D7｜15→16→26→27→28→32→42→44。
+D8｜33→34→35→40→41→45→48→52→53→55。
+META｜01→02→49→50→51→54。
+## 真正的學習順序（不建議照01→55讀）
+第一階段｜D1 SURVIVAL｜先學會辨識威脅、安全、恐懼與損失。
+第二階段｜D2 NEED｜再辨識需求、利益、自利、交換與利他。
+第三階段｜D3 SELF｜再看Self Model、Identity、World Model與Value Model。
+第四階段｜D4 SOCIAL｜再理解比較、嫉妒、地位、從眾與權威。
+第五階段｜D5 RELATIONSHIP｜再進入依附、信任、愛、界線與Relationship Pattern。
+第六階段｜D6 POWER｜再理解Resource、Dependency、Control、Power與Exit Option。
+第七階段｜D7 COGNITION｜再看Representation、Language、Bias、Emotion與Prediction。
+第八階段｜D8 EVOLUTION｜最後學Prediction Error、Feedback、Model Update與High Agency。
+### 完整學習路徑
+03生存→09恐懼→10安全感→13損失厭惡→37風險防禦。
+→04自利→05利益→06價值交換→07高階利己→08利他vs討好→47 Altruism OS。
+→14身份→25原生家庭→29 Self Model→30 World Model→31 Value Model。
+→11比較→12嫉妒→17從眾→18權威→38識人。
+→21信任→22人格→23關係→24愛情→43 Relationship OS。
+→19權力→20控制→36制度→39自主與界線→46 Power OS。
+→15合理化→16偏誤→26情緒→27語言→28表徵→32 Prediction→42 Inner Model→44 Language OS。
+→33 Prediction Error→34 High Agency→35選擇與後果→40 Human Nature OS→41 Problem Diagnosis→45 Predictive Coding→48 High Agency OS→52新舊模型→53最高智慧→55總公式。
+## 八域之間的真正因果方向
+D1 SURVIVAL回答｜我安全嗎？
+↓
+D2 NEED回答｜我要什麼？
+↓
+D3 SELF回答｜這對「我是誰」意味著什麼？
+↓
+D4 SOCIAL回答｜別人與群體怎麼看？
+↓
+D5 RELATIONSHIP回答｜我們之間會發生什麼？
+↓
+D6 POWER回答｜誰有資源、控制權與退出權？
+↓
+D7 COGNITION回答｜我的大腦如何表徵並預測這一切？
+↓
+ACTION｜因此我現在做什麼？
+↓
+REALITY｜世界回傳實際結果。
+↓
+D8 EVOLUTION回答｜Prediction錯在哪裡？我要不要更新？
+↓
+NEW MODEL。
+↓
+NEW ACTION。
+↓
+NEW REALITY。
+## 55節最後不應被理解成55篇文章
+它們真正形成的是一張Human Nature Knowledge Graph。
+01／02定義Ontology。
+49定義Domain Architecture。
+50定義Node Registry。
+51定義Causal Graph。
+54負責Knowledge Deduplication。
+D1～D7解釋Behavior如何生成。
+D8負責Error Correction與Evolution。
+55負責把整套系統壓縮成總公式。
+### Human Nature OS最高階總公式
+Reality→Threat／Safety→Need→Value→Self Model→Social Reference→Relationship→Power Structure→Representation→Language→Prediction→Emotion→Choice→Behavior→Outcome→Feedback→Prediction Error→Model Update→Retest→New Action。
+### 55節真正共同指向的能力
+不是背55個人性知識。
+而是看到一個Behavior時，可以一路逆推：
+Behavior←Choice←Emotion←Prediction←Representation←Model←Value←Need←Threat／Safety←Structure。
+再一路正向更新：
+Reality→Feedback→Prediction Error→Model Update→New Representation→New Prediction→New Choice→New Behavior。
+這才是55節從「人性文章資料庫」升級成「Human Nature OS」的真正分界。
+# ⑦ Human Nature OS｜55節→八大Domain重組版
+這55節不再按照「文章順序」排列。
+改成按照「人性生成的上游→下游→更新」重新建模。
+八大Domain不是八個互相獨立的分類。
+它們是一條動態生成鏈。
+總母體｜Reality→Survival→Need→Self→Social→Relationship→Power→Cognition→Evolution→New Reality。
+總原則｜不要只問「這個人是什麼人」，要問「什麼系統正在生成這個行為」。
+## DOMAIN 1｜SURVIVAL｜生存・避害・安全系統
+核心問題｜當人感受到威脅、匱乏與損失時，人性如何改變？
+本體｜生命系統首先必須維持自身存在。
+結構｜威脅→恐懼→避害→安全需求→資源保護→行為收縮。
+核心Node｜生存、避害、恐懼、安全感、損失、匱乏、資源、不確定性。
+對應原55節｜03生存、09恐懼、10安全感、13損失厭惡、37防禦人性的惡。
+核心機制｜Threat↑→Attention Narrowing↑→Short-term Survival Weight↑→Long-term Value Weight↓。
+人在安全時與危險時可能呈現完全不同的行為。
+因此不能把壓力狀態下的Behavior直接等同完整人格。
+但理解Threat Mechanism不等於取消責任。
+理解機制是為了提高Prediction Accuracy。
+界線則是為了降低Risk。
+舊模式｜他怎麼突然變壞了？
+新模式｜目前什麼Threat正在改變他的Value Weight？
+舊模式｜不要害怕。
+新模式｜恐懼正在預測什麼Loss？
+舊模式｜我要得到永遠的安全。
+新模式｜我要提高面對不確定性的Adaptive Capacity。
+能力｜Threat Detection、Risk Assessment、Loss Mapping、Uncertainty Tolerance、Safety Building、Resource Buffer、Adaptive Capacity。
+智慧｜真正的安全不是世界永遠不變，而是世界改變時我仍有能力重新組織自己。
+金句｜恐懼不是敵人，而是系統對未來損失的預測。
+金句｜匱乏會縮小人的時間尺度。
+金句｜安全感的最高形式不是Certainty，而是Adaptability。
+DOMAIN 1公式｜Threat→Predicted Loss→Fear→Protection Strategy→Behavior→Feedback。
+## DOMAIN 2｜NEED｜需求・慾望・利益・獎賞系統
+核心問題｜人到底想得到什麼？
+本體｜行為背後通常存在某種Value Seeking。
+結構｜Need→Value→Reward Prediction→Incentive→Choice→Behavior。
+核心Node｜需求、慾望、獎賞、利益、自利、利他、互惠、公平、價值交換。
+對應原55節｜04自利、05利益、06價值交換、07利己→利他、08利他vs討好、47 Altruism OS。
+核心機制｜人會保護自己主觀認為重要的Value。
+Value不只是金錢。
+安全是Value。
+面子是Value。
+身份是Value。
+關係是Value。
+孩子是Value。
+自由是Value。
+信念也是Value。
+因此看似不理性的Behavior，在當事人的Value Function中可能具有內部合理性。
+真正識人的方法不是只聽Reason。
+而是觀察他願意為什麼付Cost。
+Words＝低成本訊號。
+Choices＝中成本訊號。
+Sacrifice＝高成本訊號。
+Repeated Costly Behavior＝高可信度訊號。
+舊模式｜人就是自私。
+新模式｜他目前正在最佳化哪個Value？
+舊模式｜利己與利他互相衝突。
+新模式｜時間尺度改變後，合作與利他可能成為更高階利己。
+舊模式｜幫助別人就是善良。
+新模式｜真正的利他應提高對方能力，而不是增加依賴。
+能力｜Need Detection、Value Mapping、Incentive Analysis、Cost Signal Reading、Reciprocity Design、Value Creation、Long-term Optimization。
+智慧｜不要只問一個人說自己重視什麼，要看他願意為什麼付代價。
+金句｜行為會暴露真正的權重。
+金句｜利他讓別人更強，討好讓自己更空。
+金句｜低階自利搶價值，中階自利交換價值，高階自利創造價值。
+DOMAIN 2公式｜Need→Value→Weight→Reward Prediction→Incentive→Choice。
+## DOMAIN 3｜SELF｜身份・自尊・內在模型系統
+核心問題｜「我是誰」如何生成我的人性？
+本體｜人不只保護生命與利益，也保護自己的Self Model。
+結構｜Experience→Self Model→Identity→Value Weight→Prediction→Behavior。
+核心Node｜Identity、Self Model、Self-esteem、Meaning、Belief、Identity Threat、Consistency、Self Protection。
+對應原55節｜14身份、29 Self Model、30 World Model、31 Value Model、25原生家庭。
+核心機制｜Evidence一旦威脅Identity，人可能先防衛再處理Evidence。
+很多爭論表面上在爭Facts。
+底層其實在保護Self Model。
+「我是失敗者。」
+「我是不值得被愛的人。」
+「我是不能犯錯的人。」
+「我一定要照顧所有人。」
+這些都可能從描述逐漸凝固成Identity。
+Identity一旦僵化，就會改變Attention。
+Attention再選擇支持Identity的Evidence。
+最後形成Self-reinforcing Loop。
+舊模式｜我就是這樣的人。
+新模式｜這是我目前使用的Self Model。
+舊模式｜別人不同意我就是否定我。
+新模式｜Idea與Identity可以分離。
+舊模式｜我要證明自己是對的。
+新模式｜我要提高模型與Reality的一致度。
+能力｜Identity Awareness、Self Distancing、Belief Updating、Value Clarification、Identity Flexibility、Evidence Tolerance、Self Reconstruction。
+智慧｜真正成熟的身份不是永遠不變，而是具有核心穩定性與邊界可更新性。
+金句｜你不是你的模型，你是可以更新模型的人。
+金句｜很多人不是在保護真相，而是在保護「我是誰」。
+金句｜自由不是沒有身份，而是不被舊身份囚禁。
+DOMAIN 3公式｜Self Model→Attention→Evidence Selection→Prediction→Behavior→Self-confirmation／Update。
+## DOMAIN 4｜SOCIAL｜比較・地位・歸屬・群體系統
+核心問題｜別人如何進入我的大腦？
+本體｜人類是高度社會化的預測系統。
+結構｜Reference→Comparison→Status→Belonging→Norm→Conformity→Behavior。
+核心Node｜比較、嫉妒、地位、歸屬、從眾、權威、Social Norm、Reference Point。
+對應原55節｜11比較、12嫉妒、17從眾、18權威、38鬼谷子識人術。
+核心機制｜人會把別人當成Reference Point。
+Reference改變→主觀Value改變。
+因此收入沒變也可能突然覺得自己很窮。
+能力沒變也可能突然覺得自己很差。
+嫉妒也可以被重新理解為Value Detector。
+「他擁有什麼，是我其實很在乎的？」
+從眾則是一種Social Prediction Shortcut。
+「大家都這樣做」會被系統當成安全訊號。
+權威則是External Model Borrowing。
+人在不確定時會借用專家的Prediction降低運算成本。
+舊模式｜不要跟別人比較。
+新模式｜先看自己用了哪個Reference。
+舊模式｜嫉妒很壞。
+新模式｜嫉妒正在暴露哪個Hidden Value？
+舊模式｜不要相信權威。
+新模式｜可以借用權威，但必須保留Reality Verification。
+能力｜Reference Awareness、Social Signal Reading、Norm Detection、Status Awareness、Independent Verification、Group Pressure Resistance、Social Calibration。
+智慧｜成熟不是脫離群體，而是不把群體訊號誤認成Reality本身。
+金句｜比較不可怕，無意識地選錯參照點才可怕。
+金句｜嫉妒可能是尚未被承認的願望。
+金句｜真正獨立不是拒絕所有權威，而是保留驗證權。
+DOMAIN 4公式｜Social Input→Reference→Comparison→Status Prediction→Emotion→Behavior。
+## DOMAIN 5｜RELATIONSHIP｜依附・信任・交換・愛・界線系統
+核心問題｜兩個人的人性如何形成一個新的系統？
+本體｜關係不是兩個固定人格相加，而是兩個Feedback System互相耦合。
+結構｜Need→Expectation→Prediction→Interaction→Feedback→Trust→Pattern→Attractor。
+核心Node｜依附、信任、愛、互惠、交換、界線、衝突、修復、Relationship Pattern。
+對應原55節｜21信任、22人格、23關係、24愛情、25原生家庭、43 Relationship OS。
+核心機制｜A的Behavior成為B的Input。
+B的Response再成為A下一輪Input。
+反覆循環最後形成Relationship Attractor。
+追的人越追。
+逃的人越逃。
+控制的人越控制。
+沉默的人越沉默。
+最後雙方都以為「對方本來就是這樣」。
+其實部分Behavior是Relationship System共同生成的。
+Trust也不是一句「相信我」。
+Trust≈Ability＋Integrity＋Consistency＋Repair。
+舊模式｜找一個永遠不讓我失望的人。
+新模式｜找一個失望發生後仍具有Repair Capacity的人。
+舊模式｜愛就是沒有界線。
+新模式｜成熟的愛需要Connection＋Boundary。
+舊模式｜關係不好就是誰有問題。
+新模式｜先找Interaction Loop。
+能力｜Attachment Awareness、Boundary Setting、Trust Calibration、Conflict Repair、Reciprocity、Relationship Pattern Detection、Co-evolution。
+智慧｜關係品質不是由「從不出錯」決定，而是由「出錯後能不能修復」決定。
+金句｜沒有界線的愛，最後很容易變成控制或耗損。
+金句｜信任不是相信承諾，而是相信長期行為資料。
+金句｜成熟關係不是彼此控制，而是彼此增加選擇空間。
+DOMAIN 5公式｜Need→Expectation→Prediction→Interaction→Feedback→Trust／Distrust→Pattern。
+## DOMAIN 6｜POWER｜資源・控制・資訊・權力系統
+核心問題｜誰能改變誰的選項？
+本體｜權力是改變他人Choice Architecture與Consequence的能力。
+結構｜Resource→Dependency→Power→Control→Choice Space→Behavior。
+核心Node｜資源、資訊、依賴、權力、控制、選擇權、談判力、Exit Option、制度、制衡。
+對應原55節｜19權力、20控制、36制度、37防禦人性的惡、39人性黑話、46 Power OS。
+核心機制｜Dependency↑→Exit Option↓→Bargaining Power↓→Control Risk↑。
+所以自主不是心理口號。
+自主需要Resource。
+需要Information。
+需要Capability。
+需要Network。
+需要Exit Option。
+好的制度也不能假設掌權者永遠善良。
+好的制度應讓Power受到Feedback、Audit、Constraint與Correction。
+舊模式｜希望掌權者是好人。
+新模式｜建立即使遇到普通人甚至壞人也不容易失控的制度。
+舊模式｜我要讓對方聽我的。
+新模式｜我要理解Choice Architecture。
+舊模式｜我要勇敢。
+新模式｜我要增加Exit Options。
+能力｜Power Mapping、Dependency Analysis、Resource Building、Negotiation、Boundary Enforcement、Exit Design、Institution Design。
+智慧｜最好的安全不是期待所有人善良，而是讓惡意的破壞成本提高。
+金句｜沒有Exit Option的選擇，很難稱為真正自由。
+金句｜權力真正危險的地方，不是存在，而是缺乏Feedback。
+金句｜真正自主不是「我誰都不怕」，而是「我有選項」。
+DOMAIN 6公式｜Resource→Dependency→Bargaining Power→Choice Space→Behavior。
+## DOMAIN 7｜COGNITION｜表徵・語言・偏誤・預測系統
+核心問題｜我們看到的是Reality，還是大腦生成的Reality Model？
+本體｜人不是直接接觸完整Reality，而是透過Representation理解Reality。
+結構｜Reality→Observation→Representation→Language→Attention→Evidence Selection→Prediction→Emotion→Action。
+核心Node｜Representation、Language、Attention、Evidence Selection、Bias、Rationalization、Prediction、Emotion、Interpretation。
+對應原55節｜15合理化、16認知偏誤、26情緒、27語言、28表徵、32 Prediction、42 Inner Model OS、44 Language OS。
+核心機制｜同一Reality可以生成不同Representation。
+「他沒有回我。」
+第一表徵｜他討厭我。
+第二表徵｜他很忙。
+第三表徵｜資訊不足。
+Reality相同。
+Representation不同。
+Emotion不同。
+Action不同。
+Outcome最後也不同。
+所以真正的認知自由從第二表徵開始。
+舊模式｜我的感覺就是真相。
+新模式｜我的感覺是目前模型產生的訊號。
+舊模式｜我的第一個解釋一定是真的。
+新模式｜至少生成第二與第三表徵。
+舊模式｜我要消除偏誤。
+新模式｜我要建立Bias Detection與Correction Mechanism。
+能力｜Representation Awareness、Second Representation、Bias Detection、Language Reconstruction、Evidence Testing、Probabilistic Thinking、Prediction Calibration。
+智慧｜人最大的認知陷阱不是模型錯，而是不知道自己正在使用模型。
+金句｜不要把第一個表徵當Reality。
+金句｜語言不是Reality，而是Reality的壓縮格式。
+金句｜真正自由從第二個可能解釋開始。
+DOMAIN 7公式｜Reality→Representation→Language→Attention→Prediction→Emotion→Action。
+## DOMAIN 8｜EVOLUTION｜回饋・誤差・更新・High Agency系統
+核心問題｜人能不能離開舊的人性模式？
+本體｜人性具有慣性，但不是完全固定。
+結構｜Prediction→Action→Reality→Feedback→Prediction Error→Model Update→Retest。
+核心Node｜Feedback、Prediction Error、Model Update、Retest、Learning、Choice、Consequence、High Agency、Adaptive Capacity、Evolution。
+對應原55節｜33 Prediction Error、34 High Agency、35選擇與後果、40 Human Nature OS、41 Problem Diagnosis、45 Predictive Coding OS、48 High Agency OS、52新舊人性模型、53人性智慧最高層、55總公式。
+核心機制｜Prediction與Reality不一致時產生Prediction Error。
+低流動性系統遇到Error時：
+→否認Reality。
+→攻擊Evidence。
+→責怪別人。
+→合理化。
+→尋找支持舊模型的資料。
+高流動性系統遇到Error時：
+→辨識Difference。
+→定位錯誤Node。
+→降低錯誤Weight。
+→生成Alternative Model。
+→執行Minimum Action。
+→取得新Feedback。
+→再次測試。
+因此成長不是「永遠猜對」。
+成長是Prediction Accuracy逐漸提高。
+自由不是「我能控制Reality」。
+自由是「Reality不照Prediction走，我仍然能更新」。
+舊模式｜錯了代表我不好。
+新模式｜錯了代表模型得到新資訊。
+舊模式｜我要證明原本的自己是對的。
+新模式｜我要讓Model更接近Reality。
+舊模式｜成功＝控制結果。
+新模式｜成功＝持續提高Adaptation與Prediction Accuracy。
+能力｜Feedback Reading、Error Detection、Error Localization、Model Updating、Retesting、Action Generation、High Agency。
+智慧｜智慧的最高形式不是擁有永遠正確的模型，而是擁有永遠可以更新的自己。
+金句｜Prediction Error不是敵人，而是Reality送來的更新資料。
+金句｜模型可以錯，但更新機制不能死。
+金句｜真正的High Agency不是控制Reality，而是Reality改變後仍能生成新Action。
+DOMAIN 8公式｜Prediction→Action→Feedback→Error→Update→Retest→Higher Prediction Accuracy。
+## 八大Domain一頁總覽
+D1｜SURVIVAL｜我要活下來｜生存、避害、恐懼、安全、損失、匱乏｜核心能力＝風險調節。
+D2｜NEED｜我要得到什麼｜需求、慾望、利益、獎賞、自利、利他、互惠｜核心能力＝價值辨識。
+D3｜SELF｜我是誰｜身份、自尊、Self Model、World Model、Value Model｜核心能力＝身份流動。
+D4｜SOCIAL｜別人如何影響我｜比較、嫉妒、地位、歸屬、從眾、權威｜核心能力＝社會校準。
+D5｜RELATIONSHIP｜我們如何互動｜依附、信任、交換、愛、界線、衝突、修復｜核心能力＝關係共演化。
+D6｜POWER｜誰能改變誰的選項｜資源、資訊、依賴、控制、權力、Exit Option、制度｜核心能力＝增加選項。
+D7｜COGNITION｜我如何理解Reality｜表徵、語言、注意、偏誤、合理化、Prediction｜核心能力＝表徵流動。
+D8｜EVOLUTION｜我如何持續升級｜Feedback、Prediction Error、Model Update、Retest、High Agency｜核心能力＝模型更新。
+## 八大Domain不是八個盒子，而是一條人性生成鏈
+D1 Survival｜系統先判斷「我安全嗎？」
+↓
+D2 Need｜接著判斷「我要什麼？」
+↓
+D3 Self｜再判斷「這對我是誰代表什麼？」
+↓
+D4 Social｜再讀取「別人怎麼看？群體怎麼做？」
+↓
+D5 Relationship｜進入「我們如何互動？」
+↓
+D6 Power｜形成「誰有資源？誰有選項？誰依賴誰？」
+↓
+D7 Cognition｜大腦把以上資訊壓縮成Representation與Prediction。
+↓
+Behavior｜最後才生成我們表面看到的行為。
+↓
+D8 Evolution｜Reality回傳Feedback，產生Prediction Error，決定系統更新還是僵化。
+## 完整Human Nature OS生成公式
+Reality
+→State
+→Threat／Safety
+→Need
+→Value
+→Self Model
+→Social Reference
+→Relationship Prediction
+→Power Structure
+→Representation
+→Language
+→Attention
+→Evidence Selection
+→Prediction
+→Emotion
+→Incentive
+→Choice
+→Behavior
+→Outcome
+→Feedback
+→Prediction Error
+→Model Update
+→Retest
+→New Prediction
+→New Action
+→New Reality。
+## 八大Domain真正共同的最高層
+D1教你不要被恐懼綁架。
+D2教你看懂真正的需求與利益。
+D3教你不要被舊身份綁架。
+D4教你不要被群體與比較綁架。
+D5教你不要被舊關係模式綁架。
+D6教你不要被依賴與權力結構綁架。
+D7教你不要被第一表徵與舊語言綁架。
+D8教你建立永遠可以更新自己的能力。
+所以Human Nature OS最終不是「識破別人的工具」。
+它首先是一套「解除自己被舊模型控制」的系統。
+理解人性不是為了變得多疑。
+理解人性是為了提高Prediction Accuracy。
+提高Prediction Accuracy不是為了控制所有人。
+而是為了更早辨識Pattern、更精準設定Boundary、更有效配置Resource、更快修正Error、更自由生成Action。
+真正的人性智慧＝看得懂人＋看得懂自己＋看得懂結構＋看得見誤差＋改得動模型。
+最終總公式｜Human Wisdom＝Structural Awareness×Prediction Accuracy×Model Fluidity×Update Capacity×Action Space。
+最終金句｜看懂人性不是終點，能在看懂人性之後仍然保有善意、界線、能力、選擇與更新能力，才是更高階的智慧。
+</script>
+
+<script type="text/plain" id="posts">
+@0-0
+你懂很多人性，為什麼還是被人性牽著走？
+讀了一百篇文章，遇到事情還是同一個反應。
+不是你不夠聰明。
+不是你不夠努力。
+是你一直在「讀」，卻從來沒有「跑一次」。
+=
+你是不是也這樣？
+道理都懂，一吵架就忘。
+書都看過，一緊張就亂。
+筆記很多，一受傷就回到原點。
+課上了很多，一遇到那個人就破功。
+你以為自己缺的是更多知識。
+其實你缺的，是一套遇到事情可以直接操作的流程。
+=
+最累的不是不懂
+最累的不是不懂。
+最累的是明明懂，卻做不到。
+你知道不該生氣，還是生氣。
+你知道不該比較，還是比較。
+你知道不該討好，還是討好。
+然後你開始責怪自己：我怎麼這麼沒用？
+其實不是你沒用，是知識還沒有變成能力。
+=
+真相：懂是腦袋的事，能是現場的事
+知道恐懼的定義，不等於知道此刻自己在怕什麼。
+知道比較的機制，不等於看得見自己正在跟誰比。
+知道關係的模式，不等於能在關係裡停下來。
+知識住在腦袋裡。
+反應住在身體裡。
+中間那一段路，只能靠一次一次的練習走過去。
+=
+更新：把「懂」改成「跑一次」
+辨識：現在是哪一個人性領域被啟動？
+診斷：我原本預測會發生什麼？
+對照：現實哪裡跟我想的不一樣？
+槓桿：哪一個點最值得動？
+行動：做一件最小、最可控的事。
+回饋：看結果，再修正。
+不用八個步驟都完美，先跑完一圈就贏了。
+=
+能力：你會慢慢長出三種力量
+第一，先看事實，不急著下結論。
+第二，先找卡點，不急著全部改。
+第三，先做小事，不急著證明自己。
+每跑一次，你對自己的預測就準一點。
+每準一點，你被舊反應綁架的時間就短一點。
+每短一點，你的人生就多一點選擇。
+=
+智慧：成熟不是沒有情緒
+真正的成熟，不是從此沒有情緒。
+而是情緒來的時候，你知道它從哪裡來。
+不是從此不犯錯。
+而是錯了以後，你知道要改哪裡。
+不是變成一個完美的人。
+而是變成一個可以一直更新的人。
+人性不是拿來背的，是拿來一次一次練的。
+=
+送給今天的你
+懂了不用，等於不懂。
+用了不修，等於白用。
+讀一百次，不如跑一次。
+跑一百次，不如修正一次。
+別再問自己為什麼做不到。
+改問自己：下一步，最小的那一步是什麼？
+今天遇到的那件事，就是你最好的練習題。
+
+@0-1
+你的人生卡住，通常只卡在八個問題
+我安全嗎？我要什麼？我是誰？別人怎麼看我？
+我能相信你嗎？我有選擇嗎？我看對了嗎？我願意改嗎？
+你所有的煩惱，幾乎都躲在這八句話裡。
+=
+你是不是常常說不清楚自己怎麼了？
+心裡很亂，卻不知道亂在哪裡。
+很想改變，卻不知道從哪裡開始。
+很想求救，卻連問題都講不出來。
+於是只能說：我好累。我好煩。我不知道。
+不是你太脆弱。
+是從來沒有人給過你一張人生的地圖。
+=
+說不清楚的痛，最折磨人
+說不清楚的害怕，會變成焦慮。
+說不清楚的想要，會變成不滿。
+說不清楚的自卑，會變成逞強。
+說不清楚的比較，會變成嫉妒。
+說不清楚的委屈，會變成冷戰。
+說不清楚的無力，會變成放棄。
+痛不可怕，找不到痛在哪裡才可怕。
+=
+真相：人性有八個入口
+生存，問的是我安全嗎。
+需求，問的是我要什麼。
+自我，問的是我是誰。
+群體，問的是別人怎麼看我。
+關係，問的是我能相信你嗎。
+權力，問的是我有選擇嗎。
+認知，問的是我看對了嗎。
+更新，問的是我願意改嗎。
+=
+更新：先命名，再處理
+怕的時候，問：我到底怕失去什麼？
+想要的時候，問：我真正需要的是什麼？
+受傷的時候，問：哪個身份被碰到了？
+比較的時候，問：沒人看，我還會選嗎？
+糾結的時候，問：這是愛，是需要，還是恐懼？
+無力的時候，問：誰掌握了退出的權利？
+生氣的時候，問：有沒有第二種解釋？
+=
+能力：一次只修一格
+你不需要一次處理八個問題。
+你只需要找到此刻最痛的那一格。
+把威脅寫成具體的事件。
+把「我是」改成「我現在」。
+換一個比較的基準。
+說清楚一個需求，一條界線。
+多準備一個替代方案。
+小小的一步，就是鬆動的開始。
+=
+智慧：有地圖的人不怕迷路
+沒有地圖的人，把每一次迷路都當成世界末日。
+有地圖的人，只是停下來看看自己在哪裡。
+人生不會因為你懂了就不再有問題。
+但會因為你懂了，問題不再是一團黑。
+看得見，就有路。
+說得出，就有解。
+=
+收藏這八句話
+安全，不是沒有風險，是知道自己接得住。
+需求，不是想要更多，是知道什麼最重要。
+自我，不是固定答案，是可以更新的版本。
+群體，不是標準答案，只是參考資料。
+關係，不是不出錯，是出錯後能修復。
+權力，不是壓過誰，是自己有選項。
+認知，不是看見真相，是願意再看一次。
+更新，不是否定過去，是放過自己。
+
+@0-2
+你怕的，真的會發生嗎？
+半夜睡不著，腦中一直演最壞的劇本。
+還沒發生的事，你已經痛了一百次。
+你不是膽小。
+你只是一直讓警報響著，卻沒有人去看火在哪裡。
+=
+你是不是也有這些聲音？
+我很怕。
+我一定要趕快處理。
+我不能失去。
+事情一定會很糟。
+我想逃，我想反擊，我想躲起來。
+心跳很快，呼吸很淺，腦袋一片空白。
+你以為那是事實，其實那只是預測。
+=
+恐懼最可怕的地方
+恐懼會把注意力縮得很窄。
+窄到你只看得見威脅，看不見資源。
+窄到你只看得見今天，看不見明天。
+窄到你只看得見失去，看不見自己還擁有什麼。
+於是你急著做決定。
+而急著做的決定，常常讓事情更糟。
+=
+真相：恐懼不是敵人
+恐懼是身體在提醒你：這裡可能有損失。
+它不是在說你會完蛋。
+它只是在說：請你看一下。
+威脅存在，不等於全面崩潰。
+會痛，不等於撐不過。
+有風險，不等於沒有路。
+你可以聽它說話，但不必讓它開車。
+=
+更新：七個問題，把警報變成資料
+現在真正發生了什麼？
+真正的威脅是什麼？
+我預測會失去什麼？
+真的發生的機率有多少？
+即使發生，我還有哪些資源？
+現在最小、最可控的行動是什麼？
+做完之後，風險真的下降了嗎？
+寫下來，害怕就會從霧變成字。
+=
+能力：安全感是練出來的
+多一點資訊，就少一點想像。
+多一點緩衝，就少一點慌張。
+多一個選項，就少一分被逼到牆角的感覺。
+多一次復原的經驗，就多一分對自己的信任。
+安全感不是別人給的。
+安全感是你一次一次接住自己之後長出來的。
+=
+智慧：最高的安全，是接得住
+沒有人能保證壞事永遠不發生。
+沒有人能保證明天一定順利。
+沒有人能保證誰永遠不離開。
+但你可以成為那個，事情發生後仍然站得起來的人。
+世界可以變。
+你也可以跟著重新組織自己。
+這才是誰都拿不走的安全感。
+=
+寫給正在害怕的你
+恐懼不是你的缺點，是你的雷達。
+匱乏會讓人只看得見眼前。
+慌張會讓小事變成大事。
+先停一下，先呼吸，先把它寫下來。
+你怕的那件事，也許只會發生一部分。
+而你比自己想像的，更有能力面對。
+安全感的最高階，不是確定，而是適應。
+
+@0-3
+你一直想要更多，為什麼還是不快樂？
+錢賺到了，心還是空的。
+被稱讚了，還是覺得不夠。
+事情照你的意思了，還是不安。
+也許你要的，從來不是你以為的那個東西。
+=
+你是不是常常這樣想？
+我就是想要。
+為什麼都是他得到？
+這樣對我有什麼好處？
+我付出這麼多。
+為什麼沒有人回報我？
+越想越不甘心，越比越不平衡。
+你不是貪心，你只是還沒看懂自己。
+=
+最深的匱乏，是填錯了洞
+用工作填孤單，越忙越孤單。
+用購物填焦慮，越買越焦慮。
+用控制填不安，越抓越不安。
+用掌聲填自卑，越紅越自卑。
+得到了，卻沒有滿足。
+因為表面想要的，不等於心裡需要的。
+=
+真相：想要的背後，還有一層
+想要錢，可能是想要安全，想要自由。
+想被稱讚，可能是想確認自己有價值。
+想要對方聽話，可能是想要確定感。
+想要成交，可能是想要被肯定。
+慾望沒有錯。
+錯的是讓看不清的慾望握著方向盤。
+=
+更新：七步，看懂自己要什麼
+我表面想要什麼？
+底層真正需要什麼？
+這代表我重視什麼價值？
+它的重要性，零到十是幾分？
+我要為它付出什麼成本？
+還有沒有其他方式可以滿足？
+三個月後，三年後，這個選擇還值得嗎？
+=
+能力：會排序的人，才會幸福
+什麼都想要的人，什麼都抓不牢。
+知道什麼最重要的人，才捨得放下其他。
+能等一等的人，才拿得到更大的回報。
+能讓別人也得到的人，才走得長遠。
+幸福不是擁有得多。
+幸福是清楚自己把力氣放在哪裡。
+=
+智慧：成熟不是沒有慾望
+成熟不是無欲無求。
+成熟是知道哪一個需求值得被放大。
+成熟是知道哪一個需求不能掌握方向盤。
+成熟是願意為真正重要的事付代價。
+看一個人說什麼，不如看他願意為什麼付出。
+行為，會暴露真正的權重。
+=
+給想要很多的你
+低階的自利，搶價值。
+中階的自利，換價值。
+高階的自利，創造價值。
+利他讓別人更強，討好讓自己更空。
+先弄清楚自己要什麼，再決定要追什麼。
+不要拿一輩子，去換一個你其實不需要的東西。
+你值得被真正的需要填滿。
+
+@0-4
+一次失敗，為什麼讓你覺得自己整個人都很糟？
+被拒絕一次，你說：我就是不夠好。
+搞砸一件事，你說：我一直都是這樣。
+其實你不是失敗者。
+你只是把一個結果，誤認成了自己。
+=
+這些話，是不是很熟悉？
+我就是不行。
+我一直都是這樣。
+他看不起我。
+我不能輸。
+我一定要證明自己。
+如果我做不到，我就沒有價值。
+你每天都在對自己說這些話，而且深信不疑。
+=
+最重的枷鎖，是你給自己的名字
+別人說你一句，你記十年。
+自己罵自己一句，你信一輩子。
+你把「這次沒做好」翻譯成「我很爛」。
+你把「他沒選我」翻譯成「沒人愛我」。
+然後你只看得見證明自己很糟的證據。
+越看越像，越像越信。
+=
+真相：「我是誰」只是一套模型
+你以為那是事實，其實那是很久以前寫下的結論。
+也許來自一次考試。
+也許來自一句大人的話。
+也許來自一段沒有被好好對待的關係。
+模型可以錯。
+模型可以舊。
+模型，也可以更新。
+=
+更新：換一種說話的方式
+我是失敗者，改成：這次結果沒有達標。
+我英文很差，改成：有些部分我還沒掌握。
+我沒能力，改成：我目前缺一項技能。
+沒人愛我，改成：這段關係沒有給我需要的連結。
+把「我是」改成「我現在」。
+一個字的距離，就是一條出路。
+=
+能力：用小行動，寫新的證據
+不要等有自信才行動。
+要先行動，才會有自信。
+完成一件小事，就是一筆新的證據。
+證據多了，舊的結論就站不住了。
+你不是不行。
+你只是還有尚未建立的能力。
+=
+智慧：穩定，不是不變
+成熟的自我，不是永遠不變。
+而是核心穩定，邊界可以更新。
+別人不同意你的想法，不等於否定你這個人。
+你犯了錯，不等於你就是錯。
+真正的自由不是沒有身份。
+是不被舊的身份囚禁。
+=
+請把這段話送給自己
+你不是你的成績。
+你不是你的過去。
+你不是別人嘴裡的你。
+你不是你的舊模型。
+你是那個能看見模型，測試模型，更新模型的人。
+很多人不是在保護真相，而是在保護「我是誰」。
+放下證明，才有力氣成長。
+
+@0-5
+滑完手機，為什麼你突然覺得自己很失敗？
+薪水沒變，卻覺得自己很窮。
+生活沒變，卻覺得自己很差。
+什麼都沒發生。
+只是你看了別人一眼，就把自己弄丟了。
+=
+你是不是也常常這樣？
+大家都有，只有我沒有。
+別人會怎麼看我？
+為什麼他比我好？
+老師都這樣說，大家都這樣做。
+我怕被排擠，我怕跟別人不一樣。
+你活得很努力。
+卻常常活在別人的眼光裡。
+=
+比較，是最安靜的折磨
+它不會大聲罵你。
+它只會輕輕地說：你看看人家。
+你拿自己的幕後，去比別人的精華。
+你拿自己的起點，去比別人的終點。
+你拿自己的全部，去比別人的一個角度。
+這場比賽，從一開始就不公平。
+=
+真相：錯的不是比較，是參照點
+人天生會看別人，這不是你的錯。
+錯的是無意識地選錯了對象。
+大家都這樣，不代表一定對。
+很多人相信，不代表就是真相。
+群體可以給你資料。
+但群體不能替你決定你是誰。
+=
+更新：七個問題，把自己找回來
+我正在跟誰比？
+我比的是哪一個面向？
+我們的條件一樣嗎？
+這份嫉妒，透露我重視什麼？
+這是我的價值，還是大家的規則？
+如果沒有人知道，我還會這樣選嗎？
+我可以換一個更合理的參照嗎？
+=
+能力：把嫉妒變成方向
+嫉妒來的時候，不要先羞辱自己。
+問一句：他擁有什麼，是我也很在乎的？
+那就是你藏起來的渴望。
+渴望的背後，是一段可以補上的差距。
+差距的背後，是一個可以開始的學習。
+嫉妒不是罪。
+嫉妒是尚未被承認的願望。
+=
+智慧：在人群裡，仍然是自己
+成熟不是離開人群。
+成熟是不把群體的聲音，當成唯一的真實。
+可以參考，不必照抄。
+可以尊重，不必盲從。
+可以羨慕，不必否定自己。
+真正的獨立，是保留自己驗證的權利。
+=
+送給愛比較的你
+別人的位置，不決定你的價值。
+別人的速度，不決定你的終點。
+別人的掌聲，不決定你的方向。
+把別人的成果，當成資料，不要當成判決。
+比較不可怕，選錯參照點才可怕。
+你要比的，是昨天的自己。
+你走的每一步，都算數。
+
+@0-6
+你付出這麼多，為什麼他還是不懂你？
+你一直給，一直讓，一直等。
+換來的卻是理所當然。
+不是你不夠好。
+是你把愛，過成了沒有界線的犧牲。
+=
+這些話，你是不是說過？
+為什麼他不懂我？
+我為他做了這麼多。
+我好怕他離開。
+我不敢拒絕。
+每次到最後，都變成這樣。
+你累了，卻不敢停。
+因為你怕一停，愛就不見了。
+=
+最痛的不是不被愛
+最痛的是你拼命愛，卻沒有被看見。
+你越追，他越逃。
+你越忍，他越理所當然。
+你越沉默，距離越遠。
+你以為只要付出更多，他就會改。
+結果更多的付出，只是讓老樣子更牢固。
+=
+真相：關係是兩個人一起跳的舞
+不是誰一個人的錯。
+你的反應，是他下一步的原因。
+他的反應，又成為你下一步的理由。
+一圈一圈，就跳成了固定的舞步。
+愛，不等於無限的責任。
+在乎，不等於什麼都要扛。
+=
+更新：七步，看清一段關係
+他實際做了什麼？
+我真正需要什麼？
+我原本期待什麼？
+哪些是我的責任，哪些是他的？
+長期看下來，他的行為值得信任嗎？
+這是一次的事，還是一再重複？
+我們有沒有修復的能力？
+=
+能力：說清楚，才是溫柔
+說清楚一個需求，不是麻煩，是誠實。
+畫清楚一條界線，不是無情，是尊重。
+信任，看的是能力，誠信，一致，還有修復。
+有愛有界線，是健康的連結。
+有愛沒界線，容易依賴和耗盡。
+你不需要用委屈，來證明你很愛。
+=
+智慧：好的關係，不是不出錯
+沒有人能保證永遠不讓你失望。
+重要的是失望之後，他願不願意回來修。
+重要的是吵架之後，你們能不能更懂彼此。
+關係的品質，不由「從不出錯」決定。
+而由「出錯之後能不能修復」決定。
+=
+寫給在關係裡很累的你
+沒有界線的愛，最後會變成控制或耗損。
+信任不是相信承諾，是相信長期的行為。
+討好換不到尊重，只會換到習慣。
+成熟的關係不是彼此控制，是彼此多一點自由。
+先好好站穩，再好好去愛。
+你值得一段，不必委屈自己的關係。
+
+@0-7
+你不是沒有選擇，你只是選項太少
+「我沒有辦法。」
+「我只能聽他的。」
+「離開的代價太高了。」
+這些話說久了，你就真的相信自己被困住了。
+=
+你是不是也有這種無力感？
+不敢拒絕主管。
+不敢離開一段關係。
+不敢說出真正的想法。
+因為他掌握了資源，掌握了資訊，掌握了你的退路。
+你不是不想反抗。
+你是覺得反抗之後，自己活不下去。
+=
+無力感，會慢慢偷走一個人
+一開始只是忍一下。
+後來變成習慣忍。
+再後來，你忘了自己其實可以不忍。
+你越依賴，越不敢離開。
+越不敢離開，越沒有籌碼。
+越沒有籌碼，就越只能聽話。
+=
+真相：無力感，不等於零選項
+你覺得完全沒有選擇。
+其實可能只是目前的選項太少。
+權力不只是地位高低。
+權力是資源，是資訊，是替代方案，是離得開的能力。
+誰比較不依賴，誰就比較自由。
+這不是性格問題，這是結構問題。
+=
+更新：七步，畫出你的處境
+誰掌握關鍵資源？
+誰知道得比較多？
+誰比較依賴誰？
+我有哪些替代方案？
+如果退出，成本是多少？
+我最低可以接受的條件是什麼？
+我要怎麼增加自己的選擇權？
+=
+能力：自由是準備出來的
+多知道一點，就少被牽著走一點。
+多會一樣本事，就多一條路。
+多存一點錢，就多一點底氣。
+多一群支持你的人，就少一分孤立。
+多一個備案，就多一分從容。
+勇氣很重要。
+但有選項的勇氣，才撐得久。
+=
+智慧：別期待所有人都善良
+最好的安全，不是希望對方永遠是好人。
+而是讓自己不必只靠對方的善良。
+權力本身不可怕。
+可怕的是沒有人能對它說不。
+給自己留一條退路，不是不信任。
+是對自己的人生負責。
+=
+給覺得被困住的你
+沒有退路的選擇，很難叫做自由。
+真正的自主，不是我誰都不怕，而是我有選項。
+敢說不，很了不起。
+說不之後還能好好活著，更了不起。
+從今天起，為自己多準備一個選項。
+一個就好。
+那就是你走出去的第一扇門。
+
+@0-8
+你確定，事情真的是你想的那樣嗎？
+他沒回訊息，你說：他討厭我。
+他臉色不好，你說：他在針對我。
+你花了一整晚難過。
+後來才發現，他只是手機沒電。
+=
+這些話，你是不是常說？
+一定是這樣。
+他就是故意的。
+他永遠都不會變。
+大家都在針對我。
+我早就知道會這樣。
+你說得很肯定。
+但你其實只看到了一小部分。
+=
+傷你最深的，常常是你的解釋
+事情本身只有一分。
+你的想像，又加了九分。
+你替別人寫好台詞。
+你替未來判了死刑。
+你替自己選了最痛的那個版本。
+然後為了一個沒被證實的故事，哭了一整夜。
+=
+真相：你看到的不是世界
+你看到的，是大腦替你整理過的世界。
+大腦為了省力，會自動補上答案。
+補上的答案，常常來自過去的傷。
+所以第一個解釋，通常不是事實。
+它只是你最熟悉的那個故事。
+感覺很真，不代表它就是真的。
+=
+更新：七步，讓現實說話
+攝影機會拍到什麼？
+我是怎麼解釋的？
+還有哪三種可能？
+每一種解釋，各有什麼證據？
+把「一定」換成「有幾成可能」。
+如果我是對的，接下來應該看到什麼？
+去確認，去問，讓現實來回答。
+=
+能力：換一種說法，換一種心情
+他就是自私，改成：這個行為把他自己放在前面。
+他不愛我，改成：哪些行為讓我這樣覺得？
+我一定會失敗，改成：我估計成功率有多少？
+他故意傷害我，改成：故意，是一個需要證據的猜測。
+語言鬆了，心就鬆了。
+心鬆了，路就寬了。
+=
+智慧：最大的陷阱，是不知道自己在猜
+想錯不可怕。
+可怕的是把猜測當成事實。
+被現實打臉的時候，有人忙著找理由。
+有人願意說：原來我想錯了。
+前者守住了面子。
+後者得到了成長。
+=
+送給容易想太多的你
+不要把第一個想法當成真相。
+語言不是現實，只是現實的縮寫。
+你的感覺是訊號，不是判決。
+多想一種可能，就少受一次傷。
+多問一句，就少猜一夜。
+真正的自由，從第二個解釋開始。
+
+@0-9
+為什麼同樣的事，一直在你的人生重演？
+換了工作，遇到同樣的主管。
+換了對象，吵同樣的架。
+換了環境，掉進同樣的坑。
+不是你運氣不好。
+是有一個東西，你一直沒有更新。
+=
+你是不是也說過這些話？
+怎麼又發生一樣的事？
+明明都是別人的問題。
+我知道，但是我做不到。
+以前就是這樣啊。
+沒有必要改吧。
+每說一次，舊的循環就再轉一圈。
+=
+最貴的學費，是重複
+同一個錯，犯一次是經驗。
+犯兩次是提醒。
+犯十次，就是人生。
+現實一直在給你回饋。
+你卻忙著否認，忙著解釋，忙著怪別人。
+答案早就寄來了，只是你一直沒有拆開。
+=
+真相：錯，不是你不好
+你預測的，和實際發生的不一樣。
+這不是失敗，這是資料。
+有人看不到差距。
+有人看到了，但是怪別人。
+有人看到了，承認是自己想錯。
+還有人主動去找自己哪裡想錯。
+差別不在聰明，在願不願意更新。
+=
+更新：七步，把錯變成禮物
+我原本預測什麼？
+實際發生了什麼？
+差了多少？
+是哪一個環節猜錯了？
+哪一個舊信念，我看得太重了？
+新的想法是什麼？
+下一次，我要怎麼驗證？
+=
+能力：小實驗，快回饋
+不用一次改變人生。
+只要改一個小地方，再試一次。
+回饋越快，進步越快。
+錯誤看得越清楚，修正越準。
+不崩潰，不否認。
+找出差距，更新想法，做出新的行動。
+這就是高手每天在做的事。
+=
+智慧：永遠可以更新的自己
+智慧不是擁有永遠正確的答案。
+智慧是擁有一個永遠可以修正的自己。
+自由不是控制得了現實。
+自由是現實不照劇本走，你依然有下一步。
+成長不是永遠猜對。
+成長是一次比一次更接近真實。
+=
+寫給想改變的你
+錯了，代表你得到了新的資訊。
+痛了，代表有一個想法該更新了。
+重複了，代表有一堂課還沒下課。
+放下「我要證明我是對的」。
+拿起「我要更接近真實」。
+模型可以錯，但更新的能力不能死。
+今天，就改一個小地方。
+
+@0-10
+你為什麼越努力，越亂？
+想改變自己，就一次想改全部。
+要自信，要獨立，要溝通，要放下。
+結果什麼都碰了，什麼都沒好。
+不是你不認真。
+是你沒有照順序來。
+=
+你是不是也這樣處理問題？
+還在害怕，就逼自己要正向。
+還沒搞懂自己要什麼，就急著跟別人談。
+還在被比較綁架，就想經營好關係。
+每一件事都很努力。
+每一件事都卡卡的。
+因為地基沒打好，就急著蓋樓。
+=
+順序錯了，力氣就白費了
+人在害怕的時候，聽不進道理。
+人在匱乏的時候，看不到遠方。
+人在自我否定的時候，接不住別人的愛。
+你責怪自己做不到。
+其實是你在錯的樓層用力。
+先解決下面的，上面的才會鬆開。
+=
+真相：人性是一層一層疊上去的
+先問：我安全嗎？
+再問：我真正需要什麼？
+再問：這碰到我是誰了嗎？
+再問：我被比較和群體影響了嗎？
+再問：這是我在關係裡的老模式嗎？
+再問：是誰握有資源和選擇？
+再問：我的解讀準嗎？
+最後問：現實告訴我哪裡想錯了？
+=
+更新：先掃描，再出手
+不是每一次都要八個問題全部處理。
+先從頭掃一遍。
+哪一層最卡，就先停在那一層。
+安全沒有顧好，先顧安全。
+需要沒有弄清楚，先弄清楚需要。
+一層穩了，再往上一層。
+慢慢來，反而最快。
+=
+能力：會找卡點的人，最省力
+不會找卡點的人，每一件事都想改。
+會找卡點的人，只動最關鍵的那一點。
+不會排序的人，永遠在救火。
+會排序的人，知道先救哪一場火。
+你不需要更用力。
+你需要的是更準確。
+=
+智慧：先安頓，再成長
+人要先覺得安全，才有餘力思考。
+人要先知道自己要什麼，才有方向努力。
+人要先接納自己，才有力氣面對別人。
+不要嫌自己走得慢。
+每一步踩穩了，才不會一直退回原點。
+=
+送給很努力的你
+先安全，再需要。
+先自己，再別人。
+先關係，再選擇。
+先看清，再更新。
+方向對了，慢一點沒關係。
+順序對了，力氣才不會白費。
+你不是不夠努力，只是該換個順序。
+
+@0-11
+你的情緒，其實一直在告訴你該看哪裡
+焦慮，不是你太脆弱。
+嫉妒，不是你太壞。
+討好，不是你太沒用。
+每一種難受，都是一個路標。
+只是從來沒有人教你怎麼讀。
+=
+你是不是常常被情緒淹沒？
+一難過，就覺得全世界都很糟。
+一生氣，就什麼話都說得出口。
+一焦慮，就什麼事都做不了。
+事後又後悔，又自責。
+你討厭這樣的自己。
+其實你該討厭的，是沒有人給你一本說明書。
+=
+壓下去的情緒，不會消失
+你叫自己不要想，結果想得更多。
+你叫自己不要哭，結果半夜崩潰。
+你叫自己不要在意，結果在意了一整年。
+情緒不是敵人。
+它是來敲門的信差。
+你不開門，它只會越敲越大聲。
+=
+真相：每一種情緒，都有它的入口
+恐懼，焦慮，想逃：去看安全。
+貪心，不滿，一直想得到：去看需求。
+自卑，受傷，想證明：去看自我。
+嫉妒，比較，怕別人眼光：去看群體。
+討好，依賴，衝突：去看關係。
+控制，無力，談不下去：去看權力。
+誤解，鑽牛角尖：去看認知。
+同樣的事反覆發生：去看更新。
+=
+更新：一件事，可以同時有很多層
+比如不敢拒絕主管。
+怕失去工作，這是安全。
+需要收入，這是需求。
+覺得自己是好員工，這是自我。
+大家都不拒絕，這是群體。
+怕破壞關係，這是關係。
+主管握有權力，這是權力。
+認定拒絕就會被討厭，這是認知。
+一直順從所以從沒驗證過，這是更新。
+=
+能力：先定位，再處理
+先問：我現在是什麼感覺？
+再問：這個感覺指向哪一層？
+然後只處理那一層最關鍵的一點。
+你會發現，情緒沒有那麼可怕。
+它只是還沒有被翻譯。
+翻譯對了，它就安靜了。
+=
+智慧：情緒是訊號，不是命令
+你可以感覺到憤怒，但不必照著憤怒去做。
+你可以感覺到害怕，但不必被害怕決定。
+你可以感覺到嫉妒，但不必因此否定自己。
+看懂情緒的人，不是沒有情緒。
+是不再被情緒拖著走。
+=
+送給情緒很多的你
+難受不是你的錯。
+敏感不是你的缺點。
+情緒不是麻煩，是線索。
+每一種痛，都在指向一個需要被照顧的地方。
+先聽懂它，再安撫它。
+你不必戰勝情緒，你只要讀懂它。
+讀懂了，你就自由了。
+
+@0-12
+同一套人性，為什麼有人用來賺錢，有人用來吃虧？
+你很認真做產品，卻賣不出去。
+你很用心帶團隊，卻帶不動。
+你很有誠意談合作，卻談不成。
+不是你不夠專業。
+是你只看見事，沒看見人。
+=
+你是不是也遇過這些狀況？
+客戶說再想想，然後就沒有然後。
+員工說好，然後什麼都沒做。
+對方說有興趣，然後一直殺價。
+你越說越多，他越退越遠。
+你覺得很挫折。
+因為你用的是道理，他用的是感覺。
+=
+不懂人，再好的東西也送不出去
+你講功能，他在想風險。
+你講價格，他在想面子。
+你講制度，他在想安全感。
+你講條件，他在想有沒有退路。
+頻道不對，說得再好都是雜音。
+生意難做，常常難在沒有對到人心。
+=
+真相：商業，就是人性的應用題
+怕風險，所以需要保障。
+想得到，所以需要價值。
+在乎自己是誰，所以需要品牌和認同。
+看別人怎麼選，所以需要見證。
+要相信，所以需要長期的一致。
+要有選擇，所以需要透明。
+要看得懂，所以需要說人話。
+要有結果，所以需要持續改進。
+=
+更新：換一個問題問自己
+不要問：我要怎麼賣？
+要問：他在怕什麼，他要什麼？
+不要問：他為什麼不聽話？
+要問：這個環境讓他安心做事嗎？
+不要問：我怎麼贏他？
+要問：他談不成的話還有什麼選擇？
+問題換了，答案就出現了。
+=
+能力：看人，比看數字更早一步
+會處理疑慮的人，成交比較快。
+會給安全感的人，團隊比較穩。
+會給對方面子的人，談判比較順。
+會聽回饋的人，產品比較久。
+數字是結果。
+人心是原因。
+先看懂原因，結果自己會來。
+=
+智慧：懂人性，不是為了拿捏人
+用人性操控別人，只能贏一次。
+用人性理解別人，可以走一輩子。
+讓客戶得到結果，讓夥伴得到尊重。
+讓團隊得到成長，讓自己得到信任。
+最好的生意，是每個人都覺得值得。
+=
+送給正在打拚的你
+銷售不是說服，是解決疑慮。
+管理不是控制，是讓人安心發揮。
+談判不是打敗，是一起找出路。
+品牌不是包裝，是讓人認同自己。
+生意的盡頭，是信任。
+信任的起點，是看懂人。
+先懂人，再做事。
+
+@0-13
+同一件事，為什麼你崩潰，他卻沒事？
+同樣被罵，有人睡一覺就好。
+同樣失戀，有人三個月還在哭。
+同樣失敗，有人當成經驗，有人當成末日。
+不是誰比較堅強。
+是每個人心裡看重的東西不一樣。
+=
+你是不是常常不懂自己？
+為什麼這件小事讓我這麼痛？
+為什麼別人都覺得還好？
+為什麼我就是過不去？
+你覺得自己太敏感，太玻璃心。
+其實不是你有問題。
+是那件事，剛好碰到你心裡最重的那一塊。
+=
+不知道自己看重什麼，最容易受傷
+把安全看得最重的人，一點變動就慌。
+把認同看得最重的人，一句批評就碎。
+把關係看得最重的人，一次冷淡就亂。
+把掌控看得最重的人，一點意外就怒。
+你被什麼刺痛，就代表你把什麼看得最重。
+痛，其實是一張藏寶圖。
+=
+真相：人性一樣，設定不同
+每個人都會怕，都會想要，都會比較。
+這是人人都有的基本配備。
+但每個人把哪一樣看得最重，並不相同。
+有人把家庭放第一。
+有人把自由放第一。
+有人把成就放第一。
+設定不同，反應就不同。
+=
+更新：看見自己的設定
+我最怕失去的是什麼？
+我最想得到的是什麼？
+我怎麼看待自己？
+我在乎誰的眼光？
+我怎麼相信一個人？
+我覺得自己有多少掌控？
+我習慣怎麼解讀這個世界？
+我願不願意調整？
+=
+能力：設定，可以重新調整
+把安全看太重，就練習一點點冒險。
+把認同看太重，就練習自己肯定自己。
+把關係看太重，就練習一個人也安好。
+把掌控看太重，就練習允許意外。
+不是要你變成另一個人。
+是讓你不再被單一的東西綁架。
+=
+智慧：懂自己，才不會錯怪自己
+你不是太脆弱，你只是很在乎。
+你不是太難搞，你只是有自己看重的事。
+你不是不如別人，你只是設定不同。
+看懂自己的人，才知道怎麼照顧自己。
+也才知道，別人的反應不是在針對你。
+=
+送給覺得自己太敏感的你
+你看重什麼，就會被什麼牽動。
+你執著什麼，就會被什麼困住。
+你調整什麼，就會從什麼解脫。
+人性是共同的底盤，心是自己的設定。
+設定是過去給的。
+更新是現在可以做的。
+你可以重新決定，什麼對你最重要。
+
+@0-14
+你敢不敢，誠實地幫自己打一次分數？
+我們很會評價別人。
+誰很自私，誰很玻璃心，誰很難相處。
+卻很少安靜下來，看看自己。
+不是不想看。
+是怕看了以後，發現自己沒有想像中好。
+=
+你是不是也在逃避這件事？
+不敢看存款，所以不記帳。
+不敢看體重，所以不量。
+不敢看關係，所以不談。
+不敢看自己，所以一直忙。
+你以為不看，問題就不存在。
+其實不看，問題只是在暗處長大。
+=
+不敢面對，才是最大的消耗
+逃避不會讓你輕鬆。
+逃避只會讓你背著一團說不清楚的重量。
+每天有點累，有點煩，有點空。
+卻說不出哪裡出了問題。
+模糊的痛，比清楚的痛更折磨。
+因為你連要對抗什麼都不知道。
+=
+真相：分數不是審判，是地圖
+打分數，不是為了證明你很差。
+是為了知道你現在站在哪裡。
+知道哪裡穩，就知道可以靠什麼。
+知道哪裡弱，就知道先補什麼。
+看見，不等於否定。
+看見，是改變的第一步。
+=
+更新：問自己八個問題
+我分得清真實的威脅和想像的威脅嗎？
+我知道自己真正需要什麼嗎？
+我對自己的看法，能被新的證據改變嗎？
+我能不被比較和人群綁架嗎？
+我能建立信任，畫出界線，修復關係嗎？
+我有足夠的選擇和退路嗎？
+我能想出第二種解釋嗎？
+現實證明我錯的時候，我能更新嗎？
+=
+能力：不要看總分，看最低的那一格
+總分高低，沒有那麼重要。
+最低的那一格，才是你現在的卡點。
+水桶能裝多少水，看的是最短的那塊板。
+人生順不順，常常卡在最弱的那一環。
+補上最低的那一格。
+整個人都會跟著鬆開。
+=
+智慧：誠實，是對自己最大的溫柔
+騙別人很累，騙自己更累。
+敢承認不足的人，才有機會變好。
+分數只是今天的你。
+不是永遠的你。
+今天三分沒關係。
+知道自己三分的人，已經贏過假裝十分的人。
+=
+送給不敢看自己的你
+看見，才有選擇。
+承認，才有力量。
+面對，才有出路。
+不要怕分數低，要怕永遠不知道。
+你不必一次變好。
+你只要比昨天，誠實一點點。
+誠實地看自己，就是愛自己的開始。
+
+@0-15
+遇到事情只會慌？給你一張救命小卡
+腦袋打結的時候，不要再想了。
+拿出紙筆，寫下來。
+想，會讓事情越滾越大。
+寫，會讓事情回到它原本的大小。
+=
+你是不是一遇到事就亂？
+腦中十個聲音同時在吵。
+越想越多，越想越怕。
+想找人說，又不知道從何說起。
+想做點什麼，又不知道從哪下手。
+最後什麼都沒做，只累了一整天。
+你需要的不是更努力想，而是一個步驟。
+=
+腦袋裡的事，永遠比紙上的大
+放在心裡，它是一團霧。
+寫在紙上，它是幾行字。
+霧，會讓人迷路。
+字，可以一個一個處理。
+你不是能力不夠。
+你只是把所有事情都揉在一起，才看不清。
+=
+真相：先分開，才能處理
+發生了什麼，是事實。
+我怎麼想，是解讀。
+我怕什麼，我要什麼，是需要。
+誰握有選擇，是處境。
+我能做什麼，是行動。
+把它們拆開，問題就小了一半。
+把它們寫下，心就定了一半。
+=
+更新：照著這些格子填
+事情是什麼？只寫事實。
+我怕失去什麼？
+我真正想得到什麼？
+哪個「我」被碰到了？
+我在跟誰比？
+這段關係的需要和界線是什麼？
+誰握有資源和選項？
+我的第一個解釋是什麼？第二個？第三個？
+現實可能怎麼證明我想錯了？
+=
+能力：最後只做一件小事
+填完之後，找出最卡的那一格。
+針對它，選一個最小的行動。
+小到今天就能做。
+小到不需要勇氣。
+然後訂一個時間，回來看結果。
+不是解決全部，是往前一步。
+一步，就夠了。
+=
+智慧：會整理的人，不怕混亂
+人生不會因為你準備好了才出題。
+但你可以準備一個每次都能用的方法。
+事情再亂，也是這幾格。
+情緒再大，也是這幾步。
+有了方法，你就不再是被事情追著跑的人。
+你是那個可以停下來看一看的人。
+=
+送給正在慌的你
+先寫事實，再寫感受。
+先看需要，再看選項。
+先想三種可能，再下結論。
+先做一件小事，再看結果。
+慌的時候，不要靠意志力，要靠步驟。
+紙和筆，就是你最便宜的冷靜。
+把這張卡，存起來。
+
+@0-16
+也許不是你有問題，是你待的地方有問題
+你一直檢討自己。
+是不是我不夠好，不夠努力，不夠會做人。
+卻沒有想過。
+有些土壤，本來就種不出花。
+=
+你是不是習慣把錯都攬在身上？
+家裡氣氛不好，你覺得是自己不乖。
+班上不想讀書，你覺得是自己沒定力。
+公司亂成一團，你覺得是自己能力差。
+你一直改自己，改到很累。
+事情卻一點都沒有變。
+因為生病的，不只是你。
+=
+只怪個人，是最省事也最殘忍的說法
+孩子不讀書，就說他懶。
+員工不積極，就說他爛。
+關係不好，就說誰有問題。
+一句話，把所有責任推給一個人。
+卻沒有人問。
+是什麼樣的環境，讓人變成這樣？
+=
+真相：行為，是環境養出來的
+兩個人之間，會形成固定的互動。
+一個家裡，會有反覆上演的戲碼。
+一個班級，會有大家默認的規則。
+一個公司，會獎勵某些其實不該獎勵的事。
+人是種子。
+環境是土壤。
+只罵種子，是不公平的。
+=
+更新：把鏡頭拉遠一點
+我自己，哪一塊被碰到了？
+我們兩個，形成了什麼循環？
+這個家，什麼模式一直被重複？
+這個團體，默認的規則是什麼？
+這個組織，在獎勵什麼行為？
+這個制度，把資源和權力放在誰手上？
+看得越遠，越不會只怪一個人。
+=
+能力：看得見結構的人，才改得動
+只看個人，就只會罵人。
+看見互動，就會調整說話的方式。
+看見規則，就會改變規則。
+看見獎勵，就會重新設計獎勵。
+改一個人很難。
+改一個讓人變好的環境，反而有效。
+=
+智慧：理解，不等於放棄責任
+看見環境的影響，不是替誰找藉口。
+是為了找到真正能改的地方。
+你仍然可以為自己負責。
+但你不必為整個系統的問題贖罪。
+該你的，你扛。
+不該你的，放下。
+=
+送給習慣自責的你
+不是所有的錯，都是你的錯。
+不是所有的苦，都該你一個人吞。
+花不開，先看看土。
+人不好，先看看環境。
+改不了別人，可以換個位置。
+換不了位置，可以畫出界線。
+你值得一個，讓你好好長大的地方。
+
+@0-17
+「不要怕」「要加油」為什麼從來沒有用？
+你對自己說了一萬次要振作。
+你對孩子說了一萬次要認真。
+你對伴侶說了一萬次要改。
+結果什麼都沒變。
+不是不夠用力，是用力的地方太淺。
+=
+你是不是也常常這樣做？
+難過的時候，叫自己不要難過。
+害怕的時候，罵自己沒用。
+孩子不讀書，就一直唸一直唸。
+員工不動，就一直催一直盯。
+你越用力，對方越反彈。
+最後你累，他也累。
+=
+用意志力對抗人性，一定輸
+叫一個害怕的人不要怕，就像叫發燒的人不要燙。
+唸一個沒動力的人要努力，就像對沒電的手機喊加油。
+不是他不聽。
+是你沒有碰到真正的原因。
+表面的行為，只是最後一塊骨牌。
+真正該推的，是前面那一塊。
+=
+真相：改變，有深有淺
+最淺的，是叫自己不要這樣。
+深一點，是看見自己的情緒。
+再深一點，是找到背後的預測。
+再深一點，是去找證據。
+再深一點，是增加資源和選項。
+更深的，是改變環境。
+最深的，是改變整個循環和結構。
+=
+更新：孩子不讀書，試著這樣問
+他是不是怕失敗？
+他是不是看不到讀書的好處？
+他是不是認定自己就是不會？
+他的朋友是不是都不讀？
+他是不是不信任老師？
+他是不是完全沒有自己的選擇？
+他是不是根本不知道怎麼學？
+他是不是努力了卻沒有得到回應？
+=
+能力：找對那一塊骨牌
+問完這些問題，你才知道該改哪裡。
+怕失敗，就先給小小的成功。
+不會學，就先教方法。
+沒回應，就先給即時的肯定。
+沒選擇，就先讓他自己決定一件事。
+不是唸更多，是改得更準。
+=
+智慧：與其改人，不如改環境
+讓對的事變容易，人自然會去做。
+讓回饋來得快，人自然會進步。
+讓選擇變多，人自然會主動。
+最高明的改變，不是逼。
+是把環境安排好，讓改變自己發生。
+=
+送給一直在用力的你
+罵，改變不了害怕。
+催，改變不了沒動力。
+唸，改變不了不會。
+先找原因，再給方法。
+先給安全，再談要求。
+把力氣用在對的地方，才叫努力。
+你不用更大聲，你只要更準確。
+
+@0-18
+每天三分鐘，讓你比去年的自己清醒十倍
+很多人活了三十年。
+其實只是把同一年，重複過了三十次。
+差別不在經歷了多少。
+在於有沒有從經歷裡學到東西。
+=
+你是不是也覺得自己原地踏步？
+去年煩惱的事，今年還在煩。
+去年吵過的架，今年又吵。
+去年發過的誓，今年再發一次。
+你很忙，很累，很努力。
+卻說不出自己到底進步了什麼。
+日子過去了，你卻沒有長大。
+=
+沒有紀錄的人生，很容易白過
+事情發生了，痛一下，然後忘記。
+下次再發生，再痛一下，再忘記。
+你以為時間會讓你成熟。
+其實時間只會讓你變老。
+讓人成熟的，是回頭看。
+是看懂自己哪裡想錯了。
+=
+真相：成長，藏在落差裡
+我以為會這樣，結果是那樣。
+這個落差，就是最珍貴的資料。
+以為他會生氣，結果他沒有。
+以為自己做不到，結果做到了。
+以為撐不下去，結果撐過了。
+每一次落差，都在告訴你：
+你對世界的想像，可以再更新一點。
+=
+更新：每天只記一件事
+今天發生了什麼？
+我原本以為會怎樣？
+結果是怎樣？
+不一樣的地方在哪裡？
+我可能錯估了什麼？
+這個想法，我原本有多相信？
+現在，我願意調整成多少？
+下一次，我想怎麼做？
+=
+能力：一天一點，一年就是另一個人
+每天修正一個小想法。
+一個月，你會少掉很多不必要的擔心。
+半年，你會更準確地看懂人和事。
+一年，你會發現自己不再重複同樣的錯。
+不是你變聰明了。
+是你終於開始從自己的人生學習。
+=
+智慧：錯不可怕，白錯才可怕
+每個人都會猜錯。
+有人猜錯就算了。
+有人猜錯就記下來。
+前者，一錯再錯。
+後者，越錯越準。
+人生最好的老師，不是書，不是別人。
+是你自己被現實修正過的每一次。
+=
+送給想要進步的你
+經歷不等於經驗。
+年紀不等於成熟。
+受過傷不等於學會了。
+只有回頭看，才會真的懂。
+只有寫下來，才會真的記得。
+每天三分鐘，把今天變成明天的智慧。
+今晚，就從第一則開始。
+
+@0-19
+成熟，不是不再有情緒
+你以為成熟的人，都不會生氣，不會嫉妒，不會害怕。
+所以每次情緒一來，你就覺得自己很幼稚。
+其實成熟的人什麼都有。
+只是他多了一樣東西：選擇。
+=
+你是不是對自己很失望？
+都幾歲了，還會嫉妒。
+都看了這麼多書，還會崩潰。
+都告訴自己要放下，還是放不下。
+你覺得自己沒有長進。
+你覺得自己修養不夠。
+其實你只是把成熟想得太完美了。
+=
+要求自己沒有情緒，是另一種折磨
+壓抑害怕，害怕會變成失眠。
+壓抑生氣，生氣會變成冷漠。
+壓抑嫉妒，嫉妒會變成酸言酸語。
+你越想當一個沒有情緒的人。
+情緒就越會用別的方式跑出來。
+人不是機器，不需要假裝是機器。
+=
+真相：成熟是一層一層往上的
+最初，被情緒直接推著走。
+後來，事後才知道自己反應過度。
+再來，能認出是哪裡被碰到。
+再來，能找到背後的需要和害怕。
+再來，能在行動之前想到第二種可能。
+再來，能主動調整環境。
+再來，能從錯誤中更新，並用在別的地方。
+最後，舊習慣來了，仍然做得出新的選擇。
+=
+更新：看看自己現在在哪一層
+不用急著到最高。
+知道自己在哪一層，就已經是進步。
+事後才發現，沒關係，下次早一點。
+當下認得出來，很好，下次停一下。
+能停一下，很棒，下次換一個做法。
+每往上一層，你就多一分自由。
+=
+能力：在反應和行動之間，多一秒
+成熟的人不是沒有衝動。
+是在衝動和行動之間，多了一點空間。
+那一點空間，可以深呼吸。
+那一點空間，可以多想一種解釋。
+那一點空間，可以選擇不說那句傷人的話。
+一秒鐘，就是命運的分岔。
+=
+智慧：不是沒有，而是不被控制
+有恐懼，但不被恐懼決定。
+有慾望，但不被慾望帶走。
+有嫉妒，但不讓嫉妒說話。
+有比較，但不讓比較定義自己。
+這些感覺出現的時候，你仍然有選擇。
+這就是成熟。
+=
+送給對自己很嚴格的你
+你不必完美，才算長大。
+你不必無感，才算堅強。
+你不必不痛，才算放下。
+會難過，也能照顧自己，就是成熟。
+會生氣，也能好好說話，就是成熟。
+請對自己溫柔一點。
+你已經比昨天，更懂自己了。
+
+@0-20
+你以為你在做選擇，其實你在重播
+同樣的話，同樣的反應，同樣的結局。
+你以為那是你的個性。
+其實那是一條跑了很多年的自動路線。
+看懂這條路線，你才真的開始選擇。
+=
+你是不是常常事後才後悔？
+話一出口，就知道說重了。
+訊息一送出，就知道太衝動。
+決定一做完，就知道又錯了。
+你問自己：我為什麼又這樣？
+你沒有答案。
+因為那個反應來得太快，快到你來不及看見。
+=
+看不見過程，就只能承受結果
+你只看到最後自己做了什麼。
+卻沒看到前面發生了什麼。
+於是你只能罵自己。
+罵完，下次還是一樣。
+因為你罵的是結果。
+而真正該看的，是結果之前的那一長串。
+=
+真相：一個反應，走了很長的路
+先是感覺到威脅。
+然後想到自己要什麼。
+然後碰到我是誰。
+然後想到別人怎麼看。
+然後想到這段關係會怎樣。
+然後覺得自己有沒有選擇。
+然後腦袋下了一個結論。
+然後情緒上來，然後行動。
+最後，才是你看到的那個結果。
+=
+更新：在任何一站下車都可以
+在威脅那一站，問：真的有這麼危險嗎？
+在需要那一站，問：我到底要什麼？
+在自我那一站，問：這真的代表我嗎？
+在結論那一站，問：有沒有別的可能？
+你不必等到最後才後悔。
+每一站，都是可以轉彎的地方。
+=
+能力：把自動，變成手動
+一開始很慢，要事後才想得起來。
+後來可以在發生的當下察覺。
+再後來，可以在開始之前就看見。
+路線還是那條路線。
+但握方向盤的人，換成了你。
+這就是練習的意義。
+=
+智慧：結果回來，是為了讓你更新
+做了，就會有結果。
+結果，會告訴你哪裡想錯。
+想錯的地方修正了，下一次就會不一樣。
+人生不是一條直線。
+人生是一個可以越轉越好的圈。
+只要你願意把結果帶回來看。
+=
+送給想要改變慣性的你
+你不是天生如此，你只是習慣如此。
+習慣是練出來的，也可以重新練。
+看見，是改變的一半。
+停一下，是改變的另一半。
+每一次不照舊劇本走，都是一次重生。
+你的下一個選擇，可以和過去不一樣。
+就從下一次開始。
+
+@0-21
+真正懂人性的人，反而不急著下結論
+看一眼，就說他是怎樣的人。
+聽一句，就判定他在想什麼。
+我們都以為這叫做看得準。
+其實這叫做看得快。
+快，和準，是兩回事。
+=
+你是不是也很會看人？
+他就是自私。
+她就是愛計較。
+那個人一定有問題。
+你說得斬釘截鐵。
+後來卻一次一次發現，自己看走眼。
+也一次一次被別人，這樣草率地定義。
+=
+貼標籤很快，傷害也很快
+一個標籤，可以毀掉一段關係。
+一個標籤，可以錯過一個好人。
+一個標籤，也可以讓你看不見真正的危險。
+你以為自己看穿了對方。
+其實你只是停止了了解。
+標籤貼上去的那一刻，學習就結束了。
+=
+真相：行為背後，還有很多層
+他這樣做，是在怕什麼？
+他這樣做，是想要什麼？
+他這樣做，是在保護哪一個自己？
+他這樣做，是處在什麼樣的關係和處境？
+他這樣做，是怎麼理解這件事的？
+看到這裡，你才算開始懂一個人。
+=
+更新：八個原則，帶在身上
+先看事實，再做解讀。
+先看是哪一層，不急著評斷人品。
+先找原因，再處理行為。
+先找卡點，不要全部一起改。
+先動最小、最能掌握的地方。
+每次行動，都要看得到回饋。
+想錯了不是失敗，是資料。
+任何看法，都要允許被現實推翻。
+=
+能力：看懂，然後做出新的選擇
+能觀察，才不會被情緒帶走。
+能分辨，才不會打錯地方。
+能想出別種可能，才不會鑽牛角尖。
+能做一件小事去試，才不會只停在想。
+能修正，才不會一錯再錯。
+這些加起來，就是懂人性的真本事。
+=
+智慧：懂人性，是為了更溫柔
+不是為了看穿誰。
+不是為了贏過誰。
+不是為了不再相信任何人。
+是為了在舊習慣啟動的時候，還能看見它。
+是為了理解自己，也理解別人。
+是為了生出一個原本沒有的新選擇。
+=
+把這段話留給自己
+看懂人性，不是終點。
+看懂之後仍然善良，才是本事。
+看懂之後仍然有界線，才是智慧。
+看懂之後仍然願意修正，才是成熟。
+不急著定義別人，也不急著定義自己。
+世界很大，人很複雜，而你可以一直更新。
+願你懂人，也被人懂。
+
+@1-2
+你的人生，其實只被三件事推著走
+你愛貼標籤，你總是先顧自己，你害怕改變。
+你以為這是缺點。
+其實這是每一個生命出廠時，就寫好的三條設定。
+看懂它，你就不再跟自己打架。
+=
+你是不是常常討厭自己？
+討厭自己愛比較，愛分類，愛下定論。
+討厭自己遇到事情，第一個想到的是自己。
+討厭自己明明該變了，卻死抓著過去。
+你罵自己現實，罵自己自私，罵自己固執。
+罵了很多年，一點也沒有變好。
+=
+跟天性作對，只會兩敗俱傷
+你越壓抑想保護自己的念頭，越覺得委屈。
+你越強迫自己不要有成見，成見越藏越深。
+你越假裝不怕改變，心裡越慌。
+不是你修養不夠。
+是你把與生俱來的設定，當成了要消滅的敵人。
+=
+真相：三條設定，生出了人性
+世界有規律，所以人會找規律，會分類，會預測。
+生命要活下去，所以人會排優先，會顧自己，會計較。
+一切都在變，所以昨天有用的，今天可能失效。
+找規律，讓你有了看法。
+要活下去，讓你有了輕重。
+一切會變，讓你必須更新。
+=
+更新：不是消滅，是善用
+愛找規律沒有錯，記得規律只是暫時的地圖。
+先顧自己沒有錯，記得把時間拉長來看。
+害怕改變沒有錯，記得不變才是最大的風險。
+看法可以有，但要願意改。
+輕重可以有，但要常常檢查。
+習慣可以有，但要跟得上現實。
+=
+能力：看法，輕重，更新
+會建立看法的人，不慌。
+會分輕重的人，不亂。
+會更新的人，不卡。
+三樣都有的人，走到哪裡都活得下去。
+缺了更新，前兩樣都會變成牢籠。
+舊的看法加上舊的輕重，就是一個人老去的方式。
+=
+智慧：順著天性，往上長
+不必為自己會自保而羞愧。
+不必為自己有成見而自責。
+不必為自己怕改變而難過。
+這些都是生命給你的起點，不是終點。
+起點人人相同。
+走到哪裡，才是你自己的選擇。
+=
+送給討厭自己的你
+有看法，不可恥，不肯改才可惜。
+顧自己，不可恥，只顧眼前才可惜。
+怕改變，不可恥，一步都不動才可惜。
+世界有規律，所以你可以學。
+資源有限，所以你要選。
+一切會變，所以你還有機會。
+接納天性，再超越天性。
+
+@1-7
+「人性就是這樣」是最偷懶的一句話
+人都是自私的。
+人都是現實的。
+人不可能改變的。
+這些話聽起來很清醒。
+其實只是放棄的另一種說法。
+=
+你是不是也被這些話傷過？
+被背叛之後，你告訴自己：人都不可信。
+被利用之後，你告訴自己：人都只顧自己。
+被辜負之後，你告訴自己：別再對人好。
+你以為你看透了。
+其實你只是把一次的傷，寫成了一輩子的規則。
+=
+看透，卻沒有出路，是最深的絕望
+如果人性就是這樣，那努力有什麼用？
+如果人都自私，那善良有什麼意義？
+如果誰都不可信，那活著有多孤單？
+把人性當成定案的人，很難快樂。
+因為他把所有的門，都自己關上了。
+=
+真相：人性描述傾向，不決定方向
+人通常會怎麼做，這是人性。
+人應該怎麼做，這是選擇。
+人最終要往哪裡去，這是信念。
+衝動存在，但有人願意為別人犧牲。
+利益存在，但有人選擇看得更遠。
+憤怒存在，但有人練習不被它帶走。
+=
+更新：加上一句「但是」
+人會自保，但是也會付出。
+人會計較，但是也會成全。
+人會害怕，但是也會勇敢。
+人會犯錯，但是也會回頭。
+每一個「但是」的後面，都是人的可能。
+少了這句但是，你看到的只有一半的人。
+=
+能力：讓看重的事，帶著你走
+你把什麼看得最重，你就會成為什麼樣的人。
+看重當下的痛快，就容易後悔。
+看重長遠的價值，就比較踏實。
+看重身邊的人，就比較溫暖。
+天性給你起跑的姿勢。
+你看重的事，決定你跑去哪裡。
+=
+智慧：不天真，也不絕望
+知道人有軟弱，所以設下界線。
+知道人有可能，所以保留善意。
+不把人想得太好，免得受傷。
+不把人想得太壞，免得孤單。
+清醒和溫柔，可以同時存在。
+=
+寫給對人性失望的你
+人性不是命運。
+傾向不是定案。
+受過傷，不代表要關上心。
+看清楚，不代表要變冷漠。
+世界上有讓你失望的人，也有值得你等的人。
+你可以選擇，成為後面那一種。
+人性是起點，選擇才是答案。
+
+@1-8
+你拚命證明自己夠好，是不是很累？
+要夠努力，才配被愛。
+要夠成功，才有價值。
+要夠完美，才不會被丟下。
+你一直在考試。
+而這場考試，好像永遠沒有及格的一天。
+=
+你是不是也這樣活著？
+做得好，鬆一口氣。
+做不好，整個人垮掉。
+被稱讚，才覺得自己還可以。
+被否定，就覺得自己一無是處。
+你的價值，像股票一樣每天漲跌。
+你很累，卻不敢停。
+=
+靠表現換來的愛，永遠不安
+因為你知道，那是有條件的。
+今天做得到，明天呢？
+今天被喜歡，哪天失敗了呢？
+所以你不敢犯錯，不敢示弱，不敢休息。
+你得到了很多掌聲。
+卻沒有一刻覺得自己被接住。
+=
+真相：有一種愛，不是賺來的
+在基督信仰裡，這叫做恩典。
+不是因為你夠好才給你。
+而是在你還不夠好的時候，就已經給了。
+信仰說的是神與人之間的事，遠比心理學更深。
+但它提醒了我們一件很重要的事。
+人的價值，可以先於表現。
+=
+更新：從「我要證明」到「我已被接納」
+不必先完美，才可以被愛。
+不必先成功，才算有價值。
+不必先沒有軟弱，才能抬頭。
+先被接住，才有力氣改變。
+先有新的身份，才長得出新的生命。
+改變不是入場券，改變是被愛之後結出的果子。
+=
+能力：承認軟弱，是一種力量
+敢說「我錯了」的人，心是自由的。
+敢說「我需要幫助」的人，不再孤單。
+敢回頭的人，才有新的路。
+承認不是認輸。
+承認是放下那個撐了很久的假裝。
+放下了，才輕得起來。
+=
+智慧：生命的成長，是一輩子的事
+不是今天立志，明天就完全不同。
+是一天一點，慢慢被更新。
+會跌倒，會反覆，會軟弱。
+但方向對了，就不怕慢。
+看一棵樹，不看它一天長多少。
+看它最後結出什麼果子。
+=
+送給很努力的你
+你不必用成就，換一張存在的許可證。
+你不必用完美，換一點被愛的資格。
+你的價值，不等於你的表現。
+你的軟弱，不等於你的全部。
+卸下重擔，不是放棄，是重新得力。
+願你知道，你被愛，不是因為你做了什麼。
+而是因為你是你。
+
+@1-9
+你抓得那麼緊，手不痛嗎？
+抓著一段感情，抓著一個身份，抓著一個不甘心。
+你以為放手會失去。
+其實真正讓你痛的，不是失去。
+是你一直不肯鬆開的那隻手。
+=
+你是不是也有放不下的事？
+一句話，在心裡重播了十年。
+一個人，離開很久了還在想。
+一個遺憾，每到夜裡就回來。
+你告訴自己要放下。
+可是越想放下，越放不下。
+=
+執著的苦，是自己加上去的
+失去是第一支箭，躲不掉。
+不甘心是第二支箭，是自己射的。
+事情只發生了一次。
+你卻在心裡讓它發生了一千次。
+世界沒有一直傷害你。
+是你的心，一直沒有離開那個現場。
+=
+真相：一切都在變
+佛家說無常。
+花會謝，人會老，關係會變，自己也會變。
+這不是悲觀，這是事實。
+因為會變，所以痛不會永遠。
+因為會變，所以你不會永遠是現在這樣。
+佛法的義理很深，這裡只借它提醒我們一件事。
+不要把會變的東西，當成永遠。
+=
+更新：看見，而不是對抗
+念頭來了，看著它，不跟著它跑。
+情緒來了，知道它來了，也知道它會走。
+想抓的時候，問自己：我在怕什麼？
+不甘心的時候，問自己：我在等什麼？
+不是強迫自己放下。
+是看清楚了，手自然就鬆了。
+=
+能力：覺察，是給自己的禮物
+能看見自己在生氣，就不會被氣沖走。
+能看見自己在比較，就不會被比較吞沒。
+能看見自己在執著，就多了一個選擇。
+覺察不是壓抑。
+覺察是在風暴裡，找到一個安靜的地方。
+=
+智慧：慈悲，從自己開始
+對別人寬容之前，先不要苛責自己。
+原諒別人之前，先原諒那個當時不懂的自己。
+你已經盡力了。
+在那個時候，用你當時有的能力。
+放過自己，才放得過別人。
+=
+寫給放不下的你
+抓得越緊，痛得越久。
+想得越多，走得越慢。
+緣來了，好好珍惜。
+緣走了，好好道別。
+沒有什麼會永遠留下，包括痛苦。
+放下不是忘記，是不再讓它決定今天的你。
+願你心裡，有一點空。
+
+@1-10
+你那麼用力，為什麼事情反而更糟？
+你越想掌控，事情越失控。
+你越想抓住，人越想逃。
+你越想贏，輸得越多。
+也許問題不是你不夠努力。
+是你太用力了。
+=
+你是不是一個很用力的人？
+孩子的每一件事，你都要管。
+伴侶的每一個反應，你都要猜。
+工作的每一個細節，你都要抓。
+你停不下來，因為一停就不安。
+你很累，身邊的人也很累。
+=
+硬撐，是最快的耗損
+握得太緊的沙，流得最快。
+拉得太滿的弓，最容易斷。
+逼得太緊的人，離得最遠。
+你用盡全力。
+換來的卻是一身的疲憊，和越來越僵的關係。
+=
+真相：有些事，是順出來的
+道家講無為。
+無為不是什麼都不做。
+是不硬做，不亂做，不違背事情本來的樣子去做。
+水不跟石頭硬碰，卻能流到大海。
+樹不急著長大，卻能高過屋頂。
+古人的智慧很深，這裡只借一點來提醒自己。
+少一點強求，多一點順勢。
+=
+更新：把「我要控制」換成「我來配合」
+管少一點，信任多一點。
+說少一點，聽多一點。
+急少一點，等多一點。
+不是放棄，是給事情一點空間。
+不是認輸，是讓對方有路可走。
+鬆開的手，才接得住東西。
+=
+能力：柔軟，比強硬更有力
+能彎的竹子，颱風吹不斷。
+能退一步的人，路反而更寬。
+能知足的人，日子反而更富足。
+不爭，不是沒有能力。
+是知道什麼值得爭，什麼不必爭。
+=
+智慧：留白，才有呼吸
+行程不要排滿。
+話不要說盡。
+力不要用完。
+留一點空白，事情才有轉圜。
+留一點餘地，關係才有溫度。
+=
+送給停不下來的你
+用力過頭，就是傷。
+抓得太緊，就是失去。
+逼得太急，就是推開。
+慢一點，事情不會壞掉。
+鬆一點，天不會塌下來。
+你不必扛起全世界。
+順其自然，不是消極，是懂得。
+
+@1-11
+你把外面的人都照顧好了，那你自己呢？
+對客戶很有耐心，對家人卻沒有。
+對朋友很講義氣，對自己卻很苛刻。
+事業很成功，家裡卻很冷。
+你做對了很多事。
+卻把順序做反了。
+=
+你是不是也有這種空虛？
+在外面人人稱讚，回到家卻無話可說。
+幫了很多人，卻沒有人真的懂你。
+角色扮演得很好，卻不知道自己是誰。
+你很努力當一個好人。
+卻忘了先當一個安穩的人。
+=
+裡面不穩，外面再好也是撐的
+自己沒整理好，就急著處理別人。
+家裡沒顧好，就急著去改變世界。
+脾氣沒修好，就急著教別人做人。
+撐得了一時。
+撐不了一世。
+=
+真相：由內而外，才走得遠
+儒家說修身，齊家，然後才談更大的事。
+先把自己站穩。
+再把最親近的關係顧好。
+再去承擔更大的責任。
+古人的學問很深，這裡只取一個提醒。
+人生是從裡面往外面長的。
+=
+更新：每天問自己四句話
+今天，我對人有沒有多一點體貼？
+今天，我做的事對得起良心嗎？
+今天，我有沒有尊重別人，也尊重自己？
+今天，我答應的事做到了嗎？
+不必很偉大。
+把小事做對，就是修養。
+=
+能力：把角色做好，也是一種本事
+是孩子，就學著體諒。
+是父母，就學著放手。
+是伴侶，就學著傾聽。
+是主管，就學著承擔。
+是朋友，就學著守信。
+每一個角色，都是一堂修行的課。
+=
+智慧：修養，不是壓抑
+不是沒有脾氣，是不亂發脾氣。
+不是沒有私心，是不讓私心傷人。
+不是沒有慾望，是知道分寸。
+有分寸的人，讓人安心。
+讓人安心的人，走到哪裡都有路。
+=
+送給在外面很拚的你
+先安頓自己，再照顧別人。
+先顧好家裡，再闖蕩世界。
+先做到，再要求。
+對外人的客氣，分一點給家人。
+對別人的寬容，留一點給自己。
+最難的修行，是對最親的人溫柔。
+把自己修好，是給世界最好的禮物。
+
+@1-12
+小心那些聽起來很厲害的答案
+「你的頻率不對，所以吸引不到好事。」
+「只要相信，宇宙就會給你。」
+聽起來很玄，很美，很有希望。
+可是你照做了很久，人生有變嗎？
+=
+你是不是也曾經很相信？
+買了很多課，學了很多名詞。
+每一堂都讓你覺得快要翻身了。
+每一次回到生活，問題都還在。
+你開始懷疑是自己不夠相信。
+其實不是你不夠相信。
+是那個說法，本來就不該這樣用。
+=
+迷惘的時候，最容易被漂亮的話帶走
+越痛的人，越想要一個快速的答案。
+越累的人，越想相信不用努力也可以。
+於是科學的名詞，被拿來包裝願望。
+聽不懂的道理，被當成高深的真理。
+你花了錢，花了時間。
+最後只剩下更深的失望。
+=
+真相：比喻，不等於證明
+用科學來比喻人生，可以，很有啟發。
+但像，不等於是。
+微觀世界的不確定，不等於你的人生有無限可能。
+聽起來相似，不等於有因果關係。
+好的老師會告訴你：這只是比喻。
+不好的老師會告訴你：這就是真理。
+=
+更新：聽到任何說法，先問三句
+這是比喻，還是事實？
+有什麼證據？
+如果它是錯的，我怎麼會知道？
+答不出第三題的說法，要特別小心。
+永遠不會錯的理論，通常也沒有用。
+=
+能力：分得清界線，才不被牽著走
+知道什麼是已經確定的。
+知道什麼只是可能。
+知道什麼純粹是想像。
+三種都可以聽。
+但不要把想像，當成確定的事來安排人生。
+=
+智慧：踏實，比神奇更可靠
+沒有一句咒語，可以取代行動。
+沒有一種能量，可以取代練習。
+真正改變人生的，往往很平凡。
+看清事實，做一件小事，看結果，再修正。
+不神奇，但有用。
+=
+送給正在尋找答案的你
+聽起來越厲害，越要多問一句。
+說得越絕對，越要保留一點懷疑。
+願意被檢驗的，才值得相信。
+敢說「我不確定」的，反而比較可靠。
+你不需要宇宙的密碼。
+你需要的是清楚的腦袋，和願意開始的腳。
+清醒，是對自己最好的保護。
+
+@1-13
+你為什麼越來越累？因為你的生活太亂了
+不是工作太多。
+不是事情太難。
+是每一件事都在漏你的電。
+你沒有壞掉。
+你只是一直在耗損，卻沒有人教你怎麼止漏。
+=
+你是不是也這樣過日子？
+手機一直響，訊息一直來。
+腦袋裡同時開著二十個分頁。
+跟家人三句話就吵架。
+睡了八小時，起來還是累。
+放假了，也不知道怎麼休息。
+你不是懶，你是被耗光了。
+=
+最可怕的，是越亂越怕，越怕越亂
+害怕，讓你神經緊繃。
+緊繃，讓你容易暴躁。
+暴躁，讓你到處起衝突。
+衝突，讓事情更不確定。
+不確定，又讓你更害怕。
+這個圈一轉起來，人就被捲進去了。
+=
+真相：維持秩序，是要花力氣的
+房間不整理，會亂。
+關係不經營，會淡。
+心不照顧，會散。
+這不是你的錯，這是所有事物的常態。
+放著不管，一切都會走向混亂。
+所以活得好的人，不是運氣好。
+是願意定期整理。
+=
+更新：先止漏，再充電
+關掉不必要的通知。
+拒絕不必要的邀約。
+結束不必要的爭吵。
+放下不必要的比較。
+少一件耗你的事，勝過多一件補你的事。
+先把洞補起來，水才裝得滿。
+=
+能力：把亂的，一件一件變清楚
+把模糊的擔心，寫成具體的事。
+把一堆事情，排出先後。
+把說不出口的話，好好說一次。
+每清楚一件事，心就輕一分。
+秩序，不是天生的。
+秩序，是一點一點整理出來的。
+=
+智慧：簡單，是很高級的能力
+東西少一點，選擇就輕鬆一點。
+關係真一點，心就安一點。
+目標少一點，力氣就集中一點。
+不是擁有越多越好。
+是亂的越少越好。
+=
+送給很累的你
+累，不一定是做太多，可能是漏太多。
+忙，不一定是有進展，可能只是在打轉。
+先停下來，看看是什麼在耗你。
+能刪的刪，能放的放，能說清楚的說清楚。
+把力氣留給值得的人和事。
+你需要的不是更拚，是更整齊。
+整理生活，就是整理自己。
+
+@1-19
+困住你的不是情緒，是「一定」這兩個字
+一定會失敗。
+他一定是故意的。
+我一定做不到。
+害怕本身不可怕。
+可怕的是害怕後面，接了一個沒有轉圜的句子。
+=
+你是不是常常這樣想？
+害怕的時候，直接認定會出事。
+看到別人成功，直接認定自己很差。
+吵架的時候，直接認定對方就是壞。
+你沒有給事情第二種可能。
+也沒有給自己第二條路。
+=
+僵硬的想法，比事情本身更傷人
+同樣是害怕，有人去查資料，有人直接放棄。
+同樣是比較，有人去學習，有人否定自己。
+同樣是衝突，有人去了解，有人直接絕交。
+事情一樣。
+差別只在腦袋轉不轉得動。
+=
+真相：情緒是正常的，僵化才是問題
+會怕，正常。
+會顧自己，正常。
+會比較，正常。
+需要被肯定，正常。
+這些都是人會有的反應。
+出問題的，是想法卡死，看重的事卡死，老路走到底。
+=
+更新：把句子改軟一點
+一定會失敗，改成：有風險，我先多了解。
+他成功代表我很差，改成：他做到了，我來研究條件。
+他就是壞人，改成：我們想的不一樣。
+句子一軟，路就出來了。
+不是自我安慰。
+是把被你關掉的可能，重新打開。
+=
+能力：腦袋會轉彎的人，不容易被困住
+想法能換，就不鑽牛角尖。
+輕重能調，就不被一件事壓垮。
+做法能改，就不在同一個地方跌倒。
+選項能增加，就不覺得走投無路。
+靈活，不是沒原則。
+靈活，是原則之外還有空間。
+=
+智慧：水能流，才不會發臭
+流動的水，是活的。
+不動的水，會壞。
+人的心也是這樣。
+願意轉彎的人，越活越寬。
+死守一個想法的人，越活越窄。
+=
+送給容易鑽牛角尖的你
+少說一定，多說可能。
+少說永遠，多說目前。
+少說他就是，多說也許是。
+情緒可以有，結論先不要下。
+給事情一點空間，也給自己一點餘地。
+你不必消滅情緒。
+你只要讓想法，重新流動。
+
+@1-20
+這七個老觀念，害你白白痛了很多年
+從小聽到大的話，不一定是對的。
+人性本惡。自私很壞。不要害怕。嫉妒可恥。
+你照著這些話要求自己。
+結果只是多了很多自責。
+=
+你是不是也被這些話綁住？
+有一點私心，就覺得自己很糟。
+有一點害怕，就覺得自己很沒用。
+有一點嫉妒，就覺得自己很惡劣。
+你把正常的反應，當成人格的污點。
+你一直在懺悔。
+卻從來沒有真的改變。
+=
+舊觀念只教你自責，沒教你怎麼做
+罵自己自私，不會讓你更大方。
+罵自己膽小，不會讓你更勇敢。
+罵自己小心眼，不會讓你更寬容。
+自責只會讓你把感覺藏起來。
+藏起來的東西，不會消失。
+只會在你看不見的地方作怪。
+=
+真相：換一個看法，就換一條出路
+人不是本善或本惡，是不同條件下有不同反應。
+顧自己不是壞，重點是有沒有分寸和界線。
+害怕不必消滅，要看它的預測準不準。
+嫉妒不可恥，它透露你真正在乎什麼。
+控制別人換不到安全，增加自己的能力和選項才行。
+=
+更新：再多換兩個
+不是只相信好人。
+是學會怎麼判斷可不可信，並且留下保護自己的機制。
+不是找到一個永遠正確的答案。
+是擁有一套可以被現實修正的想法。
+舊觀念要你當聖人。
+新觀念讓你當一個會成長的人。
+=
+能力：從評價，走向理解
+評價，只會問：好不好，對不對。
+理解，會問：為什麼會這樣？
+評價，讓人躲起來。
+理解，讓人願意改。
+對自己這樣，對別人也是這樣。
+=
+智慧：不完美，才有成長的空間
+不必假裝沒有陰暗面。
+承認了，才管得住它。
+不必假裝永遠正確。
+承認會錯，才有機會變對。
+接納自己，不是放縱。
+接納，是改變的起點。
+=
+送給活在自責裡的你
+自私不是罪，沒有界線才是問題。
+害怕不是弱，不去確認才可惜。
+嫉妒不是惡，不去看懂才浪費。
+犯錯不是恥，不肯修正才遺憾。
+丟掉那些只會讓你自責的話。
+換上那些能讓你前進的話。
+你不壞，你只是需要新的說明書。
+
+@1-23
+別再說「一切都是你自己的問題」
+「你的心不對，所以遇到這些事。」
+「你內在有匱乏，所以吸引爛人。」
+這些話，聽起來很有道理。
+卻讓受傷的人，又被傷了一次。
+=
+你是不是也這樣責怪過自己？
+被欺負，覺得是自己能量太低。
+被辜負，覺得是自己不夠好。
+生活不順，覺得是自己內在有問題。
+你拚命向內找原因。
+找到最後，只剩下一句：都是我的錯。
+=
+把所有責任往心裡塞，是另一種殘忍
+有些苦，來自身體的狀況。
+有些苦，來自成長的家庭。
+有些苦，來自環境和制度。
+有些苦，來自你根本無法控制的事。
+全部算在自己的心上，不公平。
+你不是神，不必為一切負責。
+=
+真相：你的心，也是被塑造出來的
+你的身體，影響你的心。
+你的童年，影響你的心。
+你的文化，你的信仰，你的經歷，都影響你的心。
+心不是一切的起點。
+心是很多東西共同寫成的結果。
+但是在此刻要怎麼反應，心確實很重要。
+=
+更新：分清楚兩件事
+造成問題的原因，很多不是你的錯。
+面對問題的方式，是你可以選擇的。
+不必為過去的遭遇自責。
+但可以為今天的下一步負責。
+前者是放過自己。
+後者是拿回力量。
+=
+能力：對內調整，對外也要動手
+心態可以調。
+環境也可以換。
+想法可以改。
+界線也可以畫。
+只修內在不改處境，是硬撐。
+只怪處境不修內在，是空等。
+兩邊都動，才走得出來。
+=
+智慧：不自責，也不卸責
+說「全是我的錯」，太重。
+說「全是別人的錯」，太輕。
+真實的人生，在這兩句話中間。
+哪些是我的，我來扛。
+哪些不是我的，我放下。
+分得清，心才不會壓垮。
+=
+送給一直向內檢討的你
+不是所有的遭遇，都是你吸引來的。
+不是所有的痛，都代表你有問題。
+你的心很重要，但不是唯一的原因。
+先原諒那個已經盡力的自己。
+再問今天能做的一件小事。
+你不必為全世界負責。
+你只要為下一步負責。
+
+@1-24
+看人只看表面，注定一次又一次看錯
+他態度很差。
+她很難相處。
+那個人很奇怪。
+你看到的是行為。
+但行為，只是冰山露出水面的那一角。
+=
+你是不是常常猜不透別人？
+以為他不在乎，結果他只是不會表達。
+以為她很強勢，結果她只是很害怕。
+以為他很冷漠，結果他只是累壞了。
+你用自己的想法去解讀別人。
+然後不是受傷，就是傷人。
+=
+誤解，是關係裡最貴的成本
+一句話沒問清楚，冷戰三天。
+一個表情想太多，心結三年。
+一個動作解讀錯，緣分就散了。
+很多人不是不相愛，不是不合適。
+只是從頭到尾，都在跟自己想像的對方相處。
+=
+真相：一個行為，底下有很多層
+行為的下面，是情緒。
+情緒的下面，是需要。
+需要的下面，是他看重的事。
+再下面，是他怎麼理解這件事。
+再下面，是他所處的環境，和他受到的限制。
+看得越深，越不容易生氣。
+=
+更新：一層一層往下問
+他為什麼這樣做？
+是什麼需要，讓他這樣做？
+是什麼想法，讓這個做法在他看來很合理？
+是什麼環境，一直讓他這樣？
+是什麼限制，讓他沒有別的選擇？
+最後再問：有什麼事實，可以證明我想錯了？
+=
+能力：看得深，心就寬
+只看行為的人，容易生氣。
+看得見情緒的人，會多一點體諒。
+看得見需要的人，知道怎麼回應。
+看得見處境的人，知道怎麼幫忙。
+看得越深，越不急著罵人。
+也越知道，該從哪裡下手。
+=
+智慧：理解，不等於縱容
+看懂他為什麼這樣，不代表他可以這樣。
+你可以理解，同時畫出界線。
+你可以體諒，同時保護自己。
+懂，是為了不被情緒帶著走。
+界線，是為了不讓自己受傷。
+=
+送給常常看錯人的你
+看行為，只知道他做了什麼。
+看需要，才知道他為什麼做。
+看處境，才知道他為什麼只能這樣做。
+多看一層，少一次誤會。
+多問一句，少一場冷戰。
+不要急著替一個人下結論。
+人，比你看到的更深。
+
+@2-4
+你越想賣，客人越想逃
+你背了很多話術。
+你準備了很多資料。
+你講得口沫橫飛。
+客人只回你三個字：再想想。
+不是你不會說，是你說太多了。
+=
+你是不是也有這種挫折？
+介紹得很完整，對方卻沒反應。
+價格已經很低，對方還是不買。
+追了好幾次，對方已讀不回。
+你開始懷疑產品，懷疑市場，懷疑自己。
+卻沒有懷疑過，你是不是問錯了問題。
+=
+一直介紹產品，是最沒效的努力
+你講功能，他在想：這跟我有什麼關係？
+你講優惠，他在想：會不會被騙？
+你講別人都買，他在想：我適合嗎？
+你在自己的世界裡很認真。
+他在他的世界裡很不安。
+兩條平行線，講再久也不會成交。
+=
+真相：銷售不是塞東西，是交換價值
+他有什麼問題？
+他真正需要什麼？
+他想得到什麼結果？
+這個結果對他有多重要？
+他相信你嗎？他怕什麼？
+是什麼擋住了他？為什麼是現在？
+這八件事沒弄懂，說什麼都是噪音。
+=
+更新：你以為的，常常不是真的
+你以為價格太高，其實他不相信有效。
+你以為功能不夠，其實他看不懂價值。
+你以為要打折，其實缺的是信任。
+沒成交不是答案。
+沒成交只是回饋。
+回饋在告訴你：你猜錯了，再猜一次。
+=
+能力：會問的人，比會講的人厲害
+差的業務，一直介紹產品。
+好的業務，一直了解問題。
+更好的業務，敢對不適合的人說：
+這個目前可能不適合你。
+少了一筆訂單。
+多了一個相信你的人。
+=
+智慧：成交是結果，不是目的
+把人當訂單，人會感覺得到。
+把人當人，人也感覺得到。
+你真心想幫他解決問題，他會知道。
+你只想收他的錢，他也會知道。
+生意做得久的人，賣的從來不是產品。
+是讓人放心。
+=
+送給做銷售的你
+先診斷，再開口。
+先聽懂，再介紹。
+先建立信任，再談價格。
+不適合的，敢說不適合。
+話術只能成交一次，真誠可以成交一輩子。
+不要問怎麼讓他買。
+要問他的問題，我真的解決得了嗎？
+
+@2-5
+你講得那麼有道理，為什麼沒人聽？
+你講得很對，他聽得很煩。
+你越證明，他越反駁。
+你贏了辯論，卻輸了關係。
+說服不了人，不是因為你的道理不夠。
+是因為沒有人喜歡被打敗。
+=
+你是不是常常講到很無力？
+跟爸媽講不通。
+跟伴侶講不通。
+跟孩子講不通。
+跟同事也講不通。
+你覺得他們固執，不講理，聽不進去。
+你越講越大聲，他們越關越緊。
+=
+硬塞的道理，只會被吐出來
+你說「你錯了」，他聽到的是「你很笨」。
+你說「你應該」，他聽到的是「你不夠好」。
+你說「聽我的」，他聽到的是「你沒有選擇」。
+人一旦覺得被攻擊，就只剩下防衛。
+這時候再對的話，也進不去。
+=
+真相：說服，是讓他看見原本沒看見的
+不是把答案塞進他的腦袋。
+是讓他看到新的證據，新的角度，新的選項。
+事情沒有變。
+他看事情的方式變了。
+比如同一個學習工具。
+「又要多做題」和「幫你少做白工」，感受完全不同。
+=
+更新：七步，換一種說法
+先讓重要的事被看見。
+先理解他現在怎麼想。
+弄清楚他是怎麼看這個問題的。
+他缺少哪個證據？
+有沒有第二種看法可以給他？
+保留他拒絕的權利。
+讓他自己得出新的結論。
+=
+能力：高明的說服，看起來不像說服
+不是證明你錯，是讓你看到更多。
+不是製造恐懼，是減少不確定。
+不是隱藏缺點，是說清楚適用的範圍。
+不是逼你點頭，是幫你做出更好的決定。
+讓人自己想通的，才記得久。
+=
+智慧：留一條路，別人才走得過來
+他可以說不，他才敢說好。
+他有面子，他才願意改。
+他覺得是自己決定的，他才會真的去做。
+逼來的同意，轉身就反悔。
+自己想通的改變，才會留下來。
+=
+送給講道理講到很累的你
+贏了道理，輸了感情，不划算。
+說得再對，對方關上耳朵，也沒用。
+先聽，再說。
+先懂他，再讓他懂你。
+少一點「你應該」，多一點「你覺得呢」。
+說服不是讓對方輸。
+是讓對方看得更清楚。
+
+@2-6
+粉絲很多，為什麼你說的話還是沒人當一回事？
+有人一句話，大家就跟著做。
+有人說破嘴，沒人理。
+差別不在聲音大小。
+不在職位高低。
+在於別人心裡，給你的話多少分量。
+=
+你是不是也覺得說話沒分量？
+在公司提意見，沒人採納。
+在家裡給建議，沒人聽。
+在網路上發文，沒人回應。
+你覺得自己被忽略。
+你想要更多曝光，更大的頭銜，更多的追蹤。
+卻發現有了這些，還是一樣。
+=
+追逐聲量，只會越追越空
+追蹤的人多，不代表相信你的人多。
+看到你的人多，不代表記得你的人多。
+頭銜很大，不代表說話有人聽。
+聲量是借來的熱鬧。
+熱鬧一散，什麼都沒留下。
+=
+真相：影響力，是時間堆出來的
+你長期說什麼。
+你長期做什麼。
+你怎麼面對自己的錯。
+你說的和做的，一不一致。
+你有沒有真的做出成果。
+這些加起來，決定別人把你的話看得多重。
+=
+更新：七個來源，問問自己有幾個
+我有真本事嗎？
+我誠實嗎？
+我前後一致嗎？
+我有實際的成果嗎？
+我跟他的關係夠嗎？
+他認同我代表的價值嗎？
+有沒有別人，也願意為我說話？
+=
+能力：一致，是最稀有的能力
+今天這樣說，明天也這樣做。
+人前這樣，人後也這樣。
+順的時候這樣，不順的時候也這樣。
+一次的精彩，比不上十年的一致。
+信任存得很慢。
+但存夠了，一句話就有千斤重。
+=
+智慧：最高的影響，是讓人不必依賴你
+不是讓別人越來越需要你。
+是讓別人因為你，越來越有判斷力。
+不是讓別人離不開你。
+是讓別人離開你之後，還是很好。
+這樣的人，別人反而一輩子記得。
+=
+送給想被聽見的你
+曝光不等於影響。
+聲量不等於分量。
+被看見不等於被相信。
+說到做到，一次。
+說到做到，一百次。
+分量，就是這樣長出來的。
+不必急著大聲，先讓自己值得被相信。
+
+@2-7
+你每次都退讓，為什麼還是談不成？
+你要一百，他只給六十。
+你退到八十，他還是六十。
+你覺得他很過分。
+其實你們從頭到尾，都只是在比誰比較硬。
+=
+你是不是很怕談判？
+不敢開口要求加薪。
+不敢跟客戶談價格。
+不敢跟家人談分工。
+一談就緊張，一緊張就讓步。
+讓完之後，又覺得委屈。
+你以為自己不會談，其實是沒人教你怎麼看。
+=
+只談數字，一定兩敗俱傷
+你要多一點，我就少一點。
+我要多一點，你就少一點。
+這樣談，永遠有一個人不開心。
+不開心的人，下次不會再跟你合作。
+贏了這一次，輸了以後。
+=
+真相：談判不是打敗對方，是重新設計交換
+他說「我要什麼」，是表面。
+他「為什麼要」，才是重點。
+價格的背後，可能是公平。
+拒絕的背後，可能是風險。
+強硬的背後，可能是面子。
+拖延的背後，可能是不確定。
+找到原因，才有新的選項。
+=
+更新：談之前，先想清楚八件事
+我表面要什麼？
+我真正在乎什麼？
+哪些最重要，哪些可以讓？
+什麼是我不能做的？
+談不成，我最好的替代方案是什麼？
+我的底線在哪裡？
+還有什麼交換的組合？
+這是一次交易，還是長期合作？
+=
+能力：最強的籌碼，是你有別條路
+談判力不是聲音大。
+是你有其他選擇。
+是你知道得夠多。
+是你等得起。
+是你說的話有人信。
+是你隨時可以站起來離開。
+準備一個備案，勝過背十句厲害的話。
+=
+智慧：把餅做大，再來分
+你在乎的，不一定是他在乎的。
+他在乎的，不一定是你在乎的。
+把你不在乎的給他，換你在乎的回來。
+兩個人都覺得自己賺到。
+這才是談得好。
+=
+送給不敢開口的你
+不要只聽他要什麼，要聽他為什麼要。
+不要只守價格，要找交換。
+不要怕談不成，要先想好談不成怎麼辦。
+有備案的人，才談得從容。
+有底線的人，才不會後悔。
+談判不是比誰狠。
+是比誰更懂對方，也更懂自己。
+
+@2-8
+你罵了一百次，他為什麼還是不做？
+交代的事沒做。
+說過的話當耳邊風。
+盯了才動，不盯就停。
+你覺得現在的人很懶，很沒責任感。
+但會不會，問題不在人？
+=
+你是不是一個很累的主管？
+每件事都要自己跳下去。
+每個人都要你一直提醒。
+你一放手，事情就出錯。
+你越管越細，他們越來越被動。
+你累得半死。
+團隊卻沒有變得更好。
+=
+盯人，催人，罵人，都是在消耗
+你盯得越緊，他越不敢做決定。
+你催得越急，他越只做表面。
+你罵得越兇，他越不敢說真話。
+最後你身邊只剩下聽話的人。
+而聽話的人，不會幫你解決問題。
+=
+真相：他不做，可能有十個原因
+不知道要做。
+不知道怎麼做。
+沒有時間。
+沒有資源。
+事情的優先順序互相打架。
+做了也沒有人回應。
+制度獎勵的是另一種行為。
+害怕犯錯。
+有責任卻沒有權力。
+覺得做了也沒意義。
+=
+更新：八個問題，檢查你的環境
+目標清楚嗎？
+誰負責什麼，清楚嗎？
+他會做嗎？
+他有資源嗎？
+做對的事，對他有好處嗎？
+是什麼讓正確的事很難做？
+他多久才知道自己做得對不對？
+做錯了，有辦法修正嗎？
+=
+能力：管理的是環境，不是人格
+你改不了一個人的個性。
+但你可以讓目標更清楚。
+可以讓資源到位。
+可以讓好的行為被看見。
+可以讓回饋來得更快。
+讓對的事變容易，人自然往那邊走。
+=
+智慧：好主管，讓人不必靠他
+最厲害的管理，不是什麼都管。
+是把事情安排好，讓人可以自己動起來。
+你不在，事情照樣運作。
+你不催，大家知道該做什麼。
+這不是放任。
+這是把力氣花在設計，而不是花在盯人。
+=
+送給帶人帶到心累的你
+先別說他懶，先問他卡在哪。
+先別罵態度，先看制度。
+先別加壓力，先減阻力。
+目標說清楚，資源給到位，回饋要即時。
+帶人，不是把人當零件。
+是讓每個人，都有發揮的位置。
+少盯一點人，多改一點環境。
+
+@2-12
+只學一招的人，最容易把自己變成討厭的樣子
+很懂人性的人，變得很冷。
+很會銷售的人，變得很油。
+很會說服的人，變得很愛辯。
+他們都很厲害。
+但你就是不想靠近。
+=
+你身邊有沒有這種人？
+什麼事都說是利益，沒有真心。
+見到誰都想成交，沒有朋友。
+每句話都要爭贏，沒有溫度。
+也許，你也怕自己變成這樣。
+學得越多，心卻越硬。
+=
+本事沒有錯，偏了才有問題
+只懂人性，容易變得憤世嫉俗。
+只懂銷售，容易只看得見業績。
+只懂說服，容易把聊天變成辯論。
+只懂影響，容易迷戀聲量和權威。
+只懂談判，容易把每段關係都當成較量。
+只懂管理，容易把人當成流程裡的零件。
+=
+真相：能力需要互相平衡
+懂人性，是為了理解。
+會說服，是為了把話說清楚。
+有影響力，是為了被信任。
+會談判，是為了讓雙方都好。
+會銷售，是為了讓價值流動。
+會管理，是為了讓好事重複發生。
+少了任何一個，其他的都會走偏。
+=
+更新：給每一種本事，配一個提醒
+懂人性，但不失去善意。
+會銷售，但不賣不適合的東西。
+會說服，但保留對方說不的權利。
+有影響力，但不讓人依賴。
+會談判，但不破壞長期的信任。
+會管理，但不拿走別人的自主。
+=
+能力：有本事，也有分寸
+本事讓你做得到。
+分寸讓你知道該不該做。
+有本事沒分寸的人，很危險。
+有分寸沒本事的人，很可惜。
+兩個都有，才叫成熟。
+=
+智慧：厲害之後，還要可愛
+這個世界不缺聰明人。
+缺的是聰明又讓人安心的人。
+你可以看得很透，但不必說得很絕。
+你可以很會談，但不必每次都贏。
+讓人舒服，是更高的本事。
+=
+送給想變強的你
+強，不等於硬。
+精明，不等於算計。
+看透，不等於冷漠。
+會贏，不等於每次都要贏。
+學本事的同時，別丟了溫度。
+變厲害的同時，別變成自己討厭的人。
+有能力，也有良心，才走得遠。
+
+@2-14
+他為什麼就是不照你說的做？
+你說了很多次。
+你解釋得很清楚。
+你甚至生氣了。
+他還是一樣。
+在你加大音量之前，先問八個問題。
+=
+你是不是也常常這樣生氣？
+孩子講不聽。
+另一半叫不動。
+同事不配合。
+客戶不回覆。
+你覺得自己已經說得夠明白了。
+你覺得對方就是故意的。
+=
+講不聽的時候，講更多沒有用
+你以為是他沒聽懂，所以再講一次。
+你以為是他不重視，所以講重一點。
+你以為是他欠罵，所以罵得更兇。
+結果他不是更聽話。
+是離你更遠。
+因為問題根本不在你說得夠不夠。
+=
+真相：他有他的世界
+他現在的狀態好嗎？
+他真正需要的是什麼？
+對他來說，什麼最重要？
+他是怎麼理解這件事的？
+他相信誰，相信什麼？
+對他來說，現在怎麼做最划算？
+他有哪些選擇和退路？
+是什麼結果，讓他一直維持現在這樣？
+=
+更新：把「他有問題」換成「我漏了什麼」
+他不是不聽，可能是太累。
+他不是不做，可能是不會。
+他不是不在乎，可能是看重的不一樣。
+他不是故意，可能是照做對他沒有好處。
+問完八題，你通常不會那麼生氣了。
+因為你終於看見，他不是在跟你作對。
+=
+能力：先懂，再要求
+懂他的狀態，你會挑對時間說。
+懂他的需要，你會換一種方式說。
+懂他的顧慮，你會先處理顧慮。
+懂他的處境，你會調整你的要求。
+不是你讓步。
+是你終於說進他的心裡。
+=
+智慧：改變別人，從了解開始
+強迫，只能換來表面的順從。
+了解，才能換來真正的配合。
+每個人都想被當成一個人來對待。
+不是被當成一個該聽話的對象。
+先看見他，他才願意看見你。
+=
+送給講到很生氣的你
+講不聽，先別講了，先問。
+叫不動，先別叫了，先看。
+他的不配合，背後一定有原因。
+找到原因，比提高音量有用。
+少問他為什麼不聽我的。
+多問我還不了解他什麼。
+懂了，話才進得去。
+
+@2-15
+事情卡住了，你知道是卡在哪一關嗎？
+沒人理你，和有人理你但不相信你，是兩回事。
+相信你但不想要，和想要但沒行動，也是兩回事。
+你一直用同一招。
+難怪每次都撞牆。
+=
+你是不是常常白費力氣？
+拚命解釋，其實對方根本沒注意到。
+拚命降價，其實對方是不信任。
+拚命催促，其實對方是做不到。
+你很努力。
+但努力的方向，跟問題不在同一個地方。
+=
+用錯力，比不用力還累
+頭痛去擦腳，擦再久也沒用。
+他沒注意到，你卻在講細節。
+他看不懂，你卻在談價格。
+他不相信，你卻在催他決定。
+每一次都很認真。
+每一次都沒有打到點。
+=
+真相：從看見到行動，有很多關
+有沒有看到？
+看懂了嗎？
+跟我有關係嗎？
+值得嗎？
+是真的嗎？
+會不會出事？
+我有選擇嗎？
+我要不要？我做不做？
+任何一關斷了，後面就全停了。
+=
+更新：對症下藥
+沒注意，就想辦法讓他看見。
+看不懂，就換成他聽得懂的話。
+不相信，就給證據，慢慢建立信任。
+不想要，就回頭確認他真正的需要。
+想要卻不動，就減少風險和麻煩。
+答應了卻沒做，就檢查能力，環境和回饋。
+做一次就停，就看有沒有持續的動力。
+=
+能力：先找關卡，再用力
+不要一上來就全力衝刺。
+先停一下，看看卡在哪。
+卡在前面，就不要處理後面。
+卡在信任，就不要一直講功能。
+卡在能力，就不要一直談態度。
+找對關卡，一分力氣有十分效果。
+=
+智慧：越靠近環境，改變越深
+一直提醒，效果最淺。
+一直說服，還是很淺。
+讓對的事變得容易，才是深的。
+讓結果很快被看見，更深。
+讓人自己長出能力，最深。
+與其一直講，不如把路鋪好。
+=
+送給一直撞牆的你
+不是你不夠努力，是你敲錯了門。
+先問卡在哪，再問怎麼做。
+沒看見的，讓他看見。
+不相信的，讓他相信。
+做不到的，幫他做到。
+找到卡住的那一關。
+門，自然就開了。
+
+@2-17
+別再相信「一句話就搞定」的話術了
+三句話讓客戶下單。
+一個技巧讓孩子聽話。
+五個金句讓主管加薪。
+你收藏了很多。
+用起來，一個都不靈。
+=
+你是不是也收藏了很多話術？
+看的時候覺得很厲害。
+用的時候覺得很彆扭。
+對方一個反應，你就接不下去了。
+你以為是自己練得不夠。
+其實是話術這件事，本來就排在最後面。
+=
+只改說法，就像只換包裝
+東西不好，包裝再漂亮也沒用。
+關係不好，話說得再漂亮也沒用。
+環境不對，講得再有道理也沒用。
+你一直在最表面的地方用力。
+難怪用了很多力，卻沒有變化。
+=
+真相：影響人，有七個層次
+最淺的，是換一種說法。
+再來，是換一種看事情的角度。
+再來，是給出新的證據。
+再來，是改變做與不做的好處。
+再來，是給更多選擇。
+再來，是改變環境。
+最深的，是讓結果很快被看見。
+=
+更新：往下走一層，再走一層
+一直提醒，效果很小。
+一直說服，效果還是有限。
+把正確的事變得容易，效果就大了。
+讓人很快知道自己做得好不好，效果更大。
+幫人建立自己的能力，效果最久。
+不是嘴巴的功夫。
+是設計的功夫。
+=
+能力：把力氣花在看不見的地方
+想讓孩子讀書，先把手機放遠，書放近。
+想讓團隊回報，先讓回報變簡單。
+想讓客戶下單，先把步驟減少。
+想讓自己運動，先把鞋放在門口。
+不靠意志力，不靠口才。
+靠安排。
+=
+智慧：好的影響，讓人更自由
+話術想的是：怎麼讓你照我的做。
+設計想的是：怎麼讓你更容易做到你本來就想做的事。
+前者是控制。
+後者是成全。
+人會抗拒被控制。
+人不會抗拒被成全。
+=
+送給迷信話術的你
+嘴上的功夫，撐不久。
+環境的力量，才長久。
+說一百次，不如改一個地方。
+催一百次，不如少一個步驟。
+不要只想著怎麼說。
+要想怎麼讓這件事，自然發生。
+最高明的影響，是讓人感覺不到被影響。
+
+@2-19
+這五個問題，分得出你是在影響人，還是在操控人
+你說你是為他好。
+你說這是溝通技巧。
+你說大家都這樣做。
+但有時候夜深人靜。
+你自己也不太確定。
+=
+你是不是也有過這種不安？
+為了成交，話說得比事實漂亮一點。
+為了留住人，故意讓他覺得離不開你。
+為了讓他聽話，故意講得嚴重一點。
+當下有效。
+心裡卻有一點點不踏實。
+那一點不踏實，是你的良心在提醒你。
+=
+操控有效，所以危險
+嚇一嚇，人就會買。
+瞞一瞞，人就會答應。
+綁一綁，人就走不了。
+短期看，你贏了。
+長期看，你失去了最貴的東西。
+別人一旦發現被操控，就再也不會相信你。
+=
+真相：影響和操控，差在這裡
+操控，隱藏資訊。影響，增加理解。
+操控，製造不必要的恐懼。影響，減少真實的不確定。
+操控，限制選項。影響，幫人做更好的決定。
+操控，製造依賴。影響，增加能力。
+操控，只要我贏。影響，要雙方都好。
+=
+更新：五個問題，每次都問
+我說的是真的嗎？
+重要的事，我有說清楚嗎？
+他可以自由地拒絕嗎？
+他真的得到價值了嗎？
+如果角色對調，我覺得公平嗎？
+有一題答不出來，就該停下來想一想。
+=
+能力：守得住底線，才是真本事
+能不誇大，是本事。
+能說出缺點，是本事。
+能讓人安心說不，是本事。
+能在賺得到的時候選擇不賺，更是本事。
+技巧人人學得會。
+底線，不是人人守得住。
+=
+智慧：願意被檢驗的，才是真誠
+操控的人，怕被看穿。
+真誠的人，不怕被問。
+操控的人，不許別人質疑。
+真誠的人，願意聽不同的聲音。
+敢讓現實來檢驗的影響，才走得長遠。
+=
+送給想走正路的你
+騙來的成交，留不住人。
+嚇來的順從，留不住心。
+綁來的關係，留不住愛。
+說真話，慢一點，但站得穩。
+給選擇，少一點，但走得久。
+不要只問有沒有效。
+要問對不對得起對方。
+
+@3-2
+嚇客人買東西，是最短命的生意
+「再不買就來不及了。」
+「不用這個，你就完了。」
+嚇得越兇，賣得越快。
+可是你有沒有發現。
+被嚇來的客人，從來不會回頭。
+=
+你是不是也遇過這些狀況？
+客人一直問「真的嗎」。
+一直問安不安全，卻不下單。
+加入購物車，卻沒有付款。
+第一次購買，怎麼推都推不動。
+你以為他不想要。
+其實他是不敢。
+=
+客人不是不想買，是怕
+怕沒效果。
+怕浪費錢。
+怕被騙。
+怕買錯。
+怕不會用。
+怕麻煩，怕花時間，怕有副作用。
+人在害怕的時候，最先想的不是賺到，是不要賠。
+=
+真相：恐懼行銷，是在透支信任
+你放大他的害怕，他可能會買一次。
+但他買的時候，心裡是不舒服的。
+用了沒有那麼嚴重，他會覺得被騙。
+用了沒有那麼神，他會覺得被耍。
+你賺到一筆訂單。
+賠掉一個客人，和他身邊所有的人。
+=
+更新：不要製造恐懼，要拿掉風險
+把事情說明白。
+說清楚誰適合，誰不適合。
+把常見的問題先回答。
+把使用的方式講清楚。
+承諾只說做得到的。
+拿出真實的案例。
+讓第一次嘗試的成本低一點。
+=
+能力：讓人安心，是最強的銷售力
+會嚇人的人很多。
+會讓人放心的人很少。
+你把疑慮一個一個拿掉。
+客人自己就會往前走。
+不用推，不用催，不用逼。
+安心的人，才會掏錢，也才會回來。
+=
+智慧：做的是生意，守的是人心
+利用害怕，賺的是快錢。
+解決害怕，賺的是長久。
+一個是在消耗客人。
+一個是在照顧客人。
+客人也許說不出差別。
+但他的腳會告訴你，下次還來不來。
+=
+送給做生意的你
+嚇出來的訂單，沒有下一次。
+安心下的訂單，才有回頭客。
+說清楚，比說得嚇人重要。
+講實話，比講得漂亮重要。
+少一點「你不買會怎樣」。
+多一點「你買了我怎麼保障你」。
+問問自己：我是在利用恐懼，還是在降低風險？
+
+@3-6
+你擁有的是流量，還是信任？
+追蹤的人很多，下單的人很少。
+按讚的人很多，回購的人很少。
+特價的時候很熱鬧，平常很冷清。
+你以為你有很多客人。
+其實你只有很多路人。
+=
+你是不是也有這種焦慮？
+要一直發文，不發就沒人看。
+要一直辦活動，不辦就沒業績。
+要一直打折，不折就沒人買。
+你停不下來。
+因為你知道一停，一切就歸零。
+=
+沒有信任的熱鬧，一停就散
+第一次買的人很多，第二次的很少。
+客人只在特價時出現。
+曝光很高，回購很低。
+這不是流量的問題。
+是他們來過了，卻沒有留下來的理由。
+=
+真相：信任由四件事組成
+你有沒有能力，把事情做好？
+你誠不誠實？
+你前後一不一致？
+出錯的時候，你願不願意修？
+四樣都有，客人才敢把自己交給你。
+少了一樣，他就只是看看。
+=
+更新：十個問題，檢查你的信任
+客人為什麼相信我？
+我說過的話，有做到嗎？
+承諾和實際，一樣嗎？
+資訊透明嗎？
+不適合的，我敢說不適合嗎？
+出錯之後，我怎麼處理？
+客人有問題，有人回應嗎？
+成交前和成交後，態度一樣嗎？
+不促銷的時候，他還會留下來嗎？
+=
+能力：做到，比說到重要
+話術再多，不如一次說到做到。
+包裝再美，不如一次好好處理客訴。
+活動再大，不如一次誠實地說「這個不適合你」。
+信任不是喊出來的。
+信任是一次一次被兌現出來的。
+=
+智慧：慢慢累積的，才帶得走
+流量會退。
+演算法會變。
+平台會換。
+只有相信你的人，會跟著你走。
+一千個相信你的人，勝過十萬個路過的人。
+=
+送給經營社群的你
+曝光不是資產，信任才是。
+人氣不是底氣，回購才是。
+不要只數有多少人看見你。
+要數有多少人，願意再來一次。
+少一點話術，多一點一致。
+少一點熱鬧，多一點可靠。
+把路人，一個一個變成相信你的人。
+
+@3-7
+用合約綁住的客人，心早就走了
+綁約一年，才能取消。
+退費很麻煩，流程很複雜。
+資料帶不走，換別家要重來。
+你以為這樣留得住人。
+其實你只是留住了一個想走的人。
+=
+你是不是也在用這些方法？
+資訊講得越少，越容易成交。
+條款寫得越小，越少人看見。
+退出設得越難，流失就越低。
+數字看起來很好。
+客人的心，卻越來越遠。
+=
+留得住人，留不住心，是最危險的生意
+他沒有走，只是走不了。
+他沒有抱怨，只是懶得說。
+合約一到期，他頭也不回。
+而且會告訴所有人，不要來。
+靠限制撐起來的業績，是一顆不知道什麼時候爆的炸彈。
+=
+真相：客人要的，是自己有選擇
+價格清不清楚？
+限制有沒有先說？
+他可以說不嗎？
+他離開容易嗎？
+你是不是利用他不懂，來多賺一點？
+你的產品，是讓他更有能力，還是更依賴？
+人可以接受貴，不能接受被騙。
+=
+更新：問自己最誠實的一題
+如果客人知道所有的資訊。
+他還會買嗎？
+如果答案是會，你的生意很健康。
+如果答案是不會，你賺的是資訊落差的錢。
+這種錢，賺得到，但賺不久。
+=
+能力：敢讓人走，才留得住人
+把價格說清楚。
+把限制先講明。
+把退出的路留好。
+然後把東西做到最好。
+他有能力離開，卻選擇留下。
+這樣的客人，才是真的客人。
+=
+智慧：把客人鎖住，不如把價值做足
+低階的生意，讓客人離不開。
+高階的生意，讓客人不想離開。
+一個靠的是門鎖。
+一個靠的是吸引力。
+門鎖會被撬開。
+吸引力，沒有人想逃。
+=
+送給想留住客人的你
+綁得住人，綁不住心。
+瞞得了一時，瞞不了一世。
+透明，是最長久的行銷。
+自由，是最牢固的黏著。
+不要問怎麼讓他走不了。
+要問他為什麼還想留下來。
+留下來的理由，只能是價值。
+
+@3-8
+你的東西很好，可惜客人聽不懂
+你講得很專業。
+你用了很多術語。
+你把所有優點都列出來了。
+客人點點頭說：我再看看。
+然後就沒有然後了。
+=
+你是不是也遇過這種狀況？
+要解釋十分鐘，對方才知道你在賣什麼。
+頁面上明明有寫，客人還是一直問。
+資訊給了一大堆，下單的卻很少。
+你覺得是客人不用心。
+其實是你讓他太累了。
+=
+聽不懂，就不會買
+人不會為了買東西而努力理解。
+看不懂，就滑走。
+太複雜，就放棄。
+選項太多，就乾脆不選。
+你的專業，變成了他的負擔。
+你越想講清楚，他越想逃。
+=
+真相：東西要先進到腦袋，才進得了市場
+他知道你是做什麼的嗎？
+十秒內看得懂嗎？
+他第一眼看到的是什麼？
+最重要的好處，有沒有被埋在後面？
+選項會不會太多？
+下一步要做什麼，清楚嗎？
+他理解的，和你想說的，是同一件事嗎？
+=
+更新：把專業翻譯成人話
+專業的話，換成客人的話。
+成分，換成它怎麼起作用。
+作用，換成他得到的好處。
+好處，換成生活會有什麼不同。
+抽象的，換成具體的。
+複雜的，換成一個下一步。
+=
+能力：會簡化，是更高的專業
+把簡單的事講複雜，很容易。
+把複雜的事講簡單，才難。
+一句話說得出你在解決什麼。
+一眼看得到該按哪裡。
+不需要更多資訊。
+需要的是更少的負擔。
+=
+智慧：站在客人的椅子上看
+你很懂，所以覺得理所當然。
+他不懂，所以每一個詞都是門檻。
+忘掉你知道的。
+用第一次看到的眼睛，再看一次你的介紹。
+你會發現，原來自己一直在自言自語。
+=
+送給很專業的你
+客人不是不想買，是沒看懂。
+講得多，不如講得清楚。
+寫得滿，不如留一句重點。
+給十個選擇，不如給一個建議。
+不要再加資訊了。
+拿掉一些，他反而看得見。
+說人話，就是最好的行銷。
+
+@3-11
+生意不好，先別急著砸錢打廣告
+沒有業績，就加預算。
+沒有流量，就買流量。
+錢越花越多，客人越來越貴。
+你不是不夠拚。
+你是沒有先搞清楚，漏水的地方在哪。
+=
+你是不是也在這樣燒錢？
+廣告越投越貴，效果越來越差。
+不打折就沒人買。
+客人買一次就消失。
+產品明明很好，卻沒人幫你介紹。
+會員很多，卻沒人在用。
+你很慌，所以只能繼續加碼。
+=
+水桶有洞，倒再多水也是空
+有流量沒點擊，問題不在流量。
+有詢問不成交，問題不在詢問。
+有成交沒回購，問題不在成交。
+你一直往桶子裡倒水。
+卻沒有蹲下來，看看洞在哪裡。
+=
+真相：每一種症狀，指向不同的原因
+有人看，沒人點：他不覺得需要，或是看不懂。
+很多人問，卻不買：他害怕，不信任，或覺得不透明。
+買了一次，沒有第二次：沒有得到結果，或沒有建立信任。
+要打折才買：價值不夠清楚，沒有認同感。
+很好卻沒人推薦：沒有值得說的理由。
+會員很多卻不用：不好用，或沒有感覺到進步。
+=
+更新：先診斷，再開藥
+先看是哪一段掉最多人。
+再想那一段的人在怕什麼，缺什麼。
+只改一個地方。
+看數字有沒有變。
+有變，繼續。
+沒變，換一個地方再試。
+不要八個地方一起改，那樣你永遠不知道什麼有效。
+=
+能力：會看漏斗的人，花得比較少
+不會看的人，哪裡都補一點。
+會看的人，只補最大的那個洞。
+不會看的人，覺得錢不夠。
+會看的人，知道問題不是錢。
+省下來的不只是預算。
+還有你一直白費的力氣。
+=
+智慧：客人的行為，就是答案
+他停在哪裡，問題就在哪裡。
+他問什麼，就代表你哪裡沒說清楚。
+他為什麼走，比他為什麼來更重要。
+市場一直在告訴你答案。
+只是你忙著推銷，沒有空聽。
+=
+送給業績卡住的你
+沒人買，先別怪景氣。
+沒人回頭，先別怪客人。
+沒人推薦，先別怪運氣。
+停下來，看看人是在哪一步離開的。
+找到洞，補起來。
+再倒水。
+先止漏，再加碼。
+
+@3-14
+追蹤你半年的人，真的有變好嗎？
+你每天發文。
+你很會講道理。
+你有很多粉絲。
+但請你誠實地問自己一句。
+他們是因為你變強了，還是只是更需要你了？
+=
+你是不是也在經營自己？
+怕沒有新內容，所以一直產出。
+怕掉粉，所以不敢講真話。
+怕被忘記，所以不敢休息。
+數字漲的時候很開心。
+數字跌的時候很焦慮。
+你經營的是影響力，還是自己的不安？
+=
+被崇拜很舒服，但很危險
+粉絲越依賴你，你越有成就感。
+你越有成就感，越想讓他們依賴。
+於是你開始說得很神。
+開始讓人覺得沒有你不行。
+人是留住了。
+但他們沒有長大，你也沒有。
+=
+真相：好的經營，回答得了八個問題
+我的讀者正在害怕什麼？
+他們真正想得到什麼？
+他們想成為什麼樣的人？
+他們想加入什麼樣的群體？
+他們為什麼願意長期相信我？
+我讓人更自主，還是更依賴我？
+我能把複雜的事，說成容易懂的嗎？
+半年後，他們真的多了什麼能力？
+=
+更新：把「看我」變成「看你自己」
+少說我多厲害，多說你可以怎麼做。
+少給答案，多給方法。
+少製造焦慮，多給看得見的進步。
+你的內容，不是用來證明你很強。
+是用來讓看的人變強。
+=
+能力：一致，比爆紅重要
+爆紅靠運氣。
+被相信靠時間。
+今天說的，明天做得到。
+今年說的，明年還站得住。
+不討好，不誇大，不裝懂。
+這樣累積起來的人，不會一夜散去。
+=
+智慧：好的老師，會讓學生離開
+一直離不開你的學生，不是你的成就。
+能自己走的學生，才是。
+你給的越多，他越自由。
+他越自由，越記得你。
+真正的影響力，是你不在的時候，他依然很好。
+=
+送給正在經營自己的你
+粉絲數，是別人給的。
+信任感，是自己累積的。
+被需要，很容易。
+讓人不必需要你，才難。
+不要只問我有多少人追蹤。
+要問有多少人，因為我過得更好。
+這個答案，才是你真正的身價。
+
+@3-15
+內容越加越多，會員為什麼還是走了？
+每個月都有新課程。
+每一週都有新文章。
+資料多到看不完。
+你覺得自己給得很夠了。
+會員卻說：我好像沒有在用，先停好了。
+=
+你是不是也在拚命加內容？
+怕會員覺得不值，所以一直加。
+怕別人給得更多，所以一直加。
+加到自己很累，會員也很累。
+後台的內容越來越多。
+打開的人卻越來越少。
+=
+堆得越多，罪惡感越重
+會員看到一大堆沒看的東西。
+感覺到的不是豐富，是壓力。
+覺得自己跟不上，覺得自己浪費錢。
+最簡單的解法，就是取消。
+你用內容留人。
+卻用內容把人逼走了。
+=
+真相：會員要的不是內容，是改變
+加入之後，少了哪一種不確定？
+每個月，持續得到什麼？
+這個身份，代表什麼？
+會員之間，有沒有好的連結？
+內容找得到，看得懂，用得上嗎？
+他真的一直在進步嗎？
+內容變多，改變卻沒有跟著變多，就是白費。
+=
+更新：少一點給，多一點帶
+與其給十堂課，不如帶他做完一件事。
+與其給一堆資料，不如告訴他現在只要看這個。
+與其一直更新，不如讓他看見自己的進度。
+不是餵得多。
+是真的吃進去，真的長出來。
+=
+能力：讓人看見自己在進步
+人會留下來，是因為感覺到自己變好了。
+一點點也好。
+上個月不會的，這個月會了。
+上次做不到的，這次做到了。
+讓這種感覺常常發生。
+比任何優惠都留得住人。
+=
+智慧：門開著，人反而不走
+退出很自由，他才安心加入。
+沒有被綁住，他才心甘情願留下。
+會員制不是把人關起來。
+是打造一個人待得舒服，又一直在長大的地方。
+=
+送給經營會員的你
+內容多，不等於價值高。
+資料多，不等於有收穫。
+會員不缺東西看，缺的是有人帶。
+少一點塞，多一點陪。
+少一點新，多一點深。
+不要問我還能再給什麼。
+要問他這個月，真的變好了嗎？
+
+@3-16
+團購最值錢的，從來不是商品
+開了很多團。
+上了很多貨。
+比了很多價格。
+你以為你在賣東西。
+其實大家買的，是你這個人說的那句「這個我用過，真的好」。
+=
+你是不是也有這種壓力？
+廠商一直來，什麼都想開。
+怕不開就沒業績。
+怕開了又沒人買。
+賣得不好，自己難過。
+賣得很好，又怕客人不滿意。
+你每一團，都像在賭。
+=
+什麼都賣，最後什麼都沒人信
+為了業績，接了不熟的商品。
+為了成交，把話說得太滿。
+客人買了，覺得沒那麼好。
+嘴上不說，下次就不跟了。
+一次的失望，要十次的滿意才補得回來。
+=
+真相：一個好的團，答得出八件事
+安全和適合誰，說清楚了嗎？
+它真正解決什麼問題？
+客人為什麼會覺得適合自己？
+證據的來源可靠嗎？
+大家為什麼相信你的推薦？
+價格和資訊透明嗎？
+功效有沒有用白話講明白？
+買了之後，你有沒有回頭問問感受？
+=
+更新：賣完之後，才是開始
+多數人賣完就衝下一團。
+很少人回頭問：用得怎麼樣？
+這一問，問出下一次該不該再開。
+這一問，問出客人真正在乎什麼。
+這一問，也讓客人知道，你不是只想賺他的錢。
+=
+能力：敢不賣，才值得信
+不確定的，不開。
+沒用過的，不亂說。
+不適合的，直接講。
+少賺一團，多了一分可信。
+你的一句推薦值多少錢。
+看的是你拒絕過多少不該賣的東西。
+=
+智慧：累積兩本帳
+一本是信任的帳。
+每一次說實話，都在存錢。
+一本是結果的帳。
+誰用了有效，誰用了沒效，你都知道。
+這兩本帳越厚，你的話越值錢。
+商品會換，這兩本帳帶得走。
+=
+送給做團購的你
+商品人人都拿得到。
+信任只有你自己能累積。
+開得多，不如開得準。
+賣得快，不如賣得久。
+寧可少一團，不要賠掉一個相信你的人。
+你賣的不是東西。
+你賣的是「我幫你試過了」。
+
+@3-17
+題目越做越多，為什麼成績還是沒起來？
+買了一堆講義。
+下載了好幾個學習工具。
+每天寫到半夜。
+分數卻一動也不動。
+不是孩子不努力，是努力沒有對到地方。
+=
+你是不是也看過這種孩子？
+會的題目一直寫，不會的還是不會。
+錯了就看答案，下次還是錯。
+寫很多，卻說不出自己哪裡不懂。
+越寫越沒信心。
+最後說出那句：我就是不會讀書。
+=
+最傷的不是考不好，是白努力
+花了時間，沒有進步。
+付出很多，沒有回報。
+一次兩次，孩子還會撐。
+十次之後，他就不相信努力有用了。
+他不是放棄讀書。
+他是放棄相信自己。
+=
+真相：學習工具該回答的八件事
+有沒有降低他對失敗的焦慮？
+他真正想要的是什麼？
+有沒有讓他從「我不會」變成「我能進步」？
+有沒有適當的同儕回饋？
+他相信這個工具真的幫得了他嗎？
+有沒有讓他更會自己學？
+他知不知道現在該做哪一題？
+有沒有作答，找錯，修正，再測一次？
+=
+更新：不是做更多，是做對的
+先找出真正不會的地方。
+只練那個地方。
+練完再測一次。
+會了，就往下一個。
+不要在已經會的題目上浪費時間。
+少做一半的題，進步可以多一倍。
+=
+能力：讓孩子看見自己在變好
+上週錯的，這週對了。
+上次三題，這次一題。
+把這些變化拿給他看。
+他不需要你說加油。
+他需要的是證據。
+證明他的努力，真的有用。
+=
+智慧：教育不是填滿，是點亮
+題目只是工具。
+分數只是結果。
+真正重要的，是孩子知道自己可以學會。
+相信自己學得會的孩子，才走得遠。
+讓他少一點無效的辛苦。
+多一點看得見的進步。
+=
+送給陪孩子讀書的你
+寫得多，不等於學得會。
+坐得久，不等於有進步。
+不要再問他寫完了沒。
+問他：你今天弄懂了哪一題？
+先找到不會的，再把它變成會的。
+努力要用在缺口上。
+孩子缺的不是題目，是方向和信心。
+
+@3-18
+公司最大的瓶頸，常常就是老闆自己
+客人不識貨。
+員工不積極。
+市場不景氣。
+你找了很多原因。
+卻漏掉了最難開口的那一個。
+=
+你是不是也有這些習慣？
+捨不得砍掉自己想出來的功能。
+聽不進別人說產品不好。
+覺得只有自己最懂。
+員工報好消息，你很開心。
+員工報壞消息，你很不高興。
+久了，就沒有人跟你說真話了。
+=
+看不見自己，是最貴的盲點
+你太愛自己的產品，所以看不見缺點。
+你太相信自己的判斷，所以聽不進數字。
+團隊怕你生氣，所以只說你想聽的。
+獎勵的方式不對，所以大家只做表面。
+你以為問題在外面。
+其實問題一直在會議室裡。
+=
+真相：做生意的每一個人，都有人性
+客人有客人的害怕和需要。
+老闆有老闆的面子和執著。
+團隊有團隊的不安和算計。
+通路有通路的利益。
+夥伴有夥伴的考量。
+只研究客人的人性，卻不看自己的，等於只看了一半。
+=
+更新：先問自己幾個難堪的問題
+我是不是太相信自己的想法？
+我多久沒有被現實打臉了？
+我的團隊敢不敢告訴我壞消息？
+我獎勵的，是真的成果，還是好看的數字？
+我是在解決客人的問題，還是在證明自己是對的？
+敢問這些問題的老闆，公司才有救。
+=
+能力：讓壞消息走得到你面前
+聽到壞消息，先說謝謝。
+聽到不同意見，先問為什麼。
+發現自己錯了，直接說我錯了。
+你怎麼對待說真話的人。
+決定了你以後還聽不聽得到真話。
+=
+智慧：放下面子，公司才長得大
+老闆的格局，是公司的天花板。
+老闆的盲點，是公司的地雷。
+你願意更新，公司才會更新。
+你願意認錯，團隊才敢嘗試。
+最難管理的，從來不是員工。
+是自己。
+=
+送給正在創業的你
+先別怪客人不懂。
+先別怪員工不拚。
+先看看自己，有沒有哪裡不肯放手。
+愛你的產品，但不要愛到看不見它的問題。
+相信你的判斷，但要讓現實有機會糾正你。
+老闆先改，公司才會動。
+最該被診斷的，是決定一切的那個人。
+
+@3-19
+你越來越忙，公司卻越來越亂
+產品越來越多。
+規則越來越多。
+會議越來越多。
+你以為這叫做成長。
+其實有一種成長，只是變胖，不是變壯。
+=
+你是不是也有這種感覺？
+事情越做越多，決定卻越來越慢。
+商品越上越多，客人卻越來越不知道你在賣什麼。
+會員越來越多，互動卻越來越少。
+折扣越給越大，客人卻越來越不忠心。
+你越來越忙。
+公司卻越來越離不開你。
+=
+亂，是悄悄長出來的
+今天多加一個產品，沒差。
+明天多訂一條規則，沒差。
+後天多一個例外，也沒差。
+每一次都很合理。
+一年之後回頭看。
+你被自己堆出來的東西，淹沒了。
+=
+真相：營收變多，不代表公司變好
+資訊越來越多，決定越來越慢。
+規則越來越多，責任越來越不清楚。
+廣告越來越多，信任越來越少。
+這些都是混亂在增加的訊號。
+賺到的錢，會被混亂一點一點吃掉。
+只看營收的人，看不見這個洞。
+=
+更新：先減，再加
+砍掉不必要的產品。
+減少客人要做的選擇。
+把不透明的地方說清楚。
+不要讓客人只能依賴你。
+把價值講得更清楚。
+讓回饋來得更快。
+讓結果可以被衡量。
+=
+能力：敢刪，比會加更難
+加東西，人人都會。
+刪東西，需要勇氣。
+刪掉一個賣得普通的產品。
+刪掉一個沒人看的報表。
+刪掉一場沒有結論的會議。
+每刪一樣，公司就輕一點，也快一點。
+=
+智慧：簡單，是整理過後的結果
+簡單不是偷懶。
+簡單是想清楚之後，才做得到的事。
+客人一看就懂。
+員工一聽就會。
+沒有你，事情也照樣運作。
+這樣的公司，才算真的長大。
+=
+送給越忙越亂的你
+多，不等於好。
+忙，不等於有進展。
+大，不等於強。
+少做一點，做好一點。
+少賣一點，賣清楚一點。
+不要只問今年多賺多少。
+要問公司有沒有比去年更清楚，更輕，更穩。
+
+@3-23
+成交不是終點，只是你猜對了一次
+訂單進來，你鬆了一口氣。
+業績達標，你覺得成功了。
+可是成交只證明一件事。
+你成功讓他相信。
+至於你值不值得被相信，還不知道。
+=
+你是不是也只盯著這個數字？
+今天成交幾單。
+這個月業績多少。
+轉換率有沒有上升。
+數字好，就開心。
+數字差，就焦慮。
+卻很少問：買的人，後來怎麼樣了？
+=
+只看成交，是在蓋沒有地基的樓
+客人買了，卻沒有用。
+用了，卻沒有效果。
+有效果，卻不想再來。
+你一直在找新的客人。
+因為舊的客人，一直在流失。
+這樣的生意，永遠停不下來，也永遠很累。
+=
+真相：一筆生意，有四個證明
+成交，證明你說服了他。
+留下來，證明價值可能是真的。
+有結果，證明東西真的有用。
+願意推薦，證明好到他願意拿自己的信用替你擔保。
+前面一個是你的本事。
+後面三個，才是你的實力。
+=
+更新：把問題換掉
+不要問我的行銷夠不夠厲害。
+要問我對客人的判斷準不準。
+不要問他為什麼不買。
+要問是價值，信任，風險，還是太麻煩。
+不要問怎麼讓他離不開。
+要問他明明可以走，為什麼還想留。
+=
+能力：把現實當成老師
+客人的抱怨，是免費的顧問。
+客人的離開，是誠實的回饋。
+客人的沉默，也是一種答案。
+不要急著辯解。
+先聽，再改，再試一次。
+願意被市場修正的人，才不會被市場淘汰。
+=
+智慧：最強的生意，是大家都贏
+客人得到結果。
+你得到利潤。
+信任一直累積。
+做法可以一直更新。
+這四件事同時發生，生意才會自己轉起來。
+不必拿捏誰，也不必討好誰。
+=
+送給努力衝業績的你
+成交是開始，不是結束。
+賣出去是本事，被感謝才是實力。
+不要只數賺了多少。
+要數幫了多少人。
+最厲害的生意，不是最會操控人性的。
+是最懂人，所以最值得被相信的。
+把每一筆訂單，都當成一個承諾。
+
+@4-1
+客人嫌貴，其實不是在嫌價格
+你降了價，他還是不買。
+你送了贈品，他還是在猶豫。
+你以為他在乎的是錢。
+其實他心裡算的，是另外一本帳。
+=
+你是不是也常被一句「太貴了」打敗？
+一聽到太貴，就急著打折。
+一聽到再想想，就急著送東西。
+折扣越給越多，利潤越來越薄。
+客人卻沒有比較爽快。
+因為你一直在回答一個他沒有問的問題。
+=
+錢，只是成本裡最小的一項
+要花時間了解，是成本。
+要重新學習，是成本。
+很麻煩，是成本。
+有風險，是成本。
+不確定有沒有用，是成本。
+怕被騙，是成本。
+要改變習慣，更是成本。
+=
+真相：人只在「值得」的時候付錢
+每個人心裡都有一個天平。
+一邊是他預期得到的。
+一邊是他預期要付出的。
+得到的比較重，他就買。
+付出的比較重，他就走。
+你的東西也許很好。
+只是他那一邊的砝碼，比你想的多很多。
+=
+更新：不降價，改成減少他的負擔
+把步驟變少。
+把說明變簡單。
+把風險拿掉一點。
+把不確定的地方講清楚。
+讓他先試一點點。
+你沒有少賺一塊錢。
+但他覺得輕鬆很多。
+=
+能力：看得見看不見的成本
+會做生意的人，不只算價格。
+還會算客人的時間，力氣，和擔心。
+你幫他省了時間，就是給他價值。
+你幫他少了麻煩，就是給他價值。
+你讓他安心，更是給他價值。
+這些，比折扣更讓人想買。
+=
+智慧：交換，要讓雙方都覺得划算
+沒有人喜歡被占便宜。
+也沒有人會長期做賠本的事。
+好的交易，是他覺得值得，你也覺得值得。
+不必把價格壓到最低。
+要把價值做到最清楚，把負擔降到最低。
+=
+送給常被嫌貴的你
+嫌貴，常常是嫌麻煩。
+猶豫，常常是不放心。
+再想想，常常是沒看懂。
+先別急著降價。
+先問問他，還在擔心什麼。
+把擔心拿掉，價格就不是問題。
+客人要的不是便宜，是值得。
+
+@4-5
+戳人痛處的文案，和說中人心的文案，只差一線
+「你再不改變就完了。」
+「你可能不是不努力，只是一直用錯地方。」
+兩句話都提到痛。
+一句讓人害怕。
+一句讓人鬆一口氣。
+=
+你是不是也寫過這種文案？
+為了吸引目光，把話說得很嚴重。
+為了讓人行動，把後果講得很可怕。
+點閱很高，留言很多。
+但你心裡知道，那不完全是事實。
+你有一點不安。
+=
+被嚇到的人，會記得誰嚇了他
+焦慮可以換來點擊。
+卻換不來好感。
+人被嚇過一次，會有防備。
+被嚇過三次，會直接略過你。
+你越用力製造緊張。
+他越習慣把你的話打折。
+=
+真相：痛點有用，是因為人會特別注意痛
+但注意，有兩種用法。
+一種是放大害怕，製造焦慮，逼他買單。
+一種是認出真實的問題，準確地說出來，再給一個可以驗證的做法。
+前者在利用他的不安。
+後者在幫他把事情看清楚。
+=
+更新：寫文案之前，問自己三句
+這個痛，是真的存在，還是我誇大的？
+我說得出問題的原因，而不只是嚇他嗎？
+我給的解法，他可以自己確認有沒有用嗎？
+三句都答得出來。
+你寫的就不是恐嚇，是理解。
+=
+能力：把別人說不出的感覺，說出來
+最打動人的，不是嚇人的話。
+是「對，我就是這樣」。
+你替他說出他講不清楚的困擾。
+他就覺得你懂他。
+被懂的人，才會願意聽你接下來要說什麼。
+=
+智慧：好的文案，讓人少一點自責
+不是告訴他你很糟。
+是告訴他：這不是你的錯，只是方法不對。
+人不需要再被多罵一次。
+人需要的是有人指出一條路。
+給希望的人，比給恐懼的人，被記得更久。
+=
+送給寫文案的你
+嚇人很容易，懂人很難。
+點閱是一時的，信任是長久的。
+說出痛，是為了陪他走出來。
+不是為了把他推下去。
+寫完之後，問自己一句。
+他看完，是更慌，還是更清楚？
+讓人清楚的文字，才有力量。
+
+@4-7
+只有你賺到的合作，都走不久
+你談到了很好的條件。
+你覺得自己贏了。
+對方笑笑地簽了約。
+然後下一次，他就不再找你了。
+=
+你是不是也遇過這樣的合作？
+一開始都很熱情。
+做到一半，有人開始不積極。
+到後來，各做各的。
+最後不歡而散。
+你覺得對方沒誠意。
+卻沒想過，他在這件事裡，到底得到了什麼。
+=
+只靠交情的合作，撐不過利益
+感情再好，也不能一直吃虧。
+理念再合，也要活得下去。
+有一方覺得不值得，合作就開始鬆動。
+先是拖延，再是敷衍。
+最後是離開。
+沒有人是壞人，只是有人撐不下去了。
+=
+真相：穩定的合作，每個人都要有所得
+你得到價值。
+他得到價值。
+客人得到價值。
+這件事本身還能繼續做下去。
+公司贏，客人輸，短期賺錢，長期會垮。
+客訴變多，信任變少，找新客人越來越貴。
+=
+更新：談合作之前，先替對方想
+他為什麼要跟我合作？
+他在這裡面得到什麼？
+這對他來說，夠不夠？
+如果我是他，我願意嗎？
+把對方的好處想清楚。
+比把自己的條件談到最好，更重要。
+=
+能力：讓別人贏，是一種本事
+小氣的人，只算自己拿多少。
+聰明的人，會算每個人拿多少。
+分得公平，大家才會盡力。
+大家盡力，餅才會變大。
+餅變大了，你拿的那一份也會變大。
+這不是吃虧，是遠見。
+=
+智慧：利他，是看得更遠的利己
+讓客人賺到，他會再來。
+讓夥伴賺到，他會挺你。
+讓員工賺到，他會留下。
+你把好處分出去。
+好處會繞一圈，再回到你身上。
+這不是道德口號，是生意的常識。
+=
+送給想找人合作的你
+占盡便宜的合作，只有一次。
+彼此成全的合作，才有下次。
+不要只問我能拿多少。
+要問他拿得夠不夠，願不願意再來。
+你贏，他也贏，事情才做得久。
+合作的本質，不是分餅。
+是一起把餅做大。
+
+@4-8
+人買的不是東西，是「我是這樣的人」
+同樣是鞋子，有人願意多付三倍。
+同樣是咖啡，有人堅持只喝那一家。
+不是他們不會算。
+是他們買的，不只是東西。
+=
+你是不是也有這種困擾？
+你的東西不比別人差。
+價格也不比別人貴。
+客人卻沒有非你不可的理由。
+你只能靠便宜吸引人。
+而靠便宜來的人，哪裡更便宜就去哪裡。
+=
+沒有認同感的品牌，只剩下比價
+功能可以被抄。
+價格可以被壓。
+通路可以被搶。
+如果客人選你只是因為划算。
+那你隨時會被更划算的取代。
+=
+真相：商品回答買了什麼，品牌回答你是誰
+買運動用品的人，買的是「我是會堅持的人」。
+買書的人，買的是「我是會成長的人」。
+送孩子去學習的父母，買的是「我是負責任的父母」。
+東西用完就沒了。
+「我是這樣的人」，會一直留著。
+=
+更新：問自己幾個問題
+用了我的東西，客人覺得自己是什麼樣的人？
+我的文字，是在貶低他，還是在肯定他？
+他願不願意讓別人知道他在用？
+這個身份是真的，還是只是好聽的包裝？
+他用了之後，真的更有能力了嗎？
+=
+能力：讓身份，有真材實料
+硬貼一個高級的標籤，撐不久。
+讓人真的做到，才留得住。
+他行動了，就有了證據。
+有了證據，就有了能力。
+有了能力，才真的相信「我是這樣的人」。
+幫他做到，比幫他包裝重要。
+=
+智慧：品牌，是一次又一次的經驗
+不是一個漂亮的標誌。
+不是一句響亮的口號。
+是每一次接觸，都讓人感覺到同一種價值。
+時間久了，別人一看到你，就知道你代表什麼。
+這個「代表什麼」，就是你的品牌。
+=
+送給想做品牌的你
+賣功能，會被比較。
+賣價格，會被取代。
+賣認同，才會被記得。
+不要只想我的東西有多好。
+要想用我東西的人，會變成誰。
+讓他因為選了你，更喜歡自己。
+這才是別人搶不走的東西。
+
+@4-9
+客人不是不想買，是買起來太累了
+想買，卻找不到按鈕。
+想問，卻不知道問誰。
+想付款，卻要填一堆資料。
+他不是不要。
+他只是在最後一步，累了。
+=
+你是不是也流失過這種客人？
+看了很久，沒有下單。
+問了很多，沒有結果。
+放進購物車，就沒有下文。
+你以為他沒興趣。
+你加強說服，寫更長的介紹。
+結果他更累了。
+=
+每多一個步驟，就少一批人
+不知道怎麼買。
+不知道怎麼付錢。
+不知道適不適合自己。
+資訊太多，選項太多，步驟太多。
+怕買錯，怕被騙。
+不知道下一步是什麼。
+這些都不是他不想要，是你讓他走不到終點。
+=
+真相：成交，不一定要更會說
+價值夠，信任夠，卻沒有成交。
+問題常常出在阻力太大。
+把阻力拿掉，比加強說服更有效。
+同樣的東西，同樣的價格。
+買起來順的，就是賣得比較好。
+=
+更新：自己走一遍
+假裝你是第一次來的客人。
+從看到，到買到，自己走一次。
+哪裡看不懂？
+哪裡要想很久？
+哪裡很麻煩？
+哪裡會害怕？
+每卡一次，就記下來，然後拿掉。
+=
+能力：會刪，比會加重要
+少一個欄位。
+少一個步驟。
+少一個選項。
+少一段沒人看的文字。
+每少一樣，就多一個人走到最後。
+讓人輕鬆，是被低估的能力。
+=
+智慧：體貼，是最好的行銷
+替他想到他會擔心的。
+替他省掉他不想做的。
+替他決定他不知道怎麼選的。
+客人未必說得出哪裡好。
+他只會覺得：跟你買，很舒服。
+舒服的地方，人就會再來。
+=
+送給流失客人的你
+不買，不一定是不想要。
+離開，不一定是不喜歡。
+很多時候，只是太麻煩。
+先別急著說服。
+先把路鋪平。
+少一點阻力，勝過多十句好話。
+讓人買得輕鬆，就是最強的銷售。
+
+@4-10
+讓人上癮，和讓人成長，是兩種完全不同的黏著
+有些東西，你一直想打開。
+用完卻覺得很空。
+有些東西，你也一直想打開。
+用完卻覺得自己變好了一點。
+差別在哪裡？
+=
+你是不是也被什麼東西黏住過？
+滑了兩個小時，不知道看了什麼。
+玩了一整晚，隔天很後悔。
+明明想放下，手卻停不下來。
+你罵自己沒有自制力。
+其實是有人很懂你，而且用它來對付你。
+=
+被設計好的上癮，最難逃
+你喜歡新鮮，它就一直給你新的。
+你喜歡驚喜，它就不告訴你下一則是什麼。
+你喜歡被肯定，它就給你紅色的小數字。
+你以為是自己的選擇。
+其實每一下滑動，都被算好了。
+=
+真相：人喜歡知道自己有沒有進步
+進度條，連續天數，完成率，等級，前後比較。
+這些都是在告訴你：你有在前進。
+這種感覺本身沒有錯。
+錯的是拿它來消耗你。
+對的是拿它來成就你。
+=
+更新：換一個問題來設計
+不要問：怎麼讓他多待一點時間？
+要問：怎麼讓他每次來，都完成一點什麼？
+不要問：怎麼讓他離不開？
+要問：怎麼讓他看得見自己的成長？
+一個是把人留下來消耗注意力。
+一個是讓人回來繼續長大。
+=
+能力：會分辨，就不會被牽著走
+用完之後，我比較好，還是比較空？
+我是自己想來，還是被拉來的？
+它讓我更有能力，還是更離不開它？
+會問這三句話的人。
+比較不容易被任何東西綁架。
+=
+智慧：好的黏著，是因為有收穫
+人會一直回到讓自己變好的地方。
+健身的地方，學習的地方，被理解的地方。
+不需要被騙，不需要被鉤住。
+因為每一次去，都有一點不一樣。
+這種黏著，叫做成長。
+=
+送給容易沉迷的你
+讓你停不下來的，不一定是你喜歡的。
+讓你離不開的，不一定是對你好的。
+用完覺得空的，少碰一點。
+用完覺得滿的，多靠近一點。
+把時間，留給讓你變好的東西。
+你的注意力很貴。
+不要便宜賣給想消耗你的人。
+
+@4-11
+你那麼確定大家需要，為什麼沒人要？
+這個點子很棒。
+這個功能一定有人需要。
+這個產品做出來，一定大賣。
+你很有信心。
+然後市場給了你一片安靜。
+=
+你是不是也有過這種經驗？
+花了半年準備。
+花了很多錢和力氣。
+推出之後，沒什麼人理。
+你覺得是宣傳不夠。
+你覺得是大家還不懂。
+你繼續加碼，結果還是一樣。
+=
+最貴的錯，是相信自己的想像
+「客人一定需要這個。」
+這句話聽起來像事實。
+其實只是一個猜測。
+你把猜測當成事實，就會一路做到底。
+做得越完整，賠得越多。
+捨不得放手，就越陷越深。
+=
+真相：做生意，就是不斷地猜，再不斷地修
+你猜客人喜歡這個。
+你推出來試試。
+客人很少用。
+這代表你猜錯了。
+也許他真正需要的是另一個。
+那就做一個最小的版本，再試一次。
+錯不可怕，可怕的是錯了還不改。
+=
+更新：先小小地試
+不要一次做到完美才推出。
+先做一點，給少數人用。
+看他們怎麼用，不是聽他們怎麼說。
+有反應，再做大。
+沒反應，就換方向。
+試錯的成本越低，你能試的次數越多。
+=
+能力：聽得見市場的聲音
+沒人買，是一種回答。
+買了不用，是一種回答。
+用了不再來，也是一種回答。
+不要急著解釋，不要急著辯護。
+把這些都當成資料。
+資料會告訴你，下一步往哪裡走。
+=
+智慧：放下「我是對的」，才做得成
+堅持很重要。
+但是堅持錯的方向，只是固執。
+市場不在乎你多努力，多有理想。
+它只在乎，你有沒有解決它的問題。
+願意被現實修正的人，才撐得到成功的那一天。
+=
+送給正在創業的你
+你的想法，只是假設。
+客人的行為，才是答案。
+先試小的，再做大的。
+先看反應，再下決定。
+錯了就改，改了再試。
+不要愛上自己的點子。
+要愛上解決問題這件事。
+
+@4-13
+「拿捏人性」這四個字，害了很多人
+拿捏客戶，拿捏員工，拿捏另一半。
+聽起來很厲害，很有手腕。
+可是你有沒有發現。
+喜歡拿捏別人的人，身邊的人越來越少。
+=
+你是不是也想過要學這個？
+被人欺負過，所以想學會控制局面。
+被人騙過，所以想先看穿別人。
+吃過虧，所以想占上風。
+你不是壞。
+你只是不想再受傷。
+=
+把人當成對象，人就會離開
+你算計他，他感覺得到。
+你利用他，他遲早會發現。
+你操控他，他只是暫時配合。
+你以為自己很高明。
+其實每一次得手，都在消耗別人對你的信任。
+用光了，就什麼都沒有了。
+=
+真相：做生意有五個層次
+最低的，利用別人的弱點。
+再來，滿足別人的需要。
+再來，解決別人的問題。
+再來，讓別人更有能力。
+最高的，讓客人，自己，還有周圍的人都變得更好。
+操控，換來一次的成交。
+創造價值，換來長久的累積。
+=
+更新：把問題換一個方向
+不要問：怎麼讓他照我的意思做？
+要問：怎麼讓他的好處，和我的好處，走在同一邊？
+不要問：怎麼讓他離不開我？
+要問：怎麼讓他因為得到價值，自己想回來？
+方向一換，你就不必再算計了。
+=
+能力：懂人，是為了把事情做對
+懂人的需要，所以做得出他要的東西。
+懂人的害怕，所以知道怎麼讓他安心。
+懂人的在乎，所以說得進他心裡。
+懂人怎麼相信，所以知道怎麼被相信。
+這不是手段。
+這是認真對待一個人。
+=
+智慧：看得懂人，更要對得起人
+看懂需求的人，看見機會。
+看懂交換的人，看見合作。
+看懂回饋的人，看見自己的錯。
+願意更新的人，才走得過每一次變化。
+最值得追求的，不是最會拿捏人性。
+是最懂人，又最願意為人創造價值。
+=
+送給想變厲害的你
+拿捏得了一時，拿捏不了一世。
+算計得了別人，算計不了人心。
+真心換不到的，手段也留不住。
+懂人性，不是為了占便宜。
+是為了把價值，送到真正需要的人手上。
+賺錢，是你做對事情之後的結果。
+做一個讓人放心的人，生意自己會來。
+
+@5-15
+你收藏了一千篇文章，為什麼還是過不好？
+按了收藏，就覺得學到了。
+存了筆記，就覺得會了。
+聽了課程，就覺得成長了。
+可是遇到事情的時候。
+你一篇都想不起來。
+=
+你是不是也有一個很滿的收藏夾？
+看到好文章，先存起來。
+看到好觀念，先記下來。
+想著哪天有空再看。
+那一天從來沒有來。
+你知道得越來越多。
+生活卻沒有什麼不同。
+=
+零散的知識，用不上
+今天看到要愛自己。
+明天看到要自律。
+後天看到要放下。
+每一句都很有道理。
+放在一起，卻不知道什麼時候用哪一句。
+知識像一地的珠子，沒有線，串不起來。
+=
+真相：有用的不是知識點，是它們之間的關係
+先有害怕，才有防衛。
+先有需要，才有計較。
+先有對自己的看法，才有比較。
+先有解讀，才有情緒。
+先有行動，才有回饋。
+把這些連起來，才知道問題從哪裡開始。
+不是五十五篇文章，是一張地圖。
+=
+更新：從收藏，變成串連
+看到一個新觀念，問：它跟我已經知道的有什麼關係？
+遇到一件事，問：這是哪一個環節出了問題？
+不是背更多。
+是把已經知道的，接起來。
+接起來了，一個觀念可以解十個問題。
+=
+能力：往回找原因，往前找出路
+看到一個行為，能往回推。
+是什麼選擇，什麼情緒，什麼想法，什麼需要，什麼害怕。
+找到源頭之後，再往前走。
+換一個想法，就換一個預期。
+換一個預期，就換一個選擇。
+這才叫做會用。
+=
+智慧：學得少而通，勝過學得多而散
+懂一百個道理，不如把十個想通。
+想通十個，不如把一個做到。
+真正的學習，不是腦袋裝了多少。
+是遇到事情的時候，你變得不一樣。
+=
+送給愛學習的你
+收藏不是學會。
+聽過不是懂了。
+懂了不是做到。
+少存一點，多想一點。
+少看一點，多用一點。
+把知識串起來，把道理活出來。
+你不缺新的文章，你缺的是一條線。
+
+@6-12
+學人性，第一個要看穿的不是別人
+你想看懂誰在騙你。
+你想分辨誰是真心。
+你想不再被人傷害。
+所以你開始研究人性。
+但最該被看懂的那個人，其實一直在鏡子裡。
+=
+你是不是學得越多，越不快樂？
+看誰都覺得有目的。
+聽什麼都覺得有話術。
+別人對你好，你先懷疑。
+你以為這叫清醒。
+其實你只是把自己關進了一座更堅固的牢房。
+=
+只拿人性來防人，會越活越孤單
+你防住了壞人。
+也擋住了好人。
+你不再被騙。
+也不再被愛。
+懂得很多，卻沒有人可以靠近。
+這不是智慧，這是另一種受傷。
+=
+真相：這套學問，是先用來解開自己的
+不要被害怕綁住。
+看懂自己真正的需要。
+不要被舊的自己綁住。
+不要被比較和人群綁住。
+不要被舊的相處方式綁住。
+不要被依賴和處境綁住。
+不要被第一個想法綁住。
+然後，養成可以一直更新的能力。
+=
+更新：先問自己，再看別人
+我現在是被什麼推著走？
+我的反應，是因為現在，還是因為過去？
+我看到的他，是真的他，還是我想像的他？
+先把自己看清楚。
+你看別人，才不會帶著自己的傷去看。
+=
+能力：看得準，是為了過得好
+早一點認出不對勁，就早一點離開。
+清楚自己的界線，就不必委屈。
+知道力氣該放哪裡，就不必白費。
+錯了能很快修正，就不必一直痛。
+選擇變多了，人就自由了。
+看得準，不是為了控制誰。
+=
+智慧：五樣東西，合起來才叫懂
+看得懂人。
+看得懂自己。
+看得懂環境和處境。
+看得見自己哪裡想錯。
+改得動自己的想法。
+少了任何一樣，都只是懂了一半。
+=
+送給正在學人性的你
+懂人性，不是為了變得多疑。
+看得透，不是為了變得冷漠。
+有界線，不是為了拒絕所有人。
+看懂之後，仍然善良。
+看懂之後，仍然願意相信值得的人。
+看懂之後，仍然願意更新自己。
+這才是懂。
+</script>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=t=>t.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KEY='人性八域OS';
+let store={};try{store=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}};
+
+// 解析：# 文件、## 節、### 小標
+const docs=[];let d,s;
+for(const l0 of $('#raw').textContent.split('\n')){
+  const l=l0.trimEnd();if(!l.trim())continue;
+  if(l.startsWith('# ')){d={t:l.slice(2),s:[]};docs.push(d);s=null}
+  else if(l.startsWith('## ')){s={t:l.slice(3),l:[]};d.s.push(s)}
+  else{if(!s){s={t:'導言',l:[]};d.s.push(s)}s.l.push(l)}
+}
+let cur=0;
+
+// 貼文：@文件-節 開頭，= 分隔圖卡，每張圖卡第一行是標題
+const posts={};{let p,c;
+for(const l0 of $('#posts').textContent.split('\n')){
+  const l=l0.trim();if(!l)continue;
+  if(l[0]=='@'){p=posts[l.slice(1).trim()]=[];c=null}
+  else if(l=='=')c=null;
+  else{if(!c){c=[];p.push(c)}c.push(l)}
+}}
+const ptext=id=>(posts[id]||[]).map(c=>c.join('\n')).join('\n\n');
+function postHtml(id){
+  const P=posts[id];
+  return `<div class="pt"><button data-copy="${id}">複製全文</button><button data-dl="${id}">下載圖卡PNG</button><span class="info">${P.length} 張圖卡・約 ${P.flat().join('').length} 字</span></div><div class="cards">`+
+    P.map((c,i)=>`<div class="card${i?'':' cv'}"><b>${esc(c[0])}</b>${c.slice(1).map(x=>`<p>${esc(x)}</p>`).join('')}<i>${i+1}/${P.length}</i></div>`).join('')+'</div>';
+}
+function draw(c,i,n,title){
+  const W=1080,H=1350,M=90,cv=document.createElement('canvas');cv.width=W;cv.height=H;
+  const x=cv.getContext('2d'),g=x.createLinearGradient(0,0,W,H),F='"Microsoft JhengHei","PingFang TC",sans-serif';
+  g.addColorStop(0,i?'#fbf6ee':'#9a5b2c');g.addColorStop(1,i?'#f1e3d0':'#5e3414');x.fillStyle=g;x.fillRect(0,0,W,H);
+  const ink=i?'#2b2622':'#fff',acc=i?'#9a5b2c':'#ffe2c2';
+  const wrap=(t,font)=>{x.font=font;const o=[];let s='';for(const ch of t){if(x.measureText(s+ch).width>W-2*M){o.push(s);s=ch}else s+=ch}o.push(s);return o};
+  let fs=56,hl,bl;
+  do{fs-=2;hl=wrap(c[0],`bold ${fs*1.5}px ${F}`);bl=c.slice(1).map(t=>wrap(t,`${fs}px ${F}`))}
+  while(hl.length*fs*2.1+fs+bl.reduce((a,b)=>a+b.length*fs*1.6+fs*.5,0)>H-2*M-110&&fs>22);
+  let y=M+fs*1.5;x.fillStyle=acc;x.font=`bold ${fs*1.5}px ${F}`;hl.forEach(l=>{x.fillText(l,M,y);y+=fs*2.1});
+  y+=fs*.4;x.fillStyle=ink;x.font=`${fs}px ${F}`;bl.forEach(b=>{b.forEach(l=>{x.fillText(l,M,y);y+=fs*1.6});y+=fs*.5});
+  x.fillStyle=acc;x.font=`28px ${F}`;x.fillText(title.slice(0,28),M,H-60);x.textAlign='right';x.fillText((i+1)+' / '+n,W-M,H-60);
+  return cv;
+}
+function copy(t){
+  const fb=()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()};
+  try{navigator.clipboard.writeText(t).catch(fb)}catch(e){fb()}
+}
+
+function sec(di,si,q){
+  const S=docs[di].s[si],L=S.l,id=di+'-'+si;let n=0,i=0,quote=false,h='';
+  const T=t=>{
+    t=esc(t);
+    if(q)t=t.replace(new RegExp(esc(q).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),m=>'<mark>'+m+'</mark>');
+    return t.replace(/________|__\/80|__(?=\/10)|D__/g,m=>{
+      if(m=='__/80')return '<output class="sum">0</output>/80';
+      const k=id+'-'+n++,v=esc(store[k]||'');
+      if(m=='________')return `<input class="f" data-k="${k}" value="${v}">`;
+      if(m=='D__')return `D<input class="n" data-k="${k}" value="${v}">`;
+      return `<input class="n" type="number" min="0" max="10" data-k="${k}" value="${v}">`;
+    });
+  };
+  while(i<L.length){
+    const l=L[i];
+    if(l.startsWith('### ')){quote=l.includes('金句');h+='<div><h3>'+T(l.slice(4))+'</h3></div>';i++}
+    else if(l=='```'){const b=[];i++;while(L[i]!='```')b.push(L[i++]);i++;h+='<pre>'+esc(b.join('\n'))+'</pre>'}
+    else if(l[0]=='|'){
+      const r=[];while(i<L.length&&L[i][0]=='|')r.push(L[i++]);
+      h+='<div class="tw"><table>'+r.filter(x=>!/^\|\s*-/.test(x)).map((x,j)=>'<tr>'+x.replace(/^\||\|$/g,'').split('|').map(c=>j?`<td>${T(c.trim())}</td>`:`<th>${T(c.trim())}</th>`).join('')+'</tr>').join('')+'</table></div>';
+    }
+    else if(l=='↓'){h+='<div class="ar">↓</div>';i++}
+    else{
+      const m=l.indexOf('｜');let c=quote?'q':'';
+      if(l[0]=='→'||l[0]=='＋'||l[0]=='＝')c+=' ch';
+      if(m>0&&m<=28){
+        const k=l.slice(0,m);if(/金句|智慧$/.test(k))c='q';
+        h+=`<p class="kv ${c}"><b>${T(k)}</b>${T(l.slice(m+1))}</p>`;
+      }else h+=`<p class="${c}">${T(l)}</p>`;
+      i++;
+    }
+  }
+  const P=posts[id],open=q&&P&&ptext(id).toLowerCase().includes(q.toLowerCase());
+  return `<section id="s${id}">`+(q?`<div class="from" data-d="${di}" data-s="${si}">${esc(docs[di].t)} ›</div>`:'')+
+    (P?`<button class="pb" data-p="${id}">📣 貼文圖卡</button>`:'')+`<h2>${T(S.t)}</h2>${h}`+
+    (P?`<div class="post" id="p${id}"${open?'':' hidden'}>${open?postHtml(id):''}</div>`:'')+`</section>`;
+}
+
+function nav(){
+  $('#nav').innerHTML=docs.map((d,i)=>`<a class="d${i==cur?' on':''}" data-d="${i}">${esc(d.t)}</a>`+(i==cur?d.s.map((s,j)=>`<a class="s" data-s="${j}">${esc(s.t)}</a>`).join(''):'')).join('');
+}
+function show(){
+  const q=$('#q').value.trim();let h='';
+  if(q){
+    const lq=q.toLowerCase();let c=0;
+    docs.forEach((d,i)=>d.s.forEach((s,j)=>{if((s.t+'\n'+s.l.join('\n')+'\n'+ptext(i+'-'+j)).toLowerCase().includes(lq)){c++;h+=sec(i,j,q)}}));
+    h=`<p class="info">「${esc(q)}」共找到 ${c} 節</p>`+h;
+  }else h=`<h1>${esc(docs[cur].t)}</h1>`+docs[cur].s.map((s,j)=>sec(cur,j)).join('');
+  $('#main').innerHTML=h;sums();
+}
+function sums(){
+  document.querySelectorAll('output.sum').forEach(o=>{
+    let t=0;o.closest('section').querySelectorAll('input.n[type=number]').forEach(x=>t+=+x.value||0);o.textContent=t;
+  });
+}
+function go(di,si){
+  cur=di;$('#q').value='';nav();show();document.body.classList.remove('open');
+  if(si==null)scrollTo(0,0);else document.getElementById('s'+di+'-'+si).scrollIntoView();
+}
+$('#nav').onclick=e=>{
+  const a=e.target.closest('a');if(!a)return;
+  if(a.dataset.d!=null)go(+a.dataset.d);else go(cur,+a.dataset.s);
+};
+$('#main').addEventListener('click',e=>{
+  const t=e.target,f=t.closest('.from');if(f)return go(+f.dataset.d,+f.dataset.s);
+  if(t.dataset.p){const b=document.getElementById('p'+t.dataset.p);if(!b.innerHTML)b.innerHTML=postHtml(t.dataset.p);b.hidden=!b.hidden}
+  else if(t.dataset.copy){copy(ptext(t.dataset.copy));t.textContent='已複製 ✓'}
+  else if(t.dataset.dl){
+    const id=t.dataset.dl,P=posts[id],[a,b]=id.split('-'),title=docs[a].s[b].t;
+    P.forEach((c,i)=>setTimeout(()=>draw(c,i,P.length,title).toBlob(bl=>{
+      const l=document.createElement('a');l.href=URL.createObjectURL(bl);l.download=title.replace(/[\\/:*?"<>|]/g,'_')+'-'+(i+1)+'.png';l.click();
+    }),i*350));
+  }
+});
+$('#main').addEventListener('input',e=>{const k=e.target.dataset.k;if(!k)return;store[k]=e.target.value;save();sums()});
+$('#q').oninput=()=>{show();scrollTo(0,0)};
+$('#mb').onclick=()=>document.body.classList.toggle('open');
+$('#clr').onclick=()=>{if(confirm('確定清除所有填寫內容與評分？')){store={};save();show()}};
+nav();show();
+</script>
+</body>
+</html>
