@@ -1,0 +1,1574 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>表徵與解讀操作系統｜Representation × Interpretation OS</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#22262b;--mute:#6b7280;--line:#e3dfd6;--acc:#2f6f6a;--acc2:#b4632b;--soft:#e8f1f0;--old:#fbeeee;--new:#eaf5ee;--gold:#fdf6e3}
+@media(prefers-color-scheme:dark){:root{--bg:#16191c;--card:#1f2428;--ink:#e8e6e1;--mute:#9aa3ad;--line:#333a41;--acc:#6fbfb7;--acc2:#e0a070;--soft:#24312f;--old:#3a2626;--new:#213327;--gold:#35301f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 16px 0}
+.wrap{max-width:980px;margin:0 auto}
+h1{font-size:19px;margin:0 0 8px}
+h1 small{font-weight:400;color:var(--mute);font-size:13px;margin-left:6px}
+#q{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:16px}
+nav{display:flex;gap:4px;margin-top:8px;overflow-x:auto}
+nav button{border:0;background:none;color:var(--mute);padding:8px 12px;font-size:15px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+nav button.on{color:var(--acc);border-color:var(--acc);font-weight:700}
+main{padding:16px}
+section{display:none}section.on{display:block}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 12px;font-size:14px;cursor:pointer}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.info{color:var(--mute);font-size:14px;margin:4px 0 12px}
+.dom{margin:18px 0 8px;font-size:16px;color:var(--acc2)}
+.dom span{color:var(--mute);font-weight:400;font-size:14px}
+details,.card{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:8px}
+.card{padding:14px}
+summary{padding:11px 14px;cursor:pointer;list-style:none;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+summary::-webkit-details-marker{display:none}
+summary b{color:var(--acc)}
+summary .en{color:var(--mute);font-size:13px}
+summary .ok{margin-left:auto;font-size:13px;color:var(--mute);display:flex;align-items:center;gap:4px}
+.body{padding:0 14px 14px}
+.sys{font-size:14px;font-weight:700;margin:12px 0 6px;color:var(--acc2)}
+.pair{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:8px;font-size:15px}
+.pair div{padding:6px 10px}
+.pair .o{background:var(--old)}.pair .n{background:var(--new)}.pair .g{background:var(--gold);font-weight:700}
+.pair i{font-style:normal;font-size:12px;color:var(--mute);margin-right:6px}
+.tag{display:inline-block;font-size:12px;border:1px solid var(--line);border-radius:6px;padding:1px 7px;margin-right:4px;cursor:pointer;color:var(--acc2)}
+.rt{font-size:14px;margin-top:8px;padding:8px 10px;border-left:3px solid var(--acc);background:var(--soft);border-radius:0 8px 8px 0}
+mark{background:#ffe27a;color:#222;border-radius:3px}
+button.btn{border:0;background:var(--acc);color:#fff;border-radius:8px;padding:8px 14px;font-size:15px;cursor:pointer;margin:4px 6px 4px 0}
+button.btn.gh{background:none;color:var(--acc);border:1px solid var(--acc)}
+button.btn:disabled{opacity:.4;cursor:default}
+label.f{display:block;font-size:14px;font-weight:700;margin:10px 0 4px}
+textarea,select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+textarea{min-height:58px;resize:vertical}
+.ck{display:block;font-size:15px;margin:4px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:8px}
+.err{cursor:pointer}.err h3{margin:0 0 4px;font-size:16px}.err h3 b{color:var(--acc2)}.err p{margin:2px 0;font-size:14px}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:9px 12px;margin:6px 0;font:inherit;cursor:pointer}
+.opt.sel{border-color:var(--acc);background:var(--soft)}.opt.right{border-color:#2e8b57;background:var(--new)}.opt.wrong{border-color:#c0504d;background:var(--old)}
+.flow{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.flow span{background:var(--soft);border-radius:8px;padding:5px 10px;font-size:14px}
+.flow span:not(:last-child)::after{content:" →";color:var(--mute)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--soft)}
+h2{font-size:17px;margin:20px 0 8px}
+ol.w{padding-left:22px;margin:0}ol.w li{margin-bottom:6px}
+.art{border-color:var(--acc2);margin-bottom:14px}
+.artT{white-space:pre-wrap;font-size:16px;line-height:1.9;margin-bottom:10px}
+.fbb{float:right;border:1px solid var(--acc2);background:none;color:var(--acc2);border-radius:6px;font-size:12px;padding:1px 8px;margin-left:8px;cursor:pointer}
+#fbBox{display:none;position:fixed;inset:0;z-index:9;background:rgba(0,0,0,.55);overflow:auto;padding:16px}
+#fbBox.on{display:block}
+#fbBox .card{max-width:520px;margin:0 auto}
+#fbCv{width:100%;height:auto;border-radius:10px;margin:8px 0;display:block}
+.rec{font-size:14px;white-space:pre-wrap;border-top:1px dashed var(--line);padding:8px 0}
+.rec button{float:right;border:0;background:none;color:var(--mute);cursor:pointer}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>表徵與解讀操作系統<small>32 節點 × 192 組新舊對照＋人生 30 節點＋寫作訓練</small></h1>
+<input id="q" type="search" placeholder="搜尋：關鍵字、節點編號（R05、I13）、錯誤代碼（E02）、人生節點（拖延、投資）…">
+<nav id="nav">
+<button data-t="nodes" class="on">節點</button>
+<button data-t="life">人生30節點</button>
+<button data-t="write">寫作訓練</button>
+<button data-t="errs">錯誤診斷</button>
+<button data-t="prac">升級練習</button>
+<button data-t="quiz">複測</button>
+<button data-t="frame">框架</button>
+</nav>
+</div></header>
+<main><div class="wrap">
+
+<section id="nodes" class="on">
+<div class="chips" id="domChips"></div>
+<div class="chips" id="sysChips"></div>
+<div class="info" id="info"></div>
+<div id="list"></div>
+</section>
+
+<section id="life">
+<div class="info">30 個最有差異資訊的人生關鍵節點：生活情境→舊模型→關鍵差異→新模型→新增選項→最小行動→回饋指標→智慧金句。</div>
+<div class="chips" id="lifeChips"></div>
+<div class="chips" id="lifeView"></div>
+<div class="info"><span id="lifeInfo"></span>　<button class="btn gh" id="lifeCopyAll" style="padding:3px 10px;font-size:13px">複製目前顯示的 LINE 快讀版</button> <span id="lifeMsg"></span></div>
+<div id="lifeList"></div>
+</section>
+
+<section id="write">
+<div class="card" style="background:var(--gold)"><b>核心命題：</b>真正的智慧，不是替舊答案找到更漂亮的理由，而是有能力重新生成更好的答案。</div>
+<h2>本體層｜我們究竟在處理什麼</h2>
+<div class="card"><ol class="w">
+<li>人的感受是真實經驗，但不等於對原因的完整解釋。</li>
+<li>人的記憶保留部分經驗痕跡，但不是過去的完整錄影。</li>
+<li>人的選擇受到可見選項限制，但可見選項不等於所有現實可能。</li>
+<li>人的成長不是永遠增加投入，而是改善理解、判斷、行動與修正能力。</li>
+</ol></div>
+<h2>結構層｜六大核心模型</h2>
+<div id="models"></div>
+<h2>機制層｜共同生成流程</h2>
+<div class="flow"><span>事件發生</span><span>感受形成</span><span>記憶提取</span><span>問題表徵</span><span>目標排序</span><span>選項生成</span><span>結果預測</span><span>行動選擇</span><span>回饋觀察</span><span>誤差歸因</span><span>模型更新</span></div>
+<div class="info">任何一個環節出錯，都可能讓人誤以為自己沒有選擇。</div>
+<h2>行動層｜寫作六步驟（草稿會自動保存）</h2>
+<div class="card">
+<div id="wSteps"></div>
+<label class="f">文章品質檢查　<span id="wN" style="font-weight:400;color:var(--mute)"></span></label>
+<div id="wChecks"></div>
+<div style="margin-top:10px"><button class="btn" id="wCopy">複製文章草稿</button><button class="btn gh" id="wClear">清空草稿</button><span id="wMsg" class="info"></span></div>
+</div>
+<h2>30 節點共同的五個差異</h2>
+<div class="card"><ol class="w">
+<li>從人格判斷升級成結構診斷。</li><li>從單一原因升級成多變數互動。</li><li>從二元選擇升級成可行選項搜尋。</li><li>從一次結果升級成長期回饋。</li><li>從固定答案升級成可持續更新的模型。</li>
+</ol></div>
+<h2>最重要的五句總結</h2>
+<div class="card"><ol class="w">
+<li>你看到的問題，不一定是問題的完整結構。</li><li>你感受到的情緒，不一定是原因的完整解釋。</li><li>你記得的過去，不一定包含所有重要證據。</li><li>你現在看見的選項，不一定涵蓋全部可行的選擇。</li><li>你真正需要提升的，不只是解決問題的速度，而是重新定義問題、發現差異、生成選項與修正模型的能力。</li>
+</ol></div>
+<h2>統一實作公式</h2>
+<div class="flow"><span>生活事件</span><span>舊模型</span><span>關鍵差異</span><span>漏掉的變數</span><span>新表徵</span><span>新增選項</span><span>最小行動</span><span>回饋測量</span><span>預測誤差</span><span>模型更新</span></div>
+<div class="card" style="background:var(--gold)"><b>最終教學原則：</b>一篇好的文章，不只讓讀者感動，更要讓讀者多一種理解現實的方法、多一個可行選項，以及一次重新選擇的能力。<br><br><b>終極金句：</b>人生真正的升級，不是永遠找到更漂亮的答案，而是每當現實不同意你時，你都有能力重新理解世界，重新生成選項，重新設計自己的下一步。</div>
+</section>
+
+<section id="errs">
+<div class="info">十大解讀錯誤診斷器。點任一張卡片，會列出掛有該錯誤的節點。</div>
+<div class="grid" id="errGrid"></div>
+</section>
+
+<section id="prac">
+<div class="card">
+<label class="f">練習節點</label><select id="pNode"></select>
+<div class="rt" id="pHint"></div>
+<label class="f">1. 舊表徵｜我原本怎麼想？</label><textarea id="p1"></textarea>
+<label class="f">2. 可核對的事實</label><textarea id="p2"></textarea>
+<label class="f">3. 新表徵｜還有哪些更準確的解釋？</label><textarea id="p3"></textarea>
+<label class="f">4. 最小行動｜今天做哪一步？</label><textarea id="p4"></textarea>
+<label class="f">5. 回饋｜我要觀察什麼結果？何時看？</label><textarea id="p5"></textarea>
+<label class="f">完成檢查　<span id="ckN" style="font-weight:400;color:var(--mute)">已完成 0/4 項</span></label>
+<label class="ck"><input type="checkbox" class="pc"> 分清事實與解釋</label>
+<label class="ck"><input type="checkbox" class="pc"> 找出至少一個替代解釋</label>
+<label class="ck"><input type="checkbox" class="pc"> 設定可完成的行動</label>
+<label class="ck"><input type="checkbox" class="pc"> 決定何時觀察回饋</label>
+<div style="margin-top:10px">
+<button class="btn" id="pSave">儲存紀錄</button>
+<button class="btn gh" id="pCopy">複製紀錄</button>
+<button class="btn gh" id="pClear">清空表單</button>
+<span id="pMsg" class="info"></span>
+</div>
+</div>
+<h2>我的表徵升級紀錄 <span id="recN" class="info"></span></h2>
+<div class="card" id="recs"></div>
+</section>
+
+<section id="quiz">
+<div class="card" id="quizBox"></div>
+<h2>節點複測題（隨機抽一題）</h2>
+<div class="card">
+<div id="rtQ"></div>
+<textarea id="rtA" placeholder="不看資料，寫下你的回答…"></textarea>
+<button class="btn" id="rtNext">換一題</button>
+<button class="btn gh" id="rtSee">看這個節點的新舊對照</button>
+</div>
+</section>
+
+<section id="frame">
+<h2>統一流程</h2>
+<div class="flow"><span>現實 Reality</span><span>感知 Perception</span><span>事實 Fact</span><span>解讀 Interpretation</span><span>情緒 Emotion</span><span>信念 Belief</span><span>預測 Prediction</span><span>決策與行動 Action</span><span>回饋 Feedback</span><span>模型更新 Model Update</span></div>
+<div class="info">這是教學用的簡化流程，各層之間存在雙向作用；情緒也受生理、經驗與環境影響。</div>
+<h2>表徵 vs 解讀</h2>
+<table>
+<tr><th>比較</th><th>Representation 表徵（R）</th><th>Interpretation 解讀（I）</th></tr>
+<tr><td>核心問題</td><td>我如何描述這件事？</td><td>這件事代表什麼？</td></tr>
+<tr><td>主要任務</td><td>辨識特徵、變數、關係</td><td>產生意義、假設、因果解釋</td></tr>
+<tr><td>常見錯誤</td><td>問題分類錯、漏掉變數</td><td>讀心、災難化、過度概括</td></tr>
+<tr><td>主要產出</td><td>問題模型</td><td>意義假設與因果假設</td></tr>
+<tr><td>最終用途</td><td>看清楚問題</td><td>判斷問題為何發生、如何回應</td></tr>
+</table>
+<h2>範例｜英文考 65 分</h2>
+<table>
+<tr><th>事實</th><td>這次考 65 分。</td></tr>
+<tr><th>表徵</th><td>錯題集中在字彙與長句理解。</td></tr>
+<tr><th>解讀</th><td>可能是字彙辨識不足，或長句解析策略尚未熟練。</td></tr>
+<tr><th>預測</th><td>加強這兩項能力，同類題目的表現可能改善。</td></tr>
+<tr><th>行動</th><td>每天練習五題相關題型。</td></tr>
+<tr><th>回饋</th><td>兩週後以不同但難度相近的題目複測。</td></tr>
+</table>
+<h2>每個節點的六階段</h2>
+<div class="flow"><span>辨識舊解讀</span><span>建立新解讀</span><span>辨認錯誤 E01–E10</span><span>完成最小行動</span><span>觀察真實回饋</span><span>延遲複測（隔天、7 天、14 天）</span></div>
+<h2>12 句生命智慧</h2>
+<div class="card"><ol class="w" id="wis"></ol></div>
+</section>
+
+</div></main>
+<div id="fbBox"><div class="card">
+<b>臉書心靈雞湯｜文圖</b>
+<canvas id="fbCv" width="1080" height="1080"></canvas>
+<div><button class="btn" id="fbSave">下載圖片</button><button class="btn gh" id="fbTheme">換配色</button></div>
+<label class="f">貼文內容（可直接修改）</label>
+<textarea id="fbTxt" style="min-height:190px"></textarea>
+<div><button class="btn" id="fbCopy">複製貼文</button><button class="btn gh" id="fbClose">關閉</button><span id="fbMsg" class="info"></span></div>
+</div></div>
+<script>
+const DOM=[
+['現實辨識','不把感覺直接當真相'],['表徵建構','把模糊問題說清楚'],['認知權重','不被最強烈的印象綁住'],['模型彈性','看見不只一條路'],
+['預測決策','在不確定中做選擇'],['行動實驗','讓理解變成能力'],['回饋糾錯','把錯誤變成資訊'],['智慧遷移','讓智慧真正成為自己的能力']];
+
+const ERR=[
+['E01','Mind Reading','讀心術','沒有證據卻認定別人的想法','他一定討厭我','我還不知道他的想法'],
+['E02','Catastrophizing','災難化','把一次挫折想成全部完蛋','這次失敗，一切都完了','先評估實際影響與補救選項'],
+['E03','Overgeneralization','過度概括','一次失敗就說永遠失敗','我永遠做不好','這次哪些條件沒有達成？'],
+['E04','Global Labeling','整體標籤','用一個行為定義整個人','他就是懶惰','哪些行為、環境與動機值得了解？'],
+['E05','Single-Cause Attribution','單因歸因','把複雜問題歸給單一原因','一定都是因為他','可能還有哪些變數？'],
+['E06','Emotional Reasoning','情緒推理','因為害怕就認定必有危險','我害怕，所以一定危險','恐懼與實際風險分開檢查'],
+['E07','All-or-Nothing Thinking','非黑即白','不是完美就是毫無價值','不是成功就是失敗','中間有哪些進展與差距？'],
+['E08','Confirmation Bias','確認偏誤','只看支持原本想法的證據','只看支持自己的證據','主動尋找可靠反證'],
+['E09','Premature Closure','過早定論','資料不足就宣布找到答案','我已經知道全部原因','哪些資訊仍然缺少？'],
+['E10','Misattributed Responsibility','責任錯置','把不屬於自己的責任扛下來，或推給別人','所有問題都是我的錯','區分自己、他人與環境的責任']];
+
+const WIS=['人生最深的自由，不是所有事情都如你所願，而是你不必永遠相信第一個傷害自己的解釋。','你所經歷的痛苦值得被理解，但不必讓痛苦替你定義全部的人生。','別把一時的感受，寫成一生的判決。','事件是發生過的事情，解讀是你替它寫下的故事；故事可以重新檢查。','當你願意問「還有沒有其他可能」，心中的世界就多了一扇窗。','真正的成長，不是把所有負面想法變成正面，而是讓自己的理解越來越接近事實。','不要把別人的行為全部解讀成自己的價值。','一次失敗可以提供資訊，卻沒有資格宣判你整個人的未來。','有些困境不是因為你不夠努力，而是你還沒有看清真正的問題。','智慧不是永遠解讀正確，而是發現自己解讀錯誤時，仍有能力重新理解。','當你開始區分事實、感受、推測與責任，就不必再讓它們混在一起傷害自己。','你不能靠改變解讀抹去現實，但可以透過更準確的解讀，找到更有力量的下一步。'];
+
+// 每個節點：標題列＋三行「舊|新|金句|行動」
+const RSRC=`R01|Observation|事實觀察
+他沒有回訊息，一定是不在乎我。|我只知道他還沒有回覆，不知道真正原因。|別讓一個尚未知道的答案，提前傷害自己的心。|寫下已確認的事實，不加入猜測。
+學生考不好，就是沒有努力。|成績只呈現結果，還需要了解學習過程。|看見結果很容易，看見結果背後的原因才是智慧。|詢問學生最困難的一個環節。
+今天不順利，代表我整個人生都很糟。|今天發生幾件不順利的事，不代表所有生活都失控。|一天的陰雨，不代表整個人生沒有陽光。|寫下今天一件仍然順利的事。
+
+R02|Emotion Awareness|感受辨識
+我很焦慮，表示一定有危險。|焦慮提醒我留意，但需要確認實際風險。|情緒是心裡的警鈴，不一定是現實的判決書。|分別寫下感受與已知風險。
+我很生氣，所以一定是對方錯了。|生氣可能代表需求受阻，也需要確認雙方責任。|情緒值得被聽見，真相值得被看清。|說出憤怒背後的一個需求。
+我很難過，代表自己太脆弱。|難過是正常情緒，不等於沒有能力。|允許自己難過，不會讓你失去堅強的力量。|用一句話描述現在的感受。
+
+R03|Fact–Interpretation Separation|事實與解釋分離
+他批評我，證明我沒有價值。|批評是一項評價，不等於完整的自我價值。|別人的一句話，不需要成為你一生的定義。|把批評內容改寫成可檢查的具體問題。
+我失敗了，所以我就是失敗的人。|一次失敗是事件，不是永久身分。|失敗可以是你走過的路，卻不必成為你的名字。|將「我很失敗」改成「這次哪件事沒有成功」。
+別人不同意我，就是討厭我。|意見不同不必然代表關係不好。|不同的想法可以同時存在，不必讓每次分歧都變成傷害。|詢問對方真正不同意的部分。
+
+R04|Evidence Checking|證據查核
+大家都這麼說，應該是真的。|多人重複同一說法，不代表證據充分。|真相不靠聲音大小決定，而靠證據慢慢站穩。|找出一項可靠的原始資料。
+我相信自己的直覺，絕不會錯。|直覺可以提供線索，但仍需要驗證。|真正的自信，不怕自己的想法接受檢驗。|找出一項支持與一項反對證據。
+我記得很清楚，所以一定是真的。|記憶可能重建，鮮明不等於完全準確。|記憶值得尊重，但不必被當成永遠不變的真相。|核對一項客觀紀錄。
+
+R05|Problem Naming|問題命名
+我就是很笨。|我目前還不熟悉某些知識與技巧。|當你停止替自己貼標籤，成長才有機會找到入口。|找出一項不熟悉的技能。
+我的人生完全失控。|我有幾個具體問題需要分別處理。|再大的混亂，只要能夠拆解，就可能找到第一步。|寫下三個最需要處理的問題。
+我就是沒有時間。|我的時間配置可能與優先目標不一致。|生命不是要你做完所有事情，而是學會留下最值得的事情。|刪除一項低優先任務。
+
+R06|Feature Decomposition|特徵拆解
+英文不好，就是英文能力差。|英文包含單字、句法、閱讀、推論等不同能力。|當你把困難拆開，就會發現自己不是什麼都不會。|找出最弱的一項能力。
+孩子不自律，就是態度不好。|可能涉及動機、環境、壓力與習慣。|真正的理解，不急著責怪，而是願意看見問題的層次。|記錄一次拖延發生的情境。
+我很累，就是自己不夠努力。|疲累可能與睡眠、健康、壓力及工作負荷有關。|別把身體發出的求救訊號，誤認成自己不夠堅強。|記錄三天睡眠與疲勞情況。
+
+R07|Relation Detection|關係辨識
+兩件事一起發生，就一定互相造成。|同時發生不代表存在因果關係。|智慧不是急著替世界找答案，而是願意確認答案是否可靠。|找出一種其他可能原因。
+我努力很多卻沒有成果，代表努力沒用。|努力與成果之間可能存在方法或資源瓶頸。|不是所有努力都會立刻開花，重要的是找對適合生長的土壤。|找出一項影響成果的中間環節。
+每次吵架都是同一個人的錯。|可以分析互動模式，同時明確區分個別責任。|理解關係的結構，不代表必須替傷害找藉口。|記錄一次衝突中的行為與界線。
+
+R08|Context & Boundary|情境與邊界
+別人成功的方法，我照做就一定成功。|方法需要符合個人條件與環境。|別人的花期值得欣賞，你也需要找到自己的季節。|比較自己與他人的一項條件差異。
+以前有效的方法，現在也一定有效。|環境改變後，需要重新確認方法是否適用。|曾經帶你走過一段路的答案，不一定能陪你走完所有人生。|檢查一項已改變的條件。
+對所有人都應該用同樣的方式。|不同的人可能需要不同的溝通與支持。|真正的尊重，不是要求每個人一樣，而是願意理解彼此不同。|調整一次溝通方式。
+
+R09|Attention|注意力
+所有事情都值得我立刻處理。|注意力有限，需要設定優先順序。|不是每一道聲音，都值得你交出整顆心。|今天選出最重要的一件事。
+我一直想著問題，就能找到答案。|反覆思考不一定有效，有時需要新的資訊或行動。|有時候，走出困境不是想得更多，而是換個方向看。|暫停反覆思考，寫出一個可驗證問題。
+我必須同時完成所有工作。|專注處理重要任務可能更有效。|把生命集中在值得的地方，也是一種溫柔。|專注二十分鐘完成一項任務。
+
+R10|Salience|顯著性
+最讓我難過的事情，就是最重要的事情。|情緒強度不一定等於客觀重要性。|最深的傷值得照顧，卻不必永遠掌握人生的方向盤。|將情緒強度與實際重要性分開評分。
+一句批評可以否定所有稱讚。|應根據完整紀錄評估表現。|不要讓一朵烏雲，遮住整片曾經照亮你的天空。|找出兩項具體正向成果。
+最吸引人的資訊，就是最值得相信的資訊。|吸引注意與證據品質是兩回事。|真正重要的真相，有時並不喧嘩。|查核一則吸睛訊息。
+
+R11|Weight Calibration|權重校準
+別人的期待永遠比我的需求重要。|需要平衡個人需求、他人期待與現實責任。|你可以溫柔地照顧世界，也別忘了把自己放進被照顧的名單。|寫下一項今天需要保護的個人需求。
+每個問題都同樣重要。|不同問題對目標的影響程度不同。|人生不是把所有石頭都搬走，而是先移開真正擋路的那一塊。|選出影響最大的瓶頸。
+我最害怕的結果，發生機率一定最高。|應區分風險發生機率與損失程度。|別讓恐懼替未來投票，讓證據與準備陪你決定。|分別估計可能性與影響程度。
+
+R12|Memory Reconstruction|記憶重建
+我過去受傷，所以未來一定還會受傷。|過去經驗值得參考，但不同情境可能有不同結果。|昨天的傷口，不必成為明天所有關係的預言。|找出現在與過去的一項差異。
+我記得的，就是完整的事實。|記憶可能受到情緒與後續資訊影響。|願你珍惜自己的故事，也為尚未看見的真相留一扇窗。|分開記錄記憶、感受與證據。
+最後一次失敗，代表我一直都失敗。|需要回顧整段歷程，而不是只看最近一次。|別讓故事最後一頁的雨，抹去之前所有努力走過的路。|列出三次過去的進步。
+
+R13|Alternative Interpretation|替代解釋
+他不理我，就是討厭我。|可能是忙碌、需要空間，或其他尚未確認的原因。|不要讓第一個猜測，成為最後的真相。|寫出三種合理解釋。
+我沒有成功，就是沒有天分。|可能是策略、練習方式或資源不足。|你不是沒有可能，只是還有一些條件值得重新尋找。|找出一項可調整因素。
+事情沒有照計畫發展，就是壞事。|意外結果可能帶來新的資訊或選項。|不是所有轉彎都是迷路，有些轉彎讓你看見新的風景。|找出一項新出現的可能性。
+
+R14|Cognitive Decoupling|認知解耦
+我有這個念頭，所以它一定是真的。|念頭只是心理事件，不等於事實。|你可以聽見心裡的聲音，卻不必服從每一句話。|把「我就是」改成「我正在想到」。
+我現在很害怕，所以不能行動。|害怕與行動能力可以同時存在。|勇敢不是沒有恐懼，而是知道如何帶著恐懼安全前進。|完成一個低風險的小步驟。
+我覺得自己沒有價值。|我正在經歷自我否定的感受，但它不是完整事實。|你的價值，不需要由某個低潮時刻來決定。|寫下一項可確認的個人能力。
+
+R15|Counterevidence|反證思考
+我相信的事情，一定不會錯。|再堅定的信念，也值得接受證據檢驗。|真正的信念，不怕真相靠近。|找出一項可能推翻原判斷的證據。
+我永遠做不好任何事。|只要存在做好的例子，就不能用「永遠」概括自己。|一個真實的反例，就可能替封閉的心打開一道門。|寫下一次做成功的經驗。
+大家都同意我，所以一定正確。|群體共識仍需要確認證據與推理。|清醒不是永遠站在人群之外，而是在人群之中仍願意思考。|尋找一個有根據的不同觀點。
+
+R16|Perspective Integration|多視角整合
+只有我的立場才是對的。|不同立場可能掌握不同資訊與需求。|當你願意從另一扇窗看世界，心中的房間也會變得寬敞。|寫出對方可能重視的一項需求。
+科學與哲學只能選一個。|科學檢驗經驗主張，哲學協助澄清概念與價值。|不同的知識可以彼此照亮，但不必假裝它們說的是同一件事。|分開寫下事實問題與價值問題。
+我只要找到一個原因就夠了。|複雜問題可能涉及多個互相影響的因素。|世界很少只有一條線，智慧是學會看見線與線之間的關係。|列出三個可能相關的變數。
+
+R17|Probability Judgment|機率判斷
+我覺得會發生，所以一定會發生。|需要區分可能性與確定性。|擔心不是預言，希望也不是保證。|為一個預測標註信心程度。
+上次失敗，這次一定也會失敗。|一次結果不足以決定下一次結果。|不要讓昨天的一次跌倒，提前取消明天的機會。|比較兩次情境的條件。
+成功機率高，就完全沒有風險。|仍需要考慮失敗可能造成的損失。|真正的勇氣，不只敢看見機會，也敢面對代價。|寫下最壞結果與可承受程度。
+
+R18|Scenario Prediction|情境預測
+未來一定會照我的計畫發展。|可以建立多種情境與應對方案。|人生不一定照劇本走，但你可以學會準備不同的下一幕。|寫下最好、一般、最壞三種情境。
+未來不可預測，所以不必準備。|不確定不代表完全無法規劃。|看不清整條路，也可以先照亮腳下的一步。|為明天準備一項必要資源。
+只要努力，結果一定成功。|成果也受到環境、策略與資源影響。|努力是種子，方法與環境也是成長需要的土壤。|檢查一項可能影響結果的外部條件。
+
+R19|Risk Assessment|風險評估
+我不能承受任何失敗。|可以設計損失有限、可恢復的嘗試。|真正的安全，不是永遠不走出去，而是知道如何保護自己。|設定最大可承受損失。
+害怕風險，就什麼都不要做。|不行動也可能存在機會成本。|停留不一定沒有代價，前進也不必毫無準備。|比較行動與不行動的代價。
+報酬越高，就是越好的選擇。|應同時考慮風險、成本與生活需求。|真正的富足，不是追逐最多，而是守住值得的人生。|列出三項決策標準。
+
+R20|Resource Allocation|資源配置
+所有事情都要做到最好。|資源有限，需要依重要性分配。|你不需要在所有地方發光，只需要把光留給真正珍惜的方向。|選出本週最重要的目標。
+已經投入很多，就不能停止。|過去投入不應單獨決定未來選擇。|珍惜曾經的付出，也別讓它成為繼續受困的理由。|重新評估未來投入的價值。
+休息就是浪費時間。|恢復能力也是長期表現的重要條件。|休息不是放棄夢想，而是讓自己有力量走得更遠。|安排十五分鐘真正的休息。
+
+R21|Minimum Action|最小行動
+做不到完美，就不要開始。|可以先完成最小可行版本。|一個不完美的開始，勝過一百個停留在心裡的完美計畫。|先做五分鐘。
+我必須一次改變整個人生。|改變可以從一個可持續的小步驟開始。|人生的轉彎，有時從一個小小的選擇開始。|選擇一個兩分鐘習慣。
+我還沒準備好，不能開始。|部分準備可以在安全試行中完成。|有些能力，不是等你準備好了才出現，而是開始以後慢慢長出來。|完成第一個低風險步驟。
+
+R22|Exploration–Exploitation|探索與利用平衡
+有效的方法，就永遠不需要改變。|保留有效方法，也持續小規模探索。|守住已有的光，也為未知留一扇窗。|每週試一項小改進。
+新方法一定比較好。|新方法需要與現有方法比較。|真正的進步，不是永遠追新，而是找到真正適合自己的方法。|比較兩種方法的實際成果。
+探索失敗就是浪費。|有效的探索也可能帶來重要資訊。|有些路沒有帶你抵達終點，卻教會你辨認方向。|記錄一次試驗的新發現。
+
+R23|Habit Design|習慣設計
+我沒有自制力，所以做不到。|可以透過環境與提示降低執行阻力。|改變不必每天和意志力拔河，也可以讓環境成為你的幫手。|移除一項干擾。
+一天沒做到，整個計畫就失敗。|習慣需要設計中斷後的恢復方式。|真正的自律，不是永遠不中斷，而是懂得重新開始。|今天恢復兩分鐘練習。
+只要有動力，就能維持習慣。|穩定習慣需要提示、環境與可執行流程。|不要只等待熱情出現，讓小小的規律陪你走得更遠。|將新習慣接在固定日常活動後面。
+
+R24|Execution Monitoring|執行監控
+我知道怎麼做，就代表我做得對。|需要檢查實際執行是否符合計畫。|真正的能力，不只存在於理解，更存在於每一次實踐。|使用三項檢查表。
+我每天都很忙，應該很有效率。|效率需要看實際成果。|忙碌不一定是前進，成果才會告訴你走到了哪裡。|記錄今天完成的一項重要成果。
+沒有達標，就是自己不夠努力。|可能需要調整流程、工具或執行條件。|有時候，生命不是要求你更用力，而是提醒你換一種走法。|找出一項執行障礙。
+
+R25|Outcome Measurement|結果測量
+我覺得自己進步了，就代表真的進步。|需要用適當指標比較前後表現。|真正的成長，不怕被現實看見。|記錄一項前後可比較的指標。
+分數變高，就是所有能力都變好了。|需要確認分數是否反映真正的能力。|不要只追求漂亮的數字，要追求真正能帶走的實力。|加入一項實際應用測試。
+努力很多，就不需要檢查成果。|投入與成果需要分別觀察。|珍惜自己的努力，也要讓努力找到值得的方向。|比較投入時間與實際成果。
+
+R26|Prediction Error|預測誤差
+我又猜錯了，代表我很笨。|預測誤差是校準判斷的資訊。|錯誤不是智慧的敵人，拒絕修正才會讓智慧停下來。|記錄預測與結果的差異。
+結果不好，就代表方法完全錯誤。|需要區分偶然波動與系統問題。|一次風雨，不代表整個季節都失去了方向。|檢查是否出現重複偏差。
+結果比預期好，就不必分析。|正向誤差也能提供新資訊。|驚喜值得慶祝，也值得理解它為什麼發生。|找出一項超出預期的原因。
+
+R27|Error Attribution|十大錯誤歸因
+事情做不好，都是我能力不足。|可能是觀察、表徵、變數或權重出了問題。|找到真正的瓶頸，比反覆責怪自己更有力量。|從十大Error選出最可能的一類。
+只要增加努力，就能修正所有錯誤。|不同錯誤需要不同的修正策略。|不是所有問題都需要更多力氣，有些問題需要更清楚的理解。|對應錯誤類型選擇修正方法。
+我失敗了，所以整套方法都沒有價值。|可以保留有效部分，修正失效環節。|成長不是推翻所有過去，而是讓有效的部分繼續發光。|寫下一項保留與一項修正。
+
+R28|Model Revision|模型修正
+改變想法代表我沒有原則。|依證據修正判斷，是認知成熟的表現。|真正堅定的人，不怕為了真相重新調整方向。|更新一項已不適用的觀念。
+我的方法用了很多年，不可能錯。|長期使用不代表永遠有效。|曾經保護你的答案，不一定永遠是最適合你的答案。|檢查一項舊方法的最新效果。
+我只要想通，就已經改變了。|新理解需要轉化成行動並驗證。|想通是種子，行動才讓智慧真正生根。|將新觀念轉成一項具體行動。
+
+R29|Delayed Retest|延遲複測
+今天學會了，就代表永遠會。|能力需要經過時間與再次測試。|真正屬於你的智慧，是時間過去後仍能陪伴你的能力。|七天後重新測試。
+我現在覺得懂了，就不必再練習。|熟悉感不等於能獨立提取。|看懂是一種相遇，真正掌握需要一次次重逢。|不看資料重新說明概念。
+一次成功，就證明方法永久有效。|需要多次觀察與不同條件下的驗證。|一次綻放值得珍惜，持續生長才更能顯示根扎得多深。|安排第二次測試。
+
+R30|Transfer|跨情境遷移
+我在課堂學會了，就代表生活中也會用。|真正的能力需要在新情境中運用。|知識走出書本，才開始成為照亮人生的智慧。|用今天的概念解決一件生活問題。
+這個方法只能用在某一件事。|可以分析核心原理是否適用其他情境。|真正深刻的理解，能在不同的人生風景裡找到新的用途。|找出另一個適用場景。
+換了環境，我又什麼都不會。|先辨識可遷移能力，再補足新情境差異。|環境可以改變，但你累積的能力不必從零開始。|列出一項可轉用的舊技能。
+
+R31|Metacognition|後設認知
+我覺得自己懂了，就是懂了。|需要區分理解感與實際能力。|真正的聰明，不是永遠覺得自己懂，而是知道自己還有哪些不懂。|不看答案完成一題測試。
+有自信，就代表能力強。|自信需要與實際表現校準。|最穩定的自信，不靠想像，而靠一次次真實的驗證。|比較預估正確率與實際正確率。
+我很了解自己，不需要任何回饋。|每個人都可能有自己看不到的盲點。|再明亮的眼睛，也需要另一面鏡子看見自己的背後。|向可信任的人詢問一項具體回饋。
+
+R32|Self-Directed Updating|自主更新
+我就是這樣的人，永遠不會改變。|部分習慣、能力與反應方式可以持續調整。|你不必永遠成為昨天的自己，今天仍然可以寫下新的版本。|改變一個最小的日常反應。
+成長就是永遠不再犯錯。|成長是更快辨識錯誤、修正方法與重新行動。|真正的成熟，不是從此不再跌倒，而是越來越懂得如何重新站穩。|記錄本週一次修正錯誤的經驗。
+我需要一個永遠正確的答案。|我需要一套能隨證據持續更新的判斷系統。|真正的自由，不是掌握所有答案，而是當世界改變時，你仍有重新理解與選擇的能力。|選一個舊信念，完成「證據→新表徵→最小行動→回饋」循環。`;
+
+// 標題列：編號|英文|中文|診斷代碼|複測題
+const ISRC=`I01|Observation Interpretation|觀察解讀|E01,E03,E09|「主管今天沒有稱讚我，所以他一定對我不滿。」請分出事實與推測。
+他沒回訊息，就是不在乎我。|目前只能確認尚未回覆，原因仍未知。|別讓未知的答案，提前傷害自己的心。|記錄已知事實。
+學生考差，就是不努力。|成績是結果，原因需要調查。|看見結果是開始，看見原因才是理解。|詢問一個學習障礙。
+今天很不順，我的人生很糟。|今天有幾件事不順，不代表整個人生失敗。|一天的陰雨，不能代表一生的天空。|列出一件仍然順利的事。
+
+I02|Emotion Interpretation|情緒解讀|E06,E04,E09|「我很焦慮，所以明天的報告一定會失敗。」如何重新解讀？
+我害怕，表示一定有危險。|害怕提醒我注意，仍須確認風險。|情緒是警鈴，不是判決書。|列出一項實際危險訊號。
+我生氣，代表對方一定錯。|憤怒可能與需求、界線或事件有關。|聽見憤怒，也要聽見它背後的需要。|寫下一項未被滿足的需求。
+我難過，就是太脆弱。|難過是正常情緒，不代表缺乏能力。|流淚不會取消你的力量。|用一句話命名感受。
+
+I03|Fact–Story Separation|事實與故事分離|E01,E04,E03|「我考65分，所以我變笨了。」哪部分是事實？哪部分是解讀？
+他批評我，我就是沒有價值。|批評是一項評價，不等於完整自我價值。|別人的一句話，不是你生命的全部。|寫出批評的具體內容。
+這次失敗，我就是失敗者。|失敗是事件，不是身分。|一次跌倒，不必成為一生的名字。|把人格標籤改成事件描述。
+朋友拒絕邀請，就是討厭我。|拒絕邀請不等於拒絕整段關係。|一個拒絕，不必被寫成整段關係的結局。|提出一個其他可能原因。
+
+I04|Evidence Interpretation|證據解讀|E08,E09,E05|某產品有一百則好評，能否直接推論對所有人有效？為什麼？
+大家都說有效，就一定有效。|經驗分享需要與可靠證據分開。|真相不靠掌聲大小決定。|尋找原始研究或可靠資料。
+我直覺很準，所以不需要查證。|直覺可以是線索，但不能取代證據。|真正的自信，敢讓想法接受檢驗。|找出一項反證。
+影片講得很專業，一定可信。|表達流暢不代表內容正確。|漂亮的語言，需要真實的證據支撐。|核對一項關鍵主張。
+
+I05|Problem Interpretation|問題命名解讀|E04,E03,E07|將「我的工作一團亂」改寫成兩個可以檢查的具體問題。
+我就是很笨。|我需要確認尚未掌握的能力。|當你停止貼標籤，成長才找到入口。|寫出一項待學技能。
+人生完全失控。|有幾項具體問題需要分開處理。|再大的迷霧，也能先照亮腳下一步。|列出三項問題。
+我沒有時間。|目前的時間安排可能不符合優先目標。|人生不必做完所有事，只需認清值得的事。|減少一項低價值活動。
+
+I06|Feature Interpretation|特徵拆解解讀|E04,E05,E09|「這個學生數學很差」至少可以拆成哪三項能力？
+英文不好，代表什麼都不會。|可以分別檢查單字、句法、閱讀與推論。|當困難被拆開，你就不必被整個困難嚇倒。|分類五題錯題。
+孩子不自律，就是懶惰。|需要觀察動機、環境、壓力與任務難度。|理解比責怪更能找到改變的方向。|觀察一次拖延情境。
+我總是疲累，表示自己沒用。|疲勞可能涉及睡眠、健康或工作負荷。|身體的訊號值得被照顧，不值得被羞辱。|記錄三天疲勞與睡眠。
+
+I07|Relational Interpretation|關係與因果解讀|E05,E09,E10|某班換教材後成績提高，為什麼不能直接認定完全是教材的功勞？
+吃了某種食品後精神變好，一定是食品造成。|可能還有睡眠、飲食或其他因素。|同時出現，不代表彼此造成。|列出兩項可能的混雜因素。
+努力沒有成果，表示努力無效。|需要檢查方法與成果之間的環節。|找對路，比只會加快腳步更重要。|畫出三步因果假設。
+關係衝突一定都是某個人的問題。|可以分析互動模式，也要分清具體責任。|理解關係，不代表替傷害開脫。|記錄雙方具體行為。
+
+I08|Context Interpretation|情境邊界解讀|E03,E05,E09|一套教學法在資優班有效，能否直接推論在所有班級同樣有效？
+別人的成功方法一定適合我。|方法是否適用，取決於條件。|別人的花期，不必成為你的時鐘。|比較一項關鍵差異。
+以前有效，現在一定有效。|環境改變後，需要重新檢查。|昨日的答案，值得珍惜，也值得更新。|找出一個改變的條件。
+所有學生都應該用相同方式學習。|不同學生可能有不同的學習瓶頸。|公平不一定是給每個人一模一樣的方法。|替一位學生調整一項練習。
+
+I09|Attention Interpretation|注意力解讀|E06,E08,E09|為什麼一則負評不應自動成為今天最重要的事情？
+所有訊息都必須立刻處理。|重要性與緊急程度需要區分。|不是每個聲音，都值得你交出整顆心。|選出今天最重要的任務。
+我一直想著問題，就是在解決問題。|反覆思考不一定產生新資訊。|有時候放下原來的角度，才能看見新的出口。|把擔心改寫成一個問題。
+別人的評價值得我全天關注。|注意力應與自己的核心目標一致。|別把生命最珍貴的光，全部照在別人的眼光上。|設定二十分鐘專注時段。
+
+I10|Salience Interpretation|顯著性解讀|E02,E06,E08|為什麼看到一則重大意外新聞，不代表同類事件發生率很高？
+最讓我難過的事情，就是最重要的事情。|情緒強度不等於客觀重要性。|最深的傷值得照顧，卻不必掌握全部方向。|分別評估情緒強度與重要性。
+一次批評可以抹去所有努力。|需要看較完整的表現紀錄。|別讓一朵烏雲，遮住整片天空。|找出兩項進步證據。
+新聞越驚人，風險一定越高。|資訊曝光度與實際發生率不同。|最吵的警報，不一定代表最大的危險。|查核實際風險資料。
+
+I11|Weight Interpretation|權重校準解讀|E02,E06,E10|為什麼「很可怕」與「很可能發生」不能畫上等號？
+別人的期待永遠比我的需求重要。|個人需求、責任與界線都應納入考量。|照顧世界的時候，也要記得照顧自己。|列出一項不可忽略的需求。
+所有問題都一樣重要。|應優先處理影響最大的瓶頸。|人生不必搬走所有石頭，先移開擋路的那一塊。|排出前三項優先順序。
+我最害怕的結果，一定最可能發生。|發生機率與損失程度需要分開。|別讓恐懼替未來投票。|分別估計可能性與影響。
+
+I12|Memory Interpretation|記憶重建解讀|E03,E08,E09|「我記得上次也是這樣，所以每次都會這樣。」存在什麼推論問題？
+以前受傷，未來一定還會受傷。|過去是參考，不是所有未來的保證。|昨日的傷口，不必成為明天的預言。|找出新舊情境差異。
+我記得很清楚，表示一定完整正確。|記憶可能受到重建與情緒影響。|珍惜回憶，也替真相留一扇窗。|核對一項客觀紀錄。
+最近一次失敗，代表我一直失敗。|應回顧整段歷程。|最後一頁的雨，不能抹去前面所有陽光。|列出三項過去的進步。
+
+I13|Alternative Interpretation|替代解讀|E01,E03,E09|同事沒有邀請你參加聚餐，請提出三種不帶定罪的解釋。
+他不理我，就是討厭我。|可能是忙碌、疲倦或需要空間。|不要讓第一個猜測，成為最後的真相。|列出三種可能原因。
+我沒成功，就是沒有天分。|也可能是練習方式、時間或資源不足。|還沒找到方法，不代表沒有可能。|測試一種新方法。
+計畫改變就是壞事。|改變可能帶來損失，也可能創造新選項。|不是每個轉彎都是迷路。|列出一項風險與一項機會。
+
+I14|Cognitive Decoupling|認知解耦|E04,E06,E09|「我想到自己會失敗」與「我一定會失敗」有何不同？
+我覺得自己沒用，所以我真的沒用。|我正在產生自我否定的念頭。|你可以聽見心裡的聲音，卻不必服從每一句。|在念頭前加上「我正在想到」。
+我害怕，就代表不能開始。|害怕與安全的小行動可以同時存在。|勇敢不是沒有恐懼，而是懂得安全地前進。|完成一個低風險步驟。
+別人批評我，我就必須接受他的定義。|我可以檢查批評是否有根據。|別人的聲音可以被聽見，不必成為你的主人。|只保留可驗證的批評內容。
+
+I15|Counterevidence Interpretation|反證解讀|E08,E09,E03|你相信「只要每天讀兩小時就一定進步」，什麼結果會讓你修正這個判斷？
+我永遠做不好。|只要曾有成功案例，「永遠」就不成立。|一個真實的反例，也能替人生打開一扇窗。|找出一次成功紀錄。
+我相信的事情不需要被質疑。|有價值的信念應能接受證據檢驗。|真正堅定的人，不害怕真相靠近。|尋找一項可靠反證。
+所有人都同意，所以一定正確。|共識不等於證明。|清醒，是在人群之中仍保有思考。|查找不同觀點的證據。
+
+I16|Perspective Integration|多視角整合解讀|E05,E07,E09|學生不交作業，請從學生、教師、家庭三個角度分析可能因素。
+只有我的立場才合理。|不同的人可能擁有不同資訊與需求。|願意換一扇窗看世界，心中的房間就會更寬。|寫出對方的一項需求。
+科學與哲學只能選一個。|科學檢驗經驗主張，哲學澄清概念與價值。|不同的知識可以互相照亮，不必彼此取代。|分開寫出事實與價值問題。
+找到一個原因，就不用再找。|複雜問題可能涉及多個互動因素。|世界不只有一條線，智慧是看見線與線的關係。|列出三個可能變數。
+
+I17|Probability Interpretation|機率解讀|E02,E03,E09|一項計畫成功機率為80%，是否表示可以忽略失敗後果？
+我覺得會發生，所以一定會發生。|可能性與確定性不同。|擔心不是預言，希望也不是保證。|標註預測信心。
+上次失敗，這次一定失敗。|需要比較兩次條件。|昨天的跌倒，不必提前取消明天。|找出一項條件差異。
+成功機率很高，就完全沒有風險。|仍須評估失敗代價。|成熟的勇氣，也懂得保護自己。|列出最壞結果。
+
+I18|Scenario Interpretation|情境預測解讀|E07,E09,E05|為下週考試建立理想、一般、不理想三種情境及應對方式。
+未來一定照我的計畫走。|應準備多種可能情境。|人生不一定照劇本走，但你可以準備不同的下一幕。|寫出三種情境。
+未來無法確定，所以不用準備。|不確定仍可以進行風險準備。|看不清整條路，也能先照亮腳下。|準備一項備案。
+努力就一定成功。|成果也受到策略、資源與環境影響。|努力是種子，方法與環境也是土壤。|檢查一項外部條件。
+
+I19|Risk Interpretation|風險解讀|E02,E07,E09|兩項投資預期報酬不同，還需要哪些資訊才能比較？
+我不能承受任何失敗。|可以設計損失有限的小實驗。|真正的安全，不是永遠停留，而是懂得保護自己。|設定損失上限。
+不做決定就沒有風險。|延遲與不行動也可能有代價。|停留也可能付出代價。|比較行動與不行動的風險。
+報酬越高越值得追求。|應同時考慮風險、成本與目標。|真正的富足，不是得到最多，而是守住重要的事。|列出三項決策條件。
+
+I20|Resource Interpretation|資源配置解讀|E07,E09,E10|已花很多錢的計畫持續虧損，為何不能只因過去投入而決定繼續？
+所有事情都必須做到最好。|資源有限，需要優先順序。|不必在每個地方發光，才能擁有明亮的人生。|選出本週第一目標。
+已經投入很多，就不能停止。|未來效益比過去沉沒成本更值得考量。|珍惜付出，不必讓付出成為枷鎖。|重新評估繼續投入的價值。
+休息就是浪費時間。|恢復是維持長期能力的必要條件。|休息不是放棄，而是讓自己走得更遠。|安排十五分鐘休息。
+
+I21|Minimum Action Interpretation|最小行動解讀|E07,E02,E09|將「我要完全學會英文」改成今天可完成的最小行動。
+做不到完美，就不值得開始。|可以先做最小可行版本。|一個不完美的開始，勝過一百個完美幻想。|先做五分鐘。
+改變必須一次完成。|小步驟可以逐步累積。|人生的轉彎，常從微小選擇開始。|建立兩分鐘習慣。
+準備不足就完全不能行動。|在風險可控時，可以邊試邊學。|有些能力，是開始之後慢慢長出來的。|完成一個安全的小測試。
+
+I22|Exploration Interpretation|探索與利用解讀|E07,E08,E09|既有教學法有效時，如何低成本測試一個新方法？
+有效的方法永遠不必改變。|保留有效部分，也持續探索。|守住已有的光，也為未知留一扇窗。|每週測試一項小改進。
+新方法一定比較好。|新舊方法都需要比較結果。|進步不是永遠追新，而是找到真正有效的方法。|設定相同的比較指標。
+探索失敗就是浪費。|探索可能提供有價值的新資訊。|有些路沒有帶你抵達，卻教會你辨認方向。|記錄一次試驗的發現。
+
+I23|Habit Interpretation|習慣解讀|E04,E07,E05|一位學生常忘記背單字，除了責怪自制力，還能調整哪三個條件？
+我沒自制力，所以做不到。|環境與提示也會影響習慣。|改變不必每天和意志力拔河。|移除一項干擾。
+中斷一天，整個計畫就失敗。|恢復機制是習慣的一部分。|真正的自律，是中斷後仍願意重新開始。|恢復兩分鐘練習。
+只要有動力就能堅持。|需要穩定提示、流程與環境支持。|熱情會起伏，好的安排能陪你走得更遠。|將新習慣接在固定活動後。
+
+I24|Execution Interpretation|執行監控解讀|E04,E05,E09|每天讀書三小時卻沒有進步，應如何區分方法錯誤與執行錯誤？
+我知道方法，就代表我做對了。|理解與實際執行需要分別檢查。|智慧不只存在於想法，更存在於實踐。|建立三項執行檢查。
+每天很忙，就是有效率。|需要觀察完成的實際成果。|忙碌不一定是前進。|記錄一項可驗證成果。
+沒達標，就是我不夠努力。|可能需要調整流程與工具。|生命有時不是要你更用力，而是換一種走法。|找出一項執行障礙。
+
+I25|Outcome Interpretation|結果測量解讀|E08,E09,E07|學生測驗從60分進步到80分，還需要確認哪些條件才能判斷能力是否提升？
+我覺得進步，就是進步。|需要用適當指標檢查。|真正的成長，不怕被現實看見。|記錄前後可比較的成果。
+分數提高，代表所有能力都變好。|要確認分數測量的是哪項能力。|別只追求漂亮的數字，也要追求真正的實力。|增加一項實際應用測試。
+努力很多，就不需要看結果。|投入與成果應分別記錄。|珍惜努力，也要讓努力找到方向。|比較時間與成果。
+
+I26|Prediction Error Interpretation|預測誤差解讀|E03,E04,E09|預估學生平均70分，實際78分，應如何分析這8分差距？
+我猜錯了，代表我很笨。|預測誤差是校準模型的資訊。|錯誤不是智慧的敵人，拒絕修正才是。|記錄預測與實際差距。
+一次結果不好，代表方法完全無效。|需要檢查波動、執行與適用條件。|一次風雨，不代表整個季節失去方向。|觀察是否持續偏差。
+結果比預期好，不必分析。|正向誤差也值得理解。|驚喜值得慶祝，也值得學習。|找出可能的成功因素。
+
+I27|Error Attribution Interpretation|錯誤歸因解讀|E04,E05,E10|學生知道解題方法卻因漏看否定詞答錯，屬於哪個系統錯誤層？如何修正？
+事情沒做好，都是我能力差。|可能是觀察、表徵、變數、權重或執行出錯。|找到真正的瓶頸，比反覆責怪自己更有力量。|選出最可能的錯誤層。
+只要更努力，就能修正所有問題。|不同錯誤需要不同修正方法。|有些問題需要的不是力氣，而是看清方向。|為錯誤配對一個修正策略。
+一次失敗代表整套方法都沒有價值。|應保留有效部分，修正失效環節。|成長不必推翻全部過去。|列出一項保留與一項修改。
+
+I28|Model Revision Interpretation|模型修正解讀|E08,E09,E07|原本認為「每天抄單字十遍最有效」，新測試顯示主動回想效果較好，應如何更新教學模型？
+改變想法代表我沒有原則。|依證據更新判斷，是成熟的表現。|真正堅定的人，不怕為真相重新調整方向。|修正一項過時假設。
+多年來有效的方法不可能失效。|環境變化可能改變方法的效果。|曾經帶你走過一段路的答案，不必陪你走完一生。|重新檢查一項舊方法。
+只要想通，就代表改變了。|需要新行動與現實驗證。|想通是種子，行動才讓智慧生根。|測試一個新策略。
+
+I29|Delayed Retest Interpretation|延遲複測解讀|E03,E08,E09|學生今天十題全對，為什麼仍需要一週後測試？
+今天學會，就代表永遠會。|需要隔一段時間再次測試。|真正屬於你的智慧，經得起時間的考驗。|七天後不看資料複測。
+看懂答案，就是已經掌握。|獨立提取才能更好地檢查學習成果。|看懂是相遇，掌握需要一次次重逢。|遮住答案重新作答。
+一次成功就證明方法永久有效。|需要多次與不同條件的測試。|一次綻放值得欣賞，持續生長更值得觀察。|安排第二次驗證。
+
+I30|Transfer Interpretation|跨情境遷移解讀|E03,E05,E09|如何將「事實與解讀分離」從英文課轉用到家庭溝通？
+課堂上學會，生活中自然會用。|需要在新情境中實際練習。|知識走出書本，才開始成為生活的智慧。|找一個生活應用案例。
+這個方法只能用在原來的事情。|可以檢查核心原理能否轉用。|真正深刻的理解，能在不同風景中找到新的用途。|尋找第二個應用場景。
+換了環境，一切又要從零開始。|先辨認可遷移的能力，再補足差異。|環境會改變，但累積的能力不必全部歸零。|列出一項可轉用技能。
+
+I31|Metacognitive Interpretation|後設認知解讀|E08,E09,E04|一位學生自認有九成把握，實際只答對六成，代表需要校準什麼？
+我覺得懂了，就是懂了。|理解感與實際能力需要分開。|真正的聰明，是知道自己還有哪些不懂。|不看資料解釋概念。
+有自信就代表能力強。|自信需要與表現校準。|最穩定的自信，來自一次次真實驗證。|比較預估與實際正確率。
+我最了解自己，不需要回饋。|每個人都可能存在盲點。|再明亮的眼睛，也需要另一面鏡子。|詢問一項具體回饋。
+
+I32|Self-Updating Interpretation|自主更新解讀|E03,E04,E09|選擇一個曾深信不疑的舊觀念，說明新證據、修正內容與下次驗證方式。
+我就是這樣，永遠不會改變。|部分習慣、技能與反應方式可以逐步調整。|你不必永遠成為昨天的自己。|改變一個日常反應。
+成長就是再也不犯錯。|成長是更快發現、理解與修正錯誤。|成熟不是不再跌倒，而是更懂得重新站穩。|記錄一次有效修正。
+我需要永遠正確的答案。|我需要能持續接受證據與回饋的模型。|真正的自由，是保有重新理解人生的能力。|完成一次完整模型更新。`;
+
+const QUIZ=[
+['I03｜事實與故事分離','學生英文考65分，說「我就是笨，永遠學不好」。最合適的解讀是？',['65分證明能力不足','65分是測驗結果，需要再找出具體學習瓶頸','只要相信自己一定滿分'],1,'65分是事實；「笨、永遠」是整體標籤（E04）與過度概括（E03）。'],
+['I02｜情緒解讀','「我很焦慮，所以明天的報告一定會失敗。」比較準確的說法是？',['焦慮提醒我留意準備狀況，實際風險要另外確認','焦慮證明我準備得不夠','不應該有焦慮的感覺'],0,'把情緒當成證據是情緒推理（E06）。情緒是警鈴，不是判決書。'],
+['I07｜關係與因果解讀','某班換了新教材後平均成績提高。最合理的判斷是？',['完全是新教材的功勞','新教材一定沒有作用','可能還有題目難度、教師、學生狀態等因素，需要比較才能確認'],2,'同時出現不代表彼此造成；直接歸給教材是單因歸因（E05）。'],
+['I11｜權重校準解讀','「我最害怕的結果，一定最可能發生。」哪裡需要修正？',['沒有問題，害怕就是預警','發生機率與損失程度要分開估計','越害怕越要避免去想'],1,'「很可怕」是損失程度，「很可能」是機率，兩者混在一起容易災難化（E02）。'],
+['I20｜資源配置解讀','一項計畫已投入很多錢且持續虧損。決定是否繼續時，最該看的是？',['未來繼續投入的預期效益與風險','已經花掉多少錢','別人會不會覺得我半途而廢'],0,'過去投入是沉沒成本，不應單獨決定未來選擇。'],
+['I29｜延遲複測解讀','學生今天十題全對，為什麼仍建議一週後再測？',['因為今天的成績不算數','因為老師不信任學生','因為當下答對不等於隔一段時間後仍能獨立提取'],2,'熟悉感不等於掌握；經得起時間與不同條件的測試，才算真正的能力。']];
+
+const parse=s=>s.trim().split(/\n\s*\n/).map(b=>{const L=b.trim().split('\n'),h=L[0].split('|');return{id:h[0],en:h[1],zh:h[2],diag:h[3]?h[3].split(','):[],q:h[4]||'',p:L.slice(1).map(x=>x.split('|'))}});
+const R=parse(RSRC),I=parse(ISRC);
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let st={q:'',dom:-1,sys:'both'},done=store.get('ros_done',{}),recs=store.get('ros_recs',[]);
+
+function hl(s){s=esc(s);if(!st.q)return s;const k=esc(st.q).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return s.replace(new RegExp(k,'gi'),m=>'<mark>'+m+'</mark>')}
+const has=s=>s.toLowerCase().includes(st.q.toLowerCase());
+function pairs(n,label,headHit){
+  const ps=n.p.filter(p=>!st.q||headHit||p.some(has));
+  if(!ps.length)return'';
+  return`<div class="sys">${label}　${hl(n.id)}｜${hl(n.zh)} <span class="en" style="font-weight:400;color:var(--mute)">${hl(n.en)}</span></div>`+
+    ps.map(p=>`<div class="pair"><div class="o"><i>舊</i>${hl(p[0])}</div><div class="n"><i>新</i>${hl(p[1])}</div><div class="g"><i>金句</i>${hl(p[2])}</div><div><i>行動</i>${hl(p[3])}${fbBtn(n.id[0]+'|'+(+n.id.slice(1)-1)+'|'+n.p.indexOf(p))}</div></div>`).join('');
+}
+function renderNodes(){
+  $('domChips').innerHTML=['全部',...DOM.map((d,i)=>'D'+(i+1)+' '+d[0])].map((t,i)=>`<button class="chip${st.dom==i-1?' on':''}" data-d="${i-1}">${t}</button>`).join('');
+  $('sysChips').innerHTML=[['both','表徵＋解讀'],['R','只看表徵 R'],['I','只看解讀 I']].map(x=>`<button class="chip${st.sys==x[0]?' on':''}" data-s="${x[0]}">${x[1]}</button>`).join('');
+  let html='',cnt=0,last=-1;
+  R.forEach((r,i)=>{
+    const d=i>>2,n=I[i];
+    if(st.dom>=0&&d!=st.dom)return;
+    const rHead=st.q&&[r.id,r.zh,r.en].some(has),iHead=st.q&&([n.id,n.zh,n.en,n.q].some(has)||n.diag.some(has));
+    let body='';
+    if(st.sys!='I')body+=pairs(r,'表徵',rHead);
+    if(st.sys!='R'){
+      const b=pairs(n,'解讀',iHead);
+      if(b)body+=b+`<div>${n.diag.map(c=>`<span class="tag" data-e="${c}" title="${ERR.find(e=>e[0]==c)[3]}">${hl(c)} ${ERR.find(e=>e[0]==c)[2]}</span>`).join('')}</div><div class="rt"><b>複測題</b>　${hl(n.q)}</div>`;
+    }
+    if(!body)return;
+    cnt++;
+    if(d!=last){last=d;html+=`<div class="dom">D${d+1}｜${DOM[d][0]}　<span>${DOM[d][1]}</span></div>`}
+    html+=`<details${st.q?' open':''}><summary><b>${r.id} ↔ ${n.id}</b>${esc(r.zh)}<span class="en">${esc(r.en)}</span><label class="ok" onclick="event.stopPropagation()"><input type="checkbox" data-done="${i}"${done[i]?' checked':''}>已練習</label></summary><div class="body">${body}<button class="btn gh" data-prac="${i}" style="margin-top:8px">用這個節點練習</button></div></details>`;
+  });
+  $('list').innerHTML=html||'<div class="info">找不到符合的內容，換個關鍵字試試。</div>';
+  $('info').textContent=`顯示 ${cnt}/32 個節點　已練習 ${Object.values(done).filter(Boolean).length}/32`;
+}
+function tab(t){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t==t));document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id==t));window.scrollTo(0,0)}
+function search(v){st.q=v.trim();$('q').value=v;st.dom=-1;renderNodes();renderLife();tab('nodes')}
+
+$('nav').onclick=e=>{if(e.target.dataset.t)tab(e.target.dataset.t)};
+$('q').oninput=e=>{st.q=e.target.value.trim();renderNodes();renderLife();if(st.q&&document.querySelector('section.on').id!='life')tab('nodes')};
+$('nodes').onclick=e=>{const t=e.target;
+  if(t.dataset.d!==undefined){st.dom=+t.dataset.d;renderNodes()}
+  else if(t.dataset.s){st.sys=t.dataset.s;renderNodes()}
+  else if(t.dataset.e)search(t.dataset.e);
+  else if(t.dataset.prac){$('pNode').value=t.dataset.prac;pHint();tab('prac')}
+};
+$('nodes').onchange=e=>{const i=e.target.dataset.done;if(i!==undefined){done[i]=e.target.checked;store.set('ros_done',done);$('info').textContent=$('info').textContent.replace(/已練習 \d+/,'已練習 '+Object.values(done).filter(Boolean).length)}};
+
+// 錯誤診斷
+$('errGrid').innerHTML=ERR.map(e=>`<div class="card err" data-e="${e[0]}"><h3><b>${e[0]}</b> ${e[2]}</h3><p class="info" style="margin:0">${e[1]}</p><p>${e[3]}</p><p>舊：${e[4]}<br>新：${e[5]}</p><p class="info" style="margin:0">掛在 ${I.filter(n=>n.diag.includes(e[0])).length} 個節點 ›${fbBtn('E|'+ERR.indexOf(e))}</p></div>`).join('');
+$('errGrid').onclick=e=>{if(e.target.dataset.fb)return;const c=e.target.closest('.err');if(c){st.sys='I';search(c.dataset.e)}};
+
+// 升級練習
+$('pNode').innerHTML=R.map((r,i)=>`<option value="${i}">${r.id}／${I[i].id}｜${r.zh}</option>`).join('');
+function pHint(){const p=R[$('pNode').value].p[0];$('pHint').innerHTML=`<b>範例</b>　舊：${esc(p[0])}<br>新：${esc(p[1])}<br>行動：${esc(p[3])}`}
+$('pNode').onchange=pHint;pHint();
+const pcs=[...document.querySelectorAll('.pc')];
+pcs.forEach(c=>c.onchange=()=>$('ckN').textContent=`已完成 ${pcs.filter(x=>x.checked).length}/4 項`);
+function pText(){const r=R[$('pNode').value];return`【表徵升級紀錄】${new Date().toLocaleDateString('zh-TW')}　${r.id}｜${r.zh}\n舊表徵：${$('p1').value.trim()}\n事實：${$('p2').value.trim()}\n新表徵：${$('p3').value.trim()}\n最小行動：${$('p4').value.trim()}\n回饋觀察：${$('p5').value.trim()}\n完成檢查：${pcs.filter(x=>x.checked).length}/4`}
+function copy(t,msg){const ok=()=>{msg.textContent='已複製';setTimeout(()=>msg.textContent='',1500)};
+  const fb=()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();ok()};
+  navigator.clipboard?navigator.clipboard.writeText(t).then(ok,fb):fb()}
+function renderRecs(){$('recN').textContent=recs.length?`共 ${recs.length} 筆`:'';$('recs').innerHTML=recs.length?recs.map((t,i)=>`<div class="rec"><button data-del="${i}">刪除</button><button data-cp="${i}">複製</button>${esc(t)}</div>`).join(''):'<div class="info" style="margin:0">尚無紀錄。填好上方表單後按「儲存紀錄」。</div>'}
+$('pSave').onclick=()=>{if(![1,2,3,4,5].some(n=>$('p'+n).value.trim())){$('pMsg').textContent='請先填寫內容';return}recs.unshift(pText());store.set('ros_recs',recs);done[$('pNode').value]=true;store.set('ros_done',done);renderRecs();renderNodes();$('pMsg').textContent='已儲存';setTimeout(()=>$('pMsg').textContent='',1500)};
+$('pCopy').onclick=()=>copy(pText(),$('pMsg'));
+$('pClear').onclick=()=>{[1,2,3,4,5].forEach(n=>$('p'+n).value='');pcs.forEach(c=>c.checked=false);$('ckN').textContent='已完成 0/4 項'};
+$('recs').onclick=e=>{const t=e.target;if(t.dataset.del!==undefined){if(confirm('刪除這筆紀錄？')){recs.splice(+t.dataset.del,1);store.set('ros_recs',recs);renderRecs()}}else if(t.dataset.cp!==undefined)copy(recs[+t.dataset.cp],$('pMsg'))};
+
+// 複測
+let qi=0,score=0,sel=-1,shown=false;
+function renderQuiz(){
+  if(qi>=QUIZ.length){$('quizBox').innerHTML=`<h2 style="margin-top:0">完成！答對 ${score}/${QUIZ.length}</h2><p>${score==QUIZ.length?'全部答對。隔天或七天後再測一次，確認不是只靠熟悉感。':'把答錯的節點找出來，看一次新舊對照後再測。'}</p><button class="btn" id="qRe">再測一輪</button>`;$('qRe').onclick=()=>{qi=score=0;sel=-1;shown=false;renderQuiz()};return}
+  const q=QUIZ[qi];
+  $('quizBox').innerHTML=`<div class="info">解讀能力複測器｜第 ${qi+1}/${QUIZ.length} 題　目前答對 ${score}</div><div class="sys" style="margin-top:0">${q[0]}</div><p style="margin:4px 0 8px"><b>${q[1]}</b></p>`+
+    q[2].map((o,i)=>`<button class="opt${shown?(i==q[3]?' right':i==sel?' wrong':''):i==sel?' sel':''}" data-o="${i}"${shown?' disabled':''}>${'ABC'[i]}. ${o}</button>`).join('')+
+    (shown?`<div class="rt">${sel==q[3]?'答對了。':'正確答案是 '+'ABC'[q[3]]+'。'}${q[4]}</div><button class="btn" id="qNext">${qi==QUIZ.length-1?'看結果':'下一題'}</button>`:`<button class="btn" id="qOk"${sel<0?' disabled':''}>確認答案</button>`);
+}
+$('quizBox').onclick=e=>{const t=e.target;
+  if(t.dataset.o!==undefined&&!shown){sel=+t.dataset.o;renderQuiz()}
+  else if(t.id=='qOk'){shown=true;if(sel==QUIZ[qi][3])score++;renderQuiz()}
+  else if(t.id=='qNext'){qi++;sel=-1;shown=false;renderQuiz()}};
+let rti=0;
+function rtNew(){rti=Math.floor(Math.random()*32);const n=I[rti];$('rtQ').innerHTML=`<div class="sys" style="margin-top:0">${n.id}｜${n.zh}</div><p style="margin:4px 0 8px"><b>${esc(n.q)}</b></p>`;$('rtA').value=''}
+$('rtNext').onclick=rtNew;
+$('rtSee').onclick=()=>{st.sys='both';search(I[rti].id)};
+
+// 人生30節點：標題列「名稱|主張」＋情境、舊模型、關鍵差異、新模型、新增選項、最小行動、金句、回饋指標
+const LCAT=['自我成長與情緒','人際關係與愛情','家庭與親子教育','職場、事業與金錢','生命、記憶與智慧'];
+const LSRC=`疲憊|累了，不一定代表應該放棄。
+上班已經很累，晚上還要去禪修，心裡越來越抗拒。
+不想上課就是懶惰，真正精進的人應該堅持。
+疲勞可能來自睡眠不足、任務過載、方法失配，也可能與投入的相對價值改變有關。
+疲憊是需要進一步辨識的狀態訊號，不是自動退出的命令。
+暫停義工、降低上課頻率、改為自主練習、重新安排休息。
+連續七天記錄睡眠、疲勞程度、活動負荷及課後感受。
+真正的成長，不是永遠不喊累，而是知道何時應該改變前進的方法。
+七天平均疲勞分數（1–10）與睡眠時數；調整安排後一週，分數是否下降。
+
+焦慮|你害怕的未來，不一定是即將發生的未來。
+主管說明天找你談話，你整晚擔心自己要被開除。
+主管找我，一定是我做錯事。
+同一個訊號可能對應工作分配、專案討論、績效回饋或其他原因。
+焦慮中的預測只是多種可能之一。
+詢問議題、準備工作資料、列出不同情境的應對方式。
+寫下三個可能原因，標記哪些有證據支持。
+讓人受困的，有時不是明天會發生什麼，而是今天已經認定明天只能發生什麼。
+談話後比對：實際原因是否在三個預測之內；談話前後的焦慮分數（1–10）。
+
+自責|一次失敗，不等於整個人失敗。
+學生英文考試不及格，認定自己沒有語言天分。
+考不好，證明我很笨。
+成績可能同時受到詞彙量、句法理解、閱讀速度、策略與時間分配影響。
+分數是學習系統的輸出，不是人格價值的測量。
+詞彙補強、錯題分類、限時閱讀、個別化練習。
+將最近二十題錯題依原因分類。
+你不是一張考卷，你只是還沒找到真正需要修正的那個環節。
+二十題錯題中最大類別的占比；兩週後同類題目的正確率。
+
+拖延|不開始，不一定是沒有意志力。
+明明想寫文章，卻一直滑手機。
+我就是不自律。
+任務太模糊、完成標準太高、開始成本太大，都可能提高逃避傾向。
+拖延可能反映任務設計與即時回饋不足。
+拆小任務、降低開始門檻、先寫草稿、設定短時間工作區間。
+只寫文章第一句，接著持續五分鐘。
+有時候，你缺少的不是更強的意志，而是一個更容易開始的入口。
+一週內成功「啟動五分鐘」的天數；每次實際持續的分鐘數。
+
+完美主義|品質不等於永遠不能完成。
+一篇貼文修改二十次，最後還是不敢發布。
+不完美就不能公開。
+沒有真實讀者回饋，再多內部修改也無法知道文章是否有效。
+品質提升需要作品、回饋與修正形成循環。
+先發布測試版、邀請小群讀者閱讀、依理解度修改。
+設定三項最低品質標準，達標後發布。
+真正阻礙進步的，不一定是作品不夠好，而是作品始終沒有機會接受現實的檢驗。
+本週實際發布篇數；每篇收到的讀者回饋數，以及讀者能否說出文章重點。
+
+休息|沒有產出，不等於沒有價值。
+週末沒有讀書或工作，就覺得浪費生命。
+每一分鐘都應該創造成果。
+休息也可能影響後續注意力、情緒調節與工作品質。
+評估效率不能只看當下產出，也要看長期可持續性。
+主動休息、安排空白時間、降低無效活動、調整工作節奏。
+安排一段不需要證明生產力的休息時間，觀察隔天狀態。
+不是所有看起來停止的時刻，都代表生命沒有向前。
+休息隔天的精神與專注評分（1–10），和沒有休息的日子比較。
+
+二選一|你以為沒有路，可能只是選項太少。
+女孩沒收入，認為只能回家鄉找工作，或留下陪男友繼續花存款。
+經濟穩定與維持感情只能選一個。
+工作地點、居住地點、收入方式與關係模式是可以分開檢查的變數。
+原本被綁定的條件，未必真的不能拆開。
+當地求職、遠距工作、短期兼職、雙方重新協商生活安排。
+搜尋當地十個適合的職缺，確認薪資與錄取條件。
+自由不只是選擇眼前的路，更是有能力發現原本看不見的路。
+符合條件的職缺數；實際投遞數與收到的面試回覆數。
+
+伴侶冷淡|對方沉默，不等於不愛。
+伴侶回家後不太說話，你認為他已經不在乎自己。
+沉默就是感情變淡。
+沉默可能與疲勞、壓力、溝通習慣或關係問題有關。
+行為需要結合情境與持續模式判讀。
+詢問狀態、約定溝通時間、觀察互動品質。
+用一句不帶指責的話詢問對方現在是否需要休息。
+有些關係不是輸給不愛，而是輸給太早認定自己已經知道答案。
+對方的實際回答是否與原本的猜測一致；一週內好好對話的次數。
+
+討好|讓所有人滿意，不一定能換來安全。
+同事每次要求幫忙，你都答應，最後自己的工作做不完。
+只要我夠配合，就不會被討厭。
+短期減少衝突，可能同時增加長期負擔與不合理期待。
+良好關係需要互惠、清楚責任與可持續的邊界。
+協商期限、重新分工、拒絕額外任務、提供替代協助。
+下一次接到要求，先確認自己的時間再答應。
+真正穩定的關係，不需要靠一個人不斷犧牲自己來維持。
+本週「先確認再回覆」的次數；自己工作的準時完成率。
+
+沉沒成本|愛得很久，不代表一定要繼續。
+一段關係長期讓人痛苦，卻因為交往十年而不敢重新評估。
+已經投入十年，離開就全部浪費。
+過去無法追回的投入，與未來的安全、信任、改善可能及轉換成本是不同變數。
+關係決策需要看現在的品質與未來可行性。
+明確協商、設定改善條件、尋求支持、規劃分開生活。
+列出三項關係必須具備的條件，評估目前是否存在。
+過去的付出值得尊重，卻不必成為未來永遠不能改變的理由。
+三項必要條件目前達成幾項；約定期限（例如三個月）後再評一次是否改善。
+
+衝突|爭吵的表面問題，不一定是真正問題。
+夫妻為了誰洗碗吵架，最後翻出多年舊帳。
+問題就是對方不願意洗碗。
+洗碗可能只是責任不均、被忽略或缺乏尊重的外在表現。
+同一個衝突可能同時存在任務層、關係層與需求層。
+重新分工、討論公平標準、建立固定溝通方式。
+各自寫下最在意的需求，而不只是指責的行為。
+有時候，兩個人吵的不是同一件事，卻都以為對方故意不理解自己。
+一個月內同一議題的爭吵次數；分工約定的實際執行率。
+
+人際拒絕|別人的拒絕，不等於你的價值降低。
+邀請朋友聚餐被拒絕，立刻覺得自己不受歡迎。
+他拒絕我，就是不喜歡我。
+時間、金錢、體力、其他安排都可能影響接受邀請的機率。
+一次拒絕不足以判定整段關係。
+另約時間、調整活動方式、觀察長期互動。
+停止猜測原因，詢問對方是否方便改天。
+不要讓別人的一次選擇，成為你對自己一生的判決。
+改約是否成行；三個月內雙方各自主動聯絡的次數。
+
+孩子沉迷手機|禁止，不等於問題解決。
+孩子每天玩手機四小時，父母一收手機就爆發衝突。
+孩子就是缺乏自制力。
+即時獎賞、同儕連結、壓力逃避、睡眠與環境設計可能共同影響行為。
+手機使用是多個因素互動形成的習慣。
+調整環境、設定共同規則、增加替代活動、檢查壓力來源。
+和孩子一起找出最容易失控的時段。
+真正有效的教育，不只是拿走孩子手上的手機，而是理解手機正在替孩子滿足什麼需求。
+每日使用時數；每週因手機起衝突的次數；失控時段是否縮短。
+
+孩子不讀書|增加讀書時間，不一定增加成績。
+孩子每天坐書桌三小時，成績仍沒有進步。
+只要再多讀一小時就會更好。
+有效練習、主動回憶、錯誤修正與題型遷移，可能比單純延長時間更重要。
+學習品質需要透過表現與錯誤類型檢驗。
+短時測驗、錯題追蹤、間隔複習、題型訓練。
+每天花十分鐘不看課本，測試自己真正記住什麼。
+讀書不是比誰坐得久，而是比誰更清楚自己還不會什麼。
+十分鐘自我測驗的答對率；同類錯題重複出現的比例。
+
+父母控制|保護孩子，不等於替孩子做完決定。
+父母幫高中生安排每一個課程與活動。
+我替他規劃越完整，他未來越安全。
+過度代替決策，可能減少孩子練習判斷與承擔後果的機會。
+教育不只追求短期正確，也需要培養長期自主能力。
+共同決策、限定範圍自主、事後檢討。
+讓孩子自己決定一項可承受風險的事情，並說明理由。
+父母真正能送給孩子的，不是永遠正確的答案，而是孩子離開自己後仍能找到答案的能力。
+孩子本月自主決定的件數；事後能否說出理由並自己檢討結果。
+
+孝順|照顧父母，不代表不能設定界線。
+家中只有一個孩子長期承擔全部照顧與費用。
+真正孝順的人不能喊累。
+照顧品質與照顧者的時間、財務、健康及支援系統相互影響。
+長期照顧需要可持續的資源分配。
+家庭分工、專業照護、財務透明、喘息服務。
+列出每週照顧時數、支出與可以分擔的任務。
+真正長久的愛，不是把自己耗盡，而是讓照顧能夠持續。
+每週照顧時數與支出；已成功分擔出去的任務數；照顧者疲勞評分（1–10）。
+
+孩子害怕失敗|鼓勵，不一定能取代能力。
+孩子說自己一定考不上，父母反覆說「你一定可以」。
+只要增加信心，孩子就會成功。
+信心需要與具體能力、練習策略和真實回饋連結。
+可靠的自信來自可觀察的進步。
+分段目標、低風險練習、能力追蹤。
+找出一項本週可以改善的具體技能。
+最能讓孩子相信自己的，不是別人保證他會成功，而是他親眼看見自己正在進步。
+該項技能的前後測成績；孩子自評把握度與實際表現的差距。
+
+親子衝突|孩子反抗，不一定代表不尊重。
+高中生開始質疑父母安排，父母認為孩子變壞。
+聽話才是好孩子。
+質疑可能是自主需求、價值差異，也可能涉及溝通方式或規則不合理。
+尊重與獨立思考可以同時存在。
+討論理由、共同訂規則、設定不可逾越的安全界線。
+先請孩子完整說明理由，再討論決策。
+教育最美好的成果，不是孩子永遠服從，而是孩子有能力負責任地思考。
+孩子能完整說完理由而不被打斷的次數；共同訂定且雙方都遵守的規則數。
+
+加班|忙碌，不等於創造價值。
+每天工作十二小時，卻覺得重要事情都沒完成。
+投入越多時間，代表工作越有價值。
+工作成果還取決於優先序、流程、重工率與任務重要性。
+應該最佳化有效成果，而不是單純最大化工作時間。
+任務排序、流程自動化、取消低價值會議、委派。
+列出今天三件最重要的成果，先完成其中一件。
+真正的效率，不是把人生塞滿工作，而是讓重要的工作不再被瑣事淹沒。
+每日三件重要成果的完成數；每週總工時是否下降。
+
+職涯轉換|不喜歡現在的工作，不代表只能離職。
+老師工作疲憊，認為不是繼續教書，就是辭職。
+職涯只有留下與離開。
+工作內容、工時、收入來源、專業角色與服務對象可以分開設計。
+職涯轉型可以是逐步重組，而非一次跳躍。
+減少額外任務、開發數位教材、兼職教學、建立專業平台。
+選一項現有專業，設計可在兩週內測試的小產品。
+人生不一定需要換一條路，有時候只需要重新設計自己走路的方式。
+兩週內小產品是否完成；試用人數與收到的具體回饋數。
+
+創業|產品很好，不代表市場一定需要。
+花半年開發課程，推出後卻沒有學生報名。
+內容越完整，顧客就越願意購買。
+市場需求、痛點強度、信任、價格、使用門檻與傳播方式都會影響購買。
+產品價值需要由真實使用情境驗證。
+訪談顧客、推出試用版、調整定位、簡化功能。
+詢問五位目標使用者最想解決的問題。
+市場不會因為你做得辛苦就給你掌聲，它會透過真實選擇告訴你什麼值得改善。
+五位受訪者中提到相同痛點的人數；試用版的報名率與續用率。
+
+投資|賺錢，不代表決策一定正確。
+某次股票買進後上漲，便認為自己的判斷方法永遠有效。
+結果賺錢，所以策略正確。
+單次獲利可能包含市場趨勢、風險暴露與運氣。
+決策品質應同時檢查過程、風險與多次結果。
+設定進出規則、比較基準報酬、追蹤最大回撤、控制部位。
+寫下買進理由、失效條件與可承受損失。
+真正值得累積的，不只是一次賺到的錢，而是能夠反覆檢驗的判斷能力。
+依照事前規則執行的交易比例；多次結果與基準報酬的比較；最大回撤。
+
+收入|收入增加，不一定代表自由增加。
+薪水提高三萬元，卻需要增加大量加班與通勤。
+薪水越高，人生越成功。
+收入、可支配時間、健康負荷、工作自主與未來選擇權是不同維度。
+財務改善應同時考慮時間與生活成本。
+談判工時、選擇不同職位、建立第二收入來源、降低固定支出。
+計算增加收入後的實際時薪與每週自由時間。
+真正的富足，不只是擁有更多金錢，而是擁有更多不被迫的選擇。
+含加班與通勤的實際時薪；每週自由時間的小時數。
+
+團購經營|顧客不買，不一定是價格太高。
+健康產品團購文章很多人看，卻很少人下單。
+只要降價，成交就會增加。
+顧客可能不了解產品定位、證據、適用邊界、使用成本或服務差異。
+成交是需求、理解、信任、價格與便利性的共同結果。
+改善產品說明、提供比較表、建立常見問題、追蹤回購體驗。
+蒐集十個未購買原因並分類，避免直接假定顧客需要更強的功效宣稱。
+真正長久的信任，不是讓顧客聽見更多承諾，而是讓顧客得到更清楚、更可靠的資訊。
+未購買原因各類別的占比；修改說明後的下單率與回購率。
+
+記憶|你記得的過去，不一定等於過去的全部。
+多年後回想一段關係，只記得最後那場激烈爭吵。
+我現在記得的，就是當年完整的事實。
+記憶會受到注意力、情緒、提取線索與後續資訊影響。
+回憶是依據記憶痕跡重建的結果，可能存在遺漏與偏差。
+查閱紀錄、聽取其他觀點、區分事實與後來的解釋。
+把一段往事分成「確定發生」「記不清楚」「我的解釋」三欄。
+過去不能重新發生，但我們可以停止讓不完整的回憶決定全部未來。
+三欄各有幾項；「確定發生」中有客觀紀錄佐證的項目數。
+
+高峰結尾|最後一次對你好，不代表長期傷害不存在。
+主管長期羞辱員工，年底卻發了豐厚獎金。
+結局很好，前面所有痛苦就值得。
+高峰與結尾可能影響事後評價，但不會自動消除長期經驗及其影響。
+評估一段經歷，應同時檢查持續模式、頻率、強度與實際代價。
+評估職場安全、改善制度、協商條件、尋找其他工作。
+記錄最近三個月具體事件與改善情形。
+一個美好的結尾可以被珍惜，卻不必替整段不合理的過程辯護。
+三個月內具體事件的次數與強度；是否出現持續改善的趨勢。
+
+創傷與警戒|現在的恐懼，可能被過去的線索放大。
+曾遭伴侶嚴重羞辱的人，聽到相似語氣就非常緊張。
+我現在感到危險，代表眼前一定發生同樣的事。
+過去威脅經驗可能提高某些線索的警戒權重，但眼前情境仍需要獨立評估。
+需要區分過去觸發的警戒反應與當前實際風險。
+辨識觸發線索、建立安全邊界、尋求專業支持、逐步恢復選擇能力。
+在安全情況下，記錄引發反應的線索與當下可確認的事實；若仍有威脅，優先確保安全。
+你不必否認曾經受過的傷，也不必讓每一個新的明天都只能按照舊傷的劇本上演。
+每週被觸發的次數與強度（1–10）；每次當下可確認的實際風險有或無。
+
+人生意義|沒有達到原定目標，不代表人生失去價值。
+一個人五十歲時，發現自己沒有達成三十歲設定的事業目標。
+沒有實現年輕時的夢想，就是失敗。
+人的能力、責任、環境與重視的價值會隨生命階段改變。
+人生目標可以更新，而不必把早年的願望當成永久契約。
+重新排序價值、調整工作角色、發展新的貢獻方式。
+列出現在最重要的三個人生目標，與十年前比較。
+你不必用今天的一生，永遠替昨天的自己完成一張不准修改的考卷。
+三個現在的目標中，本月有實際行動的有幾個。
+
+資訊熵|聽到更多資訊，不一定學到更多東西。
+每天看大量心靈成長文章，卻始終用同一套方式處理問題。
+閱讀越多，智慧就越高。
+重複訊息可能幾乎不減少不確定性，真正重要的是能否修正原有判斷。
+知識價值要看資訊是否帶來新的區分、預測與行動能力。
+比較不同觀點、整理反例、實際測試、刪除重複內容。
+每天選一個新觀點，寫下它改變了哪項原本的判斷。
+智慧不是腦中裝了多少句漂亮的話，而是遇到現實時，能不能少犯一次原本會犯的錯。
+每週「真的改變一項判斷」的觀點數，和閱讀篇數相比。
+
+自由|真正的自由，不是永遠做自己想做的事。
+一個人每次遇到衝突就逃避，卻認為這是忠於自己。
+只要順從當下感受，就是自由。
+當下偏好可能受到習慣、恐懼、舊經驗與環境誘因影響。
+自由也包含辨識自身反應、評估長期後果及重新選擇的能力。
+暫緩反應、辨識真正需求、重新定義目標、採取不同策略。
+下一次想立刻逃避時，先寫下三種可行反應及各自代價；若涉及安全威脅，不必延遲保護行動。
+真正的自由，不是每一次都照著舊習慣行動，而是你終於有能力不再被舊習慣決定。
+想逃避時有先寫下三種反應的次數；其中選擇非慣性反應的次數。`;
+const L=LSRC.trim().split(/\n\s*\n/).map((b,i)=>{const x=b.trim().split('\n'),h=x[0].split('|');return{no:String(i+1).padStart(2,'0'),name:h[0]+'節點',title:h[1],f:x.slice(1)}});
+// 顯示順序：情境、舊、差異、新、選項、行動、回饋指標、金句
+const LF=[[0,'情境','','📍'],[1,'舊模型','o','❌'],[2,'關鍵差異','','💡'],[3,'新模型','n','✅'],[4,'新增選項','','➕'],[5,'最小行動','','👣'],[7,'回饋指標','','📊'],[6,'金句','g','✨']];
+let ls={cat:-1,view:'card'};
+const lineText=n=>`【${n.no}｜${n.name}】${n.title}\n`+LF.map(x=>`${x[3]}${x[1]}：${n.f[x[0]]}`).join('\n');
+const lifeShown=()=>L.filter((n,i)=>(ls.cat<0||Math.floor(i/6)==ls.cat)&&(!st.q||[n.no,n.name,n.title,...n.f].some(has)));
+function renderLife(){
+  $('lifeChips').innerHTML=['全部',...LCAT].map((t,i)=>`<button class="chip${ls.cat==i-1?' on':''}" data-c="${i-1}">${t}</button>`).join('');
+  $('lifeView').innerHTML=[['card','卡片'],['table','一頁總覽表']].map(x=>`<button class="chip${ls.view==x[0]?' on':''}" data-v="${x[0]}">${x[1]}</button>`).join('');
+  const a=lifeShown();
+  $('lifeInfo').textContent=`顯示 ${a.length}/30 個節點`;
+  if(!a.length){$('lifeList').innerHTML='<div class="info">找不到符合的內容，換個關鍵字試試。</div>';return}
+  if(ls.view=='table'){
+    $('lifeList').innerHTML='<div style="overflow-x:auto"><table style="min-width:760px"><tr><th>#</th><th>節點</th><th>舊模型</th><th>新模型</th><th>最小行動</th><th>回饋指標</th></tr>'+
+      a.map(n=>`<tr><td>${n.no}</td><td><b>${hl(n.name.replace('節點',''))}</b><br>${hl(n.title)}</td><td>${hl(n.f[1])}</td><td>${hl(n.f[3])}</td><td>${hl(n.f[5])}</td><td>${hl(n.f[7])}</td></tr>`).join('')+'</table></div>';
+    return}
+  let html='',last=-1;
+  a.forEach(n=>{const i=+n.no-1,c=Math.floor(i/6);
+    if(c!=last){last=c;html+=`<div class="dom">${'一二三四五'[c]}｜${LCAT[c]}</div>`}
+    html+=`<details${st.q?' open':''}><summary><b>${n.no}｜${hl(n.name)}</b>${hl(n.title)}</summary><div class="body"><div class="pair">`+
+      LF.map(x=>`<div class="${x[2]}"><i>${x[1]}</i>${hl(n.f[x[0]])}</div>`).join('')+`</div><button class="btn gh" data-line="${i}">複製 LINE 快讀版</button><button class="btn" data-fb="L|${i}">臉書文圖</button></div></details>`});
+  $('lifeList').innerHTML=html;
+}
+$('life').onclick=e=>{const t=e.target;
+  if(t.dataset.c!==undefined){ls.cat=+t.dataset.c;renderLife()}
+  else if(t.dataset.v){ls.view=t.dataset.v;renderLife()}
+  else if(t.dataset.line!==undefined)copy(lineText(L[+t.dataset.line]),$('lifeMsg'));
+  else if(t.id=='lifeCopyAll')copy(lifeShown().map(lineText).join('\n\n———\n\n'),$('lifeMsg'))};
+
+// 寫作訓練
+const MODELS=[['疲勞模型','我不想做','目前哪個資源配置需要調整','累了不一定代表該放棄，也可能代表原本的方法需要重新設計。'],
+['選項模型','我要選A還是B','我是否漏掉C、D、E','困住你的不一定是沒有路，而是你還沒有看見所有可行的路。'],
+['記憶模型','過去證明我就是如此','哪些新證據能修正我的舊解釋','過去不會因為今天的理解而改變，但過去對今天的影響可以重新調整。'],
+['權重模型','最後結果很好就值得','整段經驗有哪些高權重證據','一個美好的結局值得珍惜，卻不能自動抹去長期累積的傷害。'],
+['成本模型','已經投入不能放棄','未來投入是否仍有價值','過去投入多少，不該單獨決定未來還要投入多少。'],
+['更新模型','堅持原方法','保留重要目標，持續校正方法','真正的自由，不只是選擇眼前的答案，而是有能力重新理解問題、生成選項與修正行動。']];
+$('models').innerHTML=MODELS.map((m,i)=>`<div class="pair"><div><b>0${i+1}｜${m[0]}</b></div><div class="o"><i>從</i>「${m[1]}」</div><div class="n"><i>升級成</i>「${m[2]}」</div><div class="g"><i>金句</i>${m[3]}${fbBtn('M|'+i)}</div></div>`).join('');
+const WSTEP=['寫出一個讀者熟悉的真實生活困境','指出讀者原本相信的舊模型','拆解被忽略的變數、限制與權重','說明產生困境的可能機制（避免把假說寫成定律）','提出一個可驗證的新模型及最小行動','用一句有情感力量、但不超出證據的金句收尾'];
+const WCHK=['沒有把情緒直接當成結論','區分了事實、解釋與假設','拆解了目標、手段、限制與權重','解釋了新選項如何產生','沒有把心理學模型寫得過度絕對','提出了可以執行的最小行動','設定了回饋與模型更新條件'];
+let wd=store.get('ros_write',{t:[],c:[]});
+$('wSteps').innerHTML=WSTEP.map((s,i)=>`<label class="f">第${'一二三四五六'[i]}步｜${s}</label><textarea data-w="${i}">${esc(wd.t[i]||'')}</textarea>`).join('');
+$('wChecks').innerHTML=WCHK.map((s,i)=>`<label class="ck"><input type="checkbox" data-wc="${i}"${wd.c[i]?' checked':''}> ${s}</label>`).join('');
+const wCount=()=>$('wN').textContent=`已通過 ${WCHK.filter((_,i)=>wd.c[i]).length}/7 項`;wCount();
+$('write').oninput=e=>{const t=e.target;if(t.dataset.w!==undefined)wd.t[t.dataset.w]=t.value;else if(t.dataset.wc!==undefined){wd.c[t.dataset.wc]=t.checked;wCount()}else return;store.set('ros_write',wd)};
+$('wCopy').onclick=()=>copy(WSTEP.map((_,i)=>(wd.t[i]||'').trim()).filter(Boolean).join('\n\n'),$('wMsg'));
+$('wClear').onclick=()=>{if(!confirm('清空寫作草稿？'))return;wd={t:[],c:[]};store.set('ros_write',wd);document.querySelectorAll('[data-w]').forEach(x=>x.value='');document.querySelectorAll('[data-wc]').forEach(x=>x.checked=false);wCount()};
+
+$('wis').innerHTML=WIS.map((w,i)=>`<li>${w}${fbBtn('W|'+i)}</li>`).join('');
+
+// 每一頁的臉書長文（約1200字）：[中文標題, 英文標題, 內文]
+const ART={
+nodes:['你不必永遠相信，第一個浮上心頭的念頭','You Don\'t Have to Believe Your First Thought',`他沒有回訊息。
+
+就這麼一件小事，心裡卻已經演完一整齣戲：他是不是生氣了？是不是我說錯話？是不是他其實一點都不在乎我？
+
+我們很少發現，真正讓人難受的，往往不是事情本身，而是我們替事情寫下的第一個解釋。那個解釋來得太快，快到我們以為它就是事實。
+
+可是冷靜下來看，可以確認的事實只有一句：「他還沒有回覆。」其餘的，都是我們自己補上的故事。
+
+這就是「表徵」的力量。表徵，是你在心裡怎麼描述眼前發生的事。同一張六十五分的考卷，有人寫成「我很笨」，有人寫成「我的字彙和長句理解還沒有練熟」。前一句話沒有出口，只會讓人想放棄；後一句話卻自動指出了下一步。事情一模一樣，人生的方向卻從這裡開始分岔。
+
+很多人以為，改變想法就是「正向思考」，把壞事硬說成好事。其實不是。把「我很笨」改成「我最棒」，一樣沒有根據，一樣禁不起現實的考驗。真正的升級，是讓理解更接近事實：分清楚什麼是看見的、什麼是猜的；什麼是感受、什麼是證據；什麼是這一次、什麼是永遠。
+
+情緒值得被聽見。它是心裡的警鈴，提醒你有重要的事需要留意。但警鈴不是判決書。焦慮不等於危險，難過不等於脆弱，生氣也不等於對方一定錯了。當你願意先說一句「我現在很焦慮，但我還不確定實際風險有多大」，你就已經從被情緒帶著走，變成帶著情緒往前走。
+
+這套練習，我把它拆成三十二個小小的能力：觀察事實、辨識感受、查核證據、替問題命名、把困難拆開、看見不只一種解釋、估計可能性、踏出最小的一步、觀察結果、修正想法……每一個都很樸素，樸素到像是常識。可是人在難過的時候，最先丟掉的，往往就是常識。
+
+所以它需要練習。不是讀過就會，而是在下一次心裡那齣戲又要開演的時候，能夠停一下，問自己三個問題：
+
+我真正看到的是什麼？
+除了這個解釋，還有沒有別的可能？
+今天，我可以做哪一件很小的事來確認？
+
+寫下已知的事實，是一步。問對方一句「你今天還好嗎」，是一步。把錯題分成三類，也是一步。這些行動都很小，小到幾乎不需要勇氣，卻能帶回新的資訊，讓你知道原本的想法準不準。
+
+智慧不是從來不會想錯。再有智慧的人，第一個念頭也可能是錯的。差別只在於，他們不急著把第一個念頭當成結論，而是願意讓現實有機會說話，然後根據現實更新自己。
+
+更新，不是否定過去的自己。那個曾經把一切都怪在自己身上的你，只是當時手上只有那一種解釋。今天的你多了一種看法，明天的你會再多一個選擇。能力就是這樣一點一點長出來的。
+
+你不能任意改變世界，但你可以提升自己理解世界的解析度。
+
+願你今天，在第一個念頭和最後的結論之間，為自己留下一點點空間。那個空間，就是自由開始的地方。`],
+life:['困住你的，也許不是沒有路','Maybe the Road Was Always There',`有一位朋友，白天上班已經很累，晚上還要趕去上課、當義工。她越來越抗拒，卻又不斷責備自己：「是不是我不夠精進？是不是我太懶？」
+
+她以為眼前只有兩條路：咬牙撐下去，或者承認自己失敗，乾脆退出。
+
+可是，累了，不一定代表應該放棄，也不一定代表應該硬撐。疲憊只是一個訊號，它在說：目前的安排，有某個地方需要調整。也許是睡眠不夠，也許是任務太滿，也許是方法不適合現在的自己。當她開始記錄一週的睡眠與疲勞，才發現真正的問題不在「意志」，而在「配置」。於是第三條、第四條路出現了：暫停義工、降低頻率、改成在家自己練習。
+
+人生很多關卡都長得很像。
+
+一個女孩以為只能在「回家鄉工作」和「留下來陪男友花存款」之間選一個；一位老師以為不是繼續撐，就是辭職；一個人在一段痛苦的關係裡待了十年，因為「都已經十年了」而不敢重新評估。
+
+困住他們的，不一定是沒有路，而是當下看得見的選項太少。工作地點、收入方式、相處模式，其實是可以拆開來檢查的不同變數；過去的投入值得尊重，但未來還要不要投入，應該看的是未來。
+
+我整理了三十個這樣的人生節點：疲憊、焦慮、自責、拖延、完美主義、討好、親子衝突、加班、投資、記憶、自由……每一個節點，都有一句我們太熟悉的舊想法，也都藏著一個被忽略的「關鍵差異」。
+
+什麼是真正有價值的差異？不是換一句比較好聽的話安慰自己，而是發現舊想法漏掉了什麼。孩子沉迷手機，漏掉的是「手機正在替他滿足什麼需求」；文章改了二十次不敢發，漏掉的是「沒有讀者回饋，再改也不知道好不好」；股票賺了錢，漏掉的是「這一次有多少是運氣」。
+
+看見漏掉的東西，新的選項才會出現。
+
+這三十個節點，最後都指向同樣的五種升級：
+從責怪一個人，到看懂一個結構；
+從只找一個原因，到看見許多因素彼此影響；
+從二選一，到主動尋找第三、第四種可能；
+從一次結果，到長期觀察；
+從固定的答案，到可以持續修正的模型。
+
+但只有「想通」還不夠。每一個節點後面，我都放了一個最小行動，和一個可以觀察的回饋指標。因為想法準不準，不是由感覺決定，而是由現實回答。記錄七天、問五個人、分類二十題錯題……做了，才知道新的理解是不是真的比較好；如果不是，就再修正一次。
+
+這就是能力。它不是一次頓悟，而是一個可以重複的動作：看見舊模型，找出差異，生出選項，小步嘗試，觀察結果，然後更新。
+
+智慧不是腦中裝了多少句漂亮的話，而是遇到現實時，能不能少犯一次原本會犯的錯。
+
+人生真正的升級，不是永遠找到更漂亮的答案，而是每當現實不同意你時，你都有能力重新理解世界，重新生成選項，重新設計自己的下一步。
+
+願你在覺得無路可走的時候，先別急著責怪自己。也許路一直都在，只是還沒有被看見。`],
+write:['一篇好文章，是送給讀者一個新的選擇','A Good Essay Gives the Reader One More Choice',`我們都讀過那種文章：讀的時候很感動，眼眶熱熱的，按了讚，還分享出去。可是三天之後，遇到同樣的煩惱，還是用同樣的方式難過。
+
+那篇文章沒有錯，它給了安慰。只是安慰像一杯熱茶，喝完會涼。真正能留下來的文字，除了溫度，還會多給讀者一樣東西：一種新的理解方法，或一個原本沒想到的選項。
+
+這是我對「心靈雞湯」的期待。好的雞湯不只是好喝，還要真的有營養。
+
+怎麼寫出這樣的文章？我把它整理成六個步驟。
+
+第一步，寫一個讀者熟悉的真實困境。不要從大道理開始，從一個場景開始：晚上十一點，孩子還在滑手機；主管傳來一句「明天找你談談」。讀者在場景裡看見自己，才願意繼續讀。
+
+第二步，說出他原本相信的那句話。「孩子就是沒有自制力。」「主管找我，一定是我做錯事。」把舊想法溫柔地說出來，不嘲笑、不否定，因為每個人都曾經那樣想過。
+
+第三步，拆開被忽略的東西。有哪些變數沒被看見？有哪些限制？什麼事情其實比想像中更重要？
+
+第四步，說明困境可能是怎麼形成的。這一步最需要誠實。我們知道的常常只是「可能」，不是「一定」。把假說寫成定律，文章看起來更有力，卻是在透支讀者的信任。寫「可能」「往往」「有時候」，不是軟弱，是對讀者負責。
+
+第五步，給一個可以驗證的新理解，和一個今天就做得到的小行動。
+
+第六步，才是金句。金句要有情感的力量，但不能超出證據。「累了不一定代表該放棄，也可能代表方法需要重新設計。」這句話溫柔，卻沒有向讀者保證任何它做不到的事。
+
+寫完之後，我會用幾個問題檢查自己：有沒有把情緒直接當成結論？有沒有分清事實、解釋和假設？有沒有把心理學說得太絕對？有沒有給出做得到的行動？有沒有告訴讀者，做了之後要觀察什麼、什麼情況下該修正？
+
+你會發現，這六個步驟其實不只是寫作方法，它就是思考本身。一個人能把困境寫清楚，就表示他已經把困境看清楚。寫作逼著我們放慢，把糊成一團的感受，一句一句分開：這是發生的事，這是我的感覺，這是我的猜測，這是我可以做的。
+
+所以，寫作是一種更新自己的方式。每寫一篇，作者自己先被整理一次。很多時候，那篇文章第一個幫助的人，就是寫的人。
+
+而當文章送到讀者手上，它帶去的也不該只是「你很棒，你值得」，而是「你看，這裡還有一條路」。前者讓人今天好過一點，後者讓人明天多一種能力。
+
+真正的智慧，不是替舊答案找到更漂亮的理由，而是有能力重新生成更好的答案。
+
+如果你也在寫字，願你寫下的每一篇，都不只讓人感動，更讓人多一種理解現實的方法、多一個可行的選項，以及一次重新選擇的能力。
+
+那會是文字能給出的，最長久的溫柔。`],
+errs:['十種讓我們白白受苦的想法','Ten Thoughts That Make Us Suffer for Nothing',`有些痛苦，是生活真的給的。也有一些痛苦，是我們的想法多加上去的。
+
+後面這一種，其實可以少受一點。
+
+我把最常見的十種整理出來。它們不是什麼毛病，而是每個人的大腦都會走的捷徑。認得它們，不是為了責怪自己，而是為了在下一次發生時，能夠輕輕說一聲：「喔，又是你。」
+
+第一種叫讀心術。沒有任何證據，卻很確定別人在想什麼。「他一定討厭我。」比較接近事實的說法是：「我還不知道他的想法。」
+
+第二種是災難化。一次挫折，在腦中一路滾成全部完蛋。這時候最有用的不是安慰，而是老實估一估：實際影響有多大？有哪些補救的方法？
+
+第三種是過度概括。「我永遠做不好。」只要找得到一次做好的經驗，「永遠」這兩個字就站不住了。
+
+第四種是貼標籤。用一個行為，定義一整個人。「他就是懶。」「我就是笨。」標籤很省力，卻把所有可以改變的地方都蓋住了。
+
+第五種是只找一個原因。複雜的事情，很少只有一個兇手。
+
+第六種是把情緒當證據。「我很害怕，所以一定很危險。」害怕是真的；危險不危險，要另外檢查。
+
+第七種是非黑即白。不是成功就是失敗，不是完美就是毫無價值。可是人生大部分的進步，都發生在中間。
+
+第八種是只看支持自己的證據。我們都喜歡被證明是對的，所以更需要主動問一句：有沒有可靠的反例？
+
+第九種是太早下結論。資料還不夠，就宣布已經知道全部的答案。
+
+第十種是責任放錯位置。把不屬於自己的責任全部扛下來，或者把自己的責任全部推出去。分清楚哪些是我的、哪些是別人的、哪些是環境的，人才能既不過度自責，也不逃避。
+
+讀到這裡，你也許已經在其中幾種裡看見自己。我也是。認出這些想法，並不代表從此不會再有。它們還是會來，而且常常在最累、最難過的時候來得最快。
+
+差別在於，以前它一來，我們就信了。現在它來的時候，我們多了一個動作：替它命名。
+
+「這是讀心術。」
+「這是災難化。」
+
+光是說出名字，念頭和事實之間就鬆開了一點。你不再等於那個念頭，你是看見那個念頭的人。接著才有空間問：比較接近事實的說法是什麼？我今天可以做什麼小事來確認？
+
+這是一種可以練出來的能力。就像學會辨認路上的坑洞，不是因為從此不會跌倒，而是跌倒的次數會越來越少，爬起來的速度會越來越快。
+
+請記得，認識這十種錯誤，是用來照顧自己的，不是用來攻擊自己，更不是拿去指責別人「你又在災難化了」。帶著批評使用它，它就變成另一種標籤。帶著善意使用它，它才會變成一盞燈。
+
+每一次認出來、修正一點點，就是一次小小的更新。智慧不是永遠想得正確，而是發現自己想錯的時候，仍然有能力重新理解。
+
+錯誤不是智慧的敵人，拒絕修正才是。
+
+願你今天，在某一個念頭又想把你帶走的時候，能夠認出它、叫出它的名字，然後溫柔地，把自己帶回來。`],
+prac:['想通了，然後呢？','You Understand. Now What?',`很多時候，我們不是不懂道理。
+
+「不要想太多。」「要對自己好一點。」「事情沒有那麼糟。」這些話我們聽過一百次，也真心同意。可是深夜躺在床上，同樣的念頭還是一圈一圈地轉。
+
+為什麼懂了，卻沒有改變？
+
+因為想通，只是種子。種子要落到土裡，才會長出東西。而那塊土，叫做行動。
+
+我自己最常用的方法很簡單，只有五個格子，一張紙就寫得完。
+
+第一格，寫下我最常對自己說的那句舊話。原封不動地寫，不修飾。「我什麼都做不好。」寫出來的那一刻，它就從腦袋裡的迴音，變成紙上的一行字。一行字，是可以被檢查的。
+
+第二格，寫下可以核對的事實。只寫看得見、查得到的。「這個月有三件工作延遲，其中兩件是因為在等別人的資料。」你會發現，事實通常比那句舊話小得多，也具體得多。
+
+第三格，寫一個更準確的說法。不是硬要正面，而是更接近事實。「我在需要跨部門協調的工作上常常卡住，我需要更早去要資料。」
+
+第四格，寫今天就能完成的最小行動。越小越好，小到沒有藉口不做。「下午三點前，傳訊息向同事確認資料什麼時候給我。」
+
+第五格，是最容易被跳過、卻最重要的一格：我要觀察什麼結果？什麼時候回來看？「週五檢查，這週延遲的工作有沒有變少。」
+
+少了第五格，前面四格只是一次心情整理。有了第五格，它才變成一個實驗。實驗的意思是：我允許現實告訴我，我的新想法對不對。如果有效，我就多了一個可以信任的方法；如果沒效，我也多了一筆資訊，知道該往別的方向找。
+
+無論哪一種結果，我都沒有白做。
+
+這就是我所說的「更新」。更新不是一次徹底的大改造，不是某天早上醒來忽然變成另一個人。它更像手機裡安靜完成的小版本：修正一個錯誤，改善一點效能。單看一次沒有什麼，累積一年，已經是很不一樣的系統。
+
+而且，更新需要紀錄。人的記憶很容易只記得最近一次的失敗，忘記自己其實已經走了很遠。把每一次的練習留下來，隔一段時間回頭翻一翻，你可能會親眼看見：原來三個月前讓我睡不著的那句話，現在已經不太能傷到我了。
+
+那種看見，比任何人的鼓勵都更有力量。因為它不是別人保證你會變好，而是你自己留下的證據。
+
+能力就是這樣來的。不是讀懂多少道理，而是把一個道理，做過一次、兩次、十次，直到它在需要的時候自己出現。智慧也是這樣來的：它不是知道得多，而是知道的東西，真的走進了生活。
+
+所以，如果今天有一句舊話又在心裡響起，不必急著趕走它，也不必急著相信它。拿一張紙，把它寫下來，然後陪它走完這五格。
+
+一個不完美的開始，勝過一百個停留在心裡的完美計畫。
+
+願你今天做的那一小步，成為明天回頭看時，改變開始的地方。`],
+quiz:['看懂是相遇，掌握需要一次次重逢','Understanding Is a First Meeting; Mastery Is Meeting Again',`你有沒有過這樣的經驗？
+
+聽完一場很棒的演講，覺得整個人都被點亮了。筆記寫了三頁，心想：這次我真的懂了。一個星期後，朋友問你那場演講說了什麼，你張開嘴，卻只說得出一句：「反正很棒。」
+
+這不是記性不好，這是每個人都會遇到的事。「覺得自己懂了」和「真的能用出來」，中間隔著一段不短的距離。
+
+熟悉感很會騙人。同一段文字看第二遍，會覺得「這個我知道」；可是把書闔上，請你用自己的話說一次，才發現原來只是眼睛認得，腦袋並沒有留住。
+
+所以，我很喜歡一個樸素的方法：隔一段時間，不看資料，再考自己一次。
+
+今天學的，明天試著說一遍；七天後，再說一遍；十四天後，換一個情境，看看還用不用得上。說得出來的，才是真的屬於你的；說不出來的，也沒有關係，那正好告訴你，哪裡還需要再走一趟。
+
+很多人害怕測驗，是因為從小到大，考試總是連著分數、排名和評價。考不好，好像就證明自己不行。可是測驗真正的用途，從來不是審判，而是照明。它像一支手電筒，幫你照出「我以為我會、其實還不會」的那個角落。
+
+那個角落，不照也一直在那裡。差別只是，你是在安全的練習裡先發現它，還是在人生真正需要的那一刻才發現它。
+
+把測驗當成朋友之後，答錯就不再那麼可怕了。每一題答錯，都在說：「這裡，值得你再看一眼。」而且研究學習的人早就發現，努力回想的過程本身，就會讓記憶變得更牢。也就是說，測驗不只是檢查學習，測驗本身就是學習。
+
+還有一件事，值得一起練習：在作答之前，先猜猜自己有幾成把握，然後對照結果。
+
+如果你覺得有九成把握，實際只對了六成，那不是壞消息，而是一份很珍貴的資訊：我的自信，跑在能力前面了。反過來，如果你老是覺得自己不行，結果卻常常答對，那也在提醒你：你比自己以為的更有能力。
+
+最穩定的自信，不是靠想像撐起來的，而是靠一次又一次真實的驗證。知道自己會什麼，也知道自己還不會什麼，這種清楚，本身就是一種很深的智慧。
+
+每一次複測，也是一次更新的機會。答對了，就把這份理解存得更穩；答錯了，就把原本的理解修正一點。兩種結果，都讓你比昨天更準確。
+
+最後，別忘了把學到的東西帶出教室。在課本上學會「事實和解釋要分開」，回到家，孩子頂了一句嘴，還記不記得先分一分：他說了什麼，是事實；「他不尊重我」，是我的解釋。能在新的情境裡用出來，才是能力真正長成的證明。
+
+一次答對，值得高興。隔了一段時間、換了一個地方，還能答對，才值得放心。
+
+看懂是一種相遇，真正掌握，需要一次次重逢。
+
+願你不怕回頭檢查自己。每一次重新測驗，都不是在懷疑過去的努力，而是在幫未來的自己，把能力存得更穩一點。`],
+frame:['真正的自由，是擁有重新理解的能力','Real Freedom Is the Ability to Understand Anew',`同樣一場雨，有人說「真倒楣」，有人說「終於涼快了」。
+
+雨沒有不同，不同的是雨落下之後，在每個人心裡走過的那條路。
+
+如果把這條路放慢來看，大概是這樣的：外面發生了一件事；我們只接收到其中一部分；這一部分裡，有些是可以確認的事實；接著，我們替它加上意義，這就是解讀；意義帶來情緒；同樣的解讀重複多了，變成信念；信念讓我們預測接下來會怎樣；預測影響我們怎麼做；做了之後，現實會給一個回應。
+
+到這裡，出現一個岔路。
+
+有的人看了現實的回應，調整自己原本的理解。有的人不看，或者只看符合自己想法的那一部分。前一種人，每走一圈就準確一點；後一種人，走了十年，還是同一圈。
+
+差別不在聰明，而在最後那一步：更新。
+
+這整條路裡，有兩個地方特別值得停下來。
+
+一個是「怎麼描述」。同樣是考試六十五分，描述成「我很笨」，問題沒有入口；描述成「錯題集中在字彙和長句」，問題就有了把手。這叫表徵，它決定你看不看得清楚問題。
+
+另一個是「這代表什麼」。孩子不交作業，代表他懶？還是他聽不懂、不敢問？這叫解讀，它決定你怎麼回應。
+
+描述得清楚，解讀才有根據；解讀得準確，行動才不會白費。兩者都做了之後，還要交給現實檢驗。這三件事加起來，就是一個人面對生活的基本功。
+
+我常常想，為什麼這麼簡單的流程，值得一再練習？
+
+因為它平常是自動完成的，快到我們看不見。事情一發生，情緒就到了，結論也到了，中間的每一步都被跳過。我們以為自己「看到」了真相，其實只是看到了自己最熟悉的那一種解釋。
+
+練習的目的，就是把自動變成看得見。看得見，才有機會選擇。
+
+請不要誤會，這不是要你把每件事都解讀成好事。有些事真的很糟，有些傷害真的發生過，有些關係真的需要離開。硬把它們說成「一切都是最好的安排」，不是智慧，是另一種看不清。更準確的解讀，有時候反而是承認：這件事不對，我需要保護自己。
+
+所以我們追求的，從來不是正面，而是準確。準確，才有力量。
+
+也請不要期待自己從此不再想錯。世界會變，人會變，昨天有用的答案，明天可能就不合用了。曾經保護過你的想法，值得感謝，但不必陪你走完一生。
+
+真正靠得住的，不是任何一個答案，而是那個能夠持續修正答案的自己。這是一種能力，而能力可以練習。
+
+事件是發生過的事情，解讀是你替它寫下的故事。發生過的事不能重來，故事卻可以重新檢查、重新書寫。這不是自欺，只要你願意讓每一個新的版本，都接受現實的檢驗。
+
+真正的覺醒，不是相信自己掌握了所有答案，而是建立一套能持續修正答案的能力。
+
+願你在世界改變的時候，仍然有能力重新理解，重新選擇，然後安穩地，走出下一步。`]};
+const artText=k=>`【${ART[k][0]}】\n${ART[k][1]}\n\n${ART[k][2]}\n\n#LifeOS #心靈成長 #更新 #智慧 #能力`;
+Object.keys(ART).forEach(k=>$(k).insertAdjacentHTML('afterbegin',`<details class="art"><summary><b>📖 本頁臉書長文</b>${ART[k][0]}<span class="en">${ART[k][1]}｜約 ${ART[k][2].replace(/\s/g,'').length} 字</span></summary><div class="body"><div class="artT">${esc(ART[k][2])}</div><button class="btn" data-art="${k}">複製全文</button><span class="info"></span></div></details>`));
+document.addEventListener('click',e=>{const k=e.target.dataset&&e.target.dataset.art;if(k)copy(artText(k),e.target.nextElementSibling)});
+
+// 臉書文圖：由該項目的欄位組出貼文，並用 canvas 畫金句圖卡
+function fbBtn(k){return`<button class="fbb" data-fb="${k}">臉書文圖</button>`}
+document.querySelectorAll('#write ol.w li').forEach((li,x)=>{li.dataset.qi=x;li.dataset.q=li.textContent;li.insertAdjacentHTML('beforeend',fbBtn('Q'))});
+// 各項金句的英文，逐行對應中文資料順序
+const EN=s=>s.trim().split('\n');
+const RQ=EN(`Don't let an answer you don't yet have hurt your heart in advance.
+Seeing the result is easy; seeing the reasons behind it is wisdom.
+One rainy day doesn't mean your whole life has no sunshine.
+Emotion is an alarm bell in the heart, not necessarily reality's verdict.
+Feelings deserve to be heard; the truth deserves to be seen clearly.
+Allowing yourself to be sad will not take away your strength.
+One sentence from someone else need not define your whole life.
+Failure can be a road you walked, but it need not become your name.
+Different ideas can coexist; not every disagreement has to become a wound.
+Truth isn't decided by volume; it stands slowly on evidence.
+Real confidence isn't afraid to let its ideas be tested.
+Memory deserves respect, but it need not be treated as unchanging truth.
+When you stop labeling yourself, growth finally finds a way in.
+However great the chaos, if you can break it down, you can find a first step.
+Life doesn't ask you to finish everything, but to keep what matters most.
+Take the difficulty apart and you'll find you're not bad at everything.
+Real understanding is in no hurry to blame; it is willing to see the layers of a problem.
+Don't mistake your body's call for help for a lack of strength.
+Wisdom isn't rushing to find answers for the world, but being willing to check whether they hold.
+Not every effort blooms at once; what matters is finding soil where it can grow.
+Understanding the structure of a relationship doesn't mean excusing the harm.
+Admire other people's blooming season, and find your own.
+The answer that carried you through one stretch may not carry you through all of life.
+Real respect isn't asking everyone to be the same, but being willing to understand our differences.
+Not every voice deserves your whole heart.
+Sometimes the way out isn't thinking more, but looking from another direction.
+Focusing your life on what is worthwhile is also a form of gentleness.
+The deepest wound deserves care, but it need not hold the steering wheel forever.
+Don't let one dark cloud hide the whole sky that once lit you.
+The truths that matter most are sometimes quiet.
+You can care gently for the world; just don't forget to put yourself on the list.
+Life isn't about moving every stone, but first moving the one that blocks the road.
+Don't let fear cast the vote for your future; let evidence and preparation decide with you.
+Yesterday's wound need not be a prophecy for every relationship tomorrow.
+Cherish your story, and leave a window open for truths not yet seen.
+Don't let the rain on the last page wash away all the road you walked before.
+Don't let the first guess become the final truth.
+It's not that you have no possibility; some conditions are still worth looking for.
+Not every turn is a wrong turn; some show you new scenery.
+You can hear the voice in your heart without obeying every word.
+Courage isn't the absence of fear, but knowing how to move forward safely with it.
+Your worth need not be decided by one low moment.
+A real belief is not afraid of truth drawing near.
+One true counterexample can open a door for a closed heart.
+Being clear-headed isn't always standing outside the crowd, but still thinking within it.
+When you look at the world through another window, the room in your heart grows wider.
+Different kinds of knowledge can light each other, without pretending to say the same thing.
+The world is rarely a single line; wisdom is seeing how the lines connect.
+Worry is not prophecy, and hope is not a guarantee.
+Don't let one fall yesterday cancel tomorrow's chance in advance.
+Real courage sees not only the opportunity, but also faces the cost.
+Life may not follow the script, but you can learn to prepare different next scenes.
+Even when you can't see the whole road, you can light the next step.
+Effort is the seed; method and environment are the soil it needs.
+Real safety isn't never going out, but knowing how to protect yourself.
+Staying is not always free; moving forward need not be unprepared.
+Real abundance isn't chasing the most, but keeping a life worth having.
+You don't need to shine everywhere; just keep your light for what you truly cherish.
+Cherish what you once gave, but don't let it be the reason you stay trapped.
+Rest isn't giving up on the dream; it gives you the strength to go farther.
+One imperfect start beats a hundred perfect plans that stay in the heart.
+Life's turning points sometimes begin with one small choice.
+Some abilities don't appear when you're ready; they grow after you begin.
+Keep the light you have, and leave a window open for the unknown.
+Real progress isn't always chasing the new, but finding what truly fits you.
+Some roads don't take you to the destination, but teach you to read direction.
+Change needn't be a daily tug-of-war with willpower; let your environment help.
+Real discipline isn't never stopping, but knowing how to start again.
+Don't just wait for passion; let small routines walk farther with you.
+Real ability lives not only in understanding, but in each act of practice.
+Being busy isn't necessarily moving forward; results tell you where you are.
+Sometimes life isn't asking you to push harder, but to walk a different way.
+Real growth is not afraid to be seen by reality.
+Don't chase pretty numbers; chase strength you can truly take with you.
+Cherish your effort, and help it find a worthy direction.
+Error isn't the enemy of wisdom; refusing to revise is what stops it.
+One storm doesn't mean the whole season has lost its way.
+A pleasant surprise is worth celebrating, and worth understanding.
+Finding the real bottleneck is more powerful than blaming yourself again and again.
+Not every problem needs more force; some need clearer understanding.
+Growth isn't overturning the whole past, but letting what works keep shining.
+Truly steady people aren't afraid to change direction for the truth.
+The answer that once protected you may not always be the best one for you.
+Insight is the seed; action is what lets wisdom take root.
+The wisdom that is truly yours is what still stays with you after time has passed.
+Understanding is a first meeting; mastery takes meeting again and again.
+One bloom is worth cherishing; continued growth shows how deep the roots go.
+Knowledge becomes wisdom that lights a life only when it leaves the book.
+Deep understanding finds new uses in different landscapes of life.
+The environment may change, but what you've built need not start from zero.
+Real intelligence isn't always feeling you understand, but knowing what you don't.
+The steadiest confidence rests not on imagination, but on real tests, again and again.
+Even the brightest eyes need a mirror to see their own back.
+You don't have to be yesterday's self forever; today you can still write a new version.
+Real maturity isn't never falling again, but knowing better how to stand back up.
+Real freedom isn't holding all the answers, but being able to understand and choose anew when the world changes.`);
+const IQ=EN(`Don't let an unknown answer hurt your heart in advance.
+Seeing the result is the beginning; seeing the cause is understanding.
+One rainy day can't stand for a lifetime of sky.
+Emotion is an alarm bell, not a verdict.
+Hear the anger, and hear the need behind it.
+Tears do not cancel your strength.
+One sentence from someone else is not the whole of your life.
+One fall need not become a lifelong name.
+One refusal need not be written as the end of a relationship.
+Truth isn't decided by the volume of applause.
+Real confidence dares to let its ideas be tested.
+Beautiful words need real evidence to hold them up.
+When you stop labeling, growth finds its way in.
+However thick the fog, you can light the next step.
+Life needn't finish everything, only recognize what is worth it.
+Once a difficulty is taken apart, the whole of it no longer scares you.
+Understanding finds the direction of change better than blame does.
+Your body's signals deserve care, not shame.
+Appearing together doesn't mean one caused the other.
+Finding the right road matters more than only walking faster.
+Understanding a relationship doesn't mean excusing the harm.
+Someone else's blooming season need not be your clock.
+Yesterday's answer is worth cherishing, and worth updating.
+Fairness isn't always giving everyone exactly the same method.
+Not every voice deserves your whole heart.
+Sometimes you must set down the old angle to see a new way out.
+Don't shine life's most precious light entirely on other people's opinions.
+The deepest wound deserves care, but need not set the whole direction.
+Don't let one dark cloud hide the whole sky.
+The loudest alarm isn't always the greatest danger.
+While caring for the world, remember to care for yourself.
+You needn't move every stone; first move the one in the way.
+Don't let fear cast the vote for your future.
+Yesterday's wound need not be tomorrow's prophecy.
+Cherish the memory, and leave a window open for the truth.
+The rain on the last page can't erase all the sunshine before it.
+Don't let the first guess become the final truth.
+Not having found the way yet doesn't mean there is none.
+Not every turn is a wrong turn.
+You can hear the voice in your heart without obeying every line.
+Courage isn't having no fear, but knowing how to move forward safely.
+Other people's voices can be heard without becoming your master.
+One true counterexample can open a window in a life.
+Truly steady people don't fear the truth drawing near.
+Being clear-headed is still thinking while in the crowd.
+Look through another window and the room in your heart grows wider.
+Different kinds of knowledge can light each other without replacing each other.
+The world isn't a single line; wisdom is seeing how the lines relate.
+Worry is not prophecy, and hope is not a guarantee.
+Yesterday's fall need not cancel tomorrow in advance.
+Mature courage also knows how to protect itself.
+Life may not follow the script, but you can prepare different next scenes.
+Even without seeing the whole road, you can light where you stand.
+Effort is the seed; method and environment are the soil.
+Real safety isn't staying put forever, but knowing how to protect yourself.
+Staying still can have a price too.
+Real abundance isn't getting the most, but keeping what matters.
+You needn't shine in every place to have a bright life.
+Cherish what you gave, without letting it become a chain.
+Rest isn't giving up; it lets you go farther.
+One imperfect start beats a hundred perfect fantasies.
+Life's turns often begin with tiny choices.
+Some abilities grow slowly only after you begin.
+Keep the light you have, and leave a window open for the unknown.
+Progress isn't always chasing the new, but finding what truly works.
+Some roads don't get you there, yet teach you to read direction.
+Change needn't be a daily tug-of-war with willpower.
+Real discipline is being willing to start again after a break.
+Passion rises and falls; good arrangements walk farther with you.
+Wisdom lives not only in ideas, but in practice.
+Being busy isn't necessarily moving forward.
+Sometimes life doesn't ask you to push harder, but to walk another way.
+Real growth is not afraid to be seen by reality.
+Don't chase only pretty numbers; chase real strength too.
+Cherish effort, and help it find direction.
+Error isn't the enemy of wisdom; refusing to revise is.
+One storm doesn't mean the whole season has lost its way.
+A surprise is worth celebrating, and worth learning from.
+Finding the real bottleneck is more powerful than repeated self-blame.
+Some problems need not more force, but a clearer view of direction.
+Growth needn't overturn the whole past.
+Truly steady people aren't afraid to change direction for the truth.
+The answer that carried you one stretch needn't walk your whole life with you.
+Insight is the seed; action lets wisdom take root.
+Wisdom that is truly yours stands the test of time.
+Understanding is a first meeting; mastery takes meeting again and again.
+One bloom is worth admiring; continued growth is worth watching.
+Knowledge begins to be life wisdom only when it leaves the book.
+Deep understanding finds new uses in different landscapes.
+Environments change, but what you've built needn't reset to zero.
+Real intelligence is knowing what you still don't understand.
+The steadiest confidence comes from real tests, again and again.
+Even the brightest eyes need another mirror.
+You don't have to be yesterday's self forever.
+Maturity isn't never falling, but knowing better how to stand again.
+Real freedom is keeping the ability to understand life anew.`);
+const LQ=EN(`Real growth isn't never saying you're tired, but knowing when to change how you move forward.
+What traps us is sometimes not what tomorrow brings, but having decided today that tomorrow can only go one way.
+You are not a test paper; you just haven't found the part that really needs fixing.
+Sometimes what you lack isn't stronger will, but an easier way to begin.
+What really blocks progress isn't always that the work isn't good enough, but that it never gets tested by reality.
+Not every moment that looks like stopping means life isn't moving forward.
+Freedom isn't only choosing among the roads in front of you, but being able to find roads you couldn't see.
+Some relationships aren't lost to a lack of love, but to deciding too early that you already know the answer.
+A truly stable relationship doesn't need one person to keep sacrificing to hold it up.
+Past devotion deserves respect, but it need not be the reason the future can never change.
+Sometimes two people aren't arguing about the same thing, yet each believes the other refuses to understand.
+Don't let one choice by someone else become your lifelong verdict on yourself.
+Truly effective parenting isn't just taking the phone away, but understanding what need the phone is meeting for the child.
+Studying isn't about who sits longest, but who knows best what they still don't know.
+What parents can truly give isn't an always-right answer, but a child's ability to find answers after leaving them.
+Love that lasts isn't burning yourself out, but making care sustainable.
+What makes a child believe in themselves isn't someone's promise of success, but seeing their own progress.
+Education's finest result isn't a child who always obeys, but one who can think responsibly.
+Real efficiency isn't filling life with work, but keeping important work from drowning in trivia.
+Life doesn't always need a different road; sometimes you only need to redesign how you walk.
+The market won't applaud because you worked hard; through real choices it tells you what to improve.
+What's worth accumulating isn't just one win, but judgment that can be tested again and again.
+Real abundance isn't just having more money, but having more choices you're not forced into.
+Lasting trust isn't letting customers hear more promises, but giving them clearer, more reliable information.
+The past can't happen again, but we can stop letting incomplete memories decide the whole future.
+A beautiful ending can be cherished without defending an unreasonable journey.
+You needn't deny the wound, nor let every new tomorrow follow the old wound's script.
+You needn't spend today's whole life finishing an exam for yesterday's self that may never be revised.
+Wisdom isn't how many fine sentences you hold, but whether, facing reality, you make one less mistake you would have made.
+Real freedom isn't acting on old habits every time, but finally being able to not be decided by them.`);
+const MQ=EN(`Being tired doesn't always mean you should quit; it may mean the method needs redesigning.
+What traps you isn't always the absence of a road, but not yet seeing all the workable ones.
+The past won't change with today's understanding, but its influence on today can be adjusted.
+A beautiful ending is worth cherishing, but it can't automatically erase long-accumulated harm.
+How much you've invested shouldn't alone decide how much more to invest.
+Real freedom isn't just choosing the answer in front of you, but being able to re-understand the problem, generate options, and revise your actions.`);
+const WQ=EN(`Life's deepest freedom isn't everything going your way, but not having to always believe the first explanation that hurts you.
+The pain you've lived through deserves understanding, but it need not define your whole life.
+Don't write a passing feeling into a lifelong verdict.
+The event is what happened; the interpretation is the story you wrote for it, and stories can be re-examined.
+When you ask "Is there another possibility?", your inner world gains a window.
+Real growth isn't turning every negative thought positive, but bringing your understanding closer to the facts.
+Don't read all of other people's behavior as a measure of your worth.
+One failure can offer information, but has no right to sentence your whole future.
+Some difficulties aren't because you didn't try hard enough, but because you haven't yet seen the real problem.
+Wisdom isn't always interpreting correctly, but being able to understand anew when you find you were wrong.
+When you start separating facts, feelings, guesses, and responsibility, they no longer have to tangle together and hurt you.
+You can't erase reality by changing your interpretation, but a more accurate one can lead to a stronger next step.`);
+const EQ=EN(`Instead of "He must hate me," try "I don't yet know what he thinks."
+Instead of "I failed, so everything is over," try "First assess the real impact and the ways to recover."
+Instead of "I can never do it right," try "Which conditions weren't met this time?"
+Instead of "He's just lazy," try "Which behaviors, surroundings, and motives are worth understanding?"
+Instead of "It's all because of him," try "What other variables might there be?"
+Instead of "I'm afraid, so it must be dangerous," try "Check the fear and the actual risk separately."
+Instead of "It's either success or failure," try "What progress and gaps lie in between?"
+Instead of "Only look at evidence that supports me," try "Actively look for reliable counterevidence."
+Instead of "I already know the whole cause," try "What information is still missing?"
+Instead of "Every problem is my fault," try "Separate my part, others' part, and the situation's part."`);
+const SQ=EN(`Feelings are real experience, but not a complete explanation of the cause.
+Memory keeps traces of experience, but it is not a full recording of the past.
+Our choices are limited by the options we can see, but visible options are not all that reality allows.
+Growth isn't endlessly adding effort, but improving how we understand, judge, act, and revise.
+From judging character to diagnosing structure.
+From a single cause to many interacting variables.
+From either-or choices to searching for workable options.
+From one result to long-term feedback.
+From fixed answers to models that keep updating.
+The problem you see is not necessarily its whole structure.
+The emotion you feel is not necessarily the full explanation of its cause.
+The past you remember doesn't necessarily include all the important evidence.
+The options you see now don't necessarily cover every workable choice.
+What you really need to improve isn't just how fast you solve problems, but your ability to redefine them, spot differences, generate options, and revise your models.`);
+function fbData(k,el){const d=fbData0(k,el),[t,i,j]=k.split('|');
+  d.en=({R:()=>RQ[i*3+ +j],I:()=>IQ[i*3+ +j],L:()=>LQ[i],M:()=>MQ[i],E:()=>EQ[i],W:()=>WQ[i],Q:()=>SQ[el.closest('li').dataset.qi]})[t]()||'';return d}
+function wrapW(c,s,w){const out=[];let l='';for(const x of s.split(' ')){const t=l?l+' '+x:x;if(l&&c.measureText(t).width>w){out.push(l);l=x}else l=t}if(l)out.push(l);return out}
+function fbData0(k,el){const[t,i,j]=k.split('|');
+  if(t=='R'||t=='I'){const n=(t=='R'?R:I)[i],p=n.p[j];return{tag:n.zh,old:p[0],neu:p[1],quote:p[2],act:p[3]}}
+  if(t=='L'){const n=L[i];return{tag:n.name.replace('節點',''),scene:n.f[0],old:n.f[1],diff:n.f[2],neu:n.f[3],act:n.f[5],quote:n.f[6]}}
+  if(t=='M'){const m=MODELS[i];return{tag:m[0],old:m[1]+'。',neu:m[2]+'。',quote:m[3]}}
+  if(t=='E'){const e=ERR[i];return{tag:e[2],old:e[4]+'。',neu:e[5],quote:`與其說「${e[4]}」，不如說「${e[5].replace(/[？。]$/,'')}」。`,diff:e[3]+'，是很常見的'+e[2]+'。'}}
+  if(t=='W')return{tag:'解讀智慧',quote:WIS[i]};
+  return{tag:'結構智慧',quote:el.closest('li').dataset.q}}
+function fbText(d){const a=[d.quote,d.en,''];
+  if(d.scene)a.push(d.scene,'');
+  if(d.old)a.push('我們常常這樣想｜Old belief','「'+d.old+'」','');
+  if(d.diff)a.push('但是，'+d.diff,'');
+  if(d.neu)a.push('換一種理解｜A new view',d.neu,'');
+  if(d.act)a.push('今天的小小練習｜Tiny action',d.act,'');
+  a.push('願你今天，多一種理解，也多一個選擇。','May today bring you one more way to understand, and one more choice.','','#LifeOS #心靈成長 #DailyWisdom #'+d.tag.replace(/[^一-龥A-Za-z0-9]/g,''));
+  return a.join('\n')}
+const TH=[['#f8eedc','#e8c79d','#4a3524'],['#e2f1ef','#a6d1ca','#1f3d3a'],['#2b3a55','#131a2b','#f4ecd8'],['#fdeae6','#f2b8ad','#5a2a27'],['#ecebf7','#bcb6e4','#2e2a55']];
+let fbD=null,fbT=0;
+function wrap(c,s,w){const out=[];let l='';for(const ch of s){if(l&&c.measureText(l+ch).width>w&&!'，。、；：！？」）'.includes(ch)){out.push(l);l=ch}else l+=ch}if(l)out.push(l);return out}
+function fbDraw(){const cv=$('fbCv'),c=cv.getContext('2d'),S=1080,t=TH[fbT],F='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+  const g=c.createLinearGradient(0,0,S,S);g.addColorStop(0,t[0]);g.addColorStop(1,t[1]);c.fillStyle=g;c.fillRect(0,0,S,S);
+  c.strokeStyle=t[2];c.globalAlpha=.35;c.lineWidth=3;c.strokeRect(50,50,S-100,S-100);c.globalAlpha=1;
+  c.fillStyle=t[2];c.textAlign='center';c.textBaseline='middle';
+  c.globalAlpha=.7;c.font='34px '+F;c.fillText('｜ '+fbD.tag+' ｜',S/2,130);
+  c.globalAlpha=.25;c.font='bold 200px serif';c.fillText('“',S/2,270);c.globalAlpha=1;
+  const EF='italic 36px Georgia,"Times New Roman",serif';c.font=EF;const es=wrapW(c,fbD.en,820),eh=es.length*52+40;
+  let fs=76,ls,lh;do{fs-=4;c.font='bold '+fs+'px '+F;ls=wrap(c,fbD.quote,840);lh=fs*1.5}while(ls.length*lh+eh>600&&fs>36);
+  let y=550-(ls.length*lh+eh)/2+lh/2;ls.forEach(l=>{c.fillText(l,S/2,y);y+=lh});
+  y+=66-lh/2;c.globalAlpha=.8;c.font=EF;es.forEach(l=>{c.fillText(l,S/2,y);y+=52});c.globalAlpha=1;
+  if(fbD.act){c.globalAlpha=.8;c.font='32px '+F;wrap(c,'今日小行動｜'+fbD.act,860).slice(0,2).forEach((l,i)=>c.fillText(l,S/2,920+i*46))}
+  c.globalAlpha=.55;c.font='26px '+F;c.fillText('LifeOS',S/2,1012);c.globalAlpha=1}
+document.addEventListener('click',e=>{const k=e.target.dataset&&e.target.dataset.fb;if(!k)return;e.preventDefault();
+  fbD=fbData(k,e.target);$('fbTxt').value=fbText(fbD);fbDraw();$('fbBox').classList.add('on')});
+$('fbBox').onclick=e=>{const id=e.target.id;
+  if(id=='fbBox'||id=='fbClose')$('fbBox').classList.remove('on');
+  else if(id=='fbTheme'){fbT=(fbT+1)%TH.length;fbDraw()}
+  else if(id=='fbCopy')copy($('fbTxt').value,$('fbMsg'));
+  else if(id=='fbSave')$('fbCv').toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='LifeOS_'+fbD.tag+'_'+fbD.quote.slice(0,8)+'.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)})};
+renderLife();
+renderNodes();renderRecs();renderQuiz();rtNew();
+</script>
+</body>
+</html>

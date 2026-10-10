@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>解讀與權重工程｜心靈雞湯圖卡</title>
+<style>
+:root{--bg:#f6f3ee;--card:#fff;--ink:#2b2a33;--mut:#77748a;--line:#e6e1d8;--acc:#6b4fd8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Microsoft JhengHei","Noto Sans TC","PingFang TC",sans-serif;line-height:1.6}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px}
+.wrap{max-width:1080px;margin:0 auto}
+h1{font-size:18px;margin:0 0 8px}
+h1 small{font-weight:400;color:var(--mut);font-size:12px;margin-left:6px}
+#q{width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:10px;font-size:15px;background:#fff}
+.tabs{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.tabs button,.btn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 13px;font-size:13px;cursor:pointer;color:var(--ink);font-family:inherit}
+.tabs button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+main{padding:14px 16px 60px}
+h2{font-size:15px;margin:22px 0 8px;color:var(--acc)}
+h2 span{color:var(--mut);font-weight:400;font-size:13px;margin-left:6px}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;margin:8px 0}
+summary{cursor:pointer;padding:10px 14px;font-weight:700;font-size:14px}
+summary em{font-style:normal;font-weight:400;color:var(--mut);font-size:12px;margin-left:6px}
+summary .done{color:#1a9c5b;font-size:12px;margin-left:6px}
+.body{padding:0 14px 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px}
+.it{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+.qc{aspect-ratio:1.25;padding:18px;display:flex;flex-direction:column;justify-content:center;text-align:center;cursor:pointer;position:relative}
+.qc b{font-size:17px;line-height:1.55;display:block}
+.qc i{font-family:Georgia,serif;font-size:12.5px;opacity:.9;margin-top:10px;display:block;line-height:1.45}
+.qc u{position:absolute;left:12px;bottom:8px;font-size:10px;text-decoration:none;opacity:.75}
+.tx{padding:10px 12px;font-size:13px;flex:1}
+.tx p{margin:0 0 4px}
+.tx .o{color:#a2574d}.tx .n{color:#1f7a55}.tx .a{color:#555}
+.acts{display:flex;gap:6px;padding:0 12px 12px}
+.btn{padding:4px 10px;font-size:12px}
+.btn:hover{border-color:var(--acc);color:var(--acc)}
+.meta{font-size:13px;margin-top:10px;padding:10px 12px;background:#faf8f4;border-radius:10px}
+.meta p{margin:0 0 4px}
+.meta label{cursor:pointer;color:var(--acc)}
+.art{border-color:#d9cdf7;background:#fbf9ff;margin-bottom:14px}
+.atx{white-space:pre-wrap;font-size:15px;line-height:1.9;max-width:680px;margin-bottom:12px}
+.empty{color:var(--mut);text-align:center;padding:40px}
+#dlg{position:fixed;inset:0;background:rgba(20,18,30,.72);display:none;align-items:center;justify-content:center;z-index:10;padding:14px}
+#dlg.on{display:flex}
+.box{background:#fff;border-radius:14px;padding:14px;max-width:560px;width:100%;max-height:96vh;overflow:auto}
+.box canvas{width:100%;height:auto;border-radius:10px;display:block}
+.box textarea{width:100%;height:120px;margin-top:10px;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:13px;font-family:inherit}
+.box .acts{padding:10px 0 0;flex-wrap:wrap}
+.quiz{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;max-width:640px}
+.quiz .op{display:block;width:100%;text-align:left;margin:6px 0;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;font-size:14px;font-family:inherit}
+.quiz .op.ok{background:#e3f6ea;border-color:#1a9c5b}.quiz .op.no{background:#fde8e5;border-color:#c9584b}
+table{border-collapse:collapse;width:100%;font-size:13px;background:#fff}
+td,th{border:1px solid var(--line);padding:6px 8px;text-align:left}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#2b2a33;color:#fff;padding:8px 16px;border-radius:999px;font-size:13px;display:none;z-index:20}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>解讀與權重工程｜心靈雞湯圖卡<small>I01–I32 × W01–W32｜192 張雙語文圖</small></h1>
+<input id="q" type="search" placeholder="搜尋：節點編號、關鍵字、金句、English…（例：I03、界線、fear）">
+<div class="tabs" id="tabs"></div>
+</div></header>
+<main><div class="wrap" id="out"></div></main>
+<div id="dlg"><div class="box">
+<canvas id="cv" width="1080" height="1080"></canvas>
+<textarea id="post"></textarea>
+<div class="acts">
+<button class="btn" id="bDl">⬇ 下載圖片 PNG</button>
+<button class="btn" id="bCp">📋 複製臉書貼文</button>
+<button class="btn" id="bTh">🎨 換風格</button>
+<button class="btn" id="bX">關閉</button>
+</div></div></div>
+<div id="toast"></div>
+<script>
+// 資料格式：@領域｜#節點｜其餘為「舊|新|金句|English|行動」
+const RAW_I=`
+@D1|現實辨識|不讓第一個解釋變成唯一真相
+#I01|Observation Interpretation|觀察解讀|R01 事實觀察|E01、E03、E09||「主管今天沒有稱讚我，所以他一定對我不滿。」請分出事實與推測。
+他沒回訊息，就是不在乎我。|目前只能確認尚未回覆，原因仍未知。|別讓未知的答案，提前傷害自己的心。|Don't let an answer you don't have yet hurt your heart in advance.|記錄已知事實。
+學生考差，就是不努力。|成績是結果，原因需要調查。|看見結果是開始，看見原因才是理解。|Seeing the result is the beginning; seeing the cause is understanding.|詢問一個學習障礙。
+今天很不順，我的人生很糟。|今天有幾件事不順，不代表整個人生失敗。|一天的陰雨，不能代表一生的天空。|One rainy day cannot speak for the sky of a lifetime.|列出一件仍然順利的事。
+#I02|Emotion Interpretation|情緒解讀|R02 感受辨識|E06、E04、E09||「我很焦慮，所以明天的報告一定會失敗。」如何重新解讀？
+我害怕，表示一定有危險。|害怕提醒我注意，仍須確認風險。|情緒是警鈴，不是判決書。|Emotion is an alarm bell, not a verdict.|列出一項實際危險訊號。
+我生氣，代表對方一定錯。|憤怒可能與需求、界線或事件有關。|聽見憤怒，也要聽見它背後的需要。|Hear the anger, and also the need behind it.|寫下一項未被滿足的需求。
+我難過，就是太脆弱。|難過是正常情緒，不代表缺乏能力。|流淚不會取消你的力量。|Tears do not cancel your strength.|用一句話命名感受。
+#I03|Fact–Story Separation|事實與故事分離|R03 事實與解釋分離|E01、E04、E03||「我考65分，所以我變笨了。」哪部分是事實？哪部分是解讀？
+他批評我，我就是沒有價值。|批評是一項評價，不等於完整自我價值。|別人的一句話，不是你生命的全部。|One sentence from someone else is not the whole of your life.|寫出批評的具體內容。
+這次失敗，我就是失敗者。|失敗是事件，不是身分。|一次跌倒，不必成為一生的名字。|One fall need not become your name for life.|把人格標籤改成事件描述。
+朋友拒絕邀請，就是討厭我。|拒絕邀請不等於拒絕整段關係。|一個拒絕，不必被寫成整段關係的結局。|One "no" need not be written as the ending of a whole relationship.|提出一個其他可能原因。
+#I04|Evidence Interpretation|證據解讀|R04 證據查核|E08、E09、E05||某產品有一百則好評，能否直接推論對所有人有效？為什麼？
+大家都說有效，就一定有效。|經驗分享需要與可靠證據分開。|真相不靠掌聲大小決定。|Truth is not decided by the volume of applause.|尋找原始研究或可靠資料。
+我直覺很準，所以不需要查證。|直覺可以是線索，但不能取代證據。|真正的自信，敢讓想法接受檢驗。|Real confidence dares to let its ideas be tested.|找出一項反證。
+影片講得很專業，一定可信。|表達流暢不代表內容正確。|漂亮的語言，需要真實的證據支撐。|Beautiful words still need real evidence to stand on.|核對一項關鍵主張。
+@D2|問題建構|讓模糊的困境找到可以處理的入口
+#I05|Problem Interpretation|問題命名解讀|R05 問題命名|E04、E03、E07||將「我的工作一團亂」改寫成兩個可以檢查的具體問題。
+我就是很笨。|我需要確認尚未掌握的能力。|當你停止貼標籤，成長才找到入口。|When you stop labeling yourself, growth finds its way in.|寫出一項待學技能。
+人生完全失控。|有幾項具體問題需要分開處理。|再大的迷霧，也能先照亮腳下一步。|However thick the fog, you can still light the next step.|列出三項問題。
+我沒有時間。|目前的時間安排可能不符合優先目標。|人生不必做完所有事，只需認清值得的事。|Life doesn't ask you to finish everything, only to recognize what is worth it.|減少一項低價值活動。
+#I06|Feature Interpretation|特徵拆解解讀|R06 特徵拆解|E04、E05、E09||「這個學生數學很差」至少可以拆成哪三項能力？
+英文不好，代表什麼都不會。|可以分別檢查單字、句法、閱讀與推論。|當困難被拆開，你就不必被整個困難嚇倒。|Once a difficulty is taken apart, the whole of it can no longer frighten you.|分類五題錯題。
+孩子不自律，就是懶惰。|需要觀察動機、環境、壓力與任務難度。|理解比責怪更能找到改變的方向。|Understanding finds the path to change better than blame does.|觀察一次拖延情境。
+我總是疲累，表示自己沒用。|疲勞可能涉及睡眠、健康或工作負荷。|身體的訊號值得被照顧，不值得被羞辱。|Your body's signals deserve care, not shame.|記錄三天疲勞與睡眠。
+#I07|Relational Interpretation|關係與因果解讀|R07 關係辨識|E05、E09、E10||某班換教材後成績提高，為什麼不能直接認定完全是教材的功勞？
+吃了某種食品後精神變好，一定是食品造成。|可能還有睡眠、飲食或其他因素。|同時出現，不代表彼此造成。|Appearing together does not mean one caused the other.|列出兩項可能的混雜因素。
+努力沒有成果，表示努力無效。|需要檢查方法與成果之間的環節。|找對路，比只會加快腳步更重要。|Finding the right road matters more than walking faster.|畫出三步因果假設。
+關係衝突一定都是某個人的問題。|可以分析互動模式，也要分清具體責任。|理解關係，不代表替傷害開脫。|Understanding a relationship is not excusing the harm.|記錄雙方具體行為。
+#I08|Context Interpretation|情境邊界解讀|R08 情境與邊界|E03、E05、E09||一套教學法在資優班有效，能否直接推論在所有班級同樣有效？
+別人的成功方法一定適合我。|方法是否適用，取決於條件。|別人的花期，不必成為你的時鐘。|Someone else's season of bloom need not be your clock.|比較一項關鍵差異。
+以前有效，現在一定有效。|環境改變後，需要重新檢查。|昨日的答案，值得珍惜，也值得更新。|Yesterday's answer deserves to be cherished, and to be updated.|找出一個改變的條件。
+所有學生都應該用相同方式學習。|不同學生可能有不同的學習瓶頸。|公平不一定是給每個人一模一樣的方法。|Fairness is not always giving everyone the very same method.|替一位學生調整一項練習。
+@D3|認知權重|不被最強烈的印象牽著走
+#I09|Attention Interpretation|注意力解讀|R09 注意力|E06、E08、E09||為什麼一則負評不應自動成為今天最重要的事情？
+所有訊息都必須立刻處理。|重要性與緊急程度需要區分。|不是每個聲音，都值得你交出整顆心。|Not every voice deserves your whole heart.|選出今天最重要的任務。
+我一直想著問題，就是在解決問題。|反覆思考不一定產生新資訊。|有時候放下原來的角度，才能看見新的出口。|Sometimes you must let go of the old angle to see a new way out.|把擔心改寫成一個問題。
+別人的評價值得我全天關注。|注意力應與自己的核心目標一致。|別把生命最珍貴的光，全部照在別人的眼光上。|Don't spend life's most precious light entirely on other people's gaze.|設定二十分鐘專注時段。
+#I10|Salience Interpretation|顯著性解讀|R10 顯著性|E02、E06、E08||為什麼看到一則重大意外新聞，不代表同類事件發生率很高？
+最讓我難過的事情，就是最重要的事情。|情緒強度不等於客觀重要性。|最深的傷值得照顧，卻不必掌握全部方向。|The deepest wound deserves care, but it need not hold the whole steering wheel.|分別評估情緒強度與重要性。
+一次批評可以抹去所有努力。|需要看較完整的表現紀錄。|別讓一朵烏雲，遮住整片天空。|Don't let one dark cloud cover the entire sky.|找出兩項進步證據。
+新聞越驚人，風險一定越高。|資訊曝光度與實際發生率不同。|最吵的警報，不一定代表最大的危險。|The loudest alarm is not always the greatest danger.|查核實際風險資料。
+#I11|Weight Interpretation|權重校準解讀|R11 權重校準|E02、E06、E10||為什麼「很可怕」與「很可能發生」不能畫上等號？
+別人的期待永遠比我的需求重要。|個人需求、責任與界線都應納入考量。|照顧世界的時候，也要記得照顧自己。|While caring for the world, remember to care for yourself.|列出一項不可忽略的需求。
+所有問題都一樣重要。|應優先處理影響最大的瓶頸。|人生不必搬走所有石頭，先移開擋路的那一塊。|You needn't move every stone in life; first move the one blocking the road.|排出前三項優先順序。
+我最害怕的結果，一定最可能發生。|發生機率與損失程度需要分開。|別讓恐懼替未來投票。|Don't let fear cast the vote for your future.|分別估計可能性與影響。
+#I12|Memory Interpretation|記憶重建解讀|R12 記憶重建|E03、E08、E09||「我記得上次也是這樣，所以每次都會這樣。」存在什麼推論問題？
+以前受傷，未來一定還會受傷。|過去是參考，不是所有未來的保證。|昨日的傷口，不必成為明天的預言。|Yesterday's wound need not become tomorrow's prophecy.|找出新舊情境差異。
+我記得很清楚，表示一定完整正確。|記憶可能受到重建與情緒影響。|珍惜回憶，也替真相留一扇窗。|Cherish the memory, and leave a window open for the truth.|核對一項客觀紀錄。
+最近一次失敗，代表我一直失敗。|應回顧整段歷程。|最後一頁的雨，不能抹去前面所有陽光。|Rain on the last page cannot erase all the sunshine before it.|列出三項過去的進步。
+@D4|模型彈性|讓人生不只剩下一種解釋
+#I13|Alternative Interpretation|替代解讀|R13 替代解釋|E01、E03、E09||同事沒有邀請你參加聚餐，請提出三種不帶定罪的解釋。
+他不理我，就是討厭我。|可能是忙碌、疲倦或需要空間。|不要讓第一個猜測，成為最後的真相。|Don't let the first guess become the final truth.|列出三種可能原因。
+我沒成功，就是沒有天分。|也可能是練習方式、時間或資源不足。|還沒找到方法，不代表沒有可能。|Not having found the way yet does not mean there is no way.|測試一種新方法。
+計畫改變就是壞事。|改變可能帶來損失，也可能創造新選項。|不是每個轉彎都是迷路。|Not every turn means you are lost.|列出一項風險與一項機會。
+#I14|Cognitive Decoupling|認知解耦|R14 認知解耦|E04、E06、E09||「我想到自己會失敗」與「我一定會失敗」有何不同？
+我覺得自己沒用，所以我真的沒用。|我正在產生自我否定的念頭。|你可以聽見心裡的聲音，卻不必服從每一句。|You can hear the voice inside without obeying every line.|在念頭前加上「我正在想到」。
+我害怕，就代表不能開始。|害怕與安全的小行動可以同時存在。|勇敢不是沒有恐懼，而是懂得安全地前進。|Courage is not the absence of fear, but knowing how to move forward safely.|完成一個低風險步驟。
+別人批評我，我就必須接受他的定義。|我可以檢查批評是否有根據。|別人的聲音可以被聽見，不必成為你的主人。|Other voices may be heard; they need not become your master.|只保留可驗證的批評內容。
+#I15|Counterevidence Interpretation|反證解讀|R15 反證思考|E08、E09、E03||你相信「只要每天讀兩小時就一定進步」，什麼結果會讓你修正這個判斷？
+我永遠做不好。|只要曾有成功案例，「永遠」就不成立。|一個真實的反例，也能替人生打開一扇窗。|One true counterexample can open a window in your life.|找出一次成功紀錄。
+我相信的事情不需要被質疑。|有價值的信念應能接受證據檢驗。|真正堅定的人，不害怕真相靠近。|The truly steadfast are not afraid when truth comes near.|尋找一項可靠反證。
+所有人都同意，所以一定正確。|共識不等於證明。|清醒，是在人群之中仍保有思考。|Clarity is keeping your own thinking in the middle of the crowd.|查找不同觀點的證據。
+#I16|Perspective Integration|多視角整合解讀|R16 多視角整合|E05、E07、E09||學生不交作業，請從學生、教師、家庭三個角度分析可能因素。
+只有我的立場才合理。|不同的人可能擁有不同資訊與需求。|願意換一扇窗看世界，心中的房間就會更寬。|Look at the world through another window, and the room in your heart grows wider.|寫出對方的一項需求。
+科學與哲學只能選一個。|科學檢驗經驗主張，哲學澄清概念與價值。|不同的知識可以互相照亮，不必彼此取代。|Different kinds of knowledge can light each other up without replacing each other.|分開寫出事實與價值問題。
+找到一個原因，就不用再找。|複雜問題可能涉及多個互動因素。|世界不只有一條線，智慧是看見線與線的關係。|The world is more than one line; wisdom sees how the lines relate.|列出三個可能變數。
+@D5|預測決策|不讓擔心成為命運的預言
+#I17|Probability Interpretation|機率解讀|R17 機率判斷|E02、E03、E09||一項計畫成功機率為80%，是否表示可以忽略失敗後果？
+我覺得會發生，所以一定會發生。|可能性與確定性不同。|擔心不是預言，希望也不是保證。|Worry is not prophecy, and hope is not a guarantee.|標註預測信心。
+上次失敗，這次一定失敗。|需要比較兩次條件。|昨天的跌倒，不必提前取消明天。|Yesterday's fall need not cancel tomorrow in advance.|找出一項條件差異。
+成功機率很高，就完全沒有風險。|仍須評估失敗代價。|成熟的勇氣，也懂得保護自己。|Mature courage also knows how to protect itself.|列出最壞結果。
+#I18|Scenario Interpretation|情境預測解讀|R18 情境預測|E07、E09、E05||為下週考試建立理想、一般、不理想三種情境及應對方式。
+未來一定照我的計畫走。|應準備多種可能情境。|人生不一定照劇本走，但你可以準備不同的下一幕。|Life may not follow the script, but you can prepare more than one next scene.|寫出三種情境。
+未來無法確定，所以不用準備。|不確定仍可以進行風險準備。|看不清整條路，也能先照亮腳下。|Even when you can't see the whole road, you can light the ground beneath your feet.|準備一項備案。
+努力就一定成功。|成果也受到策略、資源與環境影響。|努力是種子，方法與環境也是土壤。|Effort is the seed; method and environment are the soil.|檢查一項外部條件。
+#I19|Risk Interpretation|風險解讀|R19 風險評估|E02、E07、E09||兩項投資預期報酬不同，還需要哪些資訊才能比較？
+我不能承受任何失敗。|可以設計損失有限的小實驗。|真正的安全，不是永遠停留，而是懂得保護自己。|Real safety is not staying put forever, but knowing how to protect yourself.|設定損失上限。
+不做決定就沒有風險。|延遲與不行動也可能有代價。|停留也可能付出代價。|Standing still can have a price too.|比較行動與不行動的風險。
+報酬越高越值得追求。|應同時考慮風險、成本與目標。|真正的富足，不是得到最多，而是守住重要的事。|True abundance is not getting the most, but keeping what matters.|列出三項決策條件。
+#I20|Resource Interpretation|資源配置解讀|R20 資源配置|E07、E09、E10||已花很多錢的計畫持續虧損，為何不能只因過去投入而決定繼續？
+所有事情都必須做到最好。|資源有限，需要優先順序。|不必在每個地方發光，才能擁有明亮的人生。|You don't have to shine everywhere to have a bright life.|選出本週第一目標。
+已經投入很多，就不能停止。|未來效益比過去沉沒成本更值得考量。|珍惜付出，不必讓付出成為枷鎖。|Honor what you gave, without letting it become your chains.|重新評估繼續投入的價值。
+休息就是浪費時間。|恢復是維持長期能力的必要條件。|休息不是放棄，而是讓自己走得更遠。|Rest is not giving up; it lets you go farther.|安排十五分鐘休息。
+@D6|行動實驗|把理解轉成可以驗證的改變
+#I21|Minimum Action Interpretation|最小行動解讀|R21 最小行動|E07、E02、E09||將「我要完全學會英文」改成今天可完成的最小行動。
+做不到完美，就不值得開始。|可以先做最小可行版本。|一個不完美的開始，勝過一百個完美幻想。|One imperfect start beats a hundred perfect fantasies.|先做五分鐘。
+改變必須一次完成。|小步驟可以逐步累積。|人生的轉彎，常從微小選擇開始。|Life's turning points often begin with tiny choices.|建立兩分鐘習慣。
+準備不足就完全不能行動。|在風險可控時，可以邊試邊學。|有些能力，是開始之後慢慢長出來的。|Some abilities only grow after you begin.|完成一個安全的小測試。
+#I22|Exploration Interpretation|探索與利用解讀|R22 探索與利用|E07、E08、E09||既有教學法有效時，如何低成本測試一個新方法？
+有效的方法永遠不必改變。|保留有效部分，也持續探索。|守住已有的光，也為未知留一扇窗。|Keep the light you have, and leave a window open for the unknown.|每週測試一項小改進。
+新方法一定比較好。|新舊方法都需要比較結果。|進步不是永遠追新，而是找到真正有效的方法。|Progress is not chasing the new forever, but finding what truly works.|設定相同的比較指標。
+探索失敗就是浪費。|探索可能提供有價值的新資訊。|有些路沒有帶你抵達，卻教會你辨認方向。|Some roads never took you there, yet taught you to read direction.|記錄一次試驗的發現。
+#I23|Habit Interpretation|習慣解讀|R23 習慣設計|E04、E07、E05||一位學生常忘記背單字，除了責怪自制力，還能調整哪三個條件？
+我沒自制力，所以做不到。|環境與提示也會影響習慣。|改變不必每天和意志力拔河。|Change doesn't have to be a daily tug-of-war with willpower.|移除一項干擾。
+中斷一天，整個計畫就失敗。|恢復機制是習慣的一部分。|真正的自律，是中斷後仍願意重新開始。|Real discipline is being willing to start again after a break.|恢復兩分鐘練習。
+只要有動力就能堅持。|需要穩定提示、流程與環境支持。|熱情會起伏，好的安排能陪你走得更遠。|Passion rises and falls; good arrangements walk with you farther.|將新習慣接在固定活動後。
+#I24|Execution Interpretation|執行監控解讀|R24 執行監控|E04、E05、E09||每天讀書三小時卻沒有進步，應如何區分方法錯誤與執行錯誤？
+我知道方法，就代表我做對了。|理解與實際執行需要分別檢查。|智慧不只存在於想法，更存在於實踐。|Wisdom lives not only in ideas, but even more in practice.|建立三項執行檢查。
+每天很忙，就是有效率。|需要觀察完成的實際成果。|忙碌不一定是前進。|Being busy is not always moving forward.|記錄一項可驗證成果。
+沒達標，就是我不夠努力。|可能需要調整流程與工具。|生命有時不是要你更用力，而是換一種走法。|Sometimes life asks you not to push harder, but to walk differently.|找出一項執行障礙。
+@D7|回饋糾錯|讓每次落差都成為資訊
+#I25|Outcome Interpretation|結果測量解讀|R25 結果測量|E08、E09、E07||學生測驗從60分進步到80分，還需要確認哪些條件才能判斷能力是否提升？
+我覺得進步，就是進步。|需要用適當指標檢查。|真正的成長，不怕被現實看見。|Real growth is not afraid to be seen by reality.|記錄前後可比較的成果。
+分數提高，代表所有能力都變好。|要確認分數測量的是哪項能力。|別只追求漂亮的數字，也要追求真正的實力。|Don't chase only pretty numbers; chase real ability too.|增加一項實際應用測試。
+努力很多，就不需要看結果。|投入與成果應分別記錄。|珍惜努力，也要讓努力找到方向。|Cherish your effort, and help it find its direction.|比較時間與成果。
+#I26|Prediction Error Interpretation|預測誤差解讀|R26 預測誤差|E03、E04、E09||預估學生平均70分，實際78分，應如何分析這8分差距？
+我猜錯了，代表我很笨。|預測誤差是校準模型的資訊。|錯誤不是智慧的敵人，拒絕修正才是。|Error is not the enemy of wisdom; refusing to correct it is.|記錄預測與實際差距。
+一次結果不好，代表方法完全無效。|需要檢查波動、執行與適用條件。|一次風雨，不代表整個季節失去方向。|One storm does not mean the whole season has lost its way.|觀察是否持續偏差。
+結果比預期好，不必分析。|正向誤差也值得理解。|驚喜值得慶祝，也值得學習。|A pleasant surprise is worth celebrating, and worth learning from.|找出可能的成功因素。
+#I27|Error Attribution Interpretation|錯誤歸因解讀|R27 十大錯誤歸因|E04、E05、E10||學生知道解題方法卻因漏看否定詞答錯，屬於哪個系統錯誤層？如何修正？
+事情沒做好，都是我能力差。|可能是觀察、表徵、變數、權重或執行出錯。|找到真正的瓶頸，比反覆責怪自己更有力量。|Finding the real bottleneck is more powerful than blaming yourself again and again.|選出最可能的錯誤層。
+只要更努力，就能修正所有問題。|不同錯誤需要不同修正方法。|有些問題需要的不是力氣，而是看清方向。|Some problems need not more force, but a clearer view of direction.|為錯誤配對一個修正策略。
+一次失敗代表整套方法都沒有價值。|應保留有效部分，修正失效環節。|成長不必推翻全部過去。|Growing does not require overturning your entire past.|列出一項保留與一項修改。
+#I28|Model Revision Interpretation|模型修正解讀|R28 模型修正|E08、E09、E07||原本認為「每天抄單字十遍最有效」，新測試顯示主動回想效果較好，應如何更新教學模型？
+改變想法代表我沒有原則。|依證據更新判斷，是成熟的表現。|真正堅定的人，不怕為真相重新調整方向。|The truly steadfast are not afraid to change course for the truth.|修正一項過時假設。
+多年來有效的方法不可能失效。|環境變化可能改變方法的效果。|曾經帶你走過一段路的答案，不必陪你走完一生。|An answer that carried you part of the way need not walk with you for life.|重新檢查一項舊方法。
+只要想通，就代表改變了。|需要新行動與現實驗證。|想通是種子，行動才讓智慧生根。|Insight is the seed; action is what lets wisdom take root.|測試一個新策略。
+@D8|智慧遷移|讓新的解讀真正成為能力
+#I29|Delayed Retest Interpretation|延遲複測解讀|R29 延遲複測|E03、E08、E09||學生今天十題全對，為什麼仍需要一週後測試？
+今天學會，就代表永遠會。|需要隔一段時間再次測試。|真正屬於你的智慧，經得起時間的考驗。|Wisdom that is truly yours can stand the test of time.|七天後不看資料複測。
+看懂答案，就是已經掌握。|獨立提取才能更好地檢查學習成果。|看懂是相遇，掌握需要一次次重逢。|Understanding is a first meeting; mastery takes many reunions.|遮住答案重新作答。
+一次成功就證明方法永久有效。|需要多次與不同條件的測試。|一次綻放值得欣賞，持續生長更值得觀察。|One bloom is worth admiring; steady growth is worth watching even more.|安排第二次驗證。
+#I30|Transfer Interpretation|跨情境遷移解讀|R30 跨情境遷移|E03、E05、E09||如何將「事實與解讀分離」從英文課轉用到家庭溝通？
+課堂上學會，生活中自然會用。|需要在新情境中實際練習。|知識走出書本，才開始成為生活的智慧。|Only when knowledge leaves the book does it begin to become wisdom for living.|找一個生活應用案例。
+這個方法只能用在原來的事情。|可以檢查核心原理能否轉用。|真正深刻的理解，能在不同風景中找到新的用途。|Deep understanding finds new uses in different landscapes.|尋找第二個應用場景。
+換了環境，一切又要從零開始。|先辨認可遷移的能力，再補足差異。|環境會改變，但累積的能力不必全部歸零。|Environments change, but what you've built need not return to zero.|列出一項可轉用技能。
+#I31|Metacognitive Interpretation|後設認知解讀|R31 後設認知|E08、E09、E04||一位學生自認有九成把握，實際只答對六成，代表需要校準什麼？
+我覺得懂了，就是懂了。|理解感與實際能力需要分開。|真正的聰明，是知道自己還有哪些不懂。|Real intelligence is knowing what you still don't understand.|不看資料解釋概念。
+有自信就代表能力強。|自信需要與表現校準。|最穩定的自信，來自一次次真實驗證。|The steadiest confidence comes from being tested for real, again and again.|比較預估與實際正確率。
+我最了解自己，不需要回饋。|每個人都可能存在盲點。|再明亮的眼睛，也需要另一面鏡子。|Even the brightest eyes need another mirror.|詢問一項具體回饋。
+#I32|Self-Updating Interpretation|自主更新解讀|R32 自主更新|E03、E04、E09||選擇一個曾深信不疑的舊觀念，說明新證據、修正內容與下次驗證方式。
+我就是這樣，永遠不會改變。|部分習慣、技能與反應方式可以逐步調整。|你不必永遠成為昨天的自己。|You don't have to be yesterday's self forever.|改變一個日常反應。
+成長就是再也不犯錯。|成長是更快發現、理解與修正錯誤。|成熟不是不再跌倒，而是更懂得重新站穩。|Maturity is not never falling, but knowing better how to stand again.|記錄一次有效修正。
+我需要永遠正確的答案。|我需要能持續接受證據與回饋的模型。|真正的自由，是保有重新理解人生的能力。|True freedom is keeping the ability to understand life anew.|完成一次完整模型更新。
+`;
+const RAW_W=`
+@D1|資訊權重|Information Weighting
+#W01|Attention Priority|注意力優先權重|R09 注意力、I09 注意力解讀|權重錯誤、目標錯誤|每日核心任務完成率。|今天有十件待辦事項，如何選出最值得先完成的一件？
+別人的批評 ＞ 今天的任務。|核心任務 ＞ 未經確認的評價。|別讓一句話偷走你整天的光。|Don't let one sentence steal the light of your whole day.|先完成20分鐘重要任務。
+手機通知 ＞ 深度學習。|專注學習 ＞ 非緊急通知。|注意力在哪裡，時間就流向哪裡。|Where your attention goes, your time flows.|關閉通知30分鐘。
+所有問題同樣重要。|影響最大的瓶頸優先。|不是每塊石頭都值得先搬。|Not every stone deserves to be moved first.|選出今天第一瓶頸。
+#W02|Evidence Reliability|證據可信度權重|R04 證據查核、I04 證據解讀|觀察錯誤、權重錯誤|重要主張的來源核對率。|兩位專家說法相反，你如何分配可信度？
+朋友說有效 ＞ 研究證據。|可靠研究與適用條件優先。|真相不靠誰說得最大聲。|Truth does not belong to whoever speaks the loudest.|查核一項原始資料。
+符合期待的資訊 ＞ 相反證據。|支持與反對證據都要檢查。|願意看見反證，才有真正的自由。|Only those willing to see counterevidence are truly free.|找一項可靠反證。
+專業頭銜 ＞ 實際論證。|證據品質與論證內容優先。|尊重專業，也讓證據說話。|Respect expertise, and let the evidence speak.|確認資料來源與研究限制。
+#W03|Signal–Noise Weighting|訊號與雜訊權重|R01 事實觀察、I01 觀察解讀|觀察錯誤、測量錯誤|無關資訊時間占比。|某產品一天收到十則留言，哪些資訊真正有助於評估效果？
+最吸睛的新聞 ＞ 真正重要的資訊。|相關性與可靠度優先。|最吵的聲音，不一定最重要。|The loudest voice is not always the most important.|刪除一則無關資訊。
+一次偶然事件 ＞ 長期趨勢。|依問題需要，綜合單次事件與多次紀錄。|別讓一朵浪花代表整片海。|Don't let one splash stand for the whole sea.|比較最近五次紀錄。
+訊息越多越好。|有助決策的資訊優先。|知識的價值，不在堆積，而在能否使用。|The value of knowledge lies not in piling it up, but in being able to use it.|摘要三項關鍵資訊。
+#W04|Novelty & Difference|新差異資訊權重|R10 顯著性、I10 顯著性解讀|表徵錯誤、權重錯誤|新資訊轉成可驗證假設的比例。|一則新聞很新奇，為什麼不一定值得你改變計畫？
+重複一百次的說法 ＞ 一項可靠的新發現。|有證據支持的新差異值得檢查。|真正的資訊，能改變原本的理解。|Real information changes what you understood before.|記錄一項新差異。
+新奇資訊一定重要。|新奇度與決策價值分開。|不是所有新鮮事，都值得重新安排人生。|Not every novelty is worth rearranging your life for.|評估新資訊是否影響決策。
+只看熟悉的內容。|保留對不同觀點的探索。|成長從願意看見未知開始。|Growth begins with a willingness to see the unknown.|閱讀一項可靠的不同觀點。
+@D2|認知權重|Cognitive Weighting
+#W05|Memory Weighting|記憶權重|R12 記憶重建、I12 記憶解讀|觀察錯誤、權重錯誤|使用完整紀錄而非單一回憶的次數。|最近一次考差，為何不能推論整學期都沒有進步？
+最近一次失敗 ＞ 過去所有進步。|完整歷程優先。|最後一頁的雨，不能抹去整本書的陽光。|Rain on the last page cannot erase the sunshine of the whole book.|列出三次進步。
+痛苦回憶 ＞ 現在的新證據。|過去經驗與當下證據分開評估。|過去值得被理解，不必永遠主導現在。|The past deserves to be understood; it need not rule the present forever.|比較新舊情境。
+記得越清楚 ＞ 越可信。|記憶鮮明度不等於準確度。|記憶值得珍惜，事實仍值得核對。|Memories are worth cherishing; facts are still worth checking.|查核一項紀錄。
+#W06|Belief Weighting|信念權重|R15 反證思考、I15 反證解讀|表徵錯誤、權重錯誤|願意依反證更新信念的次數。|什麼證據足以讓你修正「我永遠學不好英文」？
+我一直相信 ＞ 新證據。|信念應隨可靠證據調整。|堅定不是拒絕改變，而是願意靠近真相。|Steadfastness is not refusing to change, but being willing to move toward the truth.|檢查一項舊信念。
+我沒有天分 ＞ 可改善的技能。|具體能力與練習結果優先。|別讓一句舊信念取消所有可能。|Don't let one old belief cancel every possibility.|練習一項弱點。
+別人的否定 ＞ 自己的實際能力。|具體表現優先於籠統評價。|別人的一句話，不是你的全部。|One sentence from someone else is not all of you.|列出兩項能力證據。
+#W07|Interpretation Weighting|解讀權重|R13 替代解釋、I13 替代解讀|表徵錯誤、情境邊界錯誤|每次重大判斷提出替代解釋的數量。|朋友沒有回訊息，為何不能直接把「不在乎」排在最高可信度？
+第一個猜測 ＞ 其他可能。|依證據比較多個解釋。|第一個答案，不一定是最後的真相。|The first answer is not necessarily the final truth.|寫出三種解釋。
+最負面的解讀 ＞ 中性解讀。|不因情緒強度而提高可信度。|心裡的恐懼，不必替世界作證。|The fear in your heart need not testify for the world.|區分事實與推測。
+熟悉的故事 ＞ 新情境。|檢查當下條件。|新的一天，不必永遠使用昨天的答案。|A new day need not keep using yesterday's answer.|找出一項新條件。
+#W08|Causal Weighting|因果權重|R07 關係辨識、I07 因果解讀|關係錯誤、節點錯誤|因果假設有無列出混雜因素。|學生換教材後成績提高，如何避免高估教材的因果權重？
+同時發生 ＞ 因果證據。|區分相關與因果。|一起出現，不代表彼此造成。|Showing up together does not mean one caused the other.|列出兩項其他原因。
+單一原因 ＞ 多變數分析。|考慮關鍵變數與交互作用。|複雜人生，很少只有一個開關。|A complex life rarely has just one switch.|畫出三個變數。
+直覺歸因 ＞ 可測試機制。|優先提出可檢驗的機制假設。|真正的理解，經得起現實的追問。|Real understanding holds up when reality asks follow-up questions.|設計一個簡單測試。
+@D3|情緒權重|Emotional Weighting
+#W09|Emotional Salience|情緒顯著權重|R02 感受辨識、I02 情緒解讀|權重錯誤、表徵錯誤|能否分辨感受與事實。|當你很生氣時，如何避免直接認定自己一定正確？
+最強烈的感受 ＞ 全部事實。|情緒與證據分開。|情緒值得被聽見，卻不必成為唯一裁判。|Emotions deserve to be heard, but need not be the only judge.|分欄記錄情緒與事實。
+一次憤怒 ＞ 長期關係評估。|綜合行為模式與界線。|一場風雨，不代表所有季節。|One storm does not stand for every season.|回顧具體互動紀錄。
+難過＝脆弱。|情緒反應不等於人格缺陷。|流淚不會讓你的力量消失。|Crying does not make your strength disappear.|命名情緒與需求。
+#W10|Threat Weighting|威脅評估權重|R19 風險評估、I19 風險解讀|權重錯誤、情境邊界錯誤、目標錯誤|高風險情境是否優先採取安全措施。|為何不應把真正的人身威脅只當作「想太多」？
+任何不舒服＝危險。|區分不舒服與實際威脅。|不是每一道警鈴，都代表同樣的危險。|Not every alarm signals the same danger.|辨識客觀危險訊號。
+害怕失敗 ＞ 嘗試的價值。|在安全前提下比較風險與收益。|勇敢可以很小，也可以很謹慎。|Courage can be small, and it can be careful.|設計低風險嘗試。
+維持和諧 ＞ 人身安全。|安全與明確界線優先。|理解別人，不代表必須容忍傷害。|Understanding others does not mean you must tolerate harm.|確認安全資源與求助方式。
+#W11|External Approval|外界認可權重|R11 權重校準、I11 權重解讀|權重錯誤、目標錯誤|是否能表達需求而不過度自責。|當他人期待與你的重要界線衝突時，如何重新排序？
+別人喜歡我 ＞ 自己的需求。|尊重他人，也保留自主與界線。|你不必靠委屈自己，證明自己值得被愛。|You don't have to wrong yourself to prove you are worth loving.|練習一次有禮貌的拒絕。
+一則負評 ＞ 完整能力。|以具體表現與可信回饋評估。|別讓一句話定義整個人生。|Don't let one sentence define a whole life.|找出客觀成果。
+被所有人認同 ＞ 真實表達。|誠實、尊重與適當界線優先。|真正的自由，是不必討好每一個人。|True freedom is not having to please everyone.|清楚說出一項需求。
+#W12|Emotion Regulation|情緒調節權重|R14 認知解耦、I14 認知解耦|行動錯誤、權重錯誤|衝動回應次數與事後滿意度。|情緒很強烈時，哪些決策應延後？哪些安全行動不能延後？
+立刻反擊 ＞ 理解與選擇。|先穩定情緒，再選擇回應。|你不必把每一次情緒，都變成立刻的行動。|You don't have to turn every emotion into immediate action.|非緊急情境先暫停一分鐘。
+壓抑情緒 ＞ 認識情緒。|辨識、接納並適當表達。|情緒不是敵人，它也需要被理解。|Emotion is not the enemy; it needs to be understood too.|寫出情緒名稱與需求。
+情緒完全消失才能行動。|可在情緒仍存在時採取適當行動。|不必等心裡完全放晴，才能走出第一步。|You needn't wait for clear skies inside to take the first step.|完成一項安全的小任務。
+@D4|價值權重|Value Weighting
+#W13|Core Values|核心價值權重|R20 資源配置、I20 資源解讀|目標錯誤、權重錯誤|重大決策與核心價值一致率。|高薪工作與健康衝突時，如何建立決策標準？
+面子 ＞ 誠信。|誠信優先於短暫認可。|真正的尊嚴，不靠別人的掌聲維持。|Real dignity is not kept alive by other people's applause.|做一次符合原則的選擇。
+短期利益 ＞ 長期健康。|健康與可持續生活優先。|別用明天的生命，交換今天的掌聲。|Don't trade tomorrow's life for today's applause.|安排必要休息。
+所有價值同樣重要。|依情境辨識不可妥協的原則。|知道什麼不能失去，才知道什麼值得追求。|Know what you cannot lose, and you'll know what is worth pursuing.|寫下前三項核心價值。
+#W14|Identity Weighting|身份信念權重|R05 問題命名、I05 問題命名|表徵錯誤、權重錯誤|固定人格標籤使用頻率。|如何把「我天生沒有領導力」改成可測試的能力描述？
+「我就是這樣」＞ 新的能力證據。|身份描述可以隨成長更新。|昨天的自己，不是今天的牢籠。|Yesterday's self is not today's cage.|改寫一項固定身份標籤。
+一次失敗 ＞ 長期表現。|完整經驗與可改善能力優先。|一次跌倒，不是你的名字。|One fall is not your name.|列出三項能力。
+角色期待 ＞ 真實需求。|角色責任與個人需求並重。|你可以扮演很多角色，也值得保有自己。|You can play many roles and still deserve to keep yourself.|寫下一項角色之外的需求。
+#W15|Goal Hierarchy|目標階層權重|R20 資源配置、I20 資源解讀|目標錯誤、測量錯誤|每週核心目標進度。|學生刷題數量增加，但閱讀能力沒改善，可能是哪一種目標錯置？
+眼前急事 ＞ 長期重要目標。|兼顧急迫性與長期價值。|別讓今天的雜音，蓋過真正想走的方向。|Don't let today's noise drown out the direction you truly want to go.|設定一項週目標。
+別人的目標 ＞ 自己的選擇。|依自主價值與責任建立目標。|你的生命，需要有自己的方向。|Your life needs a direction of its own.|寫出一個自主目標。
+追求數字 ＞ 真正目的。|先確認指標服務什麼目標。|不要為了追逐分數，忘了為什麼出發。|Don't chase the score and forget why you set out.|寫出目標背後的目的。
+#W16|Long-Term Value|長期價值權重|R18 情境預測、I18 情境預測|時間錯誤、目標錯誤|長期目標的持續進度。|為什麼高短期報酬不必然代表較高的長期價值？
+立即舒服 ＞ 長期成長。|比較短期感受與長期結果。|不是每個舒服的選擇，都能帶你到想去的地方。|Not every comfortable choice takes you where you want to go.|評估一項行動的三個月影響。
+短期成績 ＞ 持久能力。|能力保留與應用優先。|真正的學習，是考試結束後仍留下的力量。|Real learning is the strength that remains after the exam is over.|安排七天後複測。
+眼前報酬 ＞ 長期風險。|納入資金需求與承受能力。|走得遠，比一時跑得快更重要。|Going far matters more than running fast for a moment.|檢查長期風險。
+@D5|關係權重|Relationship Weighting
+#W17|Trust Weighting|信任權重|R04 證據查核、I04 證據解讀|權重錯誤、觀察錯誤|承諾履行率及安全界線是否被尊重。|一個人常道歉卻反覆違約，應提高哪種證據的權重？
+說得好聽 ＞ 實際行為。|長期可靠行為優先。|信任不只聽承諾，也看行動。|Trust listens to promises, and also watches actions.|觀察承諾是否兌現。
+熟悉的人一定可靠。|熟悉與可信度分開。|親近不代表不需要界線。|Closeness does not mean boundaries are unnecessary.|確認一項實際紀錄。
+一次犯錯＝永遠不可信。|依錯誤性質、修復行為與風險判斷。|信任可以重新建立，但需要真實的行動。|Trust can be rebuilt, but it takes real action.|訂出具體觀察標準。
+#W18|Boundary Weighting|關係界線權重|R08 情境邊界、I08 情境解讀|情境邊界錯誤、目標錯誤|界線被尊重的情況。|當有人以憤怒要求你放棄安全界線時，如何排序？
+維持關係 ＞ 個人安全。|安全優先於表面和諧。|愛與理解，不需要以失去安全為代價。|Love and understanding should never cost you your safety.|確認一項安全界線。
+拒絕別人＝自私。|合理拒絕是維持界線的方法。|你可以善良，也可以說不。|You can be kind, and you can say no.|練習一句明確拒絕。
+對方的情緒 ＞ 我的全部需求。|尊重情緒，也區分各自責任。|關心別人，不代表要替別人活。|Caring for others does not mean living their lives for them.|寫出自己的責任範圍。
+#W19|Social Influence|社會影響權重|R16 多視角整合、I16 多視角解讀|權重錯誤、觀察錯誤|重要決策的獨立證據核對率。|當社群一致推薦某產品，還需要哪些資訊？
+多數人認同 ＞ 可靠證據。|群體意見與證據分開。|人多不一定代表方向正確。|A crowd does not guarantee the right direction.|查核一項群體主張。
+有名的人說 ＞ 專業證據。|依相關專長與資料品質判斷。|名氣可以吸引目光，不能取代真相。|Fame can draw the eye; it cannot replace the truth.|確認專業領域。
+不合群＝錯誤。|尊重不同意見與合理自主。|不必和所有人一樣，才能走得穩。|You don't have to be like everyone else to walk steadily.|清楚表達一項不同觀點。
+#W20|Responsibility Weighting|責任權重|R07 關係辨識、I07 因果解讀|關係錯誤、目標錯誤、情境邊界錯誤|責任分配是否依事實與可控制性。|在衝突中，如何分開「原因」、「責任」與「可採取的行動」？
+所有衝突都是我的錯。|依具體行為區分責任。|願意負責，不代表要承擔全部。|Being willing to take responsibility does not mean carrying all of it.|列出雙方可控制的行為。
+別人的人生都由我負責。|支持他人，但不取代其自主責任。|你可以陪伴，不必替每個人走路。|You can walk beside people without walking for them.|界定一項自己的責任。
+理解對方原因＝免除其責任。|理解原因與追究責任可以並存。|理解傷害如何發生，不等於允許傷害繼續。|Understanding how harm happened is not permission for it to continue.|寫出需要停止的具體行為。
+@D6|決策權重|Decision Weighting
+#W21|Probability Weighting|機率權重|R17 機率判斷、I17 機率解讀|權重錯誤、測量錯誤|預測信心與實際結果的校準程度。|一個事件發生機率很低，但後果嚴重，應如何決策？
+最害怕的結果＝最可能。|依資料估計可能性。|恐懼不是機率表。|Fear is not a probability table.|記錄預測信心。
+一次成功＝一定成功。|用多次資料校準。|一次好運，不是永遠的保證。|One stroke of luck is not a lifetime guarantee.|比較多次結果。
+低機率＝可以完全忽略。|還要考慮後果嚴重性。|小機率的大傷害，也值得謹慎準備。|A big harm with a small chance still deserves careful preparation.|列出後果與預防措施。
+#W22|Risk–Reward Weighting|風險報酬權重|R19 風險評估、I19 風險解讀|權重錯誤、時間錯誤|決策是否符合事前風險上限。|為什麼不能只看投資報酬率來決定投入比例？
+高報酬 ＞ 所有風險。|同時考慮風險、成本與需求。|真正的智慧，不只看能得到多少，也看可能失去什麼。|Real wisdom looks not only at what you may gain, but at what you may lose.|列出三項風險。
+不做任何事＝零風險。|不行動也可能有代價。|停留不一定安全，前進也不必莽撞。|Staying is not always safe, and moving forward need not be reckless.|比較兩種選擇的代價。
+過去賺錢＝未來一定賺錢。|過去表現不保證未來結果。|昨天的順風，不是明天的保證。|Yesterday's tailwind is no guarantee for tomorrow.|檢查可能變化的條件。
+#W23|Opportunity Cost|機會成本權重|R20 資源配置、I20 資源解讀|目標錯誤、權重錯誤|每週時間是否用於最高優先目標。|參加免費講座為什麼仍可能有很高的成本？
+做這件事沒有花錢＝沒有成本。|時間與放棄的選項也是成本。|每一個選擇，都在決定你把生命留給什麼。|Every choice decides what you leave your life to.|寫出被放棄的選項。
+已投入很多＝必須繼續。|依未來效益重新評估。|過去的付出，不必綁住未來。|What you gave in the past need not tie down your future.|計算繼續投入的成本。
+所有機會都要抓住。|選擇也意味著合理放棄。|不是擁有所有機會，才叫自由。|Freedom is not having every opportunity.|拒絕一項低價值邀請。
+#W24|Uncertainty Weighting|不確定性權重|R18 情境預測、I18 情境解讀|情境邊界錯誤、預測相關權重錯誤|備案覆蓋率與預測校準。|資訊不足時，什麼情況應先查證，什麼情況可以先小規模測試？
+沒有百分之百把握就不能開始。|在風險可控時，可以小規模試驗。|不必看清整片天空，才能走出第一步。|You needn't see the whole sky to take the first step.|設計低風險測試。
+我不知道＝一定很糟。|未知需要調查，不必先判定負面。|未知不是壞消息，只是還沒得到答案。|The unknown is not bad news; it is just an answer you don't have yet.|列出缺少的資訊。
+只有一種未來。|建立不同情境與備案。|人生有多條可能的路。|Life has more than one possible road.|寫出三種情境。
+@D7|行動權重|Action Weighting
+#W25|Task Priority|任務優先權重|R21 最小行動、I21 最小行動解讀|目標錯誤、行動錯誤|核心任務完成率。|你有五件待辦，如何用重要性與期限排序？
+最容易做 ＞ 最重要的事。|重要且可執行的任務優先。|忙碌不等於前進。|Busy is not the same as moving forward.|先做一項關鍵任務。
+完美準備 ＞ 實際開始。|最小可行行動優先。|開始，是讓想法長出力量的第一步。|Starting is the first step that lets an idea grow strength.|先做五分鐘。
+所有待辦都要完成。|依價值與期限安排。|有智慧的選擇，也包含放下。|Wise choosing also includes letting go.|刪除一項不必要任務。
+#W26|Habit Reinforcement|習慣強化權重|R23 習慣設計、I23 習慣解讀|行動錯誤、時間錯誤|習慣完成率及中斷後恢復時間。|如何讓每天背單字不再完全依賴心情？
+短期娛樂 ＞ 長期學習。|設計環境讓長期目標更容易執行。|好習慣不只靠意志，也靠安排。|Good habits rely not only on will, but on arrangement.|移除一項干擾。
+中斷一次＝整個計畫失敗。|恢復行動比自責重要。|真正的自律，是願意重新開始。|Real discipline is the willingness to begin again.|今天恢復兩分鐘。
+只在有動力時行動。|固定提示與流程優先。|熱情會變，規律能陪你走得更遠。|Passion changes; rhythm walks with you farther.|固定一個練習時段。
+#W27|Execution Quality|執行品質權重|R24 執行監控、I24 執行解讀|行動錯誤、測量錯誤|錯誤率、返工率、成果品質。|學生做完一百題卻反覆犯同類錯誤，應提高什麼權重？
+做了很多 ＞ 做得正確。|執行品質與成果優先。|努力值得珍惜，方向也值得檢查。|Effort is worth cherishing; direction is worth checking.|使用檢查表。
+完成任務 ＞ 真正解決問題。|確認任務是否達成目的。|打勾不是終點，真正的改變才是。|The checkmark is not the finish line; real change is.|設定成果指標。
+速度 ＞ 安全與品質。|依任務風險平衡速度、品質與安全。|走得快很好，走得穩也重要。|Walking fast is good; walking steady matters too.|增加一項品質檢查。
+#W28|Feedback Priority|回饋優先權重|R25 結果測量、I25 結果解讀|測量錯誤、權重錯誤|預測與結果差距、調整後表現。|一個方法短期無效，如何判斷應繼續觀察還是立即修改？
+努力感 ＞ 真實成果。|適當成果指標優先。|真正的進步，經得起現實檢驗。|Real progress stands up to the test of reality.|記錄前後表現。
+只看好消息。|正負回饋都納入分析。|不只成功教會你，落差也能教會你。|Not only success teaches you; the gap can teach you too.|記錄一次偏差。
+回饋不如預期＝全盤失敗。|先診斷原因，再決定調整幅度。|一次不順，不必推翻全部努力。|One setback need not overturn all your effort.|保留一項有效做法。
+@D8|更新權重|Reweighting & Model Update
+#W29|Prediction Error Weighting|預測誤差權重|R26 預測誤差、I26 預測誤差解讀|權重錯誤、時間錯誤、測量錯誤|預測校準改善程度。|預估80分、實際65分，應如何決定哪些因素需要重新加權？
+猜錯＝自己很笨。|誤差是模型更新的資訊。|錯誤不是智慧的敵人。|Error is not the enemy of wisdom.|記錄預測與結果。
+一次失敗 ＞ 長期資料。|考慮誤差大小、重複性與情境。|一場風雨，不必推翻整個季節。|One storm need not overturn the whole season.|比較三次結果。
+超出預期的成功不用分析。|正向誤差也值得研究。|驚喜也可能藏著成長的線索。|A pleasant surprise may also hide a clue to growth.|找出成功因素。
+#W30|Error Attribution Weighting|錯誤歸因權重|R27 十大錯誤歸因、I27 錯誤歸因解讀|節點錯誤、關係錯誤、權重錯誤|修正後同類錯誤是否下降。|學生知道答案卻漏看否定詞，為什麼不應直接判定為知識不足？
+所有失敗＝努力不足。|先辨認錯誤類型。|找到真正的問題，比責怪自己更有力量。|Finding the real problem is more powerful than blaming yourself.|使用十大Error診斷器。
+第一個原因一定正確。|比較不同原因的證據。|真正的理解，不急著宣判。|Real understanding is in no hurry to pass sentence.|列出三種原因。
+每個錯誤都要全部重做。|優先修正影響最大的環節。|改變最重要的節點，才有機會改變整體。|Change the most important node, and the whole has a chance to change.|選出一個瓶頸。
+#W31|Adaptive Reweighting|動態重新加權|R28 模型修正、I28 模型修正解讀|權重錯誤、情境邊界錯誤|調整後是否提高預測或行動品質。|一次新測試與長期資料衝突時，應立即全部重新加權嗎？
+過去有效＝永遠有效。|依新證據調整權重。|昨日的答案，不必永遠主宰明天。|Yesterday's answer need not rule tomorrow forever.|檢查一項舊方法。
+改變判斷＝沒有原則。|核心價值可穩定，方法可以更新。|堅定的是方向，靈活的是走法。|Be firm about the direction, flexible about the way you walk.|調整一項策略。
+新資訊出現就全部推翻。|依證據強度與一致性調整幅度。|更新不必劇烈，準確更重要。|An update need not be drastic; being accurate matters more.|記錄調整理由。
+#W32|Self-Directed Weight Governance|自主權重治理|R32 自主更新、I32 自主更新解讀|目標錯誤、權重錯誤、測量錯誤|每週權重檢查完成率、重要決策一致性。|當你的核心目標改變，如何重新安排時間、金錢與注意力？
+別人決定什麼重要。|依證據、價值與責任自主排序。|真正的自由，是知道自己為什麼而選擇。|True freedom is knowing why you choose.|寫出前三項優先價值。
+權重永遠固定。|定期檢查情境、目標與證據變化。|成熟不是永遠不變，而是知道何時需要更新。|Maturity is not never changing, but knowing when an update is needed.|每週進行一次權重檢查。
+結果不好就全部怪自己。|辨識可控制因素、外部條件與測量誤差。|成長不是替所有事情負責，而是對真正能改變的部分負責。|Growth is not answering for everything, but for the part you can truly change.|完成一次模型更新紀錄。
+`;
+// 其他欄位的圖卡：標題|中文|English
+const EXTRA=[
+['十大解讀錯誤診斷器 E01–E10',`E01 讀心術|沒有證據，別急著替別人的心下結論。|Mind Reading: without evidence, don't conclude what is in someone else's heart.
+E02 災難化|一次挫折，不是全部完蛋。|Catastrophizing: one setback is not the end of everything.
+E03 過度概括|一次失敗，不等於永遠失敗。|Overgeneralization: failing once is not failing forever.
+E04 整體標籤|一個行為，不能定義整個人。|Global Labeling: one behavior cannot define a whole person.
+E05 單因歸因|複雜的問題，很少只有一個原因。|Single-Cause Attribution: complex problems rarely have a single cause.
+E06 情緒推理|感到害怕，不代表真的有危險。|Emotional Reasoning: feeling afraid does not prove there is danger.
+E07 非黑即白|不完美，不等於毫無價值。|All-or-Nothing Thinking: imperfect does not mean worthless.
+E08 確認偏誤|別只看支持自己想法的證據。|Confirmation Bias: don't look only at evidence that agrees with you.
+E09 過早定論|資料還不夠，先別宣布答案。|Premature Closure: when the data is thin, don't announce the answer yet.
+E10 責任錯置|不屬於你的責任，不必扛；屬於你的，也別推開。|Misattributed Responsibility: don't carry what isn't yours, and don't push away what is.`],
+['解讀工程｜六階段教學流程',`01 辨識舊解讀|先說出第一個自動出現的解釋。|Notice the old story: say the first explanation that shows up on its own.
+02 建立新解讀|提出一個更有根據的替代解釋。|Build a new reading: offer an alternative that rests on better evidence.
+03 辨認錯誤|用 E01–E10 找出可能的解讀偏誤。|Name the error: use E01–E10 to spot the likely bias.
+04 完成最小行動|把新理解變成今天做得到的事。|Take the smallest action: turn the new understanding into something doable today.
+05 觀察真實回饋|記錄預測與實際結果。|Watch real feedback: record what you predicted and what happened.
+06 延遲複測|隔天、七天、十四天，檢查能否獨立運用。|Retest later: after 1, 7 and 14 days, check whether you can use it on your own.`],
+['權重工程｜八步校準流程',`1 Baseline 建立基準|先記錄你最重視什麼，以及時間實際花在哪裡。|Baseline: record what you value most and where your time actually goes.
+2 Evidence 收集證據|分辨事實、情緒、推測與外界評價。|Evidence: tell facts, feelings, guesses and outside opinions apart.
+3 Weight 設定權重|依重要性、可信度、風險及目標排序。|Weight: rank by importance, reliability, risk and goals.
+4 Action 最小行動|優先改變一個可以控制的環節。|Action: change one link you can control first.
+5 Feedback 觀察結果|用具體指標記錄改變後的情況。|Feedback: record what changed with concrete measures.
+6 Error Attribution 錯誤診斷|辨認是觀察、表徵、關係、權重還是執行問題。|Error attribution: is it observation, representation, relation, weight or execution?
+7 Reweight 重新加權|保留有效判斷，修正不合適的優先順序。|Reweight: keep what works, fix the priorities that don't fit.
+8 Retest 兩週複測|比較新舊權重是否帶來更好的實際成果。|Retest in two weeks: did the new weights bring better real results?`],
+['兩套工程的核心智慧',`解讀工程|你不需要把每件事都解讀成好事，只要讓每一次解讀更接近事實、更尊重感受，也更能找到下一步。|You don't have to read everything as good. Let each reading come closer to the facts, respect your feelings, and help you find the next step.
+權重工程|真正的自由，是能根據證據、價值與現實回饋，持續決定什麼值得優先。|True freedom is deciding, again and again, what deserves priority, based on evidence, values and real feedback.`]
+];
+const QUIZ=[
+['I03｜事實與故事分離','學生英文考65分，說「我就是笨，永遠學不好」。最合適的解讀是？',['65分證明能力不足','65分是測驗結果，需要再找出具體學習瓶頸','只要相信自己一定滿分'],1,'65分是事實；「笨、永遠」是整體標籤（E04）與過度概括（E03）。'],
+['I02｜情緒解讀','「我很焦慮，所以明天的報告一定會失敗。」較好的重新解讀是？',['焦慮提醒我在意這件事，可以檢查準備是否充足','焦慮證明我準備得很差','不要理會焦慮就好'],0,'情緒是警鈴，不是判決書（E06 情緒推理）。'],
+['I07｜關係與因果解讀','某班換教材後成績提高，最合理的判斷是？',['完全是教材的功勞','成績與教材無關','可能還有教師、題目難度、練習時間等因素，需要比較'],2,'同時出現不代表彼此造成（E05 單因歸因）。'],
+['I17｜機率解讀','計畫成功機率 80%，代表什麼？',['可以忽略失敗後果','仍有 20% 可能失敗，需要評估失敗代價','一定會成功'],1,'可能性不等於確定性，成熟的勇氣也懂得保護自己。'],
+['W21｜機率權重','某事件發生機率很低，但後果很嚴重，應該？',['仍依後果嚴重性做預防準備','機率低就完全忽略','因為可怕就當作一定會發生'],0,'小機率的大傷害，也值得謹慎準備。'],
+['W23｜機會成本權重','免費講座為什麼仍可能成本很高？',['因為免費的都不好','因為主辦單位會推銷','因為時間與被放棄的選項也是成本'],2,'每一個選擇，都在決定你把生命留給什麼。']
+];
+// 每個頁面的臉書心靈雞湯長文（約1200字）：[標題, 內文, hashtag]
+const ARTICLES={
+I:['你不必相信腦中的第一個故事',`你有沒有過這樣的夜晚？訊息傳出去，對方已讀不回。短短幾分鐘，腦中已經演完一整部戲：他不在乎我、我說錯話了、這段關係完了。可是冷靜下來，我們真正知道的只有一件事——他還沒回覆。其餘的，都是我們自己寫的故事。
+
+人生很多的痛，不是來自事件本身，而是來自我們替事件下的註解。考了六十五分，是事實；「我很笨」，是解讀。被主管指出錯誤，是事實；「我沒有價值」，是解讀。朋友婉拒邀約，是事實；「他討厭我」，是解讀。事實通常很短，故事卻可以很長，長到把一個人整晚困在裡面。
+
+想像有個孩子，每次考不好就把考卷揉成一團，說自己「天生不是讀書的料」。後來有人陪他把錯的題目一題一題分類，才發現十題裡有七題不是不會，而是題目看得太快。孩子愣了很久，小聲說：「原來我不是笨，我只是太急。」同一張考卷，分數沒有變，但他看自己的眼光變了。從那天起，他開始願意多讀一遍題目。改變一個人的，往往不是新的事實，而是一個更準確的解讀。
+
+【更新】
+解讀不是刻在石頭上的字，它更像一份草稿。草稿可以改，而且應該改。當新的證據出現，願意修正想法，不是沒有原則，而是成熟。曾經帶你走過一段路的答案，不必陪你走完一生。昨天的傷口值得被理解，卻不必成為明天的預言。下次當你心裡冒出「一定是」「永遠都」「全部完了」的時候，先停一下，在那句話前面加上五個字：「我正在想到」。你會發現，念頭只是念頭，它還沒有資格當判決書。
+
+【智慧】
+真正的智慧，不是把每件事都硬想成好事。難過的時候說「一切都是最好的安排」，有時只是另一種逃避。智慧是願意分清楚：哪些是我看見的，哪些是我猜的；哪些是我的感受，哪些是世界的真相。情緒是警鈴，不是判決書。害怕提醒你留意，卻不能替你證明危險；憤怒告訴你有需要沒被滿足，卻不能證明對方一定錯。聽見心裡的聲音，但不必服從每一句。同樣地，理解一個人為什麼傷害你，也不等於允許傷害繼續。溫柔與清醒，可以同時存在。
+
+【能力】
+好消息是，解讀是一種可以練習的能力，就像肌肉一樣。每天只要做三件小事：
+第一，寫下事實。只寫看得見、聽得到、可以被核對的部分。
+第二，列出三種可能。他沒回訊息，也許在忙，也許累了，也許正在想怎麼回你。
+第三，做一個最小行動。問一句、查一項資料、先做五分鐘。
+然後，過幾天回頭看看：當初的猜測準嗎？哪裡需要調整？每一次落差都不是失敗，而是讓你下一次看得更準的資訊。
+
+慢慢地你會發現，世界沒有變，但你不再那麼容易被第一個念頭帶走。你開始能在風雨裡站穩，在批評裡找到可以用的部分，在失敗裡看見下一步。一次跌倒，不必成為一生的名字；一天的陰雨，也不能代表一生的天空。
+
+你不需要強迫自己把每件事都解讀成好事。你只需要讓每一次解讀，更接近事實一點，更尊重自己的感受一點，也更能幫助自己找到下一步。
+
+今天，就從一件小事開始：把心裡那句最重的話寫下來，然後問自己——這是事實，還是故事？
+
+願你對世界清醒，也對自己溫柔。`,'#LifeOS #解讀工程 #心靈雞湯 #更新 #智慧 #能力'],
+W:['不是每件事，都值得你交出整顆心',`你一天有二十四小時，注意力卻比時間更少。可是回想一下昨天：一句無心的批評，佔了你一整個下午；一則驚悚的新聞，讓你擔心到睡前；手機響了三十次，你也看了三十次。而那件真正重要的事，又被推到了「明天再說」。
+
+我們常以為人生的問題是「不夠努力」。其實更多時候，問題是「放錯重量」。把最大的力氣，給了最吵的聲音；把最深的信任，給了說得最好聽的人；把最多的時間，給了最容易做的事。日子很忙，心卻很空，因為重要的東西一直排在後面。
+
+想像一個背包。你每天出門，都往裡面放東西：別人的期待、沒回完的訊息、三年前的一句批評、還沒發生的擔心。背包越來越重，你卻從來沒有打開來看過，哪些是今天真的用得到的。很多人不是走不動，而是背了太多不屬於這段路的東西。整理背包不是自私，也不是放棄，而是為了把力氣留給真正要去的地方。當你願意放下一樣不必要的東西，才騰得出手，去牽住真正重要的人。有智慧的選擇，從來都包含放下。
+
+【更新】
+權重不是一輩子固定的。二十歲時最在意的掌聲，四十歲可能已經不重要；去年有效的方法，今年環境變了，也許就該調整。成熟不是永遠不變，而是知道什麼時候需要更新。堅定的是方向，靈活的是走法。但更新也不必劇烈——不是聽到一個新說法，就把過去全部推翻。一次風雨，不必推翻整個季節。看證據有多強、是否一再出現，再決定要調整多少。每週留十分鐘問自己：我說重要的事，和我實際花時間的事，是同一件嗎？
+
+【智慧】
+權重的智慧，是懂得分辨。
+最吵的，不一定最重要。
+最害怕的，不一定最可能發生。恐懼不是機率表。
+最多人說的，不一定是真的。人多，不代表方向正確。
+最強烈的感受值得被聽見，卻不必成為唯一的裁判。
+還有一件事特別重要：安全永遠排在表面和諧前面。你可以善良，也可以說不。愛與理解，不需要以失去安全為代價；願意負責，也不代表要把所有人的人生扛在自己身上。你可以陪伴，不必替每個人走路。知道什麼不能失去，才知道什麼值得追求。
+
+【能力】
+排出輕重，是一種可以練出來的能力。試試這四步：
+一、每天早上只選一件「今天最重要的事」，先給它二十分鐘，再去看訊息。
+二、遇到讓你心慌的資訊，問兩個問題：它可信嗎？它跟我的決定有關嗎？
+三、做選擇之前，寫下你會因此放棄什麼。免費的東西，也會花掉你的時間。
+四、兩週後回頭看：新的排序，有沒有讓生活更好一點？有，就留下；沒有，再調。
+過去投入很多，不是繼續的理由；休息也不是浪費，而是讓自己走得更遠。每一個選擇，都在決定你把生命留給什麼。
+
+人生不必搬走所有的石頭，先移開擋路的那一塊就好。你也不必在每個地方發光，才能擁有明亮的人生。
+
+不是所有資訊都值得相信，不是所有情緒都值得主導決定，也不是所有事情都值得投入同樣的生命。真正的自由，是知道自己為什麼而選擇。
+
+今天，請把最好的力氣，留給真正重要的人和事。其中一個，是你自己。`,'#LifeOS #權重工程 #心靈雞湯 #更新 #智慧 #能力'],
+X:['犯錯不可怕，可怕的是每次都錯在同一個地方',`我們從小被教導「不要犯錯」，卻很少有人教我們「怎麼看懂自己的錯」。於是每次事情不如意，我們只會用同一句話責怪自己：「我就是不夠好。」這句話聽起來很負責，其實什麼都沒有解決，因為它沒有告訴你，到底是哪裡出了問題。
+
+想像你去看醫生，醫生只說一句「你身體很差」，就請你回家。你一定覺得荒謬。可是我們對自己的心，常常就是這樣草率。
+
+其實，想法出錯是有類型的。就像感冒和骨折需要不同的治療，不同的錯，也需要不同的修正。
+
+沒有證據，就認定別人怎麼想——這是讀心術。
+一次挫折，就覺得全部完蛋——這是災難化。
+失敗一次，就說自己永遠不行——這是過度概括。
+用一件事定義整個人——這是貼標籤。
+把複雜的事怪給單一原因——這是單因歸因。
+因為害怕，就相信一定有危險——這是情緒推理。
+不是滿分就是零分——這是非黑即白。
+只看支持自己的證據——這是確認偏誤。
+資料還不夠，就急著下結論——這是過早定論。
+把不屬於自己的責任扛下來，或把該自己負責的推出去——這是責任錯置。
+
+【更新】
+當你能叫出錯誤的名字，它就不再是一團壓在胸口的烏雲，而是一個可以處理的問題。這就是更新的開始。更新不是把自己整個打掉重練，而是找到那個出錯的環節，只修那裡。保留有效的，修正失效的。成長不必推翻全部的過去。錯誤不是智慧的敵人，拒絕修正才是。
+
+【智慧】
+智慧是對自己誠實，也對自己公平。誠實，是願意承認「這次我看錯了」；公平，是不把一次看錯，放大成「我這個人不行」。真正堅定的人，不害怕真相靠近。同時也要記得：有些責任本來就不是你的。分清楚什麼是我能改變的、什麼不是，是很深的智慧，也是對自己很大的慈悲。找到真正的瓶頸，比反覆責怪自己更有力量。
+
+【能力】
+把這套方法變成能力，只需要六個步驟，反覆練習：
+一、說出舊解讀：我腦中第一個冒出來的解釋是什麼？
+二、建立新解讀：有沒有更有根據的說法？
+三、辨認錯誤：我剛才掉進哪一種陷阱？
+四、做最小行動：今天做得到的一小步是什麼？
+五、看真實回饋：結果和我預想的一樣嗎？
+六、隔幾天再測：隔天、七天、十四天後，我還能自己用出來嗎？
+
+看懂是相遇，掌握需要一次次重逢。今天學會不代表永遠會，真正屬於你的智慧，經得起時間的考驗。
+
+想像一位學生，數學考卷上錯了十題。如果他只對自己說「我數學很爛」，下次還是會錯十題。但如果他坐下來看：三題是公式沒背熟，五題是漏看了題目裡的「不」字，兩題是時間不夠。忽然之間，「很爛」變成了三件可以處理的小事：補公式、圈關鍵字、練速度。問題沒有變小，卻變得可以下手了。人生也是這樣。你不是整個人有問題，你只是有幾個地方，還沒被好好看見。當困難被拆開，你就不必被整個困難嚇倒。
+
+所以，下次事情搞砸的時候，請不要急著說「我真沒用」。換一個問題問自己：「這一次，我是錯在哪一種？」
+
+從責怪到診斷，只差一個問題。而這一個問題，會讓你一次比一次更懂自己。
+
+成熟不是不再跌倒，而是更懂得重新站穩。`,'#LifeOS #錯誤診斷 #心靈雞湯 #更新 #智慧 #能力'],
+Q:['你以為懂了，和你真的會了，中間差一次考驗',`你一定有過這種經驗：書上的道理看了很感動，劃了重點、存了金句，心想「這次我真的懂了」。結果隔天遇到事情，還是用老方法反應——一樣生氣，一樣鑽牛角尖，一樣整晚睡不著。然後你開始懷疑：是不是我學不會？
+
+不是的。你只是把「看懂」當成了「會了」。
+
+看懂，是答案擺在眼前時，你點頭說「對」。會了，是沒有人提醒、沒有答案可看的時候，你自己想得起來、用得出來。這兩件事之間，隔著一樣東西，叫做測驗。
+
+很多人怕測驗，因為小時候的考試總是連著分數、排名和責備。但人生真正有用的測驗，不是為了證明你好不好，而是為了讓你看見自己走到哪裡。它是一面鏡子，不是一張判決書。
+
+【更新】
+每一次答錯，都是一次更新的機會。你預估自己有九成把握，結果只對了六成，這不丟臉，這是珍貴的資訊——它告訴你，自信和實力之間還有一段距離需要校準。猜錯不代表你笨，只代表你的地圖有一塊需要重畫。同樣地，答對了也別急著翻頁，問問自己：我是真的懂，還是剛好猜中？驚喜值得慶祝，也值得學習。
+
+【智慧】
+真正的聰明，是知道自己還有哪些不懂。再明亮的眼睛，也需要另一面鏡子。願意被檢驗的人，不是因為特別有自信，而是因為他們把「變得更準」看得比「看起來很對」更重要。最穩定的自信，不是來自別人的稱讚，也不是來自心裡的感覺，而是來自一次又一次的真實驗證。真正的成長，不怕被現實看見。
+
+【能力】
+能力是在「提取」中長出來的，不是在「重讀」中。所以請這樣練習：
+一、遮住答案，自己先說一次。說不出來的地方，就是下一步要補的地方。
+二、今天會了，七天後再測一次。忘記是正常的，重新想起來的那一刻，記憶才真正變深。
+三、換個場景用用看。在課堂上學會的「分清事實與解讀」，回家和家人說話時用得上嗎？知識走出書本，才開始成為生活的智慧。
+四、記下預測與結果。作答前先猜自己會對幾題，作答後比一比。久了，你會越來越了解自己。
+
+也許你會說：我已經不是學生了，還要測驗什麼？其實生活每天都在出題。孩子頂嘴的時候，是一題；同事誤會你的時候，是一題；計畫被打亂、心裡冒出「我完了」的時候，也是一題。這些題目不會事先通知，也不會附上標準答案。平常有沒有練習，就在那一刻看得出來。所以平靜的日子裡做的小小複測，並不是多餘的功課，而是替風雨來臨的那一天，先把路走熟。忘記了也沒關係，中斷了也沒關係。真正的自律，不是從不中斷，而是願意重新開始。今天比上個月的自己多想起一點、多做對一次，那就是進步。
+
+環境會改變，但累積下來的能力不必歸零。一次全對值得開心，持續做得到才值得信任。
+
+所以，別再問「我看了這麼多，為什麼沒有改變」。請改問：「我今天，有沒有不看答案，自己做一次？」
+
+下面這六題，沒有人會打分數給你看，也沒有人會笑你。它只是邀請你停下來，誠實地看看自己現在站在哪裡。
+
+想通是種子，行動才讓智慧生根。而每一次小小的複測，都是在替這顆種子澆水。`,'#LifeOS #延遲複測 #心靈雞湯 #更新 #智慧 #能力']
+};
+const artText=k=>{const a=ARTICLES[k];return '【'+a[0]+'】\n\n'+a[1]+'\n\n'+a[2]};
+const artHtml=k=>{const a=ARTICLES[k];return '<details class="art"><summary>📖 臉書心靈雞湯文｜'+esc(a[0])+'<em>約 '+Math.round(a[1].replace(/\s/g,'').length/50)*50+' 字</em></summary><div class="body"><div class="atx">'+esc(a[1])+'\n\n'+esc(a[2])+'</div><button class="btn" data-a="'+k+'">📋 複製全文</button></div></details>'};
+const THEMES=[['#ff9a8b','#ff6a88','#fff'],['#f6d365','#fda085','#3b2a1a'],['#84fab0','#8fd3f4','#16323a'],['#a18cd1','#fbc2eb','#2f2147'],['#4facfe','#00c6fb','#fff'],['#43cea2','#185a9d','#fff'],['#30cfd0','#330867','#fff'],['#fbc2eb','#a6c1ee','#2c2a4a'],['#2c3e50','#4ca1af','#fff'],['#fddb92','#d1fdff','#33414a']];
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function parse(raw,sys){const out=[];let d;raw.trim().split('\n').forEach(l=>{const p=l.split('|');
+ if(l[0]=='@')d={id:p[0].slice(1),zh:p[1],sub:p[2]};
+ else if(l[0]=='#')out.push({sys,d,id:p[0].slice(1),en:p[1],zh:p[2],ref:p[3],diag:p[4],fb:p[5],q:p[6],items:[]});
+ else out[out.length-1].items.push(p)});return out}
+const NODES=parse(RAW_I,'I').concat(parse(RAW_W,'W'));
+const SYS={I:['解讀工程','舊解讀','新解讀','#解讀工程 #InterpretationOS'],W:['權重工程','舊權重','新權重','#權重工程 #WeightOS']};
+let tab='I',done={};try{done=JSON.parse(localStorage.getItem('ios_wos_retest')||'{}')}catch(e){}
+const grad=t=>'background:linear-gradient(135deg,'+THEMES[t][0]+','+THEMES[t][1]+');color:'+THEMES[t][2];
+const th=n=>(+n.d.id[1]-1+(n.sys=='W'?4:0))%THEMES.length;
+function postText(n,it){const s=SYS[n.sys];return '「'+it[2]+'」\n'+it[3]+'\n\n🌧 '+s[1]+'：'+it[0]+'\n🌤 '+s[2]+'：'+it[1]+'\n👣 今天的最小行動：'+it[4]+'\n\n'+n.id+'｜'+n.zh+' '+n.en+'\n#LifeOS '+s[3]+' #心靈雞湯 #每日一句 #DailyQuote'}
+function itemHtml(n,i,t){const it=n.items[i],s=SYS[n.sys];return '<div class="it"><div class="qc" style="'+grad(t)+'" data-c="'+n.id+','+i+'" title="點擊放大、下載"><b>'+esc(it[2])+'</b><i>'+esc(it[3])+'</i><u>'+n.id+'-'+(i+1)+'</u></div><div class="tx"><p class="o">'+s[1]+'：'+esc(it[0])+'</p><p class="n">'+s[2]+'：'+esc(it[1])+'</p><p class="a">👣 行動：'+esc(it[4])+'</p></div><div class="acts"><button class="btn" data-c="'+n.id+','+i+'">🖼 圖卡</button><button class="btn" data-p="'+n.id+','+i+'">📋 複製貼文</button></div></div>'}
+function render(){const q=$('#q').value.trim().toLowerCase(),o=$('#out');
+ $('#tabs').innerHTML=[['I','解讀工程 I01–I32'],['W','權重工程 W01–W32'],['A','全部'],['X','診斷器與流程'],['Q','互動測驗']].map(t=>'<button data-t="'+t[0]+'" class="'+(tab==t[0]?'on':'')+'">'+t[1]+'</button>').join('');
+ if(tab=='X')return renderExtra(q);if(tab=='Q')return renderQuiz();
+ let h='',last='',cnt=0;
+ NODES.forEach(n=>{if(tab!='A'&&n.sys!=tab)return;
+  const head=[n.id,n.en,n.zh,n.ref,n.diag,n.fb,n.q,n.d.zh,n.d.sub].join(' ').toLowerCase();
+  const idx=n.items.map((it,i)=>i).filter(i=>!q||head.includes(q)||n.items[i].join(' ').toLowerCase().includes(q));
+  if(!idx.length)return;cnt+=idx.length;
+  const key=n.sys+n.d.id;if(key!=last){last=key;h+='<h2>'+SYS[n.sys][0]+' '+n.d.id+'｜'+esc(n.d.zh)+'<span>'+esc(n.d.sub)+'</span></h2>'}
+  h+='<details'+(q?' open':'')+'><summary>'+n.id+'｜'+esc(n.zh)+'<em>'+esc(n.en)+'</em>'+(done[n.id]?'<span class="done">✔ 已複測 '+done[n.id]+'</span>':'')+'</summary><div class="body"><div class="grid">'+idx.map(i=>itemHtml(n,i,th(n))).join('')+'</div><div class="meta"><p>🔗 對照：'+esc(n.ref)+'</p><p>🩺 錯誤診斷：'+esc(n.diag)+'</p>'+(n.fb?'<p>📈 回饋指標：'+esc(n.fb)+'</p>':'')+'<p>📝 複測題：'+esc(n.q)+' <button class="btn" data-r="'+n.id+'">🖼 思考題圖卡</button></p><p><label><input type="checkbox" data-d="'+n.id+'"'+(done[n.id]?' checked':'')+'> 我已完成複測</label></p></div></div></details>'});
+ o.innerHTML=(q?'':(tab=='A'?['I','W']:[tab]).map(artHtml).join(''))+(h||'<div class="empty">找不到符合的內容</div>')}
+function renderExtra(q){let h='';EXTRA.forEach((g,gi)=>{const rows=g[1].split('\n').map(l=>l.split('|')).map((p,i)=>[p,i]).filter(x=>!q||x[0].join(' ').toLowerCase().includes(q));if(!rows.length)return;
+  h+='<h2>'+g[0]+'</h2><div class="grid">'+rows.map(x=>'<div class="it"><div class="qc" style="'+grad((gi*3+x[1])%THEMES.length)+'" data-e="'+gi+','+x[1]+'"><b>'+esc(x[0][1])+'</b><i>'+esc(x[0][2])+'</i><u>'+esc(x[0][0])+'</u></div><div class="acts" style="padding-top:10px"><button class="btn" data-e="'+gi+','+x[1]+'">🖼 圖卡</button></div></div>').join('')+'</div>'});
+ $('#out').innerHTML=(q?'':artHtml('X'))+(h||'<div class="empty">找不到符合的內容</div>')}
+let qi=0,qs=0,qa=-1;
+function renderQuiz(){const A=artHtml('Q');if(qi>=QUIZ.length){$('#out').innerHTML=A+'<div class="quiz"><h2 style="margin-top:0">完成！答對 '+qs+' / '+QUIZ.length+'</h2><p>建議隔天、七天、十四天後再測一次。</p><button class="btn" data-qr="1">重新作答</button></div>';return}
+ const z=QUIZ[qi];$('#out').innerHTML=A+'<div class="quiz"><p style="color:var(--mut);margin:0">第 '+(qi+1)+' / '+QUIZ.length+' 題｜目前答對 '+qs+'</p><h2 style="margin:6px 0">'+z[0]+'</h2><p>'+esc(z[1])+'</p>'+z[2].map((t,i)=>'<button class="op '+(qa<0?'':i==z[3]?'ok':i==qa?'no':'')+'" data-qa="'+i+'">'+'ABC'[i]+'. '+esc(t)+'</button>').join('')+(qa<0?'':'<p>💡 '+esc(z[4])+'</p><button class="btn" data-qn="1">下一題</button>')+'</div>'}
+// 圖卡繪製
+let cur=null;
+function wrapZh(x,t,w){const seg=t.split(/(?<=[，；。、：？！])/),L=[];let l='';seg.forEach(s=>{if(x.measureText(l+s).width<=w)l+=s;else{if(l)L.push(l);l='';for(const c of s){if(x.measureText(l+c).width>w){L.push(l);l=''}l+=c}}});if(l)L.push(l);return L}
+function wrapEn(x,t,w){const L=[];let l='';t.split(' ').forEach(s=>{const k=l?l+' '+s:s;if(x.measureText(k).width>w&&l){L.push(l);l=s}else l=k});if(l)L.push(l);return L}
+function draw(){const c=$('#cv'),x=c.getContext('2d'),W=1080,T=THEMES[cur.t],g=x.createLinearGradient(0,0,W,W);g.addColorStop(0,T[0]);g.addColorStop(1,T[1]);x.fillStyle=g;x.fillRect(0,0,W,W);
+ x.fillStyle='rgba(255,255,255,.13)';[[900,160,260],[140,940,220],[980,880,120]].forEach(a=>{x.beginPath();x.arc(a[0],a[1],a[2],0,7);x.fill()});
+ x.fillStyle='rgba(255,255,255,.2)';x.fillRect(60,60,W-120,W-120);x.fillStyle=T[2];x.textAlign='center';x.textBaseline='middle';
+ const F='"Microsoft JhengHei","Noto Sans TC","PingFang TC",sans-serif';let fs=78,zl;do{x.font='bold '+fs+'px '+F;zl=wrapZh(x,cur.zh,820);fs-=4}while(zl.length>(fs>50?4:7)&&fs>34);fs+=4;
+ let es=36,el;x.font='italic '+es+'px Georgia,serif';el=cur.en?wrapEn(x,cur.en,800):[];
+ const zh=zl.length*fs*1.5,eh=el.length*es*1.45,tot=zh+(el.length?70+eh:0);let y=(W-tot)/2+10;
+ x.globalAlpha=.35;x.font='bold 200px Georgia,serif';x.fillText('“',180,Math.max(y-40,190));x.globalAlpha=1;
+ x.font='bold '+fs+'px '+F;zl.forEach(l=>{y+=fs*.75;x.fillText(l,W/2,y);y+=fs*.75});
+ if(el.length){y+=35;x.globalAlpha=.6;x.fillRect(W/2-50,y-2,100,4);x.globalAlpha=1;y+=35;x.font='italic '+es+'px Georgia,serif';el.forEach(l=>{y+=es*.72;x.fillText(l,W/2,y);y+=es*.73})}
+ x.font='28px '+F;x.globalAlpha=.85;x.fillText(cur.foot,W/2,W-110);x.globalAlpha=1}
+function openCard(o){cur=o;$('#post').value=o.post;draw();$('#dlg').classList.add('on')}
+function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>e.style.display='none',1600)}
+function copy(t){(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}).finally(()=>toast('已複製貼文文字'))}
+const find=id=>NODES.find(n=>n.id==id);
+document.addEventListener('click',e=>{const t=e.target.closest('[data-t],[data-c],[data-p],[data-r],[data-e],[data-a],[data-qa],[data-qn],[data-qr]');if(!t)return;const d=t.dataset;
+ if(d.t){tab=d.t;render()}
+ else if(d.a)copy(artText(d.a))
+ else if(d.c){const[a,i]=d.c.split(','),n=find(a),it=n.items[i];openCard({zh:it[2],en:it[3],foot:'LifeOS · '+n.id+' '+n.zh+' · '+n.en,t:th(n),post:postText(n,it),name:n.id+'-'+(+i+1)+'_'+it[2].slice(0,10)})}
+ else if(d.p){const[a,i]=d.p.split(','),n=find(a);copy(postText(n,n.items[i]))}
+ else if(d.r){const n=find(d.r);openCard({zh:n.q,en:'Reflection question · Come back and answer it again in 7 days.',foot:'LifeOS · '+n.id+' '+n.zh+' · 今日思考題',t:(th(n)+5)%THEMES.length,post:'📝 今日思考題\n'+n.q+'\n\n留言說說你的答案，七天後再回來看一次。\n'+n.id+'｜'+n.zh+' '+n.en+'\n#LifeOS '+SYS[n.sys][3]+' #思考題',name:n.id+'_思考題'})}
+ else if(d.e){const[g,i]=d.e.split(','),p=EXTRA[g][1].split('\n')[i].split('|');openCard({zh:p[1],en:p[2],foot:'LifeOS · '+p[0],t:(g*3+ +i)%THEMES.length,post:'「'+p[1]+'」\n'+p[2]+'\n\n'+p[0]+'｜'+EXTRA[g][0]+'\n#LifeOS #心靈雞湯 #每日一句 #DailyQuote',name:p[0]})}
+ else if(d.qa&&qa<0){qa=+d.qa;if(qa==QUIZ[qi][3])qs++;renderQuiz()}
+ else if(d.qn){qi++;qa=-1;renderQuiz()}
+ else if(d.qr){qi=qs=0;qa=-1;renderQuiz()}});
+document.addEventListener('change',e=>{const id=e.target.dataset&&e.target.dataset.d;if(!id)return;if(e.target.checked)done[id]=new Date().toLocaleDateString('zh-TW');else delete done[id];try{localStorage.setItem('ios_wos_retest',JSON.stringify(done))}catch(x){}
+ const s=e.target.closest('details').querySelector('summary'),m=s.querySelector('.done');if(m)m.remove();if(done[id])s.insertAdjacentHTML('beforeend','<span class="done">✔ 已複測 '+done[id]+'</span>')});
+$('#q').addEventListener('input',()=>{if(tab=='Q'||(tab!='X'&&tab!='A'&&$('#q').value.trim()))tab='A';render()});
+$('#bX').onclick=()=>$('#dlg').classList.remove('on');$('#dlg').onclick=e=>{if(e.target.id=='dlg')$('#dlg').classList.remove('on')};
+$('#bTh').onclick=()=>{cur.t=(cur.t+1)%THEMES.length;draw()};
+$('#bCp').onclick=()=>copy($('#post').value);
+$('#bDl').onclick=()=>$('#cv').toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='LifeOS_'+cur.name.replace(/[\\/:*?"<>|，。！？]/g,'')+'.png';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)});
+render();
+</script>
+</body>
+</html>
