@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>低維→高維轉換OS | Low-High Dimension Transformation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: "Microsoft JhengHei", "微軟正黑體", Arial, sans-serif; background: #FFFFFF; color: #1A2B5F; line-height: 1.8; font-size: 15px; }
+        .header { background: linear-gradient(135deg, #1A2B5F 0%, #0A7A72 100%); color: white; padding: 40px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .header h1 { font-size: 2.2em; margin-bottom: 8px; font-weight: 700; }
+        .header p { font-size: 1em; opacity: 0.95; }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .stat-card { background: #F5F9FF; border-left: 5px solid #C9960C; padding: 18px; border-radius: 6px; text-align: center; }
+        .stat-card .number { font-size: 2em; font-weight: 700; color: #C9960C; }
+        .stat-card .label { font-size: 0.85em; color: #1A2B5F; margin-top: 6px; }
+        .nav-tabs { display: flex; gap: 8px; margin-bottom: 25px; flex-wrap: wrap; }
+        .nav-tab { padding: 10px 15px; background: #F0F0F0; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em; font-weight: 500; transition: all 0.2s; }
+        .nav-tab:hover { background: #E0E0E0; }
+        .nav-tab.active { background: #C9960C; color: white; }
+        .volume-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
+        .volume-card { background: white; border: 2px solid #E8E8E8; border-radius: 8px; overflow: hidden; transition: all 0.3s; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+        .volume-card:hover { border-color: #C9960C; box-shadow: 0 6px 20px rgba(201,150,12,0.12); transform: translateY(-3px); }
+        .volume-header { background: linear-gradient(135deg, #1A2B5F 0%, #0A7A72 100%); color: white; padding: 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .volume-header:hover { opacity: 0.95; }
+        .volume-title { flex: 1; }
+        .volume-title h3 { font-size: 1.2em; font-weight: 600; margin-bottom: 4px; }
+        .volume-title .question { font-size: 0.8em; opacity: 0.85; font-style: italic; }
+        .volume-num { font-size: 1.8em; font-weight: 700; opacity: 0.6; }
+        .volume-content { display: none; padding: 15px; background: #F9F9F9; max-height: 600px; overflow-y: auto; }
+        .volume-content.active { display: block; }
+        .case-item { background: white; border-left: 4px solid #C9960C; padding: 14px; margin-bottom: 10px; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+        .case-item:hover { background: #F5F9FF; border-left-color: #0A7A72; }
+        .case-title { font-weight: 600; color: #1A2B5F; display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .case-num { display: inline-block; background: #C9960C; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 0.85em; font-weight: 700; flex-shrink: 0; }
+        .case-content { font-size: 0.92em; display: none; margin-top: 10px; }
+        .case-content.active { display: block; }
+        .case-split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+        .dim-box { padding: 11px; border-radius: 4px; font-size: 0.9em; line-height: 1.5; }
+        .low-dim { background: #FFE8E8; border-left: 4px solid #E74C3C; }
+        .high-dim { background: #E8F8F5; border-left: 4px solid #0A7A72; }
+        .dim-label { font-weight: 700; font-size: 0.85em; margin-bottom: 5px; display: block; }
+        .speaker-btn { background: none; border: none; cursor: pointer; font-size: 1.2em; padding: 2px 6px; margin-left: auto; transition: all 0.2s; display: inline-flex; align-items: center; }
+        .speaker-btn:hover { opacity: 0.7; transform: scale(1.1); }
+        .footer { text-align: center; padding: 30px 20px; color: #999; font-size: 0.85em; border-top: 2px solid #E8E8E8; margin-top: 40px; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #F0F0F0; }
+        ::-webkit-scrollbar-thumb { background: #C9960C; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 低維→高維轉換作業系統</h1>
+        <p>Low-High Dimension Transformation Operating System</p>
+    </div>
+    
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card"><div class="number">30</div><div class="label">卷 Volumes</div></div>
+            <div class="stat-card"><div class="number">210</div><div class="label">案例 Cases</div></div>
+            <div class="stat-card"><div class="number">🌐</div><div class="label">雙語 Bilingual</div></div>
+            <div class="stat-card"><div class="number">🔊</div><div class="label">英文語音 TTS</div></div>
+        </div>
+        
+        <div class="nav-tabs" id="navTabs"></div>
+        <div id="volumeContainer" class="volume-grid"></div>
+    </div>
+    
+    <div class="footer">
+        編製: 王欣蓉 Anne Wang | 點擊展開 Click to Expand | 🔊 發音 TTS | 每日升維 Daily Elevation
+    </div>
+    
+    <script>
+const allVolumesData = {
+  1: {title_cn: "本體", title_en: "Ontology", question: "它真正是什麼？", cases: [{n:1,cn:"學英文",en:"Learning English",l_cn:"背很多單字",l_en:"Memorizing many words",h_cn:"建立理解世界與溝通的能力",h_en:"Building ability to understand world and communicate"},{n:2,cn:"考試",en:"Exam",l_cn:"拿高分",l_en:"Getting high scores",h_cn:"驗證理解模型是否正確",h_en:"Verifying if understanding model is correct"},{n:3,cn:"錯誤",en:"Error",l_cn:"失敗",l_en:"Failure",h_cn:"模型誤差",h_en:"Model deviation"},{n:4,cn:"焦慮",en:"Anxiety",l_cn:"心理不好",l_en:"Psychological discomfort",h_cn:"預測不確定性提高",h_en:"Increased prediction uncertainty"},{n:5,cn:"生氣",en:"Anger",l_cn:"情緒不好",l_en:"Bad emotions",h_cn:"界線或期待受到挑戰",h_en:"Boundaries or expectations challenged"},{n:6,cn:"痛苦",en:"Suffering",l_cn:"人生不好",l_en:"Life not good",h_cn:"系統更新通知",h_en:"System update notification"},{n:7,cn:"快樂",en:"Happiness",l_cn:"得到想要的",l_en:"Getting what you want",h_cn:"需求與能力暫時一致",h_en:"Temporary alignment of needs and abilities"}]},
+  2: {title_cn: "定義", title_en: "Definition", question: "如何一句話定義？", cases: [{n:1,cn:"學習",en:"Learning",l_cn:"記住老師教的內容",l_en:"Remembering teacher's content",h_cn:"持續提升理解世界與解決問題的能力",h_en:"Continuously improving ability to understand world and solve problems"},{n:2,cn:"知識",en:"Knowledge",l_cn:"知道答案",l_en:"Knowing answers",h_cn:"可驗證、可遷移、可應用的模型",h_en:"Verifiable, transferable, applicable models"},{n:3,cn:"智慧",en:"Wisdom",l_cn:"懂很多事情",l_en:"Understanding many things",h_cn:"在複雜情境下持續做出更好決策的能力",h_en:"Ability to make better decisions continuously in complex situations"},{n:4,cn:"能力",en:"Ability",l_cn:"會做一件事",l_en:"Can do one thing",h_cn:"在不同環境穩定產生結果的系統",h_en:"System that consistently produces results in different environments"},{n:5,cn:"成功",en:"Success",l_cn:"賺很多錢",l_en:"Earning lots of money",h_cn:"持續創造價值並實現目標函數",h_en:"Continuously creating value and achieving objective function"},{n:6,cn:"失敗",en:"Failure",l_cn:"沒有成功",l_en:"Not succeeding",h_cn:"驗證模型誤差的過程",h_en:"Process of verifying model errors"},{n:7,cn:"健康",en:"Health",l_cn:"沒有疾病",l_en:"No disease",h_cn:"具有恢復、適應與修復能力的穩態系統",h_en:"Homeostatic system with recovery, adaptation and repair capabilities"}]},
+  3: {title_cn: "本質", title_en: "Essence", question: "不可再拆的核心是什麼？", cases: [{n:1,cn:"學習",en:"Learning",l_cn:"背知識",l_en:"Memorizing knowledge",h_cn:"更新模型",h_en:"Updating models"},{n:2,cn:"教育",en:"Education",l_cn:"教內容",l_en:"Teaching content",h_cn:"培養能力",h_en:"Cultivating abilities"},{n:3,cn:"英文",en:"English",l_cn:"考高分",l_en:"High test scores",h_cn:"理解世界",h_en:"Understanding world"},{n:4,cn:"AI",en:"AI",l_cn:"回答問題",l_en:"Answering questions",h_cn:"放大認知",h_en:"Amplifying cognition"},{n:5,cn:"閱讀",en:"Reading",l_cn:"吸收資訊",l_en:"Absorbing information",h_cn:"重建思維",h_en:"Rebuilding thinking"},{n:6,cn:"寫作",en:"Writing",l_cn:"寫文字",l_en:"Writing text",h_cn:"輸出模型",h_en:"Outputting models"},{n:7,cn:"語言",en:"Language",l_cn:"表達工具",l_en:"Expression tool",h_cn:"世界生成器",h_en:"World generator"}]},
+  4: {title_cn: "第一性原理", title_en: "First Principle", question: "一直拆到不能再拆，真正原因是什麼？", cases: [{n:1,cn:"學英文",en:"Learning English",l_cn:"背單字",l_en:"Memorizing vocabulary",h_cn:"建立理解與溝通能力",h_en:"Building comprehension and communication abilities"},{n:2,cn:"考試",en:"Exam",l_cn:"考高分",l_en:"High scores",h_cn:"驗證理解程度",h_en:"Verifying comprehension level"},{n:3,cn:"閱讀",en:"Reading",l_cn:"把書看完",l_en:"Finishing a book",h_cn:"更新世界模型",h_en:"Updating world models"},{n:4,cn:"寫作",en:"Writing",l_cn:"寫文章",l_en:"Writing articles",h_cn:"整理思維模型",h_en:"Organizing thinking models"},{n:5,cn:"AI",en:"AI",l_cn:"問答案",l_en:"Asking for answers",h_cn:"放大認知能力",h_en:"Amplifying cognitive abilities"},{n:6,cn:"健康",en:"Health",l_cn:"治症狀",l_en:"Treating symptoms",h_cn:"恢復穩態",h_en:"Restoring homeostasis"},{n:7,cn:"疾病",en:"Disease",l_cn:"器官壞掉",l_en:"Organ dysfunction",h_cn:"控制系統失衡",h_en:"Control system imbalance"}]},
+  5: {title_cn: "核心問題", title_en: "Core Problem", question: "真正要解決什麼？", cases: [{n:1,cn:"學英文",en:"Learning English",l_cn:"單字背不起來",l_en:"Cannot memorize vocabulary",h_cn:"沒有建立理解系統",h_en:"No understanding system established"},{n:2,cn:"成績不好",en:"Poor grades",l_cn:"不夠努力",l_en:"Not enough effort",h_cn:"學習方法錯誤",h_en:"Wrong learning methods"},{n:3,cn:"考不上理想",en:"Cannot get desired school",l_cn:"能力差",l_en:"Weak ability",h_cn:"學習模型需要更新",h_en:"Learning model needs updating"},{n:4,cn:"看很多書沒改變",en:"Reading many books without change",l_cn:"書不好",l_en:"Bad books",h_cn:"沒有轉化成能力",h_en:"Not converting to abilities"},{n:5,cn:"AI用不好",en:"Cannot use AI well",l_cn:"AI太笨",l_en:"AI too stupid",h_cn:"不會提出高品質問題",h_en:"Cannot ask high-quality questions"},{n:6,cn:"沒時間",en:"No time",l_cn:"事情太多",l_en:"Too many things",h_cn:"沒有優先順序",h_en:"No prioritization"},{n:7,cn:"沒錢",en:"No money",l_cn:"薪水太低",l_en:"Salary too low",h_cn:"持續創造價值能力不足",h_en:"Insufficient ability to create continuous value"}]},
+  6: {title_cn: "核心目標", title_en: "Goal", question: "最後真正要得到什麼？", cases: [{n:1,cn:"學英文",en:"Learning English",l_cn:"考100分",l_en:"Score 100",h_cn:"能理解世界、自由溝通",h_en:"Understand world, communicate freely"},{n:2,cn:"閱讀",en:"Reading",l_cn:"一年讀100本書",l_en:"Read 100 books per year",h_cn:"建立100套世界模型",h_en:"Build 100 world models"},{n:3,cn:"學習",en:"Learning",l_cn:"知道更多",l_en:"Know more",h_cn:"提升預測與解決問題能力",h_en:"Improve prediction and problem-solving"},{n:4,cn:"考試",en:"Exam",l_cn:"贏同學",l_en:"Beat classmates",h_cn:"驗證自己的理解程度",h_en:"Verify own comprehension"},{n:5,cn:"教育",en:"Education",l_cn:"培養高分學生",l_en:"Raise high-scoring students",h_cn:"培養能自主學習的人",h_en:"Cultivate self-directed learners"},{n:6,cn:"AI",en:"AI",l_cn:"寫作業",l_en:"Do homework",h_cn:"放大認知與創造力",h_en:"Amplify cognition and creativity"},{n:7,cn:"工作",en:"Work",l_cn:"每月領薪水",l_en:"Get monthly salary",h_cn:"持續創造社會價值",h_en:"Continuously create social value"}]},
+  7: {title_cn: "核心價值", title_en: "Value", question: "它真正存在的原因是什麼？", cases: [{n:1,cn:"學英文",en:"Learning English",l_cn:"考高分",l_en:"High scores",h_cn:"增加理解世界與連結世界的能力",h_en:"Enhance understanding and connecting with world"},{n:2,cn:"閱讀",en:"Reading",l_cn:"增加知識",l_en:"Increase knowledge",h_cn:"更新世界模型",h_en:"Update world models"},{n:3,cn:"學習",en:"Learning",l_cn:"考試需要",l_en:"Exam requirement",h_cn:"持續提升預測能力",h_en:"Continuously improve prediction ability"},{n:4,cn:"教育",en:"Education",l_cn:"傳授知識",l_en:"Transmit knowledge",h_cn:"培養終身學習能力",h_en:"Cultivate lifelong learning ability"},{n:5,cn:"AI",en:"AI",l_cn:"節省時間",l_en:"Save time",h_cn:"放大人類認知與創造力",h_en:"Amplify human cognition and creativity"},{n:6,cn:"寫作",en:"Writing",l_cn:"分享內容",l_en:"Share content",h_cn:"建立可複製的智慧",h_en:"Build replicable wisdom"},{n:7,cn:"工作",en:"Work",l_cn:"賺薪水",l_en:"Earn salary",h_cn:"創造社會價值",h_en:"Create social value"}]},
+  8: {title_cn: "核心假設", title_en: "Assumption", question: "它默默相信世界如何運作？", cases: [{n:1,cn:"學英文",en:"Learning English",l_cn:"只是考試",l_en:"Just for exams",h_cn:"是理解世界的工具",h_en:"Is a tool for understanding world"},{n:2,cn:"學習",en:"Learning",l_cn:"畢業就不用學",l_en:"Stop after graduation",h_cn:"終身學習才能持續更新模型",h_en:"Lifelong learning for continuous model updating"},{n:3,cn:"工作",en:"Work",l_cn:"努力一定成功",l_en:"Effort guarantees success",h_cn:"方向＋方法＋努力才有效",h_en:"Direction + method + effort works"},{n:4,cn:"財富",en:"Wealth",l_cn:"有錢人運氣好",l_en:"Rich people are lucky",h_cn:"財富是價值交換的結果",h_en:"Wealth is result of value exchange"},{n:5,cn:"健康",en:"Health",l_cn:"生病才需要健康",l_en:"Health only matters when sick",h_cn:"健康每天都在累積",h_en:"Health accumulates daily"},{n:6,cn:"運動",en:"Exercise",l_cn:"變胖才運動",l_en:"Exercise only when fat",h_cn:"運動是每天保養系統",h_en:"Exercise is daily system maintenance"},{n:7,cn:"飲食",en:"Diet",l_cn:"吃飽最重要",l_en:"Fullness most important",h_cn:"細胞需要高品質原料",h_en:"Cells need high-quality materials"}]},
+  9: {title_cn: "核心信念", title_en: "Belief", question: "背後真正相信世界如何運作？", cases: [{n:1,cn:"英文",en:"English",l_cn:"沒有語言天分",l_en:"No language talent",h_cn:"語言是每天累積的能力",h_en:"Language is daily accumulated ability"},{n:2,cn:"學習",en:"Learning",l_cn:"記性不好",l_en:"Bad memory",h_cn:"理解比記憶重要",h_en:"Understanding more important than memory"},{n:3,cn:"工作",en:"Work",l_cn:"只是賺錢",l_en:"Just earning money",h_cn:"在累積能力資本",h_en:"Accumulating ability capital"},{n:4,cn:"財富",en:"Wealth",l_cn:"靠命",l_en:"Depends on fate",h_cn:"靠價值交換",h_en:"Depends on value exchange"},{n:5,cn:"健康",en:"Health",l_cn:"生病再治療",l_en:"Treat when sick",h_cn:"每天累積",h_en:"Accumulates daily"},{n:6,cn:"飲食",en:"Diet",l_cn:"吃飽就好",l_en:"Just fullness",h_cn:"是細胞原料",h_en:"Is cellular material"},{n:7,cn:"睡眠",en:"Sleep",l_cn:"熬夜沒關係",l_en:"All-nighters are fine",h_cn:"是修復系統",h_en:"Is repair system"}]},
+  10: {title_cn: "核心公式", title_en: "Formula", question: "一句公式如何描述低維→高維轉換？", cases: [{n:1,cn:"事件",en:"Event",l_cn:"命運",l_en:"Fate",h_cn:"事件+更新=成長",h_en:"Event+Update=Growth"},{n:2,cn:"知道",en:"Knowing",l_cn:"能力",l_en:"Ability",h_cn:"知道×練習=能力",h_en:"Knowing×Practice=Ability"},{n:3,cn:"努力",en:"Effort",l_cn:"成功",l_en:"Success",h_cn:"方向×方法×努力=成功",h_en:"Direction×Method×Effort=Success"},{n:4,cn:"痛苦",en:"Suffering",l_cn:"懲罰",l_en:"Punishment",h_cn:"更新通知",h_en:"Update notification"},{n:5,cn:"焦慮",en:"Anxiety",l_cn:"不好",l_en:"Bad",h_cn:"預測誤差",h_en:"Prediction error"},{n:6,cn:"情緒",en:"Emotion",l_cn:"事實",l_en:"Fact",h_cn:"訊號",h_en:"Signal"},{n:7,cn:"失敗",en:"Failure",l_cn:"能力差",l_en:"Weak ability",h_cn:"模型誤差",h_en:"Model error"}]},
+  11: {title_cn: "核心邏輯", title_en: "Logic", question: "如何推理？如何思考？", cases: [{n:1,cn:"看結果",en:"See result",l_cn:"下結論",l_en:"Conclude",h_cn:"找原因、結構、機制",h_en:"Find causes, structures, mechanisms"},{n:2,cn:"怪人",en:"Blame people",l_cn:"",l_en:"",h_cn:"找系統",h_en:"Find systems"},{n:3,cn:"找誰錯",en:"Who's wrong",l_cn:"",l_en:"",h_cn:"找哪裡卡",h_en:"Find where blocked"},{n:4,cn:"看今天",en:"See today",l_cn:"",l_en:"",h_cn:"看長期",h_en:"See long-term"},{n:5,cn:"看事件",en:"See event",l_cn:"",l_en:"",h_cn:"看模式",h_en:"See patterns"},{n:6,cn:"看一次",en:"See once",l_cn:"",l_en:"",h_cn:"看機率",h_en:"See probability"},{n:7,cn:"情緒是真相",en:"Emotion is truth",l_cn:"",l_en:"",h_cn:"情緒是資料",h_en:"Emotion is data"}]},
+  12: {title_cn: "核心規律", title_en: "Law", question: "哪些規律幾乎永遠成立？", cases: [{n:1,cn:"成長",en:"Growth",l_cn:"一直增加知識",l_en:"Always add knowledge",h_cn:"持續更新模型",h_en:"Continuously update models"},{n:2,cn:"複利",en:"Compounding",l_cn:"偶爾努力",l_en:"Effort sometimes",h_cn:"每天累積",h_en:"Accumulate daily"},{n:3,cn:"回饋",en:"Feedback",l_cn:"失敗停止",l_en:"Stop at failure",h_cn:"失敗更新",h_en:"Update at failure"},{n:4,cn:"系統",en:"System",l_cn:"結果重要",l_en:"Result important",h_cn:"系統重要",h_en:"System important"},{n:5,cn:"槓桿",en:"Leverage",l_cn:"一直做更多",l_en:"Always do more",h_cn:"找最大槓桿",h_en:"Find maximum leverage"},{n:6,cn:"熵增",en:"Entropy",l_cn:"放著就會變好",l_en:"Will improve itself",h_cn:"沒有管理一定混亂",h_en:"Chaos without management"},{n:7,cn:"注意力",en:"Attention",l_cn:"時間最重要",l_en:"Time most important",h_cn:"注意力最重要",h_en:"Attention most important"}]},
+  13: {title_cn: "核心原則", title_en: "Principle", question: "做任何決策最重要的依據是什麼？", cases: [{n:1,cn:"真相",en:"Truth",l_cn:"相信感覺",l_en:"Believe feelings",h_cn:"相信事實",h_en:"Believe facts"},{n:2,cn:"更新",en:"Updating",l_cn:"堅持原來的方法",l_en:"Stick to old methods",h_cn:"持續更新方法",h_en:"Continuously update methods"},{n:3,cn:"系統",en:"System",l_cn:"改結果",l_en:"Change results",h_cn:"改系統",h_en:"Change system"},{n:4,cn:"第一性",en:"First Principle",l_cn:"接受答案",l_en:"Accept answers",h_cn:"追問本質",h_en:"Ask essence"},{n:5,cn:"長期",en:"Long-term",l_cn:"看今天",l_en:"See today",h_cn:"看十年",h_en:"See 10 years"},{n:6,cn:"複利",en:"Compounding",l_cn:"偶爾努力",l_en:"Effort sometimes",h_cn:"每天累積",h_en:"Accumulate daily"},{n:7,cn:"回饋",en:"Feedback",l_cn:"討厭失敗",l_en:"Hate failure",h_cn:"利用失敗",h_en:"Use failure"}]},
+  14: {title_cn: "核心模型", title_en: "Model", question: "如何建立可以跨領域都適用的理解模型？", cases: [{n:1,cn:"問題",en:"Problem",l_cn:"就是敵人",l_en:"Is enemy",h_cn:"是系統暴露限制",h_en:"Exposes system limits"},{n:2,cn:"學習",en:"Learning",l_cn:"背知識",l_en:"Memorize knowledge",h_cn:"建模型",h_en:"Build models"},{n:3,cn:"成長",en:"Growth",l_cn:"一直努力",l_en:"Always effort",h_cn:"持續更新",h_en:"Continuously update"},{n:4,cn:"健康",en:"Health",l_cn:"治疾病",l_en:"Treat disease",h_cn:"恢復穩態",h_en:"Restore homeostasis"},{n:5,cn:"財富",en:"Wealth",l_cn:"努力賺錢",l_en:"Work hard for money",h_cn:"建立系統",h_en:"Build systems"},{n:6,cn:"關係",en:"Relationship",l_cn:"改變別人",l_en:"Change others",h_cn:"改善互動",h_en:"Improve interaction"},{n:7,cn:"教育",en:"Education",l_cn:"教答案",l_en:"Teach answers",h_cn:"教思考",h_en:"Teach thinking"}]},
+  15: {title_cn: "時間模型", title_en: "Time Model", question: "如何看待時間的價值？", cases: [{n:1,cn:"時間",en:"Time",l_cn:"消耗資源",l_en:"Consuming resource",h_cn:"投資資源",h_en:"Investing resource"},{n:2,cn:"過去",en:"Past",l_cn:"無法改變",l_en:"Cannot change",h_cn:"提供資料",h_en:"Provides data"},{n:3,cn:"現在",en:"Present",l_cn:"享受當下",l_en:"Enjoy present",h_cn:"建立未來",h_en:"Build future"},{n:4,cn:"未來",en:"Future",l_cn:"無法預測",l_en:"Cannot predict",h_cn:"可以設計",h_en:"Can design"},{n:5,cn:"每天",en:"Daily",l_cn:"今天沒差",l_en:"Today doesn't matter",h_cn:"累積人生",h_en:"Accumulates life"},{n:6,cn:"長期",en:"Long-term",l_cn:"太遠",l_en:"Too far",h_cn:"決定今天",h_en:"Determines today"},{n:7,cn:"複利",en:"Compounding",l_cn:"慢慢增加",l_en:"Slowly increases",h_cn:"指數成長",h_en:"Exponential growth"}]},
+  16: {title_cn: "心智模型", title_en: "Mental Model", question: "如何從低維思考升級成高維思考？", cases: [{n:1,cn:"二元",en:"Binary",l_cn:"成功或失敗",l_en:"Success or failure",h_cn:"光譜上的位置",h_en:"Position on spectrum"},{n:2,cn:"線性",en:"Linear",l_cn:"A造成B",l_en:"A causes B",h_cn:"系統互動",h_en:"System interaction"},{n:3,cn:"找人",en:"Blame people",l_cn:"誰的錯",l_en:"Whose fault",h_cn:"找機制",h_en:"Find mechanism"},{n:4,cn:"看結果",en:"See result",l_cn:"只看最後",l_en:"Only final result",h_cn:"看生成過程",h_en:"See generation process"},{n:5,cn:"看事件",en:"See event",l_cn:"只看一次",l_en:"See once",h_cn:"看模式",h_en:"See patterns"},{n:6,cn:"靠意志",en:"Willpower",l_cn:"我要改",l_en:"I will change",h_cn:"靠系統",h_en:"Through system"},{n:7,cn:"短期",en:"Short-term",l_cn:"今年目標",l_en:"This year goal",h_cn:"十年目標",h_en:"10-year goal"}]},
+  17: {title_cn: "認知模型", title_en: "Cognitive Model", question: "如何從『自動反應』升級成『主動理解』？", cases: [{n:1,cn:"記憶",en:"Memory",l_cn:"把答案記住",l_en:"Remember answers",h_cn:"理解答案",h_en:"Understand answers"},{n:2,cn:"表象",en:"Surface",l_cn:"看到現象",l_en:"See phenomena",h_cn:"看到原因",h_en:"See causes"},{n:3,cn:"直接",en:"Direct",l_cn:"別人說就相信",l_en:"Believe what's told",h_cn:"驗證後相信",h_en:"Believe after verification"},{n:4,cn:"局部",en:"Partial",l_cn:"只懂一部分",l_en:"Only understand part",h_cn:"理解全系統",h_en:"Understand whole system"},{n:5,cn:"被動",en:"Passive",l_cn:"被資訊控制",l_en:"Controlled by info",h_cn:"控制資訊",h_en:"Control information"},{n:6,cn:"單點",en:"Single point",l_cn:"每件事獨立",l_en:"Each event isolated",h_cn:"全部互相連結",h_en:"All interconnected"},{n:7,cn:"情緒",en:"Emotion",l_cn:"情緒判斷",l_en:"Judge by emotion",h_cn:"邏輯判斷",h_en:"Judge by logic"}]},
+  18: {title_cn: "預測模型", title_en: "Prediction Model", question: "如何從『反應人生』升級成『預測人生』？", cases: [{n:1,cn:"現在",en:"Present",l_cn:"發生才處理",l_en:"Handle when happens",h_cn:"提前預測",h_en:"Predict in advance"},{n:2,cn:"事件",en:"Event",l_cn:"今天運氣",l_en:"Today's luck",h_cn:"重複模式",h_en:"Repeating pattern"},{n:3,cn:"情緒",en:"Emotion",l_cn:"我很生氣",l_en:"I'm angry",h_cn:"預測失敗",h_en:"Prediction failed"},{n:4,cn:"今天",en:"Today",l_cn:"沒關係",l_en:"Doesn't matter",h_cn:"決定未來",h_en:"Determines future"},{n:5,cn:"希望",en:"Hope",l_cn:"希望變好",l_en:"Hope for better",h_cn:"模型推演",h_en:"Model projection"},{n:6,cn:"結果",en:"Result",l_cn:"結果不好",l_en:"Bad result",h_cn:"輸入錯了",h_en:"Wrong input"},{n:7,cn:"直覺",en:"Intuition",l_cn:"我覺得",l_en:"I feel",h_cn:"資料顯示",h_en:"Data shows"}]},
+  19: {title_cn: "決策模型", title_en: "Decision Model", question: "如何從『情緒決策』升級成『高品質決策』？", cases: [{n:1,cn:"情緒",en:"Emotion",l_cn:"心情好就做",l_en:"Do if feel good",h_cn:"符合原則",h_en:"Follows principles"},{n:2,cn:"眼前",en:"Immediate",l_cn:"現在舒服",l_en:"Comfortable now",h_cn:"長期價值",h_en:"Long-term value"},{n:3,cn:"喜歡",en:"Like",l_cn:"想做才做",l_en:"Do if want",h_cn:"應該做",h_en:"Should do"},{n:4,cn:"單點",en:"Single",l_cn:"只想今天",l_en:"Only think today",h_cn:"看全系統",h_en:"See whole system"},{n:5,cn:"猜測",en:"Guess",l_cn:"我覺得",l_en:"I think",h_cn:"看數據",h_en:"See data"},{n:6,cn:"一次",en:"Once",l_cn:"決定一次",l_en:"Decide once",h_cn:"持續修正",h_en:"Continuously correct"},{n:7,cn:"最好",en:"Best",l_cn:"找最好",l_en:"Find best",h_cn:"找最適合",h_en:"Find fitting"}]},
+  20: {title_cn: "更新模型", title_en: "Updating Model", question: "如何從『重複舊人生』升級成『持續更新人生』？", cases: [{n:1,cn:"重複",en:"Repeat",l_cn:"一直重複",l_en:"Keep repeating",h_cn:"每次修正",h_en:"Correct each time"},{n:2,cn:"理由",en:"Reason",l_cn:"找理由",l_en:"Find reasons",h_cn:"找誤差",h_en:"Find errors"},{n:3,cn:"結果",en:"Result",l_cn:"修結果",l_en:"Fix result",h_cn:"修模型",h_en:"Fix model"},{n:4,cn:"行為",en:"Behavior",l_cn:"改行為",l_en:"Change behavior",h_cn:"改身份",h_en:"Change identity"},{n:5,cn:"一次",en:"Once",l_cn:"改一次",l_en:"Change once",h_cn:"每天微更",h_en:"Update daily"},{n:6,cn:"缺點",en:"Weakness",l_cn:"找缺點",l_en:"Find weakness",h_cn:"找限制",h_en:"Find constraints"},{n:7,cn:"人格",en:"Personality",l_cn:"就是這樣",l_en:"That's how I am",h_cn:"可以演化",h_en:"Can evolve"}]},
+  21: {title_cn: "結構模型", title_en: "Structure Model", question: "如何從『看事情』升級成『看結構』？", cases: [{n:1,cn:"事件",en:"Event",l_cn:"發生什麼",l_en:"What happened",h_cn:"什麼結構產生",h_en:"What structure created"},{n:2,cn:"症狀",en:"Symptom",l_cn:"頭痛醫頭",l_en:"Treat symptom",h_cn:"找源頭",h_en:"Find source"},{n:3,cn:"點",en:"Point",l_cn:"單一事件",l_en:"Single event",h_cn:"整個系統",h_en:"Whole system"},{n:4,cn:"人",en:"Person",l_cn:"誰不好",l_en:"Who's bad",h_cn:"互動如何",h_en:"How interact"},{n:5,cn:"能力",en:"Ability",l_cn:"他很厲害",l_en:"He's great",h_cn:"如何生成",h_en:"How generated"},{n:6,cn:"成果",en:"Achievement",l_cn:"結果很好",l_en:"Great result",h_cn:"流程如何",h_en:"What's process"},{n:7,cn:"努力",en:"Effort",l_cn:"一直努力",l_en:"Always work",h_cn:"方向對嗎",h_en:"Is direction right"}]},
+  22: {title_cn: "系統思維", title_en: "Systems Thinking", question: "如何從『看個體』升級成『看整個系統』？", cases: [{n:1,cn:"個體",en:"Individual",l_cn:"都是他的問題",l_en:"All his problem",h_cn:"系統共同產生",h_en:"System creates together"},{n:2,cn:"原因",en:"Cause",l_cn:"只有一個原因",l_en:"Only one cause",h_cn:"多因素互影響",h_en:"Multiple factors interact"},{n:3,cn:"直線",en:"Line",l_cn:"A造成B",l_en:"A causes B",h_cn:"A、B互相影響",h_en:"A, B affect each other"},{n:4,cn:"孤立",en:"Isolated",l_cn:"彼此無關",l_en:"Unrelated",h_cn:"互相連結",h_en:"Interconnected"},{n:5,cn:"今天",en:"Today",l_cn:"今天沒差",l_en:"Doesn't matter",h_cn:"每天累積",h_en:"Accumulates daily"},{n:6,cn:"結果",en:"Result",l_cn:"只想知道",l_en:"Just want result",h_cn:"改善流程",h_en:"Improve process"},{n:7,cn:"問題",en:"Problem",l_cn:"好多",l_en:"So many",h_cn:"找真正瓶頸",h_en:"Find real bottleneck"}]},
+  23: {title_cn: "控制論", title_en: "Cybernetics", question: "如何建立可以自動修正、自動成長的人生系統？", cases: [{n:1,cn:"解決",en:"Solve",l_cn:"問題來才解",l_en:"Solve when happens",h_cn:"建立系統預防",h_en:"Build system to prevent"},{n:2,cn:"意志",en:"Willpower",l_cn:"忍耐",l_en:"Endure",h_cn:"建立回饋",h_en:"Build feedback"},{n:3,cn:"記憶",en:"Memory",l_cn:"憑感覺",l_en:"By feeling",h_cn:"看Dashboard",h_en:"Check dashboard"},{n:4,cn:"努力",en:"Effort",l_cn:"一直做",l_en:"Always do",h_cn:"靠PDCA",h_en:"Use PDCA"},{n:5,cn:"完成",en:"Complete",l_cn:"最好才開始",l_en:"Start when perfect",h_cn:"先完成再優化",h_en:"Complete then optimize"},{n:6,cn:"錯誤",en:"Error",l_cn:"我是失敗者",l_en:"I'm failure",h_cn:"模型有誤差",h_en:"Model has errors"},{n:7,cn:"情緒",en:"Emotion",l_cn:"忍住不生氣",l_en:"Suppress anger",h_cn:"系統控制",h_en:"System control"}]},
+  24: {title_cn: "自由能原理", title_en: "Free Energy Principle", question: "如何從『降低痛苦』升級成『降低預測誤差』？", cases: [{n:1,cn:"痛苦",en:"Suffering",l_cn:"就是壞事",l_en:"Is bad",h_cn:"代表誤差",h_en:"Indicates error"},{n:2,cn:"焦慮",en:"Anxiety",l_cn:"不正常",l_en:"Abnormal",h_cn:"未來不確定",h_en:"Future uncertain"},{n:3,cn:"恐懼",en:"Fear",l_cn:"不要害怕",l_en:"Don't fear",h_cn:"預測不足",h_en:"Predict more"},{n:4,cn:"逃避",en:"Escape",l_cn:"不要想",l_en:"Don't think",h_cn:"找真正誤差",h_en:"Find real error"},{n:5,cn:"壓力",en:"Pressure",l_cn:"可怕",l_en:"Scary",h_cn:"促進成長",h_en:"Promotes growth"},{n:6,cn:"控制",en:"Control",l_cn:"改變別人",l_en:"Change others",h_cn:"更新自己",h_en:"Update self"},{n:7,cn:"為什麼",en:"Why",l_cn:"為什麼倒楣",l_en:"Why unlucky",h_cn:"缺什麼資訊",h_en:"What info missing"}]},
+  25: {title_cn: "資訊論", title_en: "Information Theory", question: "如何從『蒐集資訊』升級成『提升資訊品質』？", cases: [{n:1,cn:"資訊",en:"Information",l_cn:"很多",l_en:"Lots",h_cn:"真資訊很少",h_en:"True info rare"},{n:2,cn:"內容",en:"Content",l_cn:"全部重要",l_en:"All important",h_cn:"找真正訊號",h_en:"Find real signal"},{n:3,cn:"消息",en:"News",l_cn:"今天發生",l_en:"Happens today",h_cn:"背後結構",h_en:"Underlying structure"},{n:4,cn:"答案",en:"Answer",l_cn:"直接問",l_en:"Ask directly",h_cn:"找資訊差",h_en:"Find info gap"},{n:5,cn:"接收",en:"Receive",l_cn:"看到就信",l_en:"Believe if see",h_cn:"驗證",h_en:"Verify"},{n:6,cn:"雜訊",en:"Noise",l_cn:"一直吸收",l_en:"Always absorb",h_cn:"先過濾",h_en:"Filter first"},{n:7,cn:"知識",en:"Knowledge",l_cn:"背很多",l_en:"Memorize lots",h_cn:"建立模型",h_en:"Build models"}]},
+  26: {title_cn: "複雜系統", title_en: "Complex Systems", question: "如何從『線性思考』升級成『複雜系統思考』？", cases: [{n:1,cn:"原因",en:"Cause",l_cn:"只有一個",l_en:"Only one",h_cn:"多重交互",h_en:"Multiple interaction"},{n:2,cn:"因果",en:"Causality",l_cn:"A造成B",l_en:"A causes B",h_cn:"網路因果",h_en:"Network causality"},{n:3,cn:"修復",en:"Repair",l_cn:"補一個地方",l_en:"Fix one place",h_cn:"系統一起改",h_en:"Fix system together"},{n:4,cn:"世界",en:"World",l_cn:"固定",l_en:"Fixed",h_cn:"動態演化",h_en:"Evolves dynamically"},{n:5,cn:"控制",en:"Control",l_cn:"全部做好",l_en:"Make all good",h_cn:"找關鍵節點",h_en:"Find key nodes"},{n:6,cn:"看",en:"See",l_cn:"局部",l_en:"Partial",h_cn:"全局",h_en:"Whole"},{n:7,cn:"穩定",en:"Stability",l_cn:"最好",l_en:"Best",h_cn:"適應最好",h_en:"Adaptation best"}]},
+  27: {title_cn: "槓桿思維", title_en: "Leverage Thinking", question: "如何從『拼命努力』升級成『找最大槓桿』？", cases: [{n:1,cn:"努力",en:"Effort",l_cn:"一直努力",l_en:"Always effort",h_cn:"找最大槓桿",h_en:"Find max leverage"},{n:2,cn:"做",en:"Do",l_cn:"更多",l_en:"More",h_cn:"更重要",h_en:"Important"},{n:3,cn:"時間",en:"Time",l_cn:"賣時間",l_en:"Sell time",h_cn:"建立能力",h_en:"Build ability"},{n:4,cn:"一對一",en:"One-to-one",l_cn:"",l_en:"",h_cn:"一對多",h_en:"One-to-many"},{n:5,cn:"人工",en:"Manual",l_cn:"全部自己",l_en:"All myself",h_cn:"AI槓桿",h_en:"AI leverage"},{n:6,cn:"單次",en:"Single",l_cn:"今天收入",l_en:"Today income",h_cn:"複利價值",h_en:"Compound value"},{n:7,cn:"個人",en:"Individual",l_cn:"我很厲害",l_en:"I'm great",h_cn:"系統厲害",h_en:"System great"}]},
+  28: {title_cn: "自我效能", title_en: "Self-Efficacy", question: "如何提升相信自己改變人生的能力？", cases: [{n:1,cn:"能力",en:"Ability",l_cn:"天生的",l_en:"Inborn",h_cn:"可以訓練",h_en:"Can be trained"},{n:2,cn:"目標",en:"Goal",l_cn:"很高",l_en:"Too high",h_cn:"可達成",h_en:"Achievable"},{n:3,cn:"第一步",en:"First step",l_cn:"太難",l_en:"Too hard",h_cn:"可以開始",h_en:"Can start"},{n:4,cn:"失敗",en:"Failure",l_cn:"代表沒能力",l_en:"Means incapable",h_cn:"代表有進度",h_en:"Means progressing"},{n:5,cn:"反饋",en:"Feedback",l_cn:"都是負面",l_en:"All negative",h_cn:"都是資源",h_en:"All resources"},{n:6,cn:"模型",en:"Model",l_cn:"永遠一樣",l_en:"Always same",h_cn:"每天更新",h_en:"Update daily"},{n:7,cn:"相信",en:"Belief",l_cn:"我不能",l_en:"I can't",h_cn:"我可以試",h_en:"I can try"}]},
+  29: {title_cn: "價值創造", title_en: "Value Creation", question: "如何從『索取價值』升級成『創造價值』？", cases: [{n:1,cn:"工作",en:"Work",l_cn:"領薪水",l_en:"Get salary",h_cn:"創造價值",h_en:"Create value"},{n:2,cn:"銷售",en:"Sales",l_cn:"賣產品",l_en:"Sell product",h_cn:"解決問題",h_en:"Solve problem"},{n:3,cn:"品牌",en:"Brand",l_cn:"很多粉絲",l_en:"Many followers",h_cn:"很多信任",h_en:"Much trust"},{n:4,cn:"教育",en:"Education",l_cn:"給答案",l_en:"Give answers",h_cn:"建立能力",h_en:"Build ability"},{n:5,cn:"健康",en:"Health",l_cn:"不生病",l_en:"Not sick",h_cn:"創造活力",h_en:"Create vitality"},{n:6,cn:"關係",en:"Relationship",l_cn:"索取愛",l_en:"Take love",h_cn:"生成愛",h_en:"Generate love"},{n:7,cn:"人生",en:"Life",l_cn:"為自己",l_en:"For myself",h_cn:"為世界",h_en:"For world"}]},
+  30: {title_cn: "終極升維", title_en: "Ultimate Elevation", question: "人生最終的低維→高維轉換是什麼？", cases: [{n:1,cn:"存在",en:"Existence",l_cn:"活著",l_en:"Being alive",h_cn:"有意義地存在",h_en:"Exist meaningfully"},{n:2,cn:"身體",en:"Body",l_cn:"沒有病",l_en:"No disease",h_cn:"充滿生命力",h_en:"Full of vitality"},{n:3,cn:"心智",en:"Mind",l_cn:"知道很多",l_en:"Know lots",h_cn:"降低誤差率",h_en:"Lower error rate"},{n:4,cn:"關係",en:"Relationship",l_cn:"有人陪",l_en:"Have company",h_cn:"互相成長",h_en:"Grow together"},{n:5,cn:"工作",en:"Work",l_cn:"有收入",l_en:"Have income",h_cn:"有影響力",h_en:"Have influence"},{n:6,cn:"社會",en:"Society",l_cn:"一個人",l_en:"One person",h_cn:"改變世界",h_en:"Change world"},{n:7,cn:"靈魂",en:"Soul",l_cn:"活著",l_en:"Survive",h_cn:"真正活著",h_en:"Truly live"}]}
+};
+
+function initApp() {
+  const navTabs = document.getElementById('navTabs');
+  const container = document.getElementById('volumeContainer');
+  
+  const tabs = [
+    {range: '1-6', start: 1, end: 6},
+    {range: '7-12', start: 7, end: 12},
+    {range: '13-18', start: 13, end: 18},
+    {range: '19-24', start: 19, end: 24},
+    {range: '25-30', start: 25, end: 30}
+  ];
+  
+  tabs.forEach((tab, idx) => {
+    const btn = document.createElement('button');
+    btn.className = `nav-tab ${idx === 0 ? 'active' : ''}`;
+    btn.textContent = `卷 ${tab.range}`;
+    btn.onclick = () => filterVols(tab.start, tab.end, idx);
+    navTabs.appendChild(btn);
+  });
+  
+  for (let v = 1; v <= 30; v++) {
+    const data = allVolumesData[v];
+    if (!data) continue;
+    
+    const card = document.createElement('div');
+    card.className = 'volume-card';
+    card.dataset.vol = v;
+    
+    const casesList = data.cases.map(c => `
+      <div class="case-item" onclick="toggleCase(event)">
+        <div class="case-title">
+          <span class="case-num">${String(c.n).padStart(2,'0')}</span>
+          <span>${c.cn}</span>
+          <button class="speaker-btn" onclick="speak('${(c.l_en + ' ' + c.h_en).replace(/'/g, "\\'")}', event)">🔊</button>
+        </div>
+        <div class="case-content">
+          <div class="case-split">
+            <div class="dim-box low-dim">
+              <span class="dim-label">低維 Low</span>
+              <div>${c.l_cn ? c.cn + ': ' + c.l_cn : c.cn}</div>
+              <div style="font-size:0.9em; margin-top:4px; opacity:0.8;">${c.l_en ? c.en + ': ' + c.l_en : c.en}</div>
+            </div>
+            <div class="dim-box high-dim">
+              <span class="dim-label">高維 High</span>
+              <div>${c.h_cn}</div>
+              <div style="font-size:0.9em; margin-top:4px; opacity:0.8;">${c.h_en}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    
+    card.innerHTML = `
+      <div class="volume-header" onclick="toggle(${v})">
+        <div class="volume-title">
+          <h3>${data.title_cn} | ${data.title_en}</h3>
+          <div class="question">${data.question}</div>
+        </div>
+        <div class="volume-num">Vol${v}</div>
+      </div>
+      <div class="volume-content" id="vol${v}">
+        ${casesList}
+      </div>
+    `;
+    
+    container.appendChild(card);
+  }
+}
+
+function toggle(vid) {
+  document.getElementById(`vol${vid}`).classList.toggle('active');
+}
+
+function toggleCase(e) {
+  e.stopPropagation();
+  e.currentTarget.querySelector('.case-content').classList.toggle('active');
+}
+
+function filterVols(start, end, tabIdx) {
+  document.querySelectorAll('.nav-tab').forEach((t, i) => t.classList.toggle('active', i === tabIdx));
+  document.querySelectorAll('.volume-card').forEach(c => {
+    const v = parseInt(c.dataset.vol);
+    c.style.display = (v >= start && v <= end) ? 'grid' : 'none';
+  });
+}
+
+function speak(txt, e) {
+  e.stopPropagation();
+  if ('speechSynthesis' in window) {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(txt);
+    u.lang = 'en-US';
+    u.rate = 0.9;
+    speechSynthesis.speak(u);
+  }
+}
+
+initApp();
+filterVols(1, 6, 0);
+    </script>
+
+
+
+
+
+<!-- SOUP-START -->
+<style>
+/* ── 心靈雞湯卡 + 搜尋 ── */
+.sp-card{margin:0 0 18px;padding:14px 16px;border-radius:14px;border:1px solid #E6D3A3;background:linear-gradient(135deg,#FFF9EA,#FFF1DC);color:#4A3A12;text-align:left;cursor:default;font-family:inherit;line-height:1.6;}
+.sp-dark .sp-card{background:linear-gradient(135deg,rgba(232,168,32,.12),rgba(255,255,255,.03));border-color:rgba(232,168,32,.3);color:#F3E8CC;}
+.sp-h{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;letter-spacing:.5px;color:#B07A08;margin-bottom:6px;}
+.sp-dark .sp-h{color:#E8A820;}
+.sp-n{font-weight:400;opacity:.7;}
+.sp-q{font-size:16px;font-weight:600;line-height:1.75;white-space:pre-line;}
+.sp-b{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.sp-fz{bottom:166px;font-size:16px;font-weight:700;}
+.sp-fh{font-size:12px;font-weight:700;padding:8px 6px 4px;color:#C9960C;}
+.sp-it{position:relative;}
+.sp-it[data-f]{padding-right:34px;}
+.sp-x{position:absolute;right:8px;top:8px;opacity:.5;padding:0 4px;}
+.sp-x:hover{opacity:1;}
+.sp-b button{padding:5px 13px;border-radius:16px;border:1px solid currentColor;background:transparent;color:inherit;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;opacity:.75;transition:.15s;}
+.sp-b button:hover{opacity:1;}
+.sp-note{font-size:11px;opacity:.65;margin-top:8px;text-align:center;}
+.sp-fab{position:fixed;right:14px;z-index:900;width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;font-size:18px;line-height:42px;padding:0;background:#1A2B5F;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.sp-dark .sp-fab{background:#E8A820;color:#1a1200;}
+.sp-fs{bottom:116px;}
+.sp-ft{bottom:66px;display:none;}
+.sp-ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;background:rgba(0,0,0,.55);padding:8vh 14px 14px;}
+.sp-ov.on{display:block;}
+.sp-box{max-width:560px;margin:0 auto;background:#fff;color:#1A2040;border-radius:14px;padding:14px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:14px;}
+.sp-dark .sp-box{background:#0E1835;color:#D5E5F8;border:1px solid #1C3060;}
+.sp-row{display:flex;gap:8px;}
+.sp-row input{flex:1;min-width:0;padding:10px 12px;border-radius:9px;border:1.5px solid #C9960C;font-size:15px;font-family:inherit;outline:none;background:transparent;color:inherit;}
+.sp-row button{padding:0 14px;border-radius:9px;border:none;background:rgba(128,128,128,.2);color:inherit;font-size:15px;cursor:pointer;}
+.sp-r{overflow-y:auto;margin-top:10px;}
+.sp-it{padding:9px 10px;border-radius:9px;cursor:pointer;line-height:1.6;border-bottom:1px solid rgba(128,128,128,.18);}
+.sp-it:hover{background:rgba(201,150,12,.14);}
+.sp-it mark{background:#F0C040;color:#1a1200;border-radius:3px;padding:0 2px;}
+.sp-tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:10px;background:rgba(201,150,12,.2);margin-right:6px;}
+.sp-em{padding:16px 6px;opacity:.6;text-align:center;}
+.sp-hit{outline:3px solid #E8A820 !important;outline-offset:3px;}
+#spToast{display:none;position:fixed;bottom:120px;left:50%;transform:translateX(-50%);z-index:1100;background:#1A2B5F;color:#fff;font-size:13px;font-weight:700;padding:8px 18px;border-radius:9px;}
+#spToast.on{display:block;}
+</style>
+<script>
+window.SOUP={key:'low_high',nav:'.nav-tab',tabs:false,skip:'.header,.stats,.footer',
+panels:function(){
+  var tabs=document.querySelectorAll('.nav-tab'),act=document.querySelector('.nav-tab.active');
+  var out=[{el:document.querySelector('.container'),id:'r'+Math.max(0,Array.prototype.indexOf.call(tabs,act)),after:document.getElementById('navTabs')}];
+  Array.prototype.forEach.call(document.querySelectorAll('.volume-content'),function(c){out.push({el:c,id:c.id});});
+  return out;
+},
+label:function(el){var c=el.closest('.volume-card');return c?c.querySelector('h3').textContent.split('|')[0].trim():'';},
+reveal:function(el){
+  var card=el.closest('.volume-card');if(!card)return;
+  var i=Math.floor((+card.dataset.vol-1)/6);
+  filterVols(i*6+1,i*6+6,i);
+  card.querySelector('.volume-content').classList.add('active');
+  var ci=el.closest('.case-item');if(ci)ci.querySelector('.case-content').classList.add('active');
+},
+extra:['同一件事，站高一點看就不一樣了。','升維不是變複雜，是看得更清楚。','換一個問法，答案就會跟著換。','別急著解決問題，先確定你看懂了它。','每一次想通，都是一次小小的升級。','低處有低處的風景，但高處看得見路。'],soups:{
+'r0':['先問「這到底是什麼」，心就不那麼慌了。','看懂本質的人，不容易被表面嚇到。','問題問對了，答案就在不遠的地方。'],
+'r1':['你相信什麼，就會活成什麼樣子。','換一個信念，路就寬了一倍。','規律不會辜負每天累積的人。'],
+'r2':['原則讓你在混亂裡站得穩。','腦袋裡的地圖更新了，人生就跟著轉彎。','今天看遠一點，明天就少慌一點。'],
+'r3':['好決定不靠心情，靠的是想清楚。','願意修正的人，永遠有下一次機會。','別跟結果生氣，回頭看看系統。'],
+'r4':['少做一點沒關係，做對的那件事就好。','相信自己可以，是一切改變的開頭。','你創造的價值，會替你說話。'],
+'vol1':['看清一件事真正的樣子，就不會被它的名字嚇到。','情緒和困難，都只是訊號，不是你。'],
+'vol2':['你怎麼定義成功，就會怎麼過日子。','換個定義，失敗也可以是練習。'],
+'vol3':['學習的核心不是記得多，是變得不一樣。','抓住最核心的那件事，其他的都會跟上來。'],
+'vol4':['一直問到不能再問，答案就乾淨了。','回到最根本的地方，力氣才不會白花。'],
+'vol5':['真正的問題，常常藏在你抱怨的事情後面。','找對問題，就已經解決一半。'],
+'vol6':['知道自己真正要什麼，就不會被分數綁住。','目標不是贏過誰，是成為想成為的自己。'],
+'vol7':['做一件事的理由夠深，就撐得過辛苦。','價值不是別人給的，是你活出來的。'],
+'vol8':['檢查一下你默默相信的事，有些早該換了。','好的假設，會帶你去好的地方。'],
+'vol9':['「我不行」只是一個想法，不是事實。','每天累積的人，不需要靠天分。'],
+'vol10':['方向對了，再加上方法和努力，才叫成功。','痛苦不是懲罰，是該更新的通知。'],
+'vol11':['少怪一點人，多看一點系統。','看長一點，今天的煩惱就小一點。'],
+'vol12':['每天一點點，時間會幫你放大。','不整理就會亂，人生也是。'],
+'vol13':['相信事實，溫柔對待感覺。','討厭失敗，不如好好利用它。'],
+'vol14':['問題不是敵人，是它在告訴你哪裡可以更好。','改不了別人，就先改善彼此的互動。'],
+'vol15':['過去是資料，未來可以設計。','今天不是沒差，今天正在累積你的人生。'],
+'vol16':['人生不是只有成功和失敗，中間有很寬的路。','靠意志力很累，靠系統比較久。'],
+'vol17':['先懂，再記；先查證，再相信。','看見事情之間的連結，世界就清楚了。'],
+'vol18':['生氣常常是因為「沒想到」，下次就想到了。','別只是希望變好，推演一下怎麼變好。'],
+'vol19':['不必找最好的，找最適合的。','決定之後還可以修正，所以不用怕。'],
+'vol20':['你不是「就是這樣」，你是可以改版的。','每天微調一點，一年後就是新的人。'],
+'vol21':['別只看發生什麼，看看是什麼讓它發生。','努力之前，先確認方向。'],
+'vol22':['很少有事是一個人的錯。','找到真正的瓶頸，其他的自然會鬆。'],
+'vol23':['先完成，再變好。','出錯不代表你失敗，代表該調整了。'],
+'vol24':['害怕是因為不確定，多知道一點就好一點。','壓力不可怕，它常常是成長在敲門。'],
+'vol25':['少看一點雜訊，多留一點安靜給自己。','不是知道得多，是分得出什麼重要。'],
+'vol26':['世界一直在變，能適應的人最自在。','不用樣樣做好，顧好關鍵的那幾個點。'],
+'vol27':['聰明的努力，是找到那個省力的支點。','一個人走得快，一個系統走得遠。'],
+'vol28':['「我可以試試看」，是世界上最有力量的一句話。','能力是練出來的，不是生下來就有的。'],
+'vol29':['先想能給什麼，收穫就在後面等你。','被信任，比被看見更珍貴。'],
+'vol30':['不只是活著，要真正地活。','你變好了，身邊的世界也跟著好一點。']
+}};
+</script>
+<script>
+// ── 心靈雞湯卡 + 搜尋 + 記住分頁 + 離線教練（共用模組，完全離線）──
+(function(){
+var C=window.SOUP||{},K='soup:'+(C.key||'app')+':';
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function lsGet(k){try{return localStorage.getItem(K+k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(K+k,v);}catch(e){}}
+function navs(){return C.nav?$$(C.nav):[];}
+function panels(){
+  if(C.panels)return C.panels();
+  return $$(C.panel||'.pg').map(function(el){return{el:el,id:el.id,host:(C.host&&el.querySelector(C.host))||el};});
+}
+// 通用句庫：接在每個分頁專屬句子後面，「換一碗」時輪到
+var POOL=['慢慢來，比較快。','你已經走了很遠，回頭看看就知道。','今天不必完美，只要比昨天多一點點。','允許自己休息，也是一種前進。','每一個小小的開始，都值得被肯定。','你現在做的每件小事，未來的你都會感謝。','不用和別人比，你有自己的時區。','卡住的時候，先深呼吸，再走一小步。','把今天過好，就是對未來最好的準備。','你比昨天的自己，又多懂了一點。','再難的日子，也是一天一天過完的。','對自己溫柔一點，你正在努力。'];
+function specOf(id){return (C.soups&&C.soups[id])||C.common||[];}
+function quotesOf(id){var s=specOf(id);return s.length?s.concat(C.extra||[],POOL):s;}
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+var day=Math.floor(Date.now()/864e5),off={};
+function favs(){try{return JSON.parse(lsGet('fav'))||[];}catch(e){return [];}}
+function setFavs(a){lsSet('fav',JSON.stringify(a));}
+
+// ── 雞湯卡 ──
+function fill(card){
+  var id=card.getAttribute('data-sp'),q=quotesOf(id);if(!q.length)return;
+  // 每天預設先出該分頁的專屬句，按「換一碗」再輪到其他句
+  var i=((day+hash(id))%specOf(id).length+(off[id]||0))%q.length;
+  card.querySelector('.sp-q').textContent=q[i];
+  card.querySelector('.sp-n').textContent=(i+1)+' / '+q.length;
+  card.querySelector('[data-a=n]').style.display=q.length>1?'':'none';
+  card.querySelector('[data-a=f]').textContent=favs().indexOf(q[i])>=0?'♥ 已收藏':'♡ 收藏';
+}
+function say(text){
+  if(!('speechSynthesis' in window)){toast('這個瀏覽器不支援朗讀');return;}
+  speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);u.lang='zh-TW';u.rate=0.9;speechSynthesis.speak(u);
+}
+// 存成 1080×1080 圖卡（PNG），可直接貼到臉書 / LINE
+function saveImage(text){
+  var S=1080,cv=document.createElement('canvas');cv.width=cv.height=S;
+  var x=cv.getContext('2d'),g=x.createLinearGradient(0,0,S,S);
+  g.addColorStop(0,'#1A2B5F');g.addColorStop(1,'#0A7A72');x.fillStyle=g;x.fillRect(0,0,S,S);
+  x.strokeStyle='rgba(240,192,64,.55)';x.lineWidth=4;x.strokeRect(48,48,S-96,S-96);
+  var F='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+  x.textAlign='center';x.textBaseline='middle';
+  x.fillStyle='#F0C040';x.font='bold 40px '+F;x.fillText('心靈雞湯',S/2,150);
+  var size=text.length>60?50:text.length>32?58:68,lh=size*1.6,max=S-240,lines=[];
+  x.font='bold '+size+'px '+F;
+  text.split('\n').forEach(function(par){
+    var line='';
+    for(var i=0;i<par.length;i++){
+      var ch=par[i],keep=/[，。！？、；：」』）]/.test(ch);   // 標點不放行首
+      if(line&&!keep&&x.measureText(line+ch).width>max){lines.push(line);line=ch;}else line+=ch;
+    }
+    if(line)lines.push(line);
+  });
+  x.fillStyle='#fff';
+  var y=S/2-(lines.length-1)*lh/2;
+  lines.forEach(function(l,i){x.fillText(l,S/2,y+i*lh);});
+  x.fillStyle='rgba(255,255,255,.7)';x.font='32px '+F;
+  x.fillText(C.brand||document.title.split(/[｜|]/)[0].trim(),S/2,S-140);
+  cv.toBlob(function(b){
+    var a=document.createElement('a');a.href=URL.createObjectURL(b);
+    a.download='心靈雞湯_'+text.replace(/[\s\\/:*?"<>|，。！？、]/g,'').slice(0,10)+'.png';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
+    toast('圖卡已下載 ✓');
+  },'image/png');
+}
+function toast(m){
+  var t=document.getElementById('spToast');if(!t)return;
+  t.textContent=m;t.classList.add('on');clearTimeout(toast.t);
+  toast.t=setTimeout(function(){t.classList.remove('on');},1300);
+}
+function copy(text){
+  function fb(){var a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}a.remove();}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).catch(fb);else fb();
+  toast('已複製 ✓');
+}
+function makeCard(id){
+  var d=document.createElement('div');d.className='sp-card';d.setAttribute('data-sp',id);
+  d.innerHTML='<div class="sp-h"><span>🍲 心靈雞湯</span><span class="sp-n"></span></div><div class="sp-q"></div><div class="sp-b"><button type="button" data-a="n">換一碗</button><button type="button" data-a="f">♡ 收藏</button><button type="button" data-a="c">複製</button><button type="button" data-a="s">朗讀</button><button type="button" data-a="i">存圖卡</button></div>';
+  d.addEventListener('click',function(e){
+    e.stopPropagation();
+    var a=e.target.getAttribute&&e.target.getAttribute('data-a'),t=d.querySelector('.sp-q').textContent;
+    if(a==='n'){off[id]=(off[id]||0)+1;fill(d);}
+    else if(a==='c'){copy(t);}
+    else if(a==='s'){say(t);}
+    else if(a==='i'){saveImage(t);}
+    else if(a==='f'){
+      var f=favs(),k=f.indexOf(t);
+      if(k>=0)f.splice(k,1);else f.unshift(t);
+      setFavs(f);fill(d);toast(k>=0?'已取消收藏':'已收藏 ♥（按 🔍 可看全部收藏）');
+    }
+  });
+  fill(d);return d;
+}
+function ensure(){
+  panels().forEach(function(p){
+    if(!p||!p.el)return;
+    var host=p.host||p.el,ex=null;
+    for(var c=host.firstElementChild;c;c=c.nextElementSibling){if(c.classList.contains('sp-card')){ex=c;break;}}
+    if(ex){if(ex.getAttribute('data-sp')===p.id)return;ex.remove();}
+    if(!quotesOf(p.id).length)return;
+    var card=makeCard(p.id);
+    if(p.after&&p.after.parentNode===host)host.insertBefore(card,p.after.nextSibling);
+    else host.insertBefore(card,host.firstChild);
+  });
+}
+
+// ── 搜尋 ──
+var SKIP='script,style,noscript,nav,.nav,.nav-tabs,.sp-card,.sp-ov,.sp-fab,.sp-note,#spToast,.fbx-b,.fbx-fab,#fbxMask';
+var cache=null;
+function blocks(){
+  var out=[],seen=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null),n;
+  while((n=w.nextNode())){
+    var el=n.parentElement;
+    if(!el||!n.nodeValue.trim()||el.closest(SKIP)||(C.skip&&el.closest(C.skip)))continue;
+    while(el.parentElement&&el.parentElement!==document.body&&/^(B|I|EM|STRONG|SPAN|A|U|SMALL|CODE|SUP|SUB)$/.test(el.tagName))el=el.parentElement;
+    if(seen.has(el))continue;seen.add(el);
+    var t=el.textContent.replace(/\s+/g,' ').trim();
+    if(t.length>=2)out.push({el:el,t:t});
+  }
+  return out;
+}
+function tabOf(el){
+  if(C.tabs===false)return -1;
+  var ps=panels();
+  for(var i=0;i<ps.length;i++)if(ps[i].el&&ps[i].el.contains(el))return i;
+  return -1;
+}
+function labelOf(el,ti){
+  if(C.label)return C.label(el)||'';
+  var nv=navs();return ti>=0&&nv[ti]?nv[ti].textContent.trim():'';
+}
+function snippet(t,k,len){
+  var s=Math.max(0,k-18);
+  return (s>0?'…':'')+t.substr(s,len)+(t.length>s+len?'…':'');
+}
+function domSearch(q){
+  var ql=q.toLowerCase(),hit=[],bs=cache||(cache=blocks());
+  for(var i=0;i<bs.length&&hit.length<300;i++){
+    var k=bs[i].t.toLowerCase().indexOf(ql);
+    if(k>=0)hit.push({el:bs[i].el,t:snippet(bs[i].t,k,72)});
+  }
+  // 只留最內層，避免同一段文字重複出現
+  hit=hit.filter(function(a){return !hit.some(function(b){return b!==a&&a.el.contains(b.el);});});
+  return hit.slice(0,40).map(function(h){var ti=tabOf(h.el);return{el:h.el,t:h.t,ti:ti,label:labelOf(h.el,ti)};});
+}
+function flash(el){
+  setTimeout(function(){
+    var t=el;if(!t||!document.body.contains(t))return;
+    while(t&&t!==document.body&&t.offsetParent===null)t=t.parentElement;
+    if(!t||t===document.body)return;
+    t.scrollIntoView({block:'center',behavior:'smooth'});
+    t.classList.add('sp-hit');setTimeout(function(){t.classList.remove('sp-hit');},1800);
+  },140);
+}
+function reveal(r){
+  var el=r.el;
+  if(r.go){el=r.go()||el;}
+  else if(C.reveal){C.reveal(el);}
+  else{var nv=navs();if(r.ti>=0&&nv[r.ti])nv[r.ti].click();}
+  flash(el);
+}
+function ui(){
+  if(C.dark)document.body.classList.add('sp-dark');
+  var t=document.createElement('div');t.id='spToast';document.body.appendChild(t);
+  var top=document.createElement('button');top.type='button';top.className='sp-fab sp-ft';top.title='回到頂端';top.textContent='↑';
+  top.onclick=function(){window.scrollTo({top:0,behavior:'smooth'});};
+  document.body.appendChild(top);
+  window.addEventListener('scroll',function(){top.style.display=window.scrollY>500?'block':'none';},{passive:true});
+
+  // 字體大小：標準 → 大 → 特大
+  var Z=[1,1.15,1.3],zi=+lsGet('zoom')||0,zb=document.createElement('button');
+  zb.type='button';zb.className='sp-fab sp-fz';zb.title='字體大小';zb.textContent='字';
+  function zoom(){document.documentElement.style.zoom=Z[zi]===1?'':Z[zi];}
+  zb.onclick=function(){zi=(zi+1)%Z.length;lsSet('zoom',String(zi));zoom();toast(['標準字體','大字體','特大字體'][zi]);};
+  zoom();document.body.appendChild(zb);
+
+  var fb=document.createElement('button');fb.type='button';fb.className='sp-fab sp-fs';fb.title='搜尋（按 / 開啟）';fb.textContent='🔍';
+  var ov=document.createElement('div');ov.className='sp-ov';
+  ov.innerHTML='<div class="sp-box"><div class="sp-row"><input type="search" placeholder="搜尋本 APP 內容…（Esc 關閉）"><button type="button" title="關閉">✕</button></div><div class="sp-r"></div></div>';
+  document.body.appendChild(fb);document.body.appendChild(ov);
+  var inp=ov.querySelector('input'),box=ov.querySelector('.sp-r'),res=[];
+  function close(){ov.classList.remove('on');}
+  function open(){cache=null;ov.classList.add('on');inp.focus();inp.select();render();}
+  function render(){
+    var q=inp.value.trim();
+    if(!q){
+      res=[];var f=favs();
+      box.innerHTML='<div class="sp-em">輸入關鍵字，搜尋所有分頁的內容</div>'+(f.length
+        ?'<div class="sp-fh">♥ 我的收藏（'+f.length+'）· 點一下複製</div>'+f.map(function(t,i){return '<div class="sp-it" data-f="'+i+'">'+esc(t)+'<span class="sp-x" data-x="'+i+'" title="移除">✕</span></div>';}).join('')
+        :'<div class="sp-em">按雞湯卡上的「♡ 收藏」，喜歡的句子會存在這裡</div>');
+      return;
+    }
+    res=(C.search?C.search(q):domSearch(q))||[];
+    if(!res.length){box.innerHTML='<div class="sp-em">找不到「'+esc(q)+'」</div>';return;}
+    var re=new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+    box.innerHTML=res.map(function(r,i){
+      return '<div class="sp-it" data-i="'+i+'">'+(r.label?'<span class="sp-tag">'+esc(r.label)+'</span>':'')+esc(r.t).replace(re,function(m){return '<mark>'+m+'</mark>';})+'</div>';
+    }).join('');
+  }
+  fb.onclick=open;
+  inp.addEventListener('input',render);
+  ov.querySelector('.sp-row button').onclick=close;
+  ov.addEventListener('click',function(e){
+    if(e.target===ov){close();return;}
+    var xi=e.target.getAttribute('data-x');
+    if(xi!==null){var f=favs();f.splice(+xi,1);setFavs(f);render();$$('.sp-card').forEach(fill);return;}
+    var it=e.target.closest('.sp-it');if(!it)return;
+    if(it.hasAttribute('data-f')){copy(favs()[+it.getAttribute('data-f')]||'');return;}
+    var r=res[+it.getAttribute('data-i')];close();if(r)reveal(r);
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){close();return;}
+    if(e.key==='/'&&!/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName||''))&&!e.target.isContentEditable){e.preventDefault();open();}
+  });
+}
+
+// ── 記住上次分頁 ──
+function remember(){
+  if(C.remember===false||!C.nav)return;
+  var nv=navs();
+  nv.forEach(function(b,i){b.addEventListener('click',function(){lsSet('tab',String(i));});});
+  var s=parseInt(lsGet('tab'),10);
+  if(s>0&&nv[s])nv[s].click();
+}
+
+// ── 離線教練（取代需要連網 / API 的版本）──
+var STOP={};'我很 我的 我想 我是 我不 我會 我要 怎麼 什麼 如何 可以 覺得 不知 知道 自己 沒有 是不 不是 為什 麼辦 還是 因為 所以 但是 一直 有點 的人 的時 時候 開始 想要 要怎 麼做 是否 已經 可能 真的 好像 這樣 那樣 的事 一個 現在'.split(' ').forEach(function(g){STOP[g]=1;});
+var SYN=['害怕 恐懼 擔心 焦慮 不安 緊張','希望 絕望 無望 放棄 沒救','累 疲勞 疲倦 沒力 能量 精神 活力','睡 失眠 睡眠 熬夜 休息','吵架 衝突 爭吵 溝通 冷戰','孤單 孤獨 寂寞 連結 陪伴','生氣 憤怒 情緒 委屈','目標 方向 迷茫 意義 使命','學習 讀書 記憶 專注 理解','錢 財富 收入 賺錢 金錢','幫助 貢獻 付出 給予 成全','復發 修復 恢復 重建','癌 病人 疾病 治療 症狀','壓力 放鬆 呼吸 緊繃','吃 飲食 營養 血糖 代謝','運動 走路 步行 肌肉','痛 疼痛 發炎 不舒服','信任 背叛 安全感 界線','孩子 小孩 親子 教養','伴侶 另一半 婚姻 夫妻 親密','漸行漸遠 疏遠 距離 連結 陪伴','胖 體重 腰圍 減重','身份 身分 角色 定義'].map(function(s){return s.split(' ');});
+var AD=/DHA|EPA|GABA|NMN|Q10|鎂|鋅|益生菌|補充|營養素|保健|生技|購買|團購|下單|膠囊|魚油|維生素|維他命|毫克|mg/i;
+function coach(){
+  if(!C.coach||typeof window.addMsg!=='function')return;
+  var inp=document.getElementById('aiInput');if(!inp)return;
+  var row=inp.parentElement,note=document.createElement('div');
+  note.className='sp-note';note.textContent='離線教練：不連網、不需 API，回覆整理自本 APP 的內容。';
+  row.parentNode.insertBefore(note,row.nextSibling);
+  var skip=C.coach.skip||'#pg-ai,#pg-quiz,#pg-flash,#pg-diag,.hero,.nt-card,.nt-grid,.tech-card,.tech-row,.bb';
+  function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+  window.sendAI=function(){
+    var msg=inp.value.trim();if(!msg)return;
+    inp.value='';window.addMsg('user',esc(msg));
+    var g={};
+    msg.replace(/[\s，。！？、,.!?「」『』（）()：:；;～~…]+/g,' ').split(' ').forEach(function(w){
+      if(/^[\x00-\x7f]+$/.test(w)){if(w.length>1)g[w.toLowerCase()]=1;}
+      else for(var i=0;i<w.length-1;i++){var b=w.substr(i,2);if(!STOP[b])g[b]=1;}
+    });
+    // 同義詞擴充：使用者說「害怕」，也找「恐懼」「擔心」的內容
+    SYN.forEach(function(grp){
+      if(grp.some(function(w){return msg.indexOf(w)>=0;}))grp.forEach(function(w){if(w.length>1)g[w]=1;});
+    });
+    var keys=Object.keys(g),seen={},cand=[];
+    blocks().forEach(function(b){
+      // 只取完整句子（有標點），略過標籤、編號這類短字
+      // 也略過產品 / 補充品段落：教練只給觀念和行動，不推薦產品
+      if(b.t.length<8||b.t.length>160||seen[b.t]||!/[，。；！？：,]/.test(b.t)||AD.test(b.t)||b.el.closest(skip))return;
+      var tl=b.t.toLowerCase(),sc=0;
+      keys.forEach(function(k){if(tl.indexOf(k)>=0)sc++;});
+      if(sc>0){seen[b.t]=1;cand.push({el:b.el,t:b.t,sc:sc});}
+    });
+    cand=cand.filter(function(a){return !cand.some(function(b){return b!==a&&a.el.contains(b.el);});});
+    cand.sort(function(a,b){return b.sc-a.sc||a.t.length-b.t.length;});
+    var top=[],h='';
+    cand.forEach(function(c){
+      if(top.length<3&&!top.some(function(t){return t.t.indexOf(c.t)>=0||c.t.indexOf(t.t)>=0;}))top.push(c);
+    });
+    if(top.length){
+      h+='<b>【相關重點】</b><br>'+top.map(function(x){
+        var lb=labelOf(x.el,tabOf(x.el));
+        return '• '+(lb?'〔'+esc(lb)+'〕':'')+esc(x.t);
+      }).join('<br>')+'<br><br>';
+    }else{
+      h+='這個問題在 APP 裡沒有直接對應的段落，可以換個關鍵字，或用右下角 🔍 搜尋。先給你一個方向：<br><br>';
+    }
+    var qs=quotesOf('pg-ai');
+    if(C.coach.steps&&C.coach.steps.length)h+='<b>【今日一小步】</b><br>'+esc(rnd(C.coach.steps))+'<br><br>';
+    if(qs.length)h+='<b>【心靈雞湯】</b><br>'+esc(rnd(qs));
+    setTimeout(function(){window.addMsg('bot',h);},300);
+  };
+}
+
+// ── 每日任務：記住今天勾過的項目 + 連續打卡天數 ──
+function tasks(){
+  var td;try{td=taskDone;}catch(e){return;}
+  if(!Array.isArray(td)||typeof window.toggleTask!=='function')return;
+  var today=new Date().toDateString(),yest=new Date(Date.now()-864e5).toDateString(),s=null,orig=window.toggleTask;
+  try{s=JSON.parse(lsGet('tasks'));}catch(e){}
+  s=s||{date:'',done:[],streak:0,last:''};
+  if(s.date===today&&s.done.length===td.length){
+    s.done.forEach(function(d,i){if(d&&!td[i])orig(i);});
+    var cb=document.getElementById('comboBadge');if(cb)setTimeout(function(){cb.style.display='none';},0);
+  }
+  window.toggleTask=function(i){
+    orig(i);
+    s.date=today;s.done=taskDone.slice();
+    if(taskDone[i]&&s.last!==today){
+      s.streak=s.last===yest?s.streak+1:1;s.last=today;
+      toast('今日打卡 ✓ 連續 '+s.streak+' 天');
+    }
+    lsSet('tasks',JSON.stringify(s));
+  };
+}
+
+function init(){
+  ui();ensure();remember();coach();tasks();
+  if(C.init)try{C.init();}catch(e){}
+  ensure();
+  var pend=false;
+  function later(){if(pend)return;pend=true;setTimeout(function(){pend=false;ensure();},60);}
+  new MutationObserver(later).observe(document.body,{childList:true,subtree:true});
+  document.addEventListener('click',later,true);
+}
+if(document.readyState==='complete')setTimeout(init,0);
+else window.addEventListener('load',function(){setTimeout(init,0);});
+})();
+</script>
+<!-- SOUP-END -->
+<!-- FBX-START -->
+<script>
+window.FBX={"brand": "低維→高維轉換OS", "tags": "#高維思維 #換個角度 #認知升級", "theme": 4, "steps": ["今天遇到一件煩心事，試著寫出它的高維版本。", "把這組對照講給一個人聽。", "挑一個今天的決定，問自己：高維的做法是什麼？"], "items": ".case-item", "groups": ".volume-card", "pair": {"sel": ".case-item", "low": ".low-dim", "high": ".high-dim", "title": ".case-title span:nth-of-type(2)"}};
+</script>
+<script>
+// ── 臉書文圖：每一欄、每個項目都能產生臉書貼文 + 圖卡（共用模組，完全離線）──
+(function(){
+var F=window.FBX||{},S=window.SOUP||{};
+var ITEM=F.items||'',GROUP=F.groups||'',QUOTE=F.quote||'',PAIR=F.pair||null;
+var ALL=[ITEM,GROUP].filter(Boolean).join(',');
+var ZH='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+var THEMES=[{c:'#1A2B5F',t:'#E8ECF7'},{c:'#0A7A72',t:'#E2F4F1'},{c:'#C2416B',t:'#FCE9EF'},{c:'#B4690E',t:'#FBF0DC'},{c:'#5B3FA8',t:'#EEE9FA'},{c:'#1F7A3A',t:'#E4F4E8'}];
+var K='fbx:'+(S.key||'app')+':';
+function $$(s,r){return s?Array.prototype.slice.call((r||document).querySelectorAll(s)):[];}
+function $(id){return document.getElementById(id);}
+function is(el,sel){return !!sel&&el.matches(sel);}
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+function cut(s,n){s=String(s);return s.length>n?s.slice(0,n-1)+'…':s;}
+function lsGet(k){try{return localStorage.getItem(K+k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(K+k,v);}catch(e){}}
+
+// ── 從畫面上的項目取出文字 ──
+var PIC=/^(?:[←-⯿〰〽㊗㊙️‍]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDC00-\uDFFF]|\s)+/;
+var DROP=/^(點擊複製|已複製.*|點擊翻面.*|tap to flip.*|speak|發音|例句\s*#?\d+|vol\s*\d+)$/i;
+var LABEL=/^(低維|高維)\s*(low|high)?$/i;
+function word(s){return /[A-Za-z一-鿿]/.test(s);}
+function tidy(s){return s.replace(/[⭐★]+/g,'').replace(/\s+/g,' ').trim();}
+function bare(s){return tidy(s.replace(PIC,''));}
+function grab(el){
+  var raw=[],cur='',subs=[];
+  function flush(){var s=tidy(cur);if(s)raw.push(s);cur='';}
+  (function walk(n){
+    for(var c=n.firstChild;c;c=c.nextSibling){
+      if(c.nodeType===3){cur+=c.nodeValue;continue;}
+      if(c.nodeType!==1)continue;
+      if(/^(BUTTON|SCRIPT|STYLE|INPUT|SELECT|TEXTAREA|CANVAS|A)$/.test(c.tagName)||c.classList.contains('sp-card'))continue;
+      if(c.tagName==='BR'){flush();continue;}
+      if(is(c,ALL)){flush();var t=titleOf(c);if(t)subs.push(t);continue;}
+      var inl=/^inline/.test(getComputedStyle(c).display);
+      if(!inl)flush();
+      walk(c);
+      if(!inl)flush();
+    }
+  })(el);
+  flush();
+  var lines=[],pre='';
+  raw.forEach(function(s){
+    if(DROP.test(s))return;
+    if(!word(s)){if(!lines.length&&!pre&&PIC.test(s)&&!/\d/.test(s))pre=s.split(' ')[0];return;}
+    // 「標籤：」接下一行
+    if(lines.length&&/[:：]$/.test(lines[lines.length-1]))lines[lines.length-1]+=s;else lines.push(s);
+  });
+  return {lines:lines,subs:subs,pre:pre};
+}
+function noNum(s){return s.replace(/^#?\d+\s*[·.、:：\-]?\s*/,'');}
+function titleOf(el){
+  if(PAIR&&is(el,PAIR.sel)){
+    var t=PAIR.title&&el.querySelector(PAIR.title),lo=el.querySelector(PAIR.low);
+    return bare(t?t.textContent:lo?part(lo)[0]||'':'');
+  }
+  var g=grab(el);if(!g.lines.length)return '';
+  if(is(el,QUOTE))return g.lines.slice().sort(function(a,b){return b.length-a.length;})[0];
+  return noNum(bare(g.lines[0]))||g.lines[0];
+}
+function part(el){return grab(el).lines.filter(function(s){return !LABEL.test(s);}).map(bare);}
+
+function panels(){
+  if(S.panels)return S.panels()||[];
+  return $$(S.panel||'.pg').map(function(el){return{el:el,id:el.id,host:(S.host&&el.querySelector(S.host))||el};});
+}
+function shown(el){return !!(el&&el.getClientRects().length);}
+function navText(){
+  var b=$$(S.nav).filter(function(x){return /(^|\s)(on|active)(\s|$)/.test(x.className);})[0];
+  return b?tidy(b.textContent):'';
+}
+function panelFor(el){
+  var ps=panels(),hit=null;
+  ps.forEach(function(p){if(p&&p.el&&p.el.contains(el)&&(!hit||hit.el.contains(p.el)))hit=p;});
+  return hit;
+}
+function labelFor(p){
+  var t=navText(),h=p&&p.after;
+  if(h&&/^H[1-4]$/.test(h.tagName))t+=(t?'｜':'')+tidy(h.textContent);
+  return t;
+}
+function quotesFor(p){
+  var q=(p&&S.soups&&S.soups[p.id])||[];
+  return q.length?q:(S.common||S.extra||[]);
+}
+
+function entry(el){
+  var p=panelFor(el),g=grab(el),e={el:el,tab:labelFor(p),quotes:quotesFor(p),pre:g.pre,subs:g.subs,lines:g.lines};
+  if(PAIR&&is(el,PAIR.sel)){
+    var lo=part(el.querySelector(PAIR.low)||el),hi=part(el.querySelector(PAIR.high)||el);
+    e.kind='pair';e.title=titleOf(el)||lo[0]||'';
+    e.low=lo[0]||'';e.high=hi[0]||'';e.lowEn=lo[1]||'';e.highEn=hi[1]||'';
+    var used=lo.concat(hi,[e.title]);
+    e.lines=g.lines.filter(function(s){var b=bare(s);return !LABEL.test(s)&&used.indexOf(b)<0&&used.indexOf(noNum(b))<0&&!/^#\d+/.test(s);});
+  }else if(is(el,QUOTE)){
+    e.kind='quote';e.title=titleOf(el);
+    e.lines=g.lines.filter(function(s){return s!==e.title;}).map(function(s){return noNum(s);}).filter(Boolean);
+  }else{
+    e.kind=is(el,GROUP)?'group':'item';
+    e.title=titleOf(el);e.lines=g.lines.slice(1);
+  }
+  return e;
+}
+function tabEntry(p){
+  var raw=labelFor(p)||F.brand||'',m=raw.match(PIC),seen={},heads=[],subs=[];
+  $$('h1,h2,h3,.sec-h,.sec-s,.hero-p,.section-title,.model-title,.subtitle',p.el).forEach(function(h){
+    if(h.closest('.sp-card')||(ALL&&h.closest(ALL))||heads.length>=4)return;
+    var t=tidy(h.textContent);
+    if(t.length>3&&t.length<90&&!seen[t]){seen[t]=1;heads.push(t);}
+  });
+  $$(ALL,p.el).forEach(function(el){
+    if(ALL&&el.parentElement.closest(ALL)&&p.el.contains(el.parentElement.closest(ALL)))return;
+    var t=titleOf(el);if(t&&!seen[t]){seen[t]=1;subs.push(t);}
+  });
+  return {kind:'tab',p:p,el:p.el,tab:F.brand||'',title:bare(raw)||raw,pre:m?tidy(m[0]).split(' ')[0]:'',lines:heads,subs:subs,quotes:quotesFor(p)};
+}
+
+// ── 貼文 ──
+var HOOK=[
+ function(t){return '你有沒有發現，「'+t+'」這件事，其實每天都在影響你？';},
+ function(t){return '今天想跟你分享一個小重點：「'+t+'」。';},
+ function(t){return '很多時候我們卡住，不是不夠努力，而是還沒看懂「'+t+'」。';},
+ function(t){return '如果今天只記得一件事，就記這個——「'+t+'」。';}
+];
+var HOOKL=['這一段，想送給今天的你。','看到這裡，先停三秒，慢慢讀。','有些話，早一點知道，就少走一點冤枉路。','今天的小提醒，留給正在努力的你。'];
+var TURN=['看懂了，就不會只是硬撐。知道原理，才知道力氣要用在哪裡。','不用一次全部做到。先懂一點、做一點，改變就開始了。','這不是要你更用力，而是換一個更省力的方向。','知道，是第一步；願意試一次，是第二步。'];
+var TURNP=['語言不只是在描述事情，它也在決定你接下來怎麼想、怎麼做。同一件事換一個說法，眼前就多一條路。','不是要你假裝沒事，而是把「我完了」換成「我還可以做什麼」。','一句話說久了會變成信念，信念久了會變成人生。先從換一句話開始。','低維的說法把門關上，高維的說法把門打開。你值得多一扇門。'];
+var ASK=[
+ function(t){return '我在哪個情境，最需要「'+t+'」？';},
+ function(t){return '如果今天就用上它，第一步會是什麼？';},
+ function(t){return '我身邊誰把這件事做得很好？他是怎麼做的？';},
+ function(t){return '一個月後回頭看，我希望這件事有什麼不同？';}
+];
+var ASKQ=['這句話，讓你想到誰？','今天哪一刻，最需要這句話？','如果把這句話送給一個人，你會送給誰？','這句話裡，哪幾個字最打動你？'];
+var STEP=['今天只挑一個重點，寫下來，貼在看得到的地方。','把這一段講給一個人聽，講得出來才是真的懂。','選一件五分鐘內做得到的小事，現在就做。','睡前花一分鐘，想想今天哪裡用上了它。'];
+var CLOSE=['把這篇留給今天的自己，也分享給那個正在努力的人。','慢慢來，比較快；一點點，就很多。','有共鳴的話，留言告訴我你的想法。','覺得有幫助，就分享給需要的朋友吧。'];
+function pick(a,k){return a[k%a.length];}
+function build(e,v){
+  var T=e.title,k=hash(T)+(v||0),L=[],card,tab=e.kind==='tab';
+  var steps=(F.steps&&F.steps.length?F.steps:(S.coach&&S.coach.steps)||[]).concat(STEP);
+  var q=e.quotes.length?pick(e.quotes,k):'';
+  function sec(h,arr,n){
+    if(!arr.length)return;
+    L.push('▍'+h);arr.slice(0,n).forEach(function(s){L.push('・'+cut(s,140));});
+    if(arr.length>n)L.push('…共 '+arr.length+' 項');L.push('');
+  }
+  if(e.kind==='pair'){
+    L.push('【換句話說｜'+T+'】','你是不是也常這樣說、這樣想？','');
+    L.push('✗ 低維：「'+e.low+'」');if(e.lowEn)L.push('　'+e.lowEn);
+    L.push('✓ 高維：「'+e.high+'」');if(e.highEn)L.push('　'+e.highEn);L.push('');
+    sec('補充說明',e.lines,4);
+    L.push('▍為什麼要換一句話',pick(TURNP,k),'');
+    card={kind:'pair',head:T===e.low?'換句話說':T,low:e.low,high:e.high,quote:q};
+  }else if(e.kind==='quote'){
+    L.push('「'+T+'」','',pick(HOOKL,k),'');
+    L.push('▍想一想','・'+pick(ASKQ,k),'・'+pick(ASKQ,k+1),'');
+    L.push('▍換個角度看',pick(TURN,k),'');
+    card={kind:'quote',quote:T,sub:e.lines[0]||''};
+  }else{
+    L.push('【'+(tab&&F.brand?F.brand+'｜':'')+(e.pre?e.pre+' ':'')+T+'】',T.length>16?pick(HOOKL,k):pick(HOOK,k)(T),'');
+    sec(tab?'這一欄在說什麼':'重點整理',e.lines,tab?4:7);
+    sec(tab?'這一欄的項目':'裡面有這些重點',e.subs,10);
+    if(tab&&e.quotes.length){L.push('▍三句心靈雞湯');e.quotes.slice(0,3).forEach(function(s){L.push('「'+s+'」');});L.push('');}
+    if(!tab&&e.lines.length<3)L.push('▍想一想','・'+pick(ASK,k)(T),'・'+pick(ASK,k+1)(T),'');
+    L.push('▍換個角度看',pick(TURN,k),'');
+    card={kind:'item',head:(e.pre?e.pre+' ':'')+T,lines:(e.lines.length?e.lines:e.subs).slice(0,tab?5:4).map(function(s){return cut(s,46);}),quote:q};
+  }
+  L.push('🌱 今天的小步｜'+pick(steps,k),'');
+  if(q&&e.kind!=='quote'&&!tab)L.push('🍲 「'+q+'」','');
+  L.push(pick(CLOSE,k),'');
+  var body=L.join('\n');
+  if(F.note&&(!F.noteRe||new RegExp(F.noteRe).test(body)))L.push(F.note,'');
+  var tt=T.replace(/[^A-Za-z0-9一-鿿]/g,'');
+  L.push([F.tags||'',e.kind!=='quote'&&tt.length>1&&tt.length<=10&&!/^\d/.test(tt)?'#'+tt:'','#心靈雞湯 #自我成長 #LifeOS'].filter(Boolean).join(' '));
+  card.tab=[F.brand,e.tab!==F.brand?bare(e.tab):''].filter(Boolean).join(' · ');
+  return {text:L.join('\n'),card:card};
+}
+
+// ── 圖卡（1080×1350）──
+function wrap(x,text,maxW){
+  var tk=String(text).match(/[A-Za-z0-9'’\-]+[.,!?;:]?\s?|\s+|[^\sA-Za-z0-9]/g)||[],noHead='，。！？、；：」』）)…—',out=[],cur=[];
+  function push(){var s=cur.join('').trim();if(s)out.push(s);}
+  tk.forEach(function(w){
+    if(cur.join('').trim()&&x.measureText(cur.join('')+w).width>maxW){
+      var carry=[];if(noHead.indexOf(w)>=0&&cur.length>1)carry.unshift(cur.pop());   // 標點不放行首
+      push();cur=carry.concat(w.replace(/^\s+/,''));
+    }else cur.push(w);
+  });
+  push();return out;
+}
+function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
+function draw(cv,c,th){
+  var W=1080,H=1350,X=84,MW=W-168,x=cv.getContext('2d');cv.width=W;cv.height=H;
+  function lay(s,paint,off){
+    function f(px,wt){x.font=(wt||'')+' '+Math.round(px*s)+'px '+ZH;}
+    function put(arr,a,y,lh,col){if(paint){x.fillStyle=col;arr.forEach(function(l,i){x.fillText(l,a,y+i*lh);});}return y+arr.length*lh;}
+    function box(arr,y,lh,bg,bar,col,label){
+      var h=arr.length*lh+(label?104:64)*s;
+      if(paint){x.fillStyle=bg;rr(x,X-20,y,MW+40,h,28);x.fill();x.fillStyle=bar;x.fillRect(X-20,y+24,10,h-48);}
+      if(label){f(28,'bold');put([label],X+32,y+30*s,40*s,bar);}
+      f(c.kind==='pair'?48:36,c.kind==='pair'?'bold':'');
+      put(arr,X+32,y+(label?78:34)*s,lh,col);
+      return y+h;
+    }
+    x.textBaseline='top';x.textAlign='left';
+    f(58,'bold');var head=c.head?wrap(x,c.head,MW):[];
+    var hh=Math.round(150+(head.length?head.length*78*s+50:0));
+    if(paint){
+      x.fillStyle='#FAF6EF';x.fillRect(0,0,W,H);x.fillStyle=th.c;x.fillRect(0,0,W,hh);
+      x.font='30px '+ZH;x.fillStyle='rgba(255,255,255,.85)';var tb=c.tab;while(tb.length>4&&x.measureText(tb).width>MW)tb=tb.slice(0,-2)+'…';x.fillText(tb,X,64);
+    }
+    f(58,'bold');put(head,X,124,78*s,'#fff');
+    var y=hh+70*s+off;
+    if(c.kind==='pair'){
+      f(48,'bold');var lo=wrap(x,c.low,MW-90),hi=wrap(x,c.high,MW-90);
+      y=box(lo,y,68*s,'#FBE7EA','#B4233C','#5A1622','✗ 低維｜舊說法');
+      f(54,'bold');if(paint){x.fillStyle=th.c;x.fillText('↓',W/2-16*s,y+14*s);}y+=92*s;
+      y=box(hi,y,68*s,th.t,th.c,'#1F2937','✓ 高維｜新說法')+56*s;
+    }else if(c.kind==='quote'){
+      f(70,'bold');y=put(wrap(x,'「'+c.quote+'」',MW),X,y,102*s,'#2B2622')+30*s;
+      if(c.sub){f(34,'');y=put(wrap(x,'— '+c.sub,MW),X,y,50*s,'#8A7F76');}
+    }else if(c.lines.length){
+      f(36,'');var bl=[];c.lines.forEach(function(l){wrap(x,'・'+l,MW-90).forEach(function(w){bl.push(w);});});
+      y=box(bl,y,58*s,th.t,th.c,'#3A332E')+56*s;
+    }
+    if(c.quote&&c.kind!=='quote'){
+      f(27,'bold');var pw=x.measureText('心靈雞湯').width+48,ph=54*s;
+      if(paint){x.fillStyle=th.c;rr(x,X,y,pw,ph,ph/2);x.fill();x.fillStyle='#fff';x.fillText('心靈雞湯',X+24,y+(ph-27*s)/2-2);}
+      y+=ph+22*s;f(40,'bold');y=put(wrap(x,'「'+c.quote+'」',MW),X,y,62*s,'#2B2622');
+    }
+    return y;
+  }
+  var s=1.25;while(s>0.5&&lay(s,false,0)>H-170)s-=0.03;
+  lay(s,true,Math.max(0,Math.min(150,(H-170-lay(s,false,0))/2)));
+  x.fillStyle='#E4DAD0';x.fillRect(X,H-130,MW,3);
+  x.textBaseline='top';x.font='bold 32px '+ZH;x.fillStyle=th.c;x.fillText(cut(F.brand||'LifeOS',22),X,H-96);
+  x.font='28px '+ZH;x.fillStyle='#8A7F76';var tg='#心靈雞湯';x.fillText(tg,W-X-x.measureText(tg).width,H-94);
+}
+
+// ── 介面 ──
+var cur=null,ver=0,list=[],ti=parseInt(lsGet('theme'),10);
+if(!(ti>=0&&ti<THEMES.length))ti=F.theme||0;
+function toast(b,t){var o=b.textContent;b.textContent=t;setTimeout(function(){b.textContent=o;},1200);}
+function save(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},2000);}
+function fname(){return ((F.brand||'LifeOS')+'_'+cur.title).replace(/[\\/:*?"<>|\s，。！？、]+/g,'_').slice(0,40);}
+function count(t){return (t.match(/[一-鿿]/g)||[]).length+(t.match(/[A-Za-z][A-Za-z'’\-]*/g)||[]).length;}
+function show(){
+  var r=build(cur,ver);
+  $('fbxTitle').textContent='📘 '+(cur.kind==='tab'?'本頁：':'')+cut(cur.title,28);
+  $('fbxText').value=r.text;$('fbxCnt').textContent='約 '+count(r.text)+' 字';
+  draw($('fbxCanvas'),r.card,THEMES[ti]);
+}
+function chips(){
+  var kw=$('fbxSearch').value.trim().toLowerCase(),box=$('fbxList');box.innerHTML='';
+  list.forEach(function(it){
+    if(kw&&it.find.indexOf(kw)<0)return;
+    var b=document.createElement('button');b.type='button';b.textContent=(it.tab?'📄 本頁｜':'')+cut(it.title,18);
+    if(cur&&it.el===cur.el&&!!it.tab===(cur.kind==='tab'))b.className='on';
+    b.onclick=function(){open(it.tab?tabEntry(it.p):entry(it.el));};box.appendChild(b);
+  });
+  if(!box.firstChild)box.innerHTML='<span style="opacity:.6;padding:4px">找不到符合的項目</span>';
+}
+function scan(){
+  list=[];
+  panels().forEach(function(p){
+    if(!p||!shown(p.el))return;
+    list.push({tab:1,p:p,el:p.el,title:bare(labelFor(p))||F.brand||'本頁',find:''});
+    $$(ALL,p.el).forEach(function(el){
+      var t=titleOf(el);if(t)list.push({el:el,title:t,find:el.textContent.toLowerCase()});
+    });
+  });
+}
+function open(e){
+  if(!e||!e.title)return;
+  cur=e;ver=0;scan();$('fbxMask').classList.add('on');chips();show();
+  var on=$('fbxList').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
+}
+function close(){$('fbxMask').classList.remove('on');}
+function ui(){
+  var st=document.createElement('style');
+  st.textContent='.fbx-b{display:inline-flex;align-items:center;gap:4px;margin:8px 0 0 auto;padding:4px 11px;border-radius:999px;border:1px solid rgba(24,119,242,.45);background:rgba(24,119,242,.1);color:#1877F2;font:700 11px/1.4 '+ZH+';cursor:pointer;white-space:nowrap;flex:none;align-self:center;width:auto;height:auto;letter-spacing:0;text-transform:none}'+
+  '.sp-dark .fbx-b{color:#7DB4FF;border-color:rgba(125,180,255,.45);background:rgba(125,180,255,.1)}.fbx-b:hover{background:#1877F2;color:#fff}'+
+  '.fbx-g{display:flex;margin:0 0 12px}.fbx-fab{bottom:216px;background:#1877F2!important;color:#fff!important}'+
+  '#fbxMask{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1200;background:rgba(20,16,12,.6);display:none;align-items:center;justify-content:center;padding:12px}#fbxMask.on{display:flex}'+
+  '#fbxBox{background:#FAF6EF;color:#2B2622;width:min(1040px,100%);max-height:94vh;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;font:14px/1.6 '+ZH+';text-align:left}'+
+  '#fbxTop{display:flex;gap:8px;align-items:center;padding:12px 14px;background:#1877F2;color:#fff}#fbxTop b{flex:1;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
+  '#fbxSearch{flex:0 1 260px;min-width:110px;padding:7px 12px;border:0;border-radius:999px;font:14px '+ZH+';color:#2B2622;background:#fff;outline:none}'+
+  '#fbxX{background:none;border:0;color:#fff;font-size:22px;cursor:pointer;line-height:1;padding:0 4px}'+
+  '#fbxList{max-height:118px;overflow-y:auto;flex:none;padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #E4DAD0;background:#fff}'+
+  '#fbxList button{border:1px solid #E4DAD0;background:#FAF6EF;color:#2B2622;border-radius:999px;padding:3px 10px;font:12px '+ZH+';cursor:pointer}#fbxList button.on{background:#1877F2;color:#fff;border-color:#1877F2}'+
+  '#fbxMain{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;padding:14px;overflow:auto}'+
+  '#fbxText{width:100%;height:52vh;min-height:240px;box-sizing:border-box;padding:12px;border:1px solid #E4DAD0;border-radius:12px;background:#fff;color:#2B2622;font:14px/1.75 '+ZH+';resize:vertical}'+
+  '#fbxCanvas{width:100%;height:auto;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15);display:block}'+
+  '#fbxBar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}#fbxBar button{padding:7px 13px;border-radius:999px;border:1px solid #1877F2;background:#1877F2;color:#fff;font:700 13px/1.2 '+ZH+';cursor:pointer}#fbxBar button.g{background:#fff;color:#1877F2}'+
+  '#fbxCnt{font-size:12px;color:#8A7F76;margin-left:auto}#fbxTip{font-size:12px;color:#8A7F76;margin-top:8px}'+
+  '@media(max-width:760px){#fbxMain{grid-template-columns:minmax(0,1fr)}#fbxText{height:34vh}#fbxCanvas{max-width:280px;margin:0 auto}}'+
+  '@media print{.fbx-b,.fbx-fab,#fbxMask{display:none!important}}';
+  document.head.appendChild(st);
+  var fab=document.createElement('button');fab.type='button';fab.className='sp-fab fbx-fab';fab.title='臉書文圖';fab.textContent='📘';
+  fab.onclick=function(){scan();if(list[0])open(tabEntry(list[0].p));};
+  document.body.appendChild(fab);
+  var m=document.createElement('div');m.id='fbxMask';
+  m.innerHTML='<div id="fbxBox"><div id="fbxTop"><b id="fbxTitle"></b><input id="fbxSearch" type="search" placeholder="搜尋本頁項目…"><button id="fbxX" type="button" title="關閉">×</button></div>'+
+   '<div id="fbxList"></div><div id="fbxMain"><div><textarea id="fbxText" spellcheck="false"></textarea><div id="fbxBar">'+
+   '<button type="button" id="fbxCopy">📋 複製貼文</button><button type="button" id="fbxPng">🖼️ 下載圖卡</button>'+
+   '<button type="button" class="g" id="fbxNext">🔄 換一版</button><button type="button" class="g" id="fbxTheme">🎨 換配色</button>'+
+   '<button type="button" class="g" id="fbxTxt">💾 存成 TXT</button><span id="fbxCnt"></span></div>'+
+   '<div id="fbxTip">貼文可以直接在框裡修改。到臉書發文：貼上文字，再加入下載的圖卡。</div></div>'+
+   '<div><canvas id="fbxCanvas"></canvas></div></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',function(e){if(e.target===m)close();});
+  $('fbxX').onclick=close;
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+  $('fbxSearch').addEventListener('input',chips);
+  $('fbxNext').onclick=function(){ver++;show();};
+  $('fbxTheme').onclick=function(){ti=(ti+1)%THEMES.length;lsSet('theme',String(ti));draw($('fbxCanvas'),build(cur,ver).card,THEMES[ti]);};
+  $('fbxCopy').onclick=function(){
+    var t=$('fbxText'),b=this;function fb(){t.select();try{document.execCommand('copy');}catch(e){}}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t.value).catch(fb);else fb();
+    toast(b,'✅ 已複製');
+  };
+  $('fbxPng').onclick=function(){$('fbxCanvas').toBlob(function(b){save(b,fname()+'.png');},'image/png');};
+  $('fbxTxt').onclick=function(){save(new Blob(['﻿'+$('fbxText').value],{type:'text/plain;charset=utf-8'}),fname()+'.txt');};
+}
+function btn(text,fn){
+  var b=document.createElement('button');b.type='button';b.className='fbx-b';b.textContent=text;
+  b.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();fn();});
+  return b;
+}
+function own(el,cls){for(var c=el.firstElementChild;c;c=c.nextElementSibling)if(c.classList.contains(cls))return c;return null;}
+function decorate(){
+  $$(ALL).forEach(function(el){
+    if(own(el,'fbx-b')||el.closest('.sp-card,.sp-ov,#fbxMask')||el.textContent.trim().length<4)return;
+    var b=btn('📘 臉書文圖',function(){open(entry(el));});
+    if(is(el,GROUP)&&el.firstElementChild){b.classList.add('fbx-g');el.insertBefore(b,el.firstElementChild.nextSibling);}
+    else el.appendChild(b);
+  });
+  $$('.sp-card .sp-b').forEach(function(bar){
+    if(own(bar,'fbx-b'))return;
+    var b=btn('📘 本頁臉書文圖',function(){var p=panelFor(bar);if(p)open(tabEntry(p));});
+    b.style.cssText='margin:0;opacity:1';bar.appendChild(b);
+  });
+}
+function init(){
+  ui();decorate();
+  var pend=false;
+  new MutationObserver(function(){if(pend)return;pend=true;setTimeout(function(){pend=false;decorate();},90);}).observe(document.body,{childList:true,subtree:true});
+}
+if(document.readyState==='complete')setTimeout(init,60);
+else window.addEventListener('load',function(){setTimeout(init,60);});
+})();
+</script>
+<!-- FBX-END -->
+</body>
+</html>

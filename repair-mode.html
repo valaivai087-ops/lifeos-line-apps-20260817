@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>修復模型｜五大修復節點 × 精準補充</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050810;--s1:#08101C;--s2:#0B1728;--card:#0F1E32;--bdr:#162840;--bdr2:#1E3355;
+  --txt:#D8E8F8;--dim:#486080;--dim2:#2E4868;
+  --gold:#C89030;--gold2:#A07020;--gg:rgba(200,144,48,.1);
+  --teal:#00B8A0;--teal2:#009880;--gt:rgba(0,184,160,.09);
+  --rose:#E05878;
+  /* 5 node colors */
+  --n1:#818CF8; /* 睡眠 indigo */
+  --n2:#34D399; /* 腸道 emerald */
+  --n3:#F59E0B; /* 粒線體 amber */
+  --n4:#60A5FA; /* DNA blue */
+  --n5:#F472B6; /* 組織 pink */
+  --neg:#6080D8;--hyd:#30C8C0;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--txt);font-family:'Noto Sans TC','Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+.topbar{position:sticky;top:0;z-index:300;background:rgba(5,8,16,.96);backdrop-filter:blur(18px);border-bottom:1px solid var(--bdr);padding:0 18px;display:flex;align-items:center;height:52px;gap:0;}
+.brand{font-size:15px;font-weight:900;color:var(--teal);letter-spacing:.5px;flex-shrink:0;margin-right:14px;}
+.brand em{color:var(--txt);font-style:normal;font-weight:300;font-size:13px;}
+.nav{display:flex;flex:1;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nb{flex:none;padding:0 12px;height:52px;font-size:12px;font-weight:600;border:none;background:none;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap;font-family:inherit;}
+.nb.on{color:var(--teal);border-bottom-color:var(--teal);}
+.nb:hover:not(.on){color:var(--txt);}
+.buy-top{flex-shrink:0;margin-left:8px;padding:8px 14px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:12px;font-weight:700;border:none;border-radius:8px;cursor:pointer;font-family:inherit;text-decoration:none;display:flex;align-items:center;gap:5px;transition:.15s;white-space:nowrap;}
+.buy-top:hover{opacity:.87;transform:translateY(-1px);}
+
+.pg{display:none;} .pg.on{display:block;}
+.wrap{max-width:960px;margin:0 auto;padding:24px 18px;}
+.sec-h{font-size:clamp(21px,4vw,30px);font-weight:900;letter-spacing:-1px;margin-bottom:6px;}
+.sec-s{font-size:13px;color:var(--dim);margin-bottom:22px;font-weight:300;}
+.divider{border:none;border-top:1px solid var(--bdr);margin:44px 0;}
+.teal{color:var(--teal);}
+
+/* BUY BANNER */
+.bb{background:linear-gradient(135deg,rgba(200,144,48,.1),rgba(200,144,48,.04));border:1px solid rgba(200,144,48,.22);border-radius:18px;padding:28px;text-align:center;max-width:680px;margin:0 auto;}
+.bb-h{font-size:clamp(17px,3.5vw,24px);font-weight:900;color:var(--gold);margin-bottom:6px;}
+.bb-p{font-size:13px;color:var(--dim);line-height:1.8;margin-bottom:20px;}
+.bb-a{display:inline-flex;align-items:center;gap:6px;padding:13px 30px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:14px;font-weight:700;border-radius:10px;text-decoration:none;transition:.2s;}
+.bb-a:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(200,144,48,.26);}
+.bb-note{font-size:11px;color:var(--dim);margin-top:9px;}
+
+/* HERO */
+.hero{min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 18px;text-align:center;position:relative;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.1;pointer-events:none;}
+.oa{width:560px;height:560px;background:var(--teal);top:-180px;left:-150px;}
+.ob{width:380px;height:380px;background:var(--gold);bottom:-90px;right:-90px;}
+.oc{width:300px;height:300px;background:#5020A8;top:44%;left:52%;transform:translate(-50%,-50%);}
+.hero-tag{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--teal);text-transform:uppercase;margin-bottom:14px;}
+.hero-h1{font-size:clamp(40px,9vw,92px);font-weight:900;line-height:.95;letter-spacing:-3px;margin-bottom:14px;background:linear-gradient(140deg,var(--txt) 20%,var(--teal) 85%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-p{font-size:clamp(14px,2vw,17px);color:var(--dim);max-width:500px;margin:0 auto 30px;line-height:1.95;font-weight:300;}
+.hero-formula{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:36px;}
+.hf{padding:7px 16px;border-radius:24px;font-size:13px;font-weight:700;border:1px solid;}
+.hf.t{background:rgba(0,184,160,.08);border-color:rgba(0,184,160,.3);color:var(--teal);}
+.hf.g{background:rgba(200,144,48,.08);border-color:rgba(200,144,48,.3);color:var(--gold);}
+.hf.x{color:var(--dim);border-color:transparent;background:transparent;font-size:17px;}
+.hero-btns{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;}
+.btn-t{padding:13px 28px;background:linear-gradient(135deg,var(--teal),var(--teal2));color:#020A08;font-size:14px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block;transition:.2s;}
+.btn-t:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,184,160,.22);}
+.btn-g{padding:13px 28px;background:transparent;color:var(--gold);font-size:14px;font-weight:700;border:1.5px solid rgba(200,144,48,.35);border-radius:10px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block;transition:.2s;}
+.btn-g:hover{border-color:var(--gold);background:var(--gg);}
+
+/* DIAGNOSIS */
+.d-intro{background:var(--card);border:1px solid var(--bdr2);border-radius:14px;padding:20px;text-align:center;margin-bottom:22px;}
+.d-intro h2{font-size:19px;font-weight:900;color:var(--teal);margin-bottom:4px;}
+.d-intro p{font-size:13px;color:var(--dim);line-height:1.7;}
+.d-step{display:flex;align-items:center;gap:9px;margin-bottom:15px;}
+.d-n{width:26px;height:26px;border-radius:50%;background:var(--teal);color:#020A08;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.d-lbl{font-size:14px;font-weight:700;}
+.d-sub{font-size:11px;color:var(--dim);margin-top:1px;}
+.sym-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:22px;}
+.sym-btn{background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:11px 12px;cursor:pointer;color:var(--txt);font-family:inherit;transition:.18s;text-align:left;}
+.sym-btn:hover{border-color:var(--teal);background:var(--gt);}
+.sym-btn.sel{border-color:var(--teal);background:var(--gt);}
+.sy-icon{font-size:16px;display:block;margin-bottom:3px;}
+.sy-name{font-size:13px;font-weight:600;display:block;}
+.sy-sub{font-size:10px;color:var(--dim);display:block;margin-top:2px;}
+.sym-btn.sel .sy-name{color:var(--teal);}
+.run-btn{display:block;margin:0 auto;padding:12px 26px;background:linear-gradient(135deg,var(--teal),var(--teal2));color:#020A08;font-size:14px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;transition:.2s;}
+.run-btn:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(0,184,160,.2);}
+.rst-btn{display:block;margin:9px auto 0;padding:8px 18px;background:transparent;color:var(--dim);font-size:12px;border:1px solid var(--bdr);border-radius:8px;cursor:pointer;font-family:inherit;}
+.d-result{display:none;} .d-result.show{display:block;}
+.node-score-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:9px;margin-bottom:22px;}
+.nsg{background:var(--card);border:1.5px solid var(--bdr);border-radius:13px;padding:14px;}
+.nsg.hit{border-width:2px;}
+.nsg-top{display:flex;align-items:center;gap:9px;margin-bottom:9px;}
+.nsg-ico{font-size:20px;width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nsg-name{font-size:14px;font-weight:700;}
+.nsg-pct{font-size:11px;margin-top:2px;}
+.nsg-bar-bg{height:4px;background:var(--bdr);border-radius:3px;margin-bottom:8px;}
+.nsg-bar{height:100%;border-radius:3px;transition:.6s;}
+.nsg-syms{display:flex;flex-wrap:wrap;gap:4px;}
+.nsg-sym-tag{font-size:10px;padding:2px 7px;border-radius:5px;font-weight:600;}
+.rec-h{font-size:14px;font-weight:700;color:var(--gold);margin:20px 0 12px;padding-bottom:7px;border-bottom:1px solid var(--bdr);}
+.rec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:9px;margin-bottom:20px;}
+.rec-card{background:var(--card);border:1px solid var(--bdr2);border-radius:12px;padding:14px;}
+.rc-node{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px;}
+.rc-name{font-size:15px;font-weight:700;margin-bottom:3px;}
+.rc-mech{font-size:12px;font-weight:700;color:var(--teal);margin-bottom:3px;}
+.rc-why{font-size:12px;color:var(--dim);line-height:1.6;margin-bottom:9px;}
+.rc-buy{display:inline-flex;align-items:center;gap:4px;padding:7px 13px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:11px;font-weight:700;border-radius:7px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:.14s;}
+.rc-buy:hover{opacity:.84;transform:translateY(-1px);}
+
+/* NODES PAGE */
+.node-strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.n-tab{padding:8px 16px;border-radius:20px;border:1px solid var(--bdr);background:transparent;cursor:pointer;font-size:12px;font-weight:700;color:var(--dim);transition:.17s;font-family:inherit;white-space:nowrap;}
+.n-tab.on{color:#040200;border-color:transparent;font-weight:800;}
+.n-content{display:none;} .n-content.on{display:block;}
+.n-head{display:flex;align-items:flex-start;gap:15px;margin-bottom:18px;}
+.n-ico-big{font-size:28px;width:56px;height:56px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.n-num{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;opacity:.7;}
+.n-h1{font-size:22px;font-weight:900;letter-spacing:-1px;margin-bottom:3px;}
+.n-why{font-size:13px;color:var(--dim);line-height:1.7;}
+.body-card{background:var(--card);border:1px solid var(--bdr2);border-radius:13px;padding:16px;margin-bottom:12px;}
+.bc-t{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;}
+.bc-b{font-size:13px;color:var(--dim);line-height:1.9;}
+.bc-b b{color:var(--txt);} .bc-b .hl{color:var(--teal);} .bc-b .warn{color:var(--rose);}
+.nt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:9px;margin-bottom:14px;}
+.nt-card{background:var(--card);border-left:3px solid;border-radius:0 11px 11px 0;padding:13px 15px;border-top:1px solid var(--bdr);border-right:1px solid var(--bdr);border-bottom:1px solid var(--bdr);}
+.nt-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px;}
+.nt-name{font-size:14px;font-weight:700;}
+.nt-mech{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;white-space:nowrap;}
+.nt-detail{font-size:12px;color:var(--dim);line-height:1.6;margin-bottom:8px;}
+.nt-buy{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:11px;font-weight:700;border-radius:6px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:.13s;}
+.nt-buy:hover{opacity:.84;}
+.tech-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px;}
+.tech-card{border-radius:12px;padding:14px;}
+.tech-neg{background:rgba(96,128,216,.08);border:1px solid rgba(96,128,216,.22);}
+.tech-hyd{background:rgba(48,200,192,.08);border:1px solid rgba(48,200,192,.22);}
+.tech-t{font-size:13px;font-weight:700;margin-bottom:7px;}
+.tech-flow{font-size:12px;color:var(--dim);line-height:1.9;}
+.tech-flow b{color:var(--txt);}
+.tech-flow .arr{color:var(--teal);}
+.tech-buy{display:inline-flex;align-items:center;gap:4px;margin-top:9px;padding:6px 12px;background:linear-gradient(135deg,var(--teal),var(--teal2));color:#020A08;font-size:11px;font-weight:700;border-radius:6px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:.13s;}
+.tech-buy:hover{opacity:.84;}
+
+/* LEARN */
+.formula-box{background:linear-gradient(135deg,rgba(0,184,160,.07),rgba(200,144,48,.04));border:1px solid rgba(0,184,160,.16);border-radius:13px;padding:18px;text-align:center;font-size:14px;line-height:2.5;color:var(--dim);margin-bottom:16px;}
+.formula-box b{color:var(--txt);font-size:15px;}
+.formula-box .eq{color:var(--gold);font-size:17px;font-weight:900;}
+.flow-chain{display:flex;flex-direction:column;align-items:center;gap:0;max-width:320px;margin:14px auto;}
+.fc-n{width:100%;background:var(--s2);border:1px solid var(--bdr2);border-radius:9px;padding:10px 16px;font-size:13px;text-align:center;font-weight:600;}
+.fc-a{color:var(--teal);opacity:.4;font-size:18px;padding:3px 0;text-align:center;}
+.phil-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;}
+.lcard{background:var(--card);border:1px solid var(--bdr2);border-radius:13px;padding:17px;}
+.lc-t{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;}
+.lc-b{font-size:13px;color:var(--dim);line-height:1.9;}
+.lc-b b{color:var(--txt);} .lc-b .hl{color:var(--teal);} .lc-b .warn{color:var(--rose);}
+.stage-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px;margin-bottom:22px;}
+.stage-card{background:var(--card);border-radius:10px;padding:12px;border:1px solid var(--bdr);text-align:center;}
+.stage-icon{font-size:22px;margin-bottom:5px;}
+.stage-zh{font-size:13px;font-weight:700;margin-bottom:2px;}
+.stage-detail{font-size:11px;color:var(--dim);line-height:1.5;}
+
+/* FLASHCARD */
+.fcmeta{display:flex;gap:12px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:10px 14px;margin-bottom:12px;align-items:center;}
+.fcm-i{display:flex;flex-direction:column;align-items:center;}
+.fcm-l{font-size:9px;color:var(--dim);}
+.fcm-v{font-size:18px;font-weight:700;color:var(--teal);}
+.mla{margin-left:auto;display:flex;gap:6px;}
+.pbar-w{height:4px;background:var(--bdr);border-radius:3px;margin-bottom:11px;}
+.pbar-f{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal2));border-radius:3px;transition:.3s;}
+.fcwrap{perspective:1100px;max-width:500px;margin:0 auto;}
+.fc{width:100%;height:295px;position:relative;transform-style:preserve-3d;transition:.52s cubic-bezier(.4,0,.2,1);cursor:pointer;}
+.fc.flip{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;border-radius:16px;padding:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;backface-visibility:hidden;text-align:center;border:1px solid var(--bdr2);}
+.front{background:var(--card);}
+.back{background:linear-gradient(135deg,var(--card),#0D2038);transform:rotateY(180deg);}
+.fc-eye{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:9px;}
+.fc-big{font-size:38px;font-weight:900;letter-spacing:-1.5px;margin-bottom:7px;}
+.fc-hint{font-size:12px;color:var(--dim);}
+.fc-zh{font-size:18px;font-weight:700;color:var(--teal);margin-bottom:9px;}
+.fc-detail{font-size:12px;color:var(--dim);line-height:1.6;max-width:340px;}
+.fc-btns{display:none;gap:9px;justify-content:center;margin-top:13px;}
+.fc-tap{font-size:11px;color:var(--dim);text-align:center;margin-top:8px;}
+.ctr-txt{font-size:11px;color:var(--dim);text-align:center;margin-bottom:10px;}
+.btn{padding:9px 18px;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:.17s;}
+.btn-ok{background:rgba(0,184,160,.14);color:var(--teal);border:1px solid rgba(0,184,160,.3);}
+.btn-ok:hover{background:rgba(0,184,160,.26);}
+.btn-bad{background:rgba(224,88,120,.12);color:var(--rose);border:1px solid rgba(224,88,120,.28);}
+.btn-bad:hover{background:rgba(224,88,120,.24);}
+.btn-ghost{background:var(--card);color:var(--dim);border:1px solid var(--bdr);}
+.btn-ghost:hover{border-color:var(--bdr2);color:var(--txt);}
+.result-box{text-align:center;padding:32px;background:var(--card);border-radius:15px;border:1px solid var(--bdr2);}
+.r-stars{font-size:28px;letter-spacing:4px;margin-bottom:6px;}
+.r-score{font-size:52px;font-weight:900;color:var(--teal);}
+.r-msg{font-size:13px;color:var(--dim);margin-bottom:16px;}
+
+/* QUIZ */
+.q-type{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--teal);text-transform:uppercase;margin-bottom:7px;display:inline-block;}
+.q-q{font-size:18px;font-weight:700;margin-bottom:18px;line-height:1.4;}
+.q-opts{display:grid;gap:8px;}
+.qopt{background:var(--card);border:1.5px solid var(--bdr);border-radius:11px;padding:13px 15px;font-size:13px;cursor:pointer;text-align:left;color:var(--txt);font-family:inherit;transition:.17s;line-height:1.4;}
+.qopt:hover:not(:disabled){border-color:var(--teal);background:var(--gt);}
+.qopt.ok{border-color:var(--teal);background:var(--gt);color:var(--teal);}
+.qopt.bad{border-color:var(--rose);background:rgba(224,88,120,.1);color:var(--rose);}
+.q-exp{background:var(--card);border:1px solid var(--bdr2);border-radius:10px;padding:13px;margin-top:10px;font-size:13px;line-height:1.7;display:none;color:var(--dim);}
+.q-exp.show{display:block;}
+.q-exp b{color:var(--teal);}
+.q-next-w{text-align:center;margin-top:10px;display:none;}
+.combo{display:none;position:fixed;top:60px;right:14px;background:var(--teal);color:#020A08;font-weight:800;font-size:13px;border-radius:9px;padding:7px 13px;z-index:600;animation:cpop .4s ease;}
+@keyframes cpop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.2)}100%{opacity:1;transform:scale(1)}}
+
+@media(max-width:600px){
+  .phil-grid{grid-template-columns:1fr;}
+  .tech-row{grid-template-columns:1fr;}
+  .sym-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">修復<em>模型系統</em></div>
+  <nav class="nav">
+    <button class="nb on" onclick="gp('home',this)">🌟 首頁</button>
+    <button class="nb" onclick="gp('diag',this)">🩺 修復診斷</button>
+    <button class="nb" onclick="gp('nodes',this)">🔬 五大節點</button>
+    <button class="nb" onclick="gp('learn',this)">📖 學習原理</button>
+    <button class="nb" onclick="gp('flash',this)">🃏 閃卡</button>
+    <button class="nb" onclick="gp('quiz',this)">🧠 測驗</button>
+  </nav>
+  <a class="buy-top" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 立即訂購</a>
+</div>
+
+<div id="comboBadge" class="combo"></div>
+
+<!-- ═══ HOME ═══ -->
+<div class="pg on" id="pg-home">
+<div class="hero">
+  <div class="orb oa"></div><div class="orb ob"></div><div class="orb oc"></div>
+  <div style="position:relative;z-index:1">
+    <div class="hero-tag">修復模型 Repair Model</div>
+    <h1 class="hero-h1">受損後<br>仍能重生</h1>
+    <p class="hero-p">真正的健康不是從未受傷，<br>而是<b style="color:var(--teal)">持續修復</b>的能力。<br>修復能力決定健康，恢復速度決定生命力。</p>
+    <div class="hero-formula">
+      <span class="hf t">損傷偵測</span>
+      <span class="hf x">→</span>
+      <span class="hf t">資源動員</span>
+      <span class="hf x">→</span>
+      <span class="hf t">材料供應</span>
+      <span class="hf x">→</span>
+      <span class="hf t">能量供應</span>
+      <span class="hf x">=</span>
+      <span class="hf g">修復完成</span>
+    </div>
+    <div class="hero-btns">
+      <button class="btn-t" onclick="gp('diag',document.querySelectorAll('.nb')[1])">🩺 診斷我的修復能力</button>
+      <a class="btn-g" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">查看團購商品 →</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" style="padding-top:0">
+  <!-- 5 node chips -->
+  <div class="sec-h" style="text-align:center;margin-bottom:14px;">五大修復節點</div>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:30px;" id="homeChips"></div>
+
+  <!-- core formula -->
+  <div class="formula-box">
+    <b>損傷</b> <span style="color:var(--teal)">→</span> <b>偵測</b> <span style="color:var(--teal)">→</span>
+    <b>發炎</b> <span style="color:var(--teal)">→</span> <b>材料供應</b> <span style="color:var(--teal)">→</span>
+    <b>能量供應</b> <span style="color:var(--teal)">→</span> <b>修復</b> <span style="color:var(--teal)">→</span>
+    <b>重建</b> <span style="color:var(--teal)">→</span>
+    <b style="color:var(--gold);font-size:17px;">恢復穩態</b>
+  </div>
+
+  <div style="margin-top:28px">
+    <div class="bb">
+      <div class="bb-h">🛒 修復材料精準補充</div>
+      <div class="bb-p">冠貞生技 × 大鳥工作坊精選<br>每款對應修復節點，補對材料，修復才有效</div>
+      <a class="bb-a" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">前往 7-ELEVEN 賣貨便訂購 →</a>
+      <div class="bb-note">可透過 LINE 群詢問個人化修復補充建議</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ DIAGNOSIS ═══ -->
+<div class="pg" id="pg-diag">
+<div class="wrap">
+  <div class="d-intro">
+    <h2>🩺 修復能力診斷</h2>
+    <p>選擇你目前正在經歷的狀況 → 定位修復節點 → 獲得精準補充建議</p>
+  </div>
+  <div class="d-step"><div class="d-n">1</div><div><div class="d-lbl">選擇你的狀況（可多選）</div><div class="d-sub">每個症狀對應特定的修復節點</div></div></div>
+  <div class="sym-grid" id="symGrid"></div>
+  <div style="text-align:center;margin-bottom:20px">
+    <button class="run-btn" onclick="runDiag()">🔍 分析我的修復節點</button>
+    <button class="rst-btn" onclick="resetDiag()">重新選擇</button>
+  </div>
+  <div class="d-result" id="diagResult">
+    <div class="d-step" style="margin-top:6px"><div class="d-n">2</div><div><div class="d-lbl">你的修復節點分析</div><div class="d-sub">紅色越深 = 越需要優先支持</div></div></div>
+    <div class="node-score-grid" id="nodeScoreGrid"></div>
+    <div class="rec-h">💊 針對你的節點：精準修復材料（機制說明）</div>
+    <div class="rec-grid" id="recGrid"></div>
+    <div class="bb" style="margin-top:22px">
+      <div class="bb-h">材料到位，修復自然啟動</div>
+      <div class="bb-p">修復三元素：材料 + 能量 + 時間，缺一不可</div>
+      <a class="bb-a" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 立即前往訂購</a>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ NODES ═══ -->
+<div class="pg" id="pg-nodes">
+<div class="wrap">
+  <div class="sec-h">五大修復<span class="teal">節點</span></div>
+  <div class="sec-s">每個節點有詳細機制說明、對應補充策略與黑科技支持</div>
+  <div class="node-strip" id="nodeTabs"></div>
+  <div id="nodeContents"></div>
+</div>
+</div>
+
+<!-- ═══ LEARN ═══ -->
+<div class="pg" id="pg-learn">
+<div class="wrap">
+  <div class="sec-h">修復<span class="teal">原理</span></div>
+  <div class="sec-s">理解修復的本質，才能真正支持身體自我修復</div>
+
+  <div class="sec-h" style="font-size:18px;margin-bottom:12px;">修復六階段</div>
+  <div class="stage-grid">
+    <div class="stage-card"><div class="stage-icon">💥</div><div class="stage-zh">受損</div><div class="stage-detail">細胞或組織受到傷害，損傷信號釋放</div></div>
+    <div class="stage-card"><div class="stage-icon">👁️</div><div class="stage-zh">偵測</div><div class="stage-detail">身體發現異常，受損部位被識別</div></div>
+    <div class="stage-card"><div class="stage-icon">🚨</div><div class="stage-zh">發炎</div><div class="stage-detail">啟動警報系統，免疫細胞被召喚</div></div>
+    <div class="stage-card"><div class="stage-icon">🧱</div><div class="stage-zh">修復</div><div class="stage-detail">提供材料與能量，開始結構重建</div></div>
+    <div class="stage-card"><div class="stage-icon">🏗️</div><div class="stage-zh">重建</div><div class="stage-detail">恢復組織結構與功能</div></div>
+    <div class="stage-card"><div class="stage-icon">⚖️</div><div class="stage-zh">穩態</div><div class="stage-detail">系統重新平衡，修復完成</div></div>
+  </div>
+
+  <div class="formula-box">
+    <b>修復能力</b> <span class="eq">=</span>
+    <b>偵測精準度</b> <span style="color:var(--teal)">×</span>
+    <b>材料充足度</b> <span style="color:var(--teal)">×</span>
+    <b>能量供給</b> <span style="color:var(--teal)">×</span>
+    <b>時間</b>
+  </div>
+
+  <div class="phil-grid">
+    <div class="lcard">
+      <div class="lc-t">🔬 第一性原理</div>
+      <div class="lc-b">
+        <b>損傷不可避免</b><br>
+        <b class="hl">修復不可缺少</b><br><br>
+        問題不是：如何完全不受傷<br>
+        而是：<span class="hl">如何提高修復速度</span><br><br>
+        真正的健康不是沒有受損，<br>而是持續修復的能力
+      </div>
+    </div>
+    <div class="lcard">
+      <div class="lc-t">🔄 控制論解析</div>
+      <div class="lc-b">
+        修復是一個<b>閉環系統</b>：<br>
+        損傷 → 偵測 → 回饋 → 修正 → 恢復<br><br>
+        如果：<span class="warn">偵測失效</span><br>
+        或：<span class="warn">修復資源不足</span><br>
+        系統就開始崩潰<br><br>
+        疾病 = <b>修復能力不足的結果</b>
+      </div>
+    </div>
+    <div class="lcard">
+      <div class="lc-t">🧠 預測編碼解析</div>
+      <div class="lc-b">
+        身體一直在預測：<br>
+        <b>未來是否有足夠資源修復？</b><br><br>
+        長期壓力 + 睡眠不足 + 營養不足<br>
+        → 身體把資源優先給<b>生存</b><br>
+        → 而非<span class="hl">修復</span><br><br>
+        這就是慢性病惡化的根本原因
+      </div>
+    </div>
+    <div class="lcard">
+      <div class="lc-t">🌱 高維視角</div>
+      <div class="lc-b">
+        <b>低維：如何消滅問題？</b><br>
+        <b class="hl">高維：如何提升修復能力？</b><br><br>
+        免疫需要修復<br>
+        腸道需要修復<br>
+        粒線體需要修復<br>
+        神經需要修復<br>
+        睡眠需要修復<br><br>
+        <span class="hl">七系統同步修復 = 真正的健康</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="sec-h" style="font-size:18px;margin-bottom:14px;">黑科技的角色</div>
+  <div class="tech-row">
+    <div class="tech-card tech-neg">
+      <div class="tech-t" style="color:var(--neg)">🌬️ 負離子機 — 創造修復環境</div>
+      <div class="tech-flow">
+        <b>副交感神經↑</b> <span class="arr">→</span> 壓力荷爾蒙↓ <span class="arr">→</span> 睡眠品質↑ <span class="arr">→</span> 循環↑ <span class="arr">→</span> <b style="color:var(--teal)">修復模式啟動</b>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:10px">
+        <span style="font-size:11px;background:rgba(96,128,216,.12);color:var(--neg);border:1px solid rgba(96,128,216,.2);padding:3px 9px;border-radius:5px">✅ 睡眠修復加速</span>
+        <span style="font-size:11px;background:rgba(96,128,216,.12);color:var(--neg);border:1px solid rgba(96,128,216,.2);padding:3px 9px;border-radius:5px">✅ 壓力降低</span>
+        <span style="font-size:11px;background:rgba(96,128,216,.12);color:var(--neg);border:1px solid rgba(96,128,216,.2);padding:3px 9px;border-radius:5px">✅ 循環改善</span>
+      </div>
+      <a class="tech-buy" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 查看負離子機</a>
+    </div>
+    <div class="tech-card tech-hyd">
+      <div class="tech-t" style="color:var(--hyd)">💧 氫氧水 — 降低修復負擔</div>
+      <div class="tech-flow">
+        <b>氧化壓力↓</b> <span class="arr">→</span> 自由基負荷↓ <span class="arr">→</span> 粒線體保護↑ <span class="arr">→</span> <b style="color:var(--teal)">更多資源投入修復</b>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:10px">
+        <span style="font-size:11px;background:rgba(48,200,192,.1);color:var(--hyd);border:1px solid rgba(48,200,192,.2);padding:3px 9px;border-radius:5px">✅ 修復期炎症縮短</span>
+        <span style="font-size:11px;background:rgba(48,200,192,.1);color:var(--hyd);border:1px solid rgba(48,200,192,.2);padding:3px 9px;border-radius:5px">✅ DNA保護↑</span>
+        <span style="font-size:11px;background:rgba(48,200,192,.1);color:var(--hyd);border:1px solid rgba(48,200,192,.2);padding:3px 9px;border-radius:5px">✅ 粒線體壽命↑</span>
+      </div>
+      <a class="tech-buy" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 查看氫氧水</a>
+    </div>
+  </div>
+
+  <div class="bb" style="margin-top:32px">
+    <div class="bb-h">生命最大的奇蹟</div>
+    <div class="bb-p">不是不受損傷<br>而是受損後仍能重新生長<br>給身體正確的材料 + 環境 + 時間</div>
+    <a class="bb-a" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 7-ELEVEN 賣貨便 立即訂購</a>
+  </div>
+</div>
+</div>
+
+<!-- ═══ FLASH ═══ -->
+<div class="pg" id="pg-flash">
+<div class="wrap" style="max-width:560px">
+  <div class="sec-h">閃卡<span class="teal">練習</span></div>
+  <div class="sec-s">五大修復節點 × 核心概念</div>
+  <div class="fcmeta">
+    <div class="fcm-i"><div class="fcm-l">已看</div><div class="fcm-v" id="fcSeen">0</div></div>
+    <div class="fcm-i"><div class="fcm-l">✅</div><div class="fcm-v" id="fcOK">0</div></div>
+    <div class="fcm-i"><div class="fcm-l">❌</div><div class="fcm-v" id="fcNG">0</div></div>
+    <div class="mla"><button class="btn btn-ghost" onclick="startFC()">🔀</button></div>
+  </div>
+  <div class="pbar-w"><div class="pbar-f" id="fcBar"></div></div>
+  <div class="ctr-txt" id="fcCtr"></div>
+  <div class="fcwrap">
+    <div class="fc" id="fcCard" onclick="flipFC()">
+      <div class="face front">
+        <div class="fc-eye" id="fcEye"></div>
+        <div class="fc-big" id="fcBig"></div>
+        <div class="fc-hint">點擊翻面 → 看機制與策略</div>
+      </div>
+      <div class="face back">
+        <div class="fc-eye" id="fcEye2"></div>
+        <div class="fc-zh" id="fcZh"></div>
+        <div class="fc-detail" id="fcDetail"></div>
+      </div>
+    </div>
+  </div>
+  <div class="fc-tap">翻面後 ✅ 記得 / ❌ 再看</div>
+  <div class="fc-btns" id="fcBtns">
+    <button class="btn btn-bad" onclick="markFC(false)">❌ 再看</button>
+    <button class="btn btn-ghost" onclick="skipFC()">⏭</button>
+    <button class="btn btn-ok" onclick="markFC(true)">✅ 記得</button>
+  </div>
+  <div id="fcResult" style="display:none;margin-top:22px">
+    <div class="result-box">
+      <div class="r-stars" id="rStars"></div>
+      <div class="r-score" id="rScore"></div>
+      <div class="r-msg" id="rMsg"></div>
+      <button class="btn btn-ok" onclick="startFC()" style="margin-top:13px;padding:10px 22px">再來一輪</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ QUIZ ═══ -->
+<div class="pg" id="pg-quiz">
+<div class="wrap" style="max-width:620px">
+  <div class="sec-h">修復<span class="teal">測驗</span></div>
+  <div class="sec-s">驗證你對修復模型的理解</div>
+  <div class="fcmeta">
+    <div class="fcm-i"><div class="fcm-l">第</div><div class="fcm-v" id="qN">1</div></div>
+    <div class="fcm-i"><div class="fcm-l">✅</div><div class="fcm-v" id="qC">0</div></div>
+    <div class="fcm-i"><div class="fcm-l">❌</div><div class="fcm-v" id="qW">0</div></div>
+    <div class="mla"><button class="btn btn-ghost" onclick="startQuiz()">重開</button></div>
+  </div>
+  <div class="pbar-w"><div class="pbar-f" id="qBar"></div></div>
+  <div id="quizArea">
+    <div class="q-type" id="qType">節點題</div>
+    <div class="q-q" id="qQ"></div>
+    <div class="q-opts" id="qOpts"></div>
+    <div class="q-exp" id="qExp"></div>
+    <div class="q-next-w" id="qNext"><button class="btn btn-ok" style="padding:10px 20px" onclick="nextQ()">下一題 →</button></div>
+  </div>
+  <div id="quizResult" style="display:none;margin-top:22px">
+    <div class="result-box">
+      <div class="r-stars" id="qStars"></div>
+      <div class="r-score" id="qScore"></div>
+      <div class="r-msg" id="qMsg"></div>
+      <button class="btn btn-ok" onclick="startQuiz()" style="margin-top:13px;padding:10px 22px">再測一次</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const BUY='https://myship.7-11.com.tw/general/detail/GM2407210007294';
+
+// ═══════════════════ DATA ═══════════════════
+const NODES=[
+{id:'n1',num:'節點一',icon:'🌙',name:'睡眠修復',color:'var(--n1)',
+ why:'深睡眠是全身修復的總開關。深睡眠期間：生長激素大量分泌、神經重整、免疫系統重建。睡不好 = 所有修復系統效率下降。',
+ neg:'副交感活化 → 入睡阻力↓ → 深睡期延長 → 生長激素分泌窗口最大化',
+ hyd:'全身氧化壓力↓ → 大腦清除廢物效率↑（膠淋巴系統活化）→ 神經修復加速',
+ nutrients:[
+   {n:'甘胺酸鎂',mech:'核心體溫↓促深睡',d:'甘胺酸降低核心體溫（深睡進入必要條件），鎂抑制NMDA受體降低神經過度激發，雙重機制誘導深睡'},
+   {n:'GABA',mech:'抑制性神經傳導',d:'主要抑制性神經傳導物質，降低杏仁核恐懼信號，切換從「戰逃」到「休息修復」模式'},
+   {n:'退黑激素（褪黑素）',mech:'晝夜節律重設',d:'松果體信號，修復睡眠節律，確保深睡時段的生長激素分泌窗口，低劑量0.5-1mg即可'},
+   {n:'丁酸鈉',mech:'腸腦軸睡眠調節',d:'腸道丁酸直接影響迷走神經信號，調節睡眠品質；腸道健康是優質睡眠的底層基礎'},
+   {n:'酶菌醣體',mech:'腸道菌相平衡',d:'睡眠品質與腸道菌相多樣性高度相關，菌相平衡→血清素穩定→褪黑素合成正常'},
+   {n:'銀杏複方',mech:'腦部循環',d:'促進大腦微循環，確保睡眠修復期間大腦廢物清除效率，改善睡眠後的認知恢復'},
+ ],
+ syms:['失眠','睡不飽','夜醒','淺眠多夢','治療後難入睡','早醒']},
+
+{id:'n2',num:'節點二',icon:'🦠',name:'腸道修復',color:'var(--n2)',
+ why:'腸道是吸收系統 + 免疫系統的核心。腸漏越嚴重，全身修復成本越高——毒素持續入血 = 免疫系統持續過度消耗 = 沒有資源修復。',
+ neg:'副交感活化 → 腸道蠕動節律恢復 → 消化改善 → 腸道屏障修復環境優化',
+ hyd:'腸道氧化壓力↓ → 腸道發炎↓ → 腸黏膜修復效率↑',
+ nutrients:[
+   {n:'丁酸鈉',mech:'緊密連結蛋白修復',d:'短鏈脂肪酸，腸道上皮細胞的直接燃料，修復Claudin-1和Occludin緊密連結蛋白，是腸漏最直接的修復策略'},
+   {n:'5R（麩醯胺酸）',mech:'腸壁再生燃料',d:'麩醯胺酸是腸道上皮細胞優先使用的燃料，5R方案（Remove→Replace→Reinoculate→Repair→Rebalance）的核心材料'},
+   {n:'孢子益生菌',mech:'菌相重建',d:'耐熱耐酸孢子菌株，存活率高，直接重建腸道菌相多樣性，腸道生態系統重建的基石'},
+   {n:'酶菌醣體',mech:'免疫-菌相雙向調節',d:'益生菌+益生質+植化素三合一，同時修復腸道免疫（GALT）和菌相，70%免疫細胞在此訓練'},
+   {n:'腸寶（B3）',mech:'NAD+腸細胞能量',d:'B3→NAD+是腸道細胞能量代謝核心輔酶，確保腸道上皮細胞有足夠ATP進行修復和增殖'},
+   {n:'脾胃健',mech:'消化功能修復',d:'中草藥複方刺激胃酸和膽汁分泌，修復消化功能，確保修復材料能被有效吸收'},
+ ],
+ syms:['脹氣','便秘腹瀉','腸漏','消化差','腹部不適','吸收不良']},
+
+{id:'n3',num:'節點三',icon:'⚡',name:'粒線體修復',color:'var(--n3)',
+ why:'沒有能量就沒有修復。所有修復過程都需要ATP驅動——蛋白質合成、DNA修補、免疫細胞增殖。粒線體是修復的動力來源。',
+ neg:'氧利用率↑ → 有氧代謝效率↑ → ATP生成增加 → 修復動力提升',
+ hyd:'粒線體氧化壓力↓ → 電子傳遞鏈效率↑ → ATP生成更穩定 → 修復持續性↑',
+ nutrients:[
+   {n:'粒線寶（硫辛酸+CoQ10）',mech:'粒線體雙重保護',d:'硫辛酸是粒線體抗氧化防線（水脂雙溶），CoQ10是電子傳遞鏈必需輔酶，協同保護粒線體同時提升ATP效率'},
+   {n:'CoQ10',mech:'ATP生成核心',d:'95%的ATP生成需要CoQ10，40歲後快速下降；化療使用者更需補充（Statin類藥物阻斷CoQ10合成）'},
+   {n:'超級B群',mech:'三羧酸循環輔酶',d:'B1 B2 B3 B5全是三羧酸循環輔酶，任一缺乏都阻斷ATP生成；B3更可生成NAD+直接提升粒線體效率'},
+   {n:'鎂',mech:'ATP活化必需礦物',d:'每個ATP分子在體內以Mg-ATP形式存在，缺鎂=所有能量代謝打折；同時參與300+酶反應'},
+   {n:'NMN（+ B3）',mech:'NAD+直接前驅物',d:'NMN→NAD+直接提升粒線體代謝效率；化療和慢性病大量消耗NAD+，NMN補充是恢復能量最直接的策略'},
+   {n:'血循環',mech:'能量輸送支持',d:'粒線體產生的ATP需要血液輸送到全身修復部位，血循環改善確保能量有效抵達需要修復的組織'},
+ ],
+ syms:['嚴重疲勞','腦霧','治療後極虛','運動後難恢復','下午沒電','修復速度慢']},
+
+{id:'n4',num:'節點四',icon:'🧬',name:'DNA修復',color:'var(--n4)',
+ why:'每天都有DNA損傷——放射線、化學物質、自由基。DNA修復系統是防止突變累積的關鍵。沒有充足的修復輔因子，DNA損傷持續累積。',
+ neg:'氧化壓力↓ → DNA氧化損傷↓ → 修復系統負擔↓ → 修復精準度↑',
+ hyd:'羥自由基（DNA最主要的損傷者）↓ → 8-OHdG（DNA氧化損傷標記）↓ → DNA完整性↑',
+ nutrients:[
+   {n:'葉酸 + B12（加強B群）',mech:'DNA甲基化和合成',d:'葉酸是DNA合成和甲基化的必需輔因子，B12是甲基化循環的輔酶。兩者缺乏直接導致DNA複製錯誤率上升'},
+   {n:'B6（神經營養素）',mech:'核苷酸代謝輔酶',d:'B6參與嘌呤（DNA鹼基成分）的代謝，缺乏影響DNA修復機制中的核苷酸供給'},
+   {n:'鋅',mech:'DNA修復酶核心',d:'超過200種DNA修復相關酵素需要鋅，包括PARP-1（DNA單鏈修復的關鍵酶）。缺鋅=DNA修復效率大幅下降'},
+   {n:'NAC',mech:'氧化DNA損傷防護',d:'NAC→GSH（麩胱甘肽）是細胞保護DNA免受氧化損傷的主要抗氧化防線，化療期間尤為重要'},
+   {n:'硒+蝦紅素',mech:'抗氧化酵素活化',d:'硒活化麩胱甘肽過氧化物酶（防止DNA氧化），蝦紅素是最強脂溶性抗氧化劑，保護細胞膜和線粒體DNA'},
+ ],
+ syms:['接受放化療','細胞修復差','氧化壓力高','老化感明顯','免疫功能低']},
+
+{id:'n5',num:'節點五',icon:'🏗️',name:'組織修復',color:'var(--n5)',
+ why:'組織修復需要三元素：材料 + 能量 + 時間。材料不足，修復停止。癌友和手術後患者的蛋白質需求是正常人的1.5倍。',
+ neg:'局部循環改善 → 修復材料和免疫細胞運送加速 → 局部修復環境優化',
+ hyd:'修復期氧化壓力↓ → 修復細胞不被自由基破壞 → 組織再生品質↑',
+ nutrients:[
+   {n:'優質蛋白質',mech:'組織重建原料',d:'所有組織修復都需要胺基酸原料——膠原蛋白合成、免疫細胞增殖、酶合成。癌友蛋白質需求比正常人高50%'},
+   {n:'維生素C（加強B群）',mech:'膠原蛋白合成輔因子',d:'膠原蛋白合成的必要輔因子（脯胺酸羥化酶需要VitC），傷口癒合第一要素。手術或化療後需求大幅上升'},
+   {n:'鋅',mech:'組織修復酵素核心',d:'200+組織修復相關酵素需要鋅，包括膠原酶、金屬蛋白酶。缺鋅=傷口癒合停滯'},
+   {n:'透明質酸鈉',mech:'細胞外基質修復',d:'細胞外基質和關節液的核心成分，吸引修復細胞聚集，幫助手術後組織潤滑和修復，保水性強'},
+   {n:'硒+蝦紅素',mech:'修復環境抗氧化',d:'修復過程會產生大量自由基，抗氧化保護確保修復細胞不被損傷，提升整體修復品質和效率'},
+ ],
+ syms:['傷口癒合慢','手術後恢復差','肌肉流失','組織修復困難','關節問題','皮膚修復差']},
+];
+
+const ALL_SYMS=[
+  {icon:'😴',name:'失眠夜醒',nodes:['n1']},
+  {icon:'😮‍💨',name:'嚴重疲勞',nodes:['n3','n1']},
+  {icon:'🌫️',name:'腦霧',nodes:['n3','n1']},
+  {icon:'💩',name:'脹氣便秘',nodes:['n2']},
+  {icon:'🩹',name:'傷口癒合慢',nodes:['n5','n4']},
+  {icon:'🦠',name:'腸漏問題',nodes:['n2']},
+  {icon:'🧬',name:'接受化療',nodes:['n4','n3']},
+  {icon:'💊',name:'治療後恢復慢',nodes:['n1','n3','n5']},
+  {icon:'💪',name:'肌肉流失',nodes:['n5','n3']},
+  {icon:'🔥',name:'慢性發炎',nodes:['n2','n4']},
+  {icon:'🧠',name:'認知下降',nodes:['n1','n3']},
+  {icon:'🤧',name:'免疫低下',nodes:['n4','n2']},
+  {icon:'🦴',name:'關節問題',nodes:['n5']},
+  {icon:'😰',name:'壓力焦慮',nodes:['n1','n3']},
+  {icon:'💉',name:'手術後修復',nodes:['n5','n3']},
+  {icon:'📉',name:'體力下降',nodes:['n3','n1']},
+  {icon:'🫀',name:'心悸心跳快',nodes:['n3']},
+  {icon:'🌙',name:'睡眠品質差',nodes:['n1']},
+];
+
+const FC_CARDS=[
+  {eye:'節點一',big:'睡眠修復',zh:'深睡 = 全身修復總開關',detail:'生長激素在深睡分泌，神經重整，免疫重建。甘胺酸鎂+褪黑素+GABA是深睡三劍客'},
+  {eye:'節點二',big:'腸道修復',zh:'腸漏越嚴重，修復成本越高',detail:'丁酸鈉直接修復緊密連結蛋白。5R麩醯胺酸是腸壁燃料。腸道好=全身修復效率提升'},
+  {eye:'節點三',big:'粒線體',zh:'沒有ATP，就沒有修復',detail:'CoQ10+B群+鎂+NMN是能量修復四組合。粒線寶保護粒線體不被氧化。能量足=修復啟動'},
+  {eye:'節點四',big:'DNA修復',zh:'每天都有DNA損傷，需要輔因子修復',detail:'葉酸+B12是DNA甲基化必需。鋅是200+修復酶核心。NAC→GSH是DNA氧化損傷防護'},
+  {eye:'節點五',big:'組織修復',zh:'材料 + 能量 + 時間，缺一不可',detail:'蛋白質是重建原料（癌友需求1.5倍）。VitC是膠原合成輔因子。透明質酸修復基質'},
+  {eye:'黑科技',big:'負離子',zh:'創造修復環境，不是直接治療',detail:'副交感↑→皮質醇↓→深睡↑→循環↑→修復模式啟動。五個節點都受益'},
+  {eye:'黑科技',big:'氫氧水',zh:'降低修復負擔，保護修復材料',detail:'選擇性清除羥自由基→DNA損傷↓→粒線體保護→修復效率↑。讓更多資源真正投入修復'},
+  {eye:'第一性原理',big:'修復公式',zh:'損傷不可避免，修復不可缺少',detail:'問題不是如何不受傷，而是如何提高修復速度。修復三元素：材料+能量+時間'},
+  {eye:'控制論',big:'閉環系統',zh:'偵測失效或資源不足 → 系統崩潰',detail:'損傷→偵測→回饋→修正→恢復。疾病=修復能力不足的結果，不是敵人'},
+  {eye:'預測編碼',big:'資源分配',zh:'身體優先給生存，而非修復',detail:'長期壓力+睡眠不足+營養不足→修復資源被搶走。先創造修復環境，再補充材料'},
+  {eye:'高維視角',big:'高維問題',zh:'如何提升修復能力？',detail:'低維：消滅問題。高維：提升修復力。免疫/腸道/粒線體/神經都需要修復，同步支持才有效'},
+  {eye:'修復終極',big:'恢復稱態',zh:'受損後仍能重新生長',detail:'真正的健康不是從未受傷，而是持續修復的能力。生命最大奇蹟是受損後的重生'},
+];
+
+const QUIZ=[
+  {type:'節點題',q:'深睡眠對修復最重要的機制是？',opts:['消耗最少卡路里','生長激素大量分泌 + 神經重整 + 免疫重建，是全身修復的總開關','讓大腦休息','降低心跳速率'],ans:1,exp:'睡眠修復節點：深睡眠期間生長激素分泌達到高峰，神經修復、免疫重建都在這個窗口發生。睡不好=所有修復效率下降。'},
+  {type:'機制題',q:'丁酸鈉修復腸道的核心機制是？',opts:['殺死腸道細菌','促進消化液分泌','直接修復腸壁緊密連結蛋白（Claudin-1, Occludin），封堵腸漏','增加腸道蠕動'],ans:2,exp:'丁酸鈉是短鏈脂肪酸，腸道上皮細胞的直接燃料。修復緊密連結蛋白=封堵腸漏=全身慢性炎症的根本改善。'},
+  {type:'機制題',q:'為什麼說「沒有ATP就沒有修復」？',opts:['ATP讓人有精神','所有修復過程都需要ATP驅動——蛋白質合成、DNA修補、免疫細胞增殖都需要能量','ATP可以殺菌','粒線體就是修復工廠'],ans:1,exp:'粒線體修復節點：修復本身是耗能過程。沒有足夠ATP，蛋白質無法合成、DNA無法修補、免疫細胞無法增殖。CoQ10+B群+鎂是能量基礎。'},
+  {type:'機制題',q:'DNA修復最需要哪個礦物質？',opts:['鈣','鐵','鋅——超過200種DNA修復相關酵素需要鋅作輔因子','碘'],ans:2,exp:'鋅是DNA修復酵素核心（包括PARP-1）。缺鋅=DNA修復效率大幅下降。化療和慢性病者特別容易缺鋅，需要積極補充。'},
+  {type:'原理題',q:'「預測編碼」解析為什麼慢性病惡化的原因是？',opts:['基因問題','飲食太差','長期壓力+睡眠不足→身體把資源優先給「生存」而非「修復」，修復長期被擱置','細菌感染'],ans:2,exp:'預測編碼解析：身體在持續預測未來資源是否充足。資源不足時優先保命，修復被放棄。解法：先降低壓力、改善睡眠，創造修復環境。'},
+  {type:'節點題',q:'組織修復的「三元素」是？',opts:['藥物+手術+放療','休息+運動+飲食','材料（蛋白質+VitC+鋅）+ 能量（ATP）+ 時間，缺一不可','意志力+信念+耐心'],ans:2,exp:'組織修復節點：材料缺乏=修復停止。能量不足=有材料也無法合成。時間不夠=修復中斷。三者缺一，修復都無法完成。'},
+  {type:'黑科技',q:'負離子機對修復的主要作用是？',opts:['直接殺病菌','增加氧氣供給','副交感神經↑→皮質醇↓→深睡↑→循環↑→創造修復環境','補充礦物質'],ans:2,exp:'負離子不是直接治療，而是「創造修復環境」。副交感活化=修復模式開啟。皮質醇下降=睡眠改善=修復窗口最大化。'},
+  {type:'高維題',q:'修復模型的高維問題是？',opts:['如何消滅疾病？','如何找到最好的醫生？','如何提升修復能力？——從材料+能量+環境三個維度同步支持','哪個藥效果最好？'],ans:2,exp:'高維思維：疾病=修復能力不足的結果。不問「如何消滅」，而問「如何提升修復力」。五大節點同步支持，才是真正的修復策略。'},
+];
+
+// ═══════════════════ STATE ═══════════════════
+let selSyms=new Set();
+let fcWords=[],fcIdx=0,fcOK=0,fcNG=0,fcFlipped=false;
+let qData=[],qIdx=0,qC=0,qW=0,qAnsed=false,comboN=0,comboT=null;
+let curNode='n1';
+
+window.onload=()=>{
+  renderHomeChips();renderSymGrid();renderNodeTabs();renderNodeContents();
+  startFC();startQuiz();
+};
+
+function gp(id,btn){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+}
+
+function renderHomeChips(){
+  document.getElementById('homeChips').innerHTML=NODES.map(n=>`
+    <div onclick="gp('nodes',document.querySelectorAll('.nb')[2]);switchNode('${n.id}')"
+         style="background:var(--card);border:1px solid var(--bdr);border-radius:11px;padding:13px 8px;cursor:pointer;text-align:center;transition:.2s"
+         onmouseover="this.style.borderColor='${getCSSVar(n.color)}'" onmouseout="this.style.borderColor='var(--bdr)'">
+      <div style="font-size:24px;margin-bottom:5px">${n.icon}</div>
+      <div style="font-size:12px;font-weight:700;color:${n.color}">${n.num.replace('節點','第')}節點</div>
+      <div style="font-size:11px;margin-top:2px;color:var(--dim)">${n.name}</div>
+    </div>`).join('');
+}
+function getCSSVar(v){return v;}
+
+// DIAGNOSIS
+function renderSymGrid(){
+  document.getElementById('symGrid').innerHTML=ALL_SYMS.map(s=>`
+    <button class="sym-btn" onclick="toggleSym('${s.name}',this)">
+      <span class="sy-icon">${s.icon}</span>
+      <span class="sy-name">${s.name}</span>
+      <span class="sy-sub">${s.nodes.map(id=>NODES.find(n=>n.id===id)?.name).join(' + ')}</span>
+    </button>`).join('');
+}
+function toggleSym(name,el){if(selSyms.has(name)){selSyms.delete(name);el.classList.remove('sel');}else{selSyms.add(name);el.classList.add('sel');}}
+function runDiag(){
+  if(!selSyms.size){alert('請先選擇至少一個狀況');return;}
+  const scores={};NODES.forEach(n=>scores[n.id]=0);
+  selSyms.forEach(sym=>{const s=ALL_SYMS.find(x=>x.name===sym);if(s)s.nodes.forEach(id=>scores[id]=(scores[id]||0)+1);});
+  const maxS=Math.max(...Object.values(scores));
+  const sorted=NODES.map(n=>({...n,score:scores[n.id]||0})).sort((a,b)=>b.score-a.score);
+  document.getElementById('nodeScoreGrid').innerHTML=sorted.map(n=>{
+    const pct=maxS>0?Math.round(n.score/maxS*100):0;const hit=n.score>0;
+    return `<div class="nsg${hit?' hit':''}" style="border-color:${hit?n.color.replace('var(','').replace(')','').trim()+'55':'var(--bdr)'};opacity:${hit?1:.4}">
+      <div class="nsg-top">
+        <div class="nsg-ico" style="background:${n.color}18">${n.icon}</div>
+        <div><div class="nsg-name" style="color:${hit?n.color:'var(--dim)'}">${n.name}</div>
+        <div class="nsg-pct" style="color:${hit?n.color:'var(--dim)'}">${hit?`需支持 ${pct}%`:'目前正常'}</div></div>
+      </div>
+      <div class="nsg-bar-bg"><div class="nsg-bar" style="background:${n.color};width:${pct}%"></div></div>
+      <div class="nsg-syms">${[...selSyms].filter(sym=>{const sm=ALL_SYMS.find(x=>x.name===sym);return sm&&sm.nodes.includes(n.id);}).map(sym=>`<span class="nsg-sym-tag" style="background:${n.color}18;color:${n.color}">${sym}</span>`).join('')}</div>
+    </div>`;
+  }).join('');
+  const top=sorted.filter(n=>n.score>0).slice(0,3);
+  document.getElementById('recGrid').innerHTML=top.flatMap(n=>n.nutrients.slice(0,2).map(nu=>`
+    <div class="rec-card">
+      <div class="rc-node" style="color:${n.color}">${n.icon} ${n.name}</div>
+      <div class="rc-name">${nu.n}</div>
+      <div class="rc-mech">${nu.mech}</div>
+      <div class="rc-why">${nu.d}</div>
+      <a class="rc-buy" href="${BUY}" target="_blank">🛒 訂購</a>
+    </div>`)).join('');
+  document.getElementById('diagResult').classList.add('show');
+  setTimeout(()=>document.getElementById('diagResult').scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+function resetDiag(){selSyms.clear();document.querySelectorAll('.sym-btn').forEach(b=>b.classList.remove('sel'));document.getElementById('diagResult').classList.remove('show');}
+
+// NODES
+function renderNodeTabs(){
+  document.getElementById('nodeTabs').innerHTML=NODES.map(n=>`
+    <button class="n-tab${n.id===curNode?' on':''}" id="nt-${n.id}" onclick="switchNode('${n.id}')"
+      style="${n.id===curNode?`background:${n.color};color:#040200`:''}">${n.icon} ${n.name}</button>`).join('');
+}
+function switchNode(id){
+  curNode=id;
+  document.querySelectorAll('.n-tab').forEach(t=>{t.classList.remove('on');t.style.background='';t.style.color='';});
+  document.querySelectorAll('.n-content').forEach(c=>c.classList.remove('on'));
+  const n=NODES.find(x=>x.id===id);
+  const tab=document.getElementById('nt-'+id);
+  if(tab){tab.classList.add('on');tab.style.background=n.color;tab.style.color='#040200';}
+  document.getElementById('nc-'+id).classList.add('on');
+}
+function renderNodeContents(){
+  document.getElementById('nodeContents').innerHTML=NODES.map(n=>`
+    <div class="n-content${n.id===curNode?' on':''}" id="nc-${n.id}">
+      <div class="n-head">
+        <div class="n-ico-big" style="background:${n.color}18">${n.icon}</div>
+        <div>
+          <div class="n-num" style="color:${n.color}">${n.num}</div>
+          <div class="n-h1" style="color:${n.color}">${n.name}</div>
+          <div class="n-why">${n.why}</div>
+        </div>
+      </div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:10px">💊 核心修復材料 × 機制說明</div>
+      <div class="nt-grid">
+        ${n.nutrients.map(nu=>`<div class="nt-card" style="border-left-color:${n.color}">
+          <div class="nt-top">
+            <span class="nt-name">${nu.n}</span>
+            <span class="nt-mech" style="background:${n.color}18;color:${n.color}">${nu.mech}</span>
+          </div>
+          <div class="nt-detail">${nu.d}</div>
+          <a class="nt-buy" href="${BUY}" target="_blank">🛒 訂購</a>
+        </div>`).join('')}
+      </div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:9px">⚡ 黑科技對應</div>
+      <div class="tech-row">
+        <div class="tech-card tech-neg">
+          <div class="tech-t" style="color:var(--neg)">🌬️ 負離子機</div>
+          <div class="tech-flow">${n.neg.split('→').map((p,i)=>i===0?`<b>${p.trim()}</b>`:`<span class="arr">→</span> ${p.trim()}`).join(' ')}</div>
+          <a class="tech-buy" href="${BUY}" target="_blank">🛒 查看負離子機</a>
+        </div>
+        <div class="tech-card tech-hyd">
+          <div class="tech-t" style="color:var(--hyd)">💧 氫氧水</div>
+          <div class="tech-flow">${n.hyd.split('→').map((p,i)=>i===0?`<b>${p.trim()}</b>`:`<span class="arr">→</span> ${p.trim()}`).join(' ')}</div>
+          <a class="tech-buy" href="${BUY}" target="_blank">🛒 查看氫氧水</a>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// FLASHCARD
+function shuffle(a){return [...a].sort(()=>Math.random()-.5);}
+function startFC(){
+  fcWords=shuffle([...FC_CARDS]);fcIdx=0;fcOK=0;fcNG=0;fcFlipped=false;
+  document.getElementById('fcResult').style.display='none';
+  document.getElementById('fcCard').style.display='';
+  document.getElementById('fcBtns').style.display='none';
+  document.getElementById('fcCard').classList.remove('flip');renderFC();
+}
+function renderFC(){
+  if(fcIdx>=fcWords.length){showFCR();return;}
+  const c=fcWords[fcIdx];
+  document.getElementById('fcBar').style.width=(fcIdx/fcWords.length*100)+'%';
+  document.getElementById('fcCtr').textContent=`第 ${fcIdx+1} / ${fcWords.length} 張`;
+  document.getElementById('fcSeen').textContent=fcIdx;
+  document.getElementById('fcOK').textContent=fcOK;
+  document.getElementById('fcNG').textContent=fcNG;
+  ['fcEye','fcEye2'].forEach(id=>document.getElementById(id).textContent=c.eye);
+  document.getElementById('fcBig').textContent=c.big;
+  document.getElementById('fcZh').textContent=c.zh;
+  document.getElementById('fcDetail').textContent=c.detail;
+  document.getElementById('fcCard').classList.remove('flip');
+  fcFlipped=false;document.getElementById('fcBtns').style.display='none';
+}
+function flipFC(){document.getElementById('fcCard').classList.toggle('flip');fcFlipped=!fcFlipped;document.getElementById('fcBtns').style.display=fcFlipped?'flex':'none';}
+function markFC(ok){if(ok)fcOK++;else{fcNG++;fcWords.push(fcWords[fcIdx]);}fcIdx++;renderFC();}
+function skipFC(){fcIdx++;renderFC();}
+function showFCR(){
+  document.getElementById('fcResult').style.display='block';document.getElementById('fcCard').style.display='none';
+  const pct=fcOK/(fcOK+fcNG)*100||0;
+  document.getElementById('rStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('rScore').textContent=`記住 ${fcOK} 個`;
+  document.getElementById('rMsg').textContent=pct>=90?'修復模型全掌握！身體會感謝你 🎉':pct>=70?'很好！繼續鞏固各節點。':'多複習幾遍，修復原理通了就全懂了。';
+}
+
+// QUIZ
+function startQuiz(){
+  qData=shuffle([...QUIZ]);qIdx=0;qC=0;qW=0;qAnsed=false;comboN=0;
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('quizArea').style.display='';renderQ();
+}
+function renderQ(){
+  if(qIdx>=qData.length){showQR();return;}
+  qAnsed=false;
+  const q=qData[qIdx];
+  document.getElementById('qN').textContent=qIdx+1;
+  document.getElementById('qC').textContent=qC;
+  document.getElementById('qW').textContent=qW;
+  document.getElementById('qBar').style.width=(qIdx/qData.length*100)+'%';
+  document.getElementById('qType').textContent=q.type;
+  document.getElementById('qQ').textContent=q.q;
+  document.getElementById('qExp').classList.remove('show');
+  document.getElementById('qNext').style.display='none';
+  document.getElementById('qOpts').innerHTML=q.opts.map((o,i)=>`
+    <button class="qopt" onclick="ansQ(this,${i},${q.ans},'${q.exp.replace(/'/g,"\\'")}')">${o}</button>`).join('');
+}
+function ansQ(btn,chosen,ans,exp){
+  if(qAnsed)return;qAnsed=true;
+  const ok=chosen===ans;
+  document.querySelectorAll('.qopt').forEach((b,i)=>{b.disabled=true;if(i===chosen)b.classList.add(ok?'ok':'bad');else if(i===ans)b.classList.add('ok');});
+  if(ok){qC++;comboN++;showCombo();}else{qW++;comboN=0;}
+  const e=document.getElementById('qExp');
+  e.innerHTML=`<b>${ok?'✅ 正確！':'❌ 解析：'}</b> ${exp}`;e.classList.add('show');
+  document.getElementById('qNext').style.display='block';
+}
+function nextQ(){qIdx++;renderQ();}
+function showCombo(){
+  if(comboN<3)return;
+  const b=document.getElementById('comboBadge');b.textContent=`🔥 ${comboN}連！`;b.style.display='block';
+  clearTimeout(comboT);comboT=setTimeout(()=>b.style.display='none',1400);
+}
+function showQR(){
+  document.getElementById('quizResult').style.display='block';document.getElementById('quizArea').style.display='none';
+  const pct=qC/(qC+qW)*100||0;
+  document.getElementById('qStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('qScore').textContent=`${qC}/${qC+qW}`;
+  document.getElementById('qMsg').textContent=pct>=90?'修復模型專家！🎉':pct>=70?'很棒！繼續深化。':'多複習節點原理，會越來越清晰。';
+}
+</script>
+
+
+
+
+
+<!-- SOUP-START -->
+<style>
+/* ── 心靈雞湯卡 + 搜尋 ── */
+.sp-card{margin:0 0 18px;padding:14px 16px;border-radius:14px;border:1px solid #E6D3A3;background:linear-gradient(135deg,#FFF9EA,#FFF1DC);color:#4A3A12;text-align:left;cursor:default;font-family:inherit;line-height:1.6;}
+.sp-dark .sp-card{background:linear-gradient(135deg,rgba(232,168,32,.12),rgba(255,255,255,.03));border-color:rgba(232,168,32,.3);color:#F3E8CC;}
+.sp-h{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;letter-spacing:.5px;color:#B07A08;margin-bottom:6px;}
+.sp-dark .sp-h{color:#E8A820;}
+.sp-n{font-weight:400;opacity:.7;}
+.sp-q{font-size:16px;font-weight:600;line-height:1.75;white-space:pre-line;}
+.sp-b{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.sp-fz{bottom:166px;font-size:16px;font-weight:700;}
+.sp-fh{font-size:12px;font-weight:700;padding:8px 6px 4px;color:#C9960C;}
+.sp-it{position:relative;}
+.sp-it[data-f]{padding-right:34px;}
+.sp-x{position:absolute;right:8px;top:8px;opacity:.5;padding:0 4px;}
+.sp-x:hover{opacity:1;}
+.sp-b button{padding:5px 13px;border-radius:16px;border:1px solid currentColor;background:transparent;color:inherit;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;opacity:.75;transition:.15s;}
+.sp-b button:hover{opacity:1;}
+.sp-note{font-size:11px;opacity:.65;margin-top:8px;text-align:center;}
+.sp-fab{position:fixed;right:14px;z-index:900;width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;font-size:18px;line-height:42px;padding:0;background:#1A2B5F;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.sp-dark .sp-fab{background:#E8A820;color:#1a1200;}
+.sp-fs{bottom:116px;}
+.sp-ft{bottom:66px;display:none;}
+.sp-ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;background:rgba(0,0,0,.55);padding:8vh 14px 14px;}
+.sp-ov.on{display:block;}
+.sp-box{max-width:560px;margin:0 auto;background:#fff;color:#1A2040;border-radius:14px;padding:14px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:14px;}
+.sp-dark .sp-box{background:#0E1835;color:#D5E5F8;border:1px solid #1C3060;}
+.sp-row{display:flex;gap:8px;}
+.sp-row input{flex:1;min-width:0;padding:10px 12px;border-radius:9px;border:1.5px solid #C9960C;font-size:15px;font-family:inherit;outline:none;background:transparent;color:inherit;}
+.sp-row button{padding:0 14px;border-radius:9px;border:none;background:rgba(128,128,128,.2);color:inherit;font-size:15px;cursor:pointer;}
+.sp-r{overflow-y:auto;margin-top:10px;}
+.sp-it{padding:9px 10px;border-radius:9px;cursor:pointer;line-height:1.6;border-bottom:1px solid rgba(128,128,128,.18);}
+.sp-it:hover{background:rgba(201,150,12,.14);}
+.sp-it mark{background:#F0C040;color:#1a1200;border-radius:3px;padding:0 2px;}
+.sp-tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:10px;background:rgba(201,150,12,.2);margin-right:6px;}
+.sp-em{padding:16px 6px;opacity:.6;text-align:center;}
+.sp-hit{outline:3px solid #E8A820 !important;outline-offset:3px;}
+#spToast{display:none;position:fixed;bottom:120px;left:50%;transform:translateX(-50%);z-index:1100;background:#1A2B5F;color:#fff;font-size:13px;font-weight:700;padding:8px 18px;border-radius:9px;}
+#spToast.on{display:block;}
+</style>
+<script>
+window.SOUP={key:'修復模式',dark:true,nav:'.nb',panel:'.pg',host:'.wrap',skip:'.topbar,.xp-bar,.combo,.copy-toast',extra:['身體每天都在悄悄努力，今天也謝謝它。','好起來不是一條直線，有起伏也沒關係。','休息不是停下來，是讓身體有空修理自己。','一口好飯、一夜好眠，都是在幫身體的忙。','別急著趕進度，身體有它自己的時間表。','你對自己多一分耐心，身體就多一分餘裕。'],soups:{
+'pg-home':['身體一直站在你這邊，它只是需要時間和條件。','修復不是回到過去，是慢慢長出新的自己。','今天願意好好照顧自己，就是最好的開始。'],
+'pg-diag':['聽懂身體的訊號，是對自己最溫柔的事。','不舒服不是敵人，是身體寫給你的一封信。','先看見，才有辦法好好照顧。'],
+'pg-nodes':['一次顧好一個環節，整個人就會慢慢穩下來。','小地方做對了，大方向自然就對了。','修復沒有捷徑，但每一步都算數。'],
+'pg-learn':['懂了原理，就不再那麼害怕。','知識會把擔心，變成今天可以做的事。','理解自己的身體，是一輩子最值得的功課。'],
+'pg-flash':['每記住一張卡，就多一分照顧自己的底氣。','慢慢翻，慢慢懂，身體也是這樣慢慢好起來的。','重複不是笨，是讓好觀念住進心裡。'],
+'pg-quiz':['答對是確認，答錯是發現，兩個都是收穫。','你願意測驗自己，代表你真的在乎。','不必滿分，只要比昨天多懂一點。']
+}};
+</script>
+<script>
+// ── 心靈雞湯卡 + 搜尋 + 記住分頁 + 離線教練（共用模組，完全離線）──
+(function(){
+var C=window.SOUP||{},K='soup:'+(C.key||'app')+':';
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function lsGet(k){try{return localStorage.getItem(K+k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(K+k,v);}catch(e){}}
+function navs(){return C.nav?$$(C.nav):[];}
+function panels(){
+  if(C.panels)return C.panels();
+  return $$(C.panel||'.pg').map(function(el){return{el:el,id:el.id,host:(C.host&&el.querySelector(C.host))||el};});
+}
+// 通用句庫：接在每個分頁專屬句子後面，「換一碗」時輪到
+var POOL=['慢慢來，比較快。','你已經走了很遠，回頭看看就知道。','今天不必完美，只要比昨天多一點點。','允許自己休息，也是一種前進。','每一個小小的開始，都值得被肯定。','你現在做的每件小事，未來的你都會感謝。','不用和別人比，你有自己的時區。','卡住的時候，先深呼吸，再走一小步。','把今天過好，就是對未來最好的準備。','你比昨天的自己，又多懂了一點。','再難的日子，也是一天一天過完的。','對自己溫柔一點，你正在努力。'];
+function specOf(id){return (C.soups&&C.soups[id])||C.common||[];}
+function quotesOf(id){var s=specOf(id);return s.length?s.concat(C.extra||[],POOL):s;}
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+var day=Math.floor(Date.now()/864e5),off={};
+function favs(){try{return JSON.parse(lsGet('fav'))||[];}catch(e){return [];}}
+function setFavs(a){lsSet('fav',JSON.stringify(a));}
+
+// ── 雞湯卡 ──
+function fill(card){
+  var id=card.getAttribute('data-sp'),q=quotesOf(id);if(!q.length)return;
+  // 每天預設先出該分頁的專屬句，按「換一碗」再輪到其他句
+  var i=((day+hash(id))%specOf(id).length+(off[id]||0))%q.length;
+  card.querySelector('.sp-q').textContent=q[i];
+  card.querySelector('.sp-n').textContent=(i+1)+' / '+q.length;
+  card.querySelector('[data-a=n]').style.display=q.length>1?'':'none';
+  card.querySelector('[data-a=f]').textContent=favs().indexOf(q[i])>=0?'♥ 已收藏':'♡ 收藏';
+}
+function say(text){
+  if(!('speechSynthesis' in window)){toast('這個瀏覽器不支援朗讀');return;}
+  speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);u.lang='zh-TW';u.rate=0.9;speechSynthesis.speak(u);
+}
+// 存成 1080×1080 圖卡（PNG），可直接貼到臉書 / LINE
+function saveImage(text){
+  var S=1080,cv=document.createElement('canvas');cv.width=cv.height=S;
+  var x=cv.getContext('2d'),g=x.createLinearGradient(0,0,S,S);
+  g.addColorStop(0,'#1A2B5F');g.addColorStop(1,'#0A7A72');x.fillStyle=g;x.fillRect(0,0,S,S);
+  x.strokeStyle='rgba(240,192,64,.55)';x.lineWidth=4;x.strokeRect(48,48,S-96,S-96);
+  var F='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+  x.textAlign='center';x.textBaseline='middle';
+  x.fillStyle='#F0C040';x.font='bold 40px '+F;x.fillText('心靈雞湯',S/2,150);
+  var size=text.length>60?50:text.length>32?58:68,lh=size*1.6,max=S-240,lines=[];
+  x.font='bold '+size+'px '+F;
+  text.split('\n').forEach(function(par){
+    var line='';
+    for(var i=0;i<par.length;i++){
+      var ch=par[i],keep=/[，。！？、；：」』）]/.test(ch);   // 標點不放行首
+      if(line&&!keep&&x.measureText(line+ch).width>max){lines.push(line);line=ch;}else line+=ch;
+    }
+    if(line)lines.push(line);
+  });
+  x.fillStyle='#fff';
+  var y=S/2-(lines.length-1)*lh/2;
+  lines.forEach(function(l,i){x.fillText(l,S/2,y+i*lh);});
+  x.fillStyle='rgba(255,255,255,.7)';x.font='32px '+F;
+  x.fillText(C.brand||document.title.split(/[｜|]/)[0].trim(),S/2,S-140);
+  cv.toBlob(function(b){
+    var a=document.createElement('a');a.href=URL.createObjectURL(b);
+    a.download='心靈雞湯_'+text.replace(/[\s\\/:*?"<>|，。！？、]/g,'').slice(0,10)+'.png';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
+    toast('圖卡已下載 ✓');
+  },'image/png');
+}
+function toast(m){
+  var t=document.getElementById('spToast');if(!t)return;
+  t.textContent=m;t.classList.add('on');clearTimeout(toast.t);
+  toast.t=setTimeout(function(){t.classList.remove('on');},1300);
+}
+function copy(text){
+  function fb(){var a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}a.remove();}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).catch(fb);else fb();
+  toast('已複製 ✓');
+}
+function makeCard(id){
+  var d=document.createElement('div');d.className='sp-card';d.setAttribute('data-sp',id);
+  d.innerHTML='<div class="sp-h"><span>🍲 心靈雞湯</span><span class="sp-n"></span></div><div class="sp-q"></div><div class="sp-b"><button type="button" data-a="n">換一碗</button><button type="button" data-a="f">♡ 收藏</button><button type="button" data-a="c">複製</button><button type="button" data-a="s">朗讀</button><button type="button" data-a="i">存圖卡</button></div>';
+  d.addEventListener('click',function(e){
+    e.stopPropagation();
+    var a=e.target.getAttribute&&e.target.getAttribute('data-a'),t=d.querySelector('.sp-q').textContent;
+    if(a==='n'){off[id]=(off[id]||0)+1;fill(d);}
+    else if(a==='c'){copy(t);}
+    else if(a==='s'){say(t);}
+    else if(a==='i'){saveImage(t);}
+    else if(a==='f'){
+      var f=favs(),k=f.indexOf(t);
+      if(k>=0)f.splice(k,1);else f.unshift(t);
+      setFavs(f);fill(d);toast(k>=0?'已取消收藏':'已收藏 ♥（按 🔍 可看全部收藏）');
+    }
+  });
+  fill(d);return d;
+}
+function ensure(){
+  panels().forEach(function(p){
+    if(!p||!p.el)return;
+    var host=p.host||p.el,ex=null;
+    for(var c=host.firstElementChild;c;c=c.nextElementSibling){if(c.classList.contains('sp-card')){ex=c;break;}}
+    if(ex){if(ex.getAttribute('data-sp')===p.id)return;ex.remove();}
+    if(!quotesOf(p.id).length)return;
+    var card=makeCard(p.id);
+    if(p.after&&p.after.parentNode===host)host.insertBefore(card,p.after.nextSibling);
+    else host.insertBefore(card,host.firstChild);
+  });
+}
+
+// ── 搜尋 ──
+var SKIP='script,style,noscript,nav,.nav,.nav-tabs,.sp-card,.sp-ov,.sp-fab,.sp-note,#spToast,.fbx-b,.fbx-fab,#fbxMask';
+var cache=null;
+function blocks(){
+  var out=[],seen=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null),n;
+  while((n=w.nextNode())){
+    var el=n.parentElement;
+    if(!el||!n.nodeValue.trim()||el.closest(SKIP)||(C.skip&&el.closest(C.skip)))continue;
+    while(el.parentElement&&el.parentElement!==document.body&&/^(B|I|EM|STRONG|SPAN|A|U|SMALL|CODE|SUP|SUB)$/.test(el.tagName))el=el.parentElement;
+    if(seen.has(el))continue;seen.add(el);
+    var t=el.textContent.replace(/\s+/g,' ').trim();
+    if(t.length>=2)out.push({el:el,t:t});
+  }
+  return out;
+}
+function tabOf(el){
+  if(C.tabs===false)return -1;
+  var ps=panels();
+  for(var i=0;i<ps.length;i++)if(ps[i].el&&ps[i].el.contains(el))return i;
+  return -1;
+}
+function labelOf(el,ti){
+  if(C.label)return C.label(el)||'';
+  var nv=navs();return ti>=0&&nv[ti]?nv[ti].textContent.trim():'';
+}
+function snippet(t,k,len){
+  var s=Math.max(0,k-18);
+  return (s>0?'…':'')+t.substr(s,len)+(t.length>s+len?'…':'');
+}
+function domSearch(q){
+  var ql=q.toLowerCase(),hit=[],bs=cache||(cache=blocks());
+  for(var i=0;i<bs.length&&hit.length<300;i++){
+    var k=bs[i].t.toLowerCase().indexOf(ql);
+    if(k>=0)hit.push({el:bs[i].el,t:snippet(bs[i].t,k,72)});
+  }
+  // 只留最內層，避免同一段文字重複出現
+  hit=hit.filter(function(a){return !hit.some(function(b){return b!==a&&a.el.contains(b.el);});});
+  return hit.slice(0,40).map(function(h){var ti=tabOf(h.el);return{el:h.el,t:h.t,ti:ti,label:labelOf(h.el,ti)};});
+}
+function flash(el){
+  setTimeout(function(){
+    var t=el;if(!t||!document.body.contains(t))return;
+    while(t&&t!==document.body&&t.offsetParent===null)t=t.parentElement;
+    if(!t||t===document.body)return;
+    t.scrollIntoView({block:'center',behavior:'smooth'});
+    t.classList.add('sp-hit');setTimeout(function(){t.classList.remove('sp-hit');},1800);
+  },140);
+}
+function reveal(r){
+  var el=r.el;
+  if(r.go){el=r.go()||el;}
+  else if(C.reveal){C.reveal(el);}
+  else{var nv=navs();if(r.ti>=0&&nv[r.ti])nv[r.ti].click();}
+  flash(el);
+}
+function ui(){
+  if(C.dark)document.body.classList.add('sp-dark');
+  var t=document.createElement('div');t.id='spToast';document.body.appendChild(t);
+  var top=document.createElement('button');top.type='button';top.className='sp-fab sp-ft';top.title='回到頂端';top.textContent='↑';
+  top.onclick=function(){window.scrollTo({top:0,behavior:'smooth'});};
+  document.body.appendChild(top);
+  window.addEventListener('scroll',function(){top.style.display=window.scrollY>500?'block':'none';},{passive:true});
+
+  // 字體大小：標準 → 大 → 特大
+  var Z=[1,1.15,1.3],zi=+lsGet('zoom')||0,zb=document.createElement('button');
+  zb.type='button';zb.className='sp-fab sp-fz';zb.title='字體大小';zb.textContent='字';
+  function zoom(){document.documentElement.style.zoom=Z[zi]===1?'':Z[zi];}
+  zb.onclick=function(){zi=(zi+1)%Z.length;lsSet('zoom',String(zi));zoom();toast(['標準字體','大字體','特大字體'][zi]);};
+  zoom();document.body.appendChild(zb);
+
+  var fb=document.createElement('button');fb.type='button';fb.className='sp-fab sp-fs';fb.title='搜尋（按 / 開啟）';fb.textContent='🔍';
+  var ov=document.createElement('div');ov.className='sp-ov';
+  ov.innerHTML='<div class="sp-box"><div class="sp-row"><input type="search" placeholder="搜尋本 APP 內容…（Esc 關閉）"><button type="button" title="關閉">✕</button></div><div class="sp-r"></div></div>';
+  document.body.appendChild(fb);document.body.appendChild(ov);
+  var inp=ov.querySelector('input'),box=ov.querySelector('.sp-r'),res=[];
+  function close(){ov.classList.remove('on');}
+  function open(){cache=null;ov.classList.add('on');inp.focus();inp.select();render();}
+  function render(){
+    var q=inp.value.trim();
+    if(!q){
+      res=[];var f=favs();
+      box.innerHTML='<div class="sp-em">輸入關鍵字，搜尋所有分頁的內容</div>'+(f.length
+        ?'<div class="sp-fh">♥ 我的收藏（'+f.length+'）· 點一下複製</div>'+f.map(function(t,i){return '<div class="sp-it" data-f="'+i+'">'+esc(t)+'<span class="sp-x" data-x="'+i+'" title="移除">✕</span></div>';}).join('')
+        :'<div class="sp-em">按雞湯卡上的「♡ 收藏」，喜歡的句子會存在這裡</div>');
+      return;
+    }
+    res=(C.search?C.search(q):domSearch(q))||[];
+    if(!res.length){box.innerHTML='<div class="sp-em">找不到「'+esc(q)+'」</div>';return;}
+    var re=new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+    box.innerHTML=res.map(function(r,i){
+      return '<div class="sp-it" data-i="'+i+'">'+(r.label?'<span class="sp-tag">'+esc(r.label)+'</span>':'')+esc(r.t).replace(re,function(m){return '<mark>'+m+'</mark>';})+'</div>';
+    }).join('');
+  }
+  fb.onclick=open;
+  inp.addEventListener('input',render);
+  ov.querySelector('.sp-row button').onclick=close;
+  ov.addEventListener('click',function(e){
+    if(e.target===ov){close();return;}
+    var xi=e.target.getAttribute('data-x');
+    if(xi!==null){var f=favs();f.splice(+xi,1);setFavs(f);render();$$('.sp-card').forEach(fill);return;}
+    var it=e.target.closest('.sp-it');if(!it)return;
+    if(it.hasAttribute('data-f')){copy(favs()[+it.getAttribute('data-f')]||'');return;}
+    var r=res[+it.getAttribute('data-i')];close();if(r)reveal(r);
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){close();return;}
+    if(e.key==='/'&&!/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName||''))&&!e.target.isContentEditable){e.preventDefault();open();}
+  });
+}
+
+// ── 記住上次分頁 ──
+function remember(){
+  if(C.remember===false||!C.nav)return;
+  var nv=navs();
+  nv.forEach(function(b,i){b.addEventListener('click',function(){lsSet('tab',String(i));});});
+  var s=parseInt(lsGet('tab'),10);
+  if(s>0&&nv[s])nv[s].click();
+}
+
+// ── 離線教練（取代需要連網 / API 的版本）──
+var STOP={};'我很 我的 我想 我是 我不 我會 我要 怎麼 什麼 如何 可以 覺得 不知 知道 自己 沒有 是不 不是 為什 麼辦 還是 因為 所以 但是 一直 有點 的人 的時 時候 開始 想要 要怎 麼做 是否 已經 可能 真的 好像 這樣 那樣 的事 一個 現在'.split(' ').forEach(function(g){STOP[g]=1;});
+var SYN=['害怕 恐懼 擔心 焦慮 不安 緊張','希望 絕望 無望 放棄 沒救','累 疲勞 疲倦 沒力 能量 精神 活力','睡 失眠 睡眠 熬夜 休息','吵架 衝突 爭吵 溝通 冷戰','孤單 孤獨 寂寞 連結 陪伴','生氣 憤怒 情緒 委屈','目標 方向 迷茫 意義 使命','學習 讀書 記憶 專注 理解','錢 財富 收入 賺錢 金錢','幫助 貢獻 付出 給予 成全','復發 修復 恢復 重建','癌 病人 疾病 治療 症狀','壓力 放鬆 呼吸 緊繃','吃 飲食 營養 血糖 代謝','運動 走路 步行 肌肉','痛 疼痛 發炎 不舒服','信任 背叛 安全感 界線','孩子 小孩 親子 教養','伴侶 另一半 婚姻 夫妻 親密','漸行漸遠 疏遠 距離 連結 陪伴','胖 體重 腰圍 減重','身份 身分 角色 定義'].map(function(s){return s.split(' ');});
+var AD=/DHA|EPA|GABA|NMN|Q10|鎂|鋅|益生菌|補充|營養素|保健|生技|購買|團購|下單|膠囊|魚油|維生素|維他命|毫克|mg/i;
+function coach(){
+  if(!C.coach||typeof window.addMsg!=='function')return;
+  var inp=document.getElementById('aiInput');if(!inp)return;
+  var row=inp.parentElement,note=document.createElement('div');
+  note.className='sp-note';note.textContent='離線教練：不連網、不需 API，回覆整理自本 APP 的內容。';
+  row.parentNode.insertBefore(note,row.nextSibling);
+  var skip=C.coach.skip||'#pg-ai,#pg-quiz,#pg-flash,#pg-diag,.hero,.nt-card,.nt-grid,.tech-card,.tech-row,.bb';
+  function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+  window.sendAI=function(){
+    var msg=inp.value.trim();if(!msg)return;
+    inp.value='';window.addMsg('user',esc(msg));
+    var g={};
+    msg.replace(/[\s，。！？、,.!?「」『』（）()：:；;～~…]+/g,' ').split(' ').forEach(function(w){
+      if(/^[\x00-\x7f]+$/.test(w)){if(w.length>1)g[w.toLowerCase()]=1;}
+      else for(var i=0;i<w.length-1;i++){var b=w.substr(i,2);if(!STOP[b])g[b]=1;}
+    });
+    // 同義詞擴充：使用者說「害怕」，也找「恐懼」「擔心」的內容
+    SYN.forEach(function(grp){
+      if(grp.some(function(w){return msg.indexOf(w)>=0;}))grp.forEach(function(w){if(w.length>1)g[w]=1;});
+    });
+    var keys=Object.keys(g),seen={},cand=[];
+    blocks().forEach(function(b){
+      // 只取完整句子（有標點），略過標籤、編號這類短字
+      // 也略過產品 / 補充品段落：教練只給觀念和行動，不推薦產品
+      if(b.t.length<8||b.t.length>160||seen[b.t]||!/[，。；！？：,]/.test(b.t)||AD.test(b.t)||b.el.closest(skip))return;
+      var tl=b.t.toLowerCase(),sc=0;
+      keys.forEach(function(k){if(tl.indexOf(k)>=0)sc++;});
+      if(sc>0){seen[b.t]=1;cand.push({el:b.el,t:b.t,sc:sc});}
+    });
+    cand=cand.filter(function(a){return !cand.some(function(b){return b!==a&&a.el.contains(b.el);});});
+    cand.sort(function(a,b){return b.sc-a.sc||a.t.length-b.t.length;});
+    var top=[],h='';
+    cand.forEach(function(c){
+      if(top.length<3&&!top.some(function(t){return t.t.indexOf(c.t)>=0||c.t.indexOf(t.t)>=0;}))top.push(c);
+    });
+    if(top.length){
+      h+='<b>【相關重點】</b><br>'+top.map(function(x){
+        var lb=labelOf(x.el,tabOf(x.el));
+        return '• '+(lb?'〔'+esc(lb)+'〕':'')+esc(x.t);
+      }).join('<br>')+'<br><br>';
+    }else{
+      h+='這個問題在 APP 裡沒有直接對應的段落，可以換個關鍵字，或用右下角 🔍 搜尋。先給你一個方向：<br><br>';
+    }
+    var qs=quotesOf('pg-ai');
+    if(C.coach.steps&&C.coach.steps.length)h+='<b>【今日一小步】</b><br>'+esc(rnd(C.coach.steps))+'<br><br>';
+    if(qs.length)h+='<b>【心靈雞湯】</b><br>'+esc(rnd(qs));
+    setTimeout(function(){window.addMsg('bot',h);},300);
+  };
+}
+
+// ── 每日任務：記住今天勾過的項目 + 連續打卡天數 ──
+function tasks(){
+  var td;try{td=taskDone;}catch(e){return;}
+  if(!Array.isArray(td)||typeof window.toggleTask!=='function')return;
+  var today=new Date().toDateString(),yest=new Date(Date.now()-864e5).toDateString(),s=null,orig=window.toggleTask;
+  try{s=JSON.parse(lsGet('tasks'));}catch(e){}
+  s=s||{date:'',done:[],streak:0,last:''};
+  if(s.date===today&&s.done.length===td.length){
+    s.done.forEach(function(d,i){if(d&&!td[i])orig(i);});
+    var cb=document.getElementById('comboBadge');if(cb)setTimeout(function(){cb.style.display='none';},0);
+  }
+  window.toggleTask=function(i){
+    orig(i);
+    s.date=today;s.done=taskDone.slice();
+    if(taskDone[i]&&s.last!==today){
+      s.streak=s.last===yest?s.streak+1:1;s.last=today;
+      toast('今日打卡 ✓ 連續 '+s.streak+' 天');
+    }
+    lsSet('tasks',JSON.stringify(s));
+  };
+}
+
+function init(){
+  ui();ensure();remember();coach();tasks();
+  if(C.init)try{C.init();}catch(e){}
+  ensure();
+  var pend=false;
+  function later(){if(pend)return;pend=true;setTimeout(function(){pend=false;ensure();},60);}
+  new MutationObserver(later).observe(document.body,{childList:true,subtree:true});
+  document.addEventListener('click',later,true);
+}
+if(document.readyState==='complete')setTimeout(init,0);
+else window.addEventListener('load',function(){setTimeout(init,0);});
+})();
+</script>
+<!-- SOUP-END -->
+<!-- FBX-START -->
+<script>
+window.FBX={"brand": "修復模型系統", "tags": "#修復 #健康 #恢復力", "theme": 1, "items": ".kpi-card,.nt-card,.tech-card,.lrk,.lcard,.q-card,.qcard,.map-card,.dq,.stage-card,.dvs-card,.ss-card,.body-card,.act-card,.vocab-card,.root-card,.grammar-card,.hl-box,.pred-card", "groups": ".n-content,.v-content,.sys-content,.s-content,.l-content,.mod-content,.e-content,.prac-section", "quote": ".q-card,.qcard,.dq", "steps": ["今晚十一點前躺平，讓身體有時間修復。", "今天多喝兩杯水。", "下一餐加一份優質蛋白質。", "做三次慢慢的深呼吸，讓身體知道現在是安全的。"], "note": "※ 本文為保健知識分享，不能取代專業醫療；身體不適請諮詢醫師。", "noteRe": "補充|營養|血糖|胰島素|癌|發炎|免疫|褪黑|粒線體|腸道|荷爾蒙|症|藥|mg"};
+</script>
+<script>
+// ── 臉書文圖：每一欄、每個項目都能產生臉書貼文 + 圖卡（共用模組，完全離線）──
+(function(){
+var F=window.FBX||{},S=window.SOUP||{};
+var ITEM=F.items||'',GROUP=F.groups||'',QUOTE=F.quote||'',PAIR=F.pair||null;
+var ALL=[ITEM,GROUP].filter(Boolean).join(',');
+var ZH='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+var THEMES=[{c:'#1A2B5F',t:'#E8ECF7'},{c:'#0A7A72',t:'#E2F4F1'},{c:'#C2416B',t:'#FCE9EF'},{c:'#B4690E',t:'#FBF0DC'},{c:'#5B3FA8',t:'#EEE9FA'},{c:'#1F7A3A',t:'#E4F4E8'}];
+var K='fbx:'+(S.key||'app')+':';
+function $$(s,r){return s?Array.prototype.slice.call((r||document).querySelectorAll(s)):[];}
+function $(id){return document.getElementById(id);}
+function is(el,sel){return !!sel&&el.matches(sel);}
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+function cut(s,n){s=String(s);return s.length>n?s.slice(0,n-1)+'…':s;}
+function lsGet(k){try{return localStorage.getItem(K+k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(K+k,v);}catch(e){}}
+
+// ── 從畫面上的項目取出文字 ──
+var PIC=/^(?:[←-⯿〰〽㊗㊙️‍]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDC00-\uDFFF]|\s)+/;
+var DROP=/^(點擊複製|已複製.*|點擊翻面.*|tap to flip.*|speak|發音|例句\s*#?\d+|vol\s*\d+)$/i;
+var LABEL=/^(低維|高維)\s*(low|high)?$/i;
+function word(s){return /[A-Za-z一-鿿]/.test(s);}
+function tidy(s){return s.replace(/[⭐★]+/g,'').replace(/\s+/g,' ').trim();}
+function bare(s){return tidy(s.replace(PIC,''));}
+function grab(el){
+  var raw=[],cur='',subs=[];
+  function flush(){var s=tidy(cur);if(s)raw.push(s);cur='';}
+  (function walk(n){
+    for(var c=n.firstChild;c;c=c.nextSibling){
+      if(c.nodeType===3){cur+=c.nodeValue;continue;}
+      if(c.nodeType!==1)continue;
+      if(/^(BUTTON|SCRIPT|STYLE|INPUT|SELECT|TEXTAREA|CANVAS|A)$/.test(c.tagName)||c.classList.contains('sp-card'))continue;
+      if(c.tagName==='BR'){flush();continue;}
+      if(is(c,ALL)){flush();var t=titleOf(c);if(t)subs.push(t);continue;}
+      var inl=/^inline/.test(getComputedStyle(c).display);
+      if(!inl)flush();
+      walk(c);
+      if(!inl)flush();
+    }
+  })(el);
+  flush();
+  var lines=[],pre='';
+  raw.forEach(function(s){
+    if(DROP.test(s))return;
+    if(!word(s)){if(!lines.length&&!pre&&PIC.test(s)&&!/\d/.test(s))pre=s.split(' ')[0];return;}
+    // 「標籤：」接下一行
+    if(lines.length&&/[:：]$/.test(lines[lines.length-1]))lines[lines.length-1]+=s;else lines.push(s);
+  });
+  return {lines:lines,subs:subs,pre:pre};
+}
+function noNum(s){return s.replace(/^#?\d+\s*[·.、:：\-]?\s*/,'');}
+function titleOf(el){
+  if(PAIR&&is(el,PAIR.sel)){
+    var t=PAIR.title&&el.querySelector(PAIR.title),lo=el.querySelector(PAIR.low);
+    return bare(t?t.textContent:lo?part(lo)[0]||'':'');
+  }
+  var g=grab(el);if(!g.lines.length)return '';
+  if(is(el,QUOTE))return g.lines.slice().sort(function(a,b){return b.length-a.length;})[0];
+  return noNum(bare(g.lines[0]))||g.lines[0];
+}
+function part(el){return grab(el).lines.filter(function(s){return !LABEL.test(s);}).map(bare);}
+
+function panels(){
+  if(S.panels)return S.panels()||[];
+  return $$(S.panel||'.pg').map(function(el){return{el:el,id:el.id,host:(S.host&&el.querySelector(S.host))||el};});
+}
+function shown(el){return !!(el&&el.getClientRects().length);}
+function navText(){
+  var b=$$(S.nav).filter(function(x){return /(^|\s)(on|active)(\s|$)/.test(x.className);})[0];
+  return b?tidy(b.textContent):'';
+}
+function panelFor(el){
+  var ps=panels(),hit=null;
+  ps.forEach(function(p){if(p&&p.el&&p.el.contains(el)&&(!hit||hit.el.contains(p.el)))hit=p;});
+  return hit;
+}
+function labelFor(p){
+  var t=navText(),h=p&&p.after;
+  if(h&&/^H[1-4]$/.test(h.tagName))t+=(t?'｜':'')+tidy(h.textContent);
+  return t;
+}
+function quotesFor(p){
+  var q=(p&&S.soups&&S.soups[p.id])||[];
+  return q.length?q:(S.common||S.extra||[]);
+}
+
+function entry(el){
+  var p=panelFor(el),g=grab(el),e={el:el,tab:labelFor(p),quotes:quotesFor(p),pre:g.pre,subs:g.subs,lines:g.lines};
+  if(PAIR&&is(el,PAIR.sel)){
+    var lo=part(el.querySelector(PAIR.low)||el),hi=part(el.querySelector(PAIR.high)||el);
+    e.kind='pair';e.title=titleOf(el)||lo[0]||'';
+    e.low=lo[0]||'';e.high=hi[0]||'';e.lowEn=lo[1]||'';e.highEn=hi[1]||'';
+    var used=lo.concat(hi,[e.title]);
+    e.lines=g.lines.filter(function(s){var b=bare(s);return !LABEL.test(s)&&used.indexOf(b)<0&&used.indexOf(noNum(b))<0&&!/^#\d+/.test(s);});
+  }else if(is(el,QUOTE)){
+    e.kind='quote';e.title=titleOf(el);
+    e.lines=g.lines.filter(function(s){return s!==e.title;}).map(function(s){return noNum(s);}).filter(Boolean);
+  }else{
+    e.kind=is(el,GROUP)?'group':'item';
+    e.title=titleOf(el);e.lines=g.lines.slice(1);
+  }
+  return e;
+}
+function tabEntry(p){
+  var raw=labelFor(p)||F.brand||'',m=raw.match(PIC),seen={},heads=[],subs=[];
+  $$('h1,h2,h3,.sec-h,.sec-s,.hero-p,.section-title,.model-title,.subtitle',p.el).forEach(function(h){
+    if(h.closest('.sp-card')||(ALL&&h.closest(ALL))||heads.length>=4)return;
+    var t=tidy(h.textContent);
+    if(t.length>3&&t.length<90&&!seen[t]){seen[t]=1;heads.push(t);}
+  });
+  $$(ALL,p.el).forEach(function(el){
+    if(ALL&&el.parentElement.closest(ALL)&&p.el.contains(el.parentElement.closest(ALL)))return;
+    var t=titleOf(el);if(t&&!seen[t]){seen[t]=1;subs.push(t);}
+  });
+  return {kind:'tab',p:p,el:p.el,tab:F.brand||'',title:bare(raw)||raw,pre:m?tidy(m[0]).split(' ')[0]:'',lines:heads,subs:subs,quotes:quotesFor(p)};
+}
+
+// ── 貼文 ──
+var HOOK=[
+ function(t){return '你有沒有發現，「'+t+'」這件事，其實每天都在影響你？';},
+ function(t){return '今天想跟你分享一個小重點：「'+t+'」。';},
+ function(t){return '很多時候我們卡住，不是不夠努力，而是還沒看懂「'+t+'」。';},
+ function(t){return '如果今天只記得一件事，就記這個——「'+t+'」。';}
+];
+var HOOKL=['這一段，想送給今天的你。','看到這裡，先停三秒，慢慢讀。','有些話，早一點知道，就少走一點冤枉路。','今天的小提醒，留給正在努力的你。'];
+var TURN=['看懂了，就不會只是硬撐。知道原理，才知道力氣要用在哪裡。','不用一次全部做到。先懂一點、做一點，改變就開始了。','這不是要你更用力，而是換一個更省力的方向。','知道，是第一步；願意試一次，是第二步。'];
+var TURNP=['語言不只是在描述事情，它也在決定你接下來怎麼想、怎麼做。同一件事換一個說法，眼前就多一條路。','不是要你假裝沒事，而是把「我完了」換成「我還可以做什麼」。','一句話說久了會變成信念，信念久了會變成人生。先從換一句話開始。','低維的說法把門關上，高維的說法把門打開。你值得多一扇門。'];
+var ASK=[
+ function(t){return '我在哪個情境，最需要「'+t+'」？';},
+ function(t){return '如果今天就用上它，第一步會是什麼？';},
+ function(t){return '我身邊誰把這件事做得很好？他是怎麼做的？';},
+ function(t){return '一個月後回頭看，我希望這件事有什麼不同？';}
+];
+var ASKQ=['這句話，讓你想到誰？','今天哪一刻，最需要這句話？','如果把這句話送給一個人，你會送給誰？','這句話裡，哪幾個字最打動你？'];
+var STEP=['今天只挑一個重點，寫下來，貼在看得到的地方。','把這一段講給一個人聽，講得出來才是真的懂。','選一件五分鐘內做得到的小事，現在就做。','睡前花一分鐘，想想今天哪裡用上了它。'];
+var CLOSE=['把這篇留給今天的自己，也分享給那個正在努力的人。','慢慢來，比較快；一點點，就很多。','有共鳴的話，留言告訴我你的想法。','覺得有幫助，就分享給需要的朋友吧。'];
+function pick(a,k){return a[k%a.length];}
+function build(e,v){
+  var T=e.title,k=hash(T)+(v||0),L=[],card,tab=e.kind==='tab';
+  var steps=(F.steps&&F.steps.length?F.steps:(S.coach&&S.coach.steps)||[]).concat(STEP);
+  var q=e.quotes.length?pick(e.quotes,k):'';
+  function sec(h,arr,n){
+    if(!arr.length)return;
+    L.push('▍'+h);arr.slice(0,n).forEach(function(s){L.push('・'+cut(s,140));});
+    if(arr.length>n)L.push('…共 '+arr.length+' 項');L.push('');
+  }
+  if(e.kind==='pair'){
+    L.push('【換句話說｜'+T+'】','你是不是也常這樣說、這樣想？','');
+    L.push('✗ 低維：「'+e.low+'」');if(e.lowEn)L.push('　'+e.lowEn);
+    L.push('✓ 高維：「'+e.high+'」');if(e.highEn)L.push('　'+e.highEn);L.push('');
+    sec('補充說明',e.lines,4);
+    L.push('▍為什麼要換一句話',pick(TURNP,k),'');
+    card={kind:'pair',head:T===e.low?'換句話說':T,low:e.low,high:e.high,quote:q};
+  }else if(e.kind==='quote'){
+    L.push('「'+T+'」','',pick(HOOKL,k),'');
+    L.push('▍想一想','・'+pick(ASKQ,k),'・'+pick(ASKQ,k+1),'');
+    L.push('▍換個角度看',pick(TURN,k),'');
+    card={kind:'quote',quote:T,sub:e.lines[0]||''};
+  }else{
+    L.push('【'+(tab&&F.brand?F.brand+'｜':'')+(e.pre?e.pre+' ':'')+T+'】',T.length>16?pick(HOOKL,k):pick(HOOK,k)(T),'');
+    sec(tab?'這一欄在說什麼':'重點整理',e.lines,tab?4:7);
+    sec(tab?'這一欄的項目':'裡面有這些重點',e.subs,10);
+    if(tab&&e.quotes.length){L.push('▍三句心靈雞湯');e.quotes.slice(0,3).forEach(function(s){L.push('「'+s+'」');});L.push('');}
+    if(!tab&&e.lines.length<3)L.push('▍想一想','・'+pick(ASK,k)(T),'・'+pick(ASK,k+1)(T),'');
+    L.push('▍換個角度看',pick(TURN,k),'');
+    card={kind:'item',head:(e.pre?e.pre+' ':'')+T,lines:(e.lines.length?e.lines:e.subs).slice(0,tab?5:4).map(function(s){return cut(s,46);}),quote:q};
+  }
+  L.push('🌱 今天的小步｜'+pick(steps,k),'');
+  if(q&&e.kind!=='quote'&&!tab)L.push('🍲 「'+q+'」','');
+  L.push(pick(CLOSE,k),'');
+  var body=L.join('\n');
+  if(F.note&&(!F.noteRe||new RegExp(F.noteRe).test(body)))L.push(F.note,'');
+  var tt=T.replace(/[^A-Za-z0-9一-鿿]/g,'');
+  L.push([F.tags||'',e.kind!=='quote'&&tt.length>1&&tt.length<=10&&!/^\d/.test(tt)?'#'+tt:'','#心靈雞湯 #自我成長 #LifeOS'].filter(Boolean).join(' '));
+  card.tab=[F.brand,e.tab!==F.brand?bare(e.tab):''].filter(Boolean).join(' · ');
+  return {text:L.join('\n'),card:card};
+}
+
+// ── 圖卡（1080×1350）──
+function wrap(x,text,maxW){
+  var tk=String(text).match(/[A-Za-z0-9'’\-]+[.,!?;:]?\s?|\s+|[^\sA-Za-z0-9]/g)||[],noHead='，。！？、；：」』）)…—',out=[],cur=[];
+  function push(){var s=cur.join('').trim();if(s)out.push(s);}
+  tk.forEach(function(w){
+    if(cur.join('').trim()&&x.measureText(cur.join('')+w).width>maxW){
+      var carry=[];if(noHead.indexOf(w)>=0&&cur.length>1)carry.unshift(cur.pop());   // 標點不放行首
+      push();cur=carry.concat(w.replace(/^\s+/,''));
+    }else cur.push(w);
+  });
+  push();return out;
+}
+function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
+function draw(cv,c,th){
+  var W=1080,H=1350,X=84,MW=W-168,x=cv.getContext('2d');cv.width=W;cv.height=H;
+  function lay(s,paint,off){
+    function f(px,wt){x.font=(wt||'')+' '+Math.round(px*s)+'px '+ZH;}
+    function put(arr,a,y,lh,col){if(paint){x.fillStyle=col;arr.forEach(function(l,i){x.fillText(l,a,y+i*lh);});}return y+arr.length*lh;}
+    function box(arr,y,lh,bg,bar,col,label){
+      var h=arr.length*lh+(label?104:64)*s;
+      if(paint){x.fillStyle=bg;rr(x,X-20,y,MW+40,h,28);x.fill();x.fillStyle=bar;x.fillRect(X-20,y+24,10,h-48);}
+      if(label){f(28,'bold');put([label],X+32,y+30*s,40*s,bar);}
+      f(c.kind==='pair'?48:36,c.kind==='pair'?'bold':'');
+      put(arr,X+32,y+(label?78:34)*s,lh,col);
+      return y+h;
+    }
+    x.textBaseline='top';x.textAlign='left';
+    f(58,'bold');var head=c.head?wrap(x,c.head,MW):[];
+    var hh=Math.round(150+(head.length?head.length*78*s+50:0));
+    if(paint){
+      x.fillStyle='#FAF6EF';x.fillRect(0,0,W,H);x.fillStyle=th.c;x.fillRect(0,0,W,hh);
+      x.font='30px '+ZH;x.fillStyle='rgba(255,255,255,.85)';var tb=c.tab;while(tb.length>4&&x.measureText(tb).width>MW)tb=tb.slice(0,-2)+'…';x.fillText(tb,X,64);
+    }
+    f(58,'bold');put(head,X,124,78*s,'#fff');
+    var y=hh+70*s+off;
+    if(c.kind==='pair'){
+      f(48,'bold');var lo=wrap(x,c.low,MW-90),hi=wrap(x,c.high,MW-90);
+      y=box(lo,y,68*s,'#FBE7EA','#B4233C','#5A1622','✗ 低維｜舊說法');
+      f(54,'bold');if(paint){x.fillStyle=th.c;x.fillText('↓',W/2-16*s,y+14*s);}y+=92*s;
+      y=box(hi,y,68*s,th.t,th.c,'#1F2937','✓ 高維｜新說法')+56*s;
+    }else if(c.kind==='quote'){
+      f(70,'bold');y=put(wrap(x,'「'+c.quote+'」',MW),X,y,102*s,'#2B2622')+30*s;
+      if(c.sub){f(34,'');y=put(wrap(x,'— '+c.sub,MW),X,y,50*s,'#8A7F76');}
+    }else if(c.lines.length){
+      f(36,'');var bl=[];c.lines.forEach(function(l){wrap(x,'・'+l,MW-90).forEach(function(w){bl.push(w);});});
+      y=box(bl,y,58*s,th.t,th.c,'#3A332E')+56*s;
+    }
+    if(c.quote&&c.kind!=='quote'){
+      f(27,'bold');var pw=x.measureText('心靈雞湯').width+48,ph=54*s;
+      if(paint){x.fillStyle=th.c;rr(x,X,y,pw,ph,ph/2);x.fill();x.fillStyle='#fff';x.fillText('心靈雞湯',X+24,y+(ph-27*s)/2-2);}
+      y+=ph+22*s;f(40,'bold');y=put(wrap(x,'「'+c.quote+'」',MW),X,y,62*s,'#2B2622');
+    }
+    return y;
+  }
+  var s=1.25;while(s>0.5&&lay(s,false,0)>H-170)s-=0.03;
+  lay(s,true,Math.max(0,Math.min(150,(H-170-lay(s,false,0))/2)));
+  x.fillStyle='#E4DAD0';x.fillRect(X,H-130,MW,3);
+  x.textBaseline='top';x.font='bold 32px '+ZH;x.fillStyle=th.c;x.fillText(cut(F.brand||'LifeOS',22),X,H-96);
+  x.font='28px '+ZH;x.fillStyle='#8A7F76';var tg='#心靈雞湯';x.fillText(tg,W-X-x.measureText(tg).width,H-94);
+}
+
+// ── 介面 ──
+var cur=null,ver=0,list=[],ti=parseInt(lsGet('theme'),10);
+if(!(ti>=0&&ti<THEMES.length))ti=F.theme||0;
+function toast(b,t){var o=b.textContent;b.textContent=t;setTimeout(function(){b.textContent=o;},1200);}
+function save(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},2000);}
+function fname(){return ((F.brand||'LifeOS')+'_'+cur.title).replace(/[\\/:*?"<>|\s，。！？、]+/g,'_').slice(0,40);}
+function count(t){return (t.match(/[一-鿿]/g)||[]).length+(t.match(/[A-Za-z][A-Za-z'’\-]*/g)||[]).length;}
+function show(){
+  var r=build(cur,ver);
+  $('fbxTitle').textContent='📘 '+(cur.kind==='tab'?'本頁：':'')+cut(cur.title,28);
+  $('fbxText').value=r.text;$('fbxCnt').textContent='約 '+count(r.text)+' 字';
+  draw($('fbxCanvas'),r.card,THEMES[ti]);
+}
+function chips(){
+  var kw=$('fbxSearch').value.trim().toLowerCase(),box=$('fbxList');box.innerHTML='';
+  list.forEach(function(it){
+    if(kw&&it.find.indexOf(kw)<0)return;
+    var b=document.createElement('button');b.type='button';b.textContent=(it.tab?'📄 本頁｜':'')+cut(it.title,18);
+    if(cur&&it.el===cur.el&&!!it.tab===(cur.kind==='tab'))b.className='on';
+    b.onclick=function(){open(it.tab?tabEntry(it.p):entry(it.el));};box.appendChild(b);
+  });
+  if(!box.firstChild)box.innerHTML='<span style="opacity:.6;padding:4px">找不到符合的項目</span>';
+}
+function scan(){
+  list=[];
+  panels().forEach(function(p){
+    if(!p||!shown(p.el))return;
+    list.push({tab:1,p:p,el:p.el,title:bare(labelFor(p))||F.brand||'本頁',find:''});
+    $$(ALL,p.el).forEach(function(el){
+      var t=titleOf(el);if(t)list.push({el:el,title:t,find:el.textContent.toLowerCase()});
+    });
+  });
+}
+function open(e){
+  if(!e||!e.title)return;
+  cur=e;ver=0;scan();$('fbxMask').classList.add('on');chips();show();
+  var on=$('fbxList').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
+}
+function close(){$('fbxMask').classList.remove('on');}
+function ui(){
+  var st=document.createElement('style');
+  st.textContent='.fbx-b{display:inline-flex;align-items:center;gap:4px;margin:8px 0 0 auto;padding:4px 11px;border-radius:999px;border:1px solid rgba(24,119,242,.45);background:rgba(24,119,242,.1);color:#1877F2;font:700 11px/1.4 '+ZH+';cursor:pointer;white-space:nowrap;flex:none;align-self:center;width:auto;height:auto;letter-spacing:0;text-transform:none}'+
+  '.sp-dark .fbx-b{color:#7DB4FF;border-color:rgba(125,180,255,.45);background:rgba(125,180,255,.1)}.fbx-b:hover{background:#1877F2;color:#fff}'+
+  '.fbx-g{display:flex;margin:0 0 12px}.fbx-fab{bottom:216px;background:#1877F2!important;color:#fff!important}'+
+  '#fbxMask{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1200;background:rgba(20,16,12,.6);display:none;align-items:center;justify-content:center;padding:12px}#fbxMask.on{display:flex}'+
+  '#fbxBox{background:#FAF6EF;color:#2B2622;width:min(1040px,100%);max-height:94vh;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;font:14px/1.6 '+ZH+';text-align:left}'+
+  '#fbxTop{display:flex;gap:8px;align-items:center;padding:12px 14px;background:#1877F2;color:#fff}#fbxTop b{flex:1;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
+  '#fbxSearch{flex:0 1 260px;min-width:110px;padding:7px 12px;border:0;border-radius:999px;font:14px '+ZH+';color:#2B2622;background:#fff;outline:none}'+
+  '#fbxX{background:none;border:0;color:#fff;font-size:22px;cursor:pointer;line-height:1;padding:0 4px}'+
+  '#fbxList{max-height:118px;overflow-y:auto;flex:none;padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #E4DAD0;background:#fff}'+
+  '#fbxList button{border:1px solid #E4DAD0;background:#FAF6EF;color:#2B2622;border-radius:999px;padding:3px 10px;font:12px '+ZH+';cursor:pointer}#fbxList button.on{background:#1877F2;color:#fff;border-color:#1877F2}'+
+  '#fbxMain{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;padding:14px;overflow:auto}'+
+  '#fbxText{width:100%;height:52vh;min-height:240px;box-sizing:border-box;padding:12px;border:1px solid #E4DAD0;border-radius:12px;background:#fff;color:#2B2622;font:14px/1.75 '+ZH+';resize:vertical}'+
+  '#fbxCanvas{width:100%;height:auto;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15);display:block}'+
+  '#fbxBar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}#fbxBar button{padding:7px 13px;border-radius:999px;border:1px solid #1877F2;background:#1877F2;color:#fff;font:700 13px/1.2 '+ZH+';cursor:pointer}#fbxBar button.g{background:#fff;color:#1877F2}'+
+  '#fbxCnt{font-size:12px;color:#8A7F76;margin-left:auto}#fbxTip{font-size:12px;color:#8A7F76;margin-top:8px}'+
+  '@media(max-width:760px){#fbxMain{grid-template-columns:minmax(0,1fr)}#fbxText{height:34vh}#fbxCanvas{max-width:280px;margin:0 auto}}'+
+  '@media print{.fbx-b,.fbx-fab,#fbxMask{display:none!important}}';
+  document.head.appendChild(st);
+  var fab=document.createElement('button');fab.type='button';fab.className='sp-fab fbx-fab';fab.title='臉書文圖';fab.textContent='📘';
+  fab.onclick=function(){scan();if(list[0])open(tabEntry(list[0].p));};
+  document.body.appendChild(fab);
+  var m=document.createElement('div');m.id='fbxMask';
+  m.innerHTML='<div id="fbxBox"><div id="fbxTop"><b id="fbxTitle"></b><input id="fbxSearch" type="search" placeholder="搜尋本頁項目…"><button id="fbxX" type="button" title="關閉">×</button></div>'+
+   '<div id="fbxList"></div><div id="fbxMain"><div><textarea id="fbxText" spellcheck="false"></textarea><div id="fbxBar">'+
+   '<button type="button" id="fbxCopy">📋 複製貼文</button><button type="button" id="fbxPng">🖼️ 下載圖卡</button>'+
+   '<button type="button" class="g" id="fbxNext">🔄 換一版</button><button type="button" class="g" id="fbxTheme">🎨 換配色</button>'+
+   '<button type="button" class="g" id="fbxTxt">💾 存成 TXT</button><span id="fbxCnt"></span></div>'+
+   '<div id="fbxTip">貼文可以直接在框裡修改。到臉書發文：貼上文字，再加入下載的圖卡。</div></div>'+
+   '<div><canvas id="fbxCanvas"></canvas></div></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',function(e){if(e.target===m)close();});
+  $('fbxX').onclick=close;
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+  $('fbxSearch').addEventListener('input',chips);
+  $('fbxNext').onclick=function(){ver++;show();};
+  $('fbxTheme').onclick=function(){ti=(ti+1)%THEMES.length;lsSet('theme',String(ti));draw($('fbxCanvas'),build(cur,ver).card,THEMES[ti]);};
+  $('fbxCopy').onclick=function(){
+    var t=$('fbxText'),b=this;function fb(){t.select();try{document.execCommand('copy');}catch(e){}}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t.value).catch(fb);else fb();
+    toast(b,'✅ 已複製');
+  };
+  $('fbxPng').onclick=function(){$('fbxCanvas').toBlob(function(b){save(b,fname()+'.png');},'image/png');};
+  $('fbxTxt').onclick=function(){save(new Blob(['﻿'+$('fbxText').value],{type:'text/plain;charset=utf-8'}),fname()+'.txt');};
+}
+function btn(text,fn){
+  var b=document.createElement('button');b.type='button';b.className='fbx-b';b.textContent=text;
+  b.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();fn();});
+  return b;
+}
+function own(el,cls){for(var c=el.firstElementChild;c;c=c.nextElementSibling)if(c.classList.contains(cls))return c;return null;}
+function decorate(){
+  $$(ALL).forEach(function(el){
+    if(own(el,'fbx-b')||el.closest('.sp-card,.sp-ov,#fbxMask')||el.textContent.trim().length<4)return;
+    var b=btn('📘 臉書文圖',function(){open(entry(el));});
+    if(is(el,GROUP)&&el.firstElementChild){b.classList.add('fbx-g');el.insertBefore(b,el.firstElementChild.nextSibling);}
+    else el.appendChild(b);
+  });
+  $$('.sp-card .sp-b').forEach(function(bar){
+    if(own(bar,'fbx-b'))return;
+    var b=btn('📘 本頁臉書文圖',function(){var p=panelFor(bar);if(p)open(tabEntry(p));});
+    b.style.cssText='margin:0;opacity:1';bar.appendChild(b);
+  });
+}
+function init(){
+  ui();decorate();
+  var pend=false;
+  new MutationObserver(function(){if(pend)return;pend=true;setTimeout(function(){pend=false;decorate();},90);}).observe(document.body,{childList:true,subtree:true});
+}
+if(document.readyState==='complete')setTimeout(init,60);
+else window.addEventListener('load',function(){setTimeout(init,60);});
+})();
+</script>
+<!-- FBX-END -->
+</body>
+</html>

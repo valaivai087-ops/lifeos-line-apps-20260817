@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>語言升維大師系統 - 10大主題低維→高維轉換</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Microsoft JhengHei", "微軟正黑體", serif;
+            background: #faf6ee;
+            color: #0d1b3e;
+            line-height: 1.8;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        /* 頂部 */
+        .header {
+            background: linear-gradient(135deg, #1A2B5F 0%, #0A7A72 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(26, 43, 95, 0.3);
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header .subtitle { font-size: 1.1em; opacity: 0.95; }
+        
+        /* 導航 */
+        .nav-tabs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .nav-btn {
+            padding: 12px;
+            border: 2px solid #C9960C;
+            background: white;
+            color: #1A2B5F;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+        .nav-btn:hover, .nav-btn.active {
+            background: #C9960C;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* 內容區 */
+        .content { display: none; padding: 30px; background: white; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .content.active { display: block; }
+        
+        /* 例句卡片 */
+        .example-card {
+            background: linear-gradient(135deg, #f9f9f9 0%, #f5f5f5 100%);
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 5px solid #C9960C;
+            transition: all 0.3s;
+        }
+        .example-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .example-number {
+            display: inline-block;
+            background: #1A2B5F;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .low-dim {
+            color: #d32f2f;
+            font-size: 1.05em;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        .arrow {
+            color: #0A7A72;
+            font-weight: bold;
+            margin: 4px 0;
+            font-size: 0.9em;
+        }
+        .high-dim {
+            color: #0A7A72;
+            font-size: 1.05em;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        
+        .english-section {
+            background: rgba(25, 118, 210, 0.05);
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+            border-left: 3px solid #1976d2;
+        }
+        .english-low {
+            color: #d32f2f;
+            font-style: italic;
+            font-size: 0.95em;
+            margin-bottom: 4px;
+        }
+        .english-high {
+            color: #1565c0;
+            font-style: italic;
+            font-size: 0.95em;
+        }
+        
+        .tts-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+            margin-left: 8px;
+            transition: all 0.2s;
+        }
+        .tts-btn:hover {
+            background: #1565c0;
+            transform: scale(1.1);
+        }
+        .tts-btn.playing {
+            background: #ff9800;
+        }
+        
+        /* ASCII區域 */
+        .ascii-container {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            overflow-x: auto;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        /* ⑩區域 */
+        .json-section {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .json-section h3 {
+            color: #1A2B5F;
+            margin-bottom: 15px;
+        }
+        .json-code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+        
+        /* 進度條 */
+        .progress-bar {
+            background: #e0e0e0;
+            height: 6px;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1A2B5F 0%, #0A7A72 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 語言升維大師系統</h1>
+            <p class="subtitle">10大主題 × 6句例句 = 60個低維→高維轉換</p>
+            <p style="margin-top: 10px; opacity: 0.95;">10 Major Themes × 6 Sentences = 60 Low-Dim to High-Dim Conversions</p>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-btn active" onclick="showTab(0)">📚 高維學習</button>
+            <button class="nav-btn" onclick="showTab(1)">🎯 自我精進</button>
+            <button class="nav-btn" onclick="showTab(2)">❤️ 高維利他</button>
+            <button class="nav-btn" onclick="showTab(3)">🗣️ 語言力量</button>
+            <button class="nav-btn" onclick="showTab(4)">🌍 人生操作系統</button>
+            <button class="nav-btn" onclick="showTab(5)">💫 情緒優化</button>
+            <button class="nav-btn" onclick="showTab(6)">🤝 關係升維</button>
+            <button class="nav-btn" onclick="showTab(7)">💪 健康力學</button>
+            <button class="nav-btn" onclick="showTab(8)">🎨 創造力激活</button>
+            <button class="nav-btn" onclick="showTab(9)">💰 財富心智</button>
+            <button class="nav-btn" onclick="showTab(10)">⑨ ASCII心智圖</button>
+            <button class="nav-btn" onclick="showTab(11)">⑩ JSON/CSV</button>
+        </div>
+
+        <!-- 10大主題 (動態生成) -->
+        <div id="tab-0" class="content active"></div>
+        <div id="tab-1" class="content"></div>
+        <div id="tab-2" class="content"></div>
+        <div id="tab-3" class="content"></div>
+        <div id="tab-4" class="content"></div>
+        <div id="tab-5" class="content"></div>
+        <div id="tab-6" class="content"></div>
+        <div id="tab-7" class="content"></div>
+        <div id="tab-8" class="content"></div>
+        <div id="tab-9" class="content"></div>
+
+        <!-- ⑨ ASCII心智圖 -->
+        <div id="tab-10" class="content">
+            <h2>⑨ ASCII心智圖 | ASCII Mind Map</h2>
+            <div class="ascii-container">
+╔════════════════════════════════════════════════════════════╗
+║    語言升維大師系統 - 10大主題低維→高維轉換心智圖          ║
+║  Language Upgrade Master OS - 10 Themes Low→High Mind Map ║
+╚════════════════════════════════════════════════════════════╝
+
+                     ┌─────────────────────┐
+                     │  語言升維大師系統    │
+                     │ Language Upgrade OS │
+                     └──────────┬──────────┘
+                                │
+                ┌───────────────┼───────────────┐
+                │               │               │
+           ┌────▼────┐    ┌────▼────┐    ┌────▼────┐
+           │ 輸入層   │    │ 轉化層   │    │ 輸出層   │
+           │Input    │    │Transform │    │Output   │
+           └────┬────┘    └────┬────┘    └────┬────┘
+                │              │              │
+        60個例句對    低維→高維    6個發音按鈕
+        10主題×6      視角轉換      ⑨心智圖
+                      詞彙替換      ⑩JSON/CSV
+        核心主題：              
+        📚高維學習   🎯自我精進   
+        ❤️高維利他   🗣️語言力量   
+        🌍人生OS    💫情緒優化   
+        🤝關係升維   💪健康力學   
+        🎨創造力激   💰財富心智   
+
+┌──────────────────────────────────────────────────────┐
+│       低維→高維轉換的核心邏輯 | Core Transform Logic  │
+├──────────────────────────────────────────────────────┤
+│                                                       │
+│  低維語言：二元對立、線性思維、短期視野、孤立認知   │
+│  └→ 啟動舊迴圈，限制思維天花板                      │
+│                                                       │
+│  高維語言：光譜連續、系統思維、長期複利、結構化認知 │
+│  └→ 開啟新路徑，擴展認知維度                        │
+│                                                       │
+│  轉換工具：                                          │
+│  • 詞彙替換：問題→限制、失敗→回饋、痛苦→更新通知   │
+│  • 視角轉換：受害→創造、無望→複利、孤立→同頻共振   │
+│  • 時間擴展：當下→長期軌跡、短視→複利價值         │
+│  • 系統化：散落→結構、線性→指數、個人→系統         │
+│                                                       │
+│  神經重編碼迴圈：                                    │
+│  讀句→思考→改詞彙→改行為→改結果→更新模型→複利成長 │
+│                                                       │
+│  時間軸：                                            │
+│  第1-10次：看似無變化                                │
+│  第11-100次：小幅改善                               │
+│  第101-1000次：顯著進步                             │
+│  第1000+次：脫胎換骨 ✨                             │
+│                                                       │
+└──────────────────────────────────────────────────────┘
+            </div>
+        </div>
+
+        <!-- ⑩ JSON/CSV資料庫 -->
+        <div id="tab-11" class="content">
+            <h2>⑩ JSON/CSV資料庫 | Database Integration</h2>
+            
+            <div class="json-section">
+                <h3>📊 直接加入APP資料庫的格式</h3>
+                <p style="margin-bottom: 15px;">
+                    完整的60個低維→高維例句，可直接導入Excel / Google Sheet / Notion / API
+                </p>
+                
+                <h4 style="color: #0A7A72; margin-top: 20px; margin-bottom: 10px;">JSON結構範例</h4>
+                <div class="json-code">
+{
+  "system": "語言升維大師系統",
+  "version": "v2-60sentences",
+  "total_sentences": 60,
+  "themes": [
+    {
+      "name_zh": "高維學習",
+      "name_en": "High-Dimensional Learning",
+      "sentences": [
+        {
+          "id": 1,
+          "low_zh": "我學不會",
+          "high_zh": "目前模型尚未同化此信息",
+          "low_en": "I can't learn this",
+          "high_en": "My current model hasn't integrated this information yet"
+        },
+        ...
+      ]
+    }
+  ]
+}
+                </div>
+                
+                <h4 style="color: #0A7A72; margin-top: 20px; margin-bottom: 10px;">CSV導出欄位</h4>
+                <table style="width: 100%; margin-top: 15px; border-collapse: collapse;">
+                    <tr style="background: #1A2B5F; color: white;">
+                        <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">主題</th>
+                        <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">低維(中文)</th>
+                        <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">高維(中文)</th>
+                        <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">低維(English)</th>
+                        <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">高維(English)</th>
+                    </tr>
+                    <tr style="background: #f9f9f9;">
+                        <td style="padding: 10px; border: 1px solid #ddd;">高維學習</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">我學不會</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">目前模型尚未同化此信息</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">I can't learn this</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">My current model hasn't integrated this information yet</td>
+                    </tr>
+                </table>
+                
+                <h4 style="color: #0A7A72; margin-top: 20px; margin-bottom: 10px;">✅ 適配場景</h4>
+                <div style="background: #f0e6d8; padding: 15px; border-radius: 6px; margin-top: 10px;">
+                    <p><strong>高中英文課堂：</strong> 導入60個例句到教學管理系統，每堂課選2-3句講解</p>
+                    <p style="margin-top: 8px;"><strong>LINE推播自動化：</strong> 配置Bot讀取JSON，每日自動推送1句到群組</p>
+                    <p style="margin-top: 8px;"><strong>英文學測APP：</strong> 作為語言力量模塊的核心教材</p>
+                    <p style="margin-top: 8px;"><strong>High Agency訓練課程：</strong> 用CSV追蹤學生學習進度</p>
+                    <p style="margin-top: 8px;"><strong>營養素團購銷售頁面：</strong> 嵌入「健康力學」主題，科學背景認知</p>
+                    <p style="margin-top: 8px;"><strong>身心靈課程教材：</strong> 人生操作系統 + 情緒優化 + 關係升維三大主題</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>語言升維大師系統 v2.0 | 10大主題低維→高維轉換展示</p>
+        <p style="margin-top: 10px;">編制者: 王欣蓉老師 | 適用: 高中英文教師 + LINE IP運營 + 身心靈課程 + 營養素團購 + High Agency訓練</p>
+        <p style="margin-top: 10px; font-size: 0.85em;">團購連結: https://myship.7-11.com.tw/general/detail/GM2407210007294</p>
+    </footer>
+
+    <script>
+        // 題目數據 (內嵌)
+        const themesData = [
+            {
+                "name_zh": "高維學習",
+                "name_en": "High-Dimensional Learning",
+                "emoji": "📚",
+                "sentences": [
+                    {"id": 1, "low_zh": "我學不會", "high_zh": "目前模型尚未同化此信息", "low_en": "I can't learn this", "high_en": "My current model hasn't integrated this information yet"},
+                    {"id": 2, "low_zh": "我沒有天分", "high_zh": "目前起始條件與學習路徑存在差異", "low_en": "I have no talent", "high_en": "My initial conditions and learning pathway differ from the model"},
+                    {"id": 3, "low_zh": "學習好累", "high_zh": "認知負荷超過目前的能量補給", "low_en": "Learning is exhausting", "high_en": "Cognitive load exceeds my current energy supply"},
+                    {"id": 4, "low_zh": "這太難了", "high_zh": "信息複雜度超過目前認知帶寬", "low_en": "This is too hard", "high_en": "Information complexity exceeds my current cognitive bandwidth"},
+                    {"id": 5, "low_zh": "我記不住", "high_zh": "編碼深度或檢索線索尚未建立", "low_en": "I can't remember", "high_en": "Encoding depth or retrieval cues haven't been established"},
+                    {"id": 6, "low_zh": "為什麼要學這個", "high_zh": "該知識對目前世界模型的預測精度有何貢獻", "low_en": "Why do I need to learn this", "high_en": "How does this knowledge improve my world model's predictive accuracy"}
+                ]
+            },
+            {
+                "name_zh": "自我精進",
+                "name_en": "Self-Mastery",
+                "emoji": "🎯",
+                "sentences": [
+                    {"id": 1, "low_zh": "我很懶惰", "high_zh": "目前缺乏足夠的內在驅動能量與目標同步", "low_en": "I'm lazy", "high_en": "My internal drive energy hasn't synchronized with my goals yet"},
+                    {"id": 2, "low_zh": "我沒有自律", "high_zh": "目前的環境設計與習慣迴圈尚未建立穩定的反饋機制", "low_en": "I have no discipline", "high_en": "My environment design and habit loops haven't established stable feedback yet"},
+                    {"id": 3, "low_zh": "我總是放棄", "high_zh": "目前的目標設計缺少中期勝利與進度可視化", "low_en": "I always give up", "high_en": "My goal design lacks intermediate wins and progress visibility"},
+                    {"id": 4, "low_zh": "我改變不了", "high_zh": "目前的改變策略與神經可塑性啟動條件尚未匹配", "low_en": "I can't change", "high_en": "My change strategy and neuroplasticity conditions haven't aligned yet"},
+                    {"id": 5, "low_zh": "我很脆弱", "high_zh": "目前的抗逆力系統與情緒穩定機制仍在建設中", "low_en": "I'm weak", "high_en": "My resilience system and emotional stability mechanism are under development"},
+                    {"id": 6, "low_zh": "我永遠好不了", "high_zh": "長期複利的改善軌跡尚未顯化", "low_en": "I'll never improve", "high_en": "The long-term compound improvement trajectory hasn't manifested yet"}
+                ]
+            },
+            {
+                "name_zh": "高維利他",
+                "name_en": "High Agency Altruism",
+                "emoji": "❤️",
+                "sentences": [
+                    {"id": 1, "low_zh": "幫別人太麻煩", "high_zh": "此時刻幫助對方的ROI與我的能量狀態不匹配", "low_en": "Helping others is too much trouble", "high_en": "The ROI of helping doesn't match my current energy state"},
+                    {"id": 2, "low_zh": "我不關心別人", "high_zh": "我的同理心神經迴圈尚未被啟動", "low_en": "I don't care about others", "high_en": "My empathy neural circuits haven't been activated yet"},
+                    {"id": 3, "low_zh": "世界太自私了", "high_zh": "集體的短期預測模型尚未與長期複利目標同步", "low_en": "The world is too selfish", "high_en": "Collective short-term models haven't synced with long-term compound goals"},
+                    {"id": 4, "low_zh": "我幫了但沒人感謝", "high_zh": "我的幫助預期與對方的感知機制產生了落差", "low_en": "I helped but no one appreciated it", "high_en": "My help expectations and their perception mechanism created a gap"},
+                    {"id": 5, "low_zh": "利他就是吃虧", "high_zh": "高維利他是最有效的複利策略", "low_en": "Altruism means losing out", "high_en": "High agency altruism is the most effective compound strategy"},
+                    {"id": 6, "low_zh": "做善事很吃虧", "high_zh": "短期顯見的成本與長期隱藏的複利收益存在時間差", "low_en": "Doing good deeds is a loss", "high_en": "Short-term visible costs lag behind long-term hidden compound returns"}
+                ]
+            },
+            {
+                "name_zh": "語言力量",
+                "name_en": "Language Power",
+                "emoji": "🗣️",
+                "sentences": [
+                    {"id": 1, "low_zh": "英文很難", "high_zh": "英文系統的符號編碼與母語差異需要新的神經路徑", "low_en": "English is hard", "high_en": "English's symbolic encoding requires new neural pathways different from my native language"},
+                    {"id": 2, "low_zh": "我英文爛", "high_zh": "我的英文模型在某些維度上的覆蓋率低於目標", "low_en": "My English is poor", "high_en": "My English model's coverage rate in certain dimensions is below target"},
+                    {"id": 3, "low_zh": "學文法很無聊", "high_zh": "文法規則是語言的控制論，理解其邏輯就能生成無限表達", "low_en": "Grammar is boring", "high_en": "Grammar rules are language's cybernetics; understanding enables infinite expression"},
+                    {"id": 4, "low_zh": "我講英文會卡", "high_zh": "我的英文模型檢索延遲說明需要加強習題密度", "low_en": "I get stuck speaking English", "high_en": "My English model's retrieval latency indicates I need more practice density"},
+                    {"id": 5, "low_zh": "老外講話太快", "high_zh": "我的聽力模型尚未適應該速度的聲學分解與快速統合", "low_en": "Native speakers talk too fast", "high_en": "My listening model hasn't adapted to that speech rate's acoustic decomposition"},
+                    {"id": 6, "low_zh": "我英文永遠不會好", "high_zh": "我的英文模型正在複利增長中，需要耐心等待指數顯現", "low_en": "My English will never improve", "high_en": "My English model is compounding; I need patience for exponential growth"}
+                ]
+            },
+            {
+                "name_zh": "人生操作系統",
+                "name_en": "Life Operating System",
+                "emoji": "🌍",
+                "sentences": [
+                    {"id": 1, "low_zh": "我的人生很失敗", "high_zh": "我的人生操作系統目前的版本在某些維度的效能低於期望", "low_en": "My life is a failure", "high_en": "My life operating system's current version underperforms in certain dimensions"},
+                    {"id": 2, "low_zh": "我不知道人生的目的", "high_zh": "我的世界模型尚未識別出對我而言最高信息價值的目標", "low_en": "I don't know my life's purpose", "high_en": "My world model hasn't identified the highest-information-value goal for me"},
+                    {"id": 3, "low_zh": "人生太無意義了", "high_zh": "我目前的目標系統與長期意義生成機制尚未連結", "low_en": "Life is meaningless", "high_en": "My goal system and long-term meaning-generation mechanism haven't connected"},
+                    {"id": 4, "low_zh": "我走錯路了", "high_zh": "我收到了重要的回饋信號，需要調整戰略與資源分配", "low_en": "I went down the wrong path", "high_en": "I received important feedback signals; I need to recalibrate my strategy"},
+                    {"id": 5, "low_zh": "我的人生被浪費了", "high_zh": "我過去的每一段經驗都是建構當前模型的參數", "low_en": "My life was wasted", "high_en": "Every past experience is a parameter that built my current model"},
+                    {"id": 6, "low_zh": "人生就是不斷的失望", "high_zh": "我的期望管理與預測準度需要優化", "low_en": "Life is endless disappointment", "high_en": "My expectation management and prediction accuracy need optimization"}
+                ]
+            },
+            {
+                "name_zh": "情緒優化",
+                "name_en": "Emotion Optimization",
+                "emoji": "💫",
+                "sentences": [
+                    {"id": 1, "low_zh": "我很焦慮", "high_zh": "未來預測的不確定性增加，我的自由能上升了", "low_en": "I'm anxious", "high_en": "The uncertainty in my future predictions has increased; my free energy is elevated"},
+                    {"id": 2, "low_zh": "我很生氣", "high_zh": "我的個人界線被長期侵犯，系統在發送邊界更新信號", "low_en": "I'm angry", "high_en": "My personal boundaries have been chronically violated; system sent boundary update signal"},
+                    {"id": 3, "low_zh": "我很悲傷", "high_zh": "我正在對舊模型進行深度重建，這是蛻變過程", "low_en": "I'm sad", "high_en": "I'm undergoing deep reconstruction of an old model; this is a metamorphosis"},
+                    {"id": 4, "low_zh": "我很恐懼", "high_zh": "未知因素增加，我的掌控感下降，需要建立新的預測模型", "low_en": "I'm afraid", "high_en": "Unknowns have increased; my control sense decreased; I need new predictive models"},
+                    {"id": 5, "low_zh": "我很失望", "high_zh": "我的預期與現實的誤差信號表明我需要重新校準期望或改變策略", "low_en": "I'm disappointed", "high_en": "The gap between expectations and reality signals need to recalibrate or change strategy"},
+                    {"id": 6, "low_zh": "我壓力很大", "high_zh": "我目前的應對資源與環境需求存在巨大落差，需要增加資源或降低需求", "low_en": "I'm under great stress", "high_en": "My coping resources and environmental demands have huge gap; need more resources or fewer demands"}
+                ]
+            },
+            {
+                "name_zh": "關係升維",
+                "name_en": "Relationship Upgrade",
+                "emoji": "🤝",
+                "sentences": [
+                    {"id": 1, "low_zh": "我和他關係很差", "high_zh": "我們兩人的溝通模式與共同目標尚未對齊", "low_en": "My relationship with him is poor", "high_en": "Our communication patterns and shared goals haven't aligned yet"},
+                    {"id": 2, "low_zh": "他不理解我", "high_zh": "我的內部模型與我向他表達的外部信號之間存在編碼差異", "low_en": "He doesn't understand me", "high_en": "There's an encoding gap between my internal model and external signals to him"},
+                    {"id": 3, "low_zh": "他傷害我了", "high_zh": "他的行為觸發了我舊模型中的創傷記憶，我需要進行治療性重構", "low_en": "He hurt me", "high_en": "His behavior triggered trauma memory in my old model; I need therapeutic reconstruction"},
+                    {"id": 4, "low_zh": "我不信任他", "high_zh": "過去的互動模式給了我系統性證據認為他的預測可靠性低", "low_en": "I don't trust him", "high_en": "Past interactions gave me systematic evidence that his predictability is low"},
+                    {"id": 5, "low_zh": "我們無法溝通", "high_zh": "我們的表達編碼、接收解碼、反饋迴圈都需要同時校準", "low_en": "We can't communicate", "high_en": "Our expression encoding, reception decoding, and feedback loops need simultaneous calibration"},
+                    {"id": 6, "low_zh": "他永遠不會改變", "high_zh": "在目前的環境與激勵機制下，他的改變動機尚未啟動", "low_en": "He'll never change", "high_en": "Given current environment and incentive structure, his change motivation hasn't activated"}
+                ]
+            },
+            {
+                "name_zh": "健康力學",
+                "name_en": "Health Mechanics",
+                "emoji": "💪",
+                "sentences": [
+                    {"id": 1, "low_zh": "我很容易生病", "high_zh": "我的免疫系統模型與環境適應度存在失配", "low_en": "I get sick easily", "high_en": "My immune system model and environmental adaptation have a mismatch"},
+                    {"id": 2, "low_zh": "我很容易疲勞", "high_zh": "我的能量代謝系統與當前生活負荷存在巨大落差", "low_en": "I get fatigued easily", "high_en": "My energy metabolism system and current life load have a huge gap"},
+                    {"id": 3, "low_zh": "我睡眠很差", "high_zh": "我的睡眠-清醒振盪器的同步信號與環境光-暗循環產生了相位差", "low_en": "My sleep is poor", "high_en": "My sleep-wake oscillator's sync signals are phase-shifted from light-dark cycle"},
+                    {"id": 4, "low_zh": "我營養不夠", "high_zh": "我的營養攝入模式與我的代謝需求之間存在系統性赤字", "low_en": "My nutrition is inadequate", "high_en": "There's a systematic deficit between my nutritional intake and metabolic demands"},
+                    {"id": 5, "low_zh": "我代謝不好", "high_zh": "我的新陳代謝系統的效能曲線尚未優化", "low_en": "My metabolism is poor", "high_en": "My metabolic system's efficiency curve hasn't been optimized"},
+                    {"id": 6, "low_zh": "我健康無望", "high_zh": "我的健康軌跡在複利增長中，只是需要更長的時間視野與耐心的重構", "low_en": "I have no hope for health", "high_en": "My health trajectory is compounding; it just needs longer time horizon and patient reconstruction"}
+                ]
+            },
+            {
+                "name_zh": "創造力激活",
+                "name_en": "Creative Activation",
+                "emoji": "🎨",
+                "sentences": [
+                    {"id": 1, "low_zh": "我沒有創意", "high_zh": "我的創意模型尚未被啟動的新刺激與隨機探索", "low_en": "I'm not creative", "high_en": "My creative model hasn't been activated by novel stimuli and random exploration"},
+                    {"id": 2, "low_zh": "我的想法都很普通", "high_zh": "我的概念組合維度尚未充分跨越多個領域的知識邊界", "low_en": "My ideas are ordinary", "high_en": "My concept-combination dimensions haven't sufficiently crossed knowledge boundaries"},
+                    {"id": 3, "low_zh": "我創意被卡住了", "high_zh": "我的想像空間遇到了舊模式的束縛，需要認知解凍來打開新維度", "low_en": "My creativity is blocked", "high_en": "My imagination space is constrained by old patterns; I need cognitive defrosting"},
+                    {"id": 4, "low_zh": "沒人欣賞我的想法", "high_zh": "我的創意表達與目標受眾的審美模型之間的匹配度低", "low_en": "Nobody appreciates my ideas", "high_en": "Matching degree between my creative expression and target audience's aesthetic model is low"},
+                    {"id": 5, "low_zh": "創新太難了", "high_zh": "創新=已知×隨機性×環境選擇壓力，我需要增加這三個變數", "low_en": "Innovation is too hard", "high_en": "Innovation equals knowledge times randomness times environmental selection pressure"},
+                    {"id": 6, "low_zh": "我的創意總是失敗", "high_zh": "我在創意-市場匹配的過程中收集了寶貴的失敗數據，可以迭代", "low_en": "My creative attempts always fail", "high_en": "I've collected valuable failure data in the creation-market matching process; I can iterate"}
+                ]
+            },
+            {
+                "name_zh": "財富心智",
+                "name_en": "Wealth Mindset",
+                "emoji": "💰",
+                "sentences": [
+                    {"id": 1, "low_zh": "我很窮", "high_zh": "我目前的資本配置與收入生成系統尚未達到目標富裕度", "low_en": "I'm poor", "high_en": "My current capital allocation and income generation system haven't reached target wealth"},
+                    {"id": 2, "low_zh": "我賺不了錢", "high_zh": "我的價值創造模型與市場需求匹配度低", "low_en": "I can't make money", "high_en": "My value-creation model's matching with market demand is low"},
+                    {"id": 3, "low_zh": "錢很難賺", "high_zh": "我對創造交換價值所需的努力系統認知不足", "low_en": "Money is hard to earn", "high_en": "My understanding of effort systems required to create exchange value is insufficient"},
+                    {"id": 4, "low_zh": "我不配有錢", "high_zh": "我的價值認知系統與財富配置的信號之間存在同步誤差", "low_en": "I don't deserve wealth", "high_en": "My self-worth recognition and wealth-signal synchronization have misaligned"},
+                    {"id": 5, "low_zh": "錢是罪惡的", "high_zh": "金錢是價值流動的信息載體，道德屬性取決於流向與使用方式", "low_en": "Money is evil", "high_en": "Money is an information carrier of value flow; morality depends on direction and usage"},
+                    {"id": 6, "low_zh": "我一輩子都翻不了身", "high_zh": "我的人生財富軌跡正在複利增長中，只需要更長時間與正確策略", "low_en": "I'll never turn my life around financially", "high_en": "My wealth trajectory is compounding; it just needs time and correct strategy"}
+                ]
+            }
+        ];
+        
+        // 渲染主題內容
+        function renderTheme(index) {
+            const theme = themesData[index];
+            let html = `<h2>${theme.emoji} ${theme.name_zh} | ${theme.name_en}</h2>`;
+            
+            theme.sentences.forEach(sent => {
+                html += `
+                    <div class="example-card">
+                        <span class="example-number">例句 #${sent.id}</span>
+                        <div class="low-dim">📌 ${sent.low_zh}</div>
+                        <div class="arrow">⇊</div>
+                        <div class="high-dim">✨ ${sent.high_zh}</div>
+                        <div class="english-section">
+                            <div class="english-low">${sent.low_en}</div>
+                            <div class="arrow">⇊</div>
+                            <div class="english-high">
+                                ${sent.high_en}
+                                <button class="tts-btn" data-say="${sent.high_en.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}" onclick="speakText(event, this.dataset.say)">🔊</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            return html;
+        }
+        
+        // 填充內容
+        for (let i = 0; i < 10; i++) {
+            document.getElementById(`tab-${i}`).innerHTML = renderTheme(i);
+        }
+        
+        // 標籤切換
+        function showTab(index) {
+            for (let i = 0; i < 12; i++) {
+                const el = document.getElementById(`tab-${i}`);
+                if (el) el.classList.remove('active');
+            }
+            const target = document.getElementById(`tab-${index}`);
+            if (target) target.classList.add('active');
+            
+            // 更新按鈕
+            document.querySelectorAll('.nav-btn').forEach((btn, i) => btn.classList.toggle('active', i === index));
+            
+            // 更新進度
+            const progress = ((index + 1) / 12) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+        
+        // 英文TTS
+        function speakText(event, text) {
+            event.stopPropagation();
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text.trim());
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                
+                const btn = event.target;
+                btn.classList.add('playing');
+                
+                utterance.onend = function() {
+                    btn.classList.remove('playing');
+                };
+                
+                speechSynthesis.speak(utterance);
+            }
+        }
+        
+        // 初始化
+        document.getElementById('progress').style.width = '8.3%';
+    </script>
+
+
+
+
+
+<!-- SOUP-START -->
+<style>
+/* ── 心靈雞湯卡 + 搜尋 ── */
+.sp-card{margin:0 0 18px;padding:14px 16px;border-radius:14px;border:1px solid #E6D3A3;background:linear-gradient(135deg,#FFF9EA,#FFF1DC);color:#4A3A12;text-align:left;cursor:default;font-family:inherit;line-height:1.6;}
+.sp-dark .sp-card{background:linear-gradient(135deg,rgba(232,168,32,.12),rgba(255,255,255,.03));border-color:rgba(232,168,32,.3);color:#F3E8CC;}
+.sp-h{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;letter-spacing:.5px;color:#B07A08;margin-bottom:6px;}
+.sp-dark .sp-h{color:#E8A820;}
+.sp-n{font-weight:400;opacity:.7;}
+.sp-q{font-size:16px;font-weight:600;line-height:1.75;white-space:pre-line;}
+.sp-b{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.sp-fz{bottom:166px;font-size:16px;font-weight:700;}
+.sp-fh{font-size:12px;font-weight:700;padding:8px 6px 4px;color:#C9960C;}
+.sp-it{position:relative;}
+.sp-it[data-f]{padding-right:34px;}
+.sp-x{position:absolute;right:8px;top:8px;opacity:.5;padding:0 4px;}
+.sp-x:hover{opacity:1;}
+.sp-b button{padding:5px 13px;border-radius:16px;border:1px solid currentColor;background:transparent;color:inherit;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;opacity:.75;transition:.15s;}
+.sp-b button:hover{opacity:1;}
+.sp-note{font-size:11px;opacity:.65;margin-top:8px;text-align:center;}
+.sp-fab{position:fixed;right:14px;z-index:900;width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;font-size:18px;line-height:42px;padding:0;background:#1A2B5F;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.sp-dark .sp-fab{background:#E8A820;color:#1a1200;}
+.sp-fs{bottom:116px;}
+.sp-ft{bottom:66px;display:none;}
+.sp-ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;background:rgba(0,0,0,.55);padding:8vh 14px 14px;}
+.sp-ov.on{display:block;}
+.sp-box{max-width:560px;margin:0 auto;background:#fff;color:#1A2040;border-radius:14px;padding:14px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:14px;}
+.sp-dark .sp-box{background:#0E1835;color:#D5E5F8;border:1px solid #1C3060;}
+.sp-row{display:flex;gap:8px;}
+.sp-row input{flex:1;min-width:0;padding:10px 12px;border-radius:9px;border:1.5px solid #C9960C;font-size:15px;font-family:inherit;outline:none;background:transparent;color:inherit;}
+.sp-row button{padding:0 14px;border-radius:9px;border:none;background:rgba(128,128,128,.2);color:inherit;font-size:15px;cursor:pointer;}
+.sp-r{overflow-y:auto;margin-top:10px;}
+.sp-it{padding:9px 10px;border-radius:9px;cursor:pointer;line-height:1.6;border-bottom:1px solid rgba(128,128,128,.18);}
+.sp-it:hover{background:rgba(201,150,12,.14);}
+.sp-it mark{background:#F0C040;color:#1a1200;border-radius:3px;padding:0 2px;}
+.sp-tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:10px;background:rgba(201,150,12,.2);margin-right:6px;}
+.sp-em{padding:16px 6px;opacity:.6;text-align:center;}
+.sp-hit{outline:3px solid #E8A820 !important;outline-offset:3px;}
+#spToast{display:none;position:fixed;bottom:120px;left:50%;transform:translateX(-50%);z-index:1100;background:#1A2B5F;color:#fff;font-size:13px;font-weight:700;padding:8px 18px;border-radius:9px;}
+#spToast.on{display:block;}
+</style>
+<script>
+window.SOUP={key:'language_upgrade_v2',nav:'.nav-btn',panel:'.content',skip:'.header,footer',extra:['把「我不行」換成「我還在學」。','說出口的話，會慢慢變成你相信的事。','對自己說話，要像對好朋友一樣。','少說一句「都是我的錯」，多說一句「下次我會」。','一句話可以困住你，也可以放你自由。','換個說法，不是騙自己，是給自己一條路。'],soups:{
+'tab-0':['不是學不會，是還沒學會。','聽不懂的那一刻，正是要進步的前一刻。','學得慢不要緊，只要沒有停。'],
+'tab-1':['你不是不夠好，你是還在路上。','今天比昨天多做一點，就是精進。','對自己有耐心，是最高級的自律。'],
+'tab-2':['善良要有力量，也要有界線。','你給出去的好，不會白費。','先把自己站穩，才扶得起別人。'],
+'tab-3':['敢開口的那一秒，你就已經進步了。','語言不用完美，能傳達心意就很美。','每天一句，世界就大一點。'],
+'tab-4':['人生不是考卷，沒有標準答案。','走過的路都不算白走。','方向比速度重要，慢一點也會到。'],
+'tab-5':['情緒來了不用趕它走，陪它坐一下就好。','難過是正常的，你沒有壞掉。','心情像天氣，會變，也會晴。'],
+'tab-6':['好好說話，是送給對方也送給自己的禮物。','先聽懂，再回答。','關係不怕吵，怕的是不說。'],
+'tab-7':['身體是陪你最久的朋友，對它好一點。','累了就休息，這不是偷懶。','每一個小習慣，都在替未來的你存健康。'],
+'tab-8':['靈感喜歡找已經動手的人。','別跟別人比，你的普通也可能是別人的驚喜。','失敗的嘗試，是下一個點子的養分。'],
+'tab-9':['你值得過得好，不需要理由。','錢是工具，不是你的分數。','慢慢來，穩穩地變好。'],
+'tab-10':['把想法畫出來，心就不那麼亂了。','看懂全貌，就不會困在一個角落。','一張圖，有時候勝過一千句安慰。'],
+'tab-11':['整理好的東西，才幫得到更多人。','你累積的每一句，都可以變成別人的光。','好內容值得被好好保存。']
+}};
+</script>
+<script>
+// ── 心靈雞湯卡 + 搜尋 + 記住分頁 + 離線教練（共用模組，完全離線）──
+(function(){
+var C=window.SOUP||{},K='soup:'+(C.key||'app')+':';
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function lsGet(k){try{return localStorage.getItem(K+k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(K+k,v);}catch(e){}}
+function navs(){return C.nav?$$(C.nav):[];}
+function panels(){
+  if(C.panels)return C.panels();
+  return $$(C.panel||'.pg').map(function(el){return{el:el,id:el.id,host:(C.host&&el.querySelector(C.host))||el};});
+}
+// 通用句庫：接在每個分頁專屬句子後面，「換一碗」時輪到
+var POOL=['慢慢來，比較快。','你已經走了很遠，回頭看看就知道。','今天不必完美，只要比昨天多一點點。','允許自己休息，也是一種前進。','每一個小小的開始，都值得被肯定。','你現在做的每件小事，未來的你都會感謝。','不用和別人比，你有自己的時區。','卡住的時候，先深呼吸，再走一小步。','把今天過好，就是對未來最好的準備。','你比昨天的自己，又多懂了一點。','再難的日子，也是一天一天過完的。','對自己溫柔一點，你正在努力。'];
+function specOf(id){return (C.soups&&C.soups[id])||C.common||[];}
+function quotesOf(id){var s=specOf(id);return s.length?s.concat(C.extra||[],POOL):s;}
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+var day=Math.floor(Date.now()/864e5),off={};
+function favs(){try{return JSON.parse(lsGet('fav'))||[];}catch(e){return [];}}
+function setFavs(a){lsSet('fav',JSON.stringify(a));}
+
+// ── 雞湯卡 ──
+function fill(card){
+  var id=card.getAttribute('data-sp'),q=quotesOf(id);if(!q.length)return;
+  // 每天預設先出該分頁的專屬句，按「換一碗」再輪到其他句
+  var i=((day+hash(id))%specOf(id).length+(off[id]||0))%q.length;
+  card.querySelector('.sp-q').textContent=q[i];
+  card.querySelector('.sp-n').textContent=(i+1)+' / '+q.length;
+  card.querySelector('[data-a=n]').style.display=q.length>1?'':'none';
+  card.querySelector('[data-a=f]').textContent=favs().indexOf(q[i])>=0?'♥ 已收藏':'♡ 收藏';
+}
+function say(text){
+  if(!('speechSynthesis' in window)){toast('這個瀏覽器不支援朗讀');return;}
+  speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);u.lang='zh-TW';u.rate=0.9;speechSynthesis.speak(u);
+}
+// 存成 1080×1080 圖卡（PNG），可直接貼到臉書 / LINE
+function saveImage(text){
+  var S=1080,cv=document.createElement('canvas');cv.width=cv.height=S;
+  var x=cv.getContext('2d'),g=x.createLinearGradient(0,0,S,S);
+  g.addColorStop(0,'#1A2B5F');g.addColorStop(1,'#0A7A72');x.fillStyle=g;x.fillRect(0,0,S,S);
+  x.strokeStyle='rgba(240,192,64,.55)';x.lineWidth=4;x.strokeRect(48,48,S-96,S-96);
+  var F='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+  x.textAlign='center';x.textBaseline='middle';
+  x.fillStyle='#F0C040';x.font='bold 40px '+F;x.fillText('心靈雞湯',S/2,150);
+  var size=text.length>60?50:text.length>32?58:68,lh=size*1.6,max=S-240,lines=[];
+  x.font='bold '+size+'px '+F;
+  text.split('\n').forEach(function(par){
+    var line='';
+    for(var i=0;i<par.length;i++){
+      var ch=par[i],keep=/[，。！？、；：」』）]/.test(ch);   // 標點不放行首
+      if(line&&!keep&&x.measureText(line+ch).width>max){lines.push(line);line=ch;}else line+=ch;
+    }
+    if(line)lines.push(line);
+  });
+  x.fillStyle='#fff';
+  var y=S/2-(lines.length-1)*lh/2;
+  lines.forEach(function(l,i){x.fillText(l,S/2,y+i*lh);});
+  x.fillStyle='rgba(255,255,255,.7)';x.font='32px '+F;
+  x.fillText(C.brand||document.title.split(/[｜|]/)[0].trim(),S/2,S-140);
+  cv.toBlob(function(b){
+    var a=document.createElement('a');a.href=URL.createObjectURL(b);
+    a.download='心靈雞湯_'+text.replace(/[\s\\/:*?"<>|，。！？、]/g,'').slice(0,10)+'.png';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
+    toast('圖卡已下載 ✓');
+  },'image/png');
+}
+function toast(m){
+  var t=document.getElementById('spToast');if(!t)return;
+  t.textContent=m;t.classList.add('on');clearTimeout(toast.t);
+  toast.t=setTimeout(function(){t.classList.remove('on');},1300);
+}
+function copy(text){
+  function fb(){var a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}a.remove();}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).catch(fb);else fb();
+  toast('已複製 ✓');
+}
+function makeCard(id){
+  var d=document.createElement('div');d.className='sp-card';d.setAttribute('data-sp',id);
+  d.innerHTML='<div class="sp-h"><span>🍲 心靈雞湯</span><span class="sp-n"></span></div><div class="sp-q"></div><div class="sp-b"><button type="button" data-a="n">換一碗</button><button type="button" data-a="f">♡ 收藏</button><button type="button" data-a="c">複製</button><button type="button" data-a="s">朗讀</button><button type="button" data-a="i">存圖卡</button></div>';
+  d.addEventListener('click',function(e){
+    e.stopPropagation();
+    var a=e.target.getAttribute&&e.target.getAttribute('data-a'),t=d.querySelector('.sp-q').textContent;
+    if(a==='n'){off[id]=(off[id]||0)+1;fill(d);}
+    else if(a==='c'){copy(t);}
+    else if(a==='s'){say(t);}
+    else if(a==='i'){saveImage(t);}
+    else if(a==='f'){
+      var f=favs(),k=f.indexOf(t);
+      if(k>=0)f.splice(k,1);else f.unshift(t);
+      setFavs(f);fill(d);toast(k>=0?'已取消收藏':'已收藏 ♥（按 🔍 可看全部收藏）');
+    }
+  });
+  fill(d);return d;
+}
+function ensure(){
+  panels().forEach(function(p){
+    if(!p||!p.el)return;
+    var host=p.host||p.el,ex=null;
+    for(var c=host.firstElementChild;c;c=c.nextElementSibling){if(c.classList.contains('sp-card')){ex=c;break;}}
+    if(ex){if(ex.getAttribute('data-sp')===p.id)return;ex.remove();}
+    if(!quotesOf(p.id).length)return;
+    var card=makeCard(p.id);
+    if(p.after&&p.after.parentNode===host)host.insertBefore(card,p.after.nextSibling);
+    else host.insertBefore(card,host.firstChild);
+  });
+}
+
+// ── 搜尋 ──
+var SKIP='script,style,noscript,nav,.nav,.nav-tabs,.sp-card,.sp-ov,.sp-fab,.sp-note,#spToast,.fbx-b,.fbx-fab,#fbxMask';
+var cache=null;
+function blocks(){
+  var out=[],seen=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null),n;
+  while((n=w.nextNode())){
+    var el=n.parentElement;
+    if(!el||!n.nodeValue.trim()||el.closest(SKIP)||(C.skip&&el.closest(C.skip)))continue;
+    while(el.parentElement&&el.parentElement!==document.body&&/^(B|I|EM|STRONG|SPAN|A|U|SMALL|CODE|SUP|SUB)$/.test(el.tagName))el=el.parentElement;
+    if(seen.has(el))continue;seen.add(el);
+    var t=el.textContent.replace(/\s+/g,' ').trim();
+    if(t.length>=2)out.push({el:el,t:t});
+  }
+  return out;
+}
+function tabOf(el){
+  if(C.tabs===false)return -1;
+  var ps=panels();
+  for(var i=0;i<ps.length;i++)if(ps[i].el&&ps[i].el.contains(el))return i;
+  return -1;
+}
+function labelOf(el,ti){
+  if(C.label)return C.label(el)||'';
+  var nv=navs();return ti>=0&&nv[ti]?nv[ti].textContent.trim():'';
+}
+function snippet(t,k,len){
+  var s=Math.max(0,k-18);
+  return (s>0?'…':'')+t.substr(s,len)+(t.length>s+len?'…':'');
+}
+function domSearch(q){
+  var ql=q.toLowerCase(),hit=[],bs=cache||(cache=blocks());
+  for(var i=0;i<bs.length&&hit.length<300;i++){
+    var k=bs[i].t.toLowerCase().indexOf(ql);
+    if(k>=0)hit.push({el:bs[i].el,t:snippet(bs[i].t,k,72)});
+  }
+  // 只留最內層，避免同一段文字重複出現
+  hit=hit.filter(function(a){return !hit.some(function(b){return b!==a&&a.el.contains(b.el);});});
+  return hit.slice(0,40).map(function(h){var ti=tabOf(h.el);return{el:h.el,t:h.t,ti:ti,label:labelOf(h.el,ti)};});
+}
+function flash(el){
+  setTimeout(function(){
+    var t=el;if(!t||!document.body.contains(t))return;
+    while(t&&t!==document.body&&t.offsetParent===null)t=t.parentElement;
+    if(!t||t===document.body)return;
+    t.scrollIntoView({block:'center',behavior:'smooth'});
+    t.classList.add('sp-hit');setTimeout(function(){t.classList.remove('sp-hit');},1800);
+  },140);
+}
+function reveal(r){
+  var el=r.el;
+  if(r.go){el=r.go()||el;}
+  else if(C.reveal){C.reveal(el);}
+  else{var nv=navs();if(r.ti>=0&&nv[r.ti])nv[r.ti].click();}
+  flash(el);
+}
+function ui(){
+  if(C.dark)document.body.classList.add('sp-dark');
+  var t=document.createElement('div');t.id='spToast';document.body.appendChild(t);
+  var top=document.createElement('button');top.type='button';top.className='sp-fab sp-ft';top.title='回到頂端';top.textContent='↑';
+  top.onclick=function(){window.scrollTo({top:0,behavior:'smooth'});};
+  document.body.appendChild(top);
+  window.addEventListener('scroll',function(){top.style.display=window.scrollY>500?'block':'none';},{passive:true});
+
+  // 字體大小：標準 → 大 → 特大
+  var Z=[1,1.15,1.3],zi=+lsGet('zoom')||0,zb=document.createElement('button');
+  zb.type='button';zb.className='sp-fab sp-fz';zb.title='字體大小';zb.textContent='字';
+  function zoom(){document.documentElement.style.zoom=Z[zi]===1?'':Z[zi];}
+  zb.onclick=function(){zi=(zi+1)%Z.length;lsSet('zoom',String(zi));zoom();toast(['標準字體','大字體','特大字體'][zi]);};
+  zoom();document.body.appendChild(zb);
+
+  var fb=document.createElement('button');fb.type='button';fb.className='sp-fab sp-fs';fb.title='搜尋（按 / 開啟）';fb.textContent='🔍';
+  var ov=document.createElement('div');ov.className='sp-ov';
+  ov.innerHTML='<div class="sp-box"><div class="sp-row"><input type="search" placeholder="搜尋本 APP 內容…（Esc 關閉）"><button type="button" title="關閉">✕</button></div><div class="sp-r"></div></div>';
+  document.body.appendChild(fb);document.body.appendChild(ov);
+  var inp=ov.querySelector('input'),box=ov.querySelector('.sp-r'),res=[];
+  function close(){ov.classList.remove('on');}
+  function open(){cache=null;ov.classList.add('on');inp.focus();inp.select();render();}
+  function render(){
+    var q=inp.value.trim();
+    if(!q){
+      res=[];var f=favs();
+      box.innerHTML='<div class="sp-em">輸入關鍵字，搜尋所有分頁的內容</div>'+(f.length
+        ?'<div class="sp-fh">♥ 我的收藏（'+f.length+'）· 點一下複製</div>'+f.map(function(t,i){return '<div class="sp-it" data-f="'+i+'">'+esc(t)+'<span class="sp-x" data-x="'+i+'" title="移除">✕</span></div>';}).join('')
+        :'<div class="sp-em">按雞湯卡上的「♡ 收藏」，喜歡的句子會存在這裡</div>');
+      return;
+    }
+    res=(C.search?C.search(q):domSearch(q))||[];
+    if(!res.length){box.innerHTML='<div class="sp-em">找不到「'+esc(q)+'」</div>';return;}
+    var re=new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+    box.innerHTML=res.map(function(r,i){
+      return '<div class="sp-it" data-i="'+i+'">'+(r.label?'<span class="sp-tag">'+esc(r.label)+'</span>':'')+esc(r.t).replace(re,function(m){return '<mark>'+m+'</mark>';})+'</div>';
+    }).join('');
+  }
+  fb.onclick=open;
+  inp.addEventListener('input',render);
+  ov.querySelector('.sp-row button').onclick=close;
+  ov.addEventListener('click',function(e){
+    if(e.target===ov){close();return;}
+    var xi=e.target.getAttribute('data-x');
+    if(xi!==null){var f=favs();f.splice(+xi,1);setFavs(f);render();$$('.sp-card').forEach(fill);return;}
+    var it=e.target.closest('.sp-it');if(!it)return;
+    if(it.hasAttribute('data-f')){copy(favs()[+it.getAttribute('data-f')]||'');return;}
+    var r=res[+it.getAttribute('data-i')];close();if(r)reveal(r);
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){close();return;}
+    if(e.key==='/'&&!/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName||''))&&!e.target.isContentEditable){e.preventDefault();open();}
+  });
+}
+
+// ── 記住上次分頁 ──
+function remember(){
+  if(C.remember===false||!C.nav)return;
+  var nv=navs();
+  nv.forEach(function(b,i){b.addEventListener('click',function(){lsSet('tab',String(i));});});
+  var s=parseInt(lsGet('tab'),10);
+  if(s>0&&nv[s])nv[s].click();
+}
+
+// ── 離線教練（取代需要連網 / API 的版本）──
+var STOP={};'我很 我的 我想 我是 我不 我會 我要 怎麼 什麼 如何 可以 覺得 不知 知道 自己 沒有 是不 不是 為什 麼辦 還是 因為 所以 但是 一直 有點 的人 的時 時候 開始 想要 要怎 麼做 是否 已經 可能 真的 好像 這樣 那樣 的事 一個 現在'.split(' ').forEach(function(g){STOP[g]=1;});
+var SYN=['害怕 恐懼 擔心 焦慮 不安 緊張','希望 絕望 無望 放棄 沒救','累 疲勞 疲倦 沒力 能量 精神 活力','睡 失眠 睡眠 熬夜 休息','吵架 衝突 爭吵 溝通 冷戰','孤單 孤獨 寂寞 連結 陪伴','生氣 憤怒 情緒 委屈','目標 方向 迷茫 意義 使命','學習 讀書 記憶 專注 理解','錢 財富 收入 賺錢 金錢','幫助 貢獻 付出 給予 成全','復發 修復 恢復 重建','癌 病人 疾病 治療 症狀','壓力 放鬆 呼吸 緊繃','吃 飲食 營養 血糖 代謝','運動 走路 步行 肌肉','痛 疼痛 發炎 不舒服','信任 背叛 安全感 界線','孩子 小孩 親子 教養','伴侶 另一半 婚姻 夫妻 親密','漸行漸遠 疏遠 距離 連結 陪伴','胖 體重 腰圍 減重','身份 身分 角色 定義'].map(function(s){return s.split(' ');});
+var AD=/DHA|EPA|GABA|NMN|Q10|鎂|鋅|益生菌|補充|營養素|保健|生技|購買|團購|下單|膠囊|魚油|維生素|維他命|毫克|mg/i;
+function coach(){
+  if(!C.coach||typeof window.addMsg!=='function')return;
+  var inp=document.getElementById('aiInput');if(!inp)return;
+  var row=inp.parentElement,note=document.createElement('div');
+  note.className='sp-note';note.textContent='離線教練：不連網、不需 API，回覆整理自本 APP 的內容。';
+  row.parentNode.insertBefore(note,row.nextSibling);
+  var skip=C.coach.skip||'#pg-ai,#pg-quiz,#pg-flash,#pg-diag,.hero,.nt-card,.nt-grid,.tech-card,.tech-row,.bb';
+  function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+  window.sendAI=function(){
+    var msg=inp.value.trim();if(!msg)return;
+    inp.value='';window.addMsg('user',esc(msg));
+    var g={};
+    msg.replace(/[\s，。！？、,.!?「」『』（）()：:；;～~…]+/g,' ').split(' ').forEach(function(w){
+      if(/^[\x00-\x7f]+$/.test(w)){if(w.length>1)g[w.toLowerCase()]=1;}
+      else for(var i=0;i<w.length-1;i++){var b=w.substr(i,2);if(!STOP[b])g[b]=1;}
+    });
+    // 同義詞擴充：使用者說「害怕」，也找「恐懼」「擔心」的內容
+    SYN.forEach(function(grp){
+      if(grp.some(function(w){return msg.indexOf(w)>=0;}))grp.forEach(function(w){if(w.length>1)g[w]=1;});
+    });
+    var keys=Object.keys(g),seen={},cand=[];
+    blocks().forEach(function(b){
+      // 只取完整句子（有標點），略過標籤、編號這類短字
+      // 也略過產品 / 補充品段落：教練只給觀念和行動，不推薦產品
+      if(b.t.length<8||b.t.length>160||seen[b.t]||!/[，。；！？：,]/.test(b.t)||AD.test(b.t)||b.el.closest(skip))return;
+      var tl=b.t.toLowerCase(),sc=0;
+      keys.forEach(function(k){if(tl.indexOf(k)>=0)sc++;});
+      if(sc>0){seen[b.t]=1;cand.push({el:b.el,t:b.t,sc:sc});}
+    });
+    cand=cand.filter(function(a){return !cand.some(function(b){return b!==a&&a.el.contains(b.el);});});
+    cand.sort(function(a,b){return b.sc-a.sc||a.t.length-b.t.length;});
+    var top=[],h='';
+    cand.forEach(function(c){
+      if(top.length<3&&!top.some(function(t){return t.t.indexOf(c.t)>=0||c.t.indexOf(t.t)>=0;}))top.push(c);
+    });
+    if(top.length){
+      h+='<b>【相關重點】</b><br>'+top.map(function(x){
+        var lb=labelOf(x.el,tabOf(x.el));
+        return '• '+(lb?'〔'+esc(lb)+'〕':'')+esc(x.t);
+      }).join('<br>')+'<br><br>';
+    }else{
+      h+='這個問題在 APP 裡沒有直接對應的段落，可以換個關鍵字，或用右下角 🔍 搜尋。先給你一個方向：<br><br>';
+    }
+    var qs=quotesOf('pg-ai');
+    if(C.coach.steps&&C.coach.steps.length)h+='<b>【今日一小步】</b><br>'+esc(rnd(C.coach.steps))+'<br><br>';
+    if(qs.length)h+='<b>【心靈雞湯】</b><br>'+esc(rnd(qs));
+    setTimeout(function(){window.addMsg('bot',h);},300);
+  };
+}
+
+// ── 每日任務：記住今天勾過的項目 + 連續打卡天數 ──
+function tasks(){
+  var td;try{td=taskDone;}catch(e){return;}
+  if(!Array.isArray(td)||typeof window.toggleTask!=='function')return;
+  var today=new Date().toDateString(),yest=new Date(Date.now()-864e5).toDateString(),s=null,orig=window.toggleTask;
+  try{s=JSON.parse(lsGet('tasks'));}catch(e){}
+  s=s||{date:'',done:[],streak:0,last:''};
+  if(s.date===today&&s.done.length===td.length){
+    s.done.forEach(function(d,i){if(d&&!td[i])orig(i);});
+    var cb=document.getElementById('comboBadge');if(cb)setTimeout(function(){cb.style.display='none';},0);
+  }
+  window.toggleTask=function(i){
+    orig(i);
+    s.date=today;s.done=taskDone.slice();
+    if(taskDone[i]&&s.last!==today){
+      s.streak=s.last===yest?s.streak+1:1;s.last=today;
+      toast('今日打卡 ✓ 連續 '+s.streak+' 天');
+    }
+    lsSet('tasks',JSON.stringify(s));
+  };
+}
+
+function init(){
+  ui();ensure();remember();coach();tasks();
+  if(C.init)try{C.init();}catch(e){}
+  ensure();
+  var pend=false;
+  function later(){if(pend)return;pend=true;setTimeout(function(){pend=false;ensure();},60);}
+  new MutationObserver(later).observe(document.body,{childList:true,subtree:true});
+  document.addEventListener('click',later,true);
+}
+if(document.readyState==='complete')setTimeout(init,0);
+else window.addEventListener('load',function(){setTimeout(init,0);});
+})();
+</script>
+<!-- SOUP-END -->
+<!-- FBX-START -->
+<script>
+window.FBX={"brand": "語言升維大師系統", "tags": "#語言升維 #換句話說 #正向語言", "theme": 1, "steps": ["今天抓到自己說一次舊句子，就當場換成新句子。", "把這一句寫在便利貼，貼在書桌前。", "找一個朋友，說說看這個新說法。", "睡前把今天說過的一句抱怨，重寫成高維版本。"], "items": ".example-card", "pair": {"sel": ".example-card", "low": ".low-dim", "high": ".high-dim"}};
+</script>
+<script>
+// ── 臉書文圖：每一欄、每個項目都能產生臉書貼文 + 圖卡（共用模組，完全離線）──
+(function(){
+var F=window.FBX||{},S=window.SOUP||{};
+var ITEM=F.items||'',GROUP=F.groups||'',QUOTE=F.quote||'',PAIR=F.pair||null;
+var ALL=[ITEM,GROUP].filter(Boolean).join(',');
+var ZH='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+var THEMES=[{c:'#1A2B5F',t:'#E8ECF7'},{c:'#0A7A72',t:'#E2F4F1'},{c:'#C2416B',t:'#FCE9EF'},{c:'#B4690E',t:'#FBF0DC'},{c:'#5B3FA8',t:'#EEE9FA'},{c:'#1F7A3A',t:'#E4F4E8'}];
+var K='fbx:'+(S.key||'app')+':';
+function $$(s,r){return s?Array.prototype.slice.call((r||document).querySelectorAll(s)):[];}
+function $(id){return document.getElementById(id);}
+function is(el,sel){return !!sel&&el.matches(sel);}
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+function cut(s,n){s=String(s);return s.length>n?s.slice(0,n-1)+'…':s;}
+function lsGet(k){try{return localStorage.getItem(K+k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(K+k,v);}catch(e){}}
+
+// ── 從畫面上的項目取出文字 ──
+var PIC=/^(?:[←-⯿〰〽㊗㊙️‍]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDC00-\uDFFF]|\s)+/;
+var DROP=/^(點擊複製|已複製.*|點擊翻面.*|tap to flip.*|speak|發音|例句\s*#?\d+|vol\s*\d+)$/i;
+var LABEL=/^(低維|高維)\s*(low|high)?$/i;
+function word(s){return /[A-Za-z一-鿿]/.test(s);}
+function tidy(s){return s.replace(/[⭐★]+/g,'').replace(/\s+/g,' ').trim();}
+function bare(s){return tidy(s.replace(PIC,''));}
+function grab(el){
+  var raw=[],cur='',subs=[];
+  function flush(){var s=tidy(cur);if(s)raw.push(s);cur='';}
+  (function walk(n){
+    for(var c=n.firstChild;c;c=c.nextSibling){
+      if(c.nodeType===3){cur+=c.nodeValue;continue;}
+      if(c.nodeType!==1)continue;
+      if(/^(BUTTON|SCRIPT|STYLE|INPUT|SELECT|TEXTAREA|CANVAS|A)$/.test(c.tagName)||c.classList.contains('sp-card'))continue;
+      if(c.tagName==='BR'){flush();continue;}
+      if(is(c,ALL)){flush();var t=titleOf(c);if(t)subs.push(t);continue;}
+      var inl=/^inline/.test(getComputedStyle(c).display);
+      if(!inl)flush();
+      walk(c);
+      if(!inl)flush();
+    }
+  })(el);
+  flush();
+  var lines=[],pre='';
+  raw.forEach(function(s){
+    if(DROP.test(s))return;
+    if(!word(s)){if(!lines.length&&!pre&&PIC.test(s)&&!/\d/.test(s))pre=s.split(' ')[0];return;}
+    // 「標籤：」接下一行
+    if(lines.length&&/[:：]$/.test(lines[lines.length-1]))lines[lines.length-1]+=s;else lines.push(s);
+  });
+  return {lines:lines,subs:subs,pre:pre};
+}
+function noNum(s){return s.replace(/^#?\d+\s*[·.、:：\-]?\s*/,'');}
+function titleOf(el){
+  if(PAIR&&is(el,PAIR.sel)){
+    var t=PAIR.title&&el.querySelector(PAIR.title),lo=el.querySelector(PAIR.low);
+    return bare(t?t.textContent:lo?part(lo)[0]||'':'');
+  }
+  var g=grab(el);if(!g.lines.length)return '';
+  if(is(el,QUOTE))return g.lines.slice().sort(function(a,b){return b.length-a.length;})[0];
+  return noNum(bare(g.lines[0]))||g.lines[0];
+}
+function part(el){return grab(el).lines.filter(function(s){return !LABEL.test(s);}).map(bare);}
+
+function panels(){
+  if(S.panels)return S.panels()||[];
+  return $$(S.panel||'.pg').map(function(el){return{el:el,id:el.id,host:(S.host&&el.querySelector(S.host))||el};});
+}
+function shown(el){return !!(el&&el.getClientRects().length);}
+function navText(){
+  var b=$$(S.nav).filter(function(x){return /(^|\s)(on|active)(\s|$)/.test(x.className);})[0];
+  return b?tidy(b.textContent):'';
+}
+function panelFor(el){
+  var ps=panels(),hit=null;
+  ps.forEach(function(p){if(p&&p.el&&p.el.contains(el)&&(!hit||hit.el.contains(p.el)))hit=p;});
+  return hit;
+}
+function labelFor(p){
+  var t=navText(),h=p&&p.after;
+  if(h&&/^H[1-4]$/.test(h.tagName))t+=(t?'｜':'')+tidy(h.textContent);
+  return t;
+}
+function quotesFor(p){
+  var q=(p&&S.soups&&S.soups[p.id])||[];
+  return q.length?q:(S.common||S.extra||[]);
+}
+
+function entry(el){
+  var p=panelFor(el),g=grab(el),e={el:el,tab:labelFor(p),quotes:quotesFor(p),pre:g.pre,subs:g.subs,lines:g.lines};
+  if(PAIR&&is(el,PAIR.sel)){
+    var lo=part(el.querySelector(PAIR.low)||el),hi=part(el.querySelector(PAIR.high)||el);
+    e.kind='pair';e.title=titleOf(el)||lo[0]||'';
+    e.low=lo[0]||'';e.high=hi[0]||'';e.lowEn=lo[1]||'';e.highEn=hi[1]||'';
+    var used=lo.concat(hi,[e.title]);
+    e.lines=g.lines.filter(function(s){var b=bare(s);return !LABEL.test(s)&&used.indexOf(b)<0&&used.indexOf(noNum(b))<0&&!/^#\d+/.test(s);});
+  }else if(is(el,QUOTE)){
+    e.kind='quote';e.title=titleOf(el);
+    e.lines=g.lines.filter(function(s){return s!==e.title;}).map(function(s){return noNum(s);}).filter(Boolean);
+  }else{
+    e.kind=is(el,GROUP)?'group':'item';
+    e.title=titleOf(el);e.lines=g.lines.slice(1);
+  }
+  return e;
+}
+function tabEntry(p){
+  var raw=labelFor(p)||F.brand||'',m=raw.match(PIC),seen={},heads=[],subs=[];
+  $$('h1,h2,h3,.sec-h,.sec-s,.hero-p,.section-title,.model-title,.subtitle',p.el).forEach(function(h){
+    if(h.closest('.sp-card')||(ALL&&h.closest(ALL))||heads.length>=4)return;
+    var t=tidy(h.textContent);
+    if(t.length>3&&t.length<90&&!seen[t]){seen[t]=1;heads.push(t);}
+  });
+  $$(ALL,p.el).forEach(function(el){
+    if(ALL&&el.parentElement.closest(ALL)&&p.el.contains(el.parentElement.closest(ALL)))return;
+    var t=titleOf(el);if(t&&!seen[t]){seen[t]=1;subs.push(t);}
+  });
+  return {kind:'tab',p:p,el:p.el,tab:F.brand||'',title:bare(raw)||raw,pre:m?tidy(m[0]).split(' ')[0]:'',lines:heads,subs:subs,quotes:quotesFor(p)};
+}
+
+// ── 貼文 ──
+var HOOK=[
+ function(t){return '你有沒有發現，「'+t+'」這件事，其實每天都在影響你？';},
+ function(t){return '今天想跟你分享一個小重點：「'+t+'」。';},
+ function(t){return '很多時候我們卡住，不是不夠努力，而是還沒看懂「'+t+'」。';},
+ function(t){return '如果今天只記得一件事，就記這個——「'+t+'」。';}
+];
+var HOOKL=['這一段，想送給今天的你。','看到這裡，先停三秒，慢慢讀。','有些話，早一點知道，就少走一點冤枉路。','今天的小提醒，留給正在努力的你。'];
+var TURN=['看懂了，就不會只是硬撐。知道原理，才知道力氣要用在哪裡。','不用一次全部做到。先懂一點、做一點，改變就開始了。','這不是要你更用力，而是換一個更省力的方向。','知道，是第一步；願意試一次，是第二步。'];
+var TURNP=['語言不只是在描述事情，它也在決定你接下來怎麼想、怎麼做。同一件事換一個說法，眼前就多一條路。','不是要你假裝沒事，而是把「我完了」換成「我還可以做什麼」。','一句話說久了會變成信念，信念久了會變成人生。先從換一句話開始。','低維的說法把門關上，高維的說法把門打開。你值得多一扇門。'];
+var ASK=[
+ function(t){return '我在哪個情境，最需要「'+t+'」？';},
+ function(t){return '如果今天就用上它，第一步會是什麼？';},
+ function(t){return '我身邊誰把這件事做得很好？他是怎麼做的？';},
+ function(t){return '一個月後回頭看，我希望這件事有什麼不同？';}
+];
+var ASKQ=['這句話，讓你想到誰？','今天哪一刻，最需要這句話？','如果把這句話送給一個人，你會送給誰？','這句話裡，哪幾個字最打動你？'];
+var STEP=['今天只挑一個重點，寫下來，貼在看得到的地方。','把這一段講給一個人聽，講得出來才是真的懂。','選一件五分鐘內做得到的小事，現在就做。','睡前花一分鐘，想想今天哪裡用上了它。'];
+var CLOSE=['把這篇留給今天的自己，也分享給那個正在努力的人。','慢慢來，比較快；一點點，就很多。','有共鳴的話，留言告訴我你的想法。','覺得有幫助，就分享給需要的朋友吧。'];
+function pick(a,k){return a[k%a.length];}
+function build(e,v){
+  var T=e.title,k=hash(T)+(v||0),L=[],card,tab=e.kind==='tab';
+  var steps=(F.steps&&F.steps.length?F.steps:(S.coach&&S.coach.steps)||[]).concat(STEP);
+  var q=e.quotes.length?pick(e.quotes,k):'';
+  function sec(h,arr,n){
+    if(!arr.length)return;
+    L.push('▍'+h);arr.slice(0,n).forEach(function(s){L.push('・'+cut(s,140));});
+    if(arr.length>n)L.push('…共 '+arr.length+' 項');L.push('');
+  }
+  if(e.kind==='pair'){
+    L.push('【換句話說｜'+T+'】','你是不是也常這樣說、這樣想？','');
+    L.push('✗ 低維：「'+e.low+'」');if(e.lowEn)L.push('　'+e.lowEn);
+    L.push('✓ 高維：「'+e.high+'」');if(e.highEn)L.push('　'+e.highEn);L.push('');
+    sec('補充說明',e.lines,4);
+    L.push('▍為什麼要換一句話',pick(TURNP,k),'');
+    card={kind:'pair',head:T===e.low?'換句話說':T,low:e.low,high:e.high,quote:q};
+  }else if(e.kind==='quote'){
+    L.push('「'+T+'」','',pick(HOOKL,k),'');
+    L.push('▍想一想','・'+pick(ASKQ,k),'・'+pick(ASKQ,k+1),'');
+    L.push('▍換個角度看',pick(TURN,k),'');
+    card={kind:'quote',quote:T,sub:e.lines[0]||''};
+  }else{
+    L.push('【'+(tab&&F.brand?F.brand+'｜':'')+(e.pre?e.pre+' ':'')+T+'】',T.length>16?pick(HOOKL,k):pick(HOOK,k)(T),'');
+    sec(tab?'這一欄在說什麼':'重點整理',e.lines,tab?4:7);
+    sec(tab?'這一欄的項目':'裡面有這些重點',e.subs,10);
+    if(tab&&e.quotes.length){L.push('▍三句心靈雞湯');e.quotes.slice(0,3).forEach(function(s){L.push('「'+s+'」');});L.push('');}
+    if(!tab&&e.lines.length<3)L.push('▍想一想','・'+pick(ASK,k)(T),'・'+pick(ASK,k+1)(T),'');
+    L.push('▍換個角度看',pick(TURN,k),'');
+    card={kind:'item',head:(e.pre?e.pre+' ':'')+T,lines:(e.lines.length?e.lines:e.subs).slice(0,tab?5:4).map(function(s){return cut(s,46);}),quote:q};
+  }
+  L.push('🌱 今天的小步｜'+pick(steps,k),'');
+  if(q&&e.kind!=='quote'&&!tab)L.push('🍲 「'+q+'」','');
+  L.push(pick(CLOSE,k),'');
+  var body=L.join('\n');
+  if(F.note&&(!F.noteRe||new RegExp(F.noteRe).test(body)))L.push(F.note,'');
+  var tt=T.replace(/[^A-Za-z0-9一-鿿]/g,'');
+  L.push([F.tags||'',e.kind!=='quote'&&tt.length>1&&tt.length<=10&&!/^\d/.test(tt)?'#'+tt:'','#心靈雞湯 #自我成長 #LifeOS'].filter(Boolean).join(' '));
+  card.tab=[F.brand,e.tab!==F.brand?bare(e.tab):''].filter(Boolean).join(' · ');
+  return {text:L.join('\n'),card:card};
+}
+
+// ── 圖卡（1080×1350）──
+function wrap(x,text,maxW){
+  var tk=String(text).match(/[A-Za-z0-9'’\-]+[.,!?;:]?\s?|\s+|[^\sA-Za-z0-9]/g)||[],noHead='，。！？、；：」』）)…—',out=[],cur=[];
+  function push(){var s=cur.join('').trim();if(s)out.push(s);}
+  tk.forEach(function(w){
+    if(cur.join('').trim()&&x.measureText(cur.join('')+w).width>maxW){
+      var carry=[];if(noHead.indexOf(w)>=0&&cur.length>1)carry.unshift(cur.pop());   // 標點不放行首
+      push();cur=carry.concat(w.replace(/^\s+/,''));
+    }else cur.push(w);
+  });
+  push();return out;
+}
+function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
+function draw(cv,c,th){
+  var W=1080,H=1350,X=84,MW=W-168,x=cv.getContext('2d');cv.width=W;cv.height=H;
+  function lay(s,paint,off){
+    function f(px,wt){x.font=(wt||'')+' '+Math.round(px*s)+'px '+ZH;}
+    function put(arr,a,y,lh,col){if(paint){x.fillStyle=col;arr.forEach(function(l,i){x.fillText(l,a,y+i*lh);});}return y+arr.length*lh;}
+    function box(arr,y,lh,bg,bar,col,label){
+      var h=arr.length*lh+(label?104:64)*s;
+      if(paint){x.fillStyle=bg;rr(x,X-20,y,MW+40,h,28);x.fill();x.fillStyle=bar;x.fillRect(X-20,y+24,10,h-48);}
+      if(label){f(28,'bold');put([label],X+32,y+30*s,40*s,bar);}
+      f(c.kind==='pair'?48:36,c.kind==='pair'?'bold':'');
+      put(arr,X+32,y+(label?78:34)*s,lh,col);
+      return y+h;
+    }
+    x.textBaseline='top';x.textAlign='left';
+    f(58,'bold');var head=c.head?wrap(x,c.head,MW):[];
+    var hh=Math.round(150+(head.length?head.length*78*s+50:0));
+    if(paint){
+      x.fillStyle='#FAF6EF';x.fillRect(0,0,W,H);x.fillStyle=th.c;x.fillRect(0,0,W,hh);
+      x.font='30px '+ZH;x.fillStyle='rgba(255,255,255,.85)';var tb=c.tab;while(tb.length>4&&x.measureText(tb).width>MW)tb=tb.slice(0,-2)+'…';x.fillText(tb,X,64);
+    }
+    f(58,'bold');put(head,X,124,78*s,'#fff');
+    var y=hh+70*s+off;
+    if(c.kind==='pair'){
+      f(48,'bold');var lo=wrap(x,c.low,MW-90),hi=wrap(x,c.high,MW-90);
+      y=box(lo,y,68*s,'#FBE7EA','#B4233C','#5A1622','✗ 低維｜舊說法');
+      f(54,'bold');if(paint){x.fillStyle=th.c;x.fillText('↓',W/2-16*s,y+14*s);}y+=92*s;
+      y=box(hi,y,68*s,th.t,th.c,'#1F2937','✓ 高維｜新說法')+56*s;
+    }else if(c.kind==='quote'){
+      f(70,'bold');y=put(wrap(x,'「'+c.quote+'」',MW),X,y,102*s,'#2B2622')+30*s;
+      if(c.sub){f(34,'');y=put(wrap(x,'— '+c.sub,MW),X,y,50*s,'#8A7F76');}
+    }else if(c.lines.length){
+      f(36,'');var bl=[];c.lines.forEach(function(l){wrap(x,'・'+l,MW-90).forEach(function(w){bl.push(w);});});
+      y=box(bl,y,58*s,th.t,th.c,'#3A332E')+56*s;
+    }
+    if(c.quote&&c.kind!=='quote'){
+      f(27,'bold');var pw=x.measureText('心靈雞湯').width+48,ph=54*s;
+      if(paint){x.fillStyle=th.c;rr(x,X,y,pw,ph,ph/2);x.fill();x.fillStyle='#fff';x.fillText('心靈雞湯',X+24,y+(ph-27*s)/2-2);}
+      y+=ph+22*s;f(40,'bold');y=put(wrap(x,'「'+c.quote+'」',MW),X,y,62*s,'#2B2622');
+    }
+    return y;
+  }
+  var s=1.25;while(s>0.5&&lay(s,false,0)>H-170)s-=0.03;
+  lay(s,true,Math.max(0,Math.min(150,(H-170-lay(s,false,0))/2)));
+  x.fillStyle='#E4DAD0';x.fillRect(X,H-130,MW,3);
+  x.textBaseline='top';x.font='bold 32px '+ZH;x.fillStyle=th.c;x.fillText(cut(F.brand||'LifeOS',22),X,H-96);
+  x.font='28px '+ZH;x.fillStyle='#8A7F76';var tg='#心靈雞湯';x.fillText(tg,W-X-x.measureText(tg).width,H-94);
+}
+
+// ── 介面 ──
+var cur=null,ver=0,list=[],ti=parseInt(lsGet('theme'),10);
+if(!(ti>=0&&ti<THEMES.length))ti=F.theme||0;
+function toast(b,t){var o=b.textContent;b.textContent=t;setTimeout(function(){b.textContent=o;},1200);}
+function save(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},2000);}
+function fname(){return ((F.brand||'LifeOS')+'_'+cur.title).replace(/[\\/:*?"<>|\s，。！？、]+/g,'_').slice(0,40);}
+function count(t){return (t.match(/[一-鿿]/g)||[]).length+(t.match(/[A-Za-z][A-Za-z'’\-]*/g)||[]).length;}
+function show(){
+  var r=build(cur,ver);
+  $('fbxTitle').textContent='📘 '+(cur.kind==='tab'?'本頁：':'')+cut(cur.title,28);
+  $('fbxText').value=r.text;$('fbxCnt').textContent='約 '+count(r.text)+' 字';
+  draw($('fbxCanvas'),r.card,THEMES[ti]);
+}
+function chips(){
+  var kw=$('fbxSearch').value.trim().toLowerCase(),box=$('fbxList');box.innerHTML='';
+  list.forEach(function(it){
+    if(kw&&it.find.indexOf(kw)<0)return;
+    var b=document.createElement('button');b.type='button';b.textContent=(it.tab?'📄 本頁｜':'')+cut(it.title,18);
+    if(cur&&it.el===cur.el&&!!it.tab===(cur.kind==='tab'))b.className='on';
+    b.onclick=function(){open(it.tab?tabEntry(it.p):entry(it.el));};box.appendChild(b);
+  });
+  if(!box.firstChild)box.innerHTML='<span style="opacity:.6;padding:4px">找不到符合的項目</span>';
+}
+function scan(){
+  list=[];
+  panels().forEach(function(p){
+    if(!p||!shown(p.el))return;
+    list.push({tab:1,p:p,el:p.el,title:bare(labelFor(p))||F.brand||'本頁',find:''});
+    $$(ALL,p.el).forEach(function(el){
+      var t=titleOf(el);if(t)list.push({el:el,title:t,find:el.textContent.toLowerCase()});
+    });
+  });
+}
+function open(e){
+  if(!e||!e.title)return;
+  cur=e;ver=0;scan();$('fbxMask').classList.add('on');chips();show();
+  var on=$('fbxList').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
+}
+function close(){$('fbxMask').classList.remove('on');}
+function ui(){
+  var st=document.createElement('style');
+  st.textContent='.fbx-b{display:inline-flex;align-items:center;gap:4px;margin:8px 0 0 auto;padding:4px 11px;border-radius:999px;border:1px solid rgba(24,119,242,.45);background:rgba(24,119,242,.1);color:#1877F2;font:700 11px/1.4 '+ZH+';cursor:pointer;white-space:nowrap;flex:none;align-self:center;width:auto;height:auto;letter-spacing:0;text-transform:none}'+
+  '.sp-dark .fbx-b{color:#7DB4FF;border-color:rgba(125,180,255,.45);background:rgba(125,180,255,.1)}.fbx-b:hover{background:#1877F2;color:#fff}'+
+  '.fbx-g{display:flex;margin:0 0 12px}.fbx-fab{bottom:216px;background:#1877F2!important;color:#fff!important}'+
+  '#fbxMask{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1200;background:rgba(20,16,12,.6);display:none;align-items:center;justify-content:center;padding:12px}#fbxMask.on{display:flex}'+
+  '#fbxBox{background:#FAF6EF;color:#2B2622;width:min(1040px,100%);max-height:94vh;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;font:14px/1.6 '+ZH+';text-align:left}'+
+  '#fbxTop{display:flex;gap:8px;align-items:center;padding:12px 14px;background:#1877F2;color:#fff}#fbxTop b{flex:1;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
+  '#fbxSearch{flex:0 1 260px;min-width:110px;padding:7px 12px;border:0;border-radius:999px;font:14px '+ZH+';color:#2B2622;background:#fff;outline:none}'+
+  '#fbxX{background:none;border:0;color:#fff;font-size:22px;cursor:pointer;line-height:1;padding:0 4px}'+
+  '#fbxList{max-height:118px;overflow-y:auto;flex:none;padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #E4DAD0;background:#fff}'+
+  '#fbxList button{border:1px solid #E4DAD0;background:#FAF6EF;color:#2B2622;border-radius:999px;padding:3px 10px;font:12px '+ZH+';cursor:pointer}#fbxList button.on{background:#1877F2;color:#fff;border-color:#1877F2}'+
+  '#fbxMain{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;padding:14px;overflow:auto}'+
+  '#fbxText{width:100%;height:52vh;min-height:240px;box-sizing:border-box;padding:12px;border:1px solid #E4DAD0;border-radius:12px;background:#fff;color:#2B2622;font:14px/1.75 '+ZH+';resize:vertical}'+
+  '#fbxCanvas{width:100%;height:auto;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15);display:block}'+
+  '#fbxBar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}#fbxBar button{padding:7px 13px;border-radius:999px;border:1px solid #1877F2;background:#1877F2;color:#fff;font:700 13px/1.2 '+ZH+';cursor:pointer}#fbxBar button.g{background:#fff;color:#1877F2}'+
+  '#fbxCnt{font-size:12px;color:#8A7F76;margin-left:auto}#fbxTip{font-size:12px;color:#8A7F76;margin-top:8px}'+
+  '@media(max-width:760px){#fbxMain{grid-template-columns:minmax(0,1fr)}#fbxText{height:34vh}#fbxCanvas{max-width:280px;margin:0 auto}}'+
+  '@media print{.fbx-b,.fbx-fab,#fbxMask{display:none!important}}';
+  document.head.appendChild(st);
+  var fab=document.createElement('button');fab.type='button';fab.className='sp-fab fbx-fab';fab.title='臉書文圖';fab.textContent='📘';
+  fab.onclick=function(){scan();if(list[0])open(tabEntry(list[0].p));};
+  document.body.appendChild(fab);
+  var m=document.createElement('div');m.id='fbxMask';
+  m.innerHTML='<div id="fbxBox"><div id="fbxTop"><b id="fbxTitle"></b><input id="fbxSearch" type="search" placeholder="搜尋本頁項目…"><button id="fbxX" type="button" title="關閉">×</button></div>'+
+   '<div id="fbxList"></div><div id="fbxMain"><div><textarea id="fbxText" spellcheck="false"></textarea><div id="fbxBar">'+
+   '<button type="button" id="fbxCopy">📋 複製貼文</button><button type="button" id="fbxPng">🖼️ 下載圖卡</button>'+
+   '<button type="button" class="g" id="fbxNext">🔄 換一版</button><button type="button" class="g" id="fbxTheme">🎨 換配色</button>'+
+   '<button type="button" class="g" id="fbxTxt">💾 存成 TXT</button><span id="fbxCnt"></span></div>'+
+   '<div id="fbxTip">貼文可以直接在框裡修改。到臉書發文：貼上文字，再加入下載的圖卡。</div></div>'+
+   '<div><canvas id="fbxCanvas"></canvas></div></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',function(e){if(e.target===m)close();});
+  $('fbxX').onclick=close;
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+  $('fbxSearch').addEventListener('input',chips);
+  $('fbxNext').onclick=function(){ver++;show();};
+  $('fbxTheme').onclick=function(){ti=(ti+1)%THEMES.length;lsSet('theme',String(ti));draw($('fbxCanvas'),build(cur,ver).card,THEMES[ti]);};
+  $('fbxCopy').onclick=function(){
+    var t=$('fbxText'),b=this;function fb(){t.select();try{document.execCommand('copy');}catch(e){}}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t.value).catch(fb);else fb();
+    toast(b,'✅ 已複製');
+  };
+  $('fbxPng').onclick=function(){$('fbxCanvas').toBlob(function(b){save(b,fname()+'.png');},'image/png');};
+  $('fbxTxt').onclick=function(){save(new Blob(['﻿'+$('fbxText').value],{type:'text/plain;charset=utf-8'}),fname()+'.txt');};
+}
+function btn(text,fn){
+  var b=document.createElement('button');b.type='button';b.className='fbx-b';b.textContent=text;
+  b.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();fn();});
+  return b;
+}
+function own(el,cls){for(var c=el.firstElementChild;c;c=c.nextElementSibling)if(c.classList.contains(cls))return c;return null;}
+function decorate(){
+  $$(ALL).forEach(function(el){
+    if(own(el,'fbx-b')||el.closest('.sp-card,.sp-ov,#fbxMask')||el.textContent.trim().length<4)return;
+    var b=btn('📘 臉書文圖',function(){open(entry(el));});
+    if(is(el,GROUP)&&el.firstElementChild){b.classList.add('fbx-g');el.insertBefore(b,el.firstElementChild.nextSibling);}
+    else el.appendChild(b);
+  });
+  $$('.sp-card .sp-b').forEach(function(bar){
+    if(own(bar,'fbx-b'))return;
+    var b=btn('📘 本頁臉書文圖',function(){var p=panelFor(bar);if(p)open(tabEntry(p));});
+    b.style.cssText='margin:0;opacity:1';bar.appendChild(b);
+  });
+}
+function init(){
+  ui();decorate();
+  var pend=false;
+  new MutationObserver(function(){if(pend)return;pend=true;setTimeout(function(){pend=false;decorate();},90);}).observe(document.body,{childList:true,subtree:true});
+}
+if(document.readyState==='complete')setTimeout(init,60);
+else window.addEventListener('load',function(){setTimeout(init,60);});
+})();
+</script>
+<!-- FBX-END -->
+</body>
+</html>

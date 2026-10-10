@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>睡眠工程 Sleep OS｜修復 × 恢復力 × 生命力</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#03060F;--s1:#06091A;--s2:#090D24;--card:#0D1430;--bdr:#14203A;--bdr2:#1C2E50;
+  --txt:#D5E5F8;--dim:#486080;--dim2:#2E4060;
+  --gold:#C89030;--gold2:#A07020;--gg:rgba(200,144,48,.1);
+  --moon:#818CF8;   /* indigo/violet for sleep */
+  --moon2:#6040D0;
+  --gm:rgba(129,140,248,.09);
+  --teal:#14B8A6;--rose:#F43F5E;
+  /* layer colors */
+  --c-env:#60A5FA;    /* 環境層 blue */
+  --c-light:#FCD34D;  /* 光線層 yellow */
+  --c-horm:#F97316;   /* 荷爾蒙層 orange */
+  --c-sleep:#818CF8;  /* 睡眠層 indigo */
+  --c-repair:#34D399; /* 修復層 emerald */
+  --c-life:#F43F5E;   /* 生命力層 rose */
+  /* stage colors */
+  --c-n1:#60A5FA;--c-n2:#818CF8;--c-n3:#A78BFA;--c-rem:#F472B6;
+  --neg:#607AD8;--hyd:#30C8C0;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--txt);font-family:'Noto Sans TC','Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden;padding-bottom:0;}
+
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;z-index:300;background:rgba(3,6,15,.97);backdrop-filter:blur(18px);border-bottom:1px solid var(--bdr);padding:0 16px;display:flex;align-items:center;height:52px;gap:0;}
+.brand{font-size:16px;font-weight:900;background:linear-gradient(135deg,var(--moon),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.5px;flex-shrink:0;margin-right:14px;white-space:nowrap;}
+.nav{display:flex;flex:1;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nb{flex:none;padding:0 11px;height:52px;font-size:12px;font-weight:600;border:none;background:none;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap;font-family:inherit;}
+.nb.on{color:var(--moon);border-bottom-color:var(--moon);}
+.nb:hover:not(.on){color:var(--txt);}
+.buy-top{flex-shrink:0;margin-left:8px;padding:8px 14px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:12px;font-weight:700;border:none;border-radius:8px;cursor:pointer;font-family:inherit;text-decoration:none;display:flex;align-items:center;gap:5px;transition:.15s;white-space:nowrap;}
+.buy-top:hover{opacity:.87;transform:translateY(-1px);}
+
+.pg{display:none;} .pg.on{display:block;}
+.wrap{max-width:960px;margin:0 auto;padding:24px 16px;}
+.sec-h{font-size:clamp(20px,4vw,30px);font-weight:900;letter-spacing:-1px;margin-bottom:6px;}
+.sec-s{font-size:13px;color:var(--dim);margin-bottom:22px;font-weight:300;}
+.divider{border:none;border-top:1px solid var(--bdr);margin:44px 0;}
+
+/* BUY BANNER */
+.bb{background:linear-gradient(135deg,rgba(200,144,48,.1),rgba(200,144,48,.04));border:1px solid rgba(200,144,48,.22);border-radius:18px;padding:28px;text-align:center;max-width:700px;margin:0 auto;}
+.bb-h{font-size:clamp(17px,3.5vw,24px);font-weight:900;color:var(--gold);margin-bottom:6px;}
+.bb-p{font-size:13px;color:var(--dim);line-height:1.8;margin-bottom:20px;}
+.bb-a{display:inline-flex;align-items:center;gap:6px;padding:13px 32px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:14px;font-weight:700;border-radius:10px;text-decoration:none;transition:.2s;}
+.bb-a:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(200,144,48,.26);}
+.bb-note{font-size:11px;color:var(--dim);margin-top:9px;}
+
+/* ── HERO ── */
+.hero{min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 16px;text-align:center;position:relative;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.12;pointer-events:none;}
+.oa{width:580px;height:580px;background:var(--moon);top:-200px;left:-160px;}
+.ob{width:360px;height:360px;background:var(--gold);bottom:-90px;right:-90px;}
+.oc{width:320px;height:320px;background:#1D3A8A;top:44%;left:52%;transform:translate(-50%,-50%);}
+.hero-tag{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--moon);text-transform:uppercase;margin-bottom:14px;}
+.hero-h1{font-size:clamp(44px,9vw,96px);font-weight:900;line-height:.92;letter-spacing:-3px;margin-bottom:14px;background:linear-gradient(140deg,var(--txt) 20%,var(--moon) 65%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-p{font-size:clamp(14px,2vw,17px);color:var(--dim);max-width:520px;margin:0 auto 30px;line-height:2;font-weight:300;}
+.sleep-formula{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:36px;}
+.sf{padding:7px 16px;border-radius:24px;font-size:13px;font-weight:700;border:1px solid;}
+.sf.m{background:rgba(129,140,248,.08);border-color:rgba(129,140,248,.3);color:var(--moon);}
+.sf.g{background:rgba(200,144,48,.08);border-color:rgba(200,144,48,.3);color:var(--gold);}
+.sf.x{color:var(--dim);border-color:transparent;background:transparent;font-size:17px;}
+.hero-btns{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;}
+.btn-m{padding:13px 28px;background:linear-gradient(135deg,var(--moon),var(--moon2));color:#F0EAFF;font-size:14px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block;transition:.2s;}
+.btn-m:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(129,140,248,.28);}
+.btn-g{padding:13px 28px;background:transparent;color:var(--gold);font-size:14px;font-weight:700;border:1.5px solid rgba(200,144,48,.35);border-radius:10px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block;transition:.2s;}
+.btn-g:hover{border-color:var(--gold);background:var(--gg);}
+
+/* ── DIAGNOSIS ── */
+.d-intro{background:var(--card);border:1px solid var(--bdr2);border-radius:14px;padding:20px;text-align:center;margin-bottom:22px;}
+.d-intro h2{font-size:19px;font-weight:900;color:var(--moon);margin-bottom:4px;}
+.d-intro p{font-size:13px;color:var(--dim);line-height:1.7;}
+.d-step{display:flex;align-items:center;gap:9px;margin-bottom:15px;}
+.d-n{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--moon),var(--moon2));color:#F0EAFF;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.d-lbl{font-size:14px;font-weight:700;}
+.d-sub{font-size:11px;color:var(--dim);margin-top:1px;}
+.sym-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:8px;margin-bottom:22px;}
+.sym-btn{background:var(--card);border:1.5px solid var(--bdr);border-radius:11px;padding:12px 13px;cursor:pointer;color:var(--txt);font-family:inherit;transition:.18s;text-align:left;}
+.sym-btn:hover{border-color:var(--moon);background:var(--gm);}
+.sym-btn.sel{border-color:var(--moon);background:var(--gm);}
+.sy-icon{font-size:17px;display:block;margin-bottom:4px;}
+.sy-name{font-size:13px;font-weight:600;display:block;}
+.sy-sub{font-size:10px;color:var(--dim);display:block;margin-top:2px;}
+.sym-btn.sel .sy-name{color:var(--moon);}
+.run-btn{display:block;margin:0 auto;padding:12px 28px;background:linear-gradient(135deg,var(--moon),var(--moon2));color:#F0EAFF;font-size:14px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;transition:.2s;}
+.run-btn:hover{transform:translateY(-1px);box-shadow:0 7px 20px rgba(129,140,248,.22);}
+.rst-btn{display:block;margin:9px auto 0;padding:9px 18px;background:transparent;color:var(--dim);font-size:12px;border:1px solid var(--bdr);border-radius:8px;cursor:pointer;font-family:inherit;}
+.d-result{display:none;} .d-result.show{display:block;}
+.layer-score-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:9px;margin-bottom:22px;}
+.lsg{background:var(--card);border:1.5px solid var(--bdr);border-radius:12px;padding:14px;}
+.lsg.hit{border-width:2px;}
+.lsg-top{display:flex;align-items:center;gap:9px;margin-bottom:9px;}
+.lsg-ico{font-size:20px;width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.lsg-name{font-size:14px;font-weight:700;}
+.lsg-pct{font-size:11px;margin-top:2px;}
+.lsg-bar-bg{height:4px;background:var(--bdr);border-radius:3px;margin-bottom:8px;}
+.lsg-bar{height:100%;border-radius:3px;transition:.6s;}
+.lsg-syms{display:flex;flex-wrap:wrap;gap:4px;}
+.lsg-sym{font-size:10px;padding:2px 7px;border-radius:5px;font-weight:600;}
+.rec-h{font-size:14px;font-weight:700;color:var(--gold);margin:20px 0 12px;padding-bottom:7px;border-bottom:1px solid var(--bdr);}
+.rec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:9px;margin-bottom:20px;}
+.rec-card{background:var(--card);border:1px solid var(--bdr2);border-radius:12px;padding:14px;border-top:3px solid;}
+.rc-layer{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px;}
+.rc-name{font-size:15px;font-weight:700;margin-bottom:3px;}
+.rc-mech{font-size:12px;font-weight:700;color:var(--moon);margin-bottom:3px;}
+.rc-effect{font-size:12px;color:var(--gold);font-weight:600;margin-bottom:5px;}
+.rc-why{font-size:12px;color:var(--dim);line-height:1.6;margin-bottom:9px;}
+.rc-buy{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:12px;font-weight:700;border-radius:7px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:.14s;}
+.rc-buy:hover{opacity:.84;transform:translateY(-1px);}
+
+/* ── SLEEP SYSTEM PAGE ── */
+.layer-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px;}
+.l-tab{padding:8px 16px;border-radius:20px;border:1.5px solid var(--bdr);background:transparent;cursor:pointer;font-size:12px;font-weight:700;color:var(--dim);transition:.17s;font-family:inherit;white-space:nowrap;}
+.l-tab.on{color:#040200;border-color:transparent;font-weight:800;}
+.l-content{display:none;} .l-content.on{display:block;}
+.l-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;}
+.l-ico{font-size:26px;width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.l-num{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;opacity:.7;}
+.l-h1{font-size:22px;font-weight:900;letter-spacing:-1px;margin-bottom:3px;}
+.l-why{font-size:13px;color:var(--dim);line-height:1.7;}
+.body-card{background:var(--card);border:1px solid var(--bdr2);border-radius:13px;padding:16px;margin-bottom:12px;}
+.bc-t{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--moon);margin-bottom:8px;}
+.bc-b{font-size:13px;color:var(--dim);line-height:1.9;}
+.bc-b b{color:var(--txt);} .bc-b .hl{color:var(--moon);} .bc-b .warn{color:var(--rose);}
+.nt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:9px;margin-bottom:14px;}
+.nt-card{background:var(--card);border-left:3px solid;border-radius:0 11px 11px 0;padding:13px 15px;border-top:1px solid var(--bdr);border-right:1px solid var(--bdr);border-bottom:1px solid var(--bdr);}
+.nt-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px;}
+.nt-name{font-size:14px;font-weight:700;}
+.nt-mech{font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;white-space:nowrap;}
+.nt-effect{font-size:12px;font-weight:700;margin-bottom:4px;}
+.nt-detail{font-size:12px;color:var(--dim);line-height:1.65;margin-bottom:8px;}
+.nt-buy{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:11px;font-weight:700;border-radius:6px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:.13s;}
+.nt-buy:hover{opacity:.84;}
+.tech-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px;}
+.tech-card{border-radius:12px;padding:14px;}
+.tech-neg{background:rgba(96,122,216,.08);border:1px solid rgba(96,122,216,.22);}
+.tech-hyd{background:rgba(48,200,192,.08);border:1px solid rgba(48,200,192,.22);}
+.tech-t{font-size:13px;font-weight:700;margin-bottom:7px;}
+.tech-flow{font-size:12px;color:var(--dim);line-height:1.9;}
+.tech-flow b{color:var(--txt);}
+.tech-flow .arr{color:var(--moon);}
+.tech-buy{display:inline-flex;align-items:center;gap:4px;margin-top:9px;padding:6px 12px;background:linear-gradient(135deg,var(--teal),#0D9488);color:#020A08;font-size:11px;font-weight:700;border-radius:6px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;}
+.tech-buy:hover{opacity:.84;}
+
+/* ── LEARN PAGE ── */
+.formula-box{background:linear-gradient(135deg,rgba(129,140,248,.08),rgba(200,144,48,.04));border:1px solid rgba(129,140,248,.2);border-radius:13px;padding:18px;text-align:center;font-size:14px;line-height:2.6;color:var(--dim);margin-bottom:16px;}
+.formula-box b{color:var(--txt);font-size:15px;}
+.formula-box .eq{color:var(--gold);font-size:18px;font-weight:900;}
+.sleep-stages{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:9px;margin-bottom:20px;}
+.ss-card{border-radius:13px;padding:16px;border:1px solid;}
+.ss-icon{font-size:24px;margin-bottom:6px;}
+.ss-name{font-size:15px;font-weight:700;margin-bottom:4px;}
+.ss-desc{font-size:12px;color:var(--dim);line-height:1.65;}
+.chain-box{background:var(--s2);border-radius:10px;padding:12px 16px;margin:8px 0;font-size:13px;line-height:2.2;text-align:center;color:var(--dim);}
+.chain-box b{color:var(--txt);}
+.chain-box .arr{color:var(--moon);}
+.phil-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;}
+.lcard{background:var(--card);border:1px solid var(--bdr2);border-radius:13px;padding:17px;}
+.lc-t{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--moon);margin-bottom:8px;}
+.lc-b{font-size:13px;color:var(--dim);line-height:1.9;}
+.lc-b b{color:var(--txt);} .lc-b .hl{color:var(--moon);} .lc-b .warn{color:var(--rose);}
+
+/* ── SLEEP TRACKER ── */
+.tracker-wrap{max-width:640px;margin:0 auto;}
+.tracker-card{background:var(--card);border:1px solid var(--bdr2);border-radius:14px;padding:20px;margin-bottom:14px;}
+.tc-title{font-size:13px;font-weight:700;color:var(--moon);letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px;}
+.slider-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.sl-label{font-size:13px;font-weight:600;min-width:100px;}
+.sl-input{flex:1;appearance:none;height:4px;border-radius:2px;outline:none;cursor:pointer;background:linear-gradient(90deg,var(--moon) var(--val,50%),var(--bdr) var(--val,50%));}
+.sl-input::-webkit-slider-thumb{appearance:none;width:18px;height:18px;border-radius:50%;background:var(--moon);cursor:pointer;}
+.sl-val{font-size:13px;font-weight:700;color:var(--moon);min-width:36px;text-align:right;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:10px 0;border-bottom:1px solid var(--bdr);}
+.toggle-row:last-child{border-bottom:none;}
+.tg-label{font-size:13px;font-weight:600;}
+.tg-sub{font-size:11px;color:var(--dim);}
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--bdr);cursor:pointer;position:relative;transition:.3s;flex-shrink:0;}
+.toggle.on{background:var(--moon);}
+.toggle::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:.3s;}
+.toggle.on::after{left:23px;}
+.score-display{background:linear-gradient(135deg,rgba(129,140,248,.12),rgba(200,144,48,.07));border:1px solid rgba(129,140,248,.22);border-radius:14px;padding:22px;text-align:center;margin-bottom:14px;}
+.sd-score{font-size:64px;font-weight:900;color:var(--moon);}
+.sd-label{font-size:13px;color:var(--dim);margin-bottom:8px;}
+.sd-grade{display:inline-block;font-size:14px;font-weight:700;padding:5px 16px;border-radius:20px;}
+.breakdown-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:14px;}
+.bd-item{background:var(--s2);border-radius:9px;padding:10px;text-align:center;border:1px solid var(--bdr);}
+.bd-val{font-size:22px;font-weight:700;margin-bottom:3px;}
+.bd-lbl{font-size:11px;color:var(--dim);}
+.rec-section{background:var(--card);border:1px solid var(--bdr2);border-radius:13px;padding:16px;}
+.rec-sec-title{font-size:13px;font-weight:700;color:var(--moon);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px;}
+.rec-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--bdr);}
+.rec-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.rec-ico{font-size:18px;flex-shrink:0;}
+.rec-text{font-size:13px;line-height:1.6;}
+.rec-text b{color:var(--moon);}
+.rec-text .buy-link{display:inline-flex;align-items:center;gap:4px;margin-top:5px;padding:5px 11px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#040200;font-size:11px;font-weight:700;border-radius:6px;text-decoration:none;}
+
+/* ── FLASHCARD ── */
+.fcmeta{display:flex;gap:12px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:10px 14px;margin-bottom:12px;align-items:center;}
+.fcm-i{display:flex;flex-direction:column;align-items:center;}
+.fcm-l{font-size:9px;color:var(--dim);}
+.fcm-v{font-size:18px;font-weight:700;color:var(--moon);}
+.mla{margin-left:auto;display:flex;gap:6px;}
+.pbar-w{height:4px;background:var(--bdr);border-radius:3px;margin-bottom:11px;}
+.pbar-f{height:100%;background:linear-gradient(90deg,var(--moon),var(--gold));border-radius:3px;transition:.3s;}
+.fcwrap{perspective:1100px;max-width:500px;margin:0 auto;}
+.fc{width:100%;height:296px;position:relative;transform-style:preserve-3d;transition:.52s cubic-bezier(.4,0,.2,1);cursor:pointer;}
+.fc.flip{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;border-radius:16px;padding:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;backface-visibility:hidden;text-align:center;border:1px solid var(--bdr2);}
+.front{background:var(--card);}
+.back{background:linear-gradient(135deg,var(--card),#0B1A38);transform:rotateY(180deg);}
+.fc-eye{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:9px;color:var(--moon);}
+.fc-big{font-size:36px;font-weight:900;letter-spacing:-1.5px;margin-bottom:7px;}
+.fc-hint{font-size:12px;color:var(--dim);}
+.fc-zh{font-size:17px;font-weight:700;color:var(--moon);margin-bottom:9px;}
+.fc-detail{font-size:12px;color:var(--dim);line-height:1.65;max-width:340px;}
+.fc-btns{display:none;gap:9px;justify-content:center;margin-top:13px;}
+.fc-tap{font-size:11px;color:var(--dim);text-align:center;margin-top:8px;}
+.ctr-txt{font-size:11px;color:var(--dim);text-align:center;margin-bottom:10px;}
+.btn{padding:9px 18px;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:.17s;}
+.btn-ok{background:rgba(129,140,248,.14);color:var(--moon);border:1px solid rgba(129,140,248,.3);}
+.btn-ok:hover{background:rgba(129,140,248,.26);}
+.btn-bad{background:rgba(244,63,94,.12);color:var(--rose);border:1px solid rgba(244,63,94,.28);}
+.btn-bad:hover{background:rgba(244,63,94,.24);}
+.btn-ghost{background:var(--card);color:var(--dim);border:1px solid var(--bdr);}
+.btn-ghost:hover{border-color:var(--bdr2);color:var(--txt);}
+.result-box{text-align:center;padding:32px;background:var(--card);border-radius:15px;border:1px solid var(--bdr2);}
+.r-stars{font-size:28px;letter-spacing:4px;margin-bottom:6px;}
+.r-score{font-size:52px;font-weight:900;color:var(--moon);}
+.r-msg{font-size:13px;color:var(--dim);margin-bottom:16px;}
+
+/* ── QUIZ ── */
+.q-type{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--moon);text-transform:uppercase;margin-bottom:7px;display:inline-block;}
+.q-q{font-size:18px;font-weight:700;margin-bottom:18px;line-height:1.4;}
+.q-opts{display:grid;gap:8px;}
+.qopt{background:var(--card);border:1.5px solid var(--bdr);border-radius:11px;padding:13px 15px;font-size:13px;cursor:pointer;text-align:left;color:var(--txt);font-family:inherit;transition:.17s;line-height:1.4;}
+.qopt:hover:not(:disabled){border-color:var(--moon);background:var(--gm);}
+.qopt.ok{border-color:var(--moon);background:var(--gm);color:var(--moon);}
+.qopt.bad{border-color:var(--rose);background:rgba(244,63,94,.1);color:var(--rose);}
+.q-exp{background:var(--card);border:1px solid var(--bdr2);border-radius:10px;padding:13px;margin-top:10px;font-size:13px;line-height:1.7;display:none;color:var(--dim);}
+.q-exp.show{display:block;}
+.q-exp b{color:var(--moon);}
+.q-next-w{text-align:center;margin-top:10px;display:none;}
+.combo{display:none;position:fixed;top:60px;right:14px;background:var(--moon);color:#F0EAFF;font-weight:800;font-size:13px;border-radius:9px;padding:7px 14px;z-index:600;animation:cpop .4s ease;}
+@keyframes cpop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.2)}100%{opacity:1;transform:scale(1)}}
+
+/* sleep cycle visual */
+.cycle-vis{background:var(--card);border:1px solid var(--bdr2);border-radius:14px;padding:20px;margin-bottom:16px;}
+.cv-title{font-size:13px;font-weight:700;color:var(--moon);margin-bottom:14px;text-align:center;}
+.cv-bars{display:flex;gap:3px;align-items:flex-end;height:80px;margin-bottom:10px;}
+.cv-bar{flex:1;border-radius:3px 3px 0 0;min-height:8px;transition:1s;}
+.cv-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--dim);}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.kpi-card{background:var(--card);border:1px solid var(--bdr2);border-radius:11px;padding:12px;text-align:center;}
+.kpi-icon{font-size:20px;margin-bottom:4px;}
+.kpi-name{font-size:12px;font-weight:700;margin-bottom:3px;}
+.kpi-desc{font-size:11px;color:var(--dim);}
+.kpi-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:5px;margin-top:5px;}
+
+@media(max-width:600px){
+  .phil-grid{grid-template-columns:1fr;}
+  .tech-row{grid-template-columns:1fr;}
+  .sym-grid{grid-template-columns:repeat(2,1fr);}
+  .sleep-stages{grid-template-columns:repeat(2,1fr);}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">睡眠工程 Sleep OS</div>
+  <nav class="nav">
+    <button class="nb on" onclick="gp('home',this)">🌙 首頁</button>
+    <button class="nb" onclick="gp('diag',this)">🩺 睡眠診斷</button>
+    <button class="nb" onclick="gp('system',this)">🔬 六層系統</button>
+    <button class="nb" onclick="gp('tracker',this)">📊 睡眠評分</button>
+    <button class="nb" onclick="gp('learn',this)">📖 學習原理</button>
+    <button class="nb" onclick="gp('flash',this)">🃏 閃卡</button>
+    <button class="nb" onclick="gp('quiz',this)">🧠 測驗</button>
+  </nav>
+  <a class="buy-top" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 立即訂購</a>
+</div>
+
+<div id="comboBadge" class="combo"></div>
+
+<!-- ═══════════ HOME ═══════════ -->
+<div class="pg on" id="pg-home">
+<div class="hero">
+  <div class="orb oa"></div><div class="orb ob"></div><div class="orb oc"></div>
+  <div style="position:relative;z-index:1;max-width:600px;margin:0 auto">
+    <div class="hero-tag">Sleep Engineering OS</div>
+    <h1 class="hero-h1">修復<br>就是<br>生命力</h1>
+    <p class="hero-p">睡眠不是一天的結束，<br>而是生命<b style="color:var(--moon)">重新修復與升級的開始</b>。<br>普通人看睡多久，高手看修復多少。</p>
+    <div class="sleep-formula">
+      <span class="sf m">深睡品質</span><span class="sf x">×</span>
+      <span class="sf m">修復能力</span><span class="sf x">×</span>
+      <span class="sf m">恢復速度</span>
+      <span class="sf x">=</span>
+      <span class="sf g">生命力</span>
+    </div>
+    <div class="hero-btns">
+      <button class="btn-m" onclick="gp('diag',document.querySelectorAll('.nb')[1])">🩺 診斷我的睡眠問題</button>
+      <button class="btn-g" onclick="gp('tracker',document.querySelectorAll('.nb')[3])">📊 計算睡眠評分</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" style="padding-top:0">
+  <!-- KPI 三大指標 -->
+  <div class="sec-h" style="text-align:center;margin-bottom:14px;">三大<span style="color:var(--moon)">黃金指標</span></div>
+  <div class="kpi-grid" style="max-width:600px;margin:0 auto 26px">
+    <div class="kpi-card" style="border-color:rgba(129,140,248,.3)">
+      <div class="kpi-icon">⏱️</div>
+      <div class="kpi-name">入睡時間</div>
+      <div class="kpi-desc">理想：<br>15分鐘內</div>
+      <div class="kpi-badge" style="background:rgba(129,140,248,.15);color:var(--moon)">最重要指標①</div>
+    </div>
+    <div class="kpi-card" style="border-color:rgba(129,140,248,.3)">
+      <div class="kpi-icon">🌊</div>
+      <div class="kpi-name">深睡時間</div>
+      <div class="kpi-desc">理想：<br>全程 20% 以上</div>
+      <div class="kpi-badge" style="background:rgba(129,140,248,.15);color:var(--moon)">修復關鍵②</div>
+    </div>
+    <div class="kpi-card" style="border-color:rgba(129,140,248,.3)">
+      <div class="kpi-icon">🌙</div>
+      <div class="kpi-name">夜醒次數</div>
+      <div class="kpi-desc">理想：<br>0~1次</div>
+      <div class="kpi-badge" style="background:rgba(129,140,248,.15);color:var(--moon)">連續性③</div>
+    </div>
+  </div>
+
+  <!-- sleep cycle visual -->
+  <div class="cycle-vis">
+    <div class="cv-title">💤 一整夜睡眠結構示意圖</div>
+    <div class="cv-bars" id="cvBars"></div>
+    <div class="cv-labels"><span>入睡</span><span>第1周期</span><span>第2周期</span><span>第3周期</span><span>第4周期</span><span>清醒</span></div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px;font-size:11px">
+      <span style="color:var(--c-n1)">■ N1淺睡</span>
+      <span style="color:var(--c-n2)">■ N2睡眠</span>
+      <span style="color:var(--c-n3)">■ N3深睡</span>
+      <span style="color:var(--c-rem)">■ REM</span>
+    </div>
+  </div>
+
+  <div class="formula-box" style="max-width:640px;margin:0 auto 28px">
+    <b>深睡</b> = 生長激素分泌 + 神經修復 + 免疫重整<br>
+    <b>REM</b> = 記憶整合 + 情緒處理 + 創造力<br>
+    <b>真正的健康</b> <span class="eq">=</span> <b>每晚都有能力把自己修復回來</b>
+  </div>
+
+  <div class="bb">
+    <div class="bb-h">🛒 睡眠修復精準補充</div>
+    <div class="bb-p">冠貞生技 × 大鳥工作坊精選<br>每款對應睡眠修復節點，讓你真正進入深眠</div>
+    <a class="bb-a" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">前往 7-ELEVEN 賣貨便訂購 →</a>
+    <div class="bb-note">可透過 LINE 群詢問最適合個人的睡眠補充組合</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════ DIAGNOSIS ═══════════ -->
+<div class="pg" id="pg-diag">
+<div class="wrap">
+  <div class="d-intro">
+    <h2>🩺 睡眠問題診斷</h2>
+    <p>選擇你正在經歷的睡眠問題 → 定位是哪個睡眠層出了問題 → 給出精準補充建議</p>
+  </div>
+  <div class="d-step"><div class="d-n">1</div><div><div class="d-lbl">選擇你的症狀（可多選）</div><div class="d-sub">每個症狀對應特定的睡眠失衡層</div></div></div>
+  <div class="sym-grid" id="symGrid"></div>
+  <div style="text-align:center;margin-bottom:20px">
+    <button class="run-btn" onclick="runDiag()">🔍 分析我的睡眠問題</button>
+    <button class="rst-btn" onclick="resetDiag()">重新選擇</button>
+  </div>
+  <div class="d-result" id="diagResult">
+    <div class="d-step" style="margin-top:6px"><div class="d-n">2</div><div><div class="d-lbl">你的睡眠層分析</div><div class="d-sub">分數越高 = 越需要優先修復</div></div></div>
+    <div class="layer-score-grid" id="layerScoreGrid"></div>
+    <div class="rec-h">💊 精準補充建議（機制 + 行銷果效）</div>
+    <div class="rec-grid" id="recGrid"></div>
+    <div class="bb" style="margin-top:22px">
+      <div class="bb-h">補對材料，深眠才會來</div>
+      <div class="bb-p">睡眠三元素：環境 + 荷爾蒙 + 神經材料，缺一不可</div>
+      <a class="bb-a" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 立即前往訂購</a>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════ SIX LAYER SYSTEM ═══════════ -->
+<div class="pg" id="pg-system">
+<div class="wrap">
+  <div class="sec-h">睡眠工程<span style="color:var(--moon)">六層架構</span></div>
+  <div class="sec-s">從環境到生命力，每層都有對應的補充策略與黑科技</div>
+  <div class="layer-tabs" id="layerTabs"></div>
+  <div id="layerContents"></div>
+</div>
+</div>
+
+<!-- ═══════════ TRACKER ═══════════ -->
+<div class="pg" id="pg-tracker">
+<div class="wrap">
+  <div class="tracker-wrap">
+    <div class="sec-h">睡眠<span style="color:var(--moon)">評分系統</span></div>
+    <div class="sec-s">回答5個問題，計算你的睡眠品質分數</div>
+
+    <div class="tracker-card">
+      <div class="tc-title">⏱️ 入睡速度</div>
+      <div class="slider-row">
+        <span class="sl-label">入睡時間</span>
+        <input type="range" class="sl-input" id="sl1" min="0" max="100" value="50" oninput="updateSlider(this,'sl1v')">
+        <span class="sl-val" id="sl1v">30分鐘</span>
+      </div>
+      <div style="font-size:11px;color:var(--dim)">0=立刻秒睡 / 50=30分鐘 / 100=超過60分鐘</div>
+    </div>
+
+    <div class="tracker-card">
+      <div class="tc-title">🌊 深睡感受</div>
+      <div class="slider-row">
+        <span class="sl-label">深睡品質</span>
+        <input type="range" class="sl-input" id="sl2" min="0" max="100" value="50" oninput="updateSlider(this,'sl2v')">
+        <span class="sl-val" id="sl2v">普通</span>
+      </div>
+      <div style="font-size:11px;color:var(--dim)">0=完全沒有深眠感 / 50=普通 / 100=沉沉的很深</div>
+    </div>
+
+    <div class="tracker-card">
+      <div class="tc-title">🌙 夜醒次數</div>
+      <div class="slider-row">
+        <span class="sl-label">夜醒次數</span>
+        <input type="range" class="sl-input" id="sl3" min="0" max="100" value="30" oninput="updateSlider(this,'sl3v')">
+        <span class="sl-val" id="sl3v">1~2次</span>
+      </div>
+      <div style="font-size:11px;color:var(--dim)">0=完全不醒 / 50=3~4次 / 100=頻繁夜醒</div>
+    </div>
+
+    <div class="tracker-card">
+      <div class="tc-title">☀️ 晨起精神</div>
+      <div class="slider-row">
+        <span class="sl-label">起床後狀態</span>
+        <input type="range" class="sl-input" id="sl4" min="0" max="100" value="50" oninput="updateSlider(this,'sl4v')">
+        <span class="sl-val" id="sl4v">普通</span>
+      </div>
+      <div style="font-size:11px;color:var(--dim)">0=精神很差 / 50=普通 / 100=神清氣爽</div>
+    </div>
+
+    <div class="tracker-card">
+      <div class="tc-title">⚡ 白天能量</div>
+      <div class="slider-row">
+        <span class="sl-label">白天體力</span>
+        <input type="range" class="sl-input" id="sl5" min="0" max="100" value="50" oninput="updateSlider(this,'sl5v')">
+        <span class="sl-val" id="sl5v">普通</span>
+      </div>
+      <div style="font-size:11px;color:var(--dim)">0=嚴重疲勞 / 50=普通 / 100=精力充沛</div>
+    </div>
+
+    <div class="tracker-card" style="margin-bottom:16px">
+      <div class="tc-title">特殊症狀</div>
+      <div class="toggle-row"><div><div class="tg-label">凌晨2~4點常醒</div><div class="tg-sub">肝臟排毒峰值，代表解毒系統或壓力問題</div></div><div class="toggle" id="tg1" onclick="toggleTG('tg1')"></div></div>
+      <div class="toggle-row"><div><div class="tg-label">多夢、惡夢頻繁</div><div class="tg-sub">REM過多，皮質醇偏高或情緒壓力大</div></div><div class="toggle" id="tg2" onclick="toggleTG('tg2')"></div></div>
+      <div class="toggle-row"><div><div class="tg-label">腿部不寧（睡前腿躁動）</div><div class="tg-sub">鐵或鎂缺乏，神經不穩</div></div><div class="toggle" id="tg3" onclick="toggleTG('tg3')"></div></div>
+    </div>
+
+    <button class="run-btn" onclick="calcSleep()">📊 計算睡眠分數</button>
+
+    <div id="sleepResult" style="display:none;margin-top:18px">
+      <div class="score-display">
+        <div class="sd-score" id="sdScore">0</div>
+        <div class="sd-label">睡眠品質分數（100分制）</div>
+        <div class="sd-grade" id="sdGrade"></div>
+        <div class="breakdown-grid" id="sdBreakdown"></div>
+      </div>
+      <div class="rec-section" id="trackerRec">
+        <div class="rec-sec-title">針對你的睡眠分數：補充建議</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════ LEARN ═══════════ -->
+<div class="pg" id="pg-learn">
+<div class="wrap">
+  <div class="sec-h">睡眠工程<span style="color:var(--moon)">原理</span></div>
+  <div class="sec-s">從系統論理解睡眠，才能真正改善睡眠</div>
+
+  <div class="sec-h" style="font-size:18px;margin-bottom:12px;">四個睡眠階段</div>
+  <div class="sleep-stages">
+    <div class="ss-card" style="background:rgba(96,165,250,.08);border-color:rgba(96,165,250,.25)">
+      <div class="ss-icon">😴</div>
+      <div class="ss-name" style="color:var(--c-n1)">N1 淺睡</div>
+      <div class="ss-desc">過渡期，5分鐘左右。容易被喚醒。肌肉可能抖動（hypnic jerk）。占比 5%。</div>
+    </div>
+    <div class="ss-card" style="background:rgba(129,140,248,.08);border-color:rgba(129,140,248,.25)">
+      <div class="ss-icon">💤</div>
+      <div class="ss-name" style="color:var(--c-n2)">N2 睡眠</div>
+      <div class="ss-desc">記憶整合開始。心跳體溫下降。睡眠紡錘波出現。占比最多，約 50%。</div>
+    </div>
+    <div class="ss-card" style="background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.3)">
+      <div class="ss-icon">🌊</div>
+      <div class="ss-name" style="color:var(--c-n3)">N3 深睡（最重要）</div>
+      <div class="ss-desc">生長激素大量分泌。免疫修復。神經修復。細胞再生。占比約 20~25%。<b style="color:var(--c-n3)">這是最重要的修復階段。</b></div>
+    </div>
+    <div class="ss-card" style="background:rgba(244,114,182,.08);border-color:rgba(244,114,182,.25)">
+      <div class="ss-icon">🌀</div>
+      <div class="ss-name" style="color:var(--c-rem)">REM 快速動眼</div>
+      <div class="ss-desc">大腦活躍，做夢期。情緒整合。創造力和洞察力生成。記憶鞏固。占比 20~25%。</div>
+    </div>
+  </div>
+
+  <div class="formula-box">
+    <b>健康</b> <span class="eq">=</span>
+    <b>深睡品質</b> <span style="color:var(--moon)">×</span>
+    <b>修復能力</b> <span style="color:var(--moon)">×</span>
+    <b>恢復速度</b>
+  </div>
+
+  <div class="phil-grid">
+    <div class="lcard">
+      <div class="lc-t">🔬 第一性原理</div>
+      <div class="lc-b">
+        <b>生命不可能持續消耗而不修復</b><br><br>
+        白天負責消耗<br>
+        夜晚負責<span class="hl">修復</span><br><br>
+        睡眠品質決定修復品質<br>
+        修復品質決定<b>生命品質</b>
+      </div>
+    </div>
+    <div class="lcard">
+      <div class="lc-t">🔄 控制論解析</div>
+      <div class="lc-b">
+        睡眠是人體最大的<b>負回饋系統</b><br>
+        負責修正白天累積的誤差<br><br>
+        消耗 → 疲勞 → 睡眠<br>
+        → 修復 → 恢復 → <span class="hl">穩態</span><br><br>
+        每晚 = 一次系統重置
+      </div>
+    </div>
+    <div class="lcard">
+      <div class="lc-t">🧠 預測編碼解析</div>
+      <div class="lc-b">
+        大腦先判斷：<b>環境是否安全？</b><br><br>
+        若大腦預測<span class="warn">危險</span><br>
+        → 副交感無法啟動<br>
+        → 即使疲勞也睡不著<br><br>
+        安全感 = 深睡的神經前提
+      </div>
+    </div>
+    <div class="lcard">
+      <div class="lc-t">🌍 複雜系統解析</div>
+      <div class="lc-b">
+        失眠通常不是睡眠問題<br>
+        而是<b>整個穩態系統失衡</b><br><br>
+        <span class="warn">神經 + 荷爾蒙 + 壓力 + 環境</span><br>
+        共同失衡的結果<br><br>
+        因此需要多層介入，不是只吃褪黑素
+      </div>
+    </div>
+    <div class="lcard">
+      <div class="lc-t">📈 完整因果鏈（熬夜的代價）</div>
+      <div class="lc-b">
+        熬夜→褪黑激素↓→深睡↓<br>
+        →修復↓→發炎↑<br>
+        →粒線體受損→疲勞↑<br>
+        →<span class="warn">老化加速 + 疾病風險↑</span>
+      </div>
+    </div>
+    <div class="lcard">
+      <div class="lc-t">✅ 正向複利鏈</div>
+      <div class="lc-b">
+        規律作息→生理時鐘同步<br>
+        →深睡↑→修復↑→能量↑<br>
+        →表現↑→生命力↑<br><br>
+        <span class="hl">形成健康複利，每天比昨天好一點</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bb" style="margin-top:28px">
+    <div class="bb-h">深睡是最便宜的長壽藥</div>
+    <div class="bb-p">普通人看睡多久，高手看修復多少<br>給身體正確的材料，每晚都能重新修復</div>
+    <a class="bb-a" href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">🛒 7-ELEVEN 賣貨便 立即訂購</a>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════ FLASH ═══════════ -->
+<div class="pg" id="pg-flash">
+<div class="wrap" style="max-width:560px">
+  <div class="sec-h">閃卡<span style="color:var(--moon)">練習</span></div>
+  <div class="sec-s">睡眠工程六層 × 核心知識</div>
+  <div class="fcmeta">
+    <div class="fcm-i"><div class="fcm-l">已看</div><div class="fcm-v" id="fcSeen">0</div></div>
+    <div class="fcm-i"><div class="fcm-l">✅</div><div class="fcm-v" id="fcOK">0</div></div>
+    <div class="fcm-i"><div class="fcm-l">❌</div><div class="fcm-v" id="fcNG">0</div></div>
+    <div class="mla"><button class="btn btn-ghost" onclick="startFC()">🔀</button></div>
+  </div>
+  <div class="pbar-w"><div class="pbar-f" id="fcBar"></div></div>
+  <div class="ctr-txt" id="fcCtr"></div>
+  <div class="fcwrap">
+    <div class="fc" id="fcCard" onclick="flipFC()">
+      <div class="face front">
+        <div class="fc-eye" id="fcEye"></div>
+        <div class="fc-big" id="fcBig"></div>
+        <div class="fc-hint">點擊翻面</div>
+      </div>
+      <div class="face back">
+        <div class="fc-eye" id="fcEye2"></div>
+        <div class="fc-zh" id="fcZh"></div>
+        <div class="fc-detail" id="fcDetail"></div>
+      </div>
+    </div>
+  </div>
+  <div class="fc-tap">翻面後 ✅ / ❌</div>
+  <div class="fc-btns" id="fcBtns">
+    <button class="btn btn-bad" onclick="markFC(false)">❌ 再看</button>
+    <button class="btn btn-ghost" onclick="skipFC()">⏭</button>
+    <button class="btn btn-ok" onclick="markFC(true)">✅ 記得</button>
+  </div>
+  <div id="fcResult" style="display:none;margin-top:22px">
+    <div class="result-box">
+      <div class="r-stars" id="rStars"></div>
+      <div class="r-score" id="rScore"></div>
+      <div class="r-msg" id="rMsg"></div>
+      <button class="btn btn-ok" onclick="startFC()" style="margin-top:13px;padding:10px 22px">再來一輪</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════ QUIZ ═══════════ -->
+<div class="pg" id="pg-quiz">
+<div class="wrap" style="max-width:620px">
+  <div class="sec-h">睡眠<span style="color:var(--moon)">測驗</span></div>
+  <div class="sec-s">驗證你對睡眠工程的理解</div>
+  <div class="fcmeta">
+    <div class="fcm-i"><div class="fcm-l">第</div><div class="fcm-v" id="qN">1</div></div>
+    <div class="fcm-i"><div class="fcm-l">✅</div><div class="fcm-v" id="qC">0</div></div>
+    <div class="fcm-i"><div class="fcm-l">❌</div><div class="fcm-v" id="qW">0</div></div>
+    <div class="mla"><button class="btn btn-ghost" onclick="startQuiz()">重開</button></div>
+  </div>
+  <div class="pbar-w"><div class="pbar-f" id="qBar"></div></div>
+  <div id="quizArea">
+    <div class="q-type" id="qType">睡眠機制</div>
+    <div class="q-q" id="qQ"></div>
+    <div class="q-opts" id="qOpts"></div>
+    <div class="q-exp" id="qExp"></div>
+    <div class="q-next-w" id="qNext"><button class="btn btn-ok" style="padding:10px 20px" onclick="nextQ()">下一題 →</button></div>
+  </div>
+  <div id="quizResult" style="display:none;margin-top:22px">
+    <div class="result-box">
+      <div class="r-stars" id="qStars"></div>
+      <div class="r-score" id="qScore"></div>
+      <div class="r-msg" id="qMsg"></div>
+      <button class="btn btn-ok" onclick="startQuiz()" style="margin-top:13px;padding:10px 22px">再測一次</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const BUY='https://myship.7-11.com.tw/general/detail/GM2407210007294';
+
+// ═══════════════════ SIX LAYERS ═══════════════════
+const LAYERS=[
+{id:'env',ico:'🏠',name:'環境層',en:'Environment',color:'var(--c-env)',
+ why:'睡眠始於環境的安全訊號。大腦若預測到危險，副交感神經無法啟動，即使身體疲勞也睡不著。溫度、光線、噪音、空氣品質是四大環境變數。',
+ neg:'負離子 → 空氣品質↑ → 大腦安全感↑ → 副交感神經啟動 → 入睡阻力↓',
+ hyd:'氫氧水 → 日間氧化壓力↓ → 夜間修復起點更佳 → 入睡品質提升',
+ tips:['🌡️ 室溫維持 18~22°C（核心體溫需下降才能入睡）','🌑 完全遮光（褪黑素對光極度敏感）','🔇 70分貝以上噪音破壞深睡','🌬️ 良好通風，CO2過高影響睡眠品質'],
+ nutrients:[
+   {n:'甘胺酸鎂',mech:'核心體溫↓',effect:'⭐ 最快改善入睡速度',d:'甘胺酸直接降低核心體溫（進入深睡的必要條件），鎂抑制NMDA受體降低神經興奮。是環境層最重要的內在輔助。'},
+   {n:'甘胺酸（單獨）',mech:'體溫調節 + 睡眠深度',effect:'⭐ 日本研究支持改善深睡品質',d:'作用於下視丘，降低核心體溫0.5~1℃，這個微小的體溫差異直接決定能否進入深睡階段。'},
+ ]},
+{id:'light',ico:'☀️',name:'光線層',en:'Light Control',color:'var(--c-light)',
+ why:'光線是生理時鐘的主要校準器。早晨陽光觸發血清素，晚上黑暗觸發褪黑激素。藍光（手機螢幕）會欺騙大腦以為是白天，抑制褪黑激素分泌。',
+ neg:'負離子 → 放鬆感↑ → 夜間皮質醇↓ → 褪黑激素不被干擾 → 自然入睡',
+ hyd:'氫氧水 → 松果體氧化壓力↓ → 褪黑激素分泌效率↑',
+ tips:['🌅 早晨10分鐘陽光校準生理時鐘','📵 睡前1小時停止使用手機','🔆 使用暖色燈（2700K以下）','🕶️ 睡前可戴藍光眼鏡'],
+ nutrients:[
+   {n:'退黑激素（褪黑素）',mech:'生理時鐘重設',effect:'⭐ 最直接的入睡時間調節',d:'松果體分泌的睡眠訊號，低劑量（0.5mg）比高劑量（3~5mg）更接近生理濃度，效果更好且不影響自然分泌。'},
+   {n:'色胺酸（L-Tryptophan）',mech:'血清素→褪黑素前驅物',effect:'⭐ 白天補充，晚上轉換',d:'色胺酸→血清素（白天）→褪黑素（晚上）。日間補充色胺酸，確保晚間褪黑素合成原料充足，自然循環更完整。'},
+   {n:'B6（神經營養素）',mech:'褪黑素合成輔酶',effect:'⭐ 讓色胺酸轉換更完整',d:'B6是色胺酸轉化為血清素的必需輔酶。缺乏B6=色胺酸再多也無法有效轉換=褪黑素不足=難以入睡。'},
+ ]},
+{id:'horm',ico:'🧪',name:'荷爾蒙層',en:'Hormonal Balance',color:'var(--c-horm)',
+ why:'睡眠由兩個荷爾蒙拔河決定：褪黑激素（促睡）vs 皮質醇（促醒）。現代人皮質醇長期偏高，是失眠最主要的荷爾蒙根因。',
+ neg:'副交感活化 → 皮質醇↓ → HPA軸平衡 → 睡眠-覺醒節律恢復',
+ hyd:'氧化壓力↓ → 腎上腺負擔↓ → 皮質醇的晝夜節律更清晰',
+ tips:['🧘 睡前20分鐘冥想降低皮質醇','🚫 避免睡前3小時劇烈運動','🌙 規律作息讓生理時鐘穩定','☕ 下午2點後避免咖啡因'],
+ nutrients:[
+   {n:'GABA',mech:'主要抑制性神經傳導物質',effect:'⭐⭐ 快速降低神經興奮',d:'GABA直接降低杏仁核（壓力/恐懼中心）的活性，幫助大腦從「戰逃模式」切換到「修復模式」，皮質醇隨之降低，入睡阻力消失。'},
+   {n:'茶胺酸（L-Theanine）',mech:'α腦波促進 + 皮質醇↓',effect:'⭐⭐ 不嗜睡的鎮靜效果',d:'來自綠茶，增加α腦波（放鬆清醒狀態），降低皮質醇峰值。白天使用不嗜睡，晚上使用幫助放鬆入睡，是最溫和的荷爾蒙調節補充。'},
+   {n:'青春方',mech:'HPA軸平衡',effect:'⭐ 夜間修復荷爾蒙',d:'含荷爾蒙前驅物，幫助HPA軸（下視丘-腦垂體-腎上腺軸）恢復晝夜節律，讓睡眠期間的生長激素和修復荷爾蒙正常分泌。'},
+ ]},
+{id:'sleep',ico:'💤',name:'睡眠層',en:'Sleep Architecture',color:'var(--c-sleep)',
+ why:'真正的睡眠品質不是睡多少小時，而是深睡比例和睡眠結構。深睡（N3）是修復的核心：生長激素、免疫重整、神經修復都在這裡發生。',
+ neg:'副交感優勢 → 心跳降低 → HRV↑ → 深睡架構更完整',
+ hyd:'粒線體氧化壓力↓ → 睡眠期間細胞修復效率↑ → 醒來感受更好',
+ tips:['🌊 追求深睡而非總時長','📊 HRV（心率變異度）是深睡品質最好的指標','🚿 睡前40分鐘熱水澡加速體溫下降','📵 睡前完全放下工作和手機'],
+ nutrients:[
+   {n:'甘胺酸鎂（核心推薦）',mech:'深睡核心補充組合',effect:'⭐⭐⭐ 最推薦的深睡補充',d:'甘胺酸降低核心體溫（深睡必要條件）+ 鎂抑制神經過激（最常見的深睡障礙）。兩者協同是改善深睡最直接有效的組合，研究顯示可縮短入睡時間並增加深睡比例。'},
+   {n:'NAC',mech:'降低氧化壓力',effect:'⭐ 睡眠修復品質↑',d:'NAC→GSH讓細胞在睡眠期間的修復效率更高，同時降低皮質醇的氧化損傷，讓深睡時的修復工作不被干擾。'},
+   {n:'Omega-3（DHA）',mech:'神經細胞膜流動性',effect:'⭐ 長期改善睡眠結構',d:'DHA是大腦神經細胞膜的主要脂肪，充足DHA讓神經信號傳導更順暢，睡眠轉換（N1→N2→N3）更流暢，深睡進入更容易。'},
+ ]},
+{id:'repair',ico:'🔧',name:'修復層',en:'Repair & Restoration',color:'var(--c-repair)',
+ why:'深睡是修復的窗口，但修復需要材料。生長激素分泌了，但如果沒有足夠的蛋白質、能量材料、抗氧化防護，修復就無法完成。',
+ neg:'副交感 → 迷走神經活化 → 消化改善 → 修復材料吸收效率↑',
+ hyd:'自由基負荷↓ → 修復細胞不被損傷 → 組織再生品質↑',
+ tips:['🥩 晚餐適量蛋白質（修復原料）','🧘 不要空腹睡覺（血糖過低影響深睡）','💊 睡前1小時補充修復材料','⏰ 睡7~9小時確保足夠修復時間'],
+ nutrients:[
+   {n:'神經營養素（B12+B6+B1）',mech:'神經修復三劍客',effect:'⭐⭐ 神經病變修復加速',d:'深睡期神經髓鞘修復需要B12（髓鞘維護）、B6（神經傳導物質合成）、B1（能量代謝）。缺乏任一項，神經修復都會打折扣。'},
+   {n:'粒線寶（硫辛酸+CoQ10）',mech:'細胞能量修復',effect:'⭐⭐ 修復能量供給',d:'深睡修復需要大量ATP驅動蛋白質合成和細胞再生。粒線寶確保修復期間有足夠的能量供應，讓生長激素的修復效果最大化。'},
+ ]},
+{id:'life',ico:'✨',name:'生命力層',en:'Vitality & Longevity',color:'var(--c-life)',
+ why:'高品質睡眠的最終輸出是生命力。深睡是最便宜的長壽藥：比任何抗老化療程都有效。每一晚的深睡都在延緩老化、強化免疫、提升認知。',
+ neg:'每日負離子接觸 → 持續副交感優勢 → 長期睡眠品質↑ → 慢性老化↓',
+ hyd:'長期使用 → 全身氧化負荷↓ → 細胞老化減慢 → 生命力持續提升',
+ tips:['🌙 把睡眠視為最重要的健康投資','📊 每週監測睡眠品質而不只是時間','🔄 形成睡眠複利：每晚好睡→明天更好睡','🌿 生活方式的整體升級才能保護深睡'],
+ nutrients:[
+   {n:'甘胺酸鎂 + 褪黑素 + GABA',mech:'睡眠三合一黃金組合',effect:'⭐⭐⭐ 完整睡眠補充方案',d:'甘胺酸鎂（體溫+深睡）+ 褪黑素（入睡時機）+ GABA（神經放鬆）。三者各解決睡眠的不同問題，協同作用形成最完整的睡眠修復方案。'},
+   {n:'NMN + B3',mech:'細胞長壽信號',effect:'⭐⭐ 睡眠品質長期提升',d:'NMN→NAD+激活Sirtuin長壽蛋白，SIRT1直接調節生理時鐘基因的表達。長期補充NMN可以從基因層面改善睡眠-覺醒節律，是最根本的長期睡眠優化策略。'},
+ ]},
+];
+
+// SYMPTOMS
+const ALL_SYMS=[
+  {ico:'😴',name:'難以入睡',l:['horm','light']},
+  {ico:'🌀',name:'腦子停不下來',l:['horm']},
+  {ico:'🌙',name:'夜醒頻繁',l:['sleep','horm']},
+  {ico:'💧',name:'凌晨2~4點醒',l:['repair','horm']},
+  {ico:'🌫️',name:'白天腦霧',l:['sleep','repair']},
+  {ico:'😮‍💨',name:'起床仍疲勞',l:['sleep','repair']},
+  {ico:'💭',name:'多夢惡夢',l:['horm']},
+  {ico:'🦵',name:'腿部不寧',l:['sleep']},
+  {ico:'😰',name:'焦慮緊張',l:['horm','env']},
+  {ico:'🔆',name:'對光敏感',l:['light']},
+  {ico:'⏰',name:'太早醒',l:['light','horm']},
+  {ico:'💊',name:'靠藥才能睡',l:['horm','sleep']},
+  {ico:'🥶',name:'手腳冰冷難入睡',l:['env','repair']},
+  {ico:'😤',name:'淺眠容易驚醒',l:['sleep','env']},
+  {ico:'🌡️',name:'夜汗盜汗',l:['horm','repair']},
+  {ico:'🔋',name:'日間體力很差',l:['life','repair']},
+];
+
+// FLASHCARDS
+const FC_CARDS=[
+  {eye:'環境層',big:'核心體溫',zh:'核心體溫必須下降才能入睡',detail:'入睡前需下降0.5~1℃。室溫18~22℃最理想。甘胺酸直接作用下視丘降低體溫。睡前熱水澡反而幫助入睡（熱後散熱加速）'},
+  {eye:'光線層',big:'褪黑激素',zh:'光線是生理時鐘的主要校準器',detail:'早晨陽光→血清素→晚上轉換褪黑激素。睡前藍光抑制褪黑激素。低劑量0.5mg比3mg更接近生理濃度'},
+  {eye:'荷爾蒙層',big:'皮質醇',zh:'現代失眠最主要的荷爾蒙根因',detail:'皮質醇升高=大腦認為現在是白天=無法入睡。GABA直接降低皮質醇。茶胺酸降低皮質醇峰值而不嗜睡'},
+  {eye:'睡眠層',big:'深睡N3',zh:'最重要的修復階段',detail:'深睡期：生長激素大量分泌 + 免疫重整 + 神經修復 + 細胞再生。占比應達20%以上。甘胺酸鎂是提升深睡最直接的補充'},
+  {eye:'睡眠層',big:'REM',zh:'情緒整合 + 記憶鞏固 + 創造力',detail:'REM睡眠期大腦活躍。情緒記憶在這裡整合。REM過多=皮質醇偏高=情緒壓力大。缺乏REM=情緒不穩 + 記憶差'},
+  {eye:'修復層',big:'修復三元素',zh:'材料 + 能量 + 時間，缺一不可',detail:'神經修復需要B群。粒線體修復需要CoQ10。組織修復需要蛋白質。有了深睡窗口但材料不足，修復依然無法完成'},
+  {eye:'生命力層',big:'睡眠複利',zh:'規律作息形成健康複利',detail:'規律→生理時鐘同步→深睡↑→修復↑→能量↑→表現↑→生命力↑。每天0.1%改善，一年後是今天的1.44倍'},
+  {eye:'黑科技',big:'負離子',zh:'副交感活化器 = 入睡環境優化',detail:'副交感活化→皮質醇↓→體溫調節↑→睡眠阻力↓。建議睡前1小時開啟。直接改善入睡速度和深睡品質'},
+  {eye:'黑科技',big:'氫氧水',zh:'氧化壓力緩衝器 = 修復品質↑',detail:'睡眠期間的修復需要低氧化環境。氫氧水→自由基↓→修復細胞保護↑→醒來的感受更好。日間飲用，夜間修復受益'},
+  {eye:'控制論',big:'負回饋',zh:'睡眠是最大的負回饋修復系統',detail:'消耗→疲勞→睡眠→修復→恢復→穩態。每晚是一次系統重置。睡眠品質=重置的完整程度'},
+  {eye:'預測編碼',big:'安全感',zh:'大腦先判斷環境是否安全才能入睡',detail:'若大腦預測危險，副交感無法啟動。即使疲勞也睡不著。安全感=深睡的神經前提。負離子改善安全感的神經環境'},
+  {eye:'第一性原理',big:'修復',zh:'睡眠不是休息，是全身修復工程',detail:'白天消耗，夜晚修復。睡眠品質決定修復品質，修復品質決定生命品質。普通人看睡多久，高手看修復多少'},
+  {eye:'金句',big:'深睡',zh:'睡眠是最便宜的長壽藥',detail:'每晚深睡20%以上=最強的抗老化工具。比任何保健品更有效。真正的健康=每天都有能力把自己修復回來'},
+];
+
+// QUIZ
+const QUIZ=[
+  {type:'睡眠機制',q:'為什麼說深睡（N3）是最重要的睡眠階段？',opts:['睡得最深不會做夢','生長激素大量分泌 + 免疫重整 + 神經修復 + 細胞再生都在這個階段發生','夢最多的階段','心跳最慢的時候'],ans:1,exp:'N3深睡是人體修復的核心窗口。缺乏深睡=修復不足=免疫下降+老化加速+疲勞累積。甘胺酸鎂是提升深睡最直接的補充策略。'},
+  {type:'營養機制',q:'甘胺酸幫助深睡的核心機制是？',opts:['讓人昏昏欲睡','直接作用於下視丘，降低核心體溫，核心體溫下降是進入深睡的必要條件','補充神經傳導物質','增加褪黑素分泌'],ans:1,exp:'入睡前核心體溫需下降0.5~1℃才能進入深睡。甘胺酸直接作用於下視丘加速散熱。這就是睡前熱水澡也有幫助的原因（熱後散熱加速）。'},
+  {type:'荷爾蒙層',q:'現代人失眠最主要的荷爾蒙根因是？',opts:['褪黑素太少','生長激素不足','皮質醇長期偏高——大腦認為現在是白天，無法切換到修復模式','血糖過高'],ans:2,exp:'皮質醇是覺醒荷爾蒙，長期偏高=大腦持續處於戰逃模式=入睡困難。GABA直接降低皮質醇，茶胺酸降低峰值。壓力管理是解決慢性失眠的根本。'},
+  {type:'光線層',q:'睡前看手機為什麼影響睡眠？',opts:['讓人興奮不想睡','螢幕藍光欺騙大腦以為是白天，抑制褪黑激素分泌，延後生理時鐘','眼睛疲勞','姿勢不對'],ans:1,exp:'褪黑激素對光（尤其藍光 460nm）極度敏感。睡前30分鐘藍光曝露可使褪黑激素延後分泌2小時。建議睡前1小時停止使用手機。'},
+  {type:'系統論',q:'失眠的真正根因通常是？',opts:['睡眠出了問題','整個穩態系統失衡——神經+荷爾蒙+壓力+環境共同失衡的結果','缺乏褪黑素','睡太多白天'],ans:1,exp:'複雜系統解析：失眠通常不是睡眠問題，而是整個穩態系統失衡的結果。因此單吃褪黑素效果有限，需要環境+荷爾蒙+神經材料多層同步介入。'},
+  {type:'預測編碼',q:'為什麼「安全感」是深睡的神經前提？',opts:['睡覺需要放鬆','大腦先判斷環境是否安全才啟動副交感，若預測危險即使疲勞也無法入睡','安全感讓人舒服','沒有根據'],ans:1,exp:'預測編碼：大腦的主要工作是預測和控制。若預測環境危險，副交感神經不會完全啟動，深睡無法實現。這解釋了為什麼旅行或壓力期間睡眠品質差。'},
+  {type:'黑科技',q:'氫氧水對睡眠修復的作用路徑是？',opts:['直接促進褪黑素','補充水分','降低全身氧化壓力→睡眠期間修復細胞不被自由基損傷→醒來的精神和恢復感更好','增加深睡時間'],ans:2,exp:'氫氧水不是直接的睡眠補充，而是「修復環境保護器」。日間使用→降低自由基→夜間修復品質↑。特別是粒線體和神經細胞的睡眠修復效率提升。'},
+  {type:'第一性原理',q:'真正的睡眠品質指標是？',opts:['睡了幾小時','睡眠中做了幾個夢','深睡比例+夜醒次數+晨起精神+入睡速度，比總睡眠時數更重要','睡著時心跳'],ans:2,exp:'三大黃金指標：①入睡時間（理想<15分鐘）②深睡時間（理想>全程20%）③夜醒次數（理想0~1次）。HRV是深睡品質最好的客觀指標。'},
+];
+
+// ═══════════════════ STATE ═══════════════════
+let selSyms=new Set(),curLayer='env';
+let fcWords=[],fcIdx=0,fcOK=0,fcNG=0,fcFlipped=false;
+let qData=[],qIdx=0,qC=0,qW=0,qAnsed=false,comboN=0,comboT=null;
+const tgState={tg1:false,tg2:false,tg3:false};
+
+window.onload=()=>{
+  renderCycleVis();renderSymGrid();renderLayerTabs();renderLayerContents();
+  startFC();startQuiz();
+};
+
+function gp(id,btn){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+}
+
+// CYCLE VIS
+function renderCycleVis(){
+  const stages=[
+    ['n1',8],['n2',25],['n3',50],['n2',35],['rem',40],
+    ['n2',22],['n3',45],['n2',30],['rem',55],
+    ['n2',18],['n3',35],['n2',25],['rem',65],
+    ['n2',15],['n3',28],['rem',70],['n1',12]
+  ];
+  const colorMap={n1:'var(--c-n1)',n2:'var(--c-n2)',n3:'var(--c-n3)',rem:'var(--c-rem)'};
+  document.getElementById('cvBars').innerHTML=stages.map(([t,h])=>`
+    <div class="cv-bar" style="background:${colorMap[t]};height:${h}px"></div>`).join('');
+}
+
+// DIAGNOSIS
+function renderSymGrid(){
+  document.getElementById('symGrid').innerHTML=ALL_SYMS.map(s=>`
+    <button class="sym-btn" onclick="toggleSym('${s.name}',this)">
+      <span class="sy-icon">${s.ico}</span>
+      <span class="sy-name">${s.name}</span>
+      <span class="sy-sub">${s.l.map(id=>LAYERS.find(l=>l.id===id)?.name).join(' + ')}</span>
+    </button>`).join('');
+}
+function toggleSym(name,el){if(selSyms.has(name)){selSyms.delete(name);el.classList.remove('sel');}else{selSyms.add(name);el.classList.add('sel');}}
+function runDiag(){
+  if(!selSyms.size){alert('請先選擇至少一個症狀');return;}
+  const scores={};LAYERS.forEach(l=>scores[l.id]=0);
+  selSyms.forEach(sym=>{const s=ALL_SYMS.find(x=>x.name===sym);if(s)s.l.forEach(id=>scores[id]=(scores[id]||0)+1);});
+  const maxS=Math.max(...Object.values(scores));
+  const sorted=LAYERS.map(l=>({...l,score:scores[l.id]||0})).sort((a,b)=>b.score-a.score);
+  document.getElementById('layerScoreGrid').innerHTML=sorted.map(l=>{
+    const pct=maxS>0?Math.round(l.score/maxS*100):0;const hit=l.score>0;
+    return `<div class="lsg${hit?' hit':''}" style="border-color:${hit?l.color.replace('var(','').replace(')','').trim()+'55':'var(--bdr)'};opacity:${hit?1:.4}">
+      <div class="lsg-top"><div class="lsg-ico" style="background:${l.color}18">${l.ico}</div>
+        <div><div class="lsg-name" style="color:${hit?l.color:'var(--dim)'}">${l.name}</div>
+        <div class="lsg-pct" style="color:${hit?l.color:'var(--dim)'}">${hit?`需改善 ${pct}%`:'目前正常'}</div></div>
+      </div>
+      <div class="lsg-bar-bg"><div class="lsg-bar" style="background:${l.color};width:${pct}%"></div></div>
+      <div class="lsg-syms">${[...selSyms].filter(sym=>{const sm=ALL_SYMS.find(x=>x.name===sym);return sm&&sm.l.includes(l.id);}).map(sym=>`<span class="lsg-sym" style="background:${l.color}18;color:${l.color}">${sym}</span>`).join('')}</div>
+    </div>`;
+  }).join('');
+  const top=sorted.filter(l=>l.score>0).slice(0,3);
+  document.getElementById('recGrid').innerHTML=top.flatMap(l=>l.nutrients.map(n=>`
+    <div class="rec-card" style="border-top-color:${l.color}">
+      <div class="rc-layer" style="color:${l.color}">${l.ico} ${l.name}</div>
+      <div class="rc-name">${n.n}</div>
+      <div class="rc-mech">${n.mech}</div>
+      <div class="rc-effect">${n.effect}</div>
+      <div class="rc-why">${n.d}</div>
+      <a class="rc-buy" href="${BUY}" target="_blank">🛒 訂購</a>
+    </div>`)).join('');
+  document.getElementById('diagResult').classList.add('show');
+  setTimeout(()=>document.getElementById('diagResult').scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+function resetDiag(){selSyms.clear();document.querySelectorAll('.sym-btn').forEach(b=>b.classList.remove('sel'));document.getElementById('diagResult').classList.remove('show');}
+
+// LAYER TABS
+function renderLayerTabs(){
+  document.getElementById('layerTabs').innerHTML=LAYERS.map(l=>`
+    <button class="l-tab${l.id===curLayer?' on':''}" id="lt-${l.id}" onclick="switchLayer('${l.id}')"
+      style="${l.id===curLayer?`background:${l.color};color:#040200`:''}">${l.ico} ${l.name}</button>`).join('');
+}
+function switchLayer(id){
+  curLayer=id;
+  document.querySelectorAll('.l-tab').forEach(t=>{t.classList.remove('on');t.style.background='';t.style.color='';});
+  document.querySelectorAll('.l-content').forEach(c=>c.classList.remove('on'));
+  const l=LAYERS.find(x=>x.id===id);
+  const tab=document.getElementById('lt-'+id);
+  if(tab){tab.classList.add('on');tab.style.background=l.color;tab.style.color='#040200';}
+  document.getElementById('lc-'+id).classList.add('on');
+}
+function renderLayerContents(){
+  document.getElementById('layerContents').innerHTML=LAYERS.map(l=>`
+    <div class="l-content${l.id===curLayer?' on':''}" id="lc-${l.id}">
+      <div class="l-head">
+        <div class="l-ico" style="background:${l.color}18">${l.ico}</div>
+        <div><div class="l-num" style="color:${l.color}">睡眠工程 ${l.en}</div>
+          <div class="l-h1" style="color:${l.color}">${l.name}</div>
+          <div class="l-why">${l.why}</div></div>
+      </div>
+      <div class="body-card">
+        <div class="bc-t">🎯 實踐建議</div>
+        <div class="bc-b">${l.tips.join('<br>')}</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:10px">💊 對應補充品 — 機制 × 果效 × 為何有效</div>
+      <div class="nt-grid">
+        ${l.nutrients.map(n=>`<div class="nt-card" style="border-left-color:${l.color}">
+          <div class="nt-top"><span class="nt-name">${n.n}</span>
+            <span class="nt-mech" style="background:${l.color}18;color:${l.color}">${n.mech}</span></div>
+          <div class="nt-effect" style="color:${l.color}">${n.effect}</div>
+          <div class="nt-detail">${n.d}</div>
+          <a class="nt-buy" href="${BUY}" target="_blank">🛒 訂購</a>
+        </div>`).join('')}
+      </div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:9px">⚡ 黑科技 × 這一層的對應作用</div>
+      <div class="tech-row">
+        <div class="tech-card tech-neg">
+          <div class="tech-t" style="color:var(--neg)">🌬️ 負離子機</div>
+          <div class="tech-flow">${l.neg.split('→').map((p,i)=>i===0?`<b>${p.trim()}</b>`:`<span class="arr">→</span> ${p.trim()}`).join(' ')}</div>
+          <a class="tech-buy" href="${BUY}" target="_blank">🛒 查看負離子機</a>
+        </div>
+        <div class="tech-card tech-hyd">
+          <div class="tech-t" style="color:var(--hyd)">💧 氫氧水</div>
+          <div class="tech-flow">${l.hyd.split('→').map((p,i)=>i===0?`<b>${p.trim()}</b>`:`<span class="arr">→</span> ${p.trim()}`).join(' ')}</div>
+          <a class="tech-buy" href="${BUY}" target="_blank">🛒 查看氫氧水</a>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// TRACKER
+function updateSlider(el,vId){
+  const v=parseInt(el.value);
+  const id=el.id;
+  let txt='';
+  if(id==='sl1'){txt=v<20?'<10分鐘':v<40?'15~20分鐘':v<60?'30分鐘':v<80?'45分鐘':'60分鐘以上';}
+  else if(id==='sl2'){txt=v<20?'非常深':v<40?'較深':v<60?'普通':v<80?'較淺':'非常淺';}
+  else if(id==='sl3'){txt=v<20?'0次':v<40?'1次':v<60?'2~3次':v<80?'4~5次':'5次以上';}
+  else if(id==='sl4'){txt=v<20?'神清氣爽':v<40?'還不錯':v<60?'普通':v<80?'偏差':'非常差';}
+  else if(id==='sl5'){txt=v<20?'精力充沛':v<40?'不錯':v<60?'普通':v<80?'偏疲':'嚴重疲勞';}
+  document.getElementById(vId).textContent=txt;
+  el.style.setProperty('--val',v+'%');
+}
+function toggleTG(id){tgState[id]=!tgState[id];document.getElementById(id).classList.toggle('on');}
+function calcSleep(){
+  const sl1=100-parseInt(document.getElementById('sl1').value); // 入睡快=分高
+  const sl2=parseInt(document.getElementById('sl2').value);     // 深睡高=分高 (已是反向)
+  const sl3=100-parseInt(document.getElementById('sl3').value); // 夜醒少=分高
+  const sl4=parseInt(document.getElementById('sl4').value);     // 晨起好=分高 (已是反向)
+  const sl5=parseInt(document.getElementById('sl5').value);     // 白天好=分高 (已是反向)
+  // 分數計算 (sl2 sl4 sl5 需要反轉：值高=差)
+  const s1=sl1, s2=100-sl2, s3=sl3, s4=100-sl4, s5=100-sl5;
+  let score=Math.round((s1*0.2+s2*0.3+s3*0.2+s4*0.15+s5*0.15));
+  // penalties
+  if(tgState.tg1)score-=8;
+  if(tgState.tg2)score-=6;
+  if(tgState.tg3)score-=5;
+  score=Math.max(0,Math.min(100,score));
+  let grade,gradeColor;
+  if(score>=85){grade='🌊 深眠達人';gradeColor='rgba(129,140,248,.2)';}
+  else if(score>=70){grade='😌 良好睡眠';gradeColor='rgba(52,211,153,.15)';}
+  else if(score>=55){grade='😐 普通水平';gradeColor='rgba(251,191,36,.15)';}
+  else if(score>=40){grade='😔 需要改善';gradeColor='rgba(249,115,22,.15)';}
+  else{grade='😰 緊急調整';gradeColor='rgba(244,63,94,.15)';}
+  document.getElementById('sdScore').textContent=score;
+  const gradeEl=document.getElementById('sdGrade');
+  gradeEl.textContent=grade;gradeEl.style.cssText=`background:${gradeColor};color:var(--moon);border:1px solid rgba(129,140,248,.3);border-radius:20px;padding:5px 16px;`;
+  document.getElementById('sdBreakdown').innerHTML=[
+    ['入睡速度',s1,sl1<50?'✅ 良好':'⚠️ 偏慢'],
+    ['深睡品質',s2,s2>60?'✅ 良好':'⚠️ 偏淺'],
+    ['夜醒次數',s3,s3>70?'✅ 良好':'⚠️ 偏多'],
+    ['晨起精神',s4,s4>60?'✅ 良好':'⚠️ 偏差'],
+    ['白天能量',s5,s5>60?'✅ 良好':'⚠️ 偏低'],
+  ].map(([n,v,tag])=>`<div class="bd-item"><div class="bd-val" style="color:var(--moon)">${v}</div><div class="bd-lbl">${n}<br><span style="font-size:10px">${tag}</span></div></div>`).join('');
+  // Recommendations
+  const recs=[];
+  if(s1<60)recs.push({ico:'⏱️',text:'<b>入睡慢建議：</b>甘胺酸鎂（核心體溫↓） + GABA（皮質醇↓） + 茶胺酸（放鬆不嗜睡）',buy:true});
+  if(s2<60)recs.push({ico:'🌊',text:'<b>深睡不足建議：</b>甘胺酸鎂（深睡核心組合） + Omega-3 DHA（神經細胞膜流動性）',buy:true});
+  if(s3<60)recs.push({ico:'🌙',text:'<b>夜醒頻繁建議：</b>GABA（神經穩定） + 青春方（荷爾蒙平衡） + 鎂（肌肉放鬆）',buy:true});
+  if(s4<60||s5<60)recs.push({ico:'☀️',text:'<b>晨起疲勞建議：</b>粒線寶+CoQ10（修復能量）+ 超級B群（代謝輔酶） + 神經營養素',buy:true});
+  if(tgState.tg1)recs.push({ico:'💧',text:'<b>凌晨2~4點醒：</b>NAC（肝臟排毒支持）+ 甘胺酸鎂（荷爾蒙穩定）',buy:true});
+  if(tgState.tg2)recs.push({ico:'💭',text:'<b>多夢惡夢頻繁：</b>GABA + 茶胺酸（皮質醇↓） + 青春方（夜間修復）',buy:true});
+  if(tgState.tg3)recs.push({ico:'🦵',text:'<b>腿部不寧症：</b>甘胺酸鎂（鎂缺乏症）+ 神經營養素（B12 B6 B1）',buy:true});
+  if(!recs.length)recs.push({ico:'🌟',text:'<b>睡眠狀態不錯！</b>持續維持：甘胺酸鎂 + 退黑激素（低劑量）是最佳維護組合',buy:true});
+  document.getElementById('trackerRec').innerHTML=`<div class="rec-sec-title">針對你的睡眠分數：補充建議</div>`+
+    recs.map(r=>`<div class="rec-item"><span class="rec-ico">${r.ico}</span><div class="rec-text">${r.text}${r.buy?`<br><a class="buy-link" href="${BUY}" target="_blank">🛒 前往訂購</a>`:''}</div></div>`).join('');
+  document.getElementById('sleepResult').style.display='block';
+  setTimeout(()=>document.getElementById('sleepResult').scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+
+// FLASHCARD
+function shuffle(a){return [...a].sort(()=>Math.random()-.5);}
+function startFC(){
+  fcWords=shuffle([...FC_CARDS]);fcIdx=0;fcOK=0;fcNG=0;fcFlipped=false;
+  document.getElementById('fcResult').style.display='none';
+  document.getElementById('fcCard').style.display='';
+  document.getElementById('fcBtns').style.display='none';
+  document.getElementById('fcCard').classList.remove('flip');renderFC();
+}
+function renderFC(){
+  if(fcIdx>=fcWords.length){showFCR();return;}
+  const c=fcWords[fcIdx];
+  document.getElementById('fcBar').style.width=(fcIdx/fcWords.length*100)+'%';
+  document.getElementById('fcCtr').textContent=`第 ${fcIdx+1} / ${fcWords.length} 張`;
+  document.getElementById('fcSeen').textContent=fcIdx;
+  document.getElementById('fcOK').textContent=fcOK;
+  document.getElementById('fcNG').textContent=fcNG;
+  ['fcEye','fcEye2'].forEach(id=>document.getElementById(id).textContent=c.eye);
+  document.getElementById('fcBig').textContent=c.big;
+  document.getElementById('fcZh').textContent=c.zh;
+  document.getElementById('fcDetail').textContent=c.detail;
+  document.getElementById('fcCard').classList.remove('flip');
+  fcFlipped=false;document.getElementById('fcBtns').style.display='none';
+}
+function flipFC(){document.getElementById('fcCard').classList.toggle('flip');fcFlipped=!fcFlipped;document.getElementById('fcBtns').style.display=fcFlipped?'flex':'none';}
+function markFC(ok){if(ok)fcOK++;else{fcNG++;fcWords.push(fcWords[fcIdx]);}fcIdx++;renderFC();}
+function skipFC(){fcIdx++;renderFC();}
+function showFCR(){
+  document.getElementById('fcResult').style.display='block';document.getElementById('fcCard').style.display='none';
+  const pct=fcOK/(fcOK+fcNG)*100||0;
+  document.getElementById('rStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('rScore').textContent=`記住 ${fcOK} 個`;
+  document.getElementById('rMsg').textContent=pct>=90?'睡眠工程全掌握！每晚都能把自己修復好 🎉':pct>=70?'很好！繼續鞏固各層的補充策略。':'多複習幾遍，深睡原理通了就全懂了。';
+}
+
+// QUIZ
+function startQuiz(){
+  qData=shuffle([...QUIZ]);qIdx=0;qC=0;qW=0;qAnsed=false;comboN=0;
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('quizArea').style.display='';renderQ();
+}
+function renderQ(){
+  if(qIdx>=qData.length){showQR();return;}
+  qAnsed=false;
+  const q=qData[qIdx];
+  document.getElementById('qN').textContent=qIdx+1;
+  document.getElementById('qC').textContent=qC;
+  document.getElementById('qW').textContent=qW;
+  document.getElementById('qBar').style.width=(qIdx/qData.length*100)+'%';
+  document.getElementById('qType').textContent=q.type;
+  document.getElementById('qQ').textContent=q.q;
+  document.getElementById('qExp').classList.remove('show');
+  document.getElementById('qNext').style.display='none';
+  document.getElementById('qOpts').innerHTML=q.opts.map((o,i)=>`
+    <button class="qopt" onclick="ansQ(this,${i},${q.ans},'${q.exp.replace(/'/g,"\\'")}')">${o}</button>`).join('');
+}
+function ansQ(btn,chosen,ans,exp){
+  if(qAnsed)return;qAnsed=true;
+  const ok=chosen===ans;
+  document.querySelectorAll('.qopt').forEach((b,i)=>{b.disabled=true;if(i===chosen)b.classList.add(ok?'ok':'bad');else if(i===ans)b.classList.add('ok');});
+  if(ok){qC++;comboN++;showCombo();}else{qW++;comboN=0;}
+  const e=document.getElementById('qExp');
+  e.innerHTML=`<b>${ok?'✅ 正確！':'❌ 解析：'}</b> ${exp}`;e.classList.add('show');
+  document.getElementById('qNext').style.display='block';
+}
+function nextQ(){qIdx++;renderQ();}
+function showCombo(){
+  if(comboN<3)return;
+  const b=document.getElementById('comboBadge');b.textContent=`🔥 ${comboN}連！`;b.style.display='block';
+  clearTimeout(comboT);comboT=setTimeout(()=>b.style.display='none',1400);
+}
+function showQR(){
+  document.getElementById('quizResult').style.display='block';document.getElementById('quizArea').style.display='none';
+  const pct=qC/(qC+qW)*100||0;
+  document.getElementById('qStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('qScore').textContent=`${qC}/${qC+qW}`;
+  document.getElementById('qMsg').textContent=pct>=90?'睡眠工程專家！🎉':pct>=70?'很棒！繼續深化。':'多複習六層架構，原理通了就全對了。';
+}
+// init slider display
+['sl1','sl2','sl3','sl4','sl5'].forEach(id=>{const el=document.getElementById(id);if(el){el.style.setProperty('--val','50%');updateSlider(el,id+'v');}});
+</script>
+
+
+
+
+
+<!-- SOUP-START -->
+<style>
+/* ── 心靈雞湯卡 + 搜尋 ── */
+.sp-card{margin:0 0 18px;padding:14px 16px;border-radius:14px;border:1px solid #E6D3A3;background:linear-gradient(135deg,#FFF9EA,#FFF1DC);color:#4A3A12;text-align:left;cursor:default;font-family:inherit;line-height:1.6;}
+.sp-dark .sp-card{background:linear-gradient(135deg,rgba(232,168,32,.12),rgba(255,255,255,.03));border-color:rgba(232,168,32,.3);color:#F3E8CC;}
+.sp-h{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;letter-spacing:.5px;color:#B07A08;margin-bottom:6px;}
+.sp-dark .sp-h{color:#E8A820;}
+.sp-n{font-weight:400;opacity:.7;}
+.sp-q{font-size:16px;font-weight:600;line-height:1.75;white-space:pre-line;}
+.sp-b{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.sp-fz{bottom:166px;font-size:16px;font-weight:700;}
+.sp-fh{font-size:12px;font-weight:700;padding:8px 6px 4px;color:#C9960C;}
+.sp-it{position:relative;}
+.sp-it[data-f]{padding-right:34px;}
+.sp-x{position:absolute;right:8px;top:8px;opacity:.5;padding:0 4px;}
+.sp-x:hover{opacity:1;}
+.sp-b button{padding:5px 13px;border-radius:16px;border:1px solid currentColor;background:transparent;color:inherit;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;opacity:.75;transition:.15s;}
+.sp-b button:hover{opacity:1;}
+.sp-note{font-size:11px;opacity:.65;margin-top:8px;text-align:center;}
+.sp-fab{position:fixed;right:14px;z-index:900;width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;font-size:18px;line-height:42px;padding:0;background:#1A2B5F;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.sp-dark .sp-fab{background:#E8A820;color:#1a1200;}
+.sp-fs{bottom:116px;}
+.sp-ft{bottom:66px;display:none;}
+.sp-ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;background:rgba(0,0,0,.55);padding:8vh 14px 14px;}
+.sp-ov.on{display:block;}
+.sp-box{max-width:560px;margin:0 auto;background:#fff;color:#1A2040;border-radius:14px;padding:14px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:14px;}
+.sp-dark .sp-box{background:#0E1835;color:#D5E5F8;border:1px solid #1C3060;}
+.sp-row{display:flex;gap:8px;}
+.sp-row input{flex:1;min-width:0;padding:10px 12px;border-radius:9px;border:1.5px solid #C9960C;font-size:15px;font-family:inherit;outline:none;background:transparent;color:inherit;}
+.sp-row button{padding:0 14px;border-radius:9px;border:none;background:rgba(128,128,128,.2);color:inherit;font-size:15px;cursor:pointer;}
+.sp-r{overflow-y:auto;margin-top:10px;}
+.sp-it{padding:9px 10px;border-radius:9px;cursor:pointer;line-height:1.6;border-bottom:1px solid rgba(128,128,128,.18);}
+.sp-it:hover{background:rgba(201,150,12,.14);}
+.sp-it mark{background:#F0C040;color:#1a1200;border-radius:3px;padding:0 2px;}
+.sp-tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:10px;background:rgba(201,150,12,.2);margin-right:6px;}
+.sp-em{padding:16px 6px;opacity:.6;text-align:center;}
+.sp-hit{outline:3px solid #E8A820 !important;outline-offset:3px;}
+#spToast{display:none;position:fixed;bottom:120px;left:50%;transform:translateX(-50%);z-index:1100;background:#1A2B5F;color:#fff;font-size:13px;font-weight:700;padding:8px 18px;border-radius:9px;}
+#spToast.on{display:block;}
+</style>
+<script>
+window.SOUP={key:'睡眠',dark:true,nav:'.nb',panel:'.pg',host:'.wrap',skip:'.topbar,.xp-bar,.combo,.copy-toast',extra:['把今天的事留給今天，明天的事交給明天。','睡前放過自己，今天已經夠努力了。','關燈的那一刻，就是照顧自己的開始。','睡不著也沒關係，躺著休息也是休息。','夜晚是用來充電的，不是用來檢討的。','一夜好眠，會讓明天的世界溫柔一點。'],soups:{
+'pg-home':['好好睡一覺，是對明天的自己最大的溫柔。','睡眠不是浪費時間，是身體在悄悄把你修好。','今晚早一點放下，明天才提得起來。'],
+'pg-diag':['睡不好不是你的錯，是身體在提醒你該被照顧了。','找到原因，夜晚就不再那麼漫長。','看懂自己的夜，白天才會亮。'],
+'pg-system':['一層一層顧好，好眠就會自己回來。','環境對了，身體就知道可以安心休息。','睡眠是可以被設計的，不用靠運氣。'],
+'pg-tracker':['分數只是今晚的紀錄，不是對你的評價。','每天看一眼，進步就藏在小小的變化裡。','願意記錄的人，已經在變好的路上。'],
+'pg-learn':['懂得睡眠的道理，才捨得讓自己休息。','休息不是偷懶，是為了走更遠。','身體的節奏，值得你花時間認識。'],
+'pg-flash':['把好觀念記進心裡，今晚就多一分安穩。','一張卡一個小提醒，累積起來就是一夜好眠。','慢慢學，慢慢睡好。'],
+'pg-quiz':['考的不是分數，是你有多願意善待自己。','答錯沒關係，今晚照樣可以好好睡。','每懂一題，離好眠就近一步。']
+}};
+</script>
+<script>
+// ── 心靈雞湯卡 + 搜尋 + 記住分頁 + 離線教練（共用模組，完全離線）──
+(function(){
+var C=window.SOUP||{},K='soup:'+(C.key||'app')+':';
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function lsGet(k){try{return localStorage.getItem(K+k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(K+k,v);}catch(e){}}
+function navs(){return C.nav?$$(C.nav):[];}
+function panels(){
+  if(C.panels)return C.panels();
+  return $$(C.panel||'.pg').map(function(el){return{el:el,id:el.id,host:(C.host&&el.querySelector(C.host))||el};});
+}
+// 通用句庫：接在每個分頁專屬句子後面，「換一碗」時輪到
+var POOL=['慢慢來，比較快。','你已經走了很遠，回頭看看就知道。','今天不必完美，只要比昨天多一點點。','允許自己休息，也是一種前進。','每一個小小的開始，都值得被肯定。','你現在做的每件小事，未來的你都會感謝。','不用和別人比，你有自己的時區。','卡住的時候，先深呼吸，再走一小步。','把今天過好，就是對未來最好的準備。','你比昨天的自己，又多懂了一點。','再難的日子，也是一天一天過完的。','對自己溫柔一點，你正在努力。'];
+function specOf(id){return (C.soups&&C.soups[id])||C.common||[];}
+function quotesOf(id){var s=specOf(id);return s.length?s.concat(C.extra||[],POOL):s;}
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+var day=Math.floor(Date.now()/864e5),off={};
+function favs(){try{return JSON.parse(lsGet('fav'))||[];}catch(e){return [];}}
+function setFavs(a){lsSet('fav',JSON.stringify(a));}
+
+// ── 雞湯卡 ──
+function fill(card){
+  var id=card.getAttribute('data-sp'),q=quotesOf(id);if(!q.length)return;
+  // 每天預設先出該分頁的專屬句，按「換一碗」再輪到其他句
+  var i=((day+hash(id))%specOf(id).length+(off[id]||0))%q.length;
+  card.querySelector('.sp-q').textContent=q[i];
+  card.querySelector('.sp-n').textContent=(i+1)+' / '+q.length;
+  card.querySelector('[data-a=n]').style.display=q.length>1?'':'none';
+  card.querySelector('[data-a=f]').textContent=favs().indexOf(q[i])>=0?'♥ 已收藏':'♡ 收藏';
+}
+function say(text){
+  if(!('speechSynthesis' in window)){toast('這個瀏覽器不支援朗讀');return;}
+  speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);u.lang='zh-TW';u.rate=0.9;speechSynthesis.speak(u);
+}
+// 存成 1080×1080 圖卡（PNG），可直接貼到臉書 / LINE
+function saveImage(text){
+  var S=1080,cv=document.createElement('canvas');cv.width=cv.height=S;
+  var x=cv.getContext('2d'),g=x.createLinearGradient(0,0,S,S);
+  g.addColorStop(0,'#1A2B5F');g.addColorStop(1,'#0A7A72');x.fillStyle=g;x.fillRect(0,0,S,S);
+  x.strokeStyle='rgba(240,192,64,.55)';x.lineWidth=4;x.strokeRect(48,48,S-96,S-96);
+  var F='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+  x.textAlign='center';x.textBaseline='middle';
+  x.fillStyle='#F0C040';x.font='bold 40px '+F;x.fillText('心靈雞湯',S/2,150);
+  var size=text.length>60?50:text.length>32?58:68,lh=size*1.6,max=S-240,lines=[];
+  x.font='bold '+size+'px '+F;
+  text.split('\n').forEach(function(par){
+    var line='';
+    for(var i=0;i<par.length;i++){
+      var ch=par[i],keep=/[，。！？、；：」』）]/.test(ch);   // 標點不放行首
+      if(line&&!keep&&x.measureText(line+ch).width>max){lines.push(line);line=ch;}else line+=ch;
+    }
+    if(line)lines.push(line);
+  });
+  x.fillStyle='#fff';
+  var y=S/2-(lines.length-1)*lh/2;
+  lines.forEach(function(l,i){x.fillText(l,S/2,y+i*lh);});
+  x.fillStyle='rgba(255,255,255,.7)';x.font='32px '+F;
+  x.fillText(C.brand||document.title.split(/[｜|]/)[0].trim(),S/2,S-140);
+  cv.toBlob(function(b){
+    var a=document.createElement('a');a.href=URL.createObjectURL(b);
+    a.download='心靈雞湯_'+text.replace(/[\s\\/:*?"<>|，。！？、]/g,'').slice(0,10)+'.png';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
+    toast('圖卡已下載 ✓');
+  },'image/png');
+}
+function toast(m){
+  var t=document.getElementById('spToast');if(!t)return;
+  t.textContent=m;t.classList.add('on');clearTimeout(toast.t);
+  toast.t=setTimeout(function(){t.classList.remove('on');},1300);
+}
+function copy(text){
+  function fb(){var a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}a.remove();}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).catch(fb);else fb();
+  toast('已複製 ✓');
+}
+function makeCard(id){
+  var d=document.createElement('div');d.className='sp-card';d.setAttribute('data-sp',id);
+  d.innerHTML='<div class="sp-h"><span>🍲 心靈雞湯</span><span class="sp-n"></span></div><div class="sp-q"></div><div class="sp-b"><button type="button" data-a="n">換一碗</button><button type="button" data-a="f">♡ 收藏</button><button type="button" data-a="c">複製</button><button type="button" data-a="s">朗讀</button><button type="button" data-a="i">存圖卡</button></div>';
+  d.addEventListener('click',function(e){
+    e.stopPropagation();
+    var a=e.target.getAttribute&&e.target.getAttribute('data-a'),t=d.querySelector('.sp-q').textContent;
+    if(a==='n'){off[id]=(off[id]||0)+1;fill(d);}
+    else if(a==='c'){copy(t);}
+    else if(a==='s'){say(t);}
+    else if(a==='i'){saveImage(t);}
+    else if(a==='f'){
+      var f=favs(),k=f.indexOf(t);
+      if(k>=0)f.splice(k,1);else f.unshift(t);
+      setFavs(f);fill(d);toast(k>=0?'已取消收藏':'已收藏 ♥（按 🔍 可看全部收藏）');
+    }
+  });
+  fill(d);return d;
+}
+function ensure(){
+  panels().forEach(function(p){
+    if(!p||!p.el)return;
+    var host=p.host||p.el,ex=null;
+    for(var c=host.firstElementChild;c;c=c.nextElementSibling){if(c.classList.contains('sp-card')){ex=c;break;}}
+    if(ex){if(ex.getAttribute('data-sp')===p.id)return;ex.remove();}
+    if(!quotesOf(p.id).length)return;
+    var card=makeCard(p.id);
+    if(p.after&&p.after.parentNode===host)host.insertBefore(card,p.after.nextSibling);
+    else host.insertBefore(card,host.firstChild);
+  });
+}
+
+// ── 搜尋 ──
+var SKIP='script,style,noscript,nav,.nav,.nav-tabs,.sp-card,.sp-ov,.sp-fab,.sp-note,#spToast,.fbx-b,.fbx-fab,#fbxMask';
+var cache=null;
+function blocks(){
+  var out=[],seen=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null),n;
+  while((n=w.nextNode())){
+    var el=n.parentElement;
+    if(!el||!n.nodeValue.trim()||el.closest(SKIP)||(C.skip&&el.closest(C.skip)))continue;
+    while(el.parentElement&&el.parentElement!==document.body&&/^(B|I|EM|STRONG|SPAN|A|U|SMALL|CODE|SUP|SUB)$/.test(el.tagName))el=el.parentElement;
+    if(seen.has(el))continue;seen.add(el);
+    var t=el.textContent.replace(/\s+/g,' ').trim();
+    if(t.length>=2)out.push({el:el,t:t});
+  }
+  return out;
+}
+function tabOf(el){
+  if(C.tabs===false)return -1;
+  var ps=panels();
+  for(var i=0;i<ps.length;i++)if(ps[i].el&&ps[i].el.contains(el))return i;
+  return -1;
+}
+function labelOf(el,ti){
+  if(C.label)return C.label(el)||'';
+  var nv=navs();return ti>=0&&nv[ti]?nv[ti].textContent.trim():'';
+}
+function snippet(t,k,len){
+  var s=Math.max(0,k-18);
+  return (s>0?'…':'')+t.substr(s,len)+(t.length>s+len?'…':'');
+}
+function domSearch(q){
+  var ql=q.toLowerCase(),hit=[],bs=cache||(cache=blocks());
+  for(var i=0;i<bs.length&&hit.length<300;i++){
+    var k=bs[i].t.toLowerCase().indexOf(ql);
+    if(k>=0)hit.push({el:bs[i].el,t:snippet(bs[i].t,k,72)});
+  }
+  // 只留最內層，避免同一段文字重複出現
+  hit=hit.filter(function(a){return !hit.some(function(b){return b!==a&&a.el.contains(b.el);});});
+  return hit.slice(0,40).map(function(h){var ti=tabOf(h.el);return{el:h.el,t:h.t,ti:ti,label:labelOf(h.el,ti)};});
+}
+function flash(el){
+  setTimeout(function(){
+    var t=el;if(!t||!document.body.contains(t))return;
+    while(t&&t!==document.body&&t.offsetParent===null)t=t.parentElement;
+    if(!t||t===document.body)return;
+    t.scrollIntoView({block:'center',behavior:'smooth'});
+    t.classList.add('sp-hit');setTimeout(function(){t.classList.remove('sp-hit');},1800);
+  },140);
+}
+function reveal(r){
+  var el=r.el;
+  if(r.go){el=r.go()||el;}
+  else if(C.reveal){C.reveal(el);}
+  else{var nv=navs();if(r.ti>=0&&nv[r.ti])nv[r.ti].click();}
+  flash(el);
+}
+function ui(){
+  if(C.dark)document.body.classList.add('sp-dark');
+  var t=document.createElement('div');t.id='spToast';document.body.appendChild(t);
+  var top=document.createElement('button');top.type='button';top.className='sp-fab sp-ft';top.title='回到頂端';top.textContent='↑';
+  top.onclick=function(){window.scrollTo({top:0,behavior:'smooth'});};
+  document.body.appendChild(top);
+  window.addEventListener('scroll',function(){top.style.display=window.scrollY>500?'block':'none';},{passive:true});
+
+  // 字體大小：標準 → 大 → 特大
+  var Z=[1,1.15,1.3],zi=+lsGet('zoom')||0,zb=document.createElement('button');
+  zb.type='button';zb.className='sp-fab sp-fz';zb.title='字體大小';zb.textContent='字';
+  function zoom(){document.documentElement.style.zoom=Z[zi]===1?'':Z[zi];}
+  zb.onclick=function(){zi=(zi+1)%Z.length;lsSet('zoom',String(zi));zoom();toast(['標準字體','大字體','特大字體'][zi]);};
+  zoom();document.body.appendChild(zb);
+
+  var fb=document.createElement('button');fb.type='button';fb.className='sp-fab sp-fs';fb.title='搜尋（按 / 開啟）';fb.textContent='🔍';
+  var ov=document.createElement('div');ov.className='sp-ov';
+  ov.innerHTML='<div class="sp-box"><div class="sp-row"><input type="search" placeholder="搜尋本 APP 內容…（Esc 關閉）"><button type="button" title="關閉">✕</button></div><div class="sp-r"></div></div>';
+  document.body.appendChild(fb);document.body.appendChild(ov);
+  var inp=ov.querySelector('input'),box=ov.querySelector('.sp-r'),res=[];
+  function close(){ov.classList.remove('on');}
+  function open(){cache=null;ov.classList.add('on');inp.focus();inp.select();render();}
+  function render(){
+    var q=inp.value.trim();
+    if(!q){
+      res=[];var f=favs();
+      box.innerHTML='<div class="sp-em">輸入關鍵字，搜尋所有分頁的內容</div>'+(f.length
+        ?'<div class="sp-fh">♥ 我的收藏（'+f.length+'）· 點一下複製</div>'+f.map(function(t,i){return '<div class="sp-it" data-f="'+i+'">'+esc(t)+'<span class="sp-x" data-x="'+i+'" title="移除">✕</span></div>';}).join('')
+        :'<div class="sp-em">按雞湯卡上的「♡ 收藏」，喜歡的句子會存在這裡</div>');
+      return;
+    }
+    res=(C.search?C.search(q):domSearch(q))||[];
+    if(!res.length){box.innerHTML='<div class="sp-em">找不到「'+esc(q)+'」</div>';return;}
+    var re=new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+    box.innerHTML=res.map(function(r,i){
+      return '<div class="sp-it" data-i="'+i+'">'+(r.label?'<span class="sp-tag">'+esc(r.label)+'</span>':'')+esc(r.t).replace(re,function(m){return '<mark>'+m+'</mark>';})+'</div>';
+    }).join('');
+  }
+  fb.onclick=open;
+  inp.addEventListener('input',render);
+  ov.querySelector('.sp-row button').onclick=close;
+  ov.addEventListener('click',function(e){
+    if(e.target===ov){close();return;}
+    var xi=e.target.getAttribute('data-x');
+    if(xi!==null){var f=favs();f.splice(+xi,1);setFavs(f);render();$$('.sp-card').forEach(fill);return;}
+    var it=e.target.closest('.sp-it');if(!it)return;
+    if(it.hasAttribute('data-f')){copy(favs()[+it.getAttribute('data-f')]||'');return;}
+    var r=res[+it.getAttribute('data-i')];close();if(r)reveal(r);
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){close();return;}
+    if(e.key==='/'&&!/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName||''))&&!e.target.isContentEditable){e.preventDefault();open();}
+  });
+}
+
+// ── 記住上次分頁 ──
+function remember(){
+  if(C.remember===false||!C.nav)return;
+  var nv=navs();
+  nv.forEach(function(b,i){b.addEventListener('click',function(){lsSet('tab',String(i));});});
+  var s=parseInt(lsGet('tab'),10);
+  if(s>0&&nv[s])nv[s].click();
+}
+
+// ── 離線教練（取代需要連網 / API 的版本）──
+var STOP={};'我很 我的 我想 我是 我不 我會 我要 怎麼 什麼 如何 可以 覺得 不知 知道 自己 沒有 是不 不是 為什 麼辦 還是 因為 所以 但是 一直 有點 的人 的時 時候 開始 想要 要怎 麼做 是否 已經 可能 真的 好像 這樣 那樣 的事 一個 現在'.split(' ').forEach(function(g){STOP[g]=1;});
+var SYN=['害怕 恐懼 擔心 焦慮 不安 緊張','希望 絕望 無望 放棄 沒救','累 疲勞 疲倦 沒力 能量 精神 活力','睡 失眠 睡眠 熬夜 休息','吵架 衝突 爭吵 溝通 冷戰','孤單 孤獨 寂寞 連結 陪伴','生氣 憤怒 情緒 委屈','目標 方向 迷茫 意義 使命','學習 讀書 記憶 專注 理解','錢 財富 收入 賺錢 金錢','幫助 貢獻 付出 給予 成全','復發 修復 恢復 重建','癌 病人 疾病 治療 症狀','壓力 放鬆 呼吸 緊繃','吃 飲食 營養 血糖 代謝','運動 走路 步行 肌肉','痛 疼痛 發炎 不舒服','信任 背叛 安全感 界線','孩子 小孩 親子 教養','伴侶 另一半 婚姻 夫妻 親密','漸行漸遠 疏遠 距離 連結 陪伴','胖 體重 腰圍 減重','身份 身分 角色 定義'].map(function(s){return s.split(' ');});
+var AD=/DHA|EPA|GABA|NMN|Q10|鎂|鋅|益生菌|補充|營養素|保健|生技|購買|團購|下單|膠囊|魚油|維生素|維他命|毫克|mg/i;
+function coach(){
+  if(!C.coach||typeof window.addMsg!=='function')return;
+  var inp=document.getElementById('aiInput');if(!inp)return;
+  var row=inp.parentElement,note=document.createElement('div');
+  note.className='sp-note';note.textContent='離線教練：不連網、不需 API，回覆整理自本 APP 的內容。';
+  row.parentNode.insertBefore(note,row.nextSibling);
+  var skip=C.coach.skip||'#pg-ai,#pg-quiz,#pg-flash,#pg-diag,.hero,.nt-card,.nt-grid,.tech-card,.tech-row,.bb';
+  function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+  window.sendAI=function(){
+    var msg=inp.value.trim();if(!msg)return;
+    inp.value='';window.addMsg('user',esc(msg));
+    var g={};
+    msg.replace(/[\s，。！？、,.!?「」『』（）()：:；;～~…]+/g,' ').split(' ').forEach(function(w){
+      if(/^[\x00-\x7f]+$/.test(w)){if(w.length>1)g[w.toLowerCase()]=1;}
+      else for(var i=0;i<w.length-1;i++){var b=w.substr(i,2);if(!STOP[b])g[b]=1;}
+    });
+    // 同義詞擴充：使用者說「害怕」，也找「恐懼」「擔心」的內容
+    SYN.forEach(function(grp){
+      if(grp.some(function(w){return msg.indexOf(w)>=0;}))grp.forEach(function(w){if(w.length>1)g[w]=1;});
+    });
+    var keys=Object.keys(g),seen={},cand=[];
+    blocks().forEach(function(b){
+      // 只取完整句子（有標點），略過標籤、編號這類短字
+      // 也略過產品 / 補充品段落：教練只給觀念和行動，不推薦產品
+      if(b.t.length<8||b.t.length>160||seen[b.t]||!/[，。；！？：,]/.test(b.t)||AD.test(b.t)||b.el.closest(skip))return;
+      var tl=b.t.toLowerCase(),sc=0;
+      keys.forEach(function(k){if(tl.indexOf(k)>=0)sc++;});
+      if(sc>0){seen[b.t]=1;cand.push({el:b.el,t:b.t,sc:sc});}
+    });
+    cand=cand.filter(function(a){return !cand.some(function(b){return b!==a&&a.el.contains(b.el);});});
+    cand.sort(function(a,b){return b.sc-a.sc||a.t.length-b.t.length;});
+    var top=[],h='';
+    cand.forEach(function(c){
+      if(top.length<3&&!top.some(function(t){return t.t.indexOf(c.t)>=0||c.t.indexOf(t.t)>=0;}))top.push(c);
+    });
+    if(top.length){
+      h+='<b>【相關重點】</b><br>'+top.map(function(x){
+        var lb=labelOf(x.el,tabOf(x.el));
+        return '• '+(lb?'〔'+esc(lb)+'〕':'')+esc(x.t);
+      }).join('<br>')+'<br><br>';
+    }else{
+      h+='這個問題在 APP 裡沒有直接對應的段落，可以換個關鍵字，或用右下角 🔍 搜尋。先給你一個方向：<br><br>';
+    }
+    var qs=quotesOf('pg-ai');
+    if(C.coach.steps&&C.coach.steps.length)h+='<b>【今日一小步】</b><br>'+esc(rnd(C.coach.steps))+'<br><br>';
+    if(qs.length)h+='<b>【心靈雞湯】</b><br>'+esc(rnd(qs));
+    setTimeout(function(){window.addMsg('bot',h);},300);
+  };
+}
+
+// ── 每日任務：記住今天勾過的項目 + 連續打卡天數 ──
+function tasks(){
+  var td;try{td=taskDone;}catch(e){return;}
+  if(!Array.isArray(td)||typeof window.toggleTask!=='function')return;
+  var today=new Date().toDateString(),yest=new Date(Date.now()-864e5).toDateString(),s=null,orig=window.toggleTask;
+  try{s=JSON.parse(lsGet('tasks'));}catch(e){}
+  s=s||{date:'',done:[],streak:0,last:''};
+  if(s.date===today&&s.done.length===td.length){
+    s.done.forEach(function(d,i){if(d&&!td[i])orig(i);});
+    var cb=document.getElementById('comboBadge');if(cb)setTimeout(function(){cb.style.display='none';},0);
+  }
+  window.toggleTask=function(i){
+    orig(i);
+    s.date=today;s.done=taskDone.slice();
+    if(taskDone[i]&&s.last!==today){
+      s.streak=s.last===yest?s.streak+1:1;s.last=today;
+      toast('今日打卡 ✓ 連續 '+s.streak+' 天');
+    }
+    lsSet('tasks',JSON.stringify(s));
+  };
+}
+
+function init(){
+  ui();ensure();remember();coach();tasks();
+  if(C.init)try{C.init();}catch(e){}
+  ensure();
+  var pend=false;
+  function later(){if(pend)return;pend=true;setTimeout(function(){pend=false;ensure();},60);}
+  new MutationObserver(later).observe(document.body,{childList:true,subtree:true});
+  document.addEventListener('click',later,true);
+}
+if(document.readyState==='complete')setTimeout(init,0);
+else window.addEventListener('load',function(){setTimeout(init,0);});
+})();
+</script>
+<!-- SOUP-END -->
+<!-- FBX-START -->
+<script>
+window.FBX={"brand": "睡眠工程 Sleep OS", "tags": "#睡眠 #好眠 #修復", "theme": 0, "items": ".kpi-card,.nt-card,.tech-card,.lrk,.lcard,.q-card,.qcard,.map-card,.dq,.stage-card,.dvs-card,.ss-card,.body-card,.act-card,.vocab-card,.root-card,.grammar-card,.hl-box,.pred-card", "groups": ".n-content,.v-content,.sys-content,.s-content,.l-content,.mod-content,.e-content,.prac-section", "quote": ".q-card,.qcard,.dq", "steps": ["今晚睡前一小時，把手機放到伸手拿不到的地方。", "早上起床先拉開窗簾，曬五分鐘的光。", "下午兩點後不喝咖啡和茶。", "睡前把房間調暗、調涼一點。"], "note": "※ 本文為保健知識分享，不能取代專業醫療；身體不適請諮詢醫師。", "noteRe": "補充|營養|血糖|胰島素|癌|發炎|免疫|褪黑|粒線體|腸道|荷爾蒙|症|藥|mg"};
+</script>
+<script>
+// ── 臉書文圖：每一欄、每個項目都能產生臉書貼文 + 圖卡（共用模組，完全離線）──
+(function(){
+var F=window.FBX||{},S=window.SOUP||{};
+var ITEM=F.items||'',GROUP=F.groups||'',QUOTE=F.quote||'',PAIR=F.pair||null;
+var ALL=[ITEM,GROUP].filter(Boolean).join(',');
+var ZH='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+var THEMES=[{c:'#1A2B5F',t:'#E8ECF7'},{c:'#0A7A72',t:'#E2F4F1'},{c:'#C2416B',t:'#FCE9EF'},{c:'#B4690E',t:'#FBF0DC'},{c:'#5B3FA8',t:'#EEE9FA'},{c:'#1F7A3A',t:'#E4F4E8'}];
+var K='fbx:'+(S.key||'app')+':';
+function $$(s,r){return s?Array.prototype.slice.call((r||document).querySelectorAll(s)):[];}
+function $(id){return document.getElementById(id);}
+function is(el,sel){return !!sel&&el.matches(sel);}
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+function cut(s,n){s=String(s);return s.length>n?s.slice(0,n-1)+'…':s;}
+function lsGet(k){try{return localStorage.getItem(K+k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(K+k,v);}catch(e){}}
+
+// ── 從畫面上的項目取出文字 ──
+var PIC=/^(?:[←-⯿〰〽㊗㊙️‍]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDC00-\uDFFF]|\s)+/;
+var DROP=/^(點擊複製|已複製.*|點擊翻面.*|tap to flip.*|speak|發音|例句\s*#?\d+|vol\s*\d+)$/i;
+var LABEL=/^(低維|高維)\s*(low|high)?$/i;
+function word(s){return /[A-Za-z一-鿿]/.test(s);}
+function tidy(s){return s.replace(/[⭐★]+/g,'').replace(/\s+/g,' ').trim();}
+function bare(s){return tidy(s.replace(PIC,''));}
+function grab(el){
+  var raw=[],cur='',subs=[];
+  function flush(){var s=tidy(cur);if(s)raw.push(s);cur='';}
+  (function walk(n){
+    for(var c=n.firstChild;c;c=c.nextSibling){
+      if(c.nodeType===3){cur+=c.nodeValue;continue;}
+      if(c.nodeType!==1)continue;
+      if(/^(BUTTON|SCRIPT|STYLE|INPUT|SELECT|TEXTAREA|CANVAS|A)$/.test(c.tagName)||c.classList.contains('sp-card'))continue;
+      if(c.tagName==='BR'){flush();continue;}
+      if(is(c,ALL)){flush();var t=titleOf(c);if(t)subs.push(t);continue;}
+      var inl=/^inline/.test(getComputedStyle(c).display);
+      if(!inl)flush();
+      walk(c);
+      if(!inl)flush();
+    }
+  })(el);
+  flush();
+  var lines=[],pre='';
+  raw.forEach(function(s){
+    if(DROP.test(s))return;
+    if(!word(s)){if(!lines.length&&!pre&&PIC.test(s)&&!/\d/.test(s))pre=s.split(' ')[0];return;}
+    // 「標籤：」接下一行
+    if(lines.length&&/[:：]$/.test(lines[lines.length-1]))lines[lines.length-1]+=s;else lines.push(s);
+  });
+  return {lines:lines,subs:subs,pre:pre};
+}
+function noNum(s){return s.replace(/^#?\d+\s*[·.、:：\-]?\s*/,'');}
+function titleOf(el){
+  if(PAIR&&is(el,PAIR.sel)){
+    var t=PAIR.title&&el.querySelector(PAIR.title),lo=el.querySelector(PAIR.low);
+    return bare(t?t.textContent:lo?part(lo)[0]||'':'');
+  }
+  var g=grab(el);if(!g.lines.length)return '';
+  if(is(el,QUOTE))return g.lines.slice().sort(function(a,b){return b.length-a.length;})[0];
+  return noNum(bare(g.lines[0]))||g.lines[0];
+}
+function part(el){return grab(el).lines.filter(function(s){return !LABEL.test(s);}).map(bare);}
+
+function panels(){
+  if(S.panels)return S.panels()||[];
+  return $$(S.panel||'.pg').map(function(el){return{el:el,id:el.id,host:(S.host&&el.querySelector(S.host))||el};});
+}
+function shown(el){return !!(el&&el.getClientRects().length);}
+function navText(){
+  var b=$$(S.nav).filter(function(x){return /(^|\s)(on|active)(\s|$)/.test(x.className);})[0];
+  return b?tidy(b.textContent):'';
+}
+function panelFor(el){
+  var ps=panels(),hit=null;
+  ps.forEach(function(p){if(p&&p.el&&p.el.contains(el)&&(!hit||hit.el.contains(p.el)))hit=p;});
+  return hit;
+}
+function labelFor(p){
+  var t=navText(),h=p&&p.after;
+  if(h&&/^H[1-4]$/.test(h.tagName))t+=(t?'｜':'')+tidy(h.textContent);
+  return t;
+}
+function quotesFor(p){
+  var q=(p&&S.soups&&S.soups[p.id])||[];
+  return q.length?q:(S.common||S.extra||[]);
+}
+
+function entry(el){
+  var p=panelFor(el),g=grab(el),e={el:el,tab:labelFor(p),quotes:quotesFor(p),pre:g.pre,subs:g.subs,lines:g.lines};
+  if(PAIR&&is(el,PAIR.sel)){
+    var lo=part(el.querySelector(PAIR.low)||el),hi=part(el.querySelector(PAIR.high)||el);
+    e.kind='pair';e.title=titleOf(el)||lo[0]||'';
+    e.low=lo[0]||'';e.high=hi[0]||'';e.lowEn=lo[1]||'';e.highEn=hi[1]||'';
+    var used=lo.concat(hi,[e.title]);
+    e.lines=g.lines.filter(function(s){var b=bare(s);return !LABEL.test(s)&&used.indexOf(b)<0&&used.indexOf(noNum(b))<0&&!/^#\d+/.test(s);});
+  }else if(is(el,QUOTE)){
+    e.kind='quote';e.title=titleOf(el);
+    e.lines=g.lines.filter(function(s){return s!==e.title;}).map(function(s){return noNum(s);}).filter(Boolean);
+  }else{
+    e.kind=is(el,GROUP)?'group':'item';
+    e.title=titleOf(el);e.lines=g.lines.slice(1);
+  }
+  return e;
+}
+function tabEntry(p){
+  var raw=labelFor(p)||F.brand||'',m=raw.match(PIC),seen={},heads=[],subs=[];
+  $$('h1,h2,h3,.sec-h,.sec-s,.hero-p,.section-title,.model-title,.subtitle',p.el).forEach(function(h){
+    if(h.closest('.sp-card')||(ALL&&h.closest(ALL))||heads.length>=4)return;
+    var t=tidy(h.textContent);
+    if(t.length>3&&t.length<90&&!seen[t]){seen[t]=1;heads.push(t);}
+  });
+  $$(ALL,p.el).forEach(function(el){
+    if(ALL&&el.parentElement.closest(ALL)&&p.el.contains(el.parentElement.closest(ALL)))return;
+    var t=titleOf(el);if(t&&!seen[t]){seen[t]=1;subs.push(t);}
+  });
+  return {kind:'tab',p:p,el:p.el,tab:F.brand||'',title:bare(raw)||raw,pre:m?tidy(m[0]).split(' ')[0]:'',lines:heads,subs:subs,quotes:quotesFor(p)};
+}
+
+// ── 貼文 ──
+var HOOK=[
+ function(t){return '你有沒有發現，「'+t+'」這件事，其實每天都在影響你？';},
+ function(t){return '今天想跟你分享一個小重點：「'+t+'」。';},
+ function(t){return '很多時候我們卡住，不是不夠努力，而是還沒看懂「'+t+'」。';},
+ function(t){return '如果今天只記得一件事，就記這個——「'+t+'」。';}
+];
+var HOOKL=['這一段，想送給今天的你。','看到這裡，先停三秒，慢慢讀。','有些話，早一點知道，就少走一點冤枉路。','今天的小提醒，留給正在努力的你。'];
+var TURN=['看懂了，就不會只是硬撐。知道原理，才知道力氣要用在哪裡。','不用一次全部做到。先懂一點、做一點，改變就開始了。','這不是要你更用力，而是換一個更省力的方向。','知道，是第一步；願意試一次，是第二步。'];
+var TURNP=['語言不只是在描述事情，它也在決定你接下來怎麼想、怎麼做。同一件事換一個說法，眼前就多一條路。','不是要你假裝沒事，而是把「我完了」換成「我還可以做什麼」。','一句話說久了會變成信念，信念久了會變成人生。先從換一句話開始。','低維的說法把門關上，高維的說法把門打開。你值得多一扇門。'];
+var ASK=[
+ function(t){return '我在哪個情境，最需要「'+t+'」？';},
+ function(t){return '如果今天就用上它，第一步會是什麼？';},
+ function(t){return '我身邊誰把這件事做得很好？他是怎麼做的？';},
+ function(t){return '一個月後回頭看，我希望這件事有什麼不同？';}
+];
+var ASKQ=['這句話，讓你想到誰？','今天哪一刻，最需要這句話？','如果把這句話送給一個人，你會送給誰？','這句話裡，哪幾個字最打動你？'];
+var STEP=['今天只挑一個重點，寫下來，貼在看得到的地方。','把這一段講給一個人聽，講得出來才是真的懂。','選一件五分鐘內做得到的小事，現在就做。','睡前花一分鐘，想想今天哪裡用上了它。'];
+var CLOSE=['把這篇留給今天的自己，也分享給那個正在努力的人。','慢慢來，比較快；一點點，就很多。','有共鳴的話，留言告訴我你的想法。','覺得有幫助，就分享給需要的朋友吧。'];
+function pick(a,k){return a[k%a.length];}
+function build(e,v){
+  var T=e.title,k=hash(T)+(v||0),L=[],card,tab=e.kind==='tab';
+  var steps=(F.steps&&F.steps.length?F.steps:(S.coach&&S.coach.steps)||[]).concat(STEP);
+  var q=e.quotes.length?pick(e.quotes,k):'';
+  function sec(h,arr,n){
+    if(!arr.length)return;
+    L.push('▍'+h);arr.slice(0,n).forEach(function(s){L.push('・'+cut(s,140));});
+    if(arr.length>n)L.push('…共 '+arr.length+' 項');L.push('');
+  }
+  if(e.kind==='pair'){
+    L.push('【換句話說｜'+T+'】','你是不是也常這樣說、這樣想？','');
+    L.push('✗ 低維：「'+e.low+'」');if(e.lowEn)L.push('　'+e.lowEn);
+    L.push('✓ 高維：「'+e.high+'」');if(e.highEn)L.push('　'+e.highEn);L.push('');
+    sec('補充說明',e.lines,4);
+    L.push('▍為什麼要換一句話',pick(TURNP,k),'');
+    card={kind:'pair',head:T===e.low?'換句話說':T,low:e.low,high:e.high,quote:q};
+  }else if(e.kind==='quote'){
+    L.push('「'+T+'」','',pick(HOOKL,k),'');
+    L.push('▍想一想','・'+pick(ASKQ,k),'・'+pick(ASKQ,k+1),'');
+    L.push('▍換個角度看',pick(TURN,k),'');
+    card={kind:'quote',quote:T,sub:e.lines[0]||''};
+  }else{
+    L.push('【'+(tab&&F.brand?F.brand+'｜':'')+(e.pre?e.pre+' ':'')+T+'】',T.length>16?pick(HOOKL,k):pick(HOOK,k)(T),'');
+    sec(tab?'這一欄在說什麼':'重點整理',e.lines,tab?4:7);
+    sec(tab?'這一欄的項目':'裡面有這些重點',e.subs,10);
+    if(tab&&e.quotes.length){L.push('▍三句心靈雞湯');e.quotes.slice(0,3).forEach(function(s){L.push('「'+s+'」');});L.push('');}
+    if(!tab&&e.lines.length<3)L.push('▍想一想','・'+pick(ASK,k)(T),'・'+pick(ASK,k+1)(T),'');
+    L.push('▍換個角度看',pick(TURN,k),'');
+    card={kind:'item',head:(e.pre?e.pre+' ':'')+T,lines:(e.lines.length?e.lines:e.subs).slice(0,tab?5:4).map(function(s){return cut(s,46);}),quote:q};
+  }
+  L.push('🌱 今天的小步｜'+pick(steps,k),'');
+  if(q&&e.kind!=='quote'&&!tab)L.push('🍲 「'+q+'」','');
+  L.push(pick(CLOSE,k),'');
+  var body=L.join('\n');
+  if(F.note&&(!F.noteRe||new RegExp(F.noteRe).test(body)))L.push(F.note,'');
+  var tt=T.replace(/[^A-Za-z0-9一-鿿]/g,'');
+  L.push([F.tags||'',e.kind!=='quote'&&tt.length>1&&tt.length<=10&&!/^\d/.test(tt)?'#'+tt:'','#心靈雞湯 #自我成長 #LifeOS'].filter(Boolean).join(' '));
+  card.tab=[F.brand,e.tab!==F.brand?bare(e.tab):''].filter(Boolean).join(' · ');
+  return {text:L.join('\n'),card:card};
+}
+
+// ── 圖卡（1080×1350）──
+function wrap(x,text,maxW){
+  var tk=String(text).match(/[A-Za-z0-9'’\-]+[.,!?;:]?\s?|\s+|[^\sA-Za-z0-9]/g)||[],noHead='，。！？、；：」』）)…—',out=[],cur=[];
+  function push(){var s=cur.join('').trim();if(s)out.push(s);}
+  tk.forEach(function(w){
+    if(cur.join('').trim()&&x.measureText(cur.join('')+w).width>maxW){
+      var carry=[];if(noHead.indexOf(w)>=0&&cur.length>1)carry.unshift(cur.pop());   // 標點不放行首
+      push();cur=carry.concat(w.replace(/^\s+/,''));
+    }else cur.push(w);
+  });
+  push();return out;
+}
+function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
+function draw(cv,c,th){
+  var W=1080,H=1350,X=84,MW=W-168,x=cv.getContext('2d');cv.width=W;cv.height=H;
+  function lay(s,paint,off){
+    function f(px,wt){x.font=(wt||'')+' '+Math.round(px*s)+'px '+ZH;}
+    function put(arr,a,y,lh,col){if(paint){x.fillStyle=col;arr.forEach(function(l,i){x.fillText(l,a,y+i*lh);});}return y+arr.length*lh;}
+    function box(arr,y,lh,bg,bar,col,label){
+      var h=arr.length*lh+(label?104:64)*s;
+      if(paint){x.fillStyle=bg;rr(x,X-20,y,MW+40,h,28);x.fill();x.fillStyle=bar;x.fillRect(X-20,y+24,10,h-48);}
+      if(label){f(28,'bold');put([label],X+32,y+30*s,40*s,bar);}
+      f(c.kind==='pair'?48:36,c.kind==='pair'?'bold':'');
+      put(arr,X+32,y+(label?78:34)*s,lh,col);
+      return y+h;
+    }
+    x.textBaseline='top';x.textAlign='left';
+    f(58,'bold');var head=c.head?wrap(x,c.head,MW):[];
+    var hh=Math.round(150+(head.length?head.length*78*s+50:0));
+    if(paint){
+      x.fillStyle='#FAF6EF';x.fillRect(0,0,W,H);x.fillStyle=th.c;x.fillRect(0,0,W,hh);
+      x.font='30px '+ZH;x.fillStyle='rgba(255,255,255,.85)';var tb=c.tab;while(tb.length>4&&x.measureText(tb).width>MW)tb=tb.slice(0,-2)+'…';x.fillText(tb,X,64);
+    }
+    f(58,'bold');put(head,X,124,78*s,'#fff');
+    var y=hh+70*s+off;
+    if(c.kind==='pair'){
+      f(48,'bold');var lo=wrap(x,c.low,MW-90),hi=wrap(x,c.high,MW-90);
+      y=box(lo,y,68*s,'#FBE7EA','#B4233C','#5A1622','✗ 低維｜舊說法');
+      f(54,'bold');if(paint){x.fillStyle=th.c;x.fillText('↓',W/2-16*s,y+14*s);}y+=92*s;
+      y=box(hi,y,68*s,th.t,th.c,'#1F2937','✓ 高維｜新說法')+56*s;
+    }else if(c.kind==='quote'){
+      f(70,'bold');y=put(wrap(x,'「'+c.quote+'」',MW),X,y,102*s,'#2B2622')+30*s;
+      if(c.sub){f(34,'');y=put(wrap(x,'— '+c.sub,MW),X,y,50*s,'#8A7F76');}
+    }else if(c.lines.length){
+      f(36,'');var bl=[];c.lines.forEach(function(l){wrap(x,'・'+l,MW-90).forEach(function(w){bl.push(w);});});
+      y=box(bl,y,58*s,th.t,th.c,'#3A332E')+56*s;
+    }
+    if(c.quote&&c.kind!=='quote'){
+      f(27,'bold');var pw=x.measureText('心靈雞湯').width+48,ph=54*s;
+      if(paint){x.fillStyle=th.c;rr(x,X,y,pw,ph,ph/2);x.fill();x.fillStyle='#fff';x.fillText('心靈雞湯',X+24,y+(ph-27*s)/2-2);}
+      y+=ph+22*s;f(40,'bold');y=put(wrap(x,'「'+c.quote+'」',MW),X,y,62*s,'#2B2622');
+    }
+    return y;
+  }
+  var s=1.25;while(s>0.5&&lay(s,false,0)>H-170)s-=0.03;
+  lay(s,true,Math.max(0,Math.min(150,(H-170-lay(s,false,0))/2)));
+  x.fillStyle='#E4DAD0';x.fillRect(X,H-130,MW,3);
+  x.textBaseline='top';x.font='bold 32px '+ZH;x.fillStyle=th.c;x.fillText(cut(F.brand||'LifeOS',22),X,H-96);
+  x.font='28px '+ZH;x.fillStyle='#8A7F76';var tg='#心靈雞湯';x.fillText(tg,W-X-x.measureText(tg).width,H-94);
+}
+
+// ── 介面 ──
+var cur=null,ver=0,list=[],ti=parseInt(lsGet('theme'),10);
+if(!(ti>=0&&ti<THEMES.length))ti=F.theme||0;
+function toast(b,t){var o=b.textContent;b.textContent=t;setTimeout(function(){b.textContent=o;},1200);}
+function save(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},2000);}
+function fname(){return ((F.brand||'LifeOS')+'_'+cur.title).replace(/[\\/:*?"<>|\s，。！？、]+/g,'_').slice(0,40);}
+function count(t){return (t.match(/[一-鿿]/g)||[]).length+(t.match(/[A-Za-z][A-Za-z'’\-]*/g)||[]).length;}
+function show(){
+  var r=build(cur,ver);
+  $('fbxTitle').textContent='📘 '+(cur.kind==='tab'?'本頁：':'')+cut(cur.title,28);
+  $('fbxText').value=r.text;$('fbxCnt').textContent='約 '+count(r.text)+' 字';
+  draw($('fbxCanvas'),r.card,THEMES[ti]);
+}
+function chips(){
+  var kw=$('fbxSearch').value.trim().toLowerCase(),box=$('fbxList');box.innerHTML='';
+  list.forEach(function(it){
+    if(kw&&it.find.indexOf(kw)<0)return;
+    var b=document.createElement('button');b.type='button';b.textContent=(it.tab?'📄 本頁｜':'')+cut(it.title,18);
+    if(cur&&it.el===cur.el&&!!it.tab===(cur.kind==='tab'))b.className='on';
+    b.onclick=function(){open(it.tab?tabEntry(it.p):entry(it.el));};box.appendChild(b);
+  });
+  if(!box.firstChild)box.innerHTML='<span style="opacity:.6;padding:4px">找不到符合的項目</span>';
+}
+function scan(){
+  list=[];
+  panels().forEach(function(p){
+    if(!p||!shown(p.el))return;
+    list.push({tab:1,p:p,el:p.el,title:bare(labelFor(p))||F.brand||'本頁',find:''});
+    $$(ALL,p.el).forEach(function(el){
+      var t=titleOf(el);if(t)list.push({el:el,title:t,find:el.textContent.toLowerCase()});
+    });
+  });
+}
+function open(e){
+  if(!e||!e.title)return;
+  cur=e;ver=0;scan();$('fbxMask').classList.add('on');chips();show();
+  var on=$('fbxList').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
+}
+function close(){$('fbxMask').classList.remove('on');}
+function ui(){
+  var st=document.createElement('style');
+  st.textContent='.fbx-b{display:inline-flex;align-items:center;gap:4px;margin:8px 0 0 auto;padding:4px 11px;border-radius:999px;border:1px solid rgba(24,119,242,.45);background:rgba(24,119,242,.1);color:#1877F2;font:700 11px/1.4 '+ZH+';cursor:pointer;white-space:nowrap;flex:none;align-self:center;width:auto;height:auto;letter-spacing:0;text-transform:none}'+
+  '.sp-dark .fbx-b{color:#7DB4FF;border-color:rgba(125,180,255,.45);background:rgba(125,180,255,.1)}.fbx-b:hover{background:#1877F2;color:#fff}'+
+  '.fbx-g{display:flex;margin:0 0 12px}.fbx-fab{bottom:216px;background:#1877F2!important;color:#fff!important}'+
+  '#fbxMask{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1200;background:rgba(20,16,12,.6);display:none;align-items:center;justify-content:center;padding:12px}#fbxMask.on{display:flex}'+
+  '#fbxBox{background:#FAF6EF;color:#2B2622;width:min(1040px,100%);max-height:94vh;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;font:14px/1.6 '+ZH+';text-align:left}'+
+  '#fbxTop{display:flex;gap:8px;align-items:center;padding:12px 14px;background:#1877F2;color:#fff}#fbxTop b{flex:1;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
+  '#fbxSearch{flex:0 1 260px;min-width:110px;padding:7px 12px;border:0;border-radius:999px;font:14px '+ZH+';color:#2B2622;background:#fff;outline:none}'+
+  '#fbxX{background:none;border:0;color:#fff;font-size:22px;cursor:pointer;line-height:1;padding:0 4px}'+
+  '#fbxList{max-height:118px;overflow-y:auto;flex:none;padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #E4DAD0;background:#fff}'+
+  '#fbxList button{border:1px solid #E4DAD0;background:#FAF6EF;color:#2B2622;border-radius:999px;padding:3px 10px;font:12px '+ZH+';cursor:pointer}#fbxList button.on{background:#1877F2;color:#fff;border-color:#1877F2}'+
+  '#fbxMain{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;padding:14px;overflow:auto}'+
+  '#fbxText{width:100%;height:52vh;min-height:240px;box-sizing:border-box;padding:12px;border:1px solid #E4DAD0;border-radius:12px;background:#fff;color:#2B2622;font:14px/1.75 '+ZH+';resize:vertical}'+
+  '#fbxCanvas{width:100%;height:auto;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15);display:block}'+
+  '#fbxBar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}#fbxBar button{padding:7px 13px;border-radius:999px;border:1px solid #1877F2;background:#1877F2;color:#fff;font:700 13px/1.2 '+ZH+';cursor:pointer}#fbxBar button.g{background:#fff;color:#1877F2}'+
+  '#fbxCnt{font-size:12px;color:#8A7F76;margin-left:auto}#fbxTip{font-size:12px;color:#8A7F76;margin-top:8px}'+
+  '@media(max-width:760px){#fbxMain{grid-template-columns:minmax(0,1fr)}#fbxText{height:34vh}#fbxCanvas{max-width:280px;margin:0 auto}}'+
+  '@media print{.fbx-b,.fbx-fab,#fbxMask{display:none!important}}';
+  document.head.appendChild(st);
+  var fab=document.createElement('button');fab.type='button';fab.className='sp-fab fbx-fab';fab.title='臉書文圖';fab.textContent='📘';
+  fab.onclick=function(){scan();if(list[0])open(tabEntry(list[0].p));};
+  document.body.appendChild(fab);
+  var m=document.createElement('div');m.id='fbxMask';
+  m.innerHTML='<div id="fbxBox"><div id="fbxTop"><b id="fbxTitle"></b><input id="fbxSearch" type="search" placeholder="搜尋本頁項目…"><button id="fbxX" type="button" title="關閉">×</button></div>'+
+   '<div id="fbxList"></div><div id="fbxMain"><div><textarea id="fbxText" spellcheck="false"></textarea><div id="fbxBar">'+
+   '<button type="button" id="fbxCopy">📋 複製貼文</button><button type="button" id="fbxPng">🖼️ 下載圖卡</button>'+
+   '<button type="button" class="g" id="fbxNext">🔄 換一版</button><button type="button" class="g" id="fbxTheme">🎨 換配色</button>'+
+   '<button type="button" class="g" id="fbxTxt">💾 存成 TXT</button><span id="fbxCnt"></span></div>'+
+   '<div id="fbxTip">貼文可以直接在框裡修改。到臉書發文：貼上文字，再加入下載的圖卡。</div></div>'+
+   '<div><canvas id="fbxCanvas"></canvas></div></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',function(e){if(e.target===m)close();});
+  $('fbxX').onclick=close;
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+  $('fbxSearch').addEventListener('input',chips);
+  $('fbxNext').onclick=function(){ver++;show();};
+  $('fbxTheme').onclick=function(){ti=(ti+1)%THEMES.length;lsSet('theme',String(ti));draw($('fbxCanvas'),build(cur,ver).card,THEMES[ti]);};
+  $('fbxCopy').onclick=function(){
+    var t=$('fbxText'),b=this;function fb(){t.select();try{document.execCommand('copy');}catch(e){}}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t.value).catch(fb);else fb();
+    toast(b,'✅ 已複製');
+  };
+  $('fbxPng').onclick=function(){$('fbxCanvas').toBlob(function(b){save(b,fname()+'.png');},'image/png');};
+  $('fbxTxt').onclick=function(){save(new Blob(['﻿'+$('fbxText').value],{type:'text/plain;charset=utf-8'}),fname()+'.txt');};
+}
+function btn(text,fn){
+  var b=document.createElement('button');b.type='button';b.className='fbx-b';b.textContent=text;
+  b.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();fn();});
+  return b;
+}
+function own(el,cls){for(var c=el.firstElementChild;c;c=c.nextElementSibling)if(c.classList.contains(cls))return c;return null;}
+function decorate(){
+  $$(ALL).forEach(function(el){
+    if(own(el,'fbx-b')||el.closest('.sp-card,.sp-ov,#fbxMask')||el.textContent.trim().length<4)return;
+    var b=btn('📘 臉書文圖',function(){open(entry(el));});
+    if(is(el,GROUP)&&el.firstElementChild){b.classList.add('fbx-g');el.insertBefore(b,el.firstElementChild.nextSibling);}
+    else el.appendChild(b);
+  });
+  $$('.sp-card .sp-b').forEach(function(bar){
+    if(own(bar,'fbx-b'))return;
+    var b=btn('📘 本頁臉書文圖',function(){var p=panelFor(bar);if(p)open(tabEntry(p));});
+    b.style.cssText='margin:0;opacity:1';bar.appendChild(b);
+  });
+}
+function init(){
+  ui();decorate();
+  var pend=false;
+  new MutationObserver(function(){if(pend)return;pend=true;setTimeout(function(){pend=false;decorate();},90);}).observe(document.body,{childList:true,subtree:true});
+}
+if(document.readyState==='complete')setTimeout(init,60);
+else window.addEventListener('load',function(){setTimeout(init,60);});
+})();
+</script>
+<!-- FBX-END -->
+</body>
+</html>

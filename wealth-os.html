@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wealth OS 財富作業系統</title>
+<style>
+:root {
+  --navy: #1A2B5F;
+  --gold: #C9960C;
+  --gold-light: #F0C040;
+  --teal: #0A7A72;
+  --teal-light: #12A99D;
+  --white: #FFFFFF;
+  --off-white: #F7F8FC;
+  --gray: #E8ECF4;
+  --gray-mid: #8895B3;
+  --text: #1A2040;
+  --shadow: 0 4px 24px rgba(26,43,95,0.10);
+  --radius: 14px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', 'Microsoft JhengHei', 'PingFang TC', Arial, sans-serif;
+  background: var(--off-white);
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1.6;
+}
+/* HEADER */
+header {
+  background: linear-gradient(135deg, var(--navy) 0%, #0D1A3F 100%);
+  color: white;
+  padding: 32px 24px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(201,150,12,0.18) 0%, transparent 60%);
+  pointer-events: none;
+}
+.header-badge {
+  display: inline-block;
+  background: var(--gold);
+  color: var(--navy);
+  font-size: 12px; font-weight: 800; letter-spacing: 2px;
+  padding: 4px 14px; border-radius: 20px; margin-bottom: 12px;
+  text-transform: uppercase;
+}
+header h1 {
+  font-size: clamp(26px, 5vw, 42px);
+  font-weight: 900; letter-spacing: -0.5px;
+  color: #fff; line-height: 1.2;
+}
+header h1 span { color: var(--gold-light); }
+header p { color: rgba(255,255,255,0.72); font-size: 15px; margin-top: 6px; }
+
+/* NAV TABS */
+nav {
+  background: var(--white);
+  border-bottom: 2px solid var(--gray);
+  overflow-x: auto;
+  white-space: nowrap;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 12px rgba(26,43,95,0.07);
+}
+.nav-inner { display: inline-flex; min-width: 100%; }
+.tab-btn {
+  background: none; border: none; cursor: pointer;
+  padding: 16px 22px;
+  font-size: 14px; font-weight: 700;
+  color: var(--gray-mid);
+  border-bottom: 3px solid transparent;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--navy); background: var(--off-white); }
+.tab-btn.active { color: var(--navy); border-bottom-color: var(--gold); }
+
+/* MAIN */
+main { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* SECTION TITLE */
+.section-title {
+  font-size: 22px; font-weight: 900; color: var(--navy);
+  margin: 36px 0 16px;
+  padding-left: 14px;
+  border-left: 5px solid var(--gold);
+  line-height: 1.3;
+}
+.section-title .en { display: block; font-size: 13px; font-weight: 600; color: var(--teal); letter-spacing: 1px; margin-top: 2px; }
+
+/* CARDS */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.card {
+  background: var(--white);
+  border: 1.5px solid var(--gray);
+  border-radius: var(--radius);
+  padding: 22px 20px 16px;
+  cursor: pointer;
+  transition: box-shadow .2s, border-color .2s, transform .15s;
+  position: relative;
+}
+.card:hover { box-shadow: var(--shadow); border-color: var(--gold); transform: translateY(-2px); }
+.card.gold-accent { border-top: 4px solid var(--gold); }
+.card.teal-accent { border-top: 4px solid var(--teal); }
+.card-num { font-size: 11px; font-weight: 800; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; }
+.card-title { font-size: 17px; font-weight: 800; color: var(--navy); margin: 4px 0 2px; }
+.card-en { font-size: 13px; color: var(--teal); font-weight: 600; }
+.card-body { display: none; margin-top: 12px; border-top: 1.5px solid var(--gray); padding-top: 12px; }
+.card-body.open { display: block; }
+.card-body p { font-size: 15px; color: #3A4060; margin-bottom: 8px; line-height: 1.7; }
+.card-body .en-p { font-size: 14px; color: var(--teal-light); font-style: italic; }
+.tts-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--navy); color: #fff;
+  border: none; border-radius: 8px; padding: 6px 14px;
+  font-size: 13px; cursor: pointer; margin-top: 8px;
+  transition: background .2s;
+}
+.tts-btn:hover { background: var(--teal); }
+.tts-btn svg { width: 14px; height: 14px; fill: none; stroke: #fff; stroke-width: 2; }
+
+/* WISDOM ROWS */
+.wisdom-list { display: flex; flex-direction: column; gap: 12px; }
+.wisdom-item {
+  background: var(--white);
+  border: 1.5px solid var(--gray);
+  border-radius: 10px; padding: 18px 20px;
+  cursor: pointer;
+  transition: border-color .2s;
+}
+.wisdom-item:hover { border-color: var(--teal); }
+.wisdom-zh { font-size: 16px; font-weight: 700; color: var(--navy); }
+.wisdom-en { font-size: 14px; color: var(--teal); margin-top: 4px; display: none; }
+.wisdom-item.open .wisdom-en { display: block; }
+.wisdom-detail { display: none; margin-top: 10px; border-top: 1px solid var(--gray); padding-top: 10px; }
+.wisdom-item.open .wisdom-detail { display: block; }
+
+/* OS GRID */
+.os-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+.os-card {
+  background: var(--white);
+  border: 1.5px solid var(--gray);
+  border-radius: 12px; padding: 20px 16px;
+  text-align: center; cursor: pointer;
+  transition: all .2s;
+}
+.os-card:hover { border-color: var(--gold); box-shadow: var(--shadow); }
+.os-num { font-size: 24px; font-weight: 900; color: var(--gold); }
+.os-zh { font-size: 15px; font-weight: 800; color: var(--navy); margin-top: 4px; }
+.os-en { font-size: 12px; color: var(--teal); margin-top: 2px; }
+.os-detail { display: none; text-align: left; margin-top: 12px; border-top: 1px solid var(--gray); padding-top: 10px; }
+.os-card.open .os-detail { display: block; }
+.os-detail li { font-size: 14px; color: #3A4060; margin-left: 16px; margin-bottom: 4px; }
+.os-detail .en-label { font-size: 12px; color: var(--teal); font-style: italic; }
+
+/* DASHBOARD */
+.dash-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.dash-card {
+  background: linear-gradient(135deg, var(--navy), #0D1A3F);
+  border-radius: 14px; padding: 22px 18px; color: white; text-align: center;
+}
+.dash-score { font-size: 40px; font-weight: 900; color: var(--gold-light); }
+.dash-label { font-size: 14px; font-weight: 700; margin-top: 4px; color: rgba(255,255,255,.85); }
+.dash-en { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 2px; }
+.progress-bar { background: rgba(255,255,255,.15); border-radius: 6px; height: 8px; margin-top: 10px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--gold); border-radius: 6px; transition: width 1.2s ease; }
+
+/* DAILY COACH */
+.coach-block {
+  background: var(--white);
+  border: 1.5px solid var(--gray);
+  border-radius: var(--radius); padding: 24px;
+  margin-bottom: 16px;
+}
+.coach-q { font-size: 18px; font-weight: 800; color: var(--navy); }
+.coach-q .en { display: block; font-size: 14px; color: var(--teal); font-weight: 600; margin-top: 2px; }
+.coach-answer { margin-top: 12px; font-size: 15px; color: #3A4060; line-height: 1.8; display: none; }
+.coach-block.open .coach-answer { display: block; }
+
+/* FLOW */
+.flow-step {
+  display: flex; align-items: flex-start; gap: 16px;
+  background: var(--white); border: 1.5px solid var(--gray);
+  border-radius: 10px; padding: 16px 18px; margin-bottom: 10px;
+  cursor: pointer;
+}
+.flow-step:hover { border-color: var(--teal); }
+.flow-num { font-size: 20px; font-weight: 900; color: var(--gold); min-width: 36px; }
+.flow-text .zh { font-size: 16px; font-weight: 700; color: var(--navy); }
+.flow-text .en { font-size: 13px; color: var(--teal); margin-top: 2px; }
+.flow-desc { display: none; font-size: 14px; color: #3A4060; margin-top: 8px; line-height: 1.7; }
+.flow-step.open .flow-desc { display: block; }
+
+/* HOME HERO */
+.hero-motto {
+  background: linear-gradient(135deg, var(--navy), #162B55);
+  border-radius: 16px; padding: 32px 28px; color: white; margin-bottom: 28px;
+  position: relative; overflow: hidden;
+}
+.hero-motto::after {
+  content: '₿';
+  position: absolute; right: 24px; bottom: -10px;
+  font-size: 100px; color: rgba(201,150,12,0.12); font-weight: 900;
+}
+.hero-motto h2 { font-size: 22px; font-weight: 900; color: var(--gold-light); margin-bottom: 10px; }
+.hero-motto ul { list-style: none; }
+.hero-motto ul li { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 15px; color: rgba(255,255,255,.85); }
+.hero-motto ul li .en { font-size: 12px; color: var(--gold); display: block; font-style: italic; }
+
+/* TAG PILL */
+.pill { display: inline-block; background: var(--gray); border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 700; color: var(--navy); margin: 3px; }
+.pill.gold { background: rgba(201,150,12,0.12); color: var(--gold); }
+.pill.teal { background: rgba(10,122,114,0.10); color: var(--teal); }
+
+/* MISSION BOX */
+.mission-box {
+  background: var(--off-white); border: 1.5px solid var(--gray);
+  border-radius: 10px; padding: 20px 22px; margin-bottom: 20px;
+}
+.mission-box h3 { font-size: 16px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+
+/* Arrows */
+.arrow { text-align: center; color: var(--teal); font-size: 22px; margin: 4px 0; }
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  header h1 { font-size: 22px; }
+  .card-grid { grid-template-columns: 1fr; }
+  .os-grid { grid-template-columns: 1fr 1fr; }
+  .dash-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-badge">Wealth Life OS · 財富作業系統</div>
+  <h1>Wealth <span>OS</span> 財富作業系統</h1>
+  <p>降低犯錯成本 · 提高決策品質 · 建立財富複利 · 達成真正自由</p>
+  <p style="font-size:13px;color:rgba(255,255,255,.45);margin-top:4px;">Reduce Errors · Improve Decisions · Build Compound Wealth · Achieve True Freedom</p>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <button class="tab-btn active" onclick="switchTab('home')">🏠 首頁 Home</button>
+    <button class="tab-btn" onclick="switchTab('model')">🌐 世界模型 World Model</button>
+    <button class="tab-btn" onclick="switchTab('os16')">⚙️ 16大OS</button>
+    <button class="tab-btn" onclick="switchTab('flow')">🔄 AI分析流程 Flow</button>
+    <button class="tab-btn" onclick="switchTab('cases')">📊 商業案例 Cases</button>
+    <button class="tab-btn" onclick="switchTab('dashboard')">📈 儀表板 Dashboard</button>
+    <button class="tab-btn" onclick="switchTab('coach')">🤖 每日教練 Daily Coach</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ======== HOME ======== -->
+<div class="tab-panel active" id="tab-home">
+  <div class="hero-motto">
+    <h2>💡 財富世界模型 · Wealth World Model</h2>
+    <ul>
+      <li>財富不是錢——財富是持續創造價值的能力。<span class="en">Wealth is not money — wealth is the ability to continuously create value.</span></li>
+      <li>財富不是收入——財富是現金流系統。<span class="en">Wealth is not income — wealth is a cash flow system.</span></li>
+      <li>財富不是投資——財富是決策品質。<span class="en">Wealth is not investing — wealth is the quality of your decisions.</span></li>
+      <li>財富不是運氣——財富是機率管理。<span class="en">Wealth is not luck — wealth is probability management.</span></li>
+      <li>財富不是存錢——財富是資本配置。<span class="en">Wealth is not saving — wealth is capital allocation.</span></li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">🎯 終極使命 <span class="en">Ultimate Mission</span></h2>
+  <div class="card-grid">
+    <div class="card gold-accent" onclick="toggleCard(this)">
+      <div class="card-num">Mission 01</div>
+      <div class="card-title">建立財富作業系統</div>
+      <div class="card-en">Build a Lifetime Wealth Operating System</div>
+      <div class="card-body">
+        <p>建立一個人一生都可以使用的財富作業系統，降低犯錯成本，提高決策品質，建立世界模型，建立財富複利，達成真正自由。</p>
+        <p class="en-p">Build a lifetime wealth OS that reduces costly mistakes, elevates decision quality, models the world, and compounds wealth toward true freedom.</p>
+        <button class="tts-btn" onclick="speakEn(event,'Build a lifetime wealth operating system that reduces costly mistakes, elevates decision quality, models the world, and compounds wealth toward true freedom.')">
+          <svg viewBox="0 0 24 24"><path d="M12 3C6.5 3 2 7 2 12s4.5 9 10 9 10-4 10-9S17.5 3 12 3zm-2 14l-4-4 1.5-1.5L10 14.1l6.5-6.5 1.5 1.4L10 17z" stroke="none" fill="white"/><polygon points="10,8 16,12 10,16"/></svg>
+          🔊 Listen in English
+        </button>
+      </div>
+    </div>
+    <div class="card teal-accent" onclick="toggleCard(this)">
+      <div class="card-num">Mission 02</div>
+      <div class="card-title">建立AI財富能力</div>
+      <div class="card-en">Build AI Wealth Intelligence</div>
+      <div class="card-body">
+        <p>建立AI賺錢能力、AI槓桿、AI自動化工作流，讓AI成為你24小時不間斷的財富工程師。</p>
+        <p class="en-p">Develop AI earning ability, AI leverage, and AI automation workflows — making AI your 24/7 wealth engineer.</p>
+        <button class="tts-btn" onclick="speakEn(event,'Develop AI earning ability, AI leverage, and AI automation workflows — making AI your 24/7 wealth engineer.')">
+          <svg viewBox="0 0 24 24"><polygon points="10,8 16,12 10,16" fill="white"/></svg>🔊 Listen
+        </button>
+      </div>
+    </div>
+    <div class="card gold-accent" onclick="toggleCard(this)">
+      <div class="card-num">Mission 03</div>
+      <div class="card-title">建立五大自由</div>
+      <div class="card-en">Build Five Dimensions of Freedom</div>
+      <div class="card-body">
+        <p>財務自由 · 時間自由 · 健康自由 · 關係自由 · 生命自由</p>
+        <p class="en-p">Financial Freedom · Time Freedom · Health Freedom · Relationship Freedom · Life Freedom</p>
+        <button class="tts-btn" onclick="speakEn(event,'Build five dimensions of freedom: Financial Freedom, Time Freedom, Health Freedom, Relationship Freedom, and Life Freedom.')">
+          <svg viewBox="0 0 24 24"><polygon points="10,8 16,12 10,16" fill="white"/></svg>🔊 Listen
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">🔟 核心目標 <span class="en">10 Core Goals</span></h2>
+  <div class="card-grid" id="core-goals"></div>
+
+  <h2 class="section-title">📅 今日模組 <span class="en">Today's Modules</span></h2>
+  <div class="card-grid" id="today-grid"></div>
+</div>
+
+<!-- ======== WORLD MODEL ======== -->
+<div class="tab-panel" id="tab-model">
+  <h2 class="section-title">🌐 財富世界模型 <span class="en">Wealth World Models</span></h2>
+  <div class="wisdom-list" id="world-model-list"></div>
+</div>
+
+<!-- ======== 16 OS ======== -->
+<div class="tab-panel" id="tab-os16">
+  <h2 class="section-title">⚙️ 16大核心作業系統 <span class="en">16 Core Operating Systems</span></h2>
+  <div class="os-grid" id="os-grid"></div>
+</div>
+
+<!-- ======== FLOW ======== -->
+<div class="tab-panel" id="tab-flow">
+  <h2 class="section-title">🔄 AI分析流程 <span class="en">AI Analysis Flow</span></h2>
+  <p style="color:var(--gray-mid);margin-bottom:20px;font-size:15px;">任何一句話，AI全部解析成財富模型。 · Any sentence becomes a full wealth model.</p>
+  <div id="flow-steps"></div>
+
+  <h2 class="section-title" style="margin-top:36px">📝 一句話固定輸出 <span class="en">Fixed Output for Any Sentence</span></h2>
+  <div class="card-grid" id="output-grid"></div>
+</div>
+
+<!-- ======== CASES ======== -->
+<div class="tab-panel" id="tab-cases">
+  <h2 class="section-title">📊 1000個商業案例 <span class="en">1000 Business Cases</span></h2>
+  <div class="card-grid" id="cases-grid"></div>
+
+  <h2 class="section-title">💰 投資大師模型 <span class="en">Master Investor Models</span></h2>
+  <div class="card-grid" id="investor-grid"></div>
+
+  <h2 class="section-title">❌ 錯誤模型 → ✅ 更新模型 <span class="en">Error Models → Updated Models</span></h2>
+  <div id="error-grid" class="card-grid"></div>
+</div>
+
+<!-- ======== DASHBOARD ======== -->
+<div class="tab-panel" id="tab-dashboard">
+  <h2 class="section-title">📈 財富儀表板 <span class="en">Wealth Dashboard</span></h2>
+  <div class="dash-grid" id="dash-grid"></div>
+  <p style="color:var(--gray-mid);font-size:13px;margin-top:16px;text-align:center;">點擊評分卡反思今日狀態 · Tap any card to reflect on today's status</p>
+
+  <h2 class="section-title">🏆 1000個能力庫 <span class="en">1000 Capability Library</span></h2>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;" id="skills-pills"></div>
+</div>
+
+<!-- ======== DAILY COACH ======== -->
+<div class="tab-panel" id="tab-coach">
+  <h2 class="section-title">🤖 AI每日教練 <span class="en">AI Daily Coach</span></h2>
+  <div id="coach-list"></div>
+
+  <h2 class="section-title" style="margin-top:40px">📖 每天固定生成 <span class="en">Daily Fixed Outputs</span></h2>
+  <div class="card-grid" id="daily-outputs"></div>
+
+  <h2 class="section-title" style="margin-top:40px">🔚 最終Life OS <span class="en">Ultimate Life OS</span></h2>
+  <div class="hero-motto" style="background:linear-gradient(135deg,var(--teal),#054A46);">
+    <h2>🌱 財富的本質 · The Nature of Wealth</h2>
+    <ul>
+      <li>所有財富，都不是金錢問題，而是世界模型問題。<span class="en">All wealth problems are not money problems — they are world-model problems.</span></li>
+      <li>所有收入，都是價值創造能力的投影。<span class="en">All income is a projection of your value-creation capability.</span></li>
+      <li>所有財富，都是決策品質的累積。<span class="en">All wealth is the accumulation of decision quality.</span></li>
+      <li>所有自由，都是能力複利的結果。<span class="en">All freedom is the result of compounding capability.</span></li>
+    </ul>
+    <button class="tts-btn" style="margin-top:16px;" onclick="speakEn(event,'All wealth problems are not money problems. They are world model problems. All income is a projection of your value creation capability. All wealth is the accumulation of decision quality. All freedom is the result of compounding capability.')">
+      <svg viewBox="0 0 24 24"><polygon points="10,8 16,12 10,16" fill="white"/></svg>🔊 Listen in English
+    </button>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ──────────── DATA ────────────
+const CORE_GOALS = [
+  {zh:'最快理解財富本質',en:'Understand the Nature of Wealth Fastest'},
+  {zh:'最快建立財富世界模型',en:'Build the Wealth World Model Fastest'},
+  {zh:'最快建立價值創造能力',en:'Develop Value-Creation Ability Fastest'},
+  {zh:'最快建立商業能力',en:'Build Business Capability Fastest'},
+  {zh:'最快建立投資能力',en:'Build Investment Ability Fastest'},
+  {zh:'最快建立AI賺錢能力',en:'Build AI Earning Ability Fastest'},
+  {zh:'最快建立現金流能力',en:'Build Cash Flow Ability Fastest'},
+  {zh:'最快建立決策能力',en:'Build Decision-Making Ability Fastest'},
+  {zh:'最快建立複利能力',en:'Build Compounding Ability Fastest'},
+  {zh:'最快建立財務自由能力',en:'Build Financial Freedom Ability Fastest'},
+];
+
+const TODAY_MODULES = [
+  {icon:'💡',zh:'今日財富智慧',en:"Today's Wealth Wisdom",desc:'每日一句精選財富智慧，重新校準你的世界模型。',edesc:"One curated wealth insight daily to re-calibrate your world model."},
+  {icon:'🌍',zh:'今日世界模型',en:"Today's World Model",desc:'更新一個對世界本質的理解，提升決策品質。',edesc:"Update one understanding of how the world works to improve your decisions."},
+  {icon:'🤖',zh:'今日AI教練',en:"Today's AI Coach",desc:'AI個人化問題診斷，今日最大的槓桿機會。',edesc:"AI-personalized problem diagnosis: your biggest leverage opportunity today."},
+  {icon:'📊',zh:'今日商業案例',en:"Today's Business Case",desc:'拆解一個頂尖企業的商業模式，建立商業DNA。',edesc:"Dissect one top company's business model to build your business DNA."},
+  {icon:'💰',zh:'今日投資案例',en:"Today's Investment Case",desc:'學習頂尖投資人的思維模型，優化投資決策。',edesc:"Learn from top investors' mental models to optimize your investment decisions."},
+  {icon:'🔄',zh:'今日反思',en:"Today's Reflection",desc:'今天最大的錯誤？今天最大的更新？',edesc:"What was your biggest mistake today? What was your biggest update?"},
+];
+
+const WORLD_MODELS = [
+  {zh:'財富不是錢',en:'Wealth is not money',detail:'財富是持續創造價值的能力。當你停止創造價值，財富也隨之消散。',edetail:'Wealth is the ability to continuously create value. When value creation stops, wealth dissipates.'},
+  {zh:'財富不是收入',en:'Wealth is not income',detail:'財富是現金流系統——一個即使你不在場也能運作的自動機制。',edetail:'Wealth is a cash flow system — an automatic mechanism that works even when you are absent.'},
+  {zh:'財富不是投資',en:'Wealth is not investing',detail:'財富是決策品質。投資只是決策品質的一種表現形式，而非財富本身。',edetail:'Wealth is decision quality. Investing is just one expression of decision quality, not wealth itself.'},
+  {zh:'財富不是運氣',en:'Wealth is not luck',detail:'財富是機率管理。成功者不是比別人更幸運，而是系統性地管理機率、擴大正期望值的事件。',edetail:'Wealth is probability management. Successful people do not have more luck — they systematically manage probability and expand positive-expectation events.'},
+  {zh:'財富不是存錢',en:'Wealth is not saving money',detail:'財富是資本配置——讓每一分錢都在最有效率的地方產生最大的複利效應。',edetail:'Wealth is capital allocation — placing every dollar where it generates the greatest compounding effect.'},
+  {zh:'財富不是勤奮',en:'Wealth is not hard work',detail:'財富是槓桿——找到正確的槓桿（代碼、媒體、資本、人力），用最小力量撬動最大結果。',edetail:'Wealth is leverage — finding the right levers (code, media, capital, labor) to produce maximum results with minimum effort.'},
+  {zh:'財富不是知識',en:'Wealth is not knowledge',detail:'財富是應用知識的決策能力，再好的知識如果無法形成決策行動，對財富毫無作用。',edetail:'Wealth is the decision-making ability to apply knowledge. The best knowledge without decisive action has zero wealth impact.'},
+  {zh:'財富不是地位',en:'Wealth is not status',detail:'財富是系統——一個可以持續升級、驗證、複利的人生財富作業系統。',edetail:'Wealth is a system — a life wealth OS that can be continuously upgraded, validated, and compounded.'},
+];
+
+const OS_16 = [
+  {num:'①',zh:'財富思維OS',en:'Wealth Mindset OS',items:['第一性原理財富觀','豐盛vs匱乏心態','機率思維','長期主義']},
+  {num:'②',zh:'價值創造OS',en:'Value Creation OS',items:['發現需求缺口','設計價值交換','建立護城河','複利疊加']},
+  {num:'③',zh:'商業OS',en:'Business OS',items:['商業模式設計','飛輪建立','護城河加深','網路效應']},
+  {num:'④',zh:'創業OS',en:'Startup OS',items:['驗證想法','最小可行產品','增長飛輪','規模擴張']},
+  {num:'⑤',zh:'投資OS',en:'Investment OS',items:['價值投資原則','資產配置','風險管理','複利建立']},
+  {num:'⑥',zh:'現金流OS',en:'Cash Flow OS',items:['主動收入優化','被動收入建立','現金流預測','現金流護城河']},
+  {num:'⑦',zh:'品牌OS',en:'Brand OS',items:['品牌定位','品牌敘事','品牌資產','品牌護城河']},
+  {num:'⑧',zh:'IP OS',en:'Intellectual Property OS',items:['知識IP建立','內容系統','IP變現','IP複利']},
+  {num:'⑨',zh:'社群OS',en:'Community OS',items:['社群建立','信任系統','社群飛輪','社群變現']},
+  {num:'⑩',zh:'銷售OS',en:'Sales OS',items:['信任建立','需求挖掘','成交系統','客戶終身價值']},
+  {num:'⑪',zh:'AI創業OS',en:'AI Startup OS',items:['AI工作流建立','AI產品設計','AI變現','AI競爭護城河']},
+  {num:'⑫',zh:'財務管理OS',en:'Financial Management OS',items:['預算系統','稅務優化','資產保護','財務報表']},
+  {num:'⑬',zh:'財富心理OS',en:'Wealth Psychology OS',items:['金錢信念升級','財富焦慮解除','豐盛心態安裝','財富認同建立']},
+  {num:'⑭',zh:'財富世界模型OS',en:'Wealth World Model OS',items:['宏觀經濟理解','市場週期模型','地緣政治模型','AI衝擊模型']},
+  {num:'⑮',zh:'Life Capital OS',en:'Life Capital OS',items:['健康資本','關係資本','知識資本','時間資本']},
+  {num:'⑯',zh:'財務自由OS',en:'Financial Freedom OS',items:['自由數字計算','被動收入系統','自由時間線','自由後人生設計']},
+];
+
+const FLOW_STEPS = [
+  {zh:'抽取概念',en:'Extract Core Concepts',desc:'從任何一句話中識別核心財富概念和關鍵詞，建立概念地圖。',edesc:'Identify core wealth concepts and keywords from any sentence, then build a concept map.'},
+  {zh:'建立本體',en:'Build the Ontology',desc:'定義概念的本質是什麼——它在財富系統中的真正地位和定義。',edesc:'Define the essence of the concept — its true position and definition in the wealth system.'},
+  {zh:'建立第一性原理',en:'First Principles Analysis',desc:'打破假設，回到最基本的真理，重建對這個概念的理解。',edesc:'Break assumptions, return to fundamental truths, and rebuild understanding of the concept.'},
+  {zh:'建立結構',en:'Build Structure',desc:'描繪概念的組成結構：輸入、處理、輸出、反饋迴路。',edesc:'Map the component structure: inputs, processing, outputs, and feedback loops.'},
+  {zh:'建立生成機制',en:'Build Generation Mechanism',desc:'理解這個財富現象是如何產生的——什麼條件導致什麼結果。',edesc:'Understand how this wealth phenomenon is generated — what conditions lead to what outcomes.'},
+  {zh:'建立流程',en:'Build the Process',desc:'設計可執行的步驟流程，讓概念可以被實際操作。',edesc:'Design executable step-by-step processes so the concept becomes actionable.'},
+  {zh:'建立世界模型',en:'Build World Model',desc:'將概念嵌入更大的世界模型中，理解它在整個系統中的位置。',edesc:'Embed the concept into a larger world model to understand its place in the entire system.'},
+  {zh:'建立商業模型',en:'Build Business Model',desc:'如何用這個概念建立可持續的商業模式和收入系統。',edesc:'How to use this concept to build a sustainable business model and income system.'},
+  {zh:'建立財富模型',en:'Build Wealth Model',desc:'將概念轉化為具體的財富建構策略和執行計劃。',edesc:'Transform the concept into concrete wealth-building strategies and execution plans.'},
+  {zh:'建立決策模型',en:'Build Decision Model',desc:'建立清晰的決策框架，讓未來面對類似情境時能快速做出優質決策。',edesc:'Build a clear decision framework for rapidly making high-quality decisions in similar future situations.'},
+  {zh:'建立AI工作流',en:'Build AI Workflow',desc:'設計AI輔助的自動化工作流，讓財富系統自動運作。',edesc:'Design AI-assisted automation workflows so the wealth system operates automatically.'},
+  {zh:'建立每日行動',en:'Build Daily Actions',desc:'將所有分析轉化為今天就可以執行的具體行動步驟。',edesc:'Transform all analysis into concrete action steps executable today.'},
+];
+
+const FIXED_OUTPUTS = [
+  {zh:'一句白話',en:'One Plain-Language Summary'},
+  {zh:'一句英文',en:'One English Sentence'},
+  {zh:'第一性原理',en:'First Principles'},
+  {zh:'本體層',en:'Ontological Layer'},
+  {zh:'結構層',en:'Structural Layer'},
+  {zh:'機制層',en:'Mechanism Layer'},
+  {zh:'控制論',en:'Cybernetics'},
+  {zh:'系統論',en:'Systems Theory'},
+  {zh:'數學模型',en:'Mathematical Model'},
+  {zh:'生活案例',en:'Life Case'},
+  {zh:'商業案例',en:'Business Case'},
+  {zh:'投資案例',en:'Investment Case'},
+  {zh:'錯誤模型',en:'Error Model'},
+  {zh:'更新模型',en:'Updated Model'},
+  {zh:'每日任務',en:'Daily Task'},
+  {zh:'每日反思',en:'Daily Reflection'},
+];
+
+const CASES = [
+  {co:'Apple',zh:'蘋果：生態系統護城河',en:'Apple: Ecosystem Moat',desc:'Apple的護城河不是產品，是生態系統鎖定效應——一旦進入Apple生態，轉換成本極高，形成天然壁壘。',edesc:"Apple's moat is not its products but its ecosystem lock-in effect. Once inside Apple's ecosystem, switching costs become prohibitively high."},
+  {co:'Amazon',zh:'亞馬遜：飛輪效應',en:'Amazon: Flywheel Effect',desc:'低價→更多客戶→更多賣家→更豐富選擇→更低成本→更低價格。這個飛輪一旦啟動，競爭對手幾乎無法追上。',edesc:'Lower prices → More customers → More sellers → More selection → Lower costs → Lower prices. Once this flywheel spins, competitors cannot catch up.'},
+  {co:'Netflix',zh:'奈飛：數據護城河',en:'Netflix: Data Moat',desc:'Netflix的核心護城河是觀看數據——2億+用戶的行為數據讓其內容推薦和原創內容投資精準度遠超競爭對手。',edesc:"Netflix's core moat is viewing data. 200M+ users' behavioral data makes its recommendations and original content investments far superior to competitors."},
+  {co:'NVIDIA',zh:'輝達：平台護城河',en:'NVIDIA: Platform Moat',desc:'CUDA生態系統讓超過400萬開發者依賴NVIDIA平台，形成比硬體更強大的軟體護城河。',edesc:'The CUDA ecosystem locks in 4M+ developers who depend on NVIDIA, creating a software moat stronger than any hardware advantage.'},
+  {co:'台積電',zh:'台積電：技術護城河',en:'TSMC: Technology Moat',desc:'台積電的護城河是工程師文化+製程節點領先+客戶依賴。複製需要15年和3兆美元，這就是護城河。',edesc:"TSMC's moat is engineering culture + process node leadership + customer dependency. Replication requires 15 years and $3 trillion — that is a moat."},
+  {co:'OpenAI',zh:'OpenAI：規模飛輪',en:'OpenAI: Scale Flywheel',desc:'更多用戶→更多數據→更好模型→更多用戶。OpenAI的核心護城河是最大的RLHF反饋數據集。',edesc:'More users → More data → Better models → More users. OpenAI core moat is the largest RLHF feedback dataset in existence.'},
+];
+
+const INVESTORS = [
+  {name:'Warren Buffett',zh:'巴菲特：護城河理論',en:'Buffett: Moat Theory',model:'只買有護城河的公司，以合理價格買入，長期持有。時間是你最好的朋友。',emodel:'Only buy companies with moats, at fair prices, and hold long-term. Time is your best friend.'},
+  {name:'Charlie Munger',zh:'蒙格：多元模型思維',en:'Munger: Latticework of Mental Models',model:'建立100個思維模型的格柵，讓任何問題都可以從多個角度分析，做出更好的決策。',emodel:'Build a latticework of 100 mental models so any problem can be analyzed from multiple angles for better decisions.'},
+  {name:'Ray Dalio',zh:'Ray Dalio：機器模型',en:'Dalio: Machine Model',model:'把世界看成一台機器，理解其機制，就能預測輸出。經濟也是一台機器，有固定的週期和規律。',emodel:'View the world as a machine. Understand its mechanisms and you can predict outputs. The economy is a machine with fixed cycles and patterns.'},
+  {name:'Naval Ravikant',zh:'Naval：特定知識',en:'Naval: Specific Knowledge',model:'真正的財富來自特定知識——只有你能做、難以被複製、世界也正好需要的能力。',emodel:'True wealth comes from specific knowledge — capability only you can do, hard to replicate, and exactly what the world needs.'},
+];
+
+const ERRORS = [
+  {zh:'為什麼會窮？',en:'Why do people stay poor?',error:'用時間換錢的線性收入模式，沒有建立任何槓桿或複利系統。',eerror:'Trading time for money in a linear income model with no leverage or compounding system.',fix:'建立複利系統：技能複利＋資產複利＋信任複利',efix:'Build compounding systems: skill compounding + asset compounding + trust compounding.'},
+  {zh:'為什麼創業失敗？',en:'Why do startups fail?',error:'在驗證市場需求前就大量投入資源，用情懷取代數據驗證。',eerror:'Committing massive resources before validating market demand, substituting emotion for data validation.',fix:'先驗證，再投入。最小可行產品→數據驗證→再擴張',efix:'Validate first, then invest. MVP → Data validation → Scale up.'},
+  {zh:'為什麼投資虧損？',en:'Why do investors lose money?',error:'追漲殺跌、情緒決策、缺乏護城河思維、不理解複利的時間需求。',eerror:'Chasing tops, panic selling, emotional decisions, missing moat thinking, misunderstanding time requirements for compounding.',fix:'建立投資決策系統，用規則取代情緒',efix:'Build an investment decision system that replaces emotions with rules.'},
+  {zh:'為什麼IP沒有流量？',en:'Why does your IP have no traffic?',error:'只有輸出沒有設計：沒有清晰的目標受眾、沒有差異化定位、沒有分發策略。',eerror:'Output without design: no clear target audience, no differentiated positioning, no distribution strategy.',fix:'先定位，後輸出。WHO(誰)→WHAT(什麼)→WHY(為何選你)',efix:'Position first, then output. WHO → WHAT → WHY CHOOSE YOU.'},
+];
+
+const DASHBOARD_DATA = [
+  {label:'財富分數',en:'Wealth Score',score:72,color:'#C9960C'},
+  {label:'現金流分數',en:'Cash Flow Score',score:65,color:'#0A7A72'},
+  {label:'AI能力分數',en:'AI Capability',score:58,color:'#1A2B5F'},
+  {label:'決策品質',en:'Decision Quality',score:80,color:'#C9960C'},
+  {label:'世界模型成熟度',en:'World Model Maturity',score:55,color:'#0A7A72'},
+  {label:'品牌分數',en:'Brand Score',score:70,color:'#1A2B5F'},
+  {label:'信任分數',en:'Trust Score',score:85,color:'#C9960C'},
+  {label:'Life Capital',en:'Life Capital',score:68,color:'#0A7A72'},
+];
+
+const SKILLS = [
+  '價值創造','商業設計','投資判斷','AI應用','槓桿思維','風險管理',
+  '預測能力','第一性原理','建立模型','品牌建立','影響力','系統思考',
+  '決策設計','創新能力','領導能力','溝通能力','終身學習','現金流設計',
+  'Value Creation','Business Design','Investment Judgment','AI Application',
+  'Leverage Thinking','Risk Management','Predictive Ability','First Principles'
+];
+
+const COACH_QS = [
+  {zh:'今天最大的槓桿？',en:"What is your biggest leverage today?",answer:'找到一件事，投入1單位，產出10倍結果。今天你有沒有在做1×10的事，還是在做1×1的事？',eanswer:"Find one thing where 1 unit of effort produces 10× output. Are you doing 1×10 work today or 1×1 work?"},
+  {zh:'今天最大的浪費？',en:"What is your biggest waste today?",answer:'你花了多少時間在不產生複利的活動上？浪費不只是金錢，還是不可再生的時間資本。',eanswer:"How much time did you spend on activities that produce no compounding? Waste is not just money — it is irreplaceable time capital."},
+  {zh:'今天最大的機會？',en:"What is your biggest opportunity today?",answer:'什麼是你現在看到、但還沒有行動的機會？機會的視窗通常比你想的更短暫。',eanswer:"What opportunity do you see right now but have not yet acted on? Opportunity windows are usually shorter than you think."},
+  {zh:'今天最大的風險？',en:"What is your biggest risk today?",answer:'你今天有沒有在做一件事，如果失敗，代價是你無法承受的？管理下行風險是財富的核心能力。',eanswer:"Are you doing something today where failure would cost you more than you can bear? Managing downside risk is the core of wealth."},
+  {zh:'今天最大的更新？',en:"What is your biggest update today?",answer:'今天你有什麼信念被挑戰或更新了？更新速度是財富複利的速度。',eanswer:"What belief was challenged or updated today? The speed of your belief updates is the speed of your wealth compounding."},
+  {zh:'今天最大的決策？',en:"What is your biggest decision today?",answer:'今天你做了一個什麼決策？你的決策依據是情緒、習慣還是系統？',eanswer:"What was your biggest decision today? Was it driven by emotion, habit, or a system?"},
+  {zh:'今天最大的複利？',en:"What is your biggest compounding action today?",answer:'你今天做了什麼事，明天會因為今天而變得更強大？複利在於每天微小的積累。',eanswer:"What did you do today that will make tomorrow stronger? Compounding lives in small daily accumulations."},
+  {zh:'今天最大的價值？',en:"What value did you create for others today?",answer:'你今天為誰創造了什麼價值？記住：所有收入都是價值創造能力的投影。',eanswer:"For whom did you create value today? Remember: all income is a projection of your value-creation capability."},
+];
+
+const DAILY_OUTPUTS = [
+  {icon:'💡',zh:'今日一句智慧',en:"Today's Wisdom Sentence"},
+  {icon:'🇬🇧',zh:'今日一句英文',en:"Today's English Insight"},
+  {icon:'🏢',zh:'今日商業模型',en:"Today's Business Model"},
+  {icon:'💰',zh:'今日投資模型',en:"Today's Investment Model"},
+  {icon:'🤖',zh:'今日AI模型',en:"Today's AI Model"},
+  {icon:'📖',zh:'今日財富案例',en:"Today's Wealth Case"},
+  {icon:'🔍',zh:'今日反思',en:"Today's Reflection"},
+  {icon:'⚡',zh:'今日挑戰',en:"Today's Challenge"},
+  {icon:'🔄',zh:'今日更新',en:"Today's Update"},
+  {icon:'💪',zh:'今日能力',en:"Today's Capability Practice"},
+];
+
+// ──────────── RENDER FUNCTIONS ────────────
+
+function toggleCard(el) {
+  const body = el.querySelector('.card-body');
+  if (body) body.classList.toggle('open');
+}
+function toggleOS(el) { el.classList.toggle('open'); }
+function toggleFlow(el) { el.classList.toggle('open'); }
+function toggleWisdom(el) { el.classList.toggle('open'); }
+function toggleCoach(el) { el.classList.toggle('open'); }
+
+function speakEn(e, text) {
+  e.stopPropagation();
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = 0.9;
+    window.speechSynthesis.speak(u);
+  }
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const btn = document.querySelector(`.tab-btn[onclick*="'${id}'"]`);
+  if (btn) btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// CORE GOALS
+const cg = document.getElementById('core-goals');
+CORE_GOALS.forEach((g,i) => {
+  cg.innerHTML += `<div class="card ${i%2===0?'gold-accent':'teal-accent'}" onclick="toggleCard(this)">
+    <div class="card-num">Goal ${String(i+1).padStart(2,'0')}</div>
+    <div class="card-title">${g.zh}</div>
+    <div class="card-en">${g.en}</div>
+    <div class="card-body">
+      <p>${g.zh}——這是財富OS的核心使命之一，每天評估自己在這個維度的進度。</p>
+      <p class="en-p">${g.en} — This is one of the core missions of Wealth OS. Evaluate your daily progress in this dimension.</p>
+      <button class="tts-btn" onclick="speakEn(event,'${g.en}. This is one of the core missions of Wealth OS. Evaluate your daily progress in this dimension.')">
+        <svg viewBox="0 0 24 24"><polygon points="10,8 16,12 10,16" fill="white"/></svg>🔊 Listen
+      </button>
+    </div>
+  </div>`;
+});
+
+// TODAY MODULES
+const tg = document.getElementById('today-grid');
+TODAY_MODULES.forEach(m => {
+  tg.innerHTML += `<div class="card gold-accent" onclick="toggleCard(this)">
+    <div class="card-title">${m.icon} ${m.zh}</div>
+    <div class="card-en">${m.en}</div>
+    <div class="card-body">
+      <p>${m.desc}</p>
+      <p class="en-p">${m.edesc}</p>
+      <button class="tts-btn" onclick="speakEn(event,'${m.edesc.replace(/'/g,"\\'")}')">
+        <svg viewBox="0 0 24 24"><polygon points="10,8 16,12 10,16" fill="white"/></svg>🔊 Listen
+      </button>
+    </div>
+  </div>`;
+});
+
+// WORLD MODEL
+const wml = document.getElementById('world-model-list');
+WORLD_MODELS.forEach(w => {
+  wml.innerHTML += `<div class="wisdom-item" onclick="toggleWisdom(this)">
+    <div class="wisdom-zh">💎 ${w.zh}</div>
+    <div class="wisdom-en">🇬🇧 ${w.en}</div>
+    <div class="wisdom-detail">
+      <p style="font-size:15px;color:#3A4060;">${w.detail}</p>
+      <p style="font-size:14px;color:var(--teal);margin-top:8px;font-style:italic;">${w.edetail}</p>
+      <button class="tts-btn" onclick="speakEn(event,'${w.edetail.replace(/'/g,"\\'")}')">
+        <svg viewBox="0 0 24 24"><polygon points="10,8 16,12 10,16" fill="white"/></svg>🔊 Listen in English
+      </button>
+    </div>
+  </div>`;
+});
+
+// OS 16
+const og = document.getElementById('os-grid');
+OS_16.forEach(os => {
+  og.innerHTML += `<div class="os-card" onclick="toggleOS(this)">
+    <div class="os-num">${os.num}</div>
+    <div class="os-zh">${os.zh}</div>
+    <div class="os-en">${os.en}</div>
+    <div class="os-detail">
+      <ul>${os.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+      <button class="tts-btn" style="margin-top:10px;" onclick="speakEn(event,'${os.en}. Key components: ${os.items.join(', ')}.')">
+        <svg viewBox="0 0 24 24"><polygon points="10,8 16,12 10,16" fill="white"/></svg>🔊 Listen
+      </button>
+    </div>
+  </div>`;
+});
+
+// FLOW
+const fs = document.getElementById('flow-steps');
+FLOW_STEPS.forEach((f,i) => {
+  fs.innerHTML += `<div class="flow-step" onclick="toggleFlow(this)">
+    <div class="flow-num">${String(i+1).padStart(2,'0')}</div>
+    <div class="flow-text">
+      <div class="zh">↓ ${f.zh}</div>
+      <div class="en">${f.en}</div>
+      <div class="flow-desc">
+        <p style="color:#3A4060;">${f.desc}</p>
+        <p style="color:var(--teal);font-style:italic;margin-top:6px;">${f.edesc}</p>
+        <button class="tts-btn" onclick="speakEn(event,'Step ${i+1}: ${f.en}. ${f.edesc}')">
+          <svg viewBox="0 0 24 24"><polygon points="10,8 16,12 10,16" fill="white"/></svg>🔊 Listen
+        </button>
+      </div>
+    </div>
+  </div>`;
+});
+
+// FIXED OUTPUTS
+const outg = document.getElementById('output-grid');
+FIXED_OUTPUTS.forEach(o => {
+  outg.innerHTML += `<div class="card teal-accent" onclick="toggleCard(this)">
+    <div class="card-title">📋 ${o.zh}</div>
+    <div class="card-en">${o.en}</div>
+    <div class="card-body">
+      <p>每次分析任何財富概念，都必須輸出「${o.zh}」這個維度的內容。</p>
+      <p class="en-p">Every wealth concept analysis must include the "${o.en}" output dimension.</p>
+      <button class="tts-btn" onclick="speakEn(event,'Every wealth concept analysis must include the ${o.en} output dimension.')">
+        <svg viewBox="0 0 24 24"><polygon points="10,8 16,12 10,16" fill="white"/></svg>🔊 Listen
+      </button>
+    </div>
+  </div>`;
+});
+
+// CASES
+const caseg = document.getElementById('cases-grid');
+CASES.forEach(c => {
+  caseg.innerHTML += `<div class="card gold-accent" onclick="toggleCard(this)">
+    <div class="card-num">${c.co}</div>
+    <div class="card-title">${c.zh}</div>
+    <div class="card-en">${c.en}</div>
+    <div class="card-body">
+      <p>${c.desc}</p>
+      <p class="en-p">${c.edesc}</p>
+      <button class="tts-btn" onclick="speakEn(event,'${c.edesc.replace(/'/g,"\\'")}')">
+        <svg viewBox="0 0 24 24"><polygon points="10,8 16,12 10,16" fill="white"/></svg>🔊 Listen
+      </button>
+    </div>
+  </div>`;
+});
+
+// INVESTORS
+const invg = document.getElementById('investor-grid');
+INVESTORS.forEach(inv => {
+  invg.innerHTML += `<div class="card teal-accent" onclick="toggleCard(this)">
+    <div class="card-num">${inv.name}</div>
+    <div class="card-title">${inv.zh}</div>
+    <div class="card-en">${inv.en}</div>
+    <div class="card-body">
+      <p>${inv.model}</p>
+      <p class="en-p">${inv.emodel}</p>
+      <button class="tts-btn" onclick="speakEn(event,'${inv.emodel.replace(/'/g,"\\'")}')">
+        <svg viewBox="0 0 24 24"><polygon points="10,8 16,12 10,16" fill="white"/></svg>🔊 Listen
+      </button>
+    </div>
+  </div>`;
+});
+
+// ERRORS
+const errc = document.getElementById('error-grid');
+ERRORS.forEach(e => {
+  errc.innerHTML += `<div class="card" onclick="toggleCard(this)" style="border-top:4px solid #E05050;">
+    <div class="card-num" style="color:#E05050;">❌ Error Model</div>
+    <div class="card-title">${e.zh}</div>
+    <div class="card-en">${e.en}</div>
+    <div class="card-body">
+      <p><strong style="color:#E05050;">錯誤：</strong>${e.error}</p>
+      <p class="en-p">Error: ${e.eerror}</p>
+      <p style="margin-top:8px;"><strong style="color:var(--teal);">✅ 更新：</strong>${e.fix}</p>
+      <p class="en-p">Fix: ${e.efix}</p>
+      <button class="tts-btn" onclick="speakEn(event,'Common error: ${e.eerror} Updated model: ${e.efix}')">
+        <svg viewBox="0 0 24 24"><polygon points="10,8 16,12 10,16" fill="white"/></svg>🔊 Listen
+      </button>
+    </div>
+  </div>`;
+});
+
+// DASHBOARD
+const dg = document.getElementById('dash-grid');
+DASHBOARD_DATA.forEach(d => {
+  dg.innerHTML += `<div class="dash-card" onclick="this.querySelector('.progress-fill').style.width='${d.score}%'">
+    <div class="dash-score">${d.score}</div>
+    <div class="dash-label">${d.label}</div>
+    <div class="dash-en">${d.en}</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:0%;background:${d.color};"></div></div>
+  </div>`;
+});
+// Animate on tab switch
+document.querySelector('[onclick="switchTab(\'dashboard\')"]').addEventListener('click',()=>{
+  setTimeout(()=>{
+    document.querySelectorAll('.progress-fill').forEach((f,i)=>{
+      f.style.width = DASHBOARD_DATA[i].score+'%';
+    });
+  },100);
+});
+
+// SKILLS PILLS
+const sp = document.getElementById('skills-pills');
+SKILLS.forEach((s,i) => {
+  sp.innerHTML += `<span class="pill ${i%3===0?'gold':i%3===1?'teal':''}">${s}</span>`;
+});
+
+// COACH
+const cl = document.getElementById('coach-list');
+COACH_QS.forEach((q,i) => {
+  cl.innerHTML += `<div class="coach-block" onclick="toggleCoach(this)">
+    <div class="coach-q">Q${i+1}: ${q.zh}<span class="en">${q.en}</span></div>
+    <div class="coach-answer">
+      <p>${q.answer}</p>
+      <p style="color:var(--teal);font-style:italic;margin-top:8px;">${q.eanswer}</p>
+      <button class="tts-btn" onclick="speakEn(event,'${q.eanswer.replace(/'/g,"\\'")}')">
+        <svg viewBox="0 0 24 24"><polygon points="10,8 16,12 10,16" fill="white"/></svg>🔊 Listen in English
+      </button>
+    </div>
+  </div>`;
+});
+
+// DAILY OUTPUTS
+const dout = document.getElementById('daily-outputs');
+DAILY_OUTPUTS.forEach(d => {
+  dout.innerHTML += `<div class="card teal-accent" onclick="toggleCard(this)">
+    <div class="card-title">${d.icon} ${d.zh}</div>
+    <div class="card-en">${d.en}</div>
+    <div class="card-body">
+      <p>每天固定輸出「${d.zh}」，讓財富複利系統每天升級一次。</p>
+      <p class="en-p">Generate "${d.en}" every day to upgrade your wealth compounding system once daily.</p>
+      <button class="tts-btn" onclick="speakEn(event,'Generate ${d.en.replace(/'/g,"\\'")} every day to upgrade your wealth compounding system once daily.')">
+        <svg viewBox="0 0 24 24"><polygon points="10,8 16,12 10,16" fill="white"/></svg>🔊 Listen
+      </button>
+    </div>
+  </div>`;
+});
+</script>
+
+
+
+
+
+<!-- SOUP-START -->
+<style>
+/* ── 心靈雞湯卡 + 搜尋 ── */
+.sp-card{margin:0 0 18px;padding:14px 16px;border-radius:14px;border:1px solid #E6D3A3;background:linear-gradient(135deg,#FFF9EA,#FFF1DC);color:#4A3A12;text-align:left;cursor:default;font-family:inherit;line-height:1.6;}
+.sp-dark .sp-card{background:linear-gradient(135deg,rgba(232,168,32,.12),rgba(255,255,255,.03));border-color:rgba(232,168,32,.3);color:#F3E8CC;}
+.sp-h{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;letter-spacing:.5px;color:#B07A08;margin-bottom:6px;}
+.sp-dark .sp-h{color:#E8A820;}
+.sp-n{font-weight:400;opacity:.7;}
+.sp-q{font-size:16px;font-weight:600;line-height:1.75;white-space:pre-line;}
+.sp-b{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.sp-fz{bottom:166px;font-size:16px;font-weight:700;}
+.sp-fh{font-size:12px;font-weight:700;padding:8px 6px 4px;color:#C9960C;}
+.sp-it{position:relative;}
+.sp-it[data-f]{padding-right:34px;}
+.sp-x{position:absolute;right:8px;top:8px;opacity:.5;padding:0 4px;}
+.sp-x:hover{opacity:1;}
+.sp-b button{padding:5px 13px;border-radius:16px;border:1px solid currentColor;background:transparent;color:inherit;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;opacity:.75;transition:.15s;}
+.sp-b button:hover{opacity:1;}
+.sp-note{font-size:11px;opacity:.65;margin-top:8px;text-align:center;}
+.sp-fab{position:fixed;right:14px;z-index:900;width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;font-size:18px;line-height:42px;padding:0;background:#1A2B5F;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.sp-dark .sp-fab{background:#E8A820;color:#1a1200;}
+.sp-fs{bottom:116px;}
+.sp-ft{bottom:66px;display:none;}
+.sp-ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;background:rgba(0,0,0,.55);padding:8vh 14px 14px;}
+.sp-ov.on{display:block;}
+.sp-box{max-width:560px;margin:0 auto;background:#fff;color:#1A2040;border-radius:14px;padding:14px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:14px;}
+.sp-dark .sp-box{background:#0E1835;color:#D5E5F8;border:1px solid #1C3060;}
+.sp-row{display:flex;gap:8px;}
+.sp-row input{flex:1;min-width:0;padding:10px 12px;border-radius:9px;border:1.5px solid #C9960C;font-size:15px;font-family:inherit;outline:none;background:transparent;color:inherit;}
+.sp-row button{padding:0 14px;border-radius:9px;border:none;background:rgba(128,128,128,.2);color:inherit;font-size:15px;cursor:pointer;}
+.sp-r{overflow-y:auto;margin-top:10px;}
+.sp-it{padding:9px 10px;border-radius:9px;cursor:pointer;line-height:1.6;border-bottom:1px solid rgba(128,128,128,.18);}
+.sp-it:hover{background:rgba(201,150,12,.14);}
+.sp-it mark{background:#F0C040;color:#1a1200;border-radius:3px;padding:0 2px;}
+.sp-tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:10px;background:rgba(201,150,12,.2);margin-right:6px;}
+.sp-em{padding:16px 6px;opacity:.6;text-align:center;}
+.sp-hit{outline:3px solid #E8A820 !important;outline-offset:3px;}
+#spToast{display:none;position:fixed;bottom:120px;left:50%;transform:translateX(-50%);z-index:1100;background:#1A2B5F;color:#fff;font-size:13px;font-weight:700;padding:8px 18px;border-radius:9px;}
+#spToast.on{display:block;}
+</style>
+<script>
+window.SOUP={key:'wealth_os',nav:'.tab-btn',panel:'.tab-panel',skip:'header',extra:['存下的不只是錢，是未來的選擇權。','不懂的不碰，是對自己最大的保護。','穩穩地賺，比賺得快更重要。','你花錢的方式，就是你在投票給想要的生活。','財富自由的第一步，是不再和別人比。','時間是最公平的資本，每個人每天都領到一樣多。'],soups:{
+'tab-home':['財富不是追來的，是你變得有價值之後，自己走過來的。','先把自己經營好，錢只是順便的結果。','慢慢變富，才是最快的路。'],
+'tab-model':['看世界的方式變了，口袋才會跟著變。','你賺不到認知以外的錢，但認知可以每天長一點。','想清楚錢是什麼，就不再被錢牽著走。'],
+'tab-os16':['不必十六項全會，先讓一個系統轉起來。','系統做對了，努力才會被留下來。','把一件事做成流程，你就多了一份自由。'],
+'tab-flow':['把問題拆開來看，就沒有那麼可怕。','想得清楚，才做得踏實。','每多問一層為什麼，就離答案近一點。'],
+'tab-cases':['別人走過的路，是送給你的地圖。','高手的錯誤和成功，都值得你花時間讀。','看懂一個案例，少繞三年彎路。'],
+'tab-dashboard':['數字不是評價你，是提醒你下一步往哪走。','每天看一眼自己的狀態，就不容易走偏。','分數會變，只要你一直在動。'],
+'tab-coach':['每天問自己一個好問題，一年後你會感謝今天。','反思五分鐘，勝過瞎忙五小時。','今天的小修正，是明天的大不同。']
+},reveal:function(el){
+  var p=el.closest('.tab-panel');
+  if(p){var b=document.querySelector('.tab-btn[onclick*="\''+p.id.replace('tab-','')+'\'"]');if(b)b.click();}
+  var body=el.closest('.card-body');if(body)body.classList.add('open');
+  var o=el.closest('.wisdom-item,.os-card,.flow-step,.coach-block');if(o)o.classList.add('open');
+}};
+</script>
+<script>
+// ── 心靈雞湯卡 + 搜尋 + 記住分頁 + 離線教練（共用模組，完全離線）──
+(function(){
+var C=window.SOUP||{},K='soup:'+(C.key||'app')+':';
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function lsGet(k){try{return localStorage.getItem(K+k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(K+k,v);}catch(e){}}
+function navs(){return C.nav?$$(C.nav):[];}
+function panels(){
+  if(C.panels)return C.panels();
+  return $$(C.panel||'.pg').map(function(el){return{el:el,id:el.id,host:(C.host&&el.querySelector(C.host))||el};});
+}
+// 通用句庫：接在每個分頁專屬句子後面，「換一碗」時輪到
+var POOL=['慢慢來，比較快。','你已經走了很遠，回頭看看就知道。','今天不必完美，只要比昨天多一點點。','允許自己休息，也是一種前進。','每一個小小的開始，都值得被肯定。','你現在做的每件小事，未來的你都會感謝。','不用和別人比，你有自己的時區。','卡住的時候，先深呼吸，再走一小步。','把今天過好，就是對未來最好的準備。','你比昨天的自己，又多懂了一點。','再難的日子，也是一天一天過完的。','對自己溫柔一點，你正在努力。'];
+function specOf(id){return (C.soups&&C.soups[id])||C.common||[];}
+function quotesOf(id){var s=specOf(id);return s.length?s.concat(C.extra||[],POOL):s;}
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+var day=Math.floor(Date.now()/864e5),off={};
+function favs(){try{return JSON.parse(lsGet('fav'))||[];}catch(e){return [];}}
+function setFavs(a){lsSet('fav',JSON.stringify(a));}
+
+// ── 雞湯卡 ──
+function fill(card){
+  var id=card.getAttribute('data-sp'),q=quotesOf(id);if(!q.length)return;
+  // 每天預設先出該分頁的專屬句，按「換一碗」再輪到其他句
+  var i=((day+hash(id))%specOf(id).length+(off[id]||0))%q.length;
+  card.querySelector('.sp-q').textContent=q[i];
+  card.querySelector('.sp-n').textContent=(i+1)+' / '+q.length;
+  card.querySelector('[data-a=n]').style.display=q.length>1?'':'none';
+  card.querySelector('[data-a=f]').textContent=favs().indexOf(q[i])>=0?'♥ 已收藏':'♡ 收藏';
+}
+function say(text){
+  if(!('speechSynthesis' in window)){toast('這個瀏覽器不支援朗讀');return;}
+  speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);u.lang='zh-TW';u.rate=0.9;speechSynthesis.speak(u);
+}
+// 存成 1080×1080 圖卡（PNG），可直接貼到臉書 / LINE
+function saveImage(text){
+  var S=1080,cv=document.createElement('canvas');cv.width=cv.height=S;
+  var x=cv.getContext('2d'),g=x.createLinearGradient(0,0,S,S);
+  g.addColorStop(0,'#1A2B5F');g.addColorStop(1,'#0A7A72');x.fillStyle=g;x.fillRect(0,0,S,S);
+  x.strokeStyle='rgba(240,192,64,.55)';x.lineWidth=4;x.strokeRect(48,48,S-96,S-96);
+  var F='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+  x.textAlign='center';x.textBaseline='middle';
+  x.fillStyle='#F0C040';x.font='bold 40px '+F;x.fillText('心靈雞湯',S/2,150);
+  var size=text.length>60?50:text.length>32?58:68,lh=size*1.6,max=S-240,lines=[];
+  x.font='bold '+size+'px '+F;
+  text.split('\n').forEach(function(par){
+    var line='';
+    for(var i=0;i<par.length;i++){
+      var ch=par[i],keep=/[，。！？、；：」』）]/.test(ch);   // 標點不放行首
+      if(line&&!keep&&x.measureText(line+ch).width>max){lines.push(line);line=ch;}else line+=ch;
+    }
+    if(line)lines.push(line);
+  });
+  x.fillStyle='#fff';
+  var y=S/2-(lines.length-1)*lh/2;
+  lines.forEach(function(l,i){x.fillText(l,S/2,y+i*lh);});
+  x.fillStyle='rgba(255,255,255,.7)';x.font='32px '+F;
+  x.fillText(C.brand||document.title.split(/[｜|]/)[0].trim(),S/2,S-140);
+  cv.toBlob(function(b){
+    var a=document.createElement('a');a.href=URL.createObjectURL(b);
+    a.download='心靈雞湯_'+text.replace(/[\s\\/:*?"<>|，。！？、]/g,'').slice(0,10)+'.png';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
+    toast('圖卡已下載 ✓');
+  },'image/png');
+}
+function toast(m){
+  var t=document.getElementById('spToast');if(!t)return;
+  t.textContent=m;t.classList.add('on');clearTimeout(toast.t);
+  toast.t=setTimeout(function(){t.classList.remove('on');},1300);
+}
+function copy(text){
+  function fb(){var a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}a.remove();}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).catch(fb);else fb();
+  toast('已複製 ✓');
+}
+function makeCard(id){
+  var d=document.createElement('div');d.className='sp-card';d.setAttribute('data-sp',id);
+  d.innerHTML='<div class="sp-h"><span>🍲 心靈雞湯</span><span class="sp-n"></span></div><div class="sp-q"></div><div class="sp-b"><button type="button" data-a="n">換一碗</button><button type="button" data-a="f">♡ 收藏</button><button type="button" data-a="c">複製</button><button type="button" data-a="s">朗讀</button><button type="button" data-a="i">存圖卡</button></div>';
+  d.addEventListener('click',function(e){
+    e.stopPropagation();
+    var a=e.target.getAttribute&&e.target.getAttribute('data-a'),t=d.querySelector('.sp-q').textContent;
+    if(a==='n'){off[id]=(off[id]||0)+1;fill(d);}
+    else if(a==='c'){copy(t);}
+    else if(a==='s'){say(t);}
+    else if(a==='i'){saveImage(t);}
+    else if(a==='f'){
+      var f=favs(),k=f.indexOf(t);
+      if(k>=0)f.splice(k,1);else f.unshift(t);
+      setFavs(f);fill(d);toast(k>=0?'已取消收藏':'已收藏 ♥（按 🔍 可看全部收藏）');
+    }
+  });
+  fill(d);return d;
+}
+function ensure(){
+  panels().forEach(function(p){
+    if(!p||!p.el)return;
+    var host=p.host||p.el,ex=null;
+    for(var c=host.firstElementChild;c;c=c.nextElementSibling){if(c.classList.contains('sp-card')){ex=c;break;}}
+    if(ex){if(ex.getAttribute('data-sp')===p.id)return;ex.remove();}
+    if(!quotesOf(p.id).length)return;
+    var card=makeCard(p.id);
+    if(p.after&&p.after.parentNode===host)host.insertBefore(card,p.after.nextSibling);
+    else host.insertBefore(card,host.firstChild);
+  });
+}
+
+// ── 搜尋 ──
+var SKIP='script,style,noscript,nav,.nav,.nav-tabs,.sp-card,.sp-ov,.sp-fab,.sp-note,#spToast,.fbx-b,.fbx-fab,#fbxMask';
+var cache=null;
+function blocks(){
+  var out=[],seen=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null),n;
+  while((n=w.nextNode())){
+    var el=n.parentElement;
+    if(!el||!n.nodeValue.trim()||el.closest(SKIP)||(C.skip&&el.closest(C.skip)))continue;
+    while(el.parentElement&&el.parentElement!==document.body&&/^(B|I|EM|STRONG|SPAN|A|U|SMALL|CODE|SUP|SUB)$/.test(el.tagName))el=el.parentElement;
+    if(seen.has(el))continue;seen.add(el);
+    var t=el.textContent.replace(/\s+/g,' ').trim();
+    if(t.length>=2)out.push({el:el,t:t});
+  }
+  return out;
+}
+function tabOf(el){
+  if(C.tabs===false)return -1;
+  var ps=panels();
+  for(var i=0;i<ps.length;i++)if(ps[i].el&&ps[i].el.contains(el))return i;
+  return -1;
+}
+function labelOf(el,ti){
+  if(C.label)return C.label(el)||'';
+  var nv=navs();return ti>=0&&nv[ti]?nv[ti].textContent.trim():'';
+}
+function snippet(t,k,len){
+  var s=Math.max(0,k-18);
+  return (s>0?'…':'')+t.substr(s,len)+(t.length>s+len?'…':'');
+}
+function domSearch(q){
+  var ql=q.toLowerCase(),hit=[],bs=cache||(cache=blocks());
+  for(var i=0;i<bs.length&&hit.length<300;i++){
+    var k=bs[i].t.toLowerCase().indexOf(ql);
+    if(k>=0)hit.push({el:bs[i].el,t:snippet(bs[i].t,k,72)});
+  }
+  // 只留最內層，避免同一段文字重複出現
+  hit=hit.filter(function(a){return !hit.some(function(b){return b!==a&&a.el.contains(b.el);});});
+  return hit.slice(0,40).map(function(h){var ti=tabOf(h.el);return{el:h.el,t:h.t,ti:ti,label:labelOf(h.el,ti)};});
+}
+function flash(el){
+  setTimeout(function(){
+    var t=el;if(!t||!document.body.contains(t))return;
+    while(t&&t!==document.body&&t.offsetParent===null)t=t.parentElement;
+    if(!t||t===document.body)return;
+    t.scrollIntoView({block:'center',behavior:'smooth'});
+    t.classList.add('sp-hit');setTimeout(function(){t.classList.remove('sp-hit');},1800);
+  },140);
+}
+function reveal(r){
+  var el=r.el;
+  if(r.go){el=r.go()||el;}
+  else if(C.reveal){C.reveal(el);}
+  else{var nv=navs();if(r.ti>=0&&nv[r.ti])nv[r.ti].click();}
+  flash(el);
+}
+function ui(){
+  if(C.dark)document.body.classList.add('sp-dark');
+  var t=document.createElement('div');t.id='spToast';document.body.appendChild(t);
+  var top=document.createElement('button');top.type='button';top.className='sp-fab sp-ft';top.title='回到頂端';top.textContent='↑';
+  top.onclick=function(){window.scrollTo({top:0,behavior:'smooth'});};
+  document.body.appendChild(top);
+  window.addEventListener('scroll',function(){top.style.display=window.scrollY>500?'block':'none';},{passive:true});
+
+  // 字體大小：標準 → 大 → 特大
+  var Z=[1,1.15,1.3],zi=+lsGet('zoom')||0,zb=document.createElement('button');
+  zb.type='button';zb.className='sp-fab sp-fz';zb.title='字體大小';zb.textContent='字';
+  function zoom(){document.documentElement.style.zoom=Z[zi]===1?'':Z[zi];}
+  zb.onclick=function(){zi=(zi+1)%Z.length;lsSet('zoom',String(zi));zoom();toast(['標準字體','大字體','特大字體'][zi]);};
+  zoom();document.body.appendChild(zb);
+
+  var fb=document.createElement('button');fb.type='button';fb.className='sp-fab sp-fs';fb.title='搜尋（按 / 開啟）';fb.textContent='🔍';
+  var ov=document.createElement('div');ov.className='sp-ov';
+  ov.innerHTML='<div class="sp-box"><div class="sp-row"><input type="search" placeholder="搜尋本 APP 內容…（Esc 關閉）"><button type="button" title="關閉">✕</button></div><div class="sp-r"></div></div>';
+  document.body.appendChild(fb);document.body.appendChild(ov);
+  var inp=ov.querySelector('input'),box=ov.querySelector('.sp-r'),res=[];
+  function close(){ov.classList.remove('on');}
+  function open(){cache=null;ov.classList.add('on');inp.focus();inp.select();render();}
+  function render(){
+    var q=inp.value.trim();
+    if(!q){
+      res=[];var f=favs();
+      box.innerHTML='<div class="sp-em">輸入關鍵字，搜尋所有分頁的內容</div>'+(f.length
+        ?'<div class="sp-fh">♥ 我的收藏（'+f.length+'）· 點一下複製</div>'+f.map(function(t,i){return '<div class="sp-it" data-f="'+i+'">'+esc(t)+'<span class="sp-x" data-x="'+i+'" title="移除">✕</span></div>';}).join('')
+        :'<div class="sp-em">按雞湯卡上的「♡ 收藏」，喜歡的句子會存在這裡</div>');
+      return;
+    }
+    res=(C.search?C.search(q):domSearch(q))||[];
+    if(!res.length){box.innerHTML='<div class="sp-em">找不到「'+esc(q)+'」</div>';return;}
+    var re=new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+    box.innerHTML=res.map(function(r,i){
+      return '<div class="sp-it" data-i="'+i+'">'+(r.label?'<span class="sp-tag">'+esc(r.label)+'</span>':'')+esc(r.t).replace(re,function(m){return '<mark>'+m+'</mark>';})+'</div>';
+    }).join('');
+  }
+  fb.onclick=open;
+  inp.addEventListener('input',render);
+  ov.querySelector('.sp-row button').onclick=close;
+  ov.addEventListener('click',function(e){
+    if(e.target===ov){close();return;}
+    var xi=e.target.getAttribute('data-x');
+    if(xi!==null){var f=favs();f.splice(+xi,1);setFavs(f);render();$$('.sp-card').forEach(fill);return;}
+    var it=e.target.closest('.sp-it');if(!it)return;
+    if(it.hasAttribute('data-f')){copy(favs()[+it.getAttribute('data-f')]||'');return;}
+    var r=res[+it.getAttribute('data-i')];close();if(r)reveal(r);
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){close();return;}
+    if(e.key==='/'&&!/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName||''))&&!e.target.isContentEditable){e.preventDefault();open();}
+  });
+}
+
+// ── 記住上次分頁 ──
+function remember(){
+  if(C.remember===false||!C.nav)return;
+  var nv=navs();
+  nv.forEach(function(b,i){b.addEventListener('click',function(){lsSet('tab',String(i));});});
+  var s=parseInt(lsGet('tab'),10);
+  if(s>0&&nv[s])nv[s].click();
+}
+
+// ── 離線教練（取代需要連網 / API 的版本）──
+var STOP={};'我很 我的 我想 我是 我不 我會 我要 怎麼 什麼 如何 可以 覺得 不知 知道 自己 沒有 是不 不是 為什 麼辦 還是 因為 所以 但是 一直 有點 的人 的時 時候 開始 想要 要怎 麼做 是否 已經 可能 真的 好像 這樣 那樣 的事 一個 現在'.split(' ').forEach(function(g){STOP[g]=1;});
+var SYN=['害怕 恐懼 擔心 焦慮 不安 緊張','希望 絕望 無望 放棄 沒救','累 疲勞 疲倦 沒力 能量 精神 活力','睡 失眠 睡眠 熬夜 休息','吵架 衝突 爭吵 溝通 冷戰','孤單 孤獨 寂寞 連結 陪伴','生氣 憤怒 情緒 委屈','目標 方向 迷茫 意義 使命','學習 讀書 記憶 專注 理解','錢 財富 收入 賺錢 金錢','幫助 貢獻 付出 給予 成全','復發 修復 恢復 重建','癌 病人 疾病 治療 症狀','壓力 放鬆 呼吸 緊繃','吃 飲食 營養 血糖 代謝','運動 走路 步行 肌肉','痛 疼痛 發炎 不舒服','信任 背叛 安全感 界線','孩子 小孩 親子 教養','伴侶 另一半 婚姻 夫妻 親密','漸行漸遠 疏遠 距離 連結 陪伴','胖 體重 腰圍 減重','身份 身分 角色 定義'].map(function(s){return s.split(' ');});
+var AD=/DHA|EPA|GABA|NMN|Q10|鎂|鋅|益生菌|補充|營養素|保健|生技|購買|團購|下單|膠囊|魚油|維生素|維他命|毫克|mg/i;
+function coach(){
+  if(!C.coach||typeof window.addMsg!=='function')return;
+  var inp=document.getElementById('aiInput');if(!inp)return;
+  var row=inp.parentElement,note=document.createElement('div');
+  note.className='sp-note';note.textContent='離線教練：不連網、不需 API，回覆整理自本 APP 的內容。';
+  row.parentNode.insertBefore(note,row.nextSibling);
+  var skip=C.coach.skip||'#pg-ai,#pg-quiz,#pg-flash,#pg-diag,.hero,.nt-card,.nt-grid,.tech-card,.tech-row,.bb';
+  function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+  window.sendAI=function(){
+    var msg=inp.value.trim();if(!msg)return;
+    inp.value='';window.addMsg('user',esc(msg));
+    var g={};
+    msg.replace(/[\s，。！？、,.!?「」『』（）()：:；;～~…]+/g,' ').split(' ').forEach(function(w){
+      if(/^[\x00-\x7f]+$/.test(w)){if(w.length>1)g[w.toLowerCase()]=1;}
+      else for(var i=0;i<w.length-1;i++){var b=w.substr(i,2);if(!STOP[b])g[b]=1;}
+    });
+    // 同義詞擴充：使用者說「害怕」，也找「恐懼」「擔心」的內容
+    SYN.forEach(function(grp){
+      if(grp.some(function(w){return msg.indexOf(w)>=0;}))grp.forEach(function(w){if(w.length>1)g[w]=1;});
+    });
+    var keys=Object.keys(g),seen={},cand=[];
+    blocks().forEach(function(b){
+      // 只取完整句子（有標點），略過標籤、編號這類短字
+      // 也略過產品 / 補充品段落：教練只給觀念和行動，不推薦產品
+      if(b.t.length<8||b.t.length>160||seen[b.t]||!/[，。；！？：,]/.test(b.t)||AD.test(b.t)||b.el.closest(skip))return;
+      var tl=b.t.toLowerCase(),sc=0;
+      keys.forEach(function(k){if(tl.indexOf(k)>=0)sc++;});
+      if(sc>0){seen[b.t]=1;cand.push({el:b.el,t:b.t,sc:sc});}
+    });
+    cand=cand.filter(function(a){return !cand.some(function(b){return b!==a&&a.el.contains(b.el);});});
+    cand.sort(function(a,b){return b.sc-a.sc||a.t.length-b.t.length;});
+    var top=[],h='';
+    cand.forEach(function(c){
+      if(top.length<3&&!top.some(function(t){return t.t.indexOf(c.t)>=0||c.t.indexOf(t.t)>=0;}))top.push(c);
+    });
+    if(top.length){
+      h+='<b>【相關重點】</b><br>'+top.map(function(x){
+        var lb=labelOf(x.el,tabOf(x.el));
+        return '• '+(lb?'〔'+esc(lb)+'〕':'')+esc(x.t);
+      }).join('<br>')+'<br><br>';
+    }else{
+      h+='這個問題在 APP 裡沒有直接對應的段落，可以換個關鍵字，或用右下角 🔍 搜尋。先給你一個方向：<br><br>';
+    }
+    var qs=quotesOf('pg-ai');
+    if(C.coach.steps&&C.coach.steps.length)h+='<b>【今日一小步】</b><br>'+esc(rnd(C.coach.steps))+'<br><br>';
+    if(qs.length)h+='<b>【心靈雞湯】</b><br>'+esc(rnd(qs));
+    setTimeout(function(){window.addMsg('bot',h);},300);
+  };
+}
+
+// ── 每日任務：記住今天勾過的項目 + 連續打卡天數 ──
+function tasks(){
+  var td;try{td=taskDone;}catch(e){return;}
+  if(!Array.isArray(td)||typeof window.toggleTask!=='function')return;
+  var today=new Date().toDateString(),yest=new Date(Date.now()-864e5).toDateString(),s=null,orig=window.toggleTask;
+  try{s=JSON.parse(lsGet('tasks'));}catch(e){}
+  s=s||{date:'',done:[],streak:0,last:''};
+  if(s.date===today&&s.done.length===td.length){
+    s.done.forEach(function(d,i){if(d&&!td[i])orig(i);});
+    var cb=document.getElementById('comboBadge');if(cb)setTimeout(function(){cb.style.display='none';},0);
+  }
+  window.toggleTask=function(i){
+    orig(i);
+    s.date=today;s.done=taskDone.slice();
+    if(taskDone[i]&&s.last!==today){
+      s.streak=s.last===yest?s.streak+1:1;s.last=today;
+      toast('今日打卡 ✓ 連續 '+s.streak+' 天');
+    }
+    lsSet('tasks',JSON.stringify(s));
+  };
+}
+
+function init(){
+  ui();ensure();remember();coach();tasks();
+  if(C.init)try{C.init();}catch(e){}
+  ensure();
+  var pend=false;
+  function later(){if(pend)return;pend=true;setTimeout(function(){pend=false;ensure();},60);}
+  new MutationObserver(later).observe(document.body,{childList:true,subtree:true});
+  document.addEventListener('click',later,true);
+}
+if(document.readyState==='complete')setTimeout(init,0);
+else window.addEventListener('load',function(){setTimeout(init,0);});
+})();
+</script>
+<!-- SOUP-END -->
+<!-- FBX-START -->
+<script>
+window.FBX={"brand": "Wealth OS 財富作業系統", "tags": "#財富思維 #理財觀念 #價值創造", "theme": 3, "steps": ["記下今天的一筆花費，問自己：這是消費還是投資？", "寫下一個你能為別人創造的價值。", "今天花十分鐘，學一個不懂的財務名詞。"], "note": "※ 本文為觀念分享，不構成任何投資建議。", "items": ".card-grid>.card,.wisdom-item,.os-card,.flow-step,.coach-block"};
+</script>
+<script>
+// ── 臉書文圖：每一欄、每個項目都能產生臉書貼文 + 圖卡（共用模組，完全離線）──
+(function(){
+var F=window.FBX||{},S=window.SOUP||{};
+var ITEM=F.items||'',GROUP=F.groups||'',QUOTE=F.quote||'',PAIR=F.pair||null;
+var ALL=[ITEM,GROUP].filter(Boolean).join(',');
+var ZH='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+var THEMES=[{c:'#1A2B5F',t:'#E8ECF7'},{c:'#0A7A72',t:'#E2F4F1'},{c:'#C2416B',t:'#FCE9EF'},{c:'#B4690E',t:'#FBF0DC'},{c:'#5B3FA8',t:'#EEE9FA'},{c:'#1F7A3A',t:'#E4F4E8'}];
+var K='fbx:'+(S.key||'app')+':';
+function $$(s,r){return s?Array.prototype.slice.call((r||document).querySelectorAll(s)):[];}
+function $(id){return document.getElementById(id);}
+function is(el,sel){return !!sel&&el.matches(sel);}
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+function cut(s,n){s=String(s);return s.length>n?s.slice(0,n-1)+'…':s;}
+function lsGet(k){try{return localStorage.getItem(K+k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(K+k,v);}catch(e){}}
+
+// ── 從畫面上的項目取出文字 ──
+var PIC=/^(?:[←-⯿〰〽㊗㊙️‍]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDC00-\uDFFF]|\s)+/;
+var DROP=/^(點擊複製|已複製.*|點擊翻面.*|tap to flip.*|speak|發音|例句\s*#?\d+|vol\s*\d+)$/i;
+var LABEL=/^(低維|高維)\s*(low|high)?$/i;
+function word(s){return /[A-Za-z一-鿿]/.test(s);}
+function tidy(s){return s.replace(/[⭐★]+/g,'').replace(/\s+/g,' ').trim();}
+function bare(s){return tidy(s.replace(PIC,''));}
+function grab(el){
+  var raw=[],cur='',subs=[];
+  function flush(){var s=tidy(cur);if(s)raw.push(s);cur='';}
+  (function walk(n){
+    for(var c=n.firstChild;c;c=c.nextSibling){
+      if(c.nodeType===3){cur+=c.nodeValue;continue;}
+      if(c.nodeType!==1)continue;
+      if(/^(BUTTON|SCRIPT|STYLE|INPUT|SELECT|TEXTAREA|CANVAS|A)$/.test(c.tagName)||c.classList.contains('sp-card'))continue;
+      if(c.tagName==='BR'){flush();continue;}
+      if(is(c,ALL)){flush();var t=titleOf(c);if(t)subs.push(t);continue;}
+      var inl=/^inline/.test(getComputedStyle(c).display);
+      if(!inl)flush();
+      walk(c);
+      if(!inl)flush();
+    }
+  })(el);
+  flush();
+  var lines=[],pre='';
+  raw.forEach(function(s){
+    if(DROP.test(s))return;
+    if(!word(s)){if(!lines.length&&!pre&&PIC.test(s)&&!/\d/.test(s))pre=s.split(' ')[0];return;}
+    // 「標籤：」接下一行
+    if(lines.length&&/[:：]$/.test(lines[lines.length-1]))lines[lines.length-1]+=s;else lines.push(s);
+  });
+  return {lines:lines,subs:subs,pre:pre};
+}
+function noNum(s){return s.replace(/^#?\d+\s*[·.、:：\-]?\s*/,'');}
+function titleOf(el){
+  if(PAIR&&is(el,PAIR.sel)){
+    var t=PAIR.title&&el.querySelector(PAIR.title),lo=el.querySelector(PAIR.low);
+    return bare(t?t.textContent:lo?part(lo)[0]||'':'');
+  }
+  var g=grab(el);if(!g.lines.length)return '';
+  if(is(el,QUOTE))return g.lines.slice().sort(function(a,b){return b.length-a.length;})[0];
+  return noNum(bare(g.lines[0]))||g.lines[0];
+}
+function part(el){return grab(el).lines.filter(function(s){return !LABEL.test(s);}).map(bare);}
+
+function panels(){
+  if(S.panels)return S.panels()||[];
+  return $$(S.panel||'.pg').map(function(el){return{el:el,id:el.id,host:(S.host&&el.querySelector(S.host))||el};});
+}
+function shown(el){return !!(el&&el.getClientRects().length);}
+function navText(){
+  var b=$$(S.nav).filter(function(x){return /(^|\s)(on|active)(\s|$)/.test(x.className);})[0];
+  return b?tidy(b.textContent):'';
+}
+function panelFor(el){
+  var ps=panels(),hit=null;
+  ps.forEach(function(p){if(p&&p.el&&p.el.contains(el)&&(!hit||hit.el.contains(p.el)))hit=p;});
+  return hit;
+}
+function labelFor(p){
+  var t=navText(),h=p&&p.after;
+  if(h&&/^H[1-4]$/.test(h.tagName))t+=(t?'｜':'')+tidy(h.textContent);
+  return t;
+}
+function quotesFor(p){
+  var q=(p&&S.soups&&S.soups[p.id])||[];
+  return q.length?q:(S.common||S.extra||[]);
+}
+
+function entry(el){
+  var p=panelFor(el),g=grab(el),e={el:el,tab:labelFor(p),quotes:quotesFor(p),pre:g.pre,subs:g.subs,lines:g.lines};
+  if(PAIR&&is(el,PAIR.sel)){
+    var lo=part(el.querySelector(PAIR.low)||el),hi=part(el.querySelector(PAIR.high)||el);
+    e.kind='pair';e.title=titleOf(el)||lo[0]||'';
+    e.low=lo[0]||'';e.high=hi[0]||'';e.lowEn=lo[1]||'';e.highEn=hi[1]||'';
+    var used=lo.concat(hi,[e.title]);
+    e.lines=g.lines.filter(function(s){var b=bare(s);return !LABEL.test(s)&&used.indexOf(b)<0&&used.indexOf(noNum(b))<0&&!/^#\d+/.test(s);});
+  }else if(is(el,QUOTE)){
+    e.kind='quote';e.title=titleOf(el);
+    e.lines=g.lines.filter(function(s){return s!==e.title;}).map(function(s){return noNum(s);}).filter(Boolean);
+  }else{
+    e.kind=is(el,GROUP)?'group':'item';
+    e.title=titleOf(el);e.lines=g.lines.slice(1);
+  }
+  return e;
+}
+function tabEntry(p){
+  var raw=labelFor(p)||F.brand||'',m=raw.match(PIC),seen={},heads=[],subs=[];
+  $$('h1,h2,h3,.sec-h,.sec-s,.hero-p,.section-title,.model-title,.subtitle',p.el).forEach(function(h){
+    if(h.closest('.sp-card')||(ALL&&h.closest(ALL))||heads.length>=4)return;
+    var t=tidy(h.textContent);
+    if(t.length>3&&t.length<90&&!seen[t]){seen[t]=1;heads.push(t);}
+  });
+  $$(ALL,p.el).forEach(function(el){
+    if(ALL&&el.parentElement.closest(ALL)&&p.el.contains(el.parentElement.closest(ALL)))return;
+    var t=titleOf(el);if(t&&!seen[t]){seen[t]=1;subs.push(t);}
+  });
+  return {kind:'tab',p:p,el:p.el,tab:F.brand||'',title:bare(raw)||raw,pre:m?tidy(m[0]).split(' ')[0]:'',lines:heads,subs:subs,quotes:quotesFor(p)};
+}
+
+// ── 貼文 ──
+var HOOK=[
+ function(t){return '你有沒有發現，「'+t+'」這件事，其實每天都在影響你？';},
+ function(t){return '今天想跟你分享一個小重點：「'+t+'」。';},
+ function(t){return '很多時候我們卡住，不是不夠努力，而是還沒看懂「'+t+'」。';},
+ function(t){return '如果今天只記得一件事，就記這個——「'+t+'」。';}
+];
+var HOOKL=['這一段，想送給今天的你。','看到這裡，先停三秒，慢慢讀。','有些話，早一點知道，就少走一點冤枉路。','今天的小提醒，留給正在努力的你。'];
+var TURN=['看懂了，就不會只是硬撐。知道原理，才知道力氣要用在哪裡。','不用一次全部做到。先懂一點、做一點，改變就開始了。','這不是要你更用力，而是換一個更省力的方向。','知道，是第一步；願意試一次，是第二步。'];
+var TURNP=['語言不只是在描述事情，它也在決定你接下來怎麼想、怎麼做。同一件事換一個說法，眼前就多一條路。','不是要你假裝沒事，而是把「我完了」換成「我還可以做什麼」。','一句話說久了會變成信念，信念久了會變成人生。先從換一句話開始。','低維的說法把門關上，高維的說法把門打開。你值得多一扇門。'];
+var ASK=[
+ function(t){return '我在哪個情境，最需要「'+t+'」？';},
+ function(t){return '如果今天就用上它，第一步會是什麼？';},
+ function(t){return '我身邊誰把這件事做得很好？他是怎麼做的？';},
+ function(t){return '一個月後回頭看，我希望這件事有什麼不同？';}
+];
+var ASKQ=['這句話，讓你想到誰？','今天哪一刻，最需要這句話？','如果把這句話送給一個人，你會送給誰？','這句話裡，哪幾個字最打動你？'];
+var STEP=['今天只挑一個重點，寫下來，貼在看得到的地方。','把這一段講給一個人聽，講得出來才是真的懂。','選一件五分鐘內做得到的小事，現在就做。','睡前花一分鐘，想想今天哪裡用上了它。'];
+var CLOSE=['把這篇留給今天的自己，也分享給那個正在努力的人。','慢慢來，比較快；一點點，就很多。','有共鳴的話，留言告訴我你的想法。','覺得有幫助，就分享給需要的朋友吧。'];
+function pick(a,k){return a[k%a.length];}
+function build(e,v){
+  var T=e.title,k=hash(T)+(v||0),L=[],card,tab=e.kind==='tab';
+  var steps=(F.steps&&F.steps.length?F.steps:(S.coach&&S.coach.steps)||[]).concat(STEP);
+  var q=e.quotes.length?pick(e.quotes,k):'';
+  function sec(h,arr,n){
+    if(!arr.length)return;
+    L.push('▍'+h);arr.slice(0,n).forEach(function(s){L.push('・'+cut(s,140));});
+    if(arr.length>n)L.push('…共 '+arr.length+' 項');L.push('');
+  }
+  if(e.kind==='pair'){
+    L.push('【換句話說｜'+T+'】','你是不是也常這樣說、這樣想？','');
+    L.push('✗ 低維：「'+e.low+'」');if(e.lowEn)L.push('　'+e.lowEn);
+    L.push('✓ 高維：「'+e.high+'」');if(e.highEn)L.push('　'+e.highEn);L.push('');
+    sec('補充說明',e.lines,4);
+    L.push('▍為什麼要換一句話',pick(TURNP,k),'');
+    card={kind:'pair',head:T===e.low?'換句話說':T,low:e.low,high:e.high,quote:q};
+  }else if(e.kind==='quote'){
+    L.push('「'+T+'」','',pick(HOOKL,k),'');
+    L.push('▍想一想','・'+pick(ASKQ,k),'・'+pick(ASKQ,k+1),'');
+    L.push('▍換個角度看',pick(TURN,k),'');
+    card={kind:'quote',quote:T,sub:e.lines[0]||''};
+  }else{
+    L.push('【'+(tab&&F.brand?F.brand+'｜':'')+(e.pre?e.pre+' ':'')+T+'】',T.length>16?pick(HOOKL,k):pick(HOOK,k)(T),'');
+    sec(tab?'這一欄在說什麼':'重點整理',e.lines,tab?4:7);
+    sec(tab?'這一欄的項目':'裡面有這些重點',e.subs,10);
+    if(tab&&e.quotes.length){L.push('▍三句心靈雞湯');e.quotes.slice(0,3).forEach(function(s){L.push('「'+s+'」');});L.push('');}
+    if(!tab&&e.lines.length<3)L.push('▍想一想','・'+pick(ASK,k)(T),'・'+pick(ASK,k+1)(T),'');
+    L.push('▍換個角度看',pick(TURN,k),'');
+    card={kind:'item',head:(e.pre?e.pre+' ':'')+T,lines:(e.lines.length?e.lines:e.subs).slice(0,tab?5:4).map(function(s){return cut(s,46);}),quote:q};
+  }
+  L.push('🌱 今天的小步｜'+pick(steps,k),'');
+  if(q&&e.kind!=='quote'&&!tab)L.push('🍲 「'+q+'」','');
+  L.push(pick(CLOSE,k),'');
+  var body=L.join('\n');
+  if(F.note&&(!F.noteRe||new RegExp(F.noteRe).test(body)))L.push(F.note,'');
+  var tt=T.replace(/[^A-Za-z0-9一-鿿]/g,'');
+  L.push([F.tags||'',e.kind!=='quote'&&tt.length>1&&tt.length<=10&&!/^\d/.test(tt)?'#'+tt:'','#心靈雞湯 #自我成長 #LifeOS'].filter(Boolean).join(' '));
+  card.tab=[F.brand,e.tab!==F.brand?bare(e.tab):''].filter(Boolean).join(' · ');
+  return {text:L.join('\n'),card:card};
+}
+
+// ── 圖卡（1080×1350）──
+function wrap(x,text,maxW){
+  var tk=String(text).match(/[A-Za-z0-9'’\-]+[.,!?;:]?\s?|\s+|[^\sA-Za-z0-9]/g)||[],noHead='，。！？、；：」』）)…—',out=[],cur=[];
+  function push(){var s=cur.join('').trim();if(s)out.push(s);}
+  tk.forEach(function(w){
+    if(cur.join('').trim()&&x.measureText(cur.join('')+w).width>maxW){
+      var carry=[];if(noHead.indexOf(w)>=0&&cur.length>1)carry.unshift(cur.pop());   // 標點不放行首
+      push();cur=carry.concat(w.replace(/^\s+/,''));
+    }else cur.push(w);
+  });
+  push();return out;
+}
+function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
+function draw(cv,c,th){
+  var W=1080,H=1350,X=84,MW=W-168,x=cv.getContext('2d');cv.width=W;cv.height=H;
+  function lay(s,paint,off){
+    function f(px,wt){x.font=(wt||'')+' '+Math.round(px*s)+'px '+ZH;}
+    function put(arr,a,y,lh,col){if(paint){x.fillStyle=col;arr.forEach(function(l,i){x.fillText(l,a,y+i*lh);});}return y+arr.length*lh;}
+    function box(arr,y,lh,bg,bar,col,label){
+      var h=arr.length*lh+(label?104:64)*s;
+      if(paint){x.fillStyle=bg;rr(x,X-20,y,MW+40,h,28);x.fill();x.fillStyle=bar;x.fillRect(X-20,y+24,10,h-48);}
+      if(label){f(28,'bold');put([label],X+32,y+30*s,40*s,bar);}
+      f(c.kind==='pair'?48:36,c.kind==='pair'?'bold':'');
+      put(arr,X+32,y+(label?78:34)*s,lh,col);
+      return y+h;
+    }
+    x.textBaseline='top';x.textAlign='left';
+    f(58,'bold');var head=c.head?wrap(x,c.head,MW):[];
+    var hh=Math.round(150+(head.length?head.length*78*s+50:0));
+    if(paint){
+      x.fillStyle='#FAF6EF';x.fillRect(0,0,W,H);x.fillStyle=th.c;x.fillRect(0,0,W,hh);
+      x.font='30px '+ZH;x.fillStyle='rgba(255,255,255,.85)';var tb=c.tab;while(tb.length>4&&x.measureText(tb).width>MW)tb=tb.slice(0,-2)+'…';x.fillText(tb,X,64);
+    }
+    f(58,'bold');put(head,X,124,78*s,'#fff');
+    var y=hh+70*s+off;
+    if(c.kind==='pair'){
+      f(48,'bold');var lo=wrap(x,c.low,MW-90),hi=wrap(x,c.high,MW-90);
+      y=box(lo,y,68*s,'#FBE7EA','#B4233C','#5A1622','✗ 低維｜舊說法');
+      f(54,'bold');if(paint){x.fillStyle=th.c;x.fillText('↓',W/2-16*s,y+14*s);}y+=92*s;
+      y=box(hi,y,68*s,th.t,th.c,'#1F2937','✓ 高維｜新說法')+56*s;
+    }else if(c.kind==='quote'){
+      f(70,'bold');y=put(wrap(x,'「'+c.quote+'」',MW),X,y,102*s,'#2B2622')+30*s;
+      if(c.sub){f(34,'');y=put(wrap(x,'— '+c.sub,MW),X,y,50*s,'#8A7F76');}
+    }else if(c.lines.length){
+      f(36,'');var bl=[];c.lines.forEach(function(l){wrap(x,'・'+l,MW-90).forEach(function(w){bl.push(w);});});
+      y=box(bl,y,58*s,th.t,th.c,'#3A332E')+56*s;
+    }
+    if(c.quote&&c.kind!=='quote'){
+      f(27,'bold');var pw=x.measureText('心靈雞湯').width+48,ph=54*s;
+      if(paint){x.fillStyle=th.c;rr(x,X,y,pw,ph,ph/2);x.fill();x.fillStyle='#fff';x.fillText('心靈雞湯',X+24,y+(ph-27*s)/2-2);}
+      y+=ph+22*s;f(40,'bold');y=put(wrap(x,'「'+c.quote+'」',MW),X,y,62*s,'#2B2622');
+    }
+    return y;
+  }
+  var s=1.25;while(s>0.5&&lay(s,false,0)>H-170)s-=0.03;
+  lay(s,true,Math.max(0,Math.min(150,(H-170-lay(s,false,0))/2)));
+  x.fillStyle='#E4DAD0';x.fillRect(X,H-130,MW,3);
+  x.textBaseline='top';x.font='bold 32px '+ZH;x.fillStyle=th.c;x.fillText(cut(F.brand||'LifeOS',22),X,H-96);
+  x.font='28px '+ZH;x.fillStyle='#8A7F76';var tg='#心靈雞湯';x.fillText(tg,W-X-x.measureText(tg).width,H-94);
+}
+
+// ── 介面 ──
+var cur=null,ver=0,list=[],ti=parseInt(lsGet('theme'),10);
+if(!(ti>=0&&ti<THEMES.length))ti=F.theme||0;
+function toast(b,t){var o=b.textContent;b.textContent=t;setTimeout(function(){b.textContent=o;},1200);}
+function save(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},2000);}
+function fname(){return ((F.brand||'LifeOS')+'_'+cur.title).replace(/[\\/:*?"<>|\s，。！？、]+/g,'_').slice(0,40);}
+function count(t){return (t.match(/[一-鿿]/g)||[]).length+(t.match(/[A-Za-z][A-Za-z'’\-]*/g)||[]).length;}
+function show(){
+  var r=build(cur,ver);
+  $('fbxTitle').textContent='📘 '+(cur.kind==='tab'?'本頁：':'')+cut(cur.title,28);
+  $('fbxText').value=r.text;$('fbxCnt').textContent='約 '+count(r.text)+' 字';
+  draw($('fbxCanvas'),r.card,THEMES[ti]);
+}
+function chips(){
+  var kw=$('fbxSearch').value.trim().toLowerCase(),box=$('fbxList');box.innerHTML='';
+  list.forEach(function(it){
+    if(kw&&it.find.indexOf(kw)<0)return;
+    var b=document.createElement('button');b.type='button';b.textContent=(it.tab?'📄 本頁｜':'')+cut(it.title,18);
+    if(cur&&it.el===cur.el&&!!it.tab===(cur.kind==='tab'))b.className='on';
+    b.onclick=function(){open(it.tab?tabEntry(it.p):entry(it.el));};box.appendChild(b);
+  });
+  if(!box.firstChild)box.innerHTML='<span style="opacity:.6;padding:4px">找不到符合的項目</span>';
+}
+function scan(){
+  list=[];
+  panels().forEach(function(p){
+    if(!p||!shown(p.el))return;
+    list.push({tab:1,p:p,el:p.el,title:bare(labelFor(p))||F.brand||'本頁',find:''});
+    $$(ALL,p.el).forEach(function(el){
+      var t=titleOf(el);if(t)list.push({el:el,title:t,find:el.textContent.toLowerCase()});
+    });
+  });
+}
+function open(e){
+  if(!e||!e.title)return;
+  cur=e;ver=0;scan();$('fbxMask').classList.add('on');chips();show();
+  var on=$('fbxList').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
+}
+function close(){$('fbxMask').classList.remove('on');}
+function ui(){
+  var st=document.createElement('style');
+  st.textContent='.fbx-b{display:inline-flex;align-items:center;gap:4px;margin:8px 0 0 auto;padding:4px 11px;border-radius:999px;border:1px solid rgba(24,119,242,.45);background:rgba(24,119,242,.1);color:#1877F2;font:700 11px/1.4 '+ZH+';cursor:pointer;white-space:nowrap;flex:none;align-self:center;width:auto;height:auto;letter-spacing:0;text-transform:none}'+
+  '.sp-dark .fbx-b{color:#7DB4FF;border-color:rgba(125,180,255,.45);background:rgba(125,180,255,.1)}.fbx-b:hover{background:#1877F2;color:#fff}'+
+  '.fbx-g{display:flex;margin:0 0 12px}.fbx-fab{bottom:216px;background:#1877F2!important;color:#fff!important}'+
+  '#fbxMask{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1200;background:rgba(20,16,12,.6);display:none;align-items:center;justify-content:center;padding:12px}#fbxMask.on{display:flex}'+
+  '#fbxBox{background:#FAF6EF;color:#2B2622;width:min(1040px,100%);max-height:94vh;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;font:14px/1.6 '+ZH+';text-align:left}'+
+  '#fbxTop{display:flex;gap:8px;align-items:center;padding:12px 14px;background:#1877F2;color:#fff}#fbxTop b{flex:1;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
+  '#fbxSearch{flex:0 1 260px;min-width:110px;padding:7px 12px;border:0;border-radius:999px;font:14px '+ZH+';color:#2B2622;background:#fff;outline:none}'+
+  '#fbxX{background:none;border:0;color:#fff;font-size:22px;cursor:pointer;line-height:1;padding:0 4px}'+
+  '#fbxList{max-height:118px;overflow-y:auto;flex:none;padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #E4DAD0;background:#fff}'+
+  '#fbxList button{border:1px solid #E4DAD0;background:#FAF6EF;color:#2B2622;border-radius:999px;padding:3px 10px;font:12px '+ZH+';cursor:pointer}#fbxList button.on{background:#1877F2;color:#fff;border-color:#1877F2}'+
+  '#fbxMain{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;padding:14px;overflow:auto}'+
+  '#fbxText{width:100%;height:52vh;min-height:240px;box-sizing:border-box;padding:12px;border:1px solid #E4DAD0;border-radius:12px;background:#fff;color:#2B2622;font:14px/1.75 '+ZH+';resize:vertical}'+
+  '#fbxCanvas{width:100%;height:auto;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15);display:block}'+
+  '#fbxBar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}#fbxBar button{padding:7px 13px;border-radius:999px;border:1px solid #1877F2;background:#1877F2;color:#fff;font:700 13px/1.2 '+ZH+';cursor:pointer}#fbxBar button.g{background:#fff;color:#1877F2}'+
+  '#fbxCnt{font-size:12px;color:#8A7F76;margin-left:auto}#fbxTip{font-size:12px;color:#8A7F76;margin-top:8px}'+
+  '@media(max-width:760px){#fbxMain{grid-template-columns:minmax(0,1fr)}#fbxText{height:34vh}#fbxCanvas{max-width:280px;margin:0 auto}}'+
+  '@media print{.fbx-b,.fbx-fab,#fbxMask{display:none!important}}';
+  document.head.appendChild(st);
+  var fab=document.createElement('button');fab.type='button';fab.className='sp-fab fbx-fab';fab.title='臉書文圖';fab.textContent='📘';
+  fab.onclick=function(){scan();if(list[0])open(tabEntry(list[0].p));};
+  document.body.appendChild(fab);
+  var m=document.createElement('div');m.id='fbxMask';
+  m.innerHTML='<div id="fbxBox"><div id="fbxTop"><b id="fbxTitle"></b><input id="fbxSearch" type="search" placeholder="搜尋本頁項目…"><button id="fbxX" type="button" title="關閉">×</button></div>'+
+   '<div id="fbxList"></div><div id="fbxMain"><div><textarea id="fbxText" spellcheck="false"></textarea><div id="fbxBar">'+
+   '<button type="button" id="fbxCopy">📋 複製貼文</button><button type="button" id="fbxPng">🖼️ 下載圖卡</button>'+
+   '<button type="button" class="g" id="fbxNext">🔄 換一版</button><button type="button" class="g" id="fbxTheme">🎨 換配色</button>'+
+   '<button type="button" class="g" id="fbxTxt">💾 存成 TXT</button><span id="fbxCnt"></span></div>'+
+   '<div id="fbxTip">貼文可以直接在框裡修改。到臉書發文：貼上文字，再加入下載的圖卡。</div></div>'+
+   '<div><canvas id="fbxCanvas"></canvas></div></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',function(e){if(e.target===m)close();});
+  $('fbxX').onclick=close;
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+  $('fbxSearch').addEventListener('input',chips);
+  $('fbxNext').onclick=function(){ver++;show();};
+  $('fbxTheme').onclick=function(){ti=(ti+1)%THEMES.length;lsSet('theme',String(ti));draw($('fbxCanvas'),build(cur,ver).card,THEMES[ti]);};
+  $('fbxCopy').onclick=function(){
+    var t=$('fbxText'),b=this;function fb(){t.select();try{document.execCommand('copy');}catch(e){}}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t.value).catch(fb);else fb();
+    toast(b,'✅ 已複製');
+  };
+  $('fbxPng').onclick=function(){$('fbxCanvas').toBlob(function(b){save(b,fname()+'.png');},'image/png');};
+  $('fbxTxt').onclick=function(){save(new Blob(['﻿'+$('fbxText').value],{type:'text/plain;charset=utf-8'}),fname()+'.txt');};
+}
+function btn(text,fn){
+  var b=document.createElement('button');b.type='button';b.className='fbx-b';b.textContent=text;
+  b.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();fn();});
+  return b;
+}
+function own(el,cls){for(var c=el.firstElementChild;c;c=c.nextElementSibling)if(c.classList.contains(cls))return c;return null;}
+function decorate(){
+  $$(ALL).forEach(function(el){
+    if(own(el,'fbx-b')||el.closest('.sp-card,.sp-ov,#fbxMask')||el.textContent.trim().length<4)return;
+    var b=btn('📘 臉書文圖',function(){open(entry(el));});
+    if(is(el,GROUP)&&el.firstElementChild){b.classList.add('fbx-g');el.insertBefore(b,el.firstElementChild.nextSibling);}
+    else el.appendChild(b);
+  });
+  $$('.sp-card .sp-b').forEach(function(bar){
+    if(own(bar,'fbx-b'))return;
+    var b=btn('📘 本頁臉書文圖',function(){var p=panelFor(bar);if(p)open(tabEntry(p));});
+    b.style.cssText='margin:0;opacity:1';bar.appendChild(b);
+  });
+}
+function init(){
+  ui();decorate();
+  var pend=false;
+  new MutationObserver(function(){if(pend)return;pend=true;setTimeout(function(){pend=false;decorate();},90);}).observe(document.body,{childList:true,subtree:true});
+}
+if(document.readyState==='complete')setTimeout(init,60);
+else window.addEventListener('load',function(){setTimeout(init,60);});
+})();
+</script>
+<!-- FBX-END -->
+</body>
+</html>

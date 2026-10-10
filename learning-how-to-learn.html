@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>學測英文 × 10大學習模型 | High School English Learning System</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06080F;--s1:#090D18;--s2:#0D1424;--card:#111C2E;--bdr:#172438;--bdr2:#1E3050;
+  --txt:#D8E8F8;--dim:#4A6888;--dim2:#2E4868;
+  --gold:#C89830;--gold2:#A07820;--gg:rgba(200,152,48,.1);
+  --teal:#00B8A0;--teal2:#009880;--gt:rgba(0,184,160,.09);
+  --rose:#E05878;--blue:#3898E8;--purple:#8058D8;
+  /* 10 model colors */
+  --m1:#10C080; /* 複利 */
+  --m2:#F07038; /* 刻意練習 */
+  --m3:#E05878; /* 輸出 */
+  --m4:#8058D8; /* 回憶 */
+  --m5:#38A8E8; /* 遷移 */
+  --m6:#F0B030; /* 費曼 */
+  --m7:#50D098; /* 知識樹 */
+  --m8:#A068E8; /* 能力圈 */
+  --m9:#E87838; /* 元學習 */
+  --m10:#30C8B8; /* 終身學習 */
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--txt);font-family:'Noto Sans TC','Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:300;background:rgba(6,8,15,.96);backdrop-filter:blur(18px);border-bottom:1px solid var(--bdr);padding:0 18px;display:flex;align-items:center;height:52px;gap:0;}
+.brand{font-size:15px;font-weight:900;color:var(--teal);letter-spacing:.5px;flex-shrink:0;margin-right:14px;white-space:nowrap;}
+.brand em{color:var(--txt);font-style:normal;font-weight:300;font-size:13px;}
+.nav{display:flex;flex:1;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nb{flex:none;padding:0 12px;height:52px;font-size:12px;font-weight:600;border:none;background:none;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap;font-family:inherit;}
+.nb.on{color:var(--teal);border-bottom-color:var(--teal);}
+.nb:hover:not(.on){color:var(--txt);}
+
+/* PAGES */
+.pg{display:none;} .pg.on{display:block;}
+.wrap{max-width:960px;margin:0 auto;padding:24px 18px;}
+.sec-h{font-size:clamp(20px,4vw,30px);font-weight:900;letter-spacing:-1px;margin-bottom:6px;}
+.sec-s{font-size:13px;color:var(--dim);margin-bottom:22px;font-weight:300;}
+.divider{border:none;border-top:1px solid var(--bdr);margin:40px 0;}
+.teal{color:var(--teal);}
+
+/* ── HERO ── */
+.hero{min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 18px;text-align:center;position:relative;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.1;pointer-events:none;}
+.oa{width:560px;height:560px;background:var(--teal);top:-180px;left:-150px;}
+.ob{width:360px;height:360px;background:var(--gold);bottom:-80px;right:-80px;}
+.oc{width:300px;height:300px;background:#6030C0;top:44%;left:52%;transform:translate(-50%,-50%);}
+.hero-tag{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--teal);text-transform:uppercase;margin-bottom:14px;}
+.hero-h1{font-size:clamp(36px,8vw,84px);font-weight:900;line-height:.93;letter-spacing:-3px;margin-bottom:12px;background:linear-gradient(140deg,var(--txt) 20%,var(--teal) 85%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-en{font-size:clamp(14px,2.5vw,20px);color:var(--dim);font-style:italic;margin-bottom:8px;}
+.hero-p{font-size:clamp(13px,1.8vw,16px);color:var(--dim);max-width:500px;margin:0 auto 30px;line-height:1.9;font-weight:300;}
+.formula-pills{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:32px;}
+.fp{padding:7px 15px;border-radius:22px;font-size:12px;font-weight:700;border:1px solid;}
+.fp.t{background:rgba(0,184,160,.08);border-color:rgba(0,184,160,.3);color:var(--teal);}
+.fp.g{background:rgba(200,152,48,.08);border-color:rgba(200,152,48,.3);color:var(--gold);}
+.fp.x{color:var(--dim);border-color:transparent;background:transparent;font-size:16px;}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-t{padding:12px 26px;background:linear-gradient(135deg,var(--teal),var(--teal2));color:#020A08;font-size:13px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block;transition:.2s;}
+.btn-t:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,184,160,.2);}
+.btn-g{padding:12px 26px;background:transparent;color:var(--gold);font-size:13px;font-weight:700;border:1.5px solid rgba(200,152,48,.35);border-radius:10px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block;transition:.2s;}
+.btn-g:hover{border-color:var(--gold);background:var(--gg);}
+
+/* ── DIAGNOSIS ── */
+.d-intro{background:var(--card);border:1px solid var(--bdr2);border-radius:14px;padding:18px;text-align:center;margin-bottom:20px;}
+.d-intro h2{font-size:18px;font-weight:900;color:var(--teal);margin-bottom:4px;}
+.d-intro .en{font-size:13px;color:var(--dim);font-style:italic;margin-bottom:5px;}
+.d-intro p{font-size:13px;color:var(--dim);line-height:1.7;}
+.d-step{display:flex;align-items:center;gap:9px;margin-bottom:14px;}
+.d-n{width:26px;height:26px;border-radius:50%;background:var(--teal);color:#020A08;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.d-lbl{font-size:14px;font-weight:700;}
+.d-sub{font-size:11px;color:var(--dim);margin-top:1px;}
+.sym-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:8px;margin-bottom:20px;}
+.sym-btn{background:var(--card);border:1.5px solid var(--bdr);border-radius:11px;padding:12px 13px;cursor:pointer;color:var(--txt);font-family:inherit;transition:.18s;text-align:left;}
+.sym-btn:hover{border-color:var(--teal);background:var(--gt);}
+.sym-btn.sel{border-color:var(--teal);background:var(--gt);}
+.sy-icon{font-size:18px;display:block;margin-bottom:4px;}
+.sy-zh{font-size:13px;font-weight:700;display:block;color:var(--txt);}
+.sy-en{font-size:11px;color:var(--dim);font-style:italic;display:block;margin-top:1px;}
+.sym-btn.sel .sy-zh{color:var(--teal);}
+.run-btn{display:block;margin:0 auto;padding:12px 26px;background:linear-gradient(135deg,var(--teal),var(--teal2));color:#020A08;font-size:14px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;transition:.2s;}
+.run-btn:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(0,184,160,.18);}
+.rst-btn{display:block;margin:9px auto 0;padding:9px 18px;background:transparent;color:var(--dim);font-size:12px;border:1px solid var(--bdr);border-radius:8px;cursor:pointer;font-family:inherit;}
+.d-result{display:none;} .d-result.show{display:block;}
+.mod-score-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:9px;margin-bottom:20px;}
+.msc{background:var(--card);border:1.5px solid var(--bdr);border-radius:12px;padding:13px;}
+.msc.hit{border-width:2px;}
+.msc-top{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+.msc-ico{font-size:18px;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.msc-name{font-size:13px;font-weight:700;}
+.msc-en{font-size:10px;color:var(--dim);font-style:italic;}
+.msc-pct{font-size:10px;margin-top:1px;}
+.msc-bar-bg{height:4px;background:var(--bdr);border-radius:3px;margin-bottom:7px;}
+.msc-bar{height:100%;border-radius:3px;transition:.6s;}
+.msc-tags{display:flex;flex-wrap:wrap;gap:3px;}
+.msc-tag{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;}
+.rec-h{font-size:13px;font-weight:700;color:var(--gold);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--bdr);}
+.rec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:9px;margin-bottom:18px;}
+.rec-card{background:var(--card);border:1px solid var(--bdr2);border-radius:12px;padding:14px;}
+.rc-mod{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px;}
+.rc-name{font-size:15px;font-weight:700;margin-bottom:2px;}
+.rc-name-en{font-size:11px;color:var(--dim);font-style:italic;margin-bottom:5px;}
+.rc-why{font-size:12px;color:var(--dim);line-height:1.6;margin-bottom:8px;}
+.rc-action{background:var(--s2);border:1px solid var(--bdr);border-radius:8px;padding:9px 12px;font-size:12px;line-height:1.6;margin-bottom:8px;}
+.rc-action b{color:var(--teal);}
+
+/* ── MODELS PAGE ── */
+.mod-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
+.mod-tab{padding:6px 13px;border-radius:18px;border:1px solid var(--bdr);background:transparent;cursor:pointer;font-size:11px;font-weight:600;color:var(--dim);transition:.16s;font-family:inherit;white-space:nowrap;}
+.mod-tab.on{color:#040200;border-color:transparent;font-weight:700;}
+.mod-content{display:none;} .mod-content.on{display:block;}
+.mod-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;}
+.mod-ico{font-size:26px;width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.mod-num{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px;opacity:.7;}
+.mod-h1{font-size:22px;font-weight:900;letter-spacing:-1px;margin-bottom:1px;}
+.mod-h1-en{font-size:13px;font-style:italic;color:var(--dim);margin-bottom:4px;}
+.mod-q{font-size:12px;padding:7px 13px;border-radius:7px;border-left:2px solid;line-height:1.6;font-style:italic;display:inline-block;}
+.body-card{background:var(--card);border:1px solid var(--bdr2);border-radius:13px;padding:16px;margin-bottom:12px;}
+.bc-t{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;}
+.bc-b{font-size:13px;color:var(--dim);line-height:1.9;}
+.bc-b b{color:var(--txt);} .bc-b .hl{color:var(--teal);} .bc-b .en{color:var(--dim);font-style:italic;}
+.chain-box{background:var(--s2);border-radius:9px;padding:11px 16px;margin:8px 0;font-size:13px;line-height:2.1;text-align:center;color:var(--dim);}
+.chain-box b{color:var(--txt);}
+.chain-box .arr{color:var(--teal);}
+.action-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-bottom:14px;}
+.act-card{background:var(--s2);border-radius:11px;padding:13px;border:1px solid var(--bdr);}
+.act-step{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.act-zh{font-size:14px;font-weight:700;margin-bottom:2px;}
+.act-en{font-size:12px;font-style:italic;color:var(--dim);margin-bottom:6px;}
+.act-detail{font-size:12px;color:var(--dim);line-height:1.6;}
+
+/* ── PRACTICE PAGE ── */
+.prac-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.prac-tab{padding:8px 18px;border-radius:9px;border:1px solid var(--bdr);background:transparent;cursor:pointer;font-size:13px;font-weight:600;color:var(--dim);transition:.16s;font-family:inherit;}
+.prac-tab.on{background:var(--teal);color:#020A08;border-color:var(--teal);}
+.prac-section{display:none;} .prac-section.on{display:block;}
+.vocab-card{background:var(--card);border:1px solid var(--bdr2);border-radius:14px;padding:20px;margin-bottom:12px;}
+.vc-word{font-size:32px;font-weight:900;letter-spacing:-1px;color:var(--teal);margin-bottom:4px;}
+.vc-ipa{font-size:14px;color:var(--dim);font-style:italic;margin-bottom:6px;}
+.vc-zh{font-size:18px;font-weight:700;margin-bottom:10px;}
+.vc-sentence{background:var(--s2);border-radius:8px;padding:11px 14px;font-size:13px;line-height:1.7;border-left:2px solid var(--teal);}
+.vc-sentence .en{color:var(--txt);font-weight:600;}
+.vc-sentence .zh{font-size:12px;color:var(--dim);margin-top:4px;}
+.root-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;}
+.root-card{background:var(--card);border:1px solid var(--bdr2);border-radius:12px;padding:14px;}
+.root-root{font-size:18px;font-weight:900;color:var(--teal);letter-spacing:1px;margin-bottom:2px;}
+.root-mean{font-size:12px;color:var(--dim);margin-bottom:9px;}
+.root-words{display:flex;flex-direction:column;gap:4px;}
+.rw{font-size:13px;font-weight:600;} .rw span{font-size:11px;color:var(--dim);font-weight:400;margin-left:6px;}
+.grammar-card{background:var(--card);border:1px solid var(--bdr2);border-radius:13px;padding:16px;margin-bottom:10px;}
+.gc-rule{font-size:14px;font-weight:700;margin-bottom:6px;}
+.gc-rule-en{font-size:12px;font-style:italic;color:var(--dim);margin-bottom:8px;}
+.gc-examples{display:flex;flex-direction:column;gap:6px;}
+.gc-ex{background:var(--s2);border-radius:7px;padding:8px 12px;font-size:13px;}
+.gc-ex .ok{color:var(--teal);font-weight:600;} .gc-ex .bad{color:var(--rose);text-decoration:line-through;} .gc-ex .zh{font-size:11px;color:var(--dim);margin-top:3px;}
+
+/* ── FLASHCARD ── */
+.fcmeta{display:flex;gap:12px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;padding:10px 14px;margin-bottom:12px;align-items:center;}
+.fcm-i{display:flex;flex-direction:column;align-items:center;}
+.fcm-l{font-size:9px;color:var(--dim);}
+.fcm-v{font-size:18px;font-weight:700;color:var(--teal);}
+.mla{margin-left:auto;display:flex;gap:6px;}
+.pbar-w{height:3px;background:var(--bdr);border-radius:2px;margin-bottom:10px;}
+.pbar-f{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal2));border-radius:2px;transition:.3s;}
+.fcwrap{perspective:1100px;max-width:500px;margin:0 auto;}
+.fc{width:100%;height:300px;position:relative;transform-style:preserve-3d;transition:.52s cubic-bezier(.4,0,.2,1);cursor:pointer;}
+.fc.flip{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;border-radius:16px;padding:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;backface-visibility:hidden;text-align:center;border:1px solid var(--bdr2);}
+.front{background:var(--card);}
+.back{background:linear-gradient(135deg,var(--card),#0C1E34);transform:rotateY(180deg);}
+.fc-eye{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.fc-big{font-size:36px;font-weight:900;letter-spacing:-1px;margin-bottom:5px;}
+.fc-big-en{font-size:16px;font-style:italic;color:var(--dim);margin-bottom:8px;}
+.fc-hint{font-size:11px;color:var(--dim);}
+.fc-zh{font-size:16px;font-weight:700;color:var(--teal);margin-bottom:5px;}
+.fc-en{font-size:13px;font-style:italic;color:var(--dim);margin-bottom:8px;}
+.fc-detail{font-size:12px;color:var(--dim);line-height:1.6;max-width:360px;}
+.fc-btns{display:none;gap:9px;justify-content:center;margin-top:12px;}
+.fc-tap{font-size:11px;color:var(--dim);text-align:center;margin-top:7px;}
+.btn{padding:9px 17px;border-radius:8px;font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:.17s;}
+.btn-ok{background:rgba(0,184,160,.14);color:var(--teal);border:1px solid rgba(0,184,160,.3);}
+.btn-ok:hover{background:rgba(0,184,160,.26);}
+.btn-bad{background:rgba(224,88,120,.12);color:var(--rose);border:1px solid rgba(224,88,120,.28);}
+.btn-bad:hover{background:rgba(224,88,120,.24);}
+.btn-ghost{background:var(--card);color:var(--dim);border:1px solid var(--bdr);}
+.btn-ghost:hover{border-color:var(--bdr2);color:var(--txt);}
+.ctr-txt{font-size:11px;color:var(--dim);text-align:center;margin-bottom:9px;}
+.result-box{text-align:center;padding:30px;background:var(--card);border-radius:14px;border:1px solid var(--bdr2);}
+.r-stars{font-size:26px;letter-spacing:4px;margin-bottom:5px;}
+.r-score{font-size:50px;font-weight:900;color:var(--teal);}
+.r-msg{font-size:13px;color:var(--dim);margin-bottom:14px;}
+
+/* ── QUIZ ── */
+.q-type{font-size:9px;font-weight:700;letter-spacing:1.5px;color:var(--teal);text-transform:uppercase;margin-bottom:7px;display:inline-block;}
+.q-q{font-size:17px;font-weight:700;margin-bottom:5px;line-height:1.4;}
+.q-q-en{font-size:13px;font-style:italic;color:var(--dim);margin-bottom:16px;}
+.q-opts{display:grid;gap:7px;}
+.qopt{background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;padding:12px 14px;font-size:13px;cursor:pointer;text-align:left;color:var(--txt);font-family:inherit;transition:.17s;line-height:1.4;}
+.qopt:hover:not(:disabled){border-color:var(--teal);background:var(--gt);}
+.qopt.ok{border-color:var(--teal);background:var(--gt);color:var(--teal);}
+.qopt.bad{border-color:var(--rose);background:rgba(224,88,120,.1);color:var(--rose);}
+.q-exp{background:var(--card);border:1px solid var(--bdr2);border-radius:10px;padding:12px;margin-top:9px;font-size:13px;line-height:1.7;display:none;color:var(--dim);}
+.q-exp.show{display:block;}
+.q-exp b{color:var(--teal);}
+.q-next-w{text-align:center;margin-top:9px;display:none;}
+.combo{display:none;position:fixed;top:60px;right:12px;background:var(--teal);color:#020A08;font-weight:800;font-size:13px;border-radius:8px;padding:7px 13px;z-index:600;animation:cpop .4s ease;}
+@keyframes cpop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.2)}100%{opacity:1;transform:scale(1)}}
+
+/* BILINGAUL BADGE */
+.bi-badge{display:inline-flex;gap:6px;align-items:center;background:rgba(0,184,160,.08);border:1px solid rgba(0,184,160,.2);border-radius:7px;padding:3px 10px;font-size:10px;font-weight:700;color:var(--teal);letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;}
+
+@media(max-width:600px){
+  .hero-h1{letter-spacing:-2px;}
+  .mod-tabs{gap:5px;}
+  .prac-tabs{gap:5px;}
+  .action-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">學測英文<em> × 10大學習模型</em></div>
+  <nav class="nav">
+    <button class="nb on" onclick="gp('home',this)">🏠 首頁</button>
+    <button class="nb" onclick="gp('diag',this)">🩺 學習診斷</button>
+    <button class="nb" onclick="gp('models',this)">🧠 十大模型</button>
+    <button class="nb" onclick="gp('practice',this)">📚 練習題庫</button>
+    <button class="nb" onclick="gp('flash',this)">🃏 閃卡</button>
+    <button class="nb" onclick="gp('quiz',this)">✅ 測驗</button>
+  </nav>
+</div>
+
+<div id="comboBadge" class="combo"></div>
+
+<!-- ══════ HOME ══════ -->
+<div class="pg on" id="pg-home">
+<div class="hero">
+  <div class="orb oa"></div><div class="orb ob"></div><div class="orb oc"></div>
+  <div style="position:relative;z-index:1">
+    <div class="hero-tag">高中英文學測 × 10大學習模型</div>
+    <h1 class="hero-h1">學會<br>學習</h1>
+    <div class="hero-en">Learn How to Learn English</div>
+    <p class="hero-p">英文學測不是考「背多少」<br>而是考 <b style="color:var(--teal)">理解力 × 預測力 × 提取力 × 遷移力</b><br>英語高手不是背最多的人，而是<b style="color:var(--teal)">最快修正</b>的人。</p>
+    <div class="formula-pills">
+      <span class="fp t">複利</span><span class="fp x">×</span>
+      <span class="fp t">刻意練習</span><span class="fp x">×</span>
+      <span class="fp t">回憶</span><span class="fp x">×</span>
+      <span class="fp t">輸出</span><span class="fp x">×</span>
+      <span class="fp t">遷移</span>
+      <span class="fp x">=</span>
+      <span class="fp g">英文高分</span>
+    </div>
+    <div class="hero-btns">
+      <button class="btn-t" onclick="gp('diag',document.querySelectorAll('.nb')[1])">🩺 診斷我的學習弱點</button>
+      <button class="btn-g" onclick="gp('models',document.querySelectorAll('.nb')[2])">探索十大模型 →</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" style="padding-top:0">
+  <div class="sec-h" style="text-align:center;margin-bottom:16px;">終極公式 <span class="teal">Ultimate Formula</span></div>
+  <div style="background:var(--card);border:1px solid var(--bdr2);border-radius:14px;padding:20px;max-width:640px;margin:0 auto 28px;text-align:center;font-size:15px;line-height:2.5;color:var(--dim);">
+    <b style="color:var(--txt)">單字</b> <span style="color:var(--teal)">×</span>
+    <b style="color:var(--txt)">文法</b> <span style="color:var(--teal)">×</span>
+    <b style="color:var(--txt)">閱讀</b> <span style="color:var(--teal)">×</span>
+    <b style="color:var(--txt)">回憶率</b> <span style="color:var(--teal)">×</span>
+    <b style="color:var(--txt)">輸出率</b>
+    <span style="color:var(--gold);font-size:18px;font-weight:900"> = </span>
+    <b style="color:var(--gold);font-size:18px;">學測成績</b><br>
+    <span style="font-size:12px;font-style:italic">Vocabulary × Grammar × Reading × Recall Rate × Output Rate = Score</span>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:28px;" id="homeChips"></div>
+
+  <div style="background:linear-gradient(135deg,rgba(0,184,160,.08),rgba(200,152,48,.04));border:1px solid rgba(0,184,160,.2);border-radius:16px;padding:22px;text-align:center;">
+    <div style="font-size:14px;font-weight:700;color:var(--gold);margin-bottom:6px;">高分生控制迴路 | High Score Loop</div>
+    <div style="font-size:13px;color:var(--dim);line-height:2.3;">
+      <b style="color:var(--txt)">輸入 Input</b> <span style="color:var(--teal)">→</span>
+      <b style="color:var(--txt)">理解 Comprehend</b> <span style="color:var(--teal)">→</span>
+      <b style="color:var(--txt)">輸出 Output</b> <span style="color:var(--teal)">→</span>
+      <b style="color:var(--txt)">測驗 Test</b> <span style="color:var(--teal)">→</span>
+      <b style="color:var(--txt)">誤差 Error</b> <span style="color:var(--teal)">→</span>
+      <b style="color:var(--txt)">修正 Correct</b> <span style="color:var(--teal)">→</span>
+      <b style="color:var(--gold)">進步 Progress</b>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════ DIAGNOSIS ══════ -->
+<div class="pg" id="pg-diag">
+<div class="wrap">
+  <div class="d-intro">
+    <h2>🩺 學習弱點診斷 / Learning Diagnosis</h2>
+    <div class="en">Select your struggles → identify weak learning models → get action plan</div>
+    <p>選擇你目前在英文學習上遇到的困難，系統幫你定位需要強化的學習模型</p>
+  </div>
+  <div class="d-step"><div class="d-n">1</div><div><div class="d-lbl">選擇你的困難（可多選）</div><div class="d-sub">Select your struggles (multiple choice)</div></div></div>
+  <div class="sym-grid" id="symGrid"></div>
+  <div style="text-align:center;margin-bottom:18px">
+    <button class="run-btn" onclick="runDiag()">🔍 分析我的學習弱點 | Analyze</button>
+    <button class="rst-btn" onclick="resetDiag()">重新選擇 / Reset</button>
+  </div>
+  <div class="d-result" id="diagResult">
+    <div class="d-step" style="margin-top:6px"><div class="d-n">2</div><div><div class="d-lbl">你的學習模型分析 | Model Analysis</div><div class="d-sub">分數越高 = 越需要優先強化</div></div></div>
+    <div class="mod-score-grid" id="modScoreGrid"></div>
+    <div class="rec-h">💡 針對你的弱點：具體行動計劃 | Action Plan</div>
+    <div class="rec-grid" id="recGrid"></div>
+  </div>
+</div>
+</div>
+
+<!-- ══════ MODELS ══════ -->
+<div class="pg" id="pg-models">
+<div class="wrap">
+  <div class="sec-h">十大學習模型 <span class="teal" style="font-size:16px;font-style:italic">10 Learning Models</span></div>
+  <div class="sec-s">每個模型有中英文解說，點選標籤切換 / Click tabs to explore each model</div>
+  <div class="mod-tabs" id="modTabs"></div>
+  <div id="modContents"></div>
+</div>
+</div>
+
+<!-- ══════ PRACTICE ══════ -->
+<div class="pg" id="pg-practice">
+<div class="wrap">
+  <div class="sec-h">練習題庫 <span class="teal" style="font-size:16px;font-style:italic">Practice Center</span></div>
+  <div class="sec-s">應用學習模型，實際練習單字、字根、文法 / Apply the models with real practice</div>
+  <div class="prac-tabs">
+    <button class="prac-tab on" onclick="setPracTab('vocab',this)">📝 核心單字</button>
+    <button class="prac-tab" onclick="setPracTab('roots',this)">🌱 字根遷移</button>
+    <button class="prac-tab" onclick="setPracTab('grammar',this)">⚙️ 文法要點</button>
+    <button class="prac-tab" onclick="setPracTab('output',this)">✍️ 輸出造句</button>
+  </div>
+  <div class="prac-section on" id="prac-vocab">
+    <div class="bi-badge">📖 核心單字 × 輸出模型 / Vocabulary × Output Model</div>
+    <p style="font-size:12px;color:var(--dim);margin-bottom:16px">看到每個單字，先嘗試用它造一個句子，再看例句。這就是「輸出模型」的實踐！<br><em>Try to make a sentence first, then check the example — this is the Output Model!</em></p>
+    <div id="vocabList"></div>
+  </div>
+  <div class="prac-section" id="prac-roots">
+    <div class="bi-badge">🌱 字根遷移 / Root Transfer Model</div>
+    <p style="font-size:12px;color:var(--dim);margin-bottom:16px">一個字根推十個單字——這是「遷移模型」！看到生字時，先拆字根猜意思。<br><em>One root = ten words. When you see new words, guess from the root first!</em></p>
+    <div class="root-grid" id="rootList"></div>
+  </div>
+  <div class="prac-section" id="prac-grammar">
+    <div class="bi-badge">⚙️ 高頻文法 / Grammar Essentials</div>
+    <p style="font-size:12px;color:var(--dim);margin-bottom:16px">學測必考文法重點——用「費曼模型」：你能用自己的話解釋這個規則嗎？<br><em>Key grammar for 學測 — Feynman Model: Can you explain the rule in your own words?</em></p>
+    <div id="grammarList"></div>
+  </div>
+  <div class="prac-section" id="prac-output">
+    <div class="bi-badge">✍️ 輸出造句挑戰 / Output Challenge</div>
+    <p style="font-size:12px;color:var(--dim);margin-bottom:16px">看到中文提示，用英文造句！造句一次 > 重看十次。<br><em>See the Chinese prompt, write an English sentence. Output once > review ten times!</em></p>
+    <div id="outputList"></div>
+  </div>
+</div>
+</div>
+
+<!-- ══════ FLASH ══════ -->
+<div class="pg" id="pg-flash">
+<div class="wrap" style="max-width:560px">
+  <div class="sec-h">閃卡 <span class="teal" style="font-size:16px">Flashcards</span></div>
+  <div class="sec-s">十大學習模型 × 雙語閃卡 / Bilingual Model Flashcards</div>
+  <div class="fcmeta">
+    <div class="fcm-i"><div class="fcm-l">已看</div><div class="fcm-v" id="fcSeen">0</div></div>
+    <div class="fcm-i"><div class="fcm-l">✅</div><div class="fcm-v" id="fcOK">0</div></div>
+    <div class="fcm-i"><div class="fcm-l">❌</div><div class="fcm-v" id="fcNG">0</div></div>
+    <div class="mla"><button class="btn btn-ghost" onclick="startFC()">🔀 Shuffle</button></div>
+  </div>
+  <div class="pbar-w"><div class="pbar-f" id="fcBar"></div></div>
+  <div class="ctr-txt" id="fcCtr"></div>
+  <div class="fcwrap">
+    <div class="fc" id="fcCard" onclick="flipFC()">
+      <div class="face front">
+        <div class="fc-eye" id="fcEye"></div>
+        <div class="fc-big" id="fcBig"></div>
+        <div class="fc-big-en" id="fcBigEn"></div>
+        <div class="fc-hint">點擊翻面 / Tap to flip</div>
+      </div>
+      <div class="face back">
+        <div class="fc-eye" id="fcEye2"></div>
+        <div class="fc-zh" id="fcZh"></div>
+        <div class="fc-en" id="fcEn"></div>
+        <div class="fc-detail" id="fcDetail"></div>
+      </div>
+    </div>
+  </div>
+  <div class="fc-tap">翻面後 ✅ 記得 / ❌ 再看</div>
+  <div class="fc-btns" id="fcBtns">
+    <button class="btn btn-bad" onclick="markFC(false)">❌ 再看</button>
+    <button class="btn btn-ghost" onclick="skipFC()">⏭ Skip</button>
+    <button class="btn btn-ok" onclick="markFC(true)">✅ 記得</button>
+  </div>
+  <div id="fcResult" style="display:none;margin-top:20px">
+    <div class="result-box">
+      <div class="r-stars" id="rStars"></div>
+      <div class="r-score" id="rScore"></div>
+      <div class="r-msg" id="rMsg"></div>
+      <button class="btn btn-ok" onclick="startFC()" style="margin-top:12px;padding:9px 20px">再來一輪 / Again</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════ QUIZ ══════ -->
+<div class="pg" id="pg-quiz">
+<div class="wrap" style="max-width:620px">
+  <div class="sec-h">模型測驗 <span class="teal" style="font-size:16px">Model Quiz</span></div>
+  <div class="sec-s">雙語測驗，驗證你對學習模型的掌握</div>
+  <div class="fcmeta">
+    <div class="fcm-i"><div class="fcm-l">第</div><div class="fcm-v" id="qN">1</div></div>
+    <div class="fcm-i"><div class="fcm-l">✅</div><div class="fcm-v" id="qC">0</div></div>
+    <div class="fcm-i"><div class="fcm-l">❌</div><div class="fcm-v" id="qW">0</div></div>
+    <div class="mla"><button class="btn btn-ghost" onclick="startQuiz()">重開</button></div>
+  </div>
+  <div class="pbar-w"><div class="pbar-f" id="qBar"></div></div>
+  <div id="quizArea">
+    <div class="q-type" id="qType">模型應用</div>
+    <div class="q-q" id="qQ"></div>
+    <div class="q-q-en" id="qQen"></div>
+    <div class="q-opts" id="qOpts"></div>
+    <div class="q-exp" id="qExp"></div>
+    <div class="q-next-w" id="qNext"><button class="btn btn-ok" style="padding:9px 18px" onclick="nextQ()">下一題 / Next →</button></div>
+  </div>
+  <div id="quizResult" style="display:none;margin-top:20px">
+    <div class="result-box">
+      <div class="r-stars" id="qStars"></div>
+      <div class="r-score" id="qScore"></div>
+      <div class="r-msg" id="rMsg2"></div>
+      <button class="btn btn-ok" onclick="startQuiz()" style="margin-top:12px;padding:9px 20px">再測一次 / Try again</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// DATA
+// ══════════════════════════════════════
+const MODELS=[
+{id:'m1',num:'模型一',icon:'📈',name:'複利模型',nameEn:'Compound Interest Model',color:'var(--m1)',
+ q:'如何進步？ / How to improve?',
+ en_q:'Small daily actions compound into massive results.',
+ core:'每天進步1%，一年後是今天的37倍。複利不只是金融概念，更是學習的本質。',
+ core_en:'Improve 1% daily → 37x better in a year. Compounding is the nature of learning itself.',
+ cancer:'英文複利：每天20個單字 + 1篇閱讀 + 10分鐘聽力。<br>一年後：<b>7,300單字接觸量</b> + <b>365篇文章</b>。看起來微小，累積後巨大。',
+ cancer_en:'Daily: 20 words + 1 reading + 10-min listening. After 1 year: 7,300 word exposures + 365 articles.',
+ actions:[
+  {step:'今天就做',zh:'建立每日清單',en:'Create a daily checklist',detail:'20字 + 1閱讀 + 10min聽力，每天勾選。不必完美，只需持續。\n20 words + 1 reading + 10-min listening. Consistency > perfection.'},
+  {step:'工具',zh:'使用Anki',en:'Use Anki',detail:'間隔重複（Spaced Repetition）是複利的技術實現。每天15分鐘Anki = 複利效果。\nSpaced Repetition = compound interest in action.'},
+  {step:'追蹤',zh:'記錄連續天數',en:'Track your streak',detail:'連續30天 → 習慣形成。可用App或紙本日曆。\nAfter 30 days streak → habit is formed.'},
+ ],
+ syms:['進步太慢','沒有每天練習','記憶力差']},
+
+{id:'m2',num:'模型二',icon:'🎯',name:'刻意練習模型',nameEn:'Deliberate Practice Model',color:'var(--m2)',
+ q:'如何變強？ / How to get stronger?',
+ en_q:'Work on your weaknesses, not your strengths.',
+ core:'刻意練習 ≠ 重複練習。刻意練習 = 專攻弱點 + 即時回饋 + 持續調整。',
+ core_en:'Deliberate Practice ≠ repetitive practice. It = target weaknesses + immediate feedback + constant adjustment.',
+ cancer:'找出你最弱的題型（克漏字？文意選填？閱讀？），<b>狂刷那個題型</b>，不要一直做會的題目。\n每次錯題必須分析：為什麼錯？',
+ cancer_en:'Identify your weakest question type. Drill that type only. Analyze every mistake: WHY did you get it wrong?',
+ actions:[
+  {step:'Step 1',zh:'做一份錯誤分析',en:'Do an error analysis',detail:'把你近期的英文試卷按題型分類：克漏字/文意選填/閱讀/翻譯/寫作。找出錯最多的。\nCategorize recent test errors by type. Find your weakest category.'},
+  {step:'Step 2',zh:'專攻弱項',en:'Drill your weakness',detail:'每天至少10題最弱的題型。不要平均分配練習時間，要不對稱地投資弱點。\n10 questions daily on your weakest type. Invest asymmetrically in your weakness.'},
+  {step:'Step 3',zh:'即時回饋',en:'Get immediate feedback',detail:'做完馬上對答案，馬上分析錯誤原因。不要等到考前才看錯在哪。\nCheck answers immediately. Analyze WHY you got it wrong, not just WHAT was wrong.'},
+ ],
+ syms:['某題型一直錯','不知道怎麼進步','克漏字弱','閱讀理解差']},
+
+{id:'m3',num:'模型三',icon:'✍️',name:'輸出模型',nameEn:'Output Model',color:'var(--m3)',
+ q:'如何學得快？ / How to learn faster?',
+ en_q:'Output is the most powerful form of learning.',
+ core:'看見 ≠ 學會。輸出（說出、寫出、教出）才是真正的學習。\n造句一次 > 重看十次。',
+ core_en:'Seeing ≠ Learning. Output (speak, write, teach) is real learning. Producing one sentence > reviewing ten times.',
+ cancer:'學到 <b>benefit</b> 不要只背「利益」。要馬上造句：<em>Exercise benefits my health.</em>\n每個新單字，造一個真實的句子。',
+ cancer_en:'Don\'t just memorize "benefit = advantage". Immediately produce: "Exercise benefits my health." One real sentence per new word.',
+ actions:[
+  {step:'單字輸出',zh:'每字造一句',en:'One sentence per word',detail:'背完單字馬上造句。用自己的生活情境造句效果最好。\nAfter learning a word, immediately make a sentence about your own life.'},
+  {step:'閱讀輸出',zh:'讀後摘要',en:'Post-reading summary',detail:'每篇閱讀讀完，用1-3句話說出文章重點（中文也可以）。說不出來 = 沒讀懂。\nAfter each reading: summarize in 1-3 sentences. Can\'t summarize = didn\'t understand.'},
+  {step:'寫作輸出',zh:'每週一篇短文',en:'One essay per week',detail:'100字英文短文。話題可以是：我的一天、我的目標、我的興趣。\n100-word essay weekly. Topics: my day, my goals, my interests.'},
+ ],
+ syms:['單字背了就忘','英文說不出口','寫作很弱','閱讀懂但說不出']},
+
+{id:'m4',num:'模型四',icon:'🧠',name:'回憶模型',nameEn:'Active Recall Model',color:'var(--m4)',
+ q:'如何記得久？ / How to remember longer?',
+ en_q:'"Seeing" is passive. "Recalling" is where real memory forms.',
+ core:'看見 ≠ 記住。主動回憶（Active Recall）才能建立長期記憶。\n重看筆記不如蓋住筆記自己回想。',
+ core_en:'Passive review = forgetting. Active recall = long-term memory. Cover your notes and recall — don\'t just re-read.',
+ cancer:'背完 <b>participate, participation, participant</b>，蓋住它，自己在紙上默寫。\n每次回想 = 一次記憶強化。用Anki讓電腦幫你決定「何時回想」。',
+ cancer_en:'After studying "participate/participation/participant", cover them and recall from memory. Each recall = memory strengthened.',
+ actions:[
+  {step:'技巧一',zh:'蓋住背誦法',en:'Cover-and-recall method',detail:'看完單字→蓋住→回想→確認。比一直重看有效3倍以上。\nLook → Cover → Recall → Check. 3x more effective than re-reading.',},
+  {step:'技巧二',zh:'測驗自己',en:'Self-testing',detail:'每學一個主題，馬上用白紙從零開始默寫你記得的內容。\nAfter each topic, take out blank paper and write everything you remember from scratch.'},
+  {step:'工具',zh:'Anki間隔重複',en:'Spaced Repetition (Anki)',detail:'Anki根據你的記憶曲線決定何時複習，讓你用最少時間記住最多。\nAnki uses your forgetting curve to schedule reviews at the perfect time.'},
+ ],
+ syms:['單字背了就忘','考前才複習','記憶力差','學完馬上忘']},
+
+{id:'m5',num:'模型五',icon:'🌿',name:'遷移模型',nameEn:'Transfer Model',color:'var(--m5)',
+ q:'如何舉一反三？ / How to apply knowledge widely?',
+ en_q:'One piece of knowledge becomes many — if you transfer it.',
+ core:'遷移 = 在新情境中應用舊知識。學會字根，就能推斷陌生單字的意思。',
+ core_en:'Transfer = applying old knowledge in new situations. Learn roots → deduce unfamiliar words instantly.',
+ cancer:'學會 <b>bio- = 生命</b>，就能推導：<em>biology, biochemistry, biomedical, biotechnology</em>。\n學會一個字根 = 推十個單字。學測閱讀遇到生字，先拆字根猜！',
+ cancer_en:'Learn "bio- = life" → deduce: biology, biochemistry, biomedical, biotechnology. One root = ten words. In 學測, see unknown word → break it down first!',
+ actions:[
+  {step:'字根學習',zh:'每週一個字根',en:'One root per week',detail:'深學一個字根（如 -spect = 看）→ 找出所有衍生字。這週學 -spect → inspect, respect, suspect, spectator...\nDeeply learn one root/week. Find ALL derivatives.'},
+  {step:'閱讀遷移',zh:'生字猜義法',en:'Context guessing strategy',detail:'學測閱讀遇到生字：① 拆字根 ② 看上下文 ③ 猜意思 ④ 繼續閱讀。不要遇到生字就放棄！\nUnknown word: ① Break it down ② Context ③ Guess ④ Continue. Never give up on a passage!'},
+  {step:'應用',zh:'舉一反三訓練',en:'Transfer practice',detail:'每次學到一個規則（如比較級），馬上用不同單字練習三個例句。\nEvery rule learned → immediately apply to 3 different examples.'},
+ ],
+ syms:['遇到生字不會猜','閱讀文章太難','字彙量不夠']},
+
+{id:'m6',num:'模型六',icon:'🎓',name:'費曼模型',nameEn:'Feynman Technique',color:'var(--m6)',
+ q:'如何真正理解？ / How to truly understand?',
+ en_q:'If you cannot explain it simply, you don\'t understand it yet.',
+ core:'費曼說：「如果你不能用簡單的語言解釋一個概念，代表你還不真正理解它。」',
+ core_en:'Feynman: "If you can\'t explain it in simple language, you don\'t truly understand it yet."',
+ cancer:'每次讀完一篇英文文章，用國中生能懂的話解釋：「作者在說什麼？」\n講不出來 → 回去再讀。這也是訓練英文摘要能力的最佳方法。',
+ cancer_en:'After every reading passage: explain the main idea in simple Chinese (or English!) that a junior high student would understand. Can\'t explain? Go back and re-read.',
+ actions:[
+  {step:'閱讀後',zh:'費曼摘要',en:'Feynman summary',detail:'每篇文章讀完，在紙上寫：「這篇文章是在說…」用最簡單的話。寫不出來 = 沒懂。\nAfter every passage: write "This article is about..." in the simplest terms. If you can\'t write it, you didn\'t understand.'},
+  {step:'文法應用',zh:'解釋文法規則',en:'Explain grammar rules',detail:'學到一個文法點（如假設語氣），用自己的話解釋給同學聽。能教人 = 真的懂了。\nLearn a grammar rule → explain it to a classmate in your own words. Teaching = true understanding.'},
+  {step:'弱點定位',zh:'找出盲點',en:'Find your blind spots',detail:'說不清楚的地方，就是你的盲點。費曼模型最大的價值是讓你誠實地面對自己不懂的地方。\nWhat you can\'t explain = your blind spot. Feynman\'s greatest gift: honest self-assessment.'},
+ ],
+ syms:['閱讀懂但說不出','文法記不住','翻譯很差']},
+
+{id:'m7',num:'模型七',icon:'🌳',name:'知識樹模型',nameEn:'Knowledge Tree Model',color:'var(--m7)',
+ q:'如何建立架構？ / How to build structure?',
+ en_q:'A tree of knowledge beats a pile of disconnected facts.',
+ core:'零散知識很快忘記。有結構的知識樹才能持久。先建立大架構，再填細節。',
+ core_en:'Disconnected facts fade. A structured knowledge tree lasts. Build the big framework first, then fill in details.',
+ cancer:'英文知識樹：<b>單字 → 片語 → 文法 → 閱讀 → 寫作 → 翻譯 → 聽力</b>。\n每次複習先想：這個知識屬於哪個枝幹？',
+ cancer_en:'English Knowledge Tree: Vocabulary → Phrases → Grammar → Reading → Writing → Translation → Listening. Before reviewing anything: which branch does this belong to?',
+ actions:[
+  {step:'建樹',zh:'畫出英文知識樹',en:'Draw your English knowledge tree',detail:'拿一張大紙，畫出你的英文學習版圖。每個科目標上你目前的掌握程度（1-5星）。\nTake a large paper. Draw your English learning map. Rate each branch 1-5 stars.'},
+  {step:'定位',zh:'找出最弱枝幹',en:'Find the weakest branch',detail:'哪個枝幹最弱？那就是最值得投資的地方。不要均勻澆水，要重點培育。\nWhich branch is weakest? That\'s where to invest. Don\'t water evenly — focus on the weak spot.'},
+  {step:'連接',zh:'建立知識連結',en:'Build knowledge connections',detail:'每次學新知識，問：這和我已知的什麼有關？關聯性越強，記憶越持久。\nEvery new knowledge: ask "What does this connect to?" Stronger connections = longer memory.'},
+ ],
+ syms:['學了東西不知道放在哪','複習沒有方向','文法記得但用不出來']},
+
+{id:'m8',num:'模型八',icon:'🎯',name:'能力圈模型',nameEn:'Circle of Competence',color:'var(--m8)',
+ q:'如何聚焦？ / How to focus?',
+ en_q:'Master the fundamentals before chasing advanced material.',
+ core:'先把能力圈範圍內的東西做到滿分，再擴大能力圈。不要一開始就挑戰超出能力的材料。',
+ core_en:'Master what\'s inside your circle first, then expand. Don\'t start with material beyond your current level.',
+ cancer:'不要一開始就衝7000字、CNN、英文小說。先把<b>4000核心字 + 文法 + 歷屆</b>吃透，穩穩拿分。\n基礎分是學測英文的命脈。',
+ cancer_en:'Don\'t chase CNN or novels first. Master 4000 core words + grammar + past exams first. Foundation points are the lifeblood of 學測.',
+ actions:[
+  {step:'現在就做',zh:'確定核心範圍',en:'Define your core range',detail:'學測英文核心：4000字 + 文法基礎 + 閱讀技巧。先把這三件事做到80%，再進階。\n學測 core: 4000 words + basic grammar + reading skills. Get these to 80% first, then advance.'},
+  {step:'歷屆練習',zh:'刷近5年學測',en:'Practice last 5 years of 學測',detail:'歷屆試題是最好的能力圈指南。刷完後你就知道真正要考什麼。\nPast exams are the best guide to your circle. After finishing them, you\'ll know exactly what\'s tested.'},
+  {step:'穩基礎',zh:'基礎100分再進階',en:'Perfect the basics before advancing',detail:'不要因為覺得基礎太簡單就跳過。學測高分就是基礎題全對 + 難題拿部分分。\nDon\'t skip basics because they seem easy. High scores = all basic questions correct + partial points on hard ones.'},
+ ],
+ syms:['讀太難的材料','沒時間準備','不知道該準備什麼','基礎不扎實']},
+
+{id:'m9',num:'模型九',icon:'🔍',name:'元學習模型',nameEn:'Meta-Learning Model',color:'var(--m9)',
+ q:'如何學習學習？ / How to learn how to learn?',
+ en_q:'Study the methods of top students, not just the content.',
+ core:'元學習 = 學習「如何學習」。研究高手的方法比埋頭苦讀更有效。',
+ core_en:'Meta-learning = learning "how to learn". Studying top students\' methods beats grinding alone.',
+ cancer:'研究第一志願學生：<b>他們如何背單字？如何刷題？如何複習？</b>\n學習方法 > 努力程度。同樣時間，正確方法可以讓效率差3-10倍。',
+ cancer_en:'Research top students: How do they memorize vocab? How do they drill? How do they review? Method > effort. Same time, correct method = 3-10x more effective.',
+ actions:[
+  {step:'研究高手',zh:'訪問學長姐',en:'Interview high-scoring seniors',detail:'找到學測英文高分的學長姐，問他們具體怎麼準備的。細節越具體越好。\nFind seniors who scored high. Ask SPECIFICALLY how they prepared. More specific = more valuable.'},
+  {step:'測試方法',zh:'實驗不同學法',en:'Experiment with methods',detail:'2週試一種方法，記錄成效。找到最適合自己的方法 > 盲目努力。\n2 weeks per method. Record results. Find YOUR best method > blind hard work.'},
+  {step:'系統優化',zh:'每月回顧學習系統',en:'Monthly review your learning system',detail:'每個月問自己：我的學習方法有什麼可以改進的？持續優化學習系統。\nMonthly: Ask "What can I improve in my learning system?" Continuously optimize.'},
+ ],
+ syms:['努力但沒進步','不知道好方法','時間管理差']},
+
+{id:'m10',num:'模型十',icon:'♾️',name:'終身學習模型',nameEn:'Lifelong Learning Model',color:'var(--m10)',
+ q:'如何持續成長？ / How to keep growing?',
+ en_q:'English is a tool, not a subject to pass.',
+ core:'英文不是考試科目，而是工具。把英文融入生活，才能持續成長。',
+ core_en:'English is not a test subject — it\'s a life tool. Integrate it into your daily life for continuous growth.',
+ cancer:'每天看YouTube英文影片、英文新聞、英文文章。不是為了準備考試，而是<b>讓英文成為你的一部分</b>。\n這就是終身學習的本質。',
+ cancer_en:'Daily: English YouTube, English news, English articles. Not for the test — for making English part of YOU. This is the essence of lifelong learning.',
+ actions:[
+  {step:'生活英文化',zh:'每天接觸英文媒體',en:'Daily English media',detail:'選一個你有興趣的英文頻道（科技/音樂/體育/美食）。每天15分鐘。興趣是最強的老師。\nChoose ONE English channel you actually like. 15 min/day. Interest is the best teacher.'},
+  {step:'工具心態',zh:'把英文當工具',en:'Treat English as a tool',detail:'你學英文是為了讀你感興趣的東西、連結世界上有趣的人。不是為了考試。\nLearn English to read what interests you, to connect with interesting people. Not just for the test.'},
+  {step:'長期思維',zh:'把學測當起點',en:'View 學測 as a starting point',detail:'學測只是第一關。英文能力可以用一輩子。學測後繼續保持英文習慣，報酬是複利的。\n學測 is just the first checkpoint. English compounds for life. Keep the habit after the exam.'},
+ ],
+ syms:['學習動力不足','覺得英文沒用','準備期太短']},
+];
+
+// SYMPTOMS
+const ALL_SYMS=[
+  {icon:'📚',zh:'單字背了就忘',en:'Words forget quickly',mods:['m4','m1']},
+  {icon:'😰',zh:'閱讀理解差',en:'Poor reading comprehension',mods:['m6','m2']},
+  {icon:'✍️',zh:'寫作很弱',en:'Writing is weak',mods:['m3','m7']},
+  {icon:'🔤',zh:'文法記不住',en:'Grammar won\'t stick',mods:['m4','m6']},
+  {icon:'🐢',zh:'進步太慢',en:'Progress is too slow',mods:['m1','m2']},
+  {icon:'🎯',zh:'克漏字弱',en:'Weak at cloze tests',mods:['m2','m5']},
+  {icon:'🌱',zh:'字彙量不夠',en:'Vocabulary is insufficient',mods:['m5','m1']},
+  {icon:'😶',zh:'英文說不出口',en:'Can\'t speak English',mods:['m3']},
+  {icon:'⏰',zh:'沒時間準備',en:'Not enough time',mods:['m8','m9']},
+  {icon:'😴',zh:'學習動力不足',en:'Low motivation',mods:['m10','m9']},
+  {icon:'🔀',zh:'學了東西放哪？',en:'Knowledge feels scattered',mods:['m7']},
+  {icon:'📖',zh:'翻譯很差',en:'Weak at translation',mods:['m3','m6']},
+  {icon:'😵',zh:'不知道準備什麼',en:'Don\'t know what to study',mods:['m8','m9']},
+  {icon:'🔁',zh:'考前才複習',en:'Cramming before exam',mods:['m4','m1']},
+  {icon:'🧩',zh:'遇到生字放棄',en:'Give up on unknown words',mods:['m5']},
+  {icon:'💪',zh:'努力但沒進步',en:'Effort but no result',mods:['m9','m2']},
+];
+
+// VOCAB for practice
+const VOCAB=[
+  {word:'benefit',ipa:'/ˈbenɪfɪt/',zh:'有益；好處',sentence_en:'Regular exercise benefits both your body and mind.',sentence_zh:'規律運動對身心都有好處。'},
+  {word:'participate',ipa:'/pɑːrˈtɪsɪpeɪt/',zh:'參與；參加',sentence_en:'Students are encouraged to participate actively in class discussions.',sentence_zh:'鼓勵學生積極參與課堂討論。'},
+  {word:'significant',ipa:'/sɪɡˈnɪfɪkənt/',zh:'重要的；顯著的',sentence_en:'The invention of the internet had a significant impact on communication.',sentence_zh:'網路的發明對通訊有重大影響。'},
+  {word:'approximately',ipa:'/əˈprɒksɪmətli/',zh:'大約；約略地',sentence_en:'The journey takes approximately three hours by train.',sentence_zh:'搭火車大約需要三個小時。'},
+  {word:'phenomenon',ipa:'/fɪˈnɒmɪnən/',zh:'現象',sentence_en:'The aurora borealis is a breathtaking natural phenomenon.',sentence_zh:'北極光是令人嘆為觀止的自然現象。'},
+  {word:'constitute',ipa:'/ˈkɒnstɪtjuːt/',zh:'構成；組成',sentence_en:'Volunteers constitute an essential part of this organization.',sentence_zh:'志工構成這個組織的重要部分。'},
+  {word:'sustainable',ipa:'/səˈsteɪnəbl/',zh:'永續的；可持續的',sentence_en:'We need to develop more sustainable energy sources.',sentence_zh:'我們需要開發更多永續的能源。'},
+  {word:'controversial',ipa:'/ˌkɒntrəˈvɜːʃl/',zh:'有爭議的',sentence_en:'The new policy proved to be quite controversial.',sentence_zh:'這項新政策被證明相當有爭議。'},
+];
+
+// ROOTS for practice
+const ROOTS=[
+  {root:'bio-',mean:'生命 / life',words:[{w:'biology',zh:'生物學'},{w:'biochemistry',zh:'生物化學'},{w:'biomedical',zh:'生醫的'},{w:'biodiversity',zh:'生物多樣性'}]},
+  {root:'-spect',mean:'看 / see',words:[{w:'inspect',zh:'檢查'},{w:'respect',zh:'尊重'},{w:'suspect',zh:'懷疑'},{w:'spectator',zh:'觀眾'}]},
+  {root:'trans-',mean:'橫跨/轉移 / across',words:[{w:'transfer',zh:'轉移'},{w:'translate',zh:'翻譯'},{w:'transport',zh:'運輸'},{w:'transform',zh:'轉變'}]},
+  {root:'-port',mean:'搬運 / carry',words:[{w:'import',zh:'進口'},{w:'export',zh:'出口'},{w:'portable',zh:'可攜帶'},{w:'support',zh:'支持'}]},
+  {root:'-rupt',mean:'破裂 / break',words:[{w:'interrupt',zh:'打斷'},{w:'erupt',zh:'爆發'},{w:'disrupt',zh:'擾亂'},{w:'corrupt',zh:'腐敗'}]},
+  {root:'-struct',mean:'建造 / build',words:[{w:'construct',zh:'建造'},{w:'instruct',zh:'指導'},{w:'destroy',zh:'破壞'},{w:'structure',zh:'結構'}]},
+];
+
+// GRAMMAR
+const GRAMMAR=[
+  {rule:'假設語氣（虛擬條件）',rule_en:'Subjunctive Mood (unreal conditions)',examples:[
+    {type:'ok',en:'If I were you, I would study harder.',zh:'如果我是你，我會更努力讀書。'},
+    {type:'bad',en:'If I was you, I would study harder.',zh:'（were → 假設語氣用were，不用was）'},
+    {type:'ok',en:'If she had studied, she would have passed.',zh:'如果她有讀書，她就會通過了。（過去假設）'},
+  ]},
+  {rule:'分詞片語（主動/被動）',rule_en:'Participial Phrases',examples:[
+    {type:'ok',en:'Walking down the street, he saw an old friend.',zh:'走在街上時，他看到一位老朋友。'},
+    {type:'ok',en:'Exhausted by the long journey, she fell asleep.',zh:'被長途旅程累壞了，她睡著了。（被動用過去分詞）'},
+    {type:'bad',en:'Walking down the street, an old friend was seen.',zh:'（懸垂分詞：分詞主語要和主句主語一致）'},
+  ]},
+  {rule:'關係子句（限定vs非限定）',rule_en:'Relative Clauses (restrictive vs non-restrictive)',examples:[
+    {type:'ok',en:'The book that I borrowed is very interesting.',zh:'我借的那本書很有趣。（限定：用that）'},
+    {type:'ok',en:'My sister, who lives in Taipei, is a doctor.',zh:'我姊姊住在台北，她是醫生。（非限定：用which/who + 逗號）'},
+  ]},
+  {rule:'時態一致性',rule_en:'Tense Consistency',examples:[
+    {type:'ok',en:'She said that she was tired.',zh:'她說她很累。（間接引語：主句過去式→子句也要調整）'},
+    {type:'bad',en:'She said that she is tired.',zh:'（時態不一致，除非是普遍事實）'},
+    {type:'ok',en:'He said that the earth revolves around the sun.',zh:'他說地球繞著太陽轉。（普遍事實不需調整時態）'},
+  ]},
+];
+
+// OUTPUT PROMPTS
+const OUTPUT_PROMPTS=[
+  {zh:'科技改變了我們溝通的方式',en_hint:'Technology / communication / completely transformed',level:'★★☆'},
+  {zh:'閱讀習慣對學業成績有重大影響',en_hint:'reading habit / academic performance / significant impact',level:'★★☆'},
+  {zh:'雖然困難重重，她仍然堅持完成了計畫',en_hint:'despite / difficulties / persisted / complete',level:'★★★'},
+  {zh:'若非政府的及時介入，情況可能更加嚴峻',en_hint:'had it not been for / government / intervention / situation',level:'★★★'},
+  {zh:'人工智慧既帶來機遇，也帶來挑戰',en_hint:'AI / both opportunities and challenges / bring',level:'★★☆'},
+];
+
+// FLASHCARDS
+const FC_CARDS=[
+  {eye:'模型一 / Model 1',big:'複利',bigEn:'Compound Interest',zh:'每天進步1%，一年後37倍',en:'1% better every day = 37x in a year',detail:'每天20字+1閱讀+10min聽力。Anki間隔重複。連續打卡追蹤。\nDaily: 20 words + 1 reading + 10-min listening. Use Anki. Track your streak.'},
+  {eye:'模型二 / Model 2',big:'刻意練習',bigEn:'Deliberate Practice',zh:'專攻弱點，不是重複強項',en:'Target your weakness, not your strength',detail:'找出最弱題型 → 狂刷那個題型 → 即時分析錯誤原因。\nFind weakest type → drill it → analyze every mistake immediately.'},
+  {eye:'模型三 / Model 3',big:'輸出',bigEn:'Output',zh:'造句一次 > 重看十次',en:'One sentence beats ten re-reads',detail:'每個新單字馬上造句。每篇文章讀後摘要。每週一篇短文。\nSentence per word. Post-reading summary. One essay per week.'},
+  {eye:'模型四 / Model 4',big:'主動回憶',bigEn:'Active Recall',zh:'蓋住筆記自己回想 > 重看筆記',en:'Recalling beats re-reading every time',detail:'蓋住→回想→確認。Anki是最好的回憶工具。\nCover → Recall → Check. Anki is the best recall tool.'},
+  {eye:'模型五 / Model 5',big:'遷移',bigEn:'Transfer',zh:'一個字根推十個單字',en:'One root = ten words',detail:'bio=生命 → biology, biochemistry, biomedical...\n遇到生字先拆字根！Never give up on unknown words.'},
+  {eye:'模型六 / Model 6',big:'費曼',bigEn:'Feynman',zh:'能教人才是真的懂',en:'If you can\'t explain it simply, you don\'t understand it',detail:'每篇閱讀後：用最簡單的話說出作者主旨。說不出來 = 回去再讀。\nAfter reading: explain the main idea in simple terms. Can\'t? Re-read.'},
+  {eye:'模型七 / Model 7',big:'知識樹',bigEn:'Knowledge Tree',zh:'零散→結構，有樹才不亂',en:'Structure beats scattered facts',detail:'英文樹：單字→片語→文法→閱讀→寫作→翻譯→聽力\nEnglish tree: Vocab→Phrases→Grammar→Reading→Writing→Translation→Listening'},
+  {eye:'模型八 / Model 8',big:'能力圈',bigEn:'Circle of Competence',zh:'先把核心範圍做到滿分',en:'Master the fundamentals before advancing',detail:'4000核心字+文法+歷屆，吃透這三件事。\n4000 core words + grammar + past exams. Master these three first.'},
+  {eye:'模型九 / Model 9',big:'元學習',bigEn:'Meta-Learning',zh:'學習方法 > 努力程度',en:'Method beats effort if the method is right',detail:'研究高分生的具體方法。每月回顧並優化學習系統。\nStudy TOP students\' specific methods. Monthly: optimize your system.'},
+  {eye:'模型十 / Model 10',big:'終身學習',bigEn:'Lifelong Learning',zh:'英文是工具，不是科目',en:'English is a life tool, not a test subject',detail:'每天15分鐘你感興趣的英文媒體。學測只是起點。\n15 min/day of English media you ACTUALLY like. 學測 is just the start.'},
+  {eye:'高分公式',big:'學測英文',bigEn:'學測 English Formula',zh:'單字×文法×閱讀×回憶率×輸出率',en:'Vocabulary × Grammar × Reading × Recall × Output',detail:'任一項趨近零，總分就趨近零。不能只補強一項。\nAny factor near zero = total near zero. Must work on ALL factors.'},
+  {eye:'控制迴路',big:'高分迴路',bigEn:'High Score Loop',zh:'輸入→理解→輸出→測驗→修正→進步',en:'Input→Understand→Output→Test→Correct→Progress',detail:'每一次錯誤都是進步的機會。修正速度決定進步速度。\nEvery mistake is a growth opportunity. Speed of correction = speed of progress.'},
+];
+
+// QUIZ
+const QUIZ=[
+  {type:'模型應用',q:'學了新單字"constitute"，用哪個模型最有效？',en:'You just learned "constitute". Which model is most effective?',opts:['馬上複習五次 / Re-read it 5 times','立刻造一個句子 / Immediately make one sentence','把單字抄十遍 / Copy it 10 times','等考前再複習 / Review before exam'],ans:1,exp:'輸出模型（Model 3）：造句一次 > 重看十次。"Volunteers constitute an essential part of this org." 說完就記住了！\nOutput Model: one sentence beats re-reading. Produce it to remember it.'},
+  {type:'遷移應用',q:'看到陌生單字"interrupt"，用遷移模型怎麼猜？',en:'You see "interrupt". How do you apply the Transfer Model?',opts:['跳過這個字繼續讀','查字典','拆字根：inter-(之間) + rupt(破裂) = 打斷之間的流程 = 打斷！','猜是動物名稱'],ans:2,exp:'遷移模型（Model 5）：拆字根！inter=between, rupt=break → 打斷兩者之間 = interrupt! 看到生字先拆！\nTransfer: inter=between + rupt=break = "break between" = interrupt!'},
+  {type:'元認知',q:'克漏字一直錯，哪個模型最直接有效？',en:'You keep failing cloze tests. Which model applies most directly?',opts:['每天多背100個單字 / Memorize 100 more words/day','用刻意練習模型：分析錯誤 + 每天專門刷克漏字10題','多看英文電影','在英文題目下畫線'],ans:1,exp:'刻意練習模型（Model 2）：不要一直做會的題目。專攻弱點 = 克漏字每天10題 + 分析每個錯誤原因。\nDeliberate Practice: drill your weakness specifically. 10 cloze questions/day + analyze EVERY mistake.'},
+  {type:'記憶科學',q:'哪種複習方式最能建立長期記憶？',en:'Which review method best builds long-term memory?',opts:['睡前把筆記重看一遍 / Re-read notes before sleep','把筆記抄一遍 / Copy notes','蓋住筆記，自己在白紙上默寫 / Cover notes, recall on blank paper','用螢光筆畫重點 / Highlight key points'],ans:2,exp:'回憶模型（Model 4）：主動回憶（Active Recall）比被動重看有效3倍以上。蓋住→回想→確認 = 真正記住。\nActive Recall (Model 4): covering and recalling is 3x+ more effective than passive re-reading.'},
+  {type:'策略選擇',q:'距離學測還有3個月，最優先要做什麼？',en:'3 months before 學測. What\'s the top priority?',opts:['開始讀英文小說 / Start reading English novels','訂閱CNN新聞 / Subscribe to CNN','用能力圈模型：先把4000核心字+文法+歷屆5年吃透','每天背50個難字'],ans:2,exp:'能力圈模型（Model 8）：別追超出範圍的東西。4000核心字 + 文法基礎 + 歷屆吃透 = 學測英文高分的黃金路徑！\nCircle of Competence: don\'t chase beyond your range. Core 4000 + grammar + past exams = the golden path.'},
+  {type:'費曼測試',q:'費曼模型的最佳應用是？',en:'What\'s the best application of the Feynman Technique?',opts:['把教科書讀完三遍','考試前把筆記整理漂亮','讀完每篇閱讀，用最簡單的話說出作者主旨，說不出來就回去再讀','多做練習題'],ans:2,exp:'費曼模型（Model 6）：能用簡單語言解釋 = 真的懂了。說不出來 = 你以為懂但其實沒懂。這是發現盲點的最快方法。\nFeynman: can explain simply = truly understood. Can\'t explain = you THINK you understand but don\'t.'},
+  {type:'終身應用',q:'學測考完後，維持英文能力最好的方式是？',en:'After 學測, what\'s the best way to maintain English?',opts:['等大學再學','每天看一個你真正感興趣的英文YouTube頻道','背GRE字彙表','等出國再練'],ans:1,exp:'終身學習模型（Model 10）：英文是工具不是科目。找到你真正有興趣的英文媒體，每天15分鐘，複利效果驚人。\nLifelong Learning: English is a tool. Find media you ACTUALLY like → 15 min/day → compound interest effect!'},
+  {type:'系統思考',q:'英文學測公式中，哪一項若趨近零，整體分數也趨近零？',en:'In the 學測 formula, if which factor approaches zero, the score approaches zero?',opts:['只有單字','只有文法','只有聽力','任何一項：單字×文法×閱讀×回憶率×輸出率，任一趨近零總分趨近零'],ans:3,exp:'知識樹模型（Model 7）：乘法公式！任一因子為零 = 全部歸零。不能只補一項，七個枝幹都要有基礎。\nKnowledge Tree: multiplication formula! Any factor = zero means score = zero. All branches matter.'},
+];
+
+// ══════════════════════════════════════
+// STATE & INIT
+// ══════════════════════════════════════
+let selSyms=new Set();
+let fcWords=[],fcIdx=0,fcOK=0,fcNG=0,fcFlipped=false;
+let qData=[],qIdx=0,qC=0,qW=0,qAnsed=false,comboN=0,comboT=null;
+let curMod='m1';
+
+window.onload=()=>{
+  renderHomeChips();renderSymGrid();renderModTabs();renderModContents();
+  renderVocab();renderRoots();renderGrammar();renderOutput();
+  startFC();startQuiz();
+};
+
+function gp(id,btn){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+}
+function setPracTab(id,btn){
+  document.querySelectorAll('.prac-section').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.prac-tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('prac-'+id).classList.add('on');
+  btn.classList.add('on');
+}
+
+function renderHomeChips(){
+  document.getElementById('homeChips').innerHTML=MODELS.map(m=>`
+    <div onclick="gp('models',document.querySelectorAll('.nb')[2]);switchMod('${m.id}')"
+         style="background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:11px 8px;cursor:pointer;text-align:center;transition:.2s"
+         onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='var(--bdr)'">
+      <div style="font-size:20px;margin-bottom:3px">${m.icon}</div>
+      <div style="font-size:11px;font-weight:700;color:${m.color}">${m.num.replace('模型','')}</div>
+      <div style="font-size:10px;margin-top:1px;color:var(--dim)">${m.name.replace('模型','')}</div>
+    </div>`).join('');
+}
+
+// ── DIAGNOSIS ──
+function renderSymGrid(){
+  document.getElementById('symGrid').innerHTML=ALL_SYMS.map(s=>`
+    <button class="sym-btn" onclick="toggleSym('${s.zh}',this)">
+      <span class="sy-icon">${s.icon}</span>
+      <span class="sy-zh">${s.zh}</span>
+      <span class="sy-en">${s.en}</span>
+    </button>`).join('');
+}
+function toggleSym(name,el){if(selSyms.has(name)){selSyms.delete(name);el.classList.remove('sel');}else{selSyms.add(name);el.classList.add('sel');}}
+function runDiag(){
+  if(!selSyms.size){alert('請先選擇至少一個困難 / Please select at least one struggle');return;}
+  const scores={};MODELS.forEach(m=>scores[m.id]=0);
+  selSyms.forEach(sym=>{const s=ALL_SYMS.find(x=>x.zh===sym);if(s)s.mods.forEach(id=>scores[id]=(scores[id]||0)+1);});
+  const maxS=Math.max(...Object.values(scores));
+  const sorted=MODELS.map(m=>({...m,score:scores[m.id]||0})).sort((a,b)=>b.score-a.score);
+  document.getElementById('modScoreGrid').innerHTML=sorted.map(m=>{
+    const pct=maxS>0?Math.round(m.score/maxS*100):0;const hit=m.score>0;
+    return `<div class="msc${hit?' hit':''}" style="border-color:${hit?m.color.replace('var(','').replace(')','').trim()+'55':'var(--bdr)'};opacity:${hit?1:.4}">
+      <div class="msc-top">
+        <div class="msc-ico" style="background:${m.color}18">${m.icon}</div>
+        <div><div class="msc-name" style="color:${hit?m.color:'var(--dim)'}">${m.name}</div>
+        <div class="msc-en">${m.nameEn}</div>
+        <div class="msc-pct" style="color:${hit?m.color:'var(--dim)'}">${hit?`需強化 ${pct}%`:'Currently OK'}</div></div>
+      </div>
+      <div class="msc-bar-bg"><div class="msc-bar" style="background:${m.color};width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+  const top=sorted.filter(m=>m.score>0).slice(0,3);
+  document.getElementById('recGrid').innerHTML=top.map(m=>`
+    <div class="rec-card">
+      <div class="rc-mod" style="color:${m.color}">${m.icon} ${m.name} / ${m.nameEn}</div>
+      <div class="rc-name">${m.name}</div>
+      <div class="rc-name-en">${m.nameEn}</div>
+      <div class="rc-why">${m.core}<br><em style="font-size:11px;color:var(--dim)">${m.core_en}</em></div>
+      <div class="rc-action"><b>馬上行動 / Action Now：</b>${m.actions[0].zh} — ${m.actions[0].detail.split('\n')[0]}</div>
+    </div>`).join('');
+  document.getElementById('diagResult').classList.add('show');
+  setTimeout(()=>document.getElementById('diagResult').scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+function resetDiag(){selSyms.clear();document.querySelectorAll('.sym-btn').forEach(b=>b.classList.remove('sel'));document.getElementById('diagResult').classList.remove('show');}
+
+// ── MODEL TABS ──
+function renderModTabs(){
+  document.getElementById('modTabs').innerHTML=MODELS.map(m=>`
+    <button class="mod-tab${m.id===curMod?' on':''}" id="mt-${m.id}" onclick="switchMod('${m.id}')"
+      style="${m.id===curMod?`background:${m.color};color:#040200`:''}">${m.icon} ${m.name.replace('模型','')}</button>`).join('');
+}
+function switchMod(id){
+  curMod=id;
+  document.querySelectorAll('.mod-tab').forEach(t=>{t.classList.remove('on');t.style.background='';t.style.color='';});
+  document.querySelectorAll('.mod-content').forEach(c=>c.classList.remove('on'));
+  const m=MODELS.find(x=>x.id===id);
+  const tab=document.getElementById('mt-'+id);
+  if(tab){tab.classList.add('on');tab.style.background=m.color;tab.style.color='#040200';}
+  document.getElementById('mc-'+id).classList.add('on');
+}
+function renderModContents(){
+  document.getElementById('modContents').innerHTML=MODELS.map(m=>`
+    <div class="mod-content${m.id===curMod?' on':''}" id="mc-${m.id}">
+      <div class="mod-head">
+        <div class="mod-ico" style="background:${m.color}18">${m.icon}</div>
+        <div>
+          <div class="mod-num" style="color:${m.color}">${m.num}</div>
+          <div class="mod-h1" style="color:${m.color}">${m.name}</div>
+          <div class="mod-h1-en">${m.nameEn}</div>
+          <div class="mod-q" style="color:${m.color};border-color:${m.color}50;background:${m.color}08">${m.q}</div>
+        </div>
+      </div>
+      <div class="body-card">
+        <div class="bc-t">核心概念 / Core Concept</div>
+        <div class="bc-b">${m.core}<br><br><em class="en">${m.core_en}</em></div>
+      </div>
+      <div class="body-card">
+        <div class="bc-t">學測英文應用 / How to Apply</div>
+        <div class="bc-b">${m.cancer}<br><br><em class="en">${m.cancer_en}</em></div>
+      </div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:9px">🎯 具體行動步驟 / Action Steps</div>
+      <div class="action-grid">
+        ${m.actions.map(a=>`<div class="act-card" style="border-color:${m.color}28">
+          <div class="act-step" style="color:${m.color}">${a.step}</div>
+          <div class="act-zh">${a.zh}</div>
+          <div class="act-en">${a.en}</div>
+          <div class="act-detail">${a.detail.replace('\n','<br><em style="color:var(--dim)">').replace(/^/,'').replace(/$/,'</em>')}</div>
+        </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ── PRACTICE ──
+function renderVocab(){
+  document.getElementById('vocabList').innerHTML=VOCAB.map(v=>`
+    <div class="vocab-card">
+      <div class="vc-word">${v.word}</div>
+      <div class="vc-ipa">${v.ipa}</div>
+      <div class="vc-zh">${v.zh}</div>
+      <div class="vc-sentence">
+        <div class="en">${v.sentence_en}</div>
+        <div class="zh">${v.sentence_zh}</div>
+      </div>
+    </div>`).join('');
+}
+function renderRoots(){
+  document.getElementById('rootList').innerHTML=ROOTS.map(r=>`
+    <div class="root-card">
+      <div class="root-root">${r.root}</div>
+      <div class="root-mean">${r.mean}</div>
+      <div class="root-words">${r.words.map(w=>`<div class="rw">${w.w}<span>${w.zh}</span></div>`).join('')}</div>
+    </div>`).join('');
+}
+function renderGrammar(){
+  document.getElementById('grammarList').innerHTML=GRAMMAR.map(g=>`
+    <div class="grammar-card">
+      <div class="gc-rule">${g.rule}</div>
+      <div class="gc-rule-en">${g.rule_en}</div>
+      <div class="gc-examples">${g.examples.map(e=>`
+        <div class="gc-ex">
+          <span class="${e.type}">${e.type==='ok'?'✅':'❌'} ${e.en}</span>
+          <div class="zh">${e.zh}</div>
+        </div>`).join('')}</div>
+    </div>`).join('');
+}
+function renderOutput(){
+  document.getElementById('outputList').innerHTML=OUTPUT_PROMPTS.map((p,i)=>`
+    <div style="background:var(--card);border:1px solid var(--bdr2);border-radius:12px;padding:16px;margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-size:11px;font-weight:700;color:var(--teal)">輸出挑戰 ${i+1}</div>
+        <div style="font-size:11px;color:var(--gold)">${p.level}</div>
+      </div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:8px">${p.zh}</div>
+      <div style="font-size:11px;color:var(--dim);margin-bottom:10px;font-style:italic">關鍵詞 Key words: ${p.en_hint}</div>
+      <textarea placeholder="試著用英文寫出來... Try writing in English..." rows="2"
+        style="width:100%;background:var(--s2);border:1px solid var(--bdr);border-radius:8px;color:var(--txt);font-family:inherit;font-size:13px;padding:9px 12px;resize:none;outline:none"></textarea>
+    </div>`).join('');
+}
+
+// ── FLASHCARD ──
+function shuffle(a){return [...a].sort(()=>Math.random()-.5);}
+function startFC(){
+  fcWords=shuffle([...FC_CARDS]);fcIdx=0;fcOK=0;fcNG=0;fcFlipped=false;
+  document.getElementById('fcResult').style.display='none';
+  document.getElementById('fcCard').style.display='';
+  document.getElementById('fcBtns').style.display='none';
+  document.getElementById('fcCard').classList.remove('flip');renderFC();
+}
+function renderFC(){
+  if(fcIdx>=fcWords.length){showFCR();return;}
+  const c=fcWords[fcIdx];
+  document.getElementById('fcBar').style.width=(fcIdx/fcWords.length*100)+'%';
+  document.getElementById('fcCtr').textContent=`第 ${fcIdx+1} / ${fcWords.length} 張`;
+  document.getElementById('fcSeen').textContent=fcIdx;
+  document.getElementById('fcOK').textContent=fcOK;
+  document.getElementById('fcNG').textContent=fcNG;
+  ['fcEye','fcEye2'].forEach(id=>document.getElementById(id).textContent=c.eye);
+  document.getElementById('fcBig').textContent=c.big;
+  document.getElementById('fcBigEn').textContent=c.bigEn;
+  document.getElementById('fcZh').textContent=c.zh;
+  document.getElementById('fcEn').textContent=c.en;
+  document.getElementById('fcDetail').textContent=c.detail.replace('\n',' | ');
+  document.getElementById('fcCard').classList.remove('flip');
+  fcFlipped=false;document.getElementById('fcBtns').style.display='none';
+}
+function flipFC(){document.getElementById('fcCard').classList.toggle('flip');fcFlipped=!fcFlipped;document.getElementById('fcBtns').style.display=fcFlipped?'flex':'none';}
+function markFC(ok){if(ok)fcOK++;else{fcNG++;fcWords.push(fcWords[fcIdx]);}fcIdx++;renderFC();}
+function skipFC(){fcIdx++;renderFC();}
+function showFCR(){
+  document.getElementById('fcResult').style.display='block';document.getElementById('fcCard').style.display='none';
+  const pct=fcOK/(fcOK+fcNG)*100||0;
+  document.getElementById('rStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('rScore').textContent=`記住 ${fcOK} / ${fcOK+fcNG}`;
+  document.getElementById('rMsg').textContent=pct>=90?'十大模型全掌握！英文高分在望！🎉':pct>=70?'很好！繼續鞏固，學習方法比努力更重要！':'多複習幾遍，這些模型會改變你的學習效率！';
+}
+
+// ── QUIZ ──
+function startQuiz(){
+  qData=shuffle([...QUIZ]);qIdx=0;qC=0;qW=0;qAnsed=false;comboN=0;
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('quizArea').style.display='';renderQ();
+}
+function renderQ(){
+  if(qIdx>=qData.length){showQR();return;}
+  qAnsed=false;
+  const q=qData[qIdx];
+  document.getElementById('qN').textContent=qIdx+1;
+  document.getElementById('qC').textContent=qC;
+  document.getElementById('qW').textContent=qW;
+  document.getElementById('qBar').style.width=(qIdx/qData.length*100)+'%';
+  document.getElementById('qType').textContent=q.type;
+  document.getElementById('qQ').textContent=q.q;
+  document.getElementById('qQen').textContent=q.en;
+  document.getElementById('qExp').classList.remove('show');
+  document.getElementById('qNext').style.display='none';
+  document.getElementById('qOpts').innerHTML=q.opts.map((o,i)=>`
+    <button class="qopt" onclick="ansQ(this,${i},${q.ans},'${q.exp.replace(/'/g,"\\'")}')">${o}</button>`).join('');
+}
+function ansQ(btn,chosen,ans,exp){
+  if(qAnsed)return;qAnsed=true;
+  const ok=chosen===ans;
+  document.querySelectorAll('.qopt').forEach((b,i)=>{b.disabled=true;if(i===chosen)b.classList.add(ok?'ok':'bad');else if(i===ans)b.classList.add('ok');});
+  if(ok){qC++;comboN++;showCombo();}else{qW++;comboN=0;}
+  const e=document.getElementById('qExp');
+  e.innerHTML=`<b>${ok?'✅ 正確！/ Correct!':'❌ 解析 / Explanation:'}</b> ${exp}`;e.classList.add('show');
+  document.getElementById('qNext').style.display='block';
+}
+function nextQ(){qIdx++;renderQ();}
+function showCombo(){
+  if(comboN<3)return;
+  const b=document.getElementById('comboBadge');b.textContent=`🔥 ${comboN}連！`;b.style.display='block';
+  clearTimeout(comboT);comboT=setTimeout(()=>b.style.display='none',1400);
+}
+function showQR(){
+  document.getElementById('quizResult').style.display='block';document.getElementById('quizArea').style.display='none';
+  const pct=qC/(qC+qW)*100||0;
+  document.getElementById('qStars').textContent=pct>=90?'⭐⭐⭐':pct>=70?'⭐⭐':'⭐';
+  document.getElementById('qScore').textContent=`${qC}/${qC+qW}`;
+  document.getElementById('rMsg2').textContent=pct>=90?'學習模型全掌握！你已經是高效學習者了！🎉':pct>=70?'不錯！把這些方法真正用起來，英文一定進步！':'多複習幾次，這些模型真的很管用！';
+}
+</script>
+
+
+
+
+
+<!-- SOUP-START -->
+<style>
+/* ── 心靈雞湯卡 + 搜尋 ── */
+.sp-card{margin:0 0 18px;padding:14px 16px;border-radius:14px;border:1px solid #E6D3A3;background:linear-gradient(135deg,#FFF9EA,#FFF1DC);color:#4A3A12;text-align:left;cursor:default;font-family:inherit;line-height:1.6;}
+.sp-dark .sp-card{background:linear-gradient(135deg,rgba(232,168,32,.12),rgba(255,255,255,.03));border-color:rgba(232,168,32,.3);color:#F3E8CC;}
+.sp-h{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;letter-spacing:.5px;color:#B07A08;margin-bottom:6px;}
+.sp-dark .sp-h{color:#E8A820;}
+.sp-n{font-weight:400;opacity:.7;}
+.sp-q{font-size:16px;font-weight:600;line-height:1.75;white-space:pre-line;}
+.sp-b{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.sp-fz{bottom:166px;font-size:16px;font-weight:700;}
+.sp-fh{font-size:12px;font-weight:700;padding:8px 6px 4px;color:#C9960C;}
+.sp-it{position:relative;}
+.sp-it[data-f]{padding-right:34px;}
+.sp-x{position:absolute;right:8px;top:8px;opacity:.5;padding:0 4px;}
+.sp-x:hover{opacity:1;}
+.sp-b button{padding:5px 13px;border-radius:16px;border:1px solid currentColor;background:transparent;color:inherit;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;opacity:.75;transition:.15s;}
+.sp-b button:hover{opacity:1;}
+.sp-note{font-size:11px;opacity:.65;margin-top:8px;text-align:center;}
+.sp-fab{position:fixed;right:14px;z-index:900;width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;font-size:18px;line-height:42px;padding:0;background:#1A2B5F;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.sp-dark .sp-fab{background:#E8A820;color:#1a1200;}
+.sp-fs{bottom:116px;}
+.sp-ft{bottom:66px;display:none;}
+.sp-ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;background:rgba(0,0,0,.55);padding:8vh 14px 14px;}
+.sp-ov.on{display:block;}
+.sp-box{max-width:560px;margin:0 auto;background:#fff;color:#1A2040;border-radius:14px;padding:14px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:14px;}
+.sp-dark .sp-box{background:#0E1835;color:#D5E5F8;border:1px solid #1C3060;}
+.sp-row{display:flex;gap:8px;}
+.sp-row input{flex:1;min-width:0;padding:10px 12px;border-radius:9px;border:1.5px solid #C9960C;font-size:15px;font-family:inherit;outline:none;background:transparent;color:inherit;}
+.sp-row button{padding:0 14px;border-radius:9px;border:none;background:rgba(128,128,128,.2);color:inherit;font-size:15px;cursor:pointer;}
+.sp-r{overflow-y:auto;margin-top:10px;}
+.sp-it{padding:9px 10px;border-radius:9px;cursor:pointer;line-height:1.6;border-bottom:1px solid rgba(128,128,128,.18);}
+.sp-it:hover{background:rgba(201,150,12,.14);}
+.sp-it mark{background:#F0C040;color:#1a1200;border-radius:3px;padding:0 2px;}
+.sp-tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:10px;background:rgba(201,150,12,.2);margin-right:6px;}
+.sp-em{padding:16px 6px;opacity:.6;text-align:center;}
+.sp-hit{outline:3px solid #E8A820 !important;outline-offset:3px;}
+#spToast{display:none;position:fixed;bottom:120px;left:50%;transform:translateX(-50%);z-index:1100;background:#1A2B5F;color:#fff;font-size:13px;font-weight:700;padding:8px 18px;border-radius:9px;}
+#spToast.on{display:block;}
+</style>
+<script>
+window.SOUP={key:'學習如何學習',dark:true,nav:'.nb',panel:'.pg',host:'.wrap',skip:'.topbar,.xp-bar,.combo,.copy-toast',extra:['讀不下去的時候，先讀五分鐘就好。','看不懂不是你笨，是這一段需要多看一次。','每個高手，都曾經是從第一個單字開始的。','今天背的每個字，都是明天讀懂世界的鑰匙。','學習最好的時機是昨天，其次是現在。','你願意坐下來學，就已經贏過了不想開始的自己。'],soups:{
+'pg-home':['學會怎麼學，比學會什麼更重要。','你不是學得慢，你只是還沒找到適合自己的節奏。','今天多懂一點點，就是在替未來的自己鋪路。'],
+'pg-diag':['看見自己卡在哪裡，就已經走出一半了。','診斷不是為了打分數，是為了找到下一步。','敢誠實面對弱點的人，進步得最快。'],
+'pg-models':['方法對了，努力才會算數。','一個用熟的模型，勝過一百次死背。','工具不用多，把一個用到變成本能，就夠改變你。'],
+'pg-practice':['練習時的每一次卡住，都是大腦正在長出新的路。','不怕寫錯，只怕不敢寫下答案。','一題一題來，山就是這樣被爬完的。'],
+'pg-flash':['忘記不是失敗，是記憶在等你再想起一次。','每翻一張卡，就把知識往心裡再推深一點。','慢慢來，重複本身就是力量。'],
+'pg-quiz':['考驗的不是你會多少，而是你願不願意再試一次。','答錯的那一題，是今天送給你的禮物。','分數是今天的位置，不是你的天花板。']
+}};
+</script>
+<script>
+// ── 心靈雞湯卡 + 搜尋 + 記住分頁 + 離線教練（共用模組，完全離線）──
+(function(){
+var C=window.SOUP||{},K='soup:'+(C.key||'app')+':';
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function lsGet(k){try{return localStorage.getItem(K+k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(K+k,v);}catch(e){}}
+function navs(){return C.nav?$$(C.nav):[];}
+function panels(){
+  if(C.panels)return C.panels();
+  return $$(C.panel||'.pg').map(function(el){return{el:el,id:el.id,host:(C.host&&el.querySelector(C.host))||el};});
+}
+// 通用句庫：接在每個分頁專屬句子後面，「換一碗」時輪到
+var POOL=['慢慢來，比較快。','你已經走了很遠，回頭看看就知道。','今天不必完美，只要比昨天多一點點。','允許自己休息，也是一種前進。','每一個小小的開始，都值得被肯定。','你現在做的每件小事，未來的你都會感謝。','不用和別人比，你有自己的時區。','卡住的時候，先深呼吸，再走一小步。','把今天過好，就是對未來最好的準備。','你比昨天的自己，又多懂了一點。','再難的日子，也是一天一天過完的。','對自己溫柔一點，你正在努力。'];
+function specOf(id){return (C.soups&&C.soups[id])||C.common||[];}
+function quotesOf(id){var s=specOf(id);return s.length?s.concat(C.extra||[],POOL):s;}
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+var day=Math.floor(Date.now()/864e5),off={};
+function favs(){try{return JSON.parse(lsGet('fav'))||[];}catch(e){return [];}}
+function setFavs(a){lsSet('fav',JSON.stringify(a));}
+
+// ── 雞湯卡 ──
+function fill(card){
+  var id=card.getAttribute('data-sp'),q=quotesOf(id);if(!q.length)return;
+  // 每天預設先出該分頁的專屬句，按「換一碗」再輪到其他句
+  var i=((day+hash(id))%specOf(id).length+(off[id]||0))%q.length;
+  card.querySelector('.sp-q').textContent=q[i];
+  card.querySelector('.sp-n').textContent=(i+1)+' / '+q.length;
+  card.querySelector('[data-a=n]').style.display=q.length>1?'':'none';
+  card.querySelector('[data-a=f]').textContent=favs().indexOf(q[i])>=0?'♥ 已收藏':'♡ 收藏';
+}
+function say(text){
+  if(!('speechSynthesis' in window)){toast('這個瀏覽器不支援朗讀');return;}
+  speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);u.lang='zh-TW';u.rate=0.9;speechSynthesis.speak(u);
+}
+// 存成 1080×1080 圖卡（PNG），可直接貼到臉書 / LINE
+function saveImage(text){
+  var S=1080,cv=document.createElement('canvas');cv.width=cv.height=S;
+  var x=cv.getContext('2d'),g=x.createLinearGradient(0,0,S,S);
+  g.addColorStop(0,'#1A2B5F');g.addColorStop(1,'#0A7A72');x.fillStyle=g;x.fillRect(0,0,S,S);
+  x.strokeStyle='rgba(240,192,64,.55)';x.lineWidth=4;x.strokeRect(48,48,S-96,S-96);
+  var F='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+  x.textAlign='center';x.textBaseline='middle';
+  x.fillStyle='#F0C040';x.font='bold 40px '+F;x.fillText('心靈雞湯',S/2,150);
+  var size=text.length>60?50:text.length>32?58:68,lh=size*1.6,max=S-240,lines=[];
+  x.font='bold '+size+'px '+F;
+  text.split('\n').forEach(function(par){
+    var line='';
+    for(var i=0;i<par.length;i++){
+      var ch=par[i],keep=/[，。！？、；：」』）]/.test(ch);   // 標點不放行首
+      if(line&&!keep&&x.measureText(line+ch).width>max){lines.push(line);line=ch;}else line+=ch;
+    }
+    if(line)lines.push(line);
+  });
+  x.fillStyle='#fff';
+  var y=S/2-(lines.length-1)*lh/2;
+  lines.forEach(function(l,i){x.fillText(l,S/2,y+i*lh);});
+  x.fillStyle='rgba(255,255,255,.7)';x.font='32px '+F;
+  x.fillText(C.brand||document.title.split(/[｜|]/)[0].trim(),S/2,S-140);
+  cv.toBlob(function(b){
+    var a=document.createElement('a');a.href=URL.createObjectURL(b);
+    a.download='心靈雞湯_'+text.replace(/[\s\\/:*?"<>|，。！？、]/g,'').slice(0,10)+'.png';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
+    toast('圖卡已下載 ✓');
+  },'image/png');
+}
+function toast(m){
+  var t=document.getElementById('spToast');if(!t)return;
+  t.textContent=m;t.classList.add('on');clearTimeout(toast.t);
+  toast.t=setTimeout(function(){t.classList.remove('on');},1300);
+}
+function copy(text){
+  function fb(){var a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}a.remove();}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).catch(fb);else fb();
+  toast('已複製 ✓');
+}
+function makeCard(id){
+  var d=document.createElement('div');d.className='sp-card';d.setAttribute('data-sp',id);
+  d.innerHTML='<div class="sp-h"><span>🍲 心靈雞湯</span><span class="sp-n"></span></div><div class="sp-q"></div><div class="sp-b"><button type="button" data-a="n">換一碗</button><button type="button" data-a="f">♡ 收藏</button><button type="button" data-a="c">複製</button><button type="button" data-a="s">朗讀</button><button type="button" data-a="i">存圖卡</button></div>';
+  d.addEventListener('click',function(e){
+    e.stopPropagation();
+    var a=e.target.getAttribute&&e.target.getAttribute('data-a'),t=d.querySelector('.sp-q').textContent;
+    if(a==='n'){off[id]=(off[id]||0)+1;fill(d);}
+    else if(a==='c'){copy(t);}
+    else if(a==='s'){say(t);}
+    else if(a==='i'){saveImage(t);}
+    else if(a==='f'){
+      var f=favs(),k=f.indexOf(t);
+      if(k>=0)f.splice(k,1);else f.unshift(t);
+      setFavs(f);fill(d);toast(k>=0?'已取消收藏':'已收藏 ♥（按 🔍 可看全部收藏）');
+    }
+  });
+  fill(d);return d;
+}
+function ensure(){
+  panels().forEach(function(p){
+    if(!p||!p.el)return;
+    var host=p.host||p.el,ex=null;
+    for(var c=host.firstElementChild;c;c=c.nextElementSibling){if(c.classList.contains('sp-card')){ex=c;break;}}
+    if(ex){if(ex.getAttribute('data-sp')===p.id)return;ex.remove();}
+    if(!quotesOf(p.id).length)return;
+    var card=makeCard(p.id);
+    if(p.after&&p.after.parentNode===host)host.insertBefore(card,p.after.nextSibling);
+    else host.insertBefore(card,host.firstChild);
+  });
+}
+
+// ── 搜尋 ──
+var SKIP='script,style,noscript,nav,.nav,.nav-tabs,.sp-card,.sp-ov,.sp-fab,.sp-note,#spToast,.fbx-b,.fbx-fab,#fbxMask';
+var cache=null;
+function blocks(){
+  var out=[],seen=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null),n;
+  while((n=w.nextNode())){
+    var el=n.parentElement;
+    if(!el||!n.nodeValue.trim()||el.closest(SKIP)||(C.skip&&el.closest(C.skip)))continue;
+    while(el.parentElement&&el.parentElement!==document.body&&/^(B|I|EM|STRONG|SPAN|A|U|SMALL|CODE|SUP|SUB)$/.test(el.tagName))el=el.parentElement;
+    if(seen.has(el))continue;seen.add(el);
+    var t=el.textContent.replace(/\s+/g,' ').trim();
+    if(t.length>=2)out.push({el:el,t:t});
+  }
+  return out;
+}
+function tabOf(el){
+  if(C.tabs===false)return -1;
+  var ps=panels();
+  for(var i=0;i<ps.length;i++)if(ps[i].el&&ps[i].el.contains(el))return i;
+  return -1;
+}
+function labelOf(el,ti){
+  if(C.label)return C.label(el)||'';
+  var nv=navs();return ti>=0&&nv[ti]?nv[ti].textContent.trim():'';
+}
+function snippet(t,k,len){
+  var s=Math.max(0,k-18);
+  return (s>0?'…':'')+t.substr(s,len)+(t.length>s+len?'…':'');
+}
+function domSearch(q){
+  var ql=q.toLowerCase(),hit=[],bs=cache||(cache=blocks());
+  for(var i=0;i<bs.length&&hit.length<300;i++){
+    var k=bs[i].t.toLowerCase().indexOf(ql);
+    if(k>=0)hit.push({el:bs[i].el,t:snippet(bs[i].t,k,72)});
+  }
+  // 只留最內層，避免同一段文字重複出現
+  hit=hit.filter(function(a){return !hit.some(function(b){return b!==a&&a.el.contains(b.el);});});
+  return hit.slice(0,40).map(function(h){var ti=tabOf(h.el);return{el:h.el,t:h.t,ti:ti,label:labelOf(h.el,ti)};});
+}
+function flash(el){
+  setTimeout(function(){
+    var t=el;if(!t||!document.body.contains(t))return;
+    while(t&&t!==document.body&&t.offsetParent===null)t=t.parentElement;
+    if(!t||t===document.body)return;
+    t.scrollIntoView({block:'center',behavior:'smooth'});
+    t.classList.add('sp-hit');setTimeout(function(){t.classList.remove('sp-hit');},1800);
+  },140);
+}
+function reveal(r){
+  var el=r.el;
+  if(r.go){el=r.go()||el;}
+  else if(C.reveal){C.reveal(el);}
+  else{var nv=navs();if(r.ti>=0&&nv[r.ti])nv[r.ti].click();}
+  flash(el);
+}
+function ui(){
+  if(C.dark)document.body.classList.add('sp-dark');
+  var t=document.createElement('div');t.id='spToast';document.body.appendChild(t);
+  var top=document.createElement('button');top.type='button';top.className='sp-fab sp-ft';top.title='回到頂端';top.textContent='↑';
+  top.onclick=function(){window.scrollTo({top:0,behavior:'smooth'});};
+  document.body.appendChild(top);
+  window.addEventListener('scroll',function(){top.style.display=window.scrollY>500?'block':'none';},{passive:true});
+
+  // 字體大小：標準 → 大 → 特大
+  var Z=[1,1.15,1.3],zi=+lsGet('zoom')||0,zb=document.createElement('button');
+  zb.type='button';zb.className='sp-fab sp-fz';zb.title='字體大小';zb.textContent='字';
+  function zoom(){document.documentElement.style.zoom=Z[zi]===1?'':Z[zi];}
+  zb.onclick=function(){zi=(zi+1)%Z.length;lsSet('zoom',String(zi));zoom();toast(['標準字體','大字體','特大字體'][zi]);};
+  zoom();document.body.appendChild(zb);
+
+  var fb=document.createElement('button');fb.type='button';fb.className='sp-fab sp-fs';fb.title='搜尋（按 / 開啟）';fb.textContent='🔍';
+  var ov=document.createElement('div');ov.className='sp-ov';
+  ov.innerHTML='<div class="sp-box"><div class="sp-row"><input type="search" placeholder="搜尋本 APP 內容…（Esc 關閉）"><button type="button" title="關閉">✕</button></div><div class="sp-r"></div></div>';
+  document.body.appendChild(fb);document.body.appendChild(ov);
+  var inp=ov.querySelector('input'),box=ov.querySelector('.sp-r'),res=[];
+  function close(){ov.classList.remove('on');}
+  function open(){cache=null;ov.classList.add('on');inp.focus();inp.select();render();}
+  function render(){
+    var q=inp.value.trim();
+    if(!q){
+      res=[];var f=favs();
+      box.innerHTML='<div class="sp-em">輸入關鍵字，搜尋所有分頁的內容</div>'+(f.length
+        ?'<div class="sp-fh">♥ 我的收藏（'+f.length+'）· 點一下複製</div>'+f.map(function(t,i){return '<div class="sp-it" data-f="'+i+'">'+esc(t)+'<span class="sp-x" data-x="'+i+'" title="移除">✕</span></div>';}).join('')
+        :'<div class="sp-em">按雞湯卡上的「♡ 收藏」，喜歡的句子會存在這裡</div>');
+      return;
+    }
+    res=(C.search?C.search(q):domSearch(q))||[];
+    if(!res.length){box.innerHTML='<div class="sp-em">找不到「'+esc(q)+'」</div>';return;}
+    var re=new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+    box.innerHTML=res.map(function(r,i){
+      return '<div class="sp-it" data-i="'+i+'">'+(r.label?'<span class="sp-tag">'+esc(r.label)+'</span>':'')+esc(r.t).replace(re,function(m){return '<mark>'+m+'</mark>';})+'</div>';
+    }).join('');
+  }
+  fb.onclick=open;
+  inp.addEventListener('input',render);
+  ov.querySelector('.sp-row button').onclick=close;
+  ov.addEventListener('click',function(e){
+    if(e.target===ov){close();return;}
+    var xi=e.target.getAttribute('data-x');
+    if(xi!==null){var f=favs();f.splice(+xi,1);setFavs(f);render();$$('.sp-card').forEach(fill);return;}
+    var it=e.target.closest('.sp-it');if(!it)return;
+    if(it.hasAttribute('data-f')){copy(favs()[+it.getAttribute('data-f')]||'');return;}
+    var r=res[+it.getAttribute('data-i')];close();if(r)reveal(r);
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){close();return;}
+    if(e.key==='/'&&!/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName||''))&&!e.target.isContentEditable){e.preventDefault();open();}
+  });
+}
+
+// ── 記住上次分頁 ──
+function remember(){
+  if(C.remember===false||!C.nav)return;
+  var nv=navs();
+  nv.forEach(function(b,i){b.addEventListener('click',function(){lsSet('tab',String(i));});});
+  var s=parseInt(lsGet('tab'),10);
+  if(s>0&&nv[s])nv[s].click();
+}
+
+// ── 離線教練（取代需要連網 / API 的版本）──
+var STOP={};'我很 我的 我想 我是 我不 我會 我要 怎麼 什麼 如何 可以 覺得 不知 知道 自己 沒有 是不 不是 為什 麼辦 還是 因為 所以 但是 一直 有點 的人 的時 時候 開始 想要 要怎 麼做 是否 已經 可能 真的 好像 這樣 那樣 的事 一個 現在'.split(' ').forEach(function(g){STOP[g]=1;});
+var SYN=['害怕 恐懼 擔心 焦慮 不安 緊張','希望 絕望 無望 放棄 沒救','累 疲勞 疲倦 沒力 能量 精神 活力','睡 失眠 睡眠 熬夜 休息','吵架 衝突 爭吵 溝通 冷戰','孤單 孤獨 寂寞 連結 陪伴','生氣 憤怒 情緒 委屈','目標 方向 迷茫 意義 使命','學習 讀書 記憶 專注 理解','錢 財富 收入 賺錢 金錢','幫助 貢獻 付出 給予 成全','復發 修復 恢復 重建','癌 病人 疾病 治療 症狀','壓力 放鬆 呼吸 緊繃','吃 飲食 營養 血糖 代謝','運動 走路 步行 肌肉','痛 疼痛 發炎 不舒服','信任 背叛 安全感 界線','孩子 小孩 親子 教養','伴侶 另一半 婚姻 夫妻 親密','漸行漸遠 疏遠 距離 連結 陪伴','胖 體重 腰圍 減重','身份 身分 角色 定義'].map(function(s){return s.split(' ');});
+var AD=/DHA|EPA|GABA|NMN|Q10|鎂|鋅|益生菌|補充|營養素|保健|生技|購買|團購|下單|膠囊|魚油|維生素|維他命|毫克|mg/i;
+function coach(){
+  if(!C.coach||typeof window.addMsg!=='function')return;
+  var inp=document.getElementById('aiInput');if(!inp)return;
+  var row=inp.parentElement,note=document.createElement('div');
+  note.className='sp-note';note.textContent='離線教練：不連網、不需 API，回覆整理自本 APP 的內容。';
+  row.parentNode.insertBefore(note,row.nextSibling);
+  var skip=C.coach.skip||'#pg-ai,#pg-quiz,#pg-flash,#pg-diag,.hero,.nt-card,.nt-grid,.tech-card,.tech-row,.bb';
+  function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+  window.sendAI=function(){
+    var msg=inp.value.trim();if(!msg)return;
+    inp.value='';window.addMsg('user',esc(msg));
+    var g={};
+    msg.replace(/[\s，。！？、,.!?「」『』（）()：:；;～~…]+/g,' ').split(' ').forEach(function(w){
+      if(/^[\x00-\x7f]+$/.test(w)){if(w.length>1)g[w.toLowerCase()]=1;}
+      else for(var i=0;i<w.length-1;i++){var b=w.substr(i,2);if(!STOP[b])g[b]=1;}
+    });
+    // 同義詞擴充：使用者說「害怕」，也找「恐懼」「擔心」的內容
+    SYN.forEach(function(grp){
+      if(grp.some(function(w){return msg.indexOf(w)>=0;}))grp.forEach(function(w){if(w.length>1)g[w]=1;});
+    });
+    var keys=Object.keys(g),seen={},cand=[];
+    blocks().forEach(function(b){
+      // 只取完整句子（有標點），略過標籤、編號這類短字
+      // 也略過產品 / 補充品段落：教練只給觀念和行動，不推薦產品
+      if(b.t.length<8||b.t.length>160||seen[b.t]||!/[，。；！？：,]/.test(b.t)||AD.test(b.t)||b.el.closest(skip))return;
+      var tl=b.t.toLowerCase(),sc=0;
+      keys.forEach(function(k){if(tl.indexOf(k)>=0)sc++;});
+      if(sc>0){seen[b.t]=1;cand.push({el:b.el,t:b.t,sc:sc});}
+    });
+    cand=cand.filter(function(a){return !cand.some(function(b){return b!==a&&a.el.contains(b.el);});});
+    cand.sort(function(a,b){return b.sc-a.sc||a.t.length-b.t.length;});
+    var top=[],h='';
+    cand.forEach(function(c){
+      if(top.length<3&&!top.some(function(t){return t.t.indexOf(c.t)>=0||c.t.indexOf(t.t)>=0;}))top.push(c);
+    });
+    if(top.length){
+      h+='<b>【相關重點】</b><br>'+top.map(function(x){
+        var lb=labelOf(x.el,tabOf(x.el));
+        return '• '+(lb?'〔'+esc(lb)+'〕':'')+esc(x.t);
+      }).join('<br>')+'<br><br>';
+    }else{
+      h+='這個問題在 APP 裡沒有直接對應的段落，可以換個關鍵字，或用右下角 🔍 搜尋。先給你一個方向：<br><br>';
+    }
+    var qs=quotesOf('pg-ai');
+    if(C.coach.steps&&C.coach.steps.length)h+='<b>【今日一小步】</b><br>'+esc(rnd(C.coach.steps))+'<br><br>';
+    if(qs.length)h+='<b>【心靈雞湯】</b><br>'+esc(rnd(qs));
+    setTimeout(function(){window.addMsg('bot',h);},300);
+  };
+}
+
+// ── 每日任務：記住今天勾過的項目 + 連續打卡天數 ──
+function tasks(){
+  var td;try{td=taskDone;}catch(e){return;}
+  if(!Array.isArray(td)||typeof window.toggleTask!=='function')return;
+  var today=new Date().toDateString(),yest=new Date(Date.now()-864e5).toDateString(),s=null,orig=window.toggleTask;
+  try{s=JSON.parse(lsGet('tasks'));}catch(e){}
+  s=s||{date:'',done:[],streak:0,last:''};
+  if(s.date===today&&s.done.length===td.length){
+    s.done.forEach(function(d,i){if(d&&!td[i])orig(i);});
+    var cb=document.getElementById('comboBadge');if(cb)setTimeout(function(){cb.style.display='none';},0);
+  }
+  window.toggleTask=function(i){
+    orig(i);
+    s.date=today;s.done=taskDone.slice();
+    if(taskDone[i]&&s.last!==today){
+      s.streak=s.last===yest?s.streak+1:1;s.last=today;
+      toast('今日打卡 ✓ 連續 '+s.streak+' 天');
+    }
+    lsSet('tasks',JSON.stringify(s));
+  };
+}
+
+function init(){
+  ui();ensure();remember();coach();tasks();
+  if(C.init)try{C.init();}catch(e){}
+  ensure();
+  var pend=false;
+  function later(){if(pend)return;pend=true;setTimeout(function(){pend=false;ensure();},60);}
+  new MutationObserver(later).observe(document.body,{childList:true,subtree:true});
+  document.addEventListener('click',later,true);
+}
+if(document.readyState==='complete')setTimeout(init,0);
+else window.addEventListener('load',function(){setTimeout(init,0);});
+})();
+</script>
+<!-- SOUP-END -->
+<!-- FBX-START -->
+<script>
+window.FBX={"brand": "學測英文 × 10大學習模型", "tags": "#學測英文 #學習方法 #高中英文", "theme": 0, "items": ".kpi-card,.nt-card,.tech-card,.lrk,.lcard,.q-card,.qcard,.map-card,.dq,.stage-card,.dvs-card,.ss-card,.body-card,.act-card,.vocab-card,.root-card,.grammar-card,.hl-box,.pred-card", "groups": ".n-content,.v-content,.sys-content,.s-content,.l-content,.mod-content,.e-content,.prac-section", "quote": ".q-card,.qcard,.dq", "steps": ["今天背的單字，各造一個自己的句子。", "讀完一段，蓋起來用自己的話講一次。", "把今天的錯題抄下來，寫出錯在哪裡。", "設定二十五分鐘，只做一件事。"]};
+</script>
+<script>
+// ── 臉書文圖：每一欄、每個項目都能產生臉書貼文 + 圖卡（共用模組，完全離線）──
+(function(){
+var F=window.FBX||{},S=window.SOUP||{};
+var ITEM=F.items||'',GROUP=F.groups||'',QUOTE=F.quote||'',PAIR=F.pair||null;
+var ALL=[ITEM,GROUP].filter(Boolean).join(',');
+var ZH='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+var THEMES=[{c:'#1A2B5F',t:'#E8ECF7'},{c:'#0A7A72',t:'#E2F4F1'},{c:'#C2416B',t:'#FCE9EF'},{c:'#B4690E',t:'#FBF0DC'},{c:'#5B3FA8',t:'#EEE9FA'},{c:'#1F7A3A',t:'#E4F4E8'}];
+var K='fbx:'+(S.key||'app')+':';
+function $$(s,r){return s?Array.prototype.slice.call((r||document).querySelectorAll(s)):[];}
+function $(id){return document.getElementById(id);}
+function is(el,sel){return !!sel&&el.matches(sel);}
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+function cut(s,n){s=String(s);return s.length>n?s.slice(0,n-1)+'…':s;}
+function lsGet(k){try{return localStorage.getItem(K+k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(K+k,v);}catch(e){}}
+
+// ── 從畫面上的項目取出文字 ──
+var PIC=/^(?:[←-⯿〰〽㊗㊙️‍]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDC00-\uDFFF]|\s)+/;
+var DROP=/^(點擊複製|已複製.*|點擊翻面.*|tap to flip.*|speak|發音|例句\s*#?\d+|vol\s*\d+)$/i;
+var LABEL=/^(低維|高維)\s*(low|high)?$/i;
+function word(s){return /[A-Za-z一-鿿]/.test(s);}
+function tidy(s){return s.replace(/[⭐★]+/g,'').replace(/\s+/g,' ').trim();}
+function bare(s){return tidy(s.replace(PIC,''));}
+function grab(el){
+  var raw=[],cur='',subs=[];
+  function flush(){var s=tidy(cur);if(s)raw.push(s);cur='';}
+  (function walk(n){
+    for(var c=n.firstChild;c;c=c.nextSibling){
+      if(c.nodeType===3){cur+=c.nodeValue;continue;}
+      if(c.nodeType!==1)continue;
+      if(/^(BUTTON|SCRIPT|STYLE|INPUT|SELECT|TEXTAREA|CANVAS|A)$/.test(c.tagName)||c.classList.contains('sp-card'))continue;
+      if(c.tagName==='BR'){flush();continue;}
+      if(is(c,ALL)){flush();var t=titleOf(c);if(t)subs.push(t);continue;}
+      var inl=/^inline/.test(getComputedStyle(c).display);
+      if(!inl)flush();
+      walk(c);
+      if(!inl)flush();
+    }
+  })(el);
+  flush();
+  var lines=[],pre='';
+  raw.forEach(function(s){
+    if(DROP.test(s))return;
+    if(!word(s)){if(!lines.length&&!pre&&PIC.test(s)&&!/\d/.test(s))pre=s.split(' ')[0];return;}
+    // 「標籤：」接下一行
+    if(lines.length&&/[:：]$/.test(lines[lines.length-1]))lines[lines.length-1]+=s;else lines.push(s);
+  });
+  return {lines:lines,subs:subs,pre:pre};
+}
+function noNum(s){return s.replace(/^#?\d+\s*[·.、:：\-]?\s*/,'');}
+function titleOf(el){
+  if(PAIR&&is(el,PAIR.sel)){
+    var t=PAIR.title&&el.querySelector(PAIR.title),lo=el.querySelector(PAIR.low);
+    return bare(t?t.textContent:lo?part(lo)[0]||'':'');
+  }
+  var g=grab(el);if(!g.lines.length)return '';
+  if(is(el,QUOTE))return g.lines.slice().sort(function(a,b){return b.length-a.length;})[0];
+  return noNum(bare(g.lines[0]))||g.lines[0];
+}
+function part(el){return grab(el).lines.filter(function(s){return !LABEL.test(s);}).map(bare);}
+
+function panels(){
+  if(S.panels)return S.panels()||[];
+  return $$(S.panel||'.pg').map(function(el){return{el:el,id:el.id,host:(S.host&&el.querySelector(S.host))||el};});
+}
+function shown(el){return !!(el&&el.getClientRects().length);}
+function navText(){
+  var b=$$(S.nav).filter(function(x){return /(^|\s)(on|active)(\s|$)/.test(x.className);})[0];
+  return b?tidy(b.textContent):'';
+}
+function panelFor(el){
+  var ps=panels(),hit=null;
+  ps.forEach(function(p){if(p&&p.el&&p.el.contains(el)&&(!hit||hit.el.contains(p.el)))hit=p;});
+  return hit;
+}
+function labelFor(p){
+  var t=navText(),h=p&&p.after;
+  if(h&&/^H[1-4]$/.test(h.tagName))t+=(t?'｜':'')+tidy(h.textContent);
+  return t;
+}
+function quotesFor(p){
+  var q=(p&&S.soups&&S.soups[p.id])||[];
+  return q.length?q:(S.common||S.extra||[]);
+}
+
+function entry(el){
+  var p=panelFor(el),g=grab(el),e={el:el,tab:labelFor(p),quotes:quotesFor(p),pre:g.pre,subs:g.subs,lines:g.lines};
+  if(PAIR&&is(el,PAIR.sel)){
+    var lo=part(el.querySelector(PAIR.low)||el),hi=part(el.querySelector(PAIR.high)||el);
+    e.kind='pair';e.title=titleOf(el)||lo[0]||'';
+    e.low=lo[0]||'';e.high=hi[0]||'';e.lowEn=lo[1]||'';e.highEn=hi[1]||'';
+    var used=lo.concat(hi,[e.title]);
+    e.lines=g.lines.filter(function(s){var b=bare(s);return !LABEL.test(s)&&used.indexOf(b)<0&&used.indexOf(noNum(b))<0&&!/^#\d+/.test(s);});
+  }else if(is(el,QUOTE)){
+    e.kind='quote';e.title=titleOf(el);
+    e.lines=g.lines.filter(function(s){return s!==e.title;}).map(function(s){return noNum(s);}).filter(Boolean);
+  }else{
+    e.kind=is(el,GROUP)?'group':'item';
+    e.title=titleOf(el);e.lines=g.lines.slice(1);
+  }
+  return e;
+}
+function tabEntry(p){
+  var raw=labelFor(p)||F.brand||'',m=raw.match(PIC),seen={},heads=[],subs=[];
+  $$('h1,h2,h3,.sec-h,.sec-s,.hero-p,.section-title,.model-title,.subtitle',p.el).forEach(function(h){
+    if(h.closest('.sp-card')||(ALL&&h.closest(ALL))||heads.length>=4)return;
+    var t=tidy(h.textContent);
+    if(t.length>3&&t.length<90&&!seen[t]){seen[t]=1;heads.push(t);}
+  });
+  $$(ALL,p.el).forEach(function(el){
+    if(ALL&&el.parentElement.closest(ALL)&&p.el.contains(el.parentElement.closest(ALL)))return;
+    var t=titleOf(el);if(t&&!seen[t]){seen[t]=1;subs.push(t);}
+  });
+  return {kind:'tab',p:p,el:p.el,tab:F.brand||'',title:bare(raw)||raw,pre:m?tidy(m[0]).split(' ')[0]:'',lines:heads,subs:subs,quotes:quotesFor(p)};
+}
+
+// ── 貼文 ──
+var HOOK=[
+ function(t){return '你有沒有發現，「'+t+'」這件事，其實每天都在影響你？';},
+ function(t){return '今天想跟你分享一個小重點：「'+t+'」。';},
+ function(t){return '很多時候我們卡住，不是不夠努力，而是還沒看懂「'+t+'」。';},
+ function(t){return '如果今天只記得一件事，就記這個——「'+t+'」。';}
+];
+var HOOKL=['這一段，想送給今天的你。','看到這裡，先停三秒，慢慢讀。','有些話，早一點知道，就少走一點冤枉路。','今天的小提醒，留給正在努力的你。'];
+var TURN=['看懂了，就不會只是硬撐。知道原理，才知道力氣要用在哪裡。','不用一次全部做到。先懂一點、做一點，改變就開始了。','這不是要你更用力，而是換一個更省力的方向。','知道，是第一步；願意試一次，是第二步。'];
+var TURNP=['語言不只是在描述事情，它也在決定你接下來怎麼想、怎麼做。同一件事換一個說法，眼前就多一條路。','不是要你假裝沒事，而是把「我完了」換成「我還可以做什麼」。','一句話說久了會變成信念，信念久了會變成人生。先從換一句話開始。','低維的說法把門關上，高維的說法把門打開。你值得多一扇門。'];
+var ASK=[
+ function(t){return '我在哪個情境，最需要「'+t+'」？';},
+ function(t){return '如果今天就用上它，第一步會是什麼？';},
+ function(t){return '我身邊誰把這件事做得很好？他是怎麼做的？';},
+ function(t){return '一個月後回頭看，我希望這件事有什麼不同？';}
+];
+var ASKQ=['這句話，讓你想到誰？','今天哪一刻，最需要這句話？','如果把這句話送給一個人，你會送給誰？','這句話裡，哪幾個字最打動你？'];
+var STEP=['今天只挑一個重點，寫下來，貼在看得到的地方。','把這一段講給一個人聽，講得出來才是真的懂。','選一件五分鐘內做得到的小事，現在就做。','睡前花一分鐘，想想今天哪裡用上了它。'];
+var CLOSE=['把這篇留給今天的自己，也分享給那個正在努力的人。','慢慢來，比較快；一點點，就很多。','有共鳴的話，留言告訴我你的想法。','覺得有幫助，就分享給需要的朋友吧。'];
+function pick(a,k){return a[k%a.length];}
+function build(e,v){
+  var T=e.title,k=hash(T)+(v||0),L=[],card,tab=e.kind==='tab';
+  var steps=(F.steps&&F.steps.length?F.steps:(S.coach&&S.coach.steps)||[]).concat(STEP);
+  var q=e.quotes.length?pick(e.quotes,k):'';
+  function sec(h,arr,n){
+    if(!arr.length)return;
+    L.push('▍'+h);arr.slice(0,n).forEach(function(s){L.push('・'+cut(s,140));});
+    if(arr.length>n)L.push('…共 '+arr.length+' 項');L.push('');
+  }
+  if(e.kind==='pair'){
+    L.push('【換句話說｜'+T+'】','你是不是也常這樣說、這樣想？','');
+    L.push('✗ 低維：「'+e.low+'」');if(e.lowEn)L.push('　'+e.lowEn);
+    L.push('✓ 高維：「'+e.high+'」');if(e.highEn)L.push('　'+e.highEn);L.push('');
+    sec('補充說明',e.lines,4);
+    L.push('▍為什麼要換一句話',pick(TURNP,k),'');
+    card={kind:'pair',head:T===e.low?'換句話說':T,low:e.low,high:e.high,quote:q};
+  }else if(e.kind==='quote'){
+    L.push('「'+T+'」','',pick(HOOKL,k),'');
+    L.push('▍想一想','・'+pick(ASKQ,k),'・'+pick(ASKQ,k+1),'');
+    L.push('▍換個角度看',pick(TURN,k),'');
+    card={kind:'quote',quote:T,sub:e.lines[0]||''};
+  }else{
+    L.push('【'+(tab&&F.brand?F.brand+'｜':'')+(e.pre?e.pre+' ':'')+T+'】',T.length>16?pick(HOOKL,k):pick(HOOK,k)(T),'');
+    sec(tab?'這一欄在說什麼':'重點整理',e.lines,tab?4:7);
+    sec(tab?'這一欄的項目':'裡面有這些重點',e.subs,10);
+    if(tab&&e.quotes.length){L.push('▍三句心靈雞湯');e.quotes.slice(0,3).forEach(function(s){L.push('「'+s+'」');});L.push('');}
+    if(!tab&&e.lines.length<3)L.push('▍想一想','・'+pick(ASK,k)(T),'・'+pick(ASK,k+1)(T),'');
+    L.push('▍換個角度看',pick(TURN,k),'');
+    card={kind:'item',head:(e.pre?e.pre+' ':'')+T,lines:(e.lines.length?e.lines:e.subs).slice(0,tab?5:4).map(function(s){return cut(s,46);}),quote:q};
+  }
+  L.push('🌱 今天的小步｜'+pick(steps,k),'');
+  if(q&&e.kind!=='quote'&&!tab)L.push('🍲 「'+q+'」','');
+  L.push(pick(CLOSE,k),'');
+  var body=L.join('\n');
+  if(F.note&&(!F.noteRe||new RegExp(F.noteRe).test(body)))L.push(F.note,'');
+  var tt=T.replace(/[^A-Za-z0-9一-鿿]/g,'');
+  L.push([F.tags||'',e.kind!=='quote'&&tt.length>1&&tt.length<=10&&!/^\d/.test(tt)?'#'+tt:'','#心靈雞湯 #自我成長 #LifeOS'].filter(Boolean).join(' '));
+  card.tab=[F.brand,e.tab!==F.brand?bare(e.tab):''].filter(Boolean).join(' · ');
+  return {text:L.join('\n'),card:card};
+}
+
+// ── 圖卡（1080×1350）──
+function wrap(x,text,maxW){
+  var tk=String(text).match(/[A-Za-z0-9'’\-]+[.,!?;:]?\s?|\s+|[^\sA-Za-z0-9]/g)||[],noHead='，。！？、；：」』）)…—',out=[],cur=[];
+  function push(){var s=cur.join('').trim();if(s)out.push(s);}
+  tk.forEach(function(w){
+    if(cur.join('').trim()&&x.measureText(cur.join('')+w).width>maxW){
+      var carry=[];if(noHead.indexOf(w)>=0&&cur.length>1)carry.unshift(cur.pop());   // 標點不放行首
+      push();cur=carry.concat(w.replace(/^\s+/,''));
+    }else cur.push(w);
+  });
+  push();return out;
+}
+function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
+function draw(cv,c,th){
+  var W=1080,H=1350,X=84,MW=W-168,x=cv.getContext('2d');cv.width=W;cv.height=H;
+  function lay(s,paint,off){
+    function f(px,wt){x.font=(wt||'')+' '+Math.round(px*s)+'px '+ZH;}
+    function put(arr,a,y,lh,col){if(paint){x.fillStyle=col;arr.forEach(function(l,i){x.fillText(l,a,y+i*lh);});}return y+arr.length*lh;}
+    function box(arr,y,lh,bg,bar,col,label){
+      var h=arr.length*lh+(label?104:64)*s;
+      if(paint){x.fillStyle=bg;rr(x,X-20,y,MW+40,h,28);x.fill();x.fillStyle=bar;x.fillRect(X-20,y+24,10,h-48);}
+      if(label){f(28,'bold');put([label],X+32,y+30*s,40*s,bar);}
+      f(c.kind==='pair'?48:36,c.kind==='pair'?'bold':'');
+      put(arr,X+32,y+(label?78:34)*s,lh,col);
+      return y+h;
+    }
+    x.textBaseline='top';x.textAlign='left';
+    f(58,'bold');var head=c.head?wrap(x,c.head,MW):[];
+    var hh=Math.round(150+(head.length?head.length*78*s+50:0));
+    if(paint){
+      x.fillStyle='#FAF6EF';x.fillRect(0,0,W,H);x.fillStyle=th.c;x.fillRect(0,0,W,hh);
+      x.font='30px '+ZH;x.fillStyle='rgba(255,255,255,.85)';var tb=c.tab;while(tb.length>4&&x.measureText(tb).width>MW)tb=tb.slice(0,-2)+'…';x.fillText(tb,X,64);
+    }
+    f(58,'bold');put(head,X,124,78*s,'#fff');
+    var y=hh+70*s+off;
+    if(c.kind==='pair'){
+      f(48,'bold');var lo=wrap(x,c.low,MW-90),hi=wrap(x,c.high,MW-90);
+      y=box(lo,y,68*s,'#FBE7EA','#B4233C','#5A1622','✗ 低維｜舊說法');
+      f(54,'bold');if(paint){x.fillStyle=th.c;x.fillText('↓',W/2-16*s,y+14*s);}y+=92*s;
+      y=box(hi,y,68*s,th.t,th.c,'#1F2937','✓ 高維｜新說法')+56*s;
+    }else if(c.kind==='quote'){
+      f(70,'bold');y=put(wrap(x,'「'+c.quote+'」',MW),X,y,102*s,'#2B2622')+30*s;
+      if(c.sub){f(34,'');y=put(wrap(x,'— '+c.sub,MW),X,y,50*s,'#8A7F76');}
+    }else if(c.lines.length){
+      f(36,'');var bl=[];c.lines.forEach(function(l){wrap(x,'・'+l,MW-90).forEach(function(w){bl.push(w);});});
+      y=box(bl,y,58*s,th.t,th.c,'#3A332E')+56*s;
+    }
+    if(c.quote&&c.kind!=='quote'){
+      f(27,'bold');var pw=x.measureText('心靈雞湯').width+48,ph=54*s;
+      if(paint){x.fillStyle=th.c;rr(x,X,y,pw,ph,ph/2);x.fill();x.fillStyle='#fff';x.fillText('心靈雞湯',X+24,y+(ph-27*s)/2-2);}
+      y+=ph+22*s;f(40,'bold');y=put(wrap(x,'「'+c.quote+'」',MW),X,y,62*s,'#2B2622');
+    }
+    return y;
+  }
+  var s=1.25;while(s>0.5&&lay(s,false,0)>H-170)s-=0.03;
+  lay(s,true,Math.max(0,Math.min(150,(H-170-lay(s,false,0))/2)));
+  x.fillStyle='#E4DAD0';x.fillRect(X,H-130,MW,3);
+  x.textBaseline='top';x.font='bold 32px '+ZH;x.fillStyle=th.c;x.fillText(cut(F.brand||'LifeOS',22),X,H-96);
+  x.font='28px '+ZH;x.fillStyle='#8A7F76';var tg='#心靈雞湯';x.fillText(tg,W-X-x.measureText(tg).width,H-94);
+}
+
+// ── 介面 ──
+var cur=null,ver=0,list=[],ti=parseInt(lsGet('theme'),10);
+if(!(ti>=0&&ti<THEMES.length))ti=F.theme||0;
+function toast(b,t){var o=b.textContent;b.textContent=t;setTimeout(function(){b.textContent=o;},1200);}
+function save(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},2000);}
+function fname(){return ((F.brand||'LifeOS')+'_'+cur.title).replace(/[\\/:*?"<>|\s，。！？、]+/g,'_').slice(0,40);}
+function count(t){return (t.match(/[一-鿿]/g)||[]).length+(t.match(/[A-Za-z][A-Za-z'’\-]*/g)||[]).length;}
+function show(){
+  var r=build(cur,ver);
+  $('fbxTitle').textContent='📘 '+(cur.kind==='tab'?'本頁：':'')+cut(cur.title,28);
+  $('fbxText').value=r.text;$('fbxCnt').textContent='約 '+count(r.text)+' 字';
+  draw($('fbxCanvas'),r.card,THEMES[ti]);
+}
+function chips(){
+  var kw=$('fbxSearch').value.trim().toLowerCase(),box=$('fbxList');box.innerHTML='';
+  list.forEach(function(it){
+    if(kw&&it.find.indexOf(kw)<0)return;
+    var b=document.createElement('button');b.type='button';b.textContent=(it.tab?'📄 本頁｜':'')+cut(it.title,18);
+    if(cur&&it.el===cur.el&&!!it.tab===(cur.kind==='tab'))b.className='on';
+    b.onclick=function(){open(it.tab?tabEntry(it.p):entry(it.el));};box.appendChild(b);
+  });
+  if(!box.firstChild)box.innerHTML='<span style="opacity:.6;padding:4px">找不到符合的項目</span>';
+}
+function scan(){
+  list=[];
+  panels().forEach(function(p){
+    if(!p||!shown(p.el))return;
+    list.push({tab:1,p:p,el:p.el,title:bare(labelFor(p))||F.brand||'本頁',find:''});
+    $$(ALL,p.el).forEach(function(el){
+      var t=titleOf(el);if(t)list.push({el:el,title:t,find:el.textContent.toLowerCase()});
+    });
+  });
+}
+function open(e){
+  if(!e||!e.title)return;
+  cur=e;ver=0;scan();$('fbxMask').classList.add('on');chips();show();
+  var on=$('fbxList').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
+}
+function close(){$('fbxMask').classList.remove('on');}
+function ui(){
+  var st=document.createElement('style');
+  st.textContent='.fbx-b{display:inline-flex;align-items:center;gap:4px;margin:8px 0 0 auto;padding:4px 11px;border-radius:999px;border:1px solid rgba(24,119,242,.45);background:rgba(24,119,242,.1);color:#1877F2;font:700 11px/1.4 '+ZH+';cursor:pointer;white-space:nowrap;flex:none;align-self:center;width:auto;height:auto;letter-spacing:0;text-transform:none}'+
+  '.sp-dark .fbx-b{color:#7DB4FF;border-color:rgba(125,180,255,.45);background:rgba(125,180,255,.1)}.fbx-b:hover{background:#1877F2;color:#fff}'+
+  '.fbx-g{display:flex;margin:0 0 12px}.fbx-fab{bottom:216px;background:#1877F2!important;color:#fff!important}'+
+  '#fbxMask{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1200;background:rgba(20,16,12,.6);display:none;align-items:center;justify-content:center;padding:12px}#fbxMask.on{display:flex}'+
+  '#fbxBox{background:#FAF6EF;color:#2B2622;width:min(1040px,100%);max-height:94vh;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;font:14px/1.6 '+ZH+';text-align:left}'+
+  '#fbxTop{display:flex;gap:8px;align-items:center;padding:12px 14px;background:#1877F2;color:#fff}#fbxTop b{flex:1;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
+  '#fbxSearch{flex:0 1 260px;min-width:110px;padding:7px 12px;border:0;border-radius:999px;font:14px '+ZH+';color:#2B2622;background:#fff;outline:none}'+
+  '#fbxX{background:none;border:0;color:#fff;font-size:22px;cursor:pointer;line-height:1;padding:0 4px}'+
+  '#fbxList{max-height:118px;overflow-y:auto;flex:none;padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #E4DAD0;background:#fff}'+
+  '#fbxList button{border:1px solid #E4DAD0;background:#FAF6EF;color:#2B2622;border-radius:999px;padding:3px 10px;font:12px '+ZH+';cursor:pointer}#fbxList button.on{background:#1877F2;color:#fff;border-color:#1877F2}'+
+  '#fbxMain{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;padding:14px;overflow:auto}'+
+  '#fbxText{width:100%;height:52vh;min-height:240px;box-sizing:border-box;padding:12px;border:1px solid #E4DAD0;border-radius:12px;background:#fff;color:#2B2622;font:14px/1.75 '+ZH+';resize:vertical}'+
+  '#fbxCanvas{width:100%;height:auto;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15);display:block}'+
+  '#fbxBar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}#fbxBar button{padding:7px 13px;border-radius:999px;border:1px solid #1877F2;background:#1877F2;color:#fff;font:700 13px/1.2 '+ZH+';cursor:pointer}#fbxBar button.g{background:#fff;color:#1877F2}'+
+  '#fbxCnt{font-size:12px;color:#8A7F76;margin-left:auto}#fbxTip{font-size:12px;color:#8A7F76;margin-top:8px}'+
+  '@media(max-width:760px){#fbxMain{grid-template-columns:minmax(0,1fr)}#fbxText{height:34vh}#fbxCanvas{max-width:280px;margin:0 auto}}'+
+  '@media print{.fbx-b,.fbx-fab,#fbxMask{display:none!important}}';
+  document.head.appendChild(st);
+  var fab=document.createElement('button');fab.type='button';fab.className='sp-fab fbx-fab';fab.title='臉書文圖';fab.textContent='📘';
+  fab.onclick=function(){scan();if(list[0])open(tabEntry(list[0].p));};
+  document.body.appendChild(fab);
+  var m=document.createElement('div');m.id='fbxMask';
+  m.innerHTML='<div id="fbxBox"><div id="fbxTop"><b id="fbxTitle"></b><input id="fbxSearch" type="search" placeholder="搜尋本頁項目…"><button id="fbxX" type="button" title="關閉">×</button></div>'+
+   '<div id="fbxList"></div><div id="fbxMain"><div><textarea id="fbxText" spellcheck="false"></textarea><div id="fbxBar">'+
+   '<button type="button" id="fbxCopy">📋 複製貼文</button><button type="button" id="fbxPng">🖼️ 下載圖卡</button>'+
+   '<button type="button" class="g" id="fbxNext">🔄 換一版</button><button type="button" class="g" id="fbxTheme">🎨 換配色</button>'+
+   '<button type="button" class="g" id="fbxTxt">💾 存成 TXT</button><span id="fbxCnt"></span></div>'+
+   '<div id="fbxTip">貼文可以直接在框裡修改。到臉書發文：貼上文字，再加入下載的圖卡。</div></div>'+
+   '<div><canvas id="fbxCanvas"></canvas></div></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',function(e){if(e.target===m)close();});
+  $('fbxX').onclick=close;
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+  $('fbxSearch').addEventListener('input',chips);
+  $('fbxNext').onclick=function(){ver++;show();};
+  $('fbxTheme').onclick=function(){ti=(ti+1)%THEMES.length;lsSet('theme',String(ti));draw($('fbxCanvas'),build(cur,ver).card,THEMES[ti]);};
+  $('fbxCopy').onclick=function(){
+    var t=$('fbxText'),b=this;function fb(){t.select();try{document.execCommand('copy');}catch(e){}}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t.value).catch(fb);else fb();
+    toast(b,'✅ 已複製');
+  };
+  $('fbxPng').onclick=function(){$('fbxCanvas').toBlob(function(b){save(b,fname()+'.png');},'image/png');};
+  $('fbxTxt').onclick=function(){save(new Blob(['﻿'+$('fbxText').value],{type:'text/plain;charset=utf-8'}),fname()+'.txt');};
+}
+function btn(text,fn){
+  var b=document.createElement('button');b.type='button';b.className='fbx-b';b.textContent=text;
+  b.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();fn();});
+  return b;
+}
+function own(el,cls){for(var c=el.firstElementChild;c;c=c.nextElementSibling)if(c.classList.contains(cls))return c;return null;}
+function decorate(){
+  $$(ALL).forEach(function(el){
+    if(own(el,'fbx-b')||el.closest('.sp-card,.sp-ov,#fbxMask')||el.textContent.trim().length<4)return;
+    var b=btn('📘 臉書文圖',function(){open(entry(el));});
+    if(is(el,GROUP)&&el.firstElementChild){b.classList.add('fbx-g');el.insertBefore(b,el.firstElementChild.nextSibling);}
+    else el.appendChild(b);
+  });
+  $$('.sp-card .sp-b').forEach(function(bar){
+    if(own(bar,'fbx-b'))return;
+    var b=btn('📘 本頁臉書文圖',function(){var p=panelFor(bar);if(p)open(tabEntry(p));});
+    b.style.cssText='margin:0;opacity:1';bar.appendChild(b);
+  });
+}
+function init(){
+  ui();decorate();
+  var pend=false;
+  new MutationObserver(function(){if(pend)return;pend=true;setTimeout(function(){pend=false;decorate();},90);}).observe(document.body,{childList:true,subtree:true});
+}
+if(document.readyState==='complete')setTimeout(init,60);
+else window.addEventListener('load',function(){setTimeout(init,60);});
+})();
+</script>
+<!-- FBX-END -->
+</body>
+</html>

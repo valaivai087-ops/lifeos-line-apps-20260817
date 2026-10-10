@@ -1,0 +1,1011 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>護理國考</title>
+<style>
+:root{--navy:#1A2B5F;--teal:#0A7A72;--gold:#C9960C;--bg:#f3f5f9;--card:#fff;--ink:#1c2333;--sub:#5b6478;--line:#dfe3ec;--memo:#fff4c9;--trap:#ffeceb;--range:#e8f3ff;--chip:#eef1f7;--mark:#ffe066}
+@media (prefers-color-scheme:dark){:root{--navy:#9db4ff;--teal:#4fd1c5;--gold:#f0c24b;--bg:#12151c;--card:#1b2030;--ink:#e8ebf3;--sub:#9aa3b8;--line:#2c3348;--memo:#3a3312;--trap:#3b1f1f;--range:#16283d;--chip:#262c3e;--mark:#806800}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:1280px;margin:0 auto;padding:0 16px}
+.top{background:linear-gradient(135deg,#1A2B5F,#0A7A72);color:#fff;padding:14px 0 12px}
+.top h1{margin:0;font-size:20px;line-height:1.3}
+.top p{margin:4px 0 0;font-size:13px;opacity:.9}
+.apps{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.apps a{color:#fff;text-decoration:none;font-size:13px;padding:5px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.45)}
+.apps a.on{background:#fff;color:#1A2B5F;font-weight:700;border-color:#fff}
+.bar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 0 0}
+.search{display:flex;gap:8px}
+.search input{flex:1;min-width:0;padding:11px 14px;border:2px solid var(--line);border-radius:10px;background:var(--card);font-size:16px}
+.search input:focus{outline:none;border-color:var(--teal)}
+.btn{padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--teal)}
+.btn.pri{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:700}
+@media (prefers-color-scheme:dark){.btn.pri{color:#0b1220}}
+.tabs{display:flex;gap:2px;margin-top:10px;overflow-x:auto}
+.tabs button{border:0;background:none;padding:9px 14px;cursor:pointer;border-bottom:3px solid transparent;color:var(--sub);white-space:nowrap;font-weight:600}
+.tabs button.on{color:var(--navy);border-bottom-color:var(--teal)}
+.filters{padding:10px 0 4px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 13px;font-size:14px;cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--navy);border-color:var(--navy);color:var(--bg);font-weight:700}
+.opts{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.opts select{padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);max-width:100%}
+.count{margin-left:auto;font-size:13px;color:var(--sub)}
+main{padding:14px 0 40px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--teal);border-radius:12px;padding:14px 14px 10px;min-width:0}
+.card.lab{border-left-color:var(--navy)}
+.card.known{opacity:.62}
+.card h3{margin:0;font-size:17px;line-height:1.35;color:var(--navy);overflow-wrap:anywhere}
+.card h3 small{display:block;font-size:13px;font-weight:400;color:var(--sub)}
+.head{display:flex;gap:8px;justify-content:space-between;align-items:flex-start;cursor:pointer}
+.stars{color:var(--gold);font-size:13px;letter-spacing:1px;white-space:nowrap;padding-top:3px}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0}
+.tag{font-size:12px;padding:1px 8px;border-radius:6px;background:var(--chip);color:var(--sub)}
+.tag.cat{background:var(--teal);color:#fff}
+@media (prefers-color-scheme:dark){.tag.cat{color:#0b1220}}
+.rows{margin:0}
+.row{display:grid;grid-template-columns:4.6em 1fr;gap:8px;padding:5px 0;border-top:1px dashed var(--line);font-size:15px}
+.row dt{color:var(--teal);font-weight:700;font-size:13px;padding-top:2px}
+.row dd{margin:0;overflow-wrap:anywhere}
+.row.range dd{background:var(--range);border-radius:6px;padding:2px 8px;font-weight:600}
+.memo,.trap{border-radius:8px;padding:7px 10px;margin-top:8px;font-size:15px}
+.memo{background:var(--memo);font-weight:700}
+.trap{background:var(--trap)}
+.trap b,.memo b{font-size:13px}
+details.case{margin-top:8px;border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:15px}
+details.case summary{cursor:pointer;font-weight:600}
+details.case p{margin:8px 0 2px;padding:8px 10px;background:var(--range);border-radius:6px}
+.acts{display:flex;gap:6px;margin-top:10px}
+.acts button{flex:1;font-size:13px;padding:6px;border:1px solid var(--line);border-radius:8px;background:none;cursor:pointer;color:var(--sub)}
+.acts button.on{background:var(--memo);color:var(--ink);font-weight:700;border-color:var(--gold)}
+.compact .card .rows,.compact .card details.case,.compact .card .trap{display:none}
+.compact .card.open .rows,.compact .card.open details.case{display:block}
+.compact .card.open .trap{display:block}
+.empty{text-align:center;color:var(--sub);padding:48px 0}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 1px}
+h2.sec{font-size:18px;color:var(--navy);margin:26px 0 10px}
+h2.sec:first-child{margin-top:4px}
+.note{background:var(--memo);border-left:4px solid var(--gold);border-radius:8px;padding:10px 14px;font-size:14px;margin-bottom:14px}
+.sys{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.sys h3{margin:0 0 8px;font-size:19px;color:var(--navy)}
+.sys .flag{background:var(--trap);border-radius:8px;padding:8px 12px;font-size:15px}
+.sys h4{margin:14px 0 6px;font-size:13px;color:var(--teal);letter-spacing:.5px}
+.links{display:flex;gap:6px;flex-wrap:wrap}
+.link{border:1px solid var(--line);background:var(--chip);border-radius:8px;padding:3px 10px;font-size:14px;cursor:pointer}
+.link:hover{border-color:var(--teal)}
+.link.d{border-left:3px solid var(--teal)}
+.link.l{border-left:3px solid var(--navy)}
+.link.x{cursor:default;opacity:.7}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table.chain{border-collapse:collapse;width:100%;min-width:760px;font-size:14px}
+table.chain th,table.chain td{padding:8px 10px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+table.chain th{background:var(--chip);font-size:13px;color:var(--sub);white-space:nowrap}
+table.chain tr:last-child td{border-bottom:0}
+table.chain td:first-child{font-weight:700;color:var(--navy);white-space:nowrap}
+.quiz{max-width:720px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
+.quiz .q{font-size:20px;font-weight:700;line-height:1.5;margin:10px 0 18px}
+.quiz .a{background:var(--range);border-radius:10px;padding:14px;margin-bottom:14px}
+.quiz .a b{color:var(--navy)}
+.quiz .meta{font-size:13px;color:var(--sub);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.quiz .go{display:flex;gap:8px;flex-wrap:wrap}
+.quiz .go button{flex:1;padding:12px;font-size:16px}
+.tip{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--gold);border-radius:12px;padding:12px 14px;font-size:15px}
+.tip h3{margin:0 0 4px;font-size:16px;color:var(--navy)}
+.tip p{margin:0;color:var(--sub)}
+.quiz p{margin:0 0 12px}
+.optlist{display:grid;gap:8px;margin-bottom:14px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;padding:12px 14px;border:2px solid var(--line);border-radius:10px;background:var(--card);cursor:pointer;font-size:16px;line-height:1.5}
+.opt b{color:var(--teal);min-width:1.2em}
+.opt:not(:disabled):hover{border-color:var(--teal)}
+.opt:disabled{cursor:default;color:inherit}
+.opt.right{border-color:#1f9d55;background:rgba(31,157,85,.14)}
+.opt.wrong{border-color:#d64545;background:rgba(214,69,69,.14)}
+dialog{border:0;border-radius:14px;padding:0;max-width:min(560px,94vw);width:100%;background:transparent}
+dialog::backdrop{background:rgba(10,15,30,.55)}
+dialog .card{margin:0}
+dialog .x{display:block;margin:8px 0 0 auto}
+footer.ft{font-size:13px;color:var(--sub);padding:0 0 32px;line-height:1.7}
+@media (max-width:560px){.wrap{padding:0 12px}.grid{grid-template-columns:1fr}.top h1{font-size:18px}.count{width:100%;margin-left:0}.quiz{padding:16px}.quiz .q{font-size:18px}}
+@media print{.bar,.top .apps,.acts{display:none}.card{break-inside:avoid}}
+
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap">
+  <h1 id="title">護理國考</h1>
+  <p id="sub"></p>
+  <nav class="apps" id="apps"></nav>
+</div></div>
+<div class="bar"><div class="wrap">
+  <div class="search"><input id="q" type="search" autocomplete="off"><button class="btn" id="clear">清除</button></div>
+  <div class="tabs" id="tabs"></div>
+</div></div>
+<div class="wrap">
+  <div class="filters" id="filters">
+    <div class="chips" id="chips"></div>
+    <div class="opts">
+      <select id="cat"></select>
+      <select id="status"><option value="">全部狀態</option><option value="five">只看 ★★★★★</option><option value="fav">只看收藏</option><option value="todo">只看未熟</option></select>
+      <button class="btn" id="compact"></button>
+      <span class="count" id="count"></span>
+    </div>
+  </div>
+  <main id="view"></main>
+  <footer class="ft">資料說明｜數值為常用成人教學參考範圍，實際判讀以題目或執行檢驗的實驗室 reference range 為準；劑量與門檻依適應症、途徑、腎肝功能與最新指引而異。星等是學習優先級，不代表官方出題率。國考題為依國考題型編寫的練習題，非歷屆原題。本工具供國考複習使用，不作為臨床處置依據。收藏、「已熟」與錯題本紀錄只存在這台裝置的瀏覽器。</footer>
+</div>
+<dialog id="dlg"><div id="dlgBody"></div><button class="btn x" data-act="close">關閉</button></dialog>
+<script>
+// 欄位：藥名|中文|分類|系統|星等|機制|重要風險|護理監測|最常考|一句背法|最易混淆|病例題|答案
+const DRUG_RAW = `
+Aspirin|阿斯匹靈|抗血小板|心血管/神經|5|抑制COX-1→降低TXA₂→抑制血小板（不可逆）|出血、GI不適/潰瘍、過敏；兒童病毒感染→Reye症候群|出血、黑便、過敏；飯後服；術前停藥依醫囑|ACS/缺血性心腦血管題|Aspirin＝讓血小板比較不黏|抗血小板=抗凝血|ACS病人給Aspirin前最重要看什麼？|過敏、活動性出血等禁忌與整體情境。
+Clopidogrel|保栓通|抗血小板|心血管/神經|5|P2Y12受體抑制→抑制ADP誘發血小板活化|出血|出血、交互作用/手術史|ACS/PCI支架後/中風二級預防|Clopidogrel封住P2Y12，血小板不易集合|和warfarin機制混在一起|Clopidogrel最核心機制？|P2Y12抑制，降低血小板活化聚集。
+Unfractionated heparin|肝素 UFH|抗凝血|心血管/呼吸/血液腫瘤|5|增強antithrombin→抑制thrombin/Xa|出血、HIT（肝素引發血小板低下）|aPTT/anti-Xa依機構、platelet、出血；解毒劑protamine|VTE/ACS；HIT；解毒劑|UFH＝快、可監測、要防HIT|所有heparin監測完全一樣|UFH後platelet明顯下降要想到？|HIT，需立即評估並通報。
+Enoxaparin (LMWH)|低分子量肝素|抗凝血|心血管/呼吸/血液腫瘤|4|較偏抑制Xa|出血、HIT較少見|腎功能、出血；皮下注射腹部、不排氣泡、不揉|VTE預防/治療；皮下注射技術|LMWH比較像盯Xa；打肚皮不揉|把LMWH當UFH用aPTT常規追|腎功能差使用LMWH要注意？|累積與出血風險，劑量/監測依情境調整。
+Warfarin|可邁丁|抗凝血|心血管/血液腫瘤|5|抑制vitamin K依賴凝血因子（II、VII、IX、X）合成|出血、交互作用多、致畸（孕婦禁用）|INR、出血；綠色蔬菜攝取量維持穩定；解毒劑Vit K|AF/VTE/機械瓣；INR；飲食衛教|Warfarin＝Vit K路線，考INR|所有適應症INR目標都一樣；以為要完全禁吃綠色蔬菜|Warfarin病人INR目標永遠2–3嗎？|不是，依適應症與題目設定（如機械瓣膜常較高）。
+Apixaban|艾必克凝|抗凝血 DOAC|心血管|4|直接factor Xa inhibitor|出血|腎肝功能、出血、交互作用；不需常規INR|AF/VTE|Apixaban直接卡Xa|以為一定用INR調劑量|Apixaban是否靠INR常規調劑量？|不是。
+Rivaroxaban/Dabigatran|拜瑞妥/普栓達|抗凝血 DOAC|心血管|4|Rivaroxaban抑制Xa；Dabigatran直接抑制thrombin|出血；腎功能差時蓄積|腎功能、出血；按時服不可自行停；Dabigatran解毒劑idarucizumab|AF中風預防、VTE|-xaban卡Xa、-gatran卡thrombin|以為DOAC和warfarin一樣要驗INR、限制飲食|Dabigatran嚴重出血時的專一反轉劑？|Idarucizumab。
+Protamine sulfate|魚精蛋白|解毒劑|心血管/血液腫瘤|4|帶正電與帶負電的heparin結合使其失效|推注太快→低血壓、心搏過緩；過敏（魚類過敏、用過NPH者風險較高）|慢速IV、BP/HR、過敏反應、出血是否改善|Heparin過量解毒劑|Heparin的解藥是Protamine，Warfarin的解藥是Vit K|把Vit K當heparin解毒劑|Heparin過量出血，解毒劑是？|Protamine sulfate，需慢速靜脈給予。
+Vitamin K₁ (Phytonadione)|維生素K₁|解毒劑/維生素|血液腫瘤/產兒|5|提供合成凝血因子II、VII、IX、X所需輔因子|IV過快可能過敏樣反應|INR、出血；新生兒出生後肌肉注射於大腿股外側肌|Warfarin過量；新生兒出血預防|Vit K救warfarin，也給剛出生的寶寶|以為Vit K立即止血（需數小時合成凝血因子）|為何新生兒出生後常規給Vit K？|腸道菌叢尚未建立、Vit K不足，預防新生兒出血性疾病。
+Tranexamic acid|傳明酸|抗纖維蛋白溶解|血液腫瘤/產兒|3|抑制plasminogen活化→減少纖維蛋白分解|血栓風險、推注過快低血壓|出血量、血栓徵象；慢速IV|產後出血、創傷出血、月經過多|TXA＝叫身體先別溶血塊|和抗凝血劑搞反方向|TXA作用方向是促進還是抑制血塊溶解？|抑制溶解（抗纖溶），所以要注意血栓風險。
+Alteplase|rt-PA 血栓溶解劑|Thrombolytic|神經/心血管|5|tPA→促進plasmin形成、溶解纖維蛋白血栓|重大出血（含顱內出血）|出血、BP、神經狀態；給藥後24小時內避免侵入性處置與抗血栓藥|缺血性中風時間窗與禁忌|tPA是溶血栓，不是『中風都給』|只記4.5h，不看資格|缺血性中風4.5h內就人人可alteplase嗎？|不是；仍需符合適應症並排除禁忌（如出血、近期手術、血壓過高）。
+Nitroglycerin|硝化甘油 NTG|硝酸鹽|心血管|5|NO→血管擴張，主要降低前負荷並改善心肌氧供需|低血壓、頭痛、反射性心搏過速|BP、症狀；舌下每5分鐘1顆最多3顆；避光棕色瓶；PDE-5 inhibitor使用史|心絞痛/ACS；舌下含錠衛教|NTG會放鬆血管；先看血壓和禁忌|把『RV infarct』背成脫離病況的單一絕對句|胸痛病人BP很低又近期使用PDE-5 inhibitor，NTG？|高度警覺禁忌/嚴重低血壓風險。
+Metoprolol|選擇性β阻斷劑|β阻斷|心血管|5|β1阻斷→降HR/收縮力|心搏過慢、低血壓、傳導阻滯、遮蔽低血糖症狀|給藥前量HR、BP；不可突然停藥|HF/HTN/ACS/心率控制|Metoprolol讓心臟慢一點、用力少一點|COPD三個字=所有β-blocker絕對禁用|Metoprolol給藥前最基本看？|HR、BP、傳導與臨床情境。
+Propranolol|非選擇性β阻斷劑|β阻斷|心血管/內分泌/消化|4|β1＋β2阻斷|支氣管痙攣（氣喘禁忌）、心搏過慢、遮蔽低血糖症狀|HR、BP、呼吸音；糖尿病人注意低血糖|甲亢症狀控制、食道靜脈曲張出血預防、偏頭痛預防|Propranolol不挑β，所以氣喘不能碰|以為所有β阻斷劑對氣道影響相同|氣喘病人為何避免propranolol？|阻斷β2造成支氣管收縮。
+Labetalol|α＋β阻斷劑|降壓|心血管/產兒|4|同時阻斷α1與β受體|低血壓、心搏過慢、支氣管痙攣|BP、HR；IV給藥時平躺、防姿勢性低血壓|妊娠高血壓、高血壓急症|Labetalol一藥擋兩邊（α＋β）|以為降壓越快越好|妊娠嚴重高血壓常用的靜脈降壓藥舉例？|Labetalol、Hydralazine（口服常見Nifedipine）。
+Diltiazem|非DHP鈣離子阻斷劑|CCB|心血管|4|非DHP CCB→降AV傳導/心率|心搏過慢、低血壓、部分HF情境需小心|HR、BP、ECG|AF rate control|Diltiazem會踩慢AV node|和amlodipine當同一種作用|AF用diltiazem前要注意？|HR/BP、傳導，以及某些心衰情境。
+Amlodipine|脈優|CCB|心血管|4|DHP CCB→周邊血管擴張|周邊水腫、頭痛、潮紅、牙齦增生|BP、水腫|HTN/angina|Amlodipine主要放鬆血管|把腳腫直接當心衰惡化|Amlodipine常見考點？|周邊水腫與血管擴張。
+Nifedipine|冠達悅|CCB|心血管/產兒|4|DHP CCB→血管擴張；放鬆子宮平滑肌|低血壓、頭痛、潮紅、反射性心搏過速|BP、HR；安胎時監測宮縮與胎心|妊娠高血壓、安胎|Nifedipine放鬆血管也放鬆子宮|短效劑型舌下快速降壓當常規|Nifedipine用於安胎時最需監測？|母親血壓、心跳與宮縮/胎心。
+Enalapril|ACE抑制劑|ACEi|心血管/泌尿|5|抑制ACE→降低Ang II/aldosterone|乾咳、高K、腎功能變化、血管性水腫；孕婦禁用|BP、K、Cr；首次劑量低血壓|HTN/HF/糖尿病腎病變|ACEi三看：BP、K、Cr；再記咳嗽|只背咳嗽忘了K/腎|ACEi後K升、Cr變化，護理重點？|監測K與腎功能並依臨床情境處理。
+Losartan|ARB|ARB|心血管/泌尿|4|阻斷AT1 receptor|高K、腎功能變化；孕婦禁用|BP、K、Cr|HTN/HF；ACEi咳嗽時替代|ARB像把Ang II門鎖住|以為完全沒有血管性水腫風險或不用看K|Losartan不用看K嗎？|錯，ARB也可能高K。
+Hydralazine|直接血管擴張劑|降壓|心血管/產兒|3|直接鬆弛小動脈平滑肌|反射性心搏過速、頭痛、類狼瘡症候群|BP、HR|妊娠高血壓、高血壓急症|Hydralazine直接把小動脈放開|忽略反射性心跳變快|Hydralazine降壓後心跳變快的原因？|血管擴張引起的反射性心搏過速。
+Furosemide|來適泄 Lasix|Loop diuretic|心血管/泌尿|5|抑制Na-K-2Cl cotransporter→強利尿|低K、低Mg、低容量、耳毒性（推注過快）|I/O、體重、BP、K/Mg、腎功能；白天給藥避免夜尿|肺水腫/HF|Furosemide排水很強，也會帶走電解質|只看尿量，不看K/BP|Furosemide後最常追哪些？|I/O、體重、BP、K/Mg、腎功能。
+Hydrochlorothiazide|Thiazide利尿劑|利尿劑|心血管/泌尿|4|抑制遠曲小管Na-Cl再吸收|低K、低Na、高尿酸、高血糖、高Ca|BP、電解質、尿酸、血糖|高血壓第一線之一|Thiazide：鉀鈉掉，尿酸、血糖、鈣上去|和loop利尿劑對鈣的影響搞反（loop排鈣、thiazide留鈣）|痛風病人用thiazide要注意？|可能升高尿酸、誘發痛風。
+Spironolactone|安達通|K-sparing利尿劑|心血管/泌尿/消化|5|aldosterone antagonist|高K、男性女乳等|K、Cr、BP；避免高鉀食物/低鈉鹽|HFrEF、肝硬化腹水|Spironolactone留鉀，所以最怕鉀太高|和furosemide一樣想成低K|Spironolactone最怕哪個電解質？|高鉀。
+Digoxin|毛地黃|強心配醣體|心血管|5|抑制Na/K ATPase增加收縮力，並增加迷走作用減慢心率|心律不整、噁心嘔吐、黃綠視/光暈；低K使毒性↑|給藥前量心尖脈1分鐘（成人<60次/分暫停並通報）、K/Mg、腎功能、血中濃度|HF/AF；毒性徵象；給藥前評估|Digoxin考『心率＋腎＋K＋毒性』|只背一個治療濃度|Digoxin病人噁心、視覺異常、心律變化，要想到？|Digoxin毒性並檢查腎功能與電解質（特別是低K）。
+Amiodarone|臟得樂|抗心律不整 Class III|心血管|4|阻斷K通道延長再極化（兼多種通道作用）|肺纖維化、甲狀腺功能異常、肝毒、角膜沉積、光敏感、QT延長、心搏過慢|ECG、BP、甲狀腺/肝功能、呼吸症狀；IV用中心靜脈較佳|VF/無脈性VT、AF|Amiodarone顧心律，但會傷肺、甲狀腺、肝、眼|只記抗心律不整忘了長期器官毒性|長期使用amiodarone出現乾咳、喘，要想到？|肺毒性（間質性肺炎/纖維化）。
+Adenosine|腺苷|抗心律不整|心血管|4|短暫阻斷AV node傳導|短暫心跳停頓、胸悶、潮紅、支氣管痙攣|持續ECG；近心端大靜脈快速推注後立刻沖生理食鹽水|PSVT|Adenosine半衰期幾秒：快推、快沖|慢慢推（會沒效）|Adenosine給藥技巧？|快速IV push並立即以生理食鹽水沖管，同時監測ECG。
+Lidocaine|利多卡因|抗心律不整 Ib/局麻|心血管/疼痛急救|3|阻斷Na通道|中樞毒性：口周麻木、耳鳴、意識混亂、抽搐|ECG、神經症狀|心室性心律不整、局部麻醉|Lidocaine中毒先看嘴麻、耳鳴、抽搐|含epinephrine的局麻用在手指腳趾末梢|局麻後病人說嘴唇麻、耳鳴，要想到？|局部麻醉劑全身性毒性，立即停藥並通報。
+Atropine|阿托平|抗膽鹼|心血管/疼痛急救|5|阻斷muscarinic受體→心率上升、分泌減少|口乾、心搏過速、尿滯留、便秘、視力模糊；隅角閉鎖性青光眼禁忌|HR、尿量、腸音|症狀性心搏過緩、有機磷中毒、術前減少分泌|Atropine＝乾、快、漲、糊|以為可用於青光眼病人|症狀性心搏過緩第一線藥物？|Atropine。
+Epinephrine|腎上腺素|升壓/急救|心血管/呼吸/疼痛急救|5|α＋β受體致效→血管收縮、強心、支氣管擴張|心搏過速、心律不整、高血壓、外滲壞死|HR、BP、ECG；過敏性休克IM打大腿前外側|心跳停止、過敏性休克|過敏性休克第一藥：Epinephrine肌肉注射|過敏性休克先給抗組織胺或類固醇|過敏性休克第一優先藥物與途徑？|Epinephrine，肌肉注射於大腿前外側。
+Dopamine|多巴胺|升壓/強心|心血管|3|劑量依賴：β1（強心）→高劑量α1（血管收縮）|心搏過速、心律不整、外滲組織壞死|HR、BP、尿量、注射部位；優先中心靜脈；外滲用phentolamine|休克、低心輸出|Dopamine劑量越高越偏收縮血管|從周邊小靜脈長時間輸注|Dopamine外滲時的處置？|立即停止輸注、通報，依醫囑局部浸潤phentolamine。
+Dobutamine|多保他命|Inotrope|心血管|4|β1 agonist→增加收縮力|心搏過速、心律不整|HR、BP、灌流|低心輸出/心因性休克情境|Dobutamine讓心臟打更有力|所有低血壓都直接用|Dobutamine主要目的？|增加心肌收縮力、改善低心輸出情境。
+Norepinephrine|正腎上腺素|Vasopressor|感染/心血管|5|α1為主→血管收縮提升MAP|周邊缺血、心律問題、外滲傷害|MAP、灌流、IV site；中心靜脈給藥|septic shock常見首選升壓劑|Norepi把血管收緊撐住壓力|只追MAP不看灌流|Septic shock用norepinephrine只要MAP上去就好？|不夠，還要看整體灌流（尿量、意識、乳酸、末梢）。
+Atorvastatin|Statin 降血脂|降血脂|心血管|4|抑制HMG-CoA reductase→降LDL|肌痛/橫紋肌溶解、肝酵素上升；孕婦禁用|肌肉痠痛無力、茶色尿、肝功能；避免大量葡萄柚汁|高血脂、ASCVD預防|Statin降LDL，痛的是肌肉、看的是肝|肌肉痛當一般痠痛不回報|服用statin後全身肌肉痠痛、尿呈茶色，要想到？|橫紋肌溶解，應停藥並檢查CK與腎功能。
+Albuterol/Salbutamol|短效支氣管擴張劑 SABA|Bronchodilator|呼吸|5|β2 agonist→支氣管擴張|心搏快、顫抖、低K|呼吸、HR、K依情境|氣喘/COPD急性支氣管痙攣|SABA＝快速把氣管打開|當成長期抗發炎控制藥|急性支氣管痙攣albuterol的角色？|快速支氣管擴張（急救藥）。
+Ipratropium|短效抗膽鹼吸入劑|Anticholinergic|呼吸|4|muscarinic blockade→支氣管擴張|口乾等抗膽鹼作用|呼吸狀態|COPD/氣喘急性輔助|Ipratropium把收縮氣管的膽鹼訊號擋掉|和SABA機制混淆|Ipratropium機制？|抗muscarinic，減少膽鹼性支氣管收縮。
+Tiotropium|長效抗膽鹼吸入劑 LAMA|Anticholinergic|呼吸|3|長效muscarinic阻斷|口乾、尿滯留、青光眼惡化|吸入技巧、症狀；一天一次|COPD維持治療|Tiotropium是每天保養，不是急救|急性喘時拿來救急|COPD病人急性喘可以只吸tiotropium嗎？|不可；它是長效維持藥，急性需SABA。
+Salmeterol/Formoterol (LABA)|長效β2致效劑|Bronchodilator|呼吸|4|長效β2 agonist|心悸、顫抖；氣喘單獨使用增加嚴重發作風險|吸入技巧、HR|氣喘/COPD維持|LABA在氣喘一定要有ICS陪|氣喘單用LABA|氣喘病人可以單獨使用LABA嗎？|不可，需與吸入型類固醇併用。
+Budesonide|吸入型類固醇 ICS|ICS|呼吸|5|吸入型類固醇→降低氣道發炎|口腔念珠菌、聲音沙啞|症狀控制、吸完漱口；先吸支氣管擴張劑再吸類固醇|氣喘控制|ICS是滅火，不是急救開氣管|急性喘只靠ICS立即救|ICS吸完為何漱口？|降低口腔念珠菌等局部副作用。
+Prednisone/Methylprednisolone|全身性類固醇|Systemic steroid|呼吸/感染/內分泌|5|廣泛抗發炎/免疫調節|高血糖、感染、消化性潰瘍、骨質疏鬆、月亮臉、傷口癒合差、腎上腺抑制|血糖、感染徵象、BP、體重；飯後服；長期使用需漸減|氣喘/COPD惡化、自體免疫|類固醇壓發炎，但也壓免疫|突然停長期類固醇|長期systemic steroid可以突然停嗎？|不應突然停，需依醫囑漸減以免腎上腺機能不足。
+Montelukast|欣流|白三烯受體拮抗劑|呼吸|3|阻斷leukotriene受體→減少氣道發炎與收縮|頭痛、情緒/行為改變、惡夢|症狀、情緒變化；通常晚上服|氣喘預防、過敏性鼻炎|Montelukast是預防藥，不是急救藥|急性發作時使用|Montelukast可以用來處理急性氣喘發作嗎？|不可，屬預防/控制用藥。
+Theophylline/Aminophylline|茶鹼|支氣管擴張劑|呼吸|4|抑制PDE→支氣管擴張|治療窗窄；噁心嘔吐、心搏過速、心律不整、抽搐|血中濃度（傳統約10–20 µg/mL）、HR；避免咖啡因；吸菸與多種藥物影響濃度|氣喘/COPD；中毒徵象|茶鹼＝窄窗藥，先吐、心跳快，再抽搐|忽略咖啡因與藥物交互作用|使用aminophylline病人出現噁心嘔吐、心悸，要想到？|茶鹼中毒，應通報並檢查血中濃度。
+Acetylcysteine|化痰劑/乙醯胺酚解毒劑|化痰/解毒|呼吸/疼痛急救|4|打斷黏液雙硫鍵降低痰黏稠度；補充glutathione保護肝臟|吸入可致支氣管痙攣；有硫磺味、噁心|呼吸音、痰液清除、備抽吸|化痰；acetaminophen中毒|NAC一藥兩用：化痰、救肝|只知道化痰不知道是普拿疼解毒劑|Acetaminophen過量的解毒劑？|N-acetylcysteine（NAC）。
+Isoniazid (INH)|異菸鹼醯肼|抗結核|呼吸/感染|5|抑制mycolic acid合成|肝毒性、周邊神經炎（缺B6）|肝功能、手腳麻木；併用Vit B6；禁酒|結核病用藥副作用|INH傷肝又麻手腳，B6來保護|把周邊神經炎歸給ethambutol|服用INH為何併用Vit B6？|預防周邊神經病變。
+Rifampin|立汎黴素|抗結核|呼吸/感染|5|抑制細菌RNA polymerase|肝毒性、體液呈橘紅色、藥物交互作用（降低口服避孕藥、warfarin效果）|肝功能；告知尿液/淚液/汗變橘紅為正常；空腹服|結核病用藥副作用|Rifampin＝Red，尿和眼淚變橘紅|看到橘紅尿以為出血而自行停藥|服rifampin後尿液呈橘紅色，如何衛教？|為藥物正常現象不需停藥；軟式隱形眼鏡可能染色。
+Ethambutol|孟表多|抗結核|呼吸/感染|5|抑制細胞壁arabinogalactan合成|視神經炎：視力模糊、紅綠色辨識不能|定期視力與辨色力檢查|結核病用藥副作用|Ethambutol＝Eye，顧眼睛|把視神經炎記成INH|服用ethambutol需定期檢查什麼？|視力與紅綠色辨色力。
+Pyrazinamide|PZA|抗結核|呼吸/感染|4|於酸性環境殺結核菌|肝毒性、高尿酸/痛風|肝功能、尿酸、關節痛|結核病用藥副作用|PZA傷肝、升尿酸|忘了痛風病史|服用PZA後大腳趾關節紅腫痛，要想到？|高尿酸引發痛風。
+Penicillin/Amoxicillin|盤尼西林類|Antibiotic|感染|5|β-lactam抑制細胞壁合成|過敏（含過敏性休克）、腹瀉、皮疹|給藥前問過敏史；首次給藥後觀察至少30分鐘|過敏史評估、過敏性休克處置|Penicillin先問過敏，打完觀察30分鐘|只問一次藥名沒問反應型態|給penicillin前最重要的評估？|過敏史（含cephalosporin交叉過敏史）。
+Cefazolin|第一代頭孢子菌素|Antibiotic|感染|4|β-lactam抑制細胞壁合成|過敏、與penicillin交叉過敏|過敏史；手術預防性抗生素於劃刀前60分鐘內給|手術預防性抗生素時機|Cefazolin＝劃刀前60分鐘內|預防性抗生素術後給才有效|手術預防性抗生素最佳給藥時機？|劃刀前60分鐘內。
+Ceftriaxone|第三代頭孢子菌素|Antibiotic|感染/神經|5|第3代cephalosporin，抑制細胞壁|過敏、GI；新生兒避免與含鈣溶液併用|過敏史、感染反應|肺炎/腦膜炎/淋病等依病原情境|Ceftriaxone打細胞壁|看到感染就固定這一支|Ceftriaxone看到感染就固定給嗎？|不是；依感染來源、病原風險與指引。
+Vancomycin|萬古黴素|Antibiotic|感染|5|抑制Gram-positive細胞壁合成|腎毒性、耳毒性、輸注過快→紅人症候群|腎功能、trough濃度、輸注至少60分鐘|MRSA；口服治C. difficile；紅人症候群|Vancomycin常考腎＋輸注反應|把red man當IgE過敏完全同義|Vancomycin快速輸注臉紅發熱先想到？|輸注相關反應（紅人症候群）：減慢速度，並與真正過敏鑑別。
+Piperacillin-tazobactam|Pip-tazo|Antibiotic|感染|4|廣效β-lactam＋β-lactamase inhibitor|過敏、腎功能相關劑量等|腎功能、感染反應|重症廣效經驗治療情境|Pip-tazo＝廣效β-lactam組合|培養出來後永遠不調整|Pip-tazo培養結果出來後？|依病原與病況考慮縮窄/調整治療（降階）。
+Meropenem|Carbapenem|Antibiotic|感染|3|廣效β-lactam抑制細胞壁|過敏、抽搐風險、明顯降低valproate濃度|腎功能、神經狀態、併用藥物|多重抗藥性菌、重症感染|Carbapenem是後線大砲，碰到valproate會打架|第一線就用後線廣效|癲癇病人併用meropenem與valproate要注意？|Valproate濃度大幅下降，可能癲癇發作。
+Gentamicin|Aminoglycoside|Antibiotic|感染|4|結合30S抑制蛋白合成|腎毒性、耳毒性（聽力/前庭）、神經肌肉阻斷|Cr、尿量、聽力/耳鳴/眩暈、peak/trough|Gram陰性菌；毒性監測|Aminoglycoside傷腎傷耳|把耳毒性只記在furosemide|使用gentamicin病人主訴耳鳴，下一步？|通報醫師，評估耳毒性與血中濃度/腎功能。
+Azithromycin|日舒|Antibiotic|呼吸/感染|4|macrolide→50S抑制蛋白合成|QT延長、GI|QT風險、交互作用|非典型肺炎、披衣菌|Macrolide卡50S|忽略QT|Azithromycin高頻安全點？|QT延長風險。
+Levofloxacin/Ciprofloxacin|Fluoroquinolone|Antibiotic|感染/泌尿/呼吸|4|抑制DNA gyrase/topoisomerase IV|肌腱炎/斷裂、QT延長、光敏感、血糖波動；兒童孕婦一般避免|肌腱疼痛、QT；與制酸劑/鐵/鈣/乳製品間隔|泌尿道感染、肺炎|Quinolone怕三件事：肌腱、QT、和牛奶制酸劑一起吃|和鈣片牛奶一起服|服用ciprofloxacin後跟腱疼痛，要如何處理？|停止運動、通報醫師，警覺肌腱炎/斷裂。
+Doxycycline|Tetracycline類|Antibiotic|感染|3|結合30S抑制蛋白合成|光敏感、牙齒染色與骨發育影響、食道刺激|配足量水、服後勿立即躺；防曬；避免與鈣鐵乳製品同服|非典型感染、恙蟲病、痤瘡|Tetracycline怕太陽、怕牛奶、怕小孩孕婦|給孕婦或8歲以下兒童|為何8歲以下兒童避免tetracycline類？|會造成牙齒永久染色並影響骨骼發育。
+Metronidazole|服立治兒|Antibiotic|感染/消化|4|破壞厭氧菌/原蟲DNA|與酒精產生disulfiram樣反應、金屬味、尿色變深|治療期間及結束後至少48–72小時禁酒|厭氧菌、滴蟲、C. difficile|Metronidazole遇酒精會出事|忘記含酒精的藥水/漱口水也算|服用metronidazole最重要的衛教？|治療期間與停藥後數日內避免酒精。
+TMP-SMX|磺胺類 Baktar|Antibiotic|感染/泌尿|4|阻斷細菌葉酸合成兩步驟|皮疹/SJS、高K、骨髓抑制、結晶尿；G6PD缺乏溶血|皮疹、CBC、K；多喝水|泌尿道感染、PJP預防與治療|磺胺藥：看皮膚、多喝水|出現皮疹繼續吃|服TMP-SMX後出現皮疹、口腔潰瘍，應如何？|立即停藥就醫，警覺Stevens-Johnson症候群。
+Acyclovir|抗疱疹病毒藥|Antiviral|神經/感染|4|抑制病毒DNA polymerase|腎毒性/結晶尿等|腎功能、水分充足；IV慢速輸注|HSV/VZV（疱疹性腦炎、帶狀疱疹）|Acyclovir考HSV＋腎|所有病毒都用|Acyclovir重要監測？|腎功能與水分狀態。
+Oseltamivir|克流感|Antiviral|感染/呼吸|3|抑制neuraminidase→阻止流感病毒釋出|噁心嘔吐；兒童青少年偶有神經精神症狀|症狀出現48小時內開始效果最好；完成5天療程|流感|克流感要早吃（48小時內）|當成流感疫苗的替代|Oseltamivir最佳開始時機？|症狀出現後48小時內。
+Fluconazole|Azole抗黴菌|Antifungal|感染|3|抑制ergosterol合成|肝毒性、QT延長、藥物交互作用多|肝功能、併用藥物|念珠菌感染|Azole抗黴菌：看肝、看交互作用|忽略與warfarin等交互作用|Fluconazole併用warfarin要注意？|增強warfarin作用，需密切追INR與出血。
+Amphotericin B|兩性黴素B|Antifungal|感染|3|結合ergosterol破壞黴菌細胞膜|輸注反應（發燒寒顫）、腎毒性、低K、低Mg|Cr、K、Mg、生命徵象；輸注前給水與前置用藥|嚴重全身性黴菌感染|Ampho-terrible：發燒寒顫、傷腎、掉鉀鎂|只顧退燒忘了追電解質|輸注amphotericin B需密切追哪些檢驗？|腎功能、K、Mg。
+Pantoprazole|氫離子幫浦抑制劑 PPI|PPI|消化|5|抑制胃壁細胞H/K ATPase|長期低Mg/B12、骨折、感染風險等|口服飯前30–60分鐘；依療程/風險|上消化道出血/潰瘍/GERD|PPI把胃酸幫浦關小|把PPI當止血鉗|GI bleed使用PPI等於已經止住出血嗎？|不是；PPI是治療的一部分，仍需穩定循環與找出血源。
+Famotidine|H2受體阻斷劑|H2 blocker|消化|3|阻斷胃壁細胞H2受體→減少胃酸|頭痛、老人/腎功能差易意識混亂|腎功能、意識|潰瘍、GERD|H2 blocker擋組織胺這條路，力道比PPI弱|和抗組織胺（H1）搞混|H2 blocker與H1抗組織胺的差別？|H2減少胃酸；H1用於過敏。
+Sucralfate|胃黏膜保護劑|黏膜保護|消化|3|在潰瘍面形成保護膜|便秘；影響其他藥物吸收|飯前1小時及睡前空腹服；與其他藥間隔2小時|消化性潰瘍衛教|Sucralfate是貼OK繃，要空腹貼|飯後吃或和其他藥一起吃|Sucralfate最佳服用時間？|飯前1小時與睡前空腹。
+Antacid (Al/Mg)|制酸劑|制酸|消化|3|直接中和胃酸|鋁→便秘、鎂→腹瀉；腎衰竭避免含鎂製劑|排便型態；與其他藥間隔1–2小時|制酸劑副作用配對|鋁「秘」、鎂「瀉」|腎衰竭病人使用含鎂制酸劑|腎衰竭病人為何避免含鎂制酸劑？|鎂排不出去會造成高鎂血症。
+Metoclopramide|Primperan|促腸胃蠕動/止吐|消化|4|D2受體拮抗→促進胃排空|錐體外症候群（EPS）、遲發性運動障礙、嗜睡|不自主動作；腸阻塞/穿孔禁用|噁心嘔吐、胃輕癱|Metoclopramide讓胃動起來，但可能讓人也動起來（EPS）|腸阻塞時使用|使用metoclopramide後出現頸部歪斜、眼球上吊？|急性肌張力異常（EPS），停藥並通報，可給抗膽鹼藥。
+Ondansetron|5-HT3拮抗止吐劑|Antiemetic|消化/血液腫瘤|3|5-HT3 antagonist|QT延長、便秘、頭痛|QT風險；化療前30分鐘給|化療/術後噁心嘔吐|Ondansetron止吐，注意QT|和促胃動藥混淆|Ondansetron高頻陷阱？|QT延長。
+Lactulose|乳果糖|滲透性緩瀉劑|消化|5|不可吸收糖→酸化結腸把NH₃變NH₄⁺排出|腹瀉、脫水、電解質異常|排便（目標每日2–3次軟便）、意識、電解質|肝性腦病|Lactulose把氨『帶出去』|只追血氨數字不看意識/排便|肝性腦病用lactulose主要追什麼？|意識、排便反應與電解質，不只血氨。
+Loperamide|止瀉劑|止瀉|消化|3|作用於腸道μ受體→減慢蠕動|便秘、腹脹；感染性腹瀉可能延長病程|排便次數、腹脹|非感染性腹瀉|血便、高燒的腹瀉不要硬止|所有腹瀉都先止瀉|哪種腹瀉不宜使用loperamide？|伴血便、高燒等疑似侵襲性感染性腹瀉。
+Bisacodyl/Senna|刺激性瀉劑|瀉劑|消化|3|刺激腸黏膜增加蠕動|腹絞痛、長期使用依賴、電解質流失|排便型態；不明原因腹痛/腸阻塞禁用|便秘處置、檢查前腸道準備|瀉劑不是長期解方，先纖維、水、活動|不明腹痛先給瀉劑|便秘衛教的優先順序？|先增加纖維、水分與活動，瀉劑為輔。
+Octreotide|體抑素類似物|止血輔助|消化|3|減少內臟血流、降低門脈壓|血糖波動、腹絞痛|血糖、出血量、生命徵象|食道靜脈曲張出血|Octreotide把門脈壓降下來|以為直接凝固出血點|食道靜脈曲張出血使用octreotide的目的？|降低門脈壓力以減少出血。
+Levetiracetam|優閒 Keppra|Antiepileptic|神經|4|調節SV2A突觸囊泡蛋白|嗜睡、行為/情緒變化|神經狀態、情緒/行為；不可自行停藥|癲癇|Levetiracetam常考癲癇＋行為副作用|一次誘發性抽搐就一定長期吃|Levetiracetam除了嗜睡還常考？|行為/情緒變化（易怒）。
+Lorazepam|安定文 Ativan|Benzodiazepine|神經/精神|5|增強GABA-A作用|呼吸抑制、鎮靜、低血壓|呼吸、意識、BP；備急救設備|持續性癲癇急救、急性焦慮/激動|正在抽不停，benzodiazepine是急救高頻|給完不看呼吸|持續性癲癇給lorazepam後最要盯？|呼吸與意識。
+Phenytoin|癲能停 Dilantin|Antiepileptic|神經|5|阻斷Na通道|牙齦增生、眼震/運動失調、多毛、皮疹（SJS）、致畸|血中濃度（約10–20 µg/mL）；IV只能配生理食鹽水、慢速、監測ECG/BP；口腔衛生|癲癇；牙齦增生；IV注意事項|Phenytoin：牙齦腫、只配N/S、慢慢推|用葡萄糖液稀釋（會沉澱）|IV phenytoin可以用D5W稀釋嗎？|不可，會沉澱；只能用生理食鹽水並慢速給。
+Valproate|帝拔癲 Depakine|Antiepileptic/情緒穩定|神經/精神|4|增加GABA、阻斷Na通道|肝毒性、胰臟炎、血小板低下、致畸（神經管缺損）|肝功能、血小板、血中濃度（約50–100 µg/mL）；育齡女性避孕衛教|癲癇、雙相情緒障礙症|Valproate看肝、看胰、看血小板、不給孕婦|忽略腹痛（胰臟炎）|育齡女性使用valproate最重要衛教？|致畸風險高，需有效避孕並與醫師討論。
+Carbamazepine|癲通 Tegretol|Antiepileptic/情緒穩定|神經/精神|4|阻斷Na通道|SJS/TEN（與HLA-B*1502相關）、低Na、骨髓抑制、頭暈|皮疹、CBC、Na、血中濃度；用藥前基因檢測|癲癇、三叉神經痛、雙相|Carbamazepine先驗HLA-B*1502，出疹就停|皮疹當小事|服carbamazepine後發燒、皮疹、口腔潰瘍？|立即停藥就醫，警覺SJS/TEN。
+Mannitol|甘露醇|滲透性利尿劑|神經/泌尿|5|提高血漿滲透壓把腦組織水分拉入血管並利尿|脫水、電解質異常、肺水腫/心衰惡化、結晶|I/O、血清滲透壓、電解質、神經學檢查；有結晶需加溫溶解並使用過濾器|顱內壓升高、腦水腫|Mannitol把水從腦拉出來；看結晶、看尿量|看到結晶直接輸|Mannitol瓶內有結晶如何處理？|加溫溶解後再用，並使用含過濾器的輸液套。
+Levodopa/Carbidopa|左多巴|抗巴金森|神經|5|Levodopa轉為dopamine；carbidopa減少周邊轉換|姿勢性低血壓、噁心、異動症、幻覺、on-off現象|BP（姿勢變換）、不自主動作；高蛋白飲食影響吸收；不可突然停藥|巴金森病|Levodopa補多巴胺；蛋白質會搶吸收|與高蛋白餐一起吃|Levodopa與飲食的關係？|高蛋白會降低吸收，宜與高蛋白餐錯開。
+Donepezil|愛憶欣|乙醯膽鹼酶抑制劑|神經/精神|3|抑制AChE→增加乙醯膽鹼|噁心、腹瀉、心搏過緩、失眠|HR、體重、GI症狀|阿茲海默症|Donepezil延緩退化，不是治癒|期待記憶恢復正常|Donepezil的治療目標？|延緩認知功能退化，無法治癒。
+Pyridostigmine|大力丸 Mestinon|乙醯膽鹼酶抑制劑|神經|4|抑制AChE→增加神經肌肉接合處乙醯膽鹼|膽鹼危象：流涎、腹瀉、心搏過緩、肌無力加重|準時給藥（飯前30–60分鐘）、吞嚥與呼吸功能；備atropine|重症肌無力|Pyridostigmine要準時，太多太少都會沒力|分不清肌無力危象與膽鹼危象|重症肌無力病人為何要在飯前30–60分鐘服藥？|使用餐時咀嚼吞嚥肌力最佳，降低嗆咳。
+Regular insulin|短效胰島素 RI|Insulin|內分泌/泌尿|5|促進葡萄糖進細胞，也使K進細胞|低血糖、低K|血糖、K；唯一可靜脈給的胰島素；皮下約30分起效、2–4小時高峰|DKA；高K急救搭配葡萄糖|Insulin不只降糖，也把K推進細胞|治高K時忘了防低血糖|高K使用insulin為什麼要搭配glucose並追血糖？|避免低血糖；insulin把K移入細胞。
+Insulin lispro/aspart|速效胰島素|Insulin|內分泌|4|速效類似物，起效約10–15分鐘|低血糖|餐前立即注射、確認餐點已備好；輪換注射部位|餐前胰島素時間|速效：打了就要吃|打完隔很久才吃|速效胰島素注射後多久應進食？|立即（約15分鐘內）。
+NPH insulin|中效胰島素|Insulin|內分泌|4|中效，外觀混濁，高峰約4–12小時|低血糖（下午/半夜高峰時）|混合時先抽清（RI）再抽濁（NPH）；注意高峰時段低血糖|混合胰島素順序、高峰時間|先清後濁；NPH半夜/傍晚最會低血糖|先抽NPH再抽RI|混合RI與NPH的抽藥順序？|先抽RI（清）再抽NPH（濁）。
+Insulin glargine|長效胰島素|Insulin|內分泌|4|長效基礎胰島素，無明顯高峰|低血糖|每日固定時間；不可與其他胰島素混合於同一針筒|基礎胰島素特性|Glargine平平一條線，不可混|和其他胰島素混在一起打|Glargine可以和RI混在同一支針筒嗎？|不可以。
+Metformin|庫魯化 Glucophage|降血糖 Biguanide|內分泌|5|減少肝臟糖質新生、增加胰島素敏感性|腸胃不適、乳酸中毒（罕見）、長期B12缺乏|腎功能（eGFR過低禁用）；顯影劑檢查前後依醫囑暫停；隨餐服|第二型糖尿病第一線|Metformin少低血糖，怕腎差與顯影劑|以為會常造成低血糖|使用metformin病人要做顯影劑檢查，注意什麼？|依腎功能與醫囑暫停，檢查後確認腎功能再恢復。
+Glimepiride|Sulfonylurea 磺醯脲類|降血糖|內分泌|4|刺激胰臟β細胞分泌胰島素|低血糖、體重增加|血糖、低血糖症狀；飯前服、不可空腹不吃|第二型糖尿病；低血糖|SU是逼胰臟擠胰島素，沒吃飯就會低血糖|吃藥後延遲進食|哪類口服降血糖藥最容易造成低血糖？|Sulfonylurea類。
+Empagliflozin|SGLT2抑制劑|降血糖|內分泌/心血管/泌尿|3|抑制腎小管SGLT2→葡萄糖由尿排出|生殖泌尿道感染、脫水、正常血糖性酮酸中毒|水分、會陰清潔、酮酸症狀|糖尿病合併心衰/腎病變|-flozin把糖尿出去，所以要顧泌尿道與水分|以為血糖不高就不會酮酸中毒|使用SGLT2i病人噁心嘔吐、腹痛但血糖不高，要想到？|正常血糖性糖尿病酮酸中毒。
+Liraglutide|GLP-1受體促效劑|降血糖|內分泌|3|增加葡萄糖依賴性胰島素分泌、延緩胃排空、增加飽足感|噁心嘔吐、胰臟炎警覺|GI症狀、體重、持續劇烈腹痛|糖尿病、體重管理|GLP-1 RA：吃得少、瘦一點、會噁心|嚴重腹痛當一般副作用|使用GLP-1 RA出現持續劇烈上腹痛放射至背部？|警覺急性胰臟炎，停藥就醫。
+Levothyroxine|昂特欣 Eltroxin|甲狀腺素|內分泌|5|補充T4|過量→心悸、失眠、體重減輕、心絞痛|TSH、HR；早晨空腹服，與鈣/鐵/制酸劑間隔約4小時；終身服用|甲狀腺機能低下|甲狀腺素早上空腹吃，終身不自行停|症狀改善就停藥|Levothyroxine最佳服藥時間？|早晨空腹（早餐前30–60分鐘）。
+Methimazole/PTU|抗甲狀腺藥|抗甲狀腺|內分泌|5|抑制甲狀腺素合成（PTU另抑制周邊T4→T3）|顆粒性白血球缺乏症、肝毒性（PTU）、皮疹|發燒、喉嚨痛立即回診驗WBC；肝功能|甲狀腺機能亢進|抗甲狀腺藥：發燒喉嚨痛＝先驗白血球|把喉嚨痛當感冒自行買藥|服抗甲狀腺藥病人發燒、喉嚨痛，應如何？|立即停藥回診驗血，警覺顆粒性白血球缺乏症。
+Hydrocortisone|皮質醇|糖皮質素|內分泌|4|補充glucocorticoid（兼有mineralocorticoid作用）|高血糖、感染、突然停藥→腎上腺危象|BP、血糖、電解質；壓力情境需增加劑量|Addison病、腎上腺危象|腎上腺不足的人，生病手術要加量、不可停|發燒生病時自行停藥|Addison病人遇到感染發燒時類固醇怎麼調整？|需依醫囑增加劑量（壓力劑量），不可停藥。
+Desmopressin|DDAVP 抗利尿激素類似物|荷爾蒙|內分泌/泌尿|4|作用於腎V2受體增加水分再吸收|低血鈉、水中毒|I/O、尿比重、體重、Na；頭痛意識改變警覺低Na|中樞性尿崩症|DDAVP把水留住，所以怕水留太多（低Na）|只看尿量減少就安心|使用DDAVP病人頭痛、嗜睡、體重增加，要想到？|水分滯留造成低血鈉/水中毒。
+Alendronate|福善美 Fosamax|雙磷酸鹽|內分泌|4|抑制蝕骨細胞骨吸收|食道炎/潰瘍、顎骨壞死、非典型骨折|晨起空腹配一大杯白開水、服後保持上身直立至少30分鐘且不進食|骨質疏鬆衛教|福善美：空腹、大杯水、坐直30分鐘|服後躺回床上或配牛奶咖啡|服用alendronate後為何要保持直立30分鐘？|避免藥物逆流造成食道炎/潰瘍。
+Allopurinol|降尿酸藥|降尿酸|內分泌/泌尿|4|抑制xanthine oxidase→減少尿酸生成|皮疹/SJS（與HLA-B*5801相關）、肝腎功能|皮疹立即停藥；多喝水；急性發作期不新開始用藥|痛風長期預防|Allopurinol是預防，不是止痛；出疹就停|急性發作時才開始吃來止痛|急性痛風發作時該新開始allopurinol嗎？|一般不在急性期新開始；急性期以消炎止痛為主。
+Colchicine|秋水仙素|抗痛風|內分泌|4|抑制微小管與白血球趨化→減少發炎|腹瀉、噁心嘔吐（毒性早期訊號）、骨髓抑制|GI症狀出現即停並通報；腎功能|急性痛風發作|秋水仙素：拉肚子就該停|拉肚子還繼續吃到不痛|服colchicine後開始腹瀉，應如何？|為毒性早期徵象，應停藥並通報。
+Glucagon/D50W|升糖素/50%葡萄糖|低血糖急救|內分泌/疼痛急救|4|Glucagon促肝醣分解；D50W直接補糖|Glucagon後噁心嘔吐；D50W高張外滲傷組織|意識、血糖；清醒者優先口服15 g糖並15分鐘後複測；給glucagon後側臥防吸入|低血糖處置順序|清醒吃糖（15-15原則），不清醒打針|意識不清還硬灌糖水|意識不清的低血糖病人可以灌果汁嗎？|不可（吸入風險）；給IV葡萄糖或IM glucagon。
+Calcium gluconate|葡萄糖酸鈣|電解質/解毒|泌尿/心血管/產兒|5|穩定心肌細胞膜；不直接把K移出體外|外滲組織傷害、推注過快心律不整|ECG、IV site；慢速IV|嚴重高K伴ECG變化；鎂中毒解毒|高K時鈣先『護心』，不是降K|以為給鈣後K數字就下降|高K給calcium gluconate後K數字會立刻下降嗎？|不會；鈣主要穩定心肌膜，降K要靠其他處置。
+Sodium bicarbonate|碳酸氫鈉|電解質|泌尿|4|提供HCO₃⁻，特定酸中毒/高K情境使用|鈉負荷、鹼中毒、低K、低Ca|ABG、Na、K、容量|特定嚴重代謝性酸中毒等|Bicarb不是所有酸中毒萬用解藥|看到pH低就一定給|看到代謝性酸中毒就一定給bicarbonate嗎？|不是；需看病因、嚴重度與特定適應情境。
+Sodium polystyrene sulfonate|Kayexalate 降鉀樹脂|降鉀|泌尿|4|在腸道以Na交換K，隨糞便排出|便秘、腸阻塞/腸壞死、鈉負荷|K、排便；口服或保留灌腸|高血鉀|Kayexalate是真的把鉀排出體外，但慢|當作高K急救第一步|高K處置中，哪些是把K真正排出體外？|Kayexalate、利尿劑、透析（insulin與bicarbonate只是移入細胞）。
+Potassium chloride|氯化鉀 KCl|電解質補充|泌尿/心血管|5|補充K⁺|高K→心律不整/心跳停止；IV刺激靜脈；口服刺激腸胃|絕不可IV push；需稀釋並用輸液幫浦，濃度與速率依機構規範；確認尿量足夠；ECG|低血鉀補充安全|KCl：不可推、要稀釋、先看尿|直接靜脈推注|KCl可以靜脈推注嗎？|絕對不可，會致命性心律不整；需稀釋後以幫浦慢速輸注。
+Epoetin|紅血球生成素 EPO|造血刺激|泌尿/血液腫瘤|4|刺激骨髓製造紅血球|高血壓、血栓、Hb升太高增加心血管風險|BP、Hb、鐵儲存量（需足夠鐵）|慢性腎臟病貧血|EPO補紅血球，但血壓會上去、鐵要夠|以為Hb升越高越好|使用EPO最需監測的生命徵象？|血壓。
+Calcium carbonate|碳酸鈣（磷結合劑）|磷結合劑|泌尿|4|在腸道與食物中的磷結合|高血鈣、便秘|Ca、P；作磷結合劑時隨餐嚼碎服|CKD高血磷|降磷要「隨餐吃」，補鈣才空腹/睡前|當磷結合劑卻空腹吃|CKD病人碳酸鈣為何要隨餐服？|與食物中的磷結合，減少吸收。
+Tamsulosin|活路利淨 Harnalidge|α1阻斷劑|泌尿|4|放鬆攝護腺與膀胱頸平滑肌|姿勢性低血壓、頭暈、逆行性射精|BP、跌倒預防；緩慢改變姿勢|良性攝護腺肥大|α阻斷劑：慢慢站起來|起床太快跌倒|BPH病人開始服α阻斷劑的首要衛教？|姿勢改變要慢，預防姿勢性低血壓與跌倒。
+Oxybutynin|膀胱過動抗膽鹼藥|抗膽鹼|泌尿|3|阻斷膀胱muscarinic受體→減少逼尿肌收縮|口乾、便秘、尿滯留、視力模糊、老人意識混亂|排尿、排便、認知；青光眼/尿滯留小心|膀胱過動、急迫性尿失禁|抗膽鹼＝乾、秘、滯、糊|用在已經尿滯留的病人|哪些病人使用抗膽鹼藥要特別小心？|隅角閉鎖性青光眼、尿滯留/BPH、老人。
+Ferrous sulfate|鐵劑|補血|血液腫瘤/產兒|4|補充鐵以合成血紅素|黑便、便秘、腸胃不適、液劑染牙|空腹吸收最佳（不適可飯後）；配Vit C助吸收；避免與茶/咖啡/牛奶/制酸劑同服；液劑用吸管|缺鐵性貧血衛教|鐵劑配C、不配茶奶，黑便是正常|看到黑便以為出血|服鐵劑後解黑便怎麼解釋？|為鐵劑造成的正常現象；若伴瀝青狀、腥臭或頭暈需評估出血。
+Vitamin B₁₂|維生素B₁₂|維生素|血液腫瘤/消化|4|DNA合成與神經髓鞘所需|缺乏→巨球性貧血、舌炎、周邊神經病變|惡性貧血/全胃切除需終身注射補充|惡性貧血、胃切除後|沒有內在因子就吸收不了B₁₂，只能打針|全胃切除者用口服補|全胃切除病人為何需終身注射B₁₂？|缺乏內在因子，無法由腸道吸收。
+Cyclophosphamide|Endoxan 烷化劑|化療|血液腫瘤|4|烷化DNA|出血性膀胱炎、骨髓抑制、噁心嘔吐、掉髮|大量水分、頻排尿、觀察血尿；併用mesna保護膀胱；CBC|化療副作用配對|Cyclophosphamide顧膀胱：多喝水、常排尿|忽略血尿|使用cyclophosphamide如何預防出血性膀胱炎？|大量補充水分、勤排尿，依醫囑併用mesna。
+Doxorubicin|小紅莓 Adriamycin|化療|血液腫瘤|4|嵌入DNA、抑制topoisomerase II|心毒性（與累積劑量相關）、起疱性外滲壞死、骨髓抑制、紅色尿|心臟功能（LVEF）、注射部位、累積劑量|化療副作用配對|小紅莓傷心臟、尿會紅、外滲會爛|紅色尿當血尿|使用doxorubicin前後需評估哪個器官功能？|心臟（左心室射出分率）。
+Cisplatin|順鉑|化療|血液腫瘤|4|與DNA交叉連結|腎毒性、耳毒性、強烈噁心嘔吐、周邊神經病變、低Mg|Cr、尿量、聽力、電解質；給藥前後大量輸液|化療副作用配對|Cisplatin傷腎傷耳又很吐|沒有先水化就給藥|Cisplatin給藥前後大量輸液的目的？|預防腎毒性。
+Methotrexate|MTX 滅殺除癌錠|化療/免疫抑制|血液腫瘤/產兒|4|葉酸拮抗→抑制DNA合成|口腔黏膜炎、骨髓抑制、肝腎毒性、致畸|CBC、肝腎功能、口腔；高劑量後以leucovorin解救；避免酒精與NSAID|癌症、類風濕性關節炎、子宮外孕|MTX擋葉酸，解救靠leucovorin|類風濕的MTX每天吃（應為每週）|高劑量MTX後給leucovorin的目的？|解救正常細胞、降低毒性。
+Vincristine|長春新鹼|化療|血液腫瘤|3|抑制微小管形成|周邊神經病變、便秘/麻痺性腸阻塞、起疱性|感覺、腱反射、排便；只能靜脈給（鞘內注射致命）|化療副作用配對|Vincristine傷神經、會便秘|忽略便秘|使用vincristine病人最需預防的腸道問題？|便秘與麻痺性腸阻塞。
+5-Fluorouracil|5-FU|化療|血液腫瘤/消化|3|抑制thymidylate synthase|口腔黏膜炎、腹瀉、骨髓抑制、手足症候群|口腔、排便、皮膚、CBC|大腸直腸癌等|5-FU顧嘴巴和腸子|嚴重腹瀉不回報|使用5-FU出現嚴重口腔潰瘍與腹瀉，處置？|通報醫師，可能需暫停或調整劑量並支持治療。
+Filgrastim|G-CSF 白血球生長激素|造血刺激|血液腫瘤|3|刺激嗜中性球生成|骨頭痠痛、脾腫大|ANC、骨痛|化療後嗜中性球低下|G-CSF把白血球拉上來，骨頭會痠|以為打了就不用防感染|使用G-CSF常見副作用？|骨頭疼痛。
+Tamoxifen|泰莫西芬|荷爾蒙治療 SERM|血液腫瘤/產兒|3|乳房組織雌激素受體拮抗|熱潮紅、血栓、子宮內膜癌風險、白內障|異常陰道出血、下肢腫痛；定期婦科檢查|荷爾蒙受體陽性乳癌|Tamoxifen擋乳房的雌激素，但要顧子宮與血栓|異常陰道出血不回報|使用tamoxifen病人出現異常陰道出血？|應回診檢查，警覺子宮內膜病變。
+PRBC 輸血|濃縮紅血球|血液製品|血液腫瘤/疼痛急救|5|補充攜氧能力|溶血反應、過敏、發熱、循環負荷過量（TACO）、TRALI|雙人核對；只能與生理食鹽水同管路；最初15分鐘慢速並守在床邊；4小時內輸完；有反應立即停止、換管路維持N/S並通報|輸血安全、輸血反應處置|輸血：雙核對、只配N/S、前15分鐘最危險、4小時內輸完|輸血反應時只調慢不停止|輸血中病人發冷、腰痛、血壓下降，第一步？|立即停止輸血，更換管路以生理食鹽水維持靜脈通路並通報。
+Oxytocin|催產素 Pitocin|子宮收縮劑|產兒|5|刺激子宮平滑肌收縮|子宮過度刺激、胎兒窘迫、子宮破裂、水中毒|宮縮頻率/強度/持續時間、胎心音、BP、I/O；用輸液幫浦|引產、催生、產後出血|Oxytocin讓子宮用力；太密太久或胎心掉就先停|胎心減速時只是調慢|Oxytocin輸注中宮縮持續超過90秒且胎心晚期減速，第一步？|立即停止oxytocin，左側臥、給氧、通報。
+Methylergonovine|麥角新鹼 Methergine|子宮收縮劑|產兒|4|直接刺激子宮持續性收縮|血壓升高、噁心、頭痛|給藥前量血壓；高血壓/子癇前症禁用|產後出血|Methergine先量血壓，高血壓不能給|子癇前症產婦也給|給Methergine前必須評估什麼？|血壓；高血壓者禁用。
+Magnesium sulfate|硫酸鎂|抗痙攣/安胎|產兒|5|抑制神經肌肉傳導、中樞鎮靜|鎂中毒：膝反射消失、呼吸抑制、尿量減少、心跳停止|深腱反射、RR（≥12次/分）、尿量（≥25–30 mL/hr）、血鎂；床旁備calcium gluconate|子癇前症預防抽搐；鎂中毒|硫酸鎂三看：反射、呼吸、尿量；解藥是鈣|以為它是降壓藥|硫酸鎂輸注中膝反射消失、RR 10次/分，處置？|立即停藥、通報，依醫囑給calcium gluconate。
+Ritodrine|安寶 Yutopar|安胎藥|產兒|4|β2 agonist→放鬆子宮平滑肌|母親心搏過速、心悸、肺水腫、高血糖、低K|母親HR（>120次/分通報）、呼吸音、血糖、I/O、胎心|早產安胎|安寶放鬆子宮，但心臟會跳很快|心跳很快仍繼續加速率|使用ritodrine時母親心跳140次/分、呼吸喘，處置？|停藥/減量並通報，警覺肺水腫。
+Betamethasone|產前類固醇|類固醇|產兒|4|促進胎兒肺泡表面張力素生成|母親血糖暫時上升|血糖、胎動/胎心|有早產風險者促胎肺成熟|早產前打類固醇，是幫寶寶的肺|以為是安胎藥|有早產風險孕婦給betamethasone的目的？|促進胎兒肺成熟，降低呼吸窘迫症候群。
+RhoGAM|Rh免疫球蛋白|免疫球蛋白|產兒|5|中和進入母體的Rh(+)胎兒紅血球，避免母體致敏|注射部位疼痛、輕微發燒|給藥對象：Rh(−)母親、尚未致敏（間接Coombs陰性）；妊娠28週及產後72小時內|Rh血型不合預防|RhoGAM打給Rh陰性媽媽：28週、產後72小時內|打給寶寶或打給已致敏的媽媽|RhoGAM產後應於多久內給？|產後72小時內（嬰兒為Rh陽性時）。
+Dinoprostone/Misoprostol|前列腺素|子宮頸熟化/子宮收縮|產兒|3|軟化子宮頸、刺激子宮收縮|子宮過度刺激、胎心異常、發燒、腹瀉|宮縮、胎心音；有子宮手術史慎用|引產前子宮頸熟化、產後出血|前列腺素先讓子宮頸變軟|用後不監測宮縮胎心|放置子宮頸熟化藥後必須持續監測？|宮縮與胎心音。
+Folic acid|葉酸|維生素|產兒/血液腫瘤|4|DNA合成所需|缺乏→巨球性貧血、胎兒神經管缺損|孕前至少1個月至孕早期每日補充|孕前衛教、神經管缺損預防|葉酸要「懷孕前」就開始吃|確定懷孕後才開始補|葉酸預防神經管缺損，最佳開始時機？|計畫懷孕時（孕前至少1個月）即開始。
+Surfactant|肺表面張力素|新生兒用藥|產兒/呼吸|3|降低肺泡表面張力、防止肺泡塌陷|給藥時短暫缺氧、心搏過緩|經氣管內管給藥；SpO₂、HR；給藥後短時間內避免抽痰|早產兒呼吸窘迫症候群|早產兒肺撐不開，補表面張力素|給完馬上抽痰|早產兒RDS的根本原因？|肺表面張力素不足。
+Indomethacin/PGE₁|開放性動脈導管用藥|新生兒用藥|產兒/心血管|3|Indomethacin抑制前列腺素→關閉PDA；PGE₁維持導管開放|Indomethacin：腎功能下降、出血；PGE₁：呼吸暫停|尿量、出血、呼吸|PDA；依賴導管的先天性心臟病|要關導管用Indomethacin，要開著用PGE₁|兩者方向記反|依賴動脈導管存活的發紺型心臟病新生兒該用哪一個？|PGE₁，維持導管開放。
+IVIG|靜脈注射免疫球蛋白|免疫球蛋白|產兒/感染|4|免疫調節|輸注反應、過敏；之後活性減毒疫苗需延後|生命徵象、輸注速度由慢漸快|川崎病（併用aspirin）預防冠狀動脈瘤|川崎病：IVIG＋Aspirin保冠狀動脈|兒童一律不可用aspirin（川崎病為例外）|川崎病給予IVIG的主要目的？|降低冠狀動脈瘤的發生。
+Erythromycin眼藥膏/HBIG|新生兒常規預防用藥|新生兒用藥|產兒|4|眼藥膏預防淋菌/披衣菌性結膜炎；HBIG提供B肝被動免疫|眼部暫時視物模糊|母親HBsAg(+)：出生後24小時內給HBIG與B肝疫苗（不同部位）|新生兒立即護理|新生兒三件事：眼藥膏、Vit K、B肝預防|HBIG與疫苗打同一部位|母親HBsAg陽性，新生兒應於何時給HBIG？|出生後24小時內（越早越好），並接種B肝疫苗。
+Haloperidol|好度 Haldol|典型抗精神病藥|精神|5|強效阻斷D2受體|錐體外症候群（急性肌張力異常、靜坐不能、類巴金森症、遲發性運動障礙）、抗精神病藥惡性症候群（NMS）、QT延長|不自主動作、體溫、肌肉僵硬、意識、ECG|思覺失調症、急性激動；EPS與NMS|Haloperidol治正性症狀，代價是EPS|把靜坐不能當成焦慮/精神症狀惡化而加藥|服抗精神病藥後高燒、肌肉僵硬、意識改變？|抗精神病藥惡性症候群（NMS），立即停藥並急救處理。
+Chlorpromazine|冬眠靈 Wintermin|典型抗精神病藥|精神|3|阻斷D2（低效價，另阻斷α1、膽鹼、組織胺受體）|鎮靜、姿勢性低血壓、抗膽鹼作用、光敏感|BP、姿勢變換要慢、防曬|思覺失調症|低效價：鎮靜、低血壓多；高效價：EPS多|把所有典型抗精神病藥副作用視為相同|低效價與高效價典型抗精神病藥副作用差別？|低效價多鎮靜/低血壓/抗膽鹼；高效價多EPS。
+Clozapine|可致律 Clozaril|非典型抗精神病藥|精神|5|多受體拮抗（D4、5-HT2A等）|顆粒性白血球缺乏症、抽搐、心肌炎、流口水、便秘、代謝症候群|定期WBC/ANC；發燒喉嚨痛立即回報|難治型思覺失調症|Clozapine最有效也最要抽血（看白血球）|第一線就使用|使用clozapine必須定期監測什麼？|WBC與嗜中性球絕對值（ANC）。
+Risperidone/Olanzapine|非典型抗精神病藥|非典型抗精神病藥|精神|4|阻斷D2與5-HT2A|代謝症候群（體重、血糖、血脂）、高泌乳素（risperidone）、鎮靜|體重/腰圍、血糖、血脂|思覺失調症、雙相|非典型：EPS少一點，但會胖、血糖血脂上升|以為沒有副作用|使用olanzapine需定期追蹤哪些指標？|體重/腰圍、血糖、血脂。
+Biperiden/Trihexyphenidyl|抗膽鹼抗巴金森藥|抗膽鹼|精神/神經|4|阻斷中樞muscarinic受體，平衡dopamine/ACh|口乾、便秘、尿滯留、視力模糊、意識混亂|排尿排便、認知|治療抗精神病藥引起的EPS|EPS的解藥是抗膽鹼藥|用於遲發性運動障礙（可能更糟）|抗膽鹼藥對哪一種EPS效果不佳甚至可能惡化？|遲發性運動障礙（TD）。
+Lithium|鋰鹽|情緒穩定劑|精神|5|調節神經傳導與第二訊息系統|治療窗窄；中毒：粗大顫抖、嘔吐腹瀉、運動失調、意識混亂、抽搐；甲狀腺低下、腎性尿崩|血中濃度（維持約0.6–1.2 mEq/L，末次服藥後約12小時抽血）；維持正常鈉與水分攝取；腎與甲狀腺功能|雙相情緒障礙症；鋰中毒|鋰鹽：鹽和水要穩，濃度超過1.5就危險|低鈉飲食或脫水（會升高鋰濃度）|服鋰鹽病人大量流汗、腹瀉後手抖加劇、走路不穩？|鋰中毒，應停藥並立即就醫驗血中濃度。
+Fluoxetine/Sertraline (SSRI)|選擇性血清素再吸收抑制劑|抗憂鬱|精神|5|抑制serotonin再吸收|腸胃不適、失眠/焦躁、性功能障礙、血清素症候群；治療初期自殺意念風險|情緒與自殺意念；約2–4週才見效；不可自行停藥|憂鬱症、焦慮症|SSRI要等2–4週；剛有力氣時最要注意自殺|吃一週沒效就停藥|SSRI開始治療後1–2週病人精神變好，要注意？|體力先恢復但情緒未改善，自殺風險可能上升，需密切評估。
+Imipramine/Amitriptyline (TCA)|三環抗憂鬱劑|抗憂鬱|精神|4|抑制NE與serotonin再吸收|抗膽鹼作用、姿勢性低血壓、鎮靜、過量具心毒性（致命）|BP、ECG、排尿排便；評估自殺風險、限量給藥|憂鬱症、神經痛|TCA過量會要命（心臟），所以不能一次給太多藥|給高自殺風險者一次領大量藥|為何TCA對高自殺風險病人要限量給藥？|過量易造成致命性心律不整。
+MAOI|單胺氧化酶抑制劑|抗憂鬱|精神|4|抑制MAO→增加單胺類神經傳導物質|與含tyramine食物→高血壓危象；與SSRI等→血清素症候群|BP、頭痛；避免起司、醃製/發酵食品、紅酒；換藥需間隔|憂鬱症；飲食衛教|MAOI不配起司紅酒（tyramine）|與SSRI直接併用或無間隔換藥|服MAOI後吃起司出現劇烈頭痛、血壓飆高？|高血壓危象，需立即就醫。
+Alprazolam/Diazepam|苯二氮平類 BZD|抗焦慮/鎮靜|精神/神經|4|增強GABA-A作用|嗜睡、跌倒、依賴與耐受、呼吸抑制（併用酒精/鴉片類時）|呼吸、意識、跌倒預防；不可突然停藥；解毒劑flumazenil|焦慮、失眠、酒精戒斷、熱痙攣|BZD短期用、慢慢停、不配酒|長期使用後突然停藥|長期使用BZD突然停藥可能發生？|戒斷症狀，包含焦慮、失眠、抽搐。
+Zolpidem|使蒂諾斯 Stilnox|安眠藥|精神|3|作用於GABA-A受體BZ1位點|夢遊等複雜睡眠行為、頭暈、跌倒|睡前立即服並直接就寢；短期使用|失眠|安眠藥吃了就上床|吃完還在活動|服用zolpidem的時機衛教？|上床前立即服用，服後不再從事活動。
+Methylphenidate|利他能 Ritalin|中樞神經興奮劑|精神/產兒|4|增加dopamine與NE|食慾下降、失眠、生長遲緩、心悸|身高體重、睡眠、HR/BP；早上或午前服、飯後給|注意力不足過動症（ADHD）|利他能早上吃、飯後吃、追身高體重|傍晚給藥|Methylphenidate為何避免下午晚些時候給？|會造成失眠。
+Methadone|美沙冬|鴉片類替代療法|精神/疼痛急救|3|長效μ受體致效劑|呼吸抑制、QT延長、便秘|呼吸、意識、ECG；每日在監督下服用|鴉片類成癮替代療法|美沙冬是用長效的換短效的，減少戒斷與針具共用|以為是戒毒解藥（可立即停）|美沙冬替代療法的公共衛生目的？|減少戒斷與渴求，降低共用針具造成的HIV等傳染（減害）。
+Morphine|嗎啡|鴉片類止痛|疼痛急救|5|μ受體致效|呼吸抑制、鎮靜、便秘（不會耐受）、噁心嘔吐、尿滯留、縮瞳、低血壓|給藥前後評估RR（過慢暫停並通報）、鎮靜程度、疼痛分數、排便；預防性使用軟便劑|癌痛、急性疼痛；副作用處置|嗎啡先看呼吸；便秘不會自己好要先預防|怕成癮而不給足夠的癌痛止痛|使用嗎啡的病人RR 8次/分、叫不醒，處置？|停止給藥、刺激呼吸並維持氣道，通報並依醫囑給naloxone。
+Fentanyl|吩坦尼貼片|鴉片類止痛|疼痛急救|4|強效μ受體致效|呼吸抑制、鎮靜|貼片每72小時更換；首貼約12–24小時才達效；避免熱敷/發燒使吸收增加；用過貼片對折丟棄|慢性癌痛貼片衛教|吩坦尼貼片：72小時換、不能熱敷|用於急性突發痛或貼上電毯熱敷|Fentanyl貼片處為何不可熱敷？|熱會加速吸收造成過量與呼吸抑制。
+Meperidine|配西汀 Demerol|鴉片類止痛|疼痛急救|3|μ受體致效|代謝物normeperidine蓄積→抽搐；腎功能差/老人風險高|神經症狀；不宜長期或用於慢性疼痛|鴉片類選擇|Demerol的代謝物會讓人抽搐，不適合久用|用於慢性癌痛長期止痛|為何meperidine不適合慢性疼痛長期使用？|毒性代謝物normeperidine蓄積會引起抽搐。
+Naloxone|鴉片類拮抗劑|解毒劑|疼痛急救|5|競爭性拮抗鴉片受體|誘發急性戒斷、疼痛再現；作用時間短於多數鴉片類|RR、意識；持續觀察有無再度呼吸抑制，可能需重複給藥|鴉片類過量|Naloxone救呼吸，但藥效比鴉片短，要一直看|給一次後就離開|給naloxone後病人清醒，可以結束觀察嗎？|不可；其半衰期短，可能再度呼吸抑制。
+Acetaminophen|乙醯胺酚 普拿疼|解熱鎮痛|疼痛急救/產兒|5|中樞抑制前列腺素合成|過量→肝毒性|每日總量（成人一般不超過4 g，肝病/酗酒者更低）；注意複方感冒藥重複成分；解毒劑NAC|解熱止痛、兒童退燒|普拿疼傷的是肝，解藥是NAC|以為有抗發炎效果、或以為很安全可多吃|Acetaminophen與NSAID作用最大差別？|Acetaminophen幾乎無抗發炎作用，也較不傷胃，但過量傷肝。
+Ibuprofen/Ketorolac (NSAID)|非類固醇抗發炎藥|NSAID|疼痛急救|4|抑制COX→減少前列腺素|腸胃道出血/潰瘍、腎功能惡化、心血管風險、誘發氣喘|飯後服；黑便、尿量、BP；ketorolac使用不超過5天|發炎性疼痛、發燒|NSAID：傷胃、傷腎、升血壓|腎功能差或潰瘍病人使用|哪些病人使用NSAID要特別避免/小心？|消化性潰瘍、腎功能不全、心衰、aspirin過敏性氣喘、懷孕後期。
+Flumazenil|BZD拮抗劑|解毒劑|疼痛急救/精神|3|競爭性拮抗benzodiazepine受體|誘發抽搐（長期BZD使用者或合併TCA過量）|意識、呼吸；作用短，注意再鎮靜|BZD過量|Flumazenil解BZD；長期用BZD的人給了可能抽搐|所有昏迷都試一下|BZD過量的解毒劑？|Flumazenil。
+Activated charcoal|活性碳|解毒|疼痛急救|3|在腸胃道吸附毒物|嘔吐、吸入性肺炎、便秘|氣道保護；通常於服毒後1小時內效果最好|藥物中毒|活性碳：越早越好、要有氣道保護|意識不清無氣道保護、腐蝕性物質、碳氫化合物仍給|哪些中毒不適合給活性碳？|腐蝕性酸鹼、碳氫化合物、金屬（如鐵、鋰）、酒精，以及無氣道保護者。
+Pralidoxime (PAM)|解磷定|解毒劑|疼痛急救|3|使被有機磷抑制的乙醯膽鹼酶再活化|推注過快：心搏過速、喉痙攣、肌肉僵硬|呼吸、肌力、分泌物；與atropine併用|有機磷農藥中毒|有機磷：Atropine擋症狀、PAM救酵素；先脫衣沖洗|未除污就接觸病人|有機磷中毒的典型表現？|流涎、流淚、縮瞳、支氣管分泌物多、腹瀉、心搏過緩、肌肉顫動。
+Midazolam|導美睡 Dormicum|鎮靜|疼痛急救|3|短效benzodiazepine|呼吸抑制、低血壓、順行性失憶|SpO₂、RR、BP、鎮靜程度；備flumazenil與急救設備|程序鎮靜、術前給藥|Midazolam讓人睡、讓人忘，但也讓人不呼吸|鎮靜後無人監測|程序鎮靜使用midazolam最需持續監測？|呼吸與血氧。
+Propofol|白色乳劑麻醉藥|麻醉鎮靜|疼痛急救|3|增強GABA作用，起效快恢復快|低血壓、呼吸抑制、高三酸甘油酯、注射痛|BP、呼吸；嚴格無菌、依規定時間更換管路與藥瓶（脂肪乳劑易孳生細菌）|ICU鎮靜、麻醉誘導|牛奶針：快睡快醒，血壓會掉、要無菌|開封後久放續用|Propofol為何要嚴格無菌並定時更換？|為脂肪乳劑，容易孳生細菌。
+Diphenhydramine|第一代抗組織胺|抗組織胺|疼痛急救|3|阻斷H1受體，兼抗膽鹼作用|嗜睡、口乾、尿滯留；老人易意識混亂與跌倒|意識、排尿；避免開車與操作機械|過敏反應、輸血過敏反應|第一代抗組織胺會想睡|當成過敏性休克第一線|過敏性休克時抗組織胺是第一線嗎？|不是；第一線是epinephrine，抗組織胺為輔助。
+Dantrolene|單挫林|肌肉鬆弛/解毒|疼痛急救|3|抑制肌漿網釋放鈣|肌無力、肝毒性|體溫、ETCO₂、肌肉僵硬、K、尿色|惡性高熱|麻醉中體溫飆、肌肉硬、CO₂飆＝惡性高熱→Dantrolene|只用冰敷不停麻醉藥|惡性高熱的專一治療藥物？|Dantrolene，並立即停止誘發的麻醉藥物、積極降溫。
+0.9% NaCl/Lactated Ringer|等張晶體溶液|輸液|疼痛急救/心血管|5|等張，留在細胞外液補充血管內容積|體液過量、肺水腫；大量N/S→高氯性酸中毒|呼吸音、頸靜脈、I/O、體重|休克/脫水復甦；輸血只配N/S|等張補容積：N/S與LR|心衰/腎衰病人快速大量輸注不評估|低血容積性休克首選輸液種類？|等張晶體溶液（N/S或LR）。
+3% NaCl|高張食鹽水|輸液|神經/疼痛急救|3|高張，把水由細胞內拉到血管內|矯正過快→滲透性去髓鞘症候群；體液過量|Na（頻繁追蹤）、神經學檢查；用幫浦慢速、中心靜脈較佳|有症狀的嚴重低血鈉、腦水腫|高張鹽水是高警訊藥：慢慢給、勤驗鈉|想快點把鈉補到正常|低血鈉矯正太快會造成什麼？|滲透性去髓鞘症候群（中樞橋腦髓鞘溶解）。
+D5W/0.45% NaCl|低張溶液|輸液|疼痛急救/神經|4|進入體內後為低張（D5W的糖被代謝後等於給自由水），水分進入細胞|細胞水腫、腦水腫、低血鈉|Na、意識；顱內壓升高者避免|高血鈉、細胞內脫水|低張把水送進細胞，所以腦水腫病人不能用|顱內壓升高病人給D5W|為何顱內壓升高病人避免D5W？|屬低張，水分進入腦細胞會加重腦水腫。
+`;
+
+// 欄位：項目|類別|系統|星等|常用成人參考|異常方向|機制/代表|護理重點|一句背法|最易混淆|病例題|答案
+const LAB_RAW = `
+WBC 白血球|CBC|感染/血液腫瘤|5|約 4.0–10.0 ×10³/µL|↑感染/發炎等；↓骨髓抑制/部分感染等|感染、骨髓、免疫|過低時保護性隔離、避免生食與鮮花、監測體溫|白血球像防衛軍；高低都要配分類與病況|WBC高=一定細菌感染|感染病人WBC升高，你能直接說是細菌感染嗎？|不能。WBC升高是發炎/感染等線索，要配分類、症狀、培養與病況。
+Neutrophil/ANC 嗜中性球|CBC|感染/血液腫瘤|5|嗜中性球約40–70%；ANC ≥1500/µL|ANC <1000感染風險上升；<500為嚴重嗜中性球低下|對抗細菌的主力|ANC低：洗手、保護隔離、避免肛溫/肛塞劑與侵入性處置、發燒即通報|ANC＝WBC×（嗜中性球%＋帶狀核%）|只看WBC總數不算ANC|化療後WBC 1000/µL、嗜中性球30%，ANC多少？風險？|ANC約300/µL，屬嚴重嗜中性球低下，感染風險極高。
+Band 帶狀核球|CBC|感染|3|約0–5%|↑稱為左移（left shift）|骨髓加速釋放未成熟嗜中性球|配合體溫、培養評估急性細菌感染|左移＝骨髓把新兵也派上場|左移代表病毒感染|Band比例上升稱為什麼？常代表？|左移，常見於急性細菌感染。
+RBC 紅血球|CBC|血液腫瘤|3|約 男4.5–5.9、女4.0–5.2 ×10⁶/µL|↓貧血/出血；↑脫水、慢性缺氧、紅血球增多症|攜氧細胞數量|配合Hb/Hct與體液狀態判讀|RBC、Hb、Hct三個一起看|只看單一項|長期缺氧的COPD病人RBC為何可能偏高？|慢性缺氧刺激紅血球生成素，代償性增生。
+Hb 血紅素|CBC|呼吸/心血管/消化/血液腫瘤|5|約 女12–16、男13.5–17.5 g/dL|↓貧血/出血；↑濃縮等|攜氧能力|貧血：防跌、節省體力、評估是否需輸血；急性出血看生命徵象與趨勢|Hb像載氧卡車；少了要問失血還是造不出來|急性出血一開始Hb一定立刻很低|急性大量吐血，第一次Hb還在正常附近，可以排除大出血嗎？|不能。急性出血早期Hb未必立刻反映失血量，先看循環與趨勢。
+Hct 血比容|CBC|心血管/消化/血液腫瘤|4|約 女36–46%、男41–53%|↓貧血/稀釋；↑脫水/紅血球增多|血中紅血球比例|配合I/O與體液狀態；燒傷/登革熱看血液濃縮|Hct是血裡紅血球占多少|只看Hct不看體液狀態|嚴重脫水病人Hct偏高，代表紅血球真的變多嗎？|不一定；多為血液濃縮，補液後會下降。
+Platelet 血小板|CBC|感染/血液腫瘤|5|約150–400 ×10³/µL|↓出血風險（<50出血風險上升、<20可能自發性出血）；↑血栓/反應性等|初級止血|低下：軟毛牙刷、電動刮鬍刀、避免肌肉注射與肛溫、延長加壓止血、觀察瘀斑黑便|血小板像補洞小隊|血小板正常就不會出血|血小板8萬，最先想到什麼護理風險？|出血風險上升；同時要找原因、觀察出血徵象。
+MCV|CBC|血液腫瘤|4|約80–100 fL|低：小球性（缺鐵、地中海型貧血）；高：大球性（B₁₂/葉酸缺乏）|紅血球平均大小|協助貧血分類後再追病因與飲食衛教|MCV先把貧血分成小、正、大|MCV直接告訴你唯一病因|MCV 70 fL，代表什麼？|先分類為小球性貧血，再做病因鑑別；不是直接等於缺鐵。
+Reticulocyte 網狀紅血球|CBC|血液腫瘤|3|約0.5–2.0%|↑骨髓有反應（出血、溶血、補鐵後）；↓造血不足|骨髓造紅血球的活性|補充鐵劑/B₁₂後上升代表治療有反應|網狀紅血球＝骨髓有沒有在加班|貧血時網狀紅血球一定高|缺鐵性貧血補鐵一週後網狀紅血球上升代表？|骨髓對治療有反應。
+ESR 紅血球沉降速率|發炎|感染|3|約 男<15、女<20 mm/hr|↑發炎、感染、自體免疫、貧血、懷孕|非特異性發炎指標|追蹤慢性發炎疾病活動度|ESR慢慢升慢慢降；CRP快升快降|ESR高=感染|ESR與CRP誰變化比較快？|CRP。
+Ferritin 鐵蛋白|貧血|血液腫瘤|4|約 男20–300、女10–150 ng/mL（依實驗室）|↓缺鐵；↑發炎、鐵過載|體內鐵儲存量|缺鐵：鐵劑與含鐵飲食衛教|Ferritin＝鐵的存摺|發炎時ferritin正常就排除缺鐵|缺鐵性貧血最早下降的指標？|Ferritin（鐵儲存）。
+Iron/TIBC|貧血|血液腫瘤|3|血清鐵約50–170 µg/dL；TIBC約250–450 µg/dL|缺鐵：血清鐵↓、TIBC↑；慢性病貧血：兩者皆↓|血清鐵與運鐵蛋白結合能力|配合ferritin判讀|缺鐵時運鐵的空車變多（TIBC↑）|缺鐵與慢性病貧血都看成一樣|缺鐵性貧血的血清鐵與TIBC變化？|血清鐵下降、TIBC上升。
+Vit B₁₂/Folate|貧血|血液腫瘤/神經|3|B₁₂約200–900 pg/mL；Folate約>3 ng/mL（依實驗室）|↓巨球性貧血；B₁₂缺乏另有神經症狀|DNA合成|素食、胃切除、酗酒者為高風險；B₁₂缺乏不可只補葉酸|兩個都會大球性貧血，只有B₁₂會傷神經|用葉酸治療B₁₂缺乏|如何區分B₁₂與葉酸缺乏的臨床表現？|B₁₂缺乏會有肢體麻木、平衡差等神經症狀。
+Na⁺|電解質|神經/泌尿|5|約135–145 mmol/L|低/高都可能造成神經症狀（意識改變、抽搐）|水與滲透平衡|神經學評估、I/O、抽搐防護；矯正不可過快|鈉像水分布的方向牌|只看Na數字，不看速度與症狀|Na 120且意識改變，重點？|這是有症狀的嚴重低鈉情境，需要急迫評估；不能只背數字。
+K⁺|電解質|心血管/泌尿|5|約3.5–5.0 mmol/L|低K：U波、肌無力、腸蠕動慢；高K：T波高尖、QRS變寬、心律不整|膜電位|ECG監測；檢體溶血會假性偏高；KCl不可IV push|鉀是心臟電氣大考點|K異常只處理數字，不看ECG|K 6.8且ECG改變，先只想把K數字降下來嗎？|不是。先給鈣穩定心肌、同步降鉀並找原因。
+Cl⁻|電解質|泌尿/消化|3|約98–106 mmol/L|↓大量嘔吐/胃抽吸（合併代謝性鹼中毒）；↑大量生理食鹽水、腹瀉|維持電中性與酸鹼平衡|配合Na、HCO₃⁻判讀|氯常跟著鈉走，和HCO₃⁻唱反調|單獨解讀Cl|持續嘔吐病人常見的酸鹼與氯變化？|低氯性代謝性鹼中毒。
+Ca²⁺ total|電解質|神經/泌尿/內分泌|4|約8.5–10.5 mg/dL|低：手足抽搐、Chvostek/Trousseau徵象、喉痙攣；高：便秘、多尿、意識改變、結石|骨/神經肌肉|低鈣備氣切包與calcium gluconate（甲狀腺/副甲狀腺術後）；高鈣多喝水、活動|鈣管骨，也管神經肌肉|總鈣不受albumin影響|總鈣低但albumin也低，能直接說游離鈣一定低嗎？|不能；總鈣受albumin影響，需依題目考慮校正或游離鈣。
+Ionized Ca²⁺ 游離鈣|電解質|神經/內分泌|3|約4.5–5.3 mg/dL（1.12–1.32 mmol/L）|↓大量輸血（citrate結合鈣）、鹼中毒、副甲狀腺低下|具生理活性的鈣|大量輸血後觀察手足麻、抽搐|真正在工作的鈣是游離鈣|只看總鈣|大量輸血後手指麻、抽筋，最可能原因？|血品中的citrate結合鈣造成低游離鈣。
+Mg²⁺|電解質|心血管/神經/產兒|4|約1.7–2.2 mg/dL|低：心律不整、抽搐、反射亢進；高：反射消失、呼吸抑制、低血壓|酵素與電氣穩定|低K補不上來要查Mg；腎衰竭避免含鎂藥物；硫酸鎂治療看反射/呼吸/尿量|鎂低時，鉀有時也不好補|只補K不想Mg|低K一直補不好，還要想到哪個電解質？|Mg。低鎂可讓低鉀更難矯正。
+Phosphate 磷|電解質|泌尿/內分泌|3|約2.5–4.5 mg/dL|↑腎衰竭、副甲狀腺低下；↓再餵食症候群、酗酒|與鈣呈反向關係|CKD：限磷飲食、磷結合劑隨餐服|鈣和磷像蹺蹺板|CKD只限鉀忘了限磷|CKD病人高血磷時血鈣通常如何？|偏低（鈣磷呈反向）。
+BUN|腎功能|泌尿/消化|4|約7–20 mg/dL|↑腎功能下降、脫水、GI出血、高蛋白攝取；↓肝衰竭、營養不良|含氮廢物|配合Cr看BUN/Cr比值；評估水分狀態|BUN高不是只有腎壞|BUN高=腎衰竭|BUN升高就等於腎衰竭嗎？|不是；脫水、GI出血等也可升高。
+Creatinine|腎功能|泌尿|5|約0.6–1.3 mg/dL|↑常提示腎過濾下降，但受肌肉量等影響|腎功能指標|顯影劑檢查前後、腎毒性藥物使用時追蹤；記錄I/O|Cr像腎過濾警報，不是透析開關|Cr一高就透析|Cr升高就立刻透析嗎？|不是；透析看危急併發症與整體臨床情境。
+eGFR|腎功能|泌尿|5|依年齡/公式；≥90正常，<60持續3個月以上為CKD條件之一，<15為第5期|下降提示過濾功能降低|估算腎絲球過濾|依eGFR調整藥物劑量；CKD分期衛教|eGFR看腎的過濾能力|一次eGFR<60就直接叫CKD|一次eGFR 50就能完整診斷CKD嗎？|不能；CKD需要持續3個月以上或有持續腎損傷證據。
+Urine output 尿量|腎功能|泌尿/心血管|5|成人≥0.5 mL/kg/hr（約≥30 mL/hr）；兒童約≥1 mL/kg/hr|少尿<400 mL/天；無尿<100 mL/天|腎灌流的即時指標|休克、術後、燒傷、硫酸鎂、補鉀前都要看尿量|尿量是最便宜的灌流監視器|只記每日總量不看每小時|術後病人連續2小時尿量15 mL/hr，代表什麼？|低於0.5 mL/kg/hr，需評估灌流不足/導尿管阻塞並通報。
+Serum osmolality 血清滲透壓|體液|泌尿/內分泌/神經|3|約275–295 mOsm/kg|↑脫水、高血鈉、高血糖、尿崩症；↓水分過多、SIADH|血中溶質濃度|使用mannitol時監測；配合尿滲透壓判讀|SIADH血稀尿濃；尿崩症血濃尿稀|SIADH與尿崩症方向記反|SIADH病人的血清鈉與尿比重？|低血鈉、尿比重偏高（尿濃）。
+Anion gap 陰離子間隙|酸鹼|泌尿/內分泌|3|約8–12 mEq/L（Na−Cl−HCO₃⁻）|↑DKA、乳酸中毒、腎衰竭、中毒；正常AG酸中毒：腹瀉、腎小管酸中毒|未測量的陰離子|代謝性酸中毒時協助找原因|AG高＝多了別的酸（酮、乳酸、尿毒、毒物）|所有代謝性酸中毒AG都高|嚴重腹瀉造成的代謝性酸中毒AG如何？|正常（流失HCO₃⁻、氯代償性上升）。
+Uric acid 尿酸|代謝|內分泌/泌尿|3|約 男3.4–7.0、女2.4–6.0 mg/dL|↑痛風、腎功能差、腫瘤溶解、thiazide/PZA等藥物|嘌呤代謝產物|低普林飲食、多喝水、避免酒精（尤其啤酒）與內臟海鮮|尿酸高不等於痛風，但痛風要顧尿酸|急性發作時尿酸一定高|化療後尿酸、K、P升高而Ca下降，要想到？|腫瘤溶解症候群。
+AST|肝功能|消化|4|常見約10–40 U/L|↑肝細胞/心肌/骨骼肌等損傷|細胞損傷酵素|配合ALT；評估酒精、藥物史|AST不是肝臟專屬|AST高=一定肝病|AST高但ALT正常，能直接說肝炎嗎？|不能；AST也可來自肌肉、心肌等。
+ALT|肝功能|消化|4|常見約7–40 U/L（依實驗室）|↑較支持肝細胞損傷|肝細胞酵素|肝毒性藥物（INH、statin、acetaminophen）使用時追蹤|ALT較偏肝，但仍要看整體|ALT高直接等於肝衰竭|ALT升高代表肝衰竭嗎？|不等同；ALT是肝細胞損傷訊號，合成功能要看albumin、PT等。
+ALP|肝功能|消化|4|常見約44–147 U/L|↑膽汁鬱積/骨來源等；兒童、孕婦生理性偏高|膽道/骨|配合GGT區分膽道或骨來源|ALP高先問膽還是骨|ALP高只可能膽結石|ALP升高先想哪兩大來源？|膽道與骨。
+GGT|肝功能|消化|3|約 男<60、女<40 U/L（依實驗室）|↑膽道疾病、飲酒|膽道/酒精相關酵素|飲酒史評估|GGT幫ALP指認是膽道，也會被酒精拉高|GGT高=一定酗酒|ALP高、GGT也高，來源較可能是？|肝膽道。
+Total bilirubin|肝功能|消化|5|約0.1–1.2 mg/dL|↑溶血、肝細胞、膽道等；約>2–3 mg/dL可見黃疸|膽紅素代謝|觀察鞏膜/皮膚、尿色（茶色）、糞色（灰白）、皮膚搔癢照護|黃疸要分做太多、處理不好、排不出去|bilirubin高=單一病因|黃疸＋ALP高，下一步思考？|往膽汁鬱積/阻塞方向提高警覺，再配bilirubin分項與影像。
+Direct bilirubin 直接膽紅素|肝功能|消化|3|約0–0.3 mg/dL|↑膽道阻塞、肝細胞疾病（茶色尿、灰白便）；間接型↑則想溶血|已結合、水溶性|阻塞性：觀察灰白便、茶色尿、搔癢|直接型排不出去；間接型做太多或來不及處理|直接/間接型對應的原因記反|灰白色糞便、茶色尿代表哪一型膽紅素升高？|直接（結合型）膽紅素，常見於膽道阻塞。
+Albumin|肝功能/營養|消化/泌尿|4|約3.5–5.0 g/dL|↓肝合成、營養、腎流失、發炎等→水腫/腹水|膠體滲透/運輸|評估水腫、壓傷風險與營養；影響總鈣與藥物結合|白蛋白低要想『做少、漏掉、稀釋、發炎』|低albumin只等於營養差|Albumin低只等於營養不良嗎？|不是；肝合成、腎流失、發炎與稀釋都可能。
+Ammonia 血氨|肝功能|消化/神經|4|依實驗室（常見約15–45 µg/dL）|↑肝衰竭、門脈分流→肝性腦病|蛋白質代謝產物，需肝臟轉為尿素|觀察意識、撲翼樣震顫；lactulose、避免便秘與GI出血；檢體需冰浴立即送檢|氨排不掉，腦就糊|只追血氨數字不看意識|肝硬化病人意識混亂、雙手撲翼樣震顫，要想到？|肝性腦病。
+Amylase 澱粉酶|胰臟|消化|4|約30–110 U/L（依實驗室）|↑急性胰臟炎（上升早、下降快）、腮腺炎等|胰臟/唾液腺酵素|急性胰臟炎：禁食、止痛、輸液|Amylase升得快降得快|Amylase越高胰臟炎越嚴重|Amylase升高只可能來自胰臟嗎？|不是；唾液腺疾病等也會升高。
+Lipase 脂解酶|胰臟|消化|4|約0–160 U/L（依實驗室）|↑急性胰臟炎（比amylase專一、持續較久）；超過上限3倍支持診斷|胰臟酵素|配合上腹痛放射至背部、影像判讀|胰臟炎看Lipase比較準|只驗amylase|診斷急性胰臟炎較專一的酵素？|Lipase。
+PT/INR|凝血|血液腫瘤/消化/心血管|5|PT約11–13.5秒；INR未抗凝者約0.8–1.2|延長：凝血因子缺乏/warfarin/肝病/Vit K缺乏等|外源/共同凝血路徑|Warfarin治療追INR；延長時出血預防措施|INR是warfarin超高頻監測|所有人INR目標都2–3|Warfarin病人為何看INR？|用來評估其抗凝強度；目標依適應症。
+aPTT|凝血|血液腫瘤/心血管|5|常見約25–35 sec|延長：內源路徑異常/UFH等|內源/共同路徑|UFH治療時依規定時間抽血；不可從輸注heparin的同側肢體抽血|aPTT常和未分段heparin連在一起|所有heparin都只看aPTT|UFH為何常看aPTT/anti-Xa？|用來監測抗凝效果；依機構策略。
+Fibrinogen 纖維蛋白原|凝血|血液腫瘤/產兒|3|約200–400 mg/dL|↓DIC、大量出血、嚴重肝病|凝血最終原料|DIC：出血與血栓同時觀察；配合platelet、PT/aPTT、D-dimer|DIC＝凝血原料被用光：platelet↓、fibrinogen↓、PT/aPTT延長、D-dimer↑|DIC只會出血不會血栓|DIC的典型檢驗組合？|血小板↓、fibrinogen↓、PT/aPTT延長、D-dimer↑。
+D-dimer|凝血|心血管/呼吸|5|依assay/年齡與策略判讀|陰性在適當低/中風險情境可協助排除VTE；陽性不專一|纖維蛋白分解|配合臨床風險評估決定進一步影像檢查|D-dimer陽性是警報，不是抓到血栓|陽性=PE/DVT|D-dimer陽性下一句應該是？|不能直接說有PE；依前測機率決定進一步檢查。
+Troponin|心臟|心血管|5|依assay與99th percentile判讀|升高=心肌損傷；病因需整合（約3–6小時開始上升，可持續1–2週）|心肌損傷標記|胸痛：10分鐘內完成12導程ECG、連續抽血看動態變化|Troponin說『心肌受傷』，不是直接說『一定MI』|一次升高=STEMI|Troponin升高但沒有典型缺血證據，能直接叫MI嗎？|不能；先確認心肌損傷，再整合缺血證據與動態變化。
+CK/CK-MB|心臟/肌肉|心血管|3|CK約 男40–200、女30–150 U/L；CK-MB占比低（依實驗室）|CK↑肌肉損傷、橫紋肌溶解；CK-MB↑心肌損傷（下降快，可看再梗塞）|肌肉細胞酵素|橫紋肌溶解：大量輸液、觀察茶色尿與腎功能|CK看肌肉、CK-MB偏心肌、Troponin最專一|肌肉注射後CK升高當成心肌梗塞|statin使用者肌肉痛且CK大幅上升，要想到？|橫紋肌溶解。
+BNP/NT-proBNP|心臟|心血管|4|依檢驗、年齡與情境判讀（BNP常以<100 pg/mL作為較不支持心衰的參考）|升高支持心衰但非專一|心室壁壓力|配合呼吸音、體重、水腫、I/O|BNP是心衰拼圖，不是判決書|固定單一cutoff確診所有人|BNP高就能單獨確診HF嗎？|不能；它是支持性證據，還要配症狀、理學與影像。
+Lipid profile 血脂|代謝|心血管/內分泌|4|TC <200、TG <150、LDL <130（高風險者目標更低）、HDL 男>40/女>50 mg/dL|LDL↑動脈硬化風險；TG極高→胰臟炎風險|脂質代謝|一般空腹後抽血（依機構）；飲食、運動、戒菸衛教|LDL是壞的要低，HDL是好的要高|所有人LDL目標都一樣|哪一項血脂是動脈硬化治療的主要目標？|LDL-C。
+CRP|發炎|感染|4|常見 <0.5 mg/dL 或依實驗室|↑發炎；不專一|急性期反應|追蹤治療反應的趨勢|CRP告訴你『有火』，不告訴你誰放火|CRP高=細菌感染|CRP很高就知道是哪個病原嗎？|不知道；CRP不專一。
+Procalcitonin|感染|感染|3|依檢驗/情境判讀|可協助部分細菌感染與抗菌策略判讀|感染生物標記|配合臨床與培養|PCT是輔助，不是單獨確診鍵|PCT一高就一定敗血症|PCT低就百分之百沒有細菌感染嗎？|不能這樣說；需依感染部位、時間與臨床情境。
+Lactate|灌流|感染/心血管|5|常見約0.5–2.2 mmol/L|↑可能灌流不足/代謝壓力等|組織代謝/灌流線索|敗血症：及早抽血培養、給抗生素與輸液，追蹤乳酸趨勢|乳酸高＝身體可能在缺血流或代謝吃緊，要找原因|乳酸高只可能敗血症|乳酸4 mmol/L最重要不是背病名，而是？|評估灌流、休克與其他造成乳酸升高的原因並看趨勢。
+Blood culture 血液培養|微生物|感染|5|正常為無菌生長|陽性：菌血症（需排除皮膚菌污染）|找出病原與藥敏|給抗生素「之前」採檢；不同部位至少2套；嚴格皮膚消毒|先抽培養，再打抗生素|等發燒退了再抽或抗生素後才抽|疑似敗血症，抗生素與血液培養的順序？|先採血液培養再給抗生素，但不可因此延誤給藥。
+Urine culture 尿液培養|微生物|感染/泌尿|4|無菌或菌落數低|清潔中段尿≥10⁵ CFU/mL具意義|泌尿道感染病原|清潔中段尿；留置導尿管由採檢口無菌抽取，不可從尿袋取|中段尿、採檢口，尿袋的尿不能用|從尿袋倒尿送培養|留置導尿管病人如何留尿液培養？|夾管後消毒採檢口，以無菌空針抽取。
+Sputum AFB 痰液抗酸菌|微生物|感染/呼吸|4|陰性|塗片陽性：具傳染性肺結核可能；培養為確診依據|結核菌檢查|清晨、漱口後深咳的痰，連續3套；空氣傳染防護（N95、負壓隔離）|結核驗痰：清晨、深咳、三套|送口水當痰|疑似開放性肺結核病人的隔離方式？|空氣傳染防護：負壓隔離病室，工作人員戴N95口罩。
+HBsAg/Anti-HBs|肝炎血清|感染/消化/產兒|5|HBsAg陰性；Anti-HBs陽性表示具免疫力|HBsAg(+)：感染中；HBeAg(+)：高傳染力；僅Anti-HBs(+)：疫苗免疫|B型肝炎感染狀態|血液體液防護；母親HBsAg(+)新生兒24小時內給HBIG＋疫苗|s抗原=有病毒；s抗體=有保護；e抗原=很會傳|Anti-HBs陽性當作感染中|只有Anti-HBs陽性、其他標記陰性，代表？|接種疫苗後產生免疫力。
+Anti-HCV|肝炎血清|感染/消化|3|陰性|陽性：曾感染或感染中，需驗HCV RNA確認|C型肝炎篩檢|血液傳染防護；目前有口服抗病毒藥可治癒；無疫苗|C肝沒疫苗但有藥可治|Anti-HCV陽性=具保護力|Anti-HCV陽性代表有保護力嗎？|不是；代表曾感染或現正感染，需驗HCV RNA。
+HIV Ag/Ab｜CD4|免疫|感染|4|HIV篩檢陰性；CD4約500–1500 cells/µL|CD4 <200：伺機性感染風險高（AIDS界定之一）|CD4看免疫力、病毒量看治療效果|標準防護措施；空窗期衛教；規則服藥|CD4看免疫、病毒量看藥效|篩檢陰性就一定沒感染（忽略空窗期）|HIV感染者CD4 150 cells/µL，最需預防什麼？|伺機性感染（如肺囊蟲肺炎）。
+pH|ABG|呼吸/泌尿|5|7.35–7.45|低酸血症；高鹼血症|酸鹼總結果|ABG採檢後加壓止血至少5分鐘、檢體排氣冰浴立即送檢|ABG第一眼先看pH|先看CO₂不看pH|ABG pH 7.25第一步？|先判酸血症，再看PaCO₂與HCO₃⁻找主要方向。
+PaCO₂|ABG|呼吸|5|35–45 mmHg|↑偏呼吸性酸方向；↓偏呼吸性鹼方向|肺泡通氣|CO₂滯留：評估意識、呼吸型態；COPD低流量給氧|CO₂看通氣|PaCO₂高=一定COPD|PaCO₂ 60代表？|高碳酸血症/通氣不足方向；病因需再判。
+HCO₃⁻|ABG|泌尿/呼吸|5|22–26 mEq/L|↓偏代謝性酸；↑偏代謝性鹼|代謝/腎調節|配合pH、PaCO₂判斷原發與代償|HCO₃看代謝腎這一邊|只看HCO₃就完成ABG|HCO₃⁻ 15代表？|往代謝性酸中毒方向思考，再看補償。
+PaO₂|ABG|呼吸|5|約80–100 mmHg（隨年齡/條件變）|下降提示低氧血症（<60為呼吸衰竭條件之一）|氧合|配合給氧濃度（FiO₂）判讀|PaO₂看氧，不是看通氣|PaO₂正常=呼吸一定正常|PaO₂低代表？|氧合不足；不要和PaCO₂的通氣概念混淆。
+SaO₂/SpO₂ 血氧飽和度|ABG/監測|呼吸|5|約95–100%（COPD目標常為88–92%）|<90%需積極處理|血紅素帶氧比例|影響因素：末梢循環差、指甲油、低體溫、CO中毒（假性正常）|SpO₂ 90%約等於PaO₂ 60 mmHg，是懸崖邊|CO中毒看SpO₂正常就放心|一氧化碳中毒病人SpO₂ 99%，可以放心嗎？|不可；脈衝式血氧計無法分辨COHb，需驗COHb並給100%氧。
+Base excess 鹼基過剩|ABG|呼吸/泌尿|3|約−2至＋2 mEq/L|負值大：代謝性酸；正值大：代謝性鹼|代謝成分的量化|配合HCO₃⁻判讀|BE是代謝那一邊的加減分|BE負=呼吸性酸|BE −10代表哪一方向？|代謝性酸中毒。
+Glucose fasting|代謝|內分泌/神經|5|常見70–99 mg/dL；≥126（兩次）符合糖尿病；<70低血糖|高低皆需依情境評估|葡萄糖代謝|低血糖：清醒者口服15 g糖並15分鐘後複測；意識改變先測血糖|意識改變先別忘了血糖|昏迷先只想神經病|意識改變第一批快速檢查為何常含血糖？|低血糖可快速造成神經症狀且可立即處理。
+OGTT 口服葡萄糖耐受試驗|代謝|內分泌/產兒|4|75 g兩小時<140 mg/dL；≥200符合糖尿病。妊娠（24–28週）：空腹≥92、1小時≥180、2小時≥153任一項即妊娠糖尿病|升高：葡萄糖耐受不良/糖尿病|糖負荷後的處理能力|檢查前空腹8小時；檢查中不進食、不抽菸、靜坐|妊娠糖尿病24–28週喝糖水，三個數字超過一個就算|妊娠糖尿病要三項都超過|妊娠糖尿病篩檢的建議週數？|妊娠24–28週。
+HbA1c|內分泌|內分泌/泌尿/心血管|4|<5.7%常見非糖尿病範圍；≥6.5%符合糖尿病診斷條件之一；一般控制目標約<7%（個別化）|反映約2–3月平均血糖|長期糖代謝|不需空腹；貧血、輸血、溶血會影響結果|A1c看長期，不是今天這餐|拿A1c判急性低血糖|A1c 9%代表今天血糖一定很高嗎？|不一定；A1c反映較長期平均。
+Ketone 酮體|代謝|內分泌|4|血/尿酮陰性|↑DKA、飢餓、酗酒|脂肪分解產物|第一型糖尿病生病日：勤測血糖與酮體、不可自行停胰島素、補充水分|DKA三件事：高血糖、酮體、酸中毒|生病吃不下就停胰島素|DKA與HHS最大差別？|DKA有明顯酮體與酸中毒；HHS血糖更高、嚴重脫水但酮酸不明顯。
+TSH|內分泌|內分泌|4|約0.4–4.0 mIU/L|原發性甲狀腺低下：TSH↑；甲狀腺亢進：TSH↓|腦下垂體對甲狀腺的回饋訊號|Levothyroxine治療以TSH調整劑量|TSH和甲狀腺素方向相反（原發性）|TSH高=甲狀腺亢進|TSH升高、Free T4降低代表？|原發性甲狀腺機能低下。
+Free T4|內分泌|內分泌|3|約0.8–1.8 ng/dL|↑甲亢；↓甲低|具活性的甲狀腺素|甲亢：高熱量飲食、涼爽環境、眼睛保護；甲低：保暖、防便秘|甲亢像油門踩到底，甲低像沒電|只看T4不看TSH|甲狀腺風暴的典型表現？|高燒、心搏過速、躁動/意識改變，屬急症。
+Cortisol 皮質醇|內分泌|內分泌|3|早晨約5–25 µg/dL（有日夜變化）|↑Cushing症候群；↓Addison病/腎上腺機能不足|壓力荷爾蒙|Addison：低Na、高K、低血糖、低血壓，壓力時需加量類固醇|Cushing什麼都多（糖、壓、鈉），Addison什麼都少（但鉀高）|Addison病人限鹽|Addison病典型電解質變化？|低血鈉、高血鉀。
+Urine specific gravity|尿液|泌尿|4|約1.005–1.030|↑濃縮（脫水、SIADH）；↓稀釋（尿崩症、水分過多）|水分與腎濃縮|配合I/O、體重|比重看尿是濃還是淡|單靠比重診斷脫水|尿比重高就一定脫水嗎？|不一定；要配水分狀態與其他因素。
+Urine protein|尿液|泌尿/產兒|5|通常陰性/微量；24小時尿蛋白<150 mg|蛋白尿提示腎損傷；妊娠20週後高血壓合併24小時尿蛋白≥300 mg支持子癇前症|腎絲球屏障|腎病症候群：水腫、低白蛋白；孕婦產檢必驗|尿蛋白像腎濾網漏東西|一次dipstick+就完整診斷CKD|尿蛋白陽性一次就等於CKD嗎？|不能；需確認、定量與慢性條件。
+UACR 尿液白蛋白/肌酸酐比值|尿液|泌尿/內分泌|4|<30 mg/g|30–300：中度增加（微量白蛋白尿）；>300：重度增加|早期腎絲球損傷|糖尿病人每年篩檢；控制血糖血壓、ACEi/ARB|糖尿病腎病變最早看UACR，不是Cr|等Cr上升才注意腎臟|糖尿病腎病變最早出現的檢驗異常？|微量白蛋白尿（UACR上升）。
+Urinalysis：WBC/Nitrite|尿液|泌尿/感染|4|WBC約0–5/HPF；nitrite與leukocyte esterase陰性|陽性支持泌尿道感染|白血球與細菌代謝產物|多喝水、不憋尿、女性由前往後擦拭|Nitrite＋白血球酯酶＝泌尿道感染線索|Nitrite陰性就排除感染|頻尿、解尿灼熱，尿液nitrite陽性支持什麼？|泌尿道感染（常為革蘭氏陰性桿菌）。
+Urine RBC 尿潛血|尿液|泌尿|3|約0–3/HPF|↑結石、感染、腫瘤、腎絲球腎炎；月經期會干擾|泌尿道出血|無痛性血尿需警覺泌尿道腫瘤|無痛血尿要想腫瘤，絞痛血尿想結石|血尿都當感染|老年吸菸者無痛性肉眼血尿要優先排除？|膀胱癌等泌尿道腫瘤。
+Stool occult blood 糞便潛血|糞便|消化|4|陰性|陽性：消化道出血/大腸直腸癌篩檢需進一步大腸鏡|腸道出血|免疫法（iFOBT）不需飲食限制；化學法需避免紅肉、鐵劑、Vit C|潛血陽性的下一步是大腸鏡，不是再驗一次|陽性再驗一次陰性就當沒事|免疫法糞便潛血陽性，下一步建議？|安排大腸鏡檢查。
+CSF pressure/cell 腦脊髓液|CSF|神經/感染|4|壓力約70–180 mmH₂O（側臥）；外觀清澈；WBC約0–5/µL|細菌性腦膜炎：混濁、壓力↑、嗜中性球↑、蛋白↑、糖↓|中樞感染/出血線索|腰椎穿刺：側臥屈膝抱胸（蝦米狀）；術後平躺、多喝水防頭痛；顱內壓升高為禁忌|細菌：濁、糖低、蛋白高；病毒：清、糖正常|顱內壓升高照樣腰椎穿刺|腰椎穿刺後為何要平躺並補充水分？|預防腰椎穿刺後頭痛。
+CSF glucose|CSF|神經/感染|4|約血糖的60%左右，依情境|細菌性腦膜炎常降低|中樞感染線索|同時抽血糖對照|CSF糖要和血糖一起想|CSF糖低單獨確診細菌性腦膜炎|CSF糖低就一定細菌腦膜炎嗎？|不是單一確診；要配細胞、蛋白、培養與病況。
+CSF protein|CSF|神經/感染|3|常見約15–45 mg/dL|多種中樞病變可升高|屏障/發炎線索|配合其他CSF項目判讀|蛋白高只說有問題，不會自己報病名|protein高=細菌感染|CSF protein高能告訴你唯一病名嗎？|不能；它是不專一線索。
+Digoxin level|藥物濃度|心血管|4|傳統約0.5–2.0 ng/mL（心衰傾向較低範圍）；>2.0毒性風險上升|↑毒性：噁心、黃綠視、心律不整|治療窗窄|低K、低Mg、腎功能差會增加毒性；給藥前量心尖脈|Digoxin濃度要和鉀一起看|濃度正常就不會中毒|Digoxin濃度在範圍內但K 3.0，會中毒嗎？|可能；低鉀會增加毒性。
+Vancomycin trough|藥物濃度|感染|3|傳統谷值約10–20 µg/mL（現多以AUC為目標，依機構）|過高：腎毒性風險|療效與毒性平衡|於下一劑給藥前（約30分鐘內）抽血|Trough＝下一劑之前抽|給藥後馬上抽當谷值|Vancomycin谷值何時抽？|下一劑給藥前。
+Lithium level|藥物濃度|精神|5|維持約0.6–1.2 mEq/L；>1.5 mEq/L毒性風險明顯上升|中毒：粗大顫抖、嘔吐腹瀉、步態不穩、意識混亂|治療窗窄|末次服藥後約12小時抽血；維持鹽分水分、避免脫水與NSAID|鋰鹽0.6–1.2，超過1.5要警戒|細微手抖就是中毒（輕微細顫可為常見副作用）|鋰鹽濃度1.8 mEq/L並有嘔吐、步態不穩，處置？|暫停給藥並立即通報處理鋰中毒。
+Phenytoin/Valproate level|藥物濃度|神經|4|Phenytoin約10–20 µg/mL；Valproate約50–100 µg/mL；Carbamazepine約4–12 µg/mL|過高：眼震、運動失調、嗜睡；過低：發作控制不良|抗癲癇藥治療範圍|低白蛋白時phenytoin游離型增加，濃度「正常」也可能中毒|癲癇藥：濃度、發作紀錄、副作用三個一起看|只看數字不看病人|Phenytoin中毒最早常見的徵象？|眼球震顫。
+Theophylline level|藥物濃度|呼吸|3|傳統約10–20 µg/mL（現多採較低目標）|>20毒性：噁心、心搏過速、心律不整、抽搐|治療窗窄|吸菸、咖啡因、macrolide/quinolone等會改變濃度|茶鹼濃度會被菸、咖啡、抗生素推來推去|戒菸後劑量不用調|使用茶鹼的病人剛戒菸，濃度會如何？|上升（吸菸原本加速代謝），需注意中毒。
+PSA|腫瘤標記|泌尿/血液腫瘤|3|一般<4 ng/mL（隨年齡調整）|↑攝護腺癌、BPH、攝護腺炎、導尿/肛門指診後|攝護腺特異抗原|抽血宜在肛門指診/導尿等處置之前|PSA高不等於癌，要切片才知道|PSA高=攝護腺癌|PSA升高能直接診斷攝護腺癌嗎？|不能；確診需切片。
+CEA/AFP/CA-125|腫瘤標記|血液腫瘤/消化/產兒|3|CEA約<5 ng/mL；AFP約<10–20 ng/mL；CA-125約<35 U/mL|CEA：大腸直腸癌追蹤；AFP：肝細胞癌（孕婦生理性升高）；CA-125：卵巢癌|腫瘤相關蛋白|主要用於治療後追蹤復發，非單獨確診工具|腫瘤標記是「追蹤用」，不是「診斷用」|標記正常就沒有癌症|大腸癌術後CEA持續上升代表？|需警覺復發或轉移，進一步檢查。
+β-hCG|產科|產兒|4|未懷孕為陰性；正常早期妊娠約每48小時倍增|上升不如預期：子宮外孕/流產；異常高：葡萄胎、多胞胎|絨毛膜分泌的妊娠荷爾蒙|育齡女性腹痛/檢查給藥前先確認是否懷孕；葡萄胎術後追蹤至陰性並避孕|hCG該翻倍沒翻倍，要想子宮外孕|hCG陽性就是正常子宮內妊娠|育齡女性下腹痛、陰道出血、hCG陽性，首先要排除？|子宮外孕。
+GBS culture 乙型鏈球菌篩檢|產科|產兒/感染|4|陰性|陽性：待產時給予預防性抗生素（penicillin類）|預防新生兒早發型GBS感染|妊娠35–37週採陰道與肛門檢體；陽性者待產時至少於分娩前4小時給抗生素|GBS：35–37週篩、陽性者生產時打抗生素|篩檢陽性當下就口服抗生素治療|GBS陽性孕婦何時給預防性抗生素？|待產/破水時靜脈給予，而非篩檢當下。
+Coombs test|免疫血液|產兒/血液腫瘤|4|陰性|直接（新生兒/病人紅血球上有抗體）：溶血；間接（母親血清有抗體）：已致敏|抗紅血球抗體|Rh(−)母親間接Coombs陰性才給RhoGAM|直接驗寶寶的紅血球，間接驗媽媽的血清|直接/間接對象記反|Rh(−)母親間接Coombs陽性代表？|已被致敏產生抗體，RhoGAM已無預防效果。
+L/S ratio 卵磷脂/抱合髓磷脂比值|產科|產兒/呼吸|3|≥2:1表示胎兒肺成熟|<2：新生兒呼吸窘迫症候群風險高|胎兒肺表面張力素成熟度|配合產前類固醇使用評估|L/S≥2，肺準備好了|母親糖尿病時2:1一定足夠|L/S ratio評估的是什麼？|胎兒肺成熟度。
+Newborn bilirubin 新生兒膽紅素|新生兒|產兒|5|生理性黃疸：出生後2–3天出現、4–5天高峰、約7–10天消退|出生24小時內出現、上升過快或持續過久：病理性黃疸|新生兒紅血球壽命短、肝臟未成熟|照光治療：遮眼、遮生殖器、裸露皮膚、勤翻身、監測體溫與水分、觀察大便|24小時內黃＝病理性，先通報|照光時忘了遮眼睛|新生兒出生12小時即出現黃疸，屬於？|病理性黃疸，需立即評估（如血型不合溶血）。
+Newborn glucose 新生兒血糖|新生兒|產兒|4|一般以<40–45 mg/dL為低血糖（依機構標準）|低血糖：顫抖、嗜睡、餵食差、呼吸暫停、抽搐|新生兒葡萄糖儲備有限|高危險群：母親糖尿病、巨嬰、早產、低體重兒；及早餵食並監測|糖媽媽的寶寶出生後要盯血糖|以為巨嬰營養好不會低血糖|母親糖尿病的新生兒為何容易低血糖？|胎兒期高胰島素狀態，出生後母體葡萄糖供應中斷。
+`;
+
+// 系統導航：chains 每列＝[情境, 機制, 檢驗證據, 藥物/處置, 護理監測]
+const SYS = [
+{k:'呼吸',i:'🫁',
+ flag:'SpO₂<90%、RR>30或<10、使用呼吸輔助肌、無法說完整句子、發紺、意識改變、寂靜肺（聽不到呼吸音）',
+ labs:['pH','PaCO₂','HCO₃⁻','PaO₂','SaO₂','D-dimer','Sputum AFB','Theophylline level','Hb'],
+ drugs:['Albuterol','Ipratropium','Budesonide','Salmeterol','Tiotropium','Prednisone','Montelukast','Theophylline','Acetylcysteine','Isoniazid','Rifampin','Ethambutol','Pyrazinamide'],
+ nurse:'半坐臥；噘嘴/腹式呼吸；COPD滴定給氧（目標SpO₂常為88–92%）；吸入劑先擴張劑後類固醇、吸完漱口；胸腔引流瓶低於胸部、不常規夾管、觀察水封波動',
+ trap:'氧合（PaO₂）≠通氣（PaCO₂）；ICS不是急救藥；COPD不是「不能給氧」而是「小心滴定」',
+ chains:[
+  ['氣喘急性發作','氣道發炎＋支氣管痙攣','SpO₂、ABG（PaCO₂由低轉正常或升高＝呼吸疲乏警訊）','SABA → Ipratropium → 全身性類固醇','坐姿、給氧、聽呼吸音（寂靜肺最危險）、吸入技巧衛教'],
+  ['COPD急性惡化','氣流受限 → CO₂滯留','ABG：pH↓、PaCO₂↑','SABA＋Ipratropium＋類固醇 ± 抗生素','低流量給氧、噘嘴呼吸、觀察意識（CO₂昏迷）'],
+  ['肺栓塞','血栓阻塞肺動脈 → 通氣灌流不合','D-dimer（低風險排除用）、ABG、CT血管攝影','Heparin/LMWH → 口服抗凝；不穩定者考慮溶栓','給氧、臥床、出血觀察、下肢不可按摩'],
+  ['肺結核','空氣傳染、乾酪性壞死','痰AFB塗片與培養×3、胸部X光','INH＋Rifampin＋Ethambutol＋PZA','負壓隔離、N95、都治（DOTS）、規則服藥至少6個月、副作用監測']]},
+{k:'心血管',i:'❤️',
+ flag:'胸痛>20分鐘合併冒冷汗、SBP<90、HR<50或>150、突發呼吸困難/粉紅色泡沫痰、暈厥、單側肢體冰冷蒼白無脈',
+ labs:['K⁺','Mg²⁺','Troponin','CK','BNP','Lactate','PT/INR','aPTT','Lipid','Digoxin level'],
+ drugs:['Aspirin','Clopidogrel','Unfractionated heparin','Enoxaparin','Warfarin','Apixaban','Nitroglycerin','Metoprolol','Diltiazem','Amlodipine','Enalapril','Losartan','Furosemide','Spironolactone','Digoxin','Amiodarone','Adenosine','Atropine','Dobutamine','Norepinephrine','Atorvastatin'],
+ nurse:'胸痛10分鐘內完成12導程ECG；臥床、SpO₂<90%給氧；心衰每日量體重、限鈉、端坐；給Digoxin前量心尖脈1分鐘；心導管後觀察穿刺處出血與遠端脈搏',
+ trap:'抗血小板≠抗凝血；左心衰看肺（喘、囉音）、右心衰看身體（水腫、頸靜脈怒張、肝腫大）；Troponin升高≠一定MI',
+ chains:[
+  ['急性心肌梗塞','冠狀動脈阻塞 → 心肌壞死','Troponin動態、12導程ECG（ST上升）','Aspirin＋P2Y12抑制劑＋抗凝；NTG、Morphine視情況；儘速PCI','臥床、ECG監測、評估胸痛；STEMI到院至導絲通過目標90分鐘內'],
+  ['左心衰竭/急性肺水腫','心輸出↓ → 肺鬱血','BNP、胸部X光、ABG、K','Furosemide、NTG；穩定後ACEi/ARB、β阻斷劑','端坐雙腳下垂、給氧、I/O、每日體重、限鈉'],
+  ['心房顫動','心房無效收縮 → 血栓 → 中風','ECG（無P波、心律絕對不整）、INR','心率控制（β阻斷劑/Diltiazem/Digoxin）＋抗凝（Warfarin/DOAC）','同時量心尖脈與橈動脈（脈搏短絀）、出血與中風徵象衛教'],
+  ['深部靜脈栓塞','血流滯留＋內皮損傷＋高凝狀態','D-dimer、下肢超音波','Heparin/LMWH → Warfarin/DOAC','患肢抬高、不可按摩、早期下床、彈性襪、觀察肺栓塞徵象']]},
+{k:'感染',i:'🦠',
+ flag:'體溫>38.3或<36°C、SBP<90或MAP<65、意識改變、RR≥22、尿量<0.5 mL/kg/hr、乳酸≥2、嗜中性球低下合併發燒',
+ labs:['WBC','Neutrophil','Band','CRP','Procalcitonin','Lactate','Blood culture','Urine culture','Sputum AFB','HBsAg','Anti-HCV','HIV','Vancomycin trough'],
+ drugs:['Penicillin','Cefazolin','Ceftriaxone','Vancomycin','Piperacillin','Meropenem','Gentamicin','Azithromycin','Levofloxacin','Doxycycline','Metronidazole','TMP-SMX','Acyclovir','Oseltamivir','Fluconazole','Amphotericin B','Norepinephrine'],
+ nurse:'洗手五時機；先培養後抗生素；隔離分類—空氣（結核、麻疹、水痘）、飛沫（流感、百日咳、腦膜炎雙球菌）、接觸（MRSA、VRE、C. difficile、疥瘡）；C. difficile須用肥皂與水洗手',
+ trap:'發燒≠感染；老人/免疫低下WBC正常也可能重症；酒精乾洗手對C. difficile孢子效果不佳',
+ chains:[
+  ['敗血性休克','感染 → 全身血管擴張＋灌流不足','乳酸、血液培養、WBC、PCT','廣效抗生素（儘速）＋晶體輸液 → Norepinephrine','監測MAP≥65、尿量、意識、末梢；先培養後抗生素但不延誤給藥'],
+  ['嗜中性球低下發燒','化療後骨髓抑制','ANC<500、血液培養','立即經驗性廣效抗生素、G-CSF','保護隔離、避免生食與鮮花、不量肛溫、勤洗手'],
+  ['泌尿道感染','細菌上行感染','尿液常規（WBC、nitrite）、尿液培養','依藥敏選擇抗生素（TMP-SMX、Quinolone、Cephalosporin等）','多喝水、不憋尿、由前往後擦、導尿管儘早移除'],
+  ['偽膜性腸炎','抗生素後C. difficile過度生長','糞便毒素檢驗','停用誘發抗生素；口服Vancomycin','接觸隔離、肥皂洗手、含氯消毒劑清潔環境']]},
+{k:'泌尿',i:'💧',
+ flag:'K>6.0或ECG改變、尿量<0.5 mL/kg/hr或無尿、嚴重酸中毒、肺水腫、尿毒性意識改變',
+ labs:['Creatinine','eGFR','BUN','Urine output','K⁺','Na⁺','Ca²⁺ total','Phosphate','Mg²⁺','HCO₃⁻','Anion gap','Urine protein','UACR','Urine specific gravity','Urinalysis','Urine RBC','PSA'],
+ drugs:['Calcium gluconate','Regular insulin','Sodium bicarbonate','Sodium polystyrene','Furosemide','Potassium chloride','Epoetin','Calcium carbonate','Enalapril','Tamsulosin','Oxybutynin','Desmopressin'],
+ nurse:'I/O與每日體重；CKD飲食（限鉀、磷、鈉，蛋白質依分期）；動靜脈瘻管—聽bruit摸thrill，患肢不量血壓、不抽血、不提重物；腹膜透析觀察引流液是否混濁；導尿袋低於膀胱且不落地',
+ trap:'鈣是護心不是降鉀；BUN高≠腎衰竭；是否透析不看單一Cr數值',
+ chains:[
+  ['高血鉀','腎排鉀↓或細胞釋出','K、ECG（T波高尖、QRS變寬）','①Calcium gluconate護心 ②Insulin＋葡萄糖、SABA、Bicarbonate把K移入細胞 ③Kayexalate、利尿劑、透析把K排出','持續ECG、追血糖、限鉀飲食；懷疑溶血檢體要重抽'],
+  ['急性腎損傷','腎前（灌流↓）/腎性/腎後（阻塞）','Cr、BUN、尿量、尿比重、K','矯正原因：補液或解除阻塞；停腎毒性藥物','I/O、體重、避免顯影劑與NSAID；少尿期限水限鉀'],
+  ['慢性腎臟病','腎元持續流失','eGFR、UACR、Hb、Ca/P、K','ACEi/ARB、EPO、磷結合劑、活性Vit D','低鹽低磷低鉀、血壓血糖控制、瘻管保護、透析衛教'],
+  ['良性攝護腺肥大','尿道受壓 → 排尿困難','PSA、殘尿量','α阻斷劑（Tamsulosin）、5α還原酶抑制劑','防姿勢性低血壓；TURP術後持續膀胱沖洗、觀察出血與低血鈉（TUR症候群）']]},
+{k:'消化',i:'🍽️',
+ flag:'吐血/黑便合併HR↑BP↓、板狀腹與反彈痛、黃疸合併發燒寒顫、意識改變（肝性腦病）、劇烈上腹痛放射至背部',
+ labs:['Hb','Hct','Platelet','PT/INR','AST','ALT','ALP','GGT','Total bilirubin','Direct bilirubin','Albumin','Ammonia','Amylase','Lipase','Stool occult','HBsAg','BUN'],
+ drugs:['Pantoprazole','Famotidine','Sucralfate','Antacid','Octreotide','Propranolol','Lactulose','Spironolactone','Metoclopramide','Ondansetron','Loperamide','Bisacodyl','Metronidazole'],
+ nurse:'出血先建立兩條大口徑IV並備血；腹部評估順序 視→聽→叩→觸；肝硬化限鈉、量腹圍與體重、避免便秘；胰臟炎禁食、止痛、側臥屈膝；傾倒症候群少量多餐、餐後平躺、用餐時不喝湯水',
+ trap:'PPI不是止血鉗；急性出血初期Hb可以還正常；不明原因腹痛不先給瀉劑或灌腸',
+ chains:[
+  ['上消化道出血','潰瘍或食道靜脈曲張破裂','Hb/Hct趨勢、BUN↑、PT/INR、備血','PPI；靜脈曲張加Octreotide；輸血','生命徵象、兩條大口徑IV、NPO、觀察嘔吐物與糞便、準備內視鏡'],
+  ['肝硬化合併肝性腦病','肝臟無法代謝氨','Ammonia↑、Albumin↓、PT延長、Bilirubin↑','Lactulose（每日2–3次軟便）；腹水用Spironolactone ± Furosemide','意識與撲翼樣震顫、防跌；避免便秘、感染、GI出血等誘因'],
+  ['急性胰臟炎','胰酵素自體消化（膽結石、酒精）','Lipase/Amylase↑、Ca↓、血糖↑','輸液、止痛','NPO、大量輸液、止痛、觀察低血鈣徵象與Cullen/Grey-Turner徵象'],
+  ['膽道阻塞/膽囊炎','結石阻塞 → 膽汁鬱積','ALP、GGT、Direct bilirubin↑、WBC','抗生素、止痛；手術或ERCP','低脂飲食、觀察黃疸/灰白便/茶色尿、T-tube引流量與顏色']]},
+{k:'神經',i:'🧠',
+ flag:'GCS下降≥2分、瞳孔不等大或對光反應消失、Cushing三徵象（收縮壓↑脈壓變寬、HR↓、呼吸不規則）、突發單側無力/口齒不清、抽搐>5分鐘、發燒合併頸部僵硬',
+ labs:['Glucose','Na⁺','Ca²⁺ total','Mg²⁺','CSF pressure','CSF glucose','CSF protein','Serum osmolality','Phenytoin/Valproate level','PT/INR','Ammonia'],
+ drugs:['Alteplase','Aspirin','Clopidogrel','Mannitol','3% NaCl','Lorazepam','Phenytoin','Valproate','Carbamazepine','Levetiracetam','Levodopa','Donepezil','Pyridostigmine','Ceftriaxone','Acyclovir'],
+ nurse:'GCS（E4V5M6）、瞳孔、肌力；顱內壓升高—床頭抬高30度、頭頸正中、避免用力咳嗽與閉氣用力、抽痰每次不超過10–15秒；癲癇—側臥、移開危險物、不塞物不約束、記錄時間與型態；中風—通過吞嚥評估才進食',
+ trap:'中風先做CT分出血或缺血才決定治療；tPA看時間也看禁忌；顱內壓升高禁做腰椎穿刺；D5W會加重腦水腫',
+ chains:[
+  ['缺血性腦中風','腦血管阻塞 → 半影區缺血','血糖（先排除低血糖）、無顯影劑CT、PT/INR、Platelet','符合條件者Alteplase（發作4.5小時內）；之後抗血小板','FAST辨識、記錄最後正常時間、tPA後24小時密集神經學與出血監測、吞嚥篩檢'],
+  ['顱內壓升高','顱內容積增加 → 腦灌流↓','GCS、瞳孔、血清滲透壓、Na','Mannitol、高張鹽水；必要時鎮靜與手術','床頭30度、頭頸正中、避免Valsalva、維持呼吸道、I/O'],
+  ['癲癇重積狀態','持續異常放電>5分鐘','血糖、Na/Ca/Mg、抗癲癇藥濃度','Lorazepam/Diazepam → Phenytoin/Valproate/Levetiracetam','維持呼吸道、側臥、防受傷、給氧、記錄發作'],
+  ['細菌性腦膜炎','腦膜感染發炎','CSF：混濁、壓力↑、嗜中性球↑、蛋白↑、糖↓；血液培養','儘速經驗性抗生素（如Ceftriaxone＋Vancomycin）','飛沫隔離至有效抗生素治療24小時後、Kernig/Brudzinski徵象、降低環境刺激']]},
+{k:'內分泌',i:'🧬',
+ flag:'血糖<70合併意識改變、高血糖合併Kussmaul呼吸/水果味、高燒心搏過速躁動（甲狀腺風暴）、低血壓合併低鈉高鉀（腎上腺危象）、甲狀腺術後手足抽搐或喘鳴',
+ labs:['Glucose','OGTT','HbA1c','Ketone','Anion gap','K⁺','Na⁺','Serum osmolality','TSH','Free T4','Cortisol','Ca²⁺ total','UACR','Uric acid','Lipid'],
+ drugs:['Regular insulin','Insulin lispro','NPH insulin','Insulin glargine','Metformin','Glimepiride','Empagliflozin','Liraglutide','Glucagon','Levothyroxine','Methimazole','Propranolol','Hydrocortisone','Prednisone','Desmopressin','Alendronate','Allopurinol','Colchicine'],
+ nurse:'胰島素輪換注射部位（腹部吸收最快）；低血糖15-15原則；足部照護—每日檢查、不赤腳、溫水洗、趾甲平剪；生病日不自行停胰島素；甲狀腺術後備氣切包與calcium gluconate、檢查頸後有無出血',
+ trap:'DKA給胰島素前先看K；A1c不能判急性低血糖；SIADH要限水、尿崩症要補水',
+ chains:[
+  ['糖尿病酮酸中毒','胰島素絕對缺乏 → 脂肪分解 → 酮酸','血糖↑、酮體(+)、pH<7.3、HCO₃⁻↓、AG↑、K（體內總量不足）','①生理食鹽水 ②RI靜脈滴注 ③補K（K<3.3先補鉀再給胰島素）','每小時血糖、I/O、ECG、意識；血糖降至約200–250時改含糖輸液'],
+  ['低血糖','胰島素/SU過量、進食不足、運動','血糖<70 mg/dL','清醒：口服15 g糖；不清醒：D50W靜脈或Glucagon肌肉注射','15分鐘後複測、找原因、之後補充點心'],
+  ['甲狀腺機能亢進','甲狀腺素過多 → 代謝亢進','TSH↓、Free T4↑','Methimazole/PTU、Propranolol、放射碘、手術','高熱量高蛋白飲食、涼爽安靜環境、突眼者保護眼睛、發燒喉嚨痛回診'],
+  ['腎上腺危象','糖皮質素急性不足','Na↓、K↑、血糖↓、Cortisol↓','Hydrocortisone靜脈＋大量生理食鹽水＋葡萄糖','監測BP與電解質；衛教不可自行停類固醇、壓力時加量']]},
+{k:'血液腫瘤',i:'🩸',
+ flag:'ANC<500合併發燒、Platelet<20×10³/µL、Hb<7或有症狀、輸血中發冷腰痛、化療後少尿（腫瘤溶解）、背痛合併下肢無力（脊髓壓迫）、臉頸腫脹（上腔靜脈症候群）',
+ labs:['Hb','MCV','Reticulocyte','Ferritin','Iron/TIBC','Vit B₁₂','WBC','Neutrophil','Platelet','PT/INR','aPTT','Fibrinogen','D-dimer','Uric acid','CEA','PSA','Coombs'],
+ drugs:['Ferrous sulfate','Vitamin B₁₂','Folic acid','Epoetin','Filgrastim','PRBC','Cyclophosphamide','Doxorubicin','Cisplatin','Methotrexate','Vincristine','5-Fluorouracil','Tamoxifen','Ondansetron','Morphine','Vitamin K₁','Protamine','Tranexamic acid'],
+ nurse:'化療外滲—立即停止、保留針頭回抽、通報並依藥物處置；口腔黏膜炎—軟毛牙刷、生理食鹽水漱口；骨髓抑制最低點約在化療後7–14天；輸血雙人核對、前15分鐘守在床邊；放射治療皮膚—不擦掉標記、不用力搓洗、避免日曬',
+ trap:'缺鐵TIBC↑、慢性病貧血TIBC↓；腫瘤標記是追蹤不是診斷；癌痛是按時給藥，不是痛了才給',
+ chains:[
+  ['缺鐵性貧血','鐵不足 → 血紅素合成↓','Hb↓、MCV↓、Ferritin↓、TIBC↑','口服鐵劑＋Vit C；找出血原因','避免與茶奶同服、黑便衛教、含鐵飲食'],
+  ['化療後骨髓抑制','造血細胞受抑制','WBC/ANC、Platelet、Hb','G-CSF、輸血、抗生素','保護隔離、出血預防措施、節省體力、規律量體溫'],
+  ['瀰漫性血管內凝血（DIC）','凝血系統過度活化 → 耗竭','Platelet↓、Fibrinogen↓、PT/aPTT延長、D-dimer↑','治療根本病因；補充血品','出血與器官灌流觀察、減少侵入性處置、加壓止血'],
+  ['腫瘤溶解症候群','大量癌細胞崩解','K↑、P↑、Uric acid↑、Ca↓、Cr↑','大量輸液、Allopurinol','I/O、ECG、尿量、電解質密集追蹤']]},
+{k:'產兒',i:'🤰',
+ flag:'產後出血量大且子宮鬆軟、BP≥160/110合併頭痛/視力模糊/上腹痛、胎心持續<110或>160或晚期減速、臍帶脫垂、新生兒24小時內黃疸、嬰兒囟門凹陷無淚尿少',
+ labs:['β-hCG','OGTT','Urine protein','GBS','Coombs','L/S','Hb','Platelet','Mg²⁺','HBsAg','Fibrinogen','Newborn bilirubin','Newborn glucose'],
+ drugs:['Oxytocin','Methylergonovine','Magnesium sulfate','Ritodrine','Nifedipine','Labetalol','Hydralazine','Betamethasone','RhoGAM','Dinoprostone','Folic acid','Tranexamic acid','Vitamin K₁','Erythromycin','Surfactant','Indomethacin','IVIG','Acetaminophen','Methylphenidate'],
+ nurse:'產後出血先按摩子宮底並排空膀胱；胎心減速—早期（胎頭受壓，觀察）、變異（臍帶受壓，改變姿勢）、晚期（胎盤功能不足：左側臥、停Oxytocin、給氧、輸液）；臍帶脫垂採膝胸臥位並上推先露部；新生兒先保暖擦乾，Apgar於1與5分鐘評估；兒童劑量以體重計算',
+ trap:'硫酸鎂不是降壓藥；RhoGAM是給媽媽不是給寶寶；兒童發燒不用Aspirin（Reye症候群），川崎病是例外',
+ chains:[
+  ['子癇前症','胎盤因素 → 全身血管痙攣、內皮損傷','妊娠20週後BP≥140/90＋尿蛋白；Platelet↓、AST/ALT↑要想HELLP','Magnesium sulfate預防抽搐；Labetalol/Hydralazine/Nifedipine降壓；根本治療為分娩','安靜昏暗環境、左側臥、DTR/RR/尿量、抽搐防護、備calcium gluconate'],
+  ['產後出血','4T：Tone子宮收縮不良（最常見）、Trauma、Tissue、Thrombin','出血量、Hb、Fibrinogen、凝血功能','Oxytocin → Methylergonovine（高血壓禁用）→ 前列腺素；Tranexamic acid','按摩子宮底、排空膀胱、秤產墊估出血量、生命徵象、建立IV'],
+  ['早產','未滿37週規則宮縮合併子宮頸變化','子宮頸長度、L/S ratio','安胎（Ritodrine/Nifedipine）、Betamethasone促肺成熟、MgSO₄神經保護','左側臥、宮縮與胎心監測、母親心跳與肺水腫徵象'],
+  ['新生兒黃疸','膽紅素生成多、肝臟結合能力未成熟','膽紅素、血型、直接Coombs、Hb','照光治療；嚴重者換血','遮眼遮生殖器、勤翻身、監測體溫與水分、增加餵食促進排便'],
+  ['嬰幼兒腸胃炎脫水','水分與電解質流失','體重下降百分比、Na、K、尿比重','口服電解質液；重度脫水靜脈輸液','評估囟門、淚液、皮膚彈性、尿布數；少量多次補液']]},
+{k:'精神',i:'🧩',
+ flag:'具體自殺計畫與工具、命令式幻聽、暴力前兆（握拳、踱步、音量升高）、高燒合併肌肉僵硬（NMS）、鋰鹽>1.5 mEq/L、停酒後48–72小時譫妄',
+ labs:['Lithium level','Neutrophil','WBC','Glucose','Lipid','TSH','Creatinine','Na⁺','ALT','Phenytoin/Valproate level','CK'],
+ drugs:['Haloperidol','Chlorpromazine','Clozapine','Risperidone','Biperiden','Lithium','Valproate','Carbamazepine','Fluoxetine','Imipramine','MAOI','Alprazolam','Lorazepam','Zolpidem','Methylphenidate','Donepezil','Methadone','Flumazenil'],
+ nurse:'治療性溝通（開放式問句、反映、澄清）；自殺意念要直接問；妄想不否定也不附和，回到感受與現實；躁症給低刺激環境、可手拿的高熱量食物、一致的設限；約束是最後手段且需密集評估',
+ trap:'靜坐不能≠病情惡化；SSRI初期體力先恢復時自殺風險反而高；遲發性運動障礙用抗膽鹼藥無效',
+ chains:[
+  ['思覺失調症','多巴胺功能失調','血糖、血脂、體重、ECG；Clozapine需驗ANC','典型/非典型抗精神病藥；EPS用Biperiden','評估幻聽內容（是否命令式）、建立信任、提供現實感、服藥遵從性'],
+  ['雙相情緒障礙症躁期','情緒調節失衡','鋰鹽濃度、腎功能、TSH、Na','Lithium、Valproate、非典型抗精神病藥','低刺激環境、維持水分與鹽分、設限、防衝動與體力耗竭'],
+  ['重鬱症','血清素/正腎上腺素功能不足','排除甲狀腺低下（TSH）、貧血等','SSRI（2–4週見效）、TCA、ECT','自殺評估與安全環境、陪伴、簡短具體溝通'],
+  ['酒精戒斷','中樞抑制突然解除 → 過度興奮','Mg、K、血糖、肝功能','Benzodiazepine；Thiamine（先於葡萄糖給）','生命徵象、抽搐防護、安靜明亮環境、定向感'],
+  ['抗精神病藥惡性症候群','多巴胺阻斷過度','CK↑、WBC↑、腎功能','立即停藥；Dantrolene；降溫與輸液','體溫、肌肉僵硬、意識、尿量（橫紋肌溶解）']]},
+{k:'疼痛急救',i:'🚑',
+ flag:'無反應無呼吸無脈搏、呼吸道阻塞（無法發聲）、過敏性休克（喘、低血壓、蕁麻疹）、RR<8合併針狀瞳孔、SBP<90合併意識改變、麻醉中體溫與ETCO₂驟升',
+ labs:['pH','PaO₂','SaO₂','Lactate','K⁺','Glucose','Hb','Hct','Urine output','CK','Na⁺'],
+ drugs:['Epinephrine','Amiodarone','Atropine','Adenosine','Lidocaine','Dopamine','Norepinephrine','0.9% NaCl','3% NaCl','D5W','PRBC','Morphine','Fentanyl','Meperidine','Naloxone','Acetaminophen','Ibuprofen','Flumazenil','Acetylcysteine','Activated charcoal','Pralidoxime','Midazolam','Propofol','Dantrolene','Diphenhydramine','Glucagon'],
+ nurse:'成人CPR—按壓深度5–6公分、速率100–120次/分、30:2、儘早電擊；燒傷面積用九法則，輸液用Parkland公式（4 mL×kg×%TBSA，前8小時給一半）；疼痛按時給藥，鎮靜程度變化早於呼吸變慢；中毒先除污再處置',
+ trap:'過敏性休克第一線是Epinephrine不是抗組織胺；可電擊心律只有VF與無脈性VT；Naloxone藥效比多數鴉片類短',
+ chains:[
+  ['過敏性休克','肥大細胞大量釋放介質 → 血管擴張、支氣管痙攣','臨床診斷為主，不等檢驗','Epinephrine肌肉注射（大腿前外側）→ 輸液、給氧；抗組織胺與類固醇為輔','移除過敏原、平躺抬腿、維持呼吸道、觀察雙相反應'],
+  ['低血容積性休克','循環血量↓ → 灌流↓','Hb/Hct趨勢、Lactate、尿量','等張晶體、輸血；止血','兩條大口徑IV、保暖、每小時尿量、意識'],
+  ['心跳停止','VF/無脈性VT、PEA、Asystole','ABG、K、血糖（找可逆原因）','Epinephrine每3–5分鐘；VF/pVT電擊後加Amiodarone','高品質CPR、減少中斷、每2分鐘換手、記錄時間'],
+  ['鴉片類過量','μ受體過度刺激 → 呼吸抑制','SpO₂、ABG（PaCO₂↑）','Naloxone（可能需重複給）','刺激呼吸、維持呼吸道、給氧、持續觀察再度鎮靜'],
+  ['嚴重燒傷','微血管通透性↑ → 體液外滲 → 休克','Hct↑（血液濃縮）、K、尿量、Albumin','乳酸林格氏液依Parkland公式；止痛','呼吸道評估（臉部燒傷、鼻毛燒焦、聲音沙啞）、尿量、保暖、無菌']]}
+];
+
+// 高分秘笈：[標題, 白話, 背這句, 掉分陷阱]
+const TIPS = {
+ os:'看題目 → 抓紅旗 → 判系統 → 找最危險 → 選第一步 → 排除禁忌 → 驗證答案',
+ common:[
+  ['先救命再診斷','先看會不會死，再想病名。','ABC＋意識＋生命徵象先。','看到熟悉病名就跳過危急程度。'],
+  ['題幹先抓紅旗','題目很長，真正決定答案的常只有2～3個字。','急、低、喘、痛、昏、血＝先找危急。','平均閱讀所有資訊。'],
+  ['護理優先順序','先處理現在最危險、最能改變結果的事。','立即危險＞潛在危險＞舒適。','先做最容易做的事。'],
+  ['生命徵象','數字不是裝飾，是病人現在穩不穩。','BP、HR、RR、SpO₂、T、意識一起看。','只盯單一數字。'],
+  ['趨勢比單點重要','一次數字像照片，連續數字才像影片。','Trend > single value。','只背正常值，不看變化方向。'],
+  ['先分症狀與證據','症狀是線索，檢驗/影像是幫你確認。','症狀猜方向，證據做確認。','單一症狀直接確診。'],
+  ['禁忌題','國考很愛問『哪個不能做』。','先圈 NOT／不宜／禁忌／錯誤。','知道正確知識卻看反題目。'],
+  ['藥物題四問','看到藥，不只背名字。','為何給？看什麼？怕什麼？何時停/通報？','只背作用。'],
+  ['檢驗題三問','看到數字先問高低，再問代表什麼。','方向 → 器官 → 危險度。','背正常值卻不會判讀。'],
+  ['病例題五步','把故事縮成五格。','人 → 主訴 → 紅旗 → 關鍵證據 → 第一步。','被背景故事帶走。'],
+  ['錯題省察','不要寫『粗心』，要抓哪一招不會。','我怎麼想錯 → 哪個證據推翻 → 換題再測。','看解析後以為自己會了。'],
+  ['拿分驗證','同一題會不算真的會。','原題 → 換數字 → 換情境 → 隔天再測。','記住答案，不是更新能力。']],
+ drug:[
+  ['藥名不是重點','國考要你知道作用、監測、副作用、禁忌與護理。','藥＝作用＋監測＋危險＋教導。','只背劑量。'],
+  ['抗凝 vs 抗血小板','兩者都防血栓，但作用位置與適應症不同。','platelet ≠ coagulation cascade。','看到『防血栓』就混成一類。'],
+  ['利尿劑','排水同時可能改變電解質與血壓。','尿多後要看BP、K、腎功能。','只看水腫有沒有消。'],
+  ['ACEi/ARB','要注意血壓、腎功能與鉀。','ACE/ARB三看＝BP、Cr、K。','只背ACEi會咳嗽。'],
+  ['Digoxin','治療窗與毒性線索是考點，腎功能/電解質也會影響風險。','心率＋腎＋K＋毒性症狀。','只背血中濃度。'],
+  ['給藥安全','病人、藥、劑量、途徑、時間等基本核對永遠先。','先核對，再給藥，再評估效果。','會藥理卻漏安全流程。'],
+  ['解毒劑配對','Heparin→Protamine；Warfarin→Vit K；鴉片類→Naloxone；BZD→Flumazenil；Acetaminophen→NAC；硫酸鎂→Calcium gluconate；有機磷→Atropine＋PAM。','一毒一解，成對背。','把Vit K當成heparin解毒劑。'],
+  ['高警訊藥物','KCl、胰島素、抗凝血劑、鴉片類、高張鹽水、化療藥。','高警訊＝雙人核對＋幫浦＋密集監測。','KCl靜脈推注。']],
+ lab:[
+  ['正常值不是死數字','不同實驗室與方法可有差異。','先看題目/本院reference range。','把單一網路數字當絕對。'],
+  ['危急值','危急值重點是立即確認、通報與處置流程。','危急值＝確認＋通報＋行動。','只背數字。'],
+  ['Troponin','代表心肌損傷，不等於單靠它就能判定所有MI。','Troponin要配症狀＋ECG＋動態。','一次升高直接等於STEMI。'],
+  ['BNP','支持心衰評估，但受年齡、腎功能等影響。','BNP是拼圖，不是判決書。','用固定單一cutoff『確診』所有人。'],
+  ['D-dimer','較適合特定低/中風險情境排除，不是陽性就等於血栓。','陰性有時能排；陽性不能直接定。','陽性＝PE。'],
+  ['ABG五步','pH → PaCO₂ → HCO₃⁻ → 補償 → 氧合。','酸鹼五步走；ROME：呼吸相反、代謝相同。','只背正常範圍。'],
+  ['採檢正確才有意義','溶血讓K假性偏高；輸液同側抽血被稀釋；培養要在抗生素前。','檢體錯，判讀全錯。','看到異常值不先想採檢問題。'],
+  ['藥物濃度抽血時間','谷值在下一劑之前；鋰鹽在末次服藥後約12小時。','先問「什麼時候抽的」。','給藥後馬上抽當谷值。']],
+ errors:[
+  ['把「看到線索」當成「確診」','一個線索只能讓你『更懷疑』，通常不能單獨把病名釘死。','線索提高可能性；診斷要合併病史、理學檢查與適當檢驗。'],
+  ['把單一數字當答案','一個數字像一張照片；病人變好變壞，要看整段影片。','單值判讀＋趨勢＋臨床狀態一起看。'],
+  ['把「常見」寫成「一定」','醫學很少有『只要A就一定B』。','用『支持、提示、需考慮、應進一步評估』取代不必要的『確診』。'],
+  ['把疾病處置寫成固定套餐','同一病名，穩定和休克的第一步可能完全不同。','先判穩定度，再選處置。'],
+  ['把護理優先順序和完整治療混在一起','國考問『第一步』，不是叫你把整張醫囑背完。','先處理立即威脅生命的問題，再做後續診斷與長期管理。'],
+  ['把背答案當學會','看過解析會選，不代表換病例還會。','原題 → 換數字 → 換情境 → 延遲再測，才算Model Update。']],
+ edges:[
+  ['劑量不是死背一個數字','藥物劑量會跟適應症、途徑、年齡、腎肝功能與情境變。','題幹若未指定，不把單一劑量當萬用答案。'],
+  ['Nitroglycerin','重點不是『RV梗塞永遠絕對禁止』這種一句話。','低血壓、前負荷依賴、PDE-5 inhibitor等情境要特別警覺；依題幹判斷。'],
+  ['β-blocker與氣喘/COPD','不是看到COPD三個字就把所有β阻斷劑永久打叉。','看選擇性、病況、適應症與風險。'],
+  ['Warfarin','INR目標跟適應症有關，不是一個數字走天下。','依題目疾病與治療目標判。'],
+  ['Digoxin','濃度只是毒性判讀的一部分。','症狀＋心律＋腎功能＋電解質＋濃度。'],
+  ['正常值','正常範圍不是全世界只有一個版本。','依題目/實驗室reference range判。'],
+  ['乳酸','高乳酸表示要警覺灌流/代謝問題，不是敗血症專用印章。','原因＋趨勢＋灌流一起看。'],
+  ['危急值','不要只背一個網路數字。','題目給值依題目；實務依機構危急值政策。']],
+ say:[
+  ['「看到A，所以一定是B。」','A支持/提示B，但仍需結合其他證據。'],
+  ['「這個數字高，所以確診。」','此結果增加某診斷可能性，需依題幹情境整合判讀。'],
+  ['「這個病就給這個藥。」','先判病人穩定度、適應症、禁忌與監測需求。'],
+  ['「我只是粗心。」','我錯在：題意／危急度／機制／檢驗／藥物／優先順序／計算／鑑別中的哪一層。']],
+ review:['我選了什麼？','我當時相信哪條規則？','題目哪個證據推翻我？','真正錯因是知識、判讀、優先順序、藥物、檢驗還是題意？','換一個病例還會嗎？','隔天不看答案還會嗎？']
+};
+
+// 國考題型練習題（四選一）。欄位：系統|類型(D藥物/L檢驗/N護理)|題幹|正確選項|誘答1|誘答2|誘答3|解析
+// 正確選項固定寫在第一個，出題時由程式打亂順序。
+const EXAM_RAW = `
+呼吸|D|氣喘病人同時使用支氣管擴張劑與類固醇吸入劑，正確的使用方式為何？|先吸支氣管擴張劑，再吸類固醇，吸完漱口|先吸類固醇，再吸支氣管擴張劑|兩種同時按壓一起吸入|順序沒有差別，吸完不需漱口|先擴張氣道讓類固醇更能到達深部；漱口可預防口腔念珠菌感染與聲音沙啞。
+呼吸|D|服用Rifampin的肺結核病人發現尿液呈橘紅色，護理師最適當的回應為何？|這是藥物造成的正常現象，請繼續規則服藥|可能是血尿，請立即停藥|表示肝功能已受損，需自行減量|表示藥物過量，應暫停數日|Rifampin會使尿液、汗、淚液呈橘紅色，屬正常現象，不可自行停藥。
+呼吸|D|肺結核病人服藥後主訴視力模糊、無法分辨紅綠色，最可能與下列何種藥物有關？|Ethambutol|Isoniazid|Rifampin|Pyrazinamide|Ethambutol可引起視神經炎，需定期檢查視力與辨色力。
+呼吸|D|使用Aminophylline的病人出現噁心、嘔吐、心悸與躁動不安，護理師首先應懷疑下列何者？|茶鹼中毒|藥物劑量不足|氣喘惡化|低血糖|茶鹼治療窗窄，早期中毒徵象為腸胃症狀與心搏過速，嚴重時心律不整、抽搐。
+呼吸|D|有關Isoniazid（INH）之護理指導，下列何者正確？|併用維生素B6以預防周邊神經炎|尿液會變成橘紅色屬正常|需定期檢查辨色力|治療期間可飲酒不影響肝臟|INH會造成B6缺乏引起周邊神經炎，並具肝毒性，應避免飲酒。
+呼吸|L|動脈血液氣體分析：pH 7.30、PaCO₂ 58 mmHg、HCO₃⁻ 26 mEq/L，最可能為下列何者？|呼吸性酸中毒|代謝性酸中毒|呼吸性鹼中毒|代謝性鹼中毒|pH下降且PaCO₂上升、HCO₃⁻在正常範圍，為（未代償的）呼吸性酸中毒。
+呼吸|L|因焦慮而過度換氣的病人，其動脈血液氣體分析最可能呈現下列何者？|pH上升、PaCO₂下降|pH下降、PaCO₂上升|pH下降、HCO₃⁻下降|pH上升、HCO₃⁻上升|過度換氣排出過多CO₂，造成呼吸性鹼中毒。
+呼吸|L|收集肺結核病人痰液抗酸菌檢體，下列何者正確？|清晨漱口後深咳出痰液，連續收集3套|飯後立即收集|收集口水即可|任何時間收集1套即可|清晨痰液濃度最高；需為深部咳出的痰而非唾液，通常連續送驗3套。
+呼吸|L|慢性阻塞性肺疾病（COPD）合併CO₂滯留的病人給氧原則，下列何者最適當？|低流量給氧，維持SpO₂約88–92%|高流量給氧，維持SpO₂ 100%|完全不可給予氧氣|長期以非再吸入型面罩15 L/min給氧|過高濃度氧氣可能使CO₂滯留惡化，應滴定給氧至目標範圍。
+呼吸|N|有關胸腔引流系統之照護，下列何者正確？|引流瓶須低於胸部，維持管路通暢與密閉|常規每小時夾管一次|引流瓶可掛於床欄高於胸部|運送病人時一律夾管|引流瓶高於胸部會造成逆流；常規夾管可能導致張力性氣胸。
+呼吸|N|氣喘急性發作的病人，下列哪一項評估發現最為危急？|原本明顯的哮鳴音消失，呼吸音幾乎聽不到|呼氣時出現哮鳴音|呼吸28次/分|能說完整句子但顯得焦慮|「寂靜肺」表示氣流嚴重受阻，是呼吸衰竭的前兆。
+呼吸|N|指導COPD病人採噘嘴式呼吸，其主要目的為何？|延長呼氣時間，防止小氣道過早塌陷|增加吸氣量以快速提高血氧|減少痰液產生|訓練吸氣肌的力量|噘嘴呼氣可維持氣道內正壓，幫助排出滯留的氣體。
+心血管|D|給予Digoxin前，測得成人病人心尖脈52次/分，最適當的處置為何？|暫停給藥並通知醫師|照常給藥|先給半量|30分鐘後再量，正常則給兩倍劑量|Digoxin會減慢心跳，成人心尖脈低於60次/分應暫停給藥並通報。
+心血管|D|使用Digoxin的病人，下列何種電解質異常最容易誘發毒性？|低血鉀|高血鉀|低血鈉|高血鎂|低血鉀會增加Digoxin與Na/K ATPase的結合，使毒性上升；併用利尿劑者尤需注意。
+心血管|D|有關舌下Nitroglycerin之衛教，下列何者正確？|胸痛時每5分鐘含1顆，連續3顆未緩解應立即就醫|可放在透明藥盒方便取用|含藥後頭痛表示過敏需停藥|應以開水整顆吞服|NTG需避光保存於棕色瓶；頭痛為血管擴張的常見副作用；舌下含服才能快速吸收。
+心血管|D|服用Warfarin病人的飲食指導，下列何者正確？|深綠色蔬菜攝取量維持穩定即可，不需完全禁食|應完全禁食所有蔬菜|大量攝取菠菜可增強藥效|飲食與藥效無關|富含維生素K的食物會降低Warfarin效果，重點是攝取量穩定。
+心血管|D|接受Heparin持續靜脈滴注的病人，應監測的檢驗與其解毒劑分別為何？|aPTT；Protamine sulfate|PT/INR；Vitamin K|血小板；Vitamin K|出血時間；Calcium gluconate|未分段肝素以aPTT（或anti-Xa）監測，解毒劑為Protamine；Warfarin才是INR與Vitamin K。
+心血管|L|下列何項檢驗對診斷急性心肌梗塞最具專一性？|Troponin|CK|LDH|AST|Troponin為心肌專一的損傷標記；仍需配合症狀、心電圖與動態變化判讀。
+心血管|L|高血鉀病人的心電圖最典型的變化為何？|T波高而尖|出現明顯U波|PR間期縮短|ST段上升合併病理性Q波|高血鉀：T波高尖、QRS變寬；低血鉀才是U波與T波變平。
+心血管|L|服用Warfarin的心房顫動病人，INR為5.2，目前無出血。最適當的處置為何？|暫停給藥並通知醫師，觀察出血徵象|照常給藥|加倍劑量|給予Protamine sulfate|INR過高表示出血風險上升，應暫停並通報；Warfarin的拮抗劑是Vitamin K。
+心血管|L|心衰竭病人使用Furosemide治療，最需注意下列何項檢驗變化？|血鉀下降|血鈣上升|血糖下降|血紅素下降|Loop利尿劑會排出鉀、鎂，低血鉀可誘發心律不整並增加Digoxin毒性。
+心血管|N|下列何者為左心衰竭的主要臨床表徵？|端坐呼吸、肺部濕囉音|下肢水腫、頸靜脈怒張|肝腫大、腹水|體重增加、食慾不振|左心衰竭造成肺鬱血；其餘選項為右心衰竭造成的體循環鬱血表現。
+心血管|N|急性肺水腫的病人，最適當的臥位為何？|高坐臥並讓雙腳下垂|平躺並抬高下肢|垂頭仰臥式|左側臥|坐姿雙腳下垂可減少靜脈回流、降低前負荷並改善呼吸。
+心血管|N|經股動脈心導管檢查後的護理，下列何者正確？|穿刺側下肢保持平直，定時評估穿刺處與足背動脈搏動|鼓勵立即下床活動|穿刺側髖關節多做屈曲運動|嚴格限制水分攝取|需預防出血與血栓；若無禁忌應鼓勵喝水以排出顯影劑。
+感染|D|Vancomycin輸注中，病人出現臉頸潮紅與搔癢，生命徵象穩定。護理師的首要處置為何？|減慢輸注速度並通知醫師|立即給予Epinephrine|維持原速率，這是正常反應|改為靜脈推注儘快給完|此為輸注過快引起的紅人症候群，應減慢速度（輸注至少60分鐘），並與真正過敏鑑別。
+感染|D|使用Gentamicin的病人，最需監測下列何種副作用？|腎毒性與耳毒性|肝毒性與視神經炎|骨髓抑制與肺纖維化|牙齦增生與多毛|Aminoglycoside類需追蹤腎功能、尿量、聽力與血中濃度。
+感染|D|有關服用Metronidazole之衛教，下列何者最重要？|治療期間與停藥後數日內避免飲酒|需嚴格避免日曬|應與牛奶併服|尿色變深表示必須停藥|與酒精併用會產生類disulfiram反應（潮紅、噁心嘔吐、心悸）。
+感染|D|首次注射Penicillin前，護理師最重要的評估為何？|藥物過敏史|飲食習慣|身高體重|睡眠型態|Penicillin可能引起過敏性休克，給藥前必須確認過敏史，給藥後觀察至少30分鐘。
+感染|D|手術預防性抗生素最適當的給藥時機為何？|劃刀前60分鐘內|手術前一天晚上|手術結束後立即|傷口縫合時|劃刀時組織內需達到有效藥物濃度，故於劃刀前60分鐘內給予。
+感染|L|疑似敗血症的病人，血液培養與抗生素的執行順序為何？|先採血液培養再給抗生素，但不可延誤給藥|先給抗生素，隔日再採檢|等退燒後再採檢|只需採集一套即可|抗生素會降低培養陽性率；應由不同部位採至少兩套，並儘速給藥。
+感染|L|化學治療後病人WBC 1,200/µL、嗜中性球25%，其嗜中性球絕對值（ANC）與意義為何？|300/µL，屬嚴重嗜中性球低下，需保護隔離|1,200/µL，屬正常|900/µL，屬輕度低下|3,000/µL，表示正在感染|ANC＝1,200×25%＝300/µL；低於500/µL感染風險極高。
+感染|L|檢驗結果：HBsAg(−)、Anti-HBs(+)、Anti-HBc(−)，最可能代表下列何者？|曾接種疫苗而具有免疫力|急性B型肝炎|慢性B型肝炎帶原|曾自然感染後痊癒|只有表面抗體陽性為疫苗免疫；自然感染痊癒者Anti-HBc也會陽性。
+感染|L|留置導尿管的病人需收集尿液培養檢體，下列何者正確？|消毒採檢口後以無菌空針抽取|由尿袋出口倒出|分開導尿管與引流管接頭收集|拔除導尿管後請病人自解|尿袋內的尿液已受污染；分開接頭會破壞密閉系統。
+感染|N|開放性肺結核病人的隔離措施，下列何者正確？|負壓隔離病室，進入者配戴N95口罩|一般病室，配戴外科口罩即可|接觸隔離，穿隔離衣即可|保護隔離，安排正壓病室|結核屬空氣傳染，需負壓隔離與N95口罩。
+感染|N|照護困難梭狀桿菌（C. difficile）感染病人後，最適當的手部衛生方式為何？|以肥皂和清水濕洗手|使用酒精性乾洗手液即可|有戴手套就不需洗手|只用清水沖洗|酒精對孢子效果不佳，需以肥皂與清水搓洗將孢子沖離。
+感染|N|下列何種疾病需採取空氣傳染防護措施？|麻疹|流行性感冒|疥瘡|MRSA感染|空氣傳染：結核、麻疹、水痘；流感為飛沫；疥瘡與MRSA為接觸。
+泌尿|D|高血鉀合併心電圖變化的病人，給予Calcium gluconate的主要目的為何？|穩定心肌細胞膜，預防致命性心律不整|將鉀離子移入細胞內|促進鉀由腎臟排出|在腸道與鉀結合後由糞便排出|鈣不會降低血鉀；移入細胞靠Insulin＋葡萄糖，排出體外靠樹脂、利尿劑或透析。
+泌尿|D|有關氯化鉀（KCl）靜脈補充，下列何者正確？|須稀釋後以輸液幫浦緩慢滴注，不可靜脈推注|可直接靜脈推注以快速矯正|無尿的病人應加速補充|可加入輸液後全速滴完|KCl靜脈推注會造成心跳停止；給藥前需確認尿量足夠。
+泌尿|D|慢性腎臟病病人以Calcium carbonate作為磷結合劑，最適當的服用時間為何？|隨餐服用|空腹服用|睡前服用|飯後2小時服用|隨餐服用才能與食物中的磷結合，減少吸收。
+泌尿|D|接受紅血球生成素（EPO）治療的透析病人，最需監測下列何者？|血壓|體溫|血糖|呼吸速率|EPO常見副作用為血壓上升與血栓，Hb也不宜矯正過高。
+泌尿|D|良性攝護腺肥大病人開始服用Tamsulosin，最重要的衛教為何？|姿勢改變要緩慢，預防姿勢性低血壓|需嚴格限制水分|服藥後尿液會變紅|服藥後應立即活動促進吸收|α1阻斷劑會造成姿勢性低血壓與頭暈，需預防跌倒。
+泌尿|L|下列何項檢驗較不受飲食蛋白質與水分狀態影響，較能反映腎功能？|Creatinine|BUN|尿比重|尿酸|BUN會受脫水、腸胃道出血與蛋白質攝取影響；Creatinine相對穩定。
+泌尿|L|手術後病人體重60公斤，過去2小時尿量共30 mL。下列判讀與處置何者正確？|低於0.5 mL/kg/hr，需評估並通報|屬正常範圍|屬於多尿|應立即限制水分|60公斤每小時至少應有30 mL；此病人每小時僅15 mL，需評估灌流與管路是否阻塞。
+泌尿|L|慢性腎臟病第5期病人常見的檢驗變化為何？|血鉀上升、血磷上升、血鈣下降|血鉀下降、血磷下降、血鈣上升|血鉀上升、血磷下降、血鈣上升|血鉀下降、血磷上升、血鈣上升|腎臟無法排鉀與磷，活性維生素D不足使血鈣下降，並可能出現代謝性酸中毒與貧血。
+泌尿|L|糖尿病腎病變最早出現的檢驗異常為何？|微量白蛋白尿|血清肌酸酐上升|BUN上升|肉眼血尿|糖尿病人應每年篩檢尿液白蛋白/肌酸酐比值（UACR）。
+泌尿|N|有關血液透析動靜脈瘻管的照護，下列何者正確？|每日觸摸震顫感，患肢避免量血壓與抽血|患肢可提重物以促進血流|睡覺時可壓在患肢上|可在患肢進行靜脈輸液|需保護瘻管通暢，避免壓迫、穿刺與提重物。
+泌尿|N|腹膜透析病人主訴腹痛，引流液呈混濁狀，最可能的問題為何？|腹膜炎|脫水|透析不足|正常現象|引流液混濁合併腹痛、發燒為腹膜炎的典型表現，需留取檢體並通報。
+泌尿|N|經尿道攝護腺切除術（TURP）後持續膀胱沖洗，引流液轉為鮮紅色並有血塊。最適當的處置為何？|加快沖洗速度並通知醫師|停止沖洗|夾住導尿管|減慢沖洗速度|加快沖洗可避免血塊阻塞導尿管；需同時監測生命徵象與出入量。
+消化|D|肝性腦病病人使用Lactulose，下列何者表示達到治療效果？|每日2–3次軟便且意識改善|每日1次硬便|數日未排便|每日水瀉10次以上|Lactulose酸化腸道使氨排出；過度腹瀉會造成脫水與電解質不平衡。
+消化|D|有關Sucralfate的服用時間，下列何者正確？|飯前1小時及睡前空腹服用|飯後立即服用|與制酸劑同時服用|隨餐服用|需在酸性環境下於潰瘍表面形成保護膜，並與其他藥物間隔約2小時。
+消化|D|含鋁與含鎂制酸劑的常見副作用，下列配對何者正確？|鋁—便秘；鎂—腹瀉|鋁—腹瀉；鎂—便秘|兩者皆為腹瀉|兩者皆為便秘|因此常製成鋁鎂複方；腎功能不全者應避免含鎂製劑。
+消化|D|病人注射Metoclopramide後出現頸部歪斜、眼球上吊，最可能為下列何者？|錐體外症候群（急性肌張力異常）|過敏性休克|血清素症候群|低血糖反應|Metoclopramide阻斷多巴胺D2受體，可引起EPS，應停藥通報並可給抗膽鹼藥。
+消化|D|食道靜脈曲張出血的病人使用Octreotide，主要目的為何？|降低門脈壓力以減少出血|中和胃酸|直接促進血液凝固|根除幽門螺旋桿菌|體抑素類似物可減少內臟血流、降低門脈壓。
+消化|L|下列何項檢驗對急性胰臟炎的診斷較具專一性？|Lipase|AST|ALP|Albumin|Lipase較Amylase專一且持續時間較久。
+消化|L|總膽管結石造成阻塞的病人，最可能出現下列何種表現？|直接型膽紅素上升、灰白色糞便、茶色尿|間接型膽紅素上升、糞便顏色加深|膽紅素正常、黑便|間接型膽紅素上升、尿色正常|結合型膽紅素無法排入腸道而逆流入血並由尿液排出。
+消化|L|肝硬化病人血清白蛋白2.3 g/dL，與此數值最相關的臨床表徵為何？|腹水與下肢水腫|黃疸|蜘蛛狀血管瘤|撲翼樣震顫|白蛋白下降使血漿膠體滲透壓降低，水分滲出血管外。
+消化|L|上消化道出血病人BUN明顯上升而Creatinine正常，最可能的原因為何？|血液中的蛋白質在腸道被消化吸收|急性腎衰竭|肝衰竭|蛋白質攝取不足|腸道內血液被分解吸收使BUN上升，脫水也會加重此現象。
+消化|N|腹部身體評估的正確順序為何？|視診→聽診→叩診→觸診|視診→觸診→叩診→聽診|聽診→視診→觸診→叩診|觸診→視診→聽診→叩診|叩診與觸診會改變腸蠕動音，因此聽診要在前。
+消化|N|胃切除術後預防傾倒症候群的飲食指導，下列何者正確？|少量多餐、用餐時不喝湯水、餐後平躺休息|採高醣流質飲食|餐後立即散步|用餐時多喝水幫助吞嚥|減緩食物快速進入小腸；應採低醣、高蛋白、適量脂肪飲食。
+消化|N|急性胰臟炎病人疼痛時，下列何種姿勢較能緩解疼痛？|側臥屈膝或坐姿前傾|平躺雙腿伸直|俯臥|垂頭仰臥式|屈膝前傾可減少腹膜後張力；平躺常使疼痛加劇。
+神經|D|有關靜脈注射Phenytoin，下列何者正確？|只能以生理食鹽水稀釋並緩慢給予|應以5%葡萄糖液稀釋|可快速推注以儘速止痙|可與其他藥物同一管路混合輸注|Phenytoin遇葡萄糖液會沉澱；給藥過快會造成低血壓與心律不整。
+神經|D|長期服用Phenytoin的病人，下列衛教何者最適當？|加強口腔衛生並定期牙科檢查|需嚴格避免日曬|多攝取高鉀食物|發作停止後可自行停藥|Phenytoin常見牙齦增生；抗癲癇藥不可自行驟停。
+神經|D|使用Mannitol降低顱內壓，下列何者正確？|有結晶時需加溫溶解，並使用含過濾器的輸液套|有結晶可直接輸注|輸注期間不需監測尿量|應以極慢速度24小時連續滴注|Mannitol為滲透性利尿劑，需監測出入量、電解質與血清滲透壓。
+神經|D|服用Levodopa的巴金森病病人，下列衛教何者正確？|避免與高蛋白食物同時服用|應與高蛋白飲食併服以增加吸收|症狀改善即可停藥|起床動作越快越好|蛋白質會與Levodopa競爭吸收；藥物可致姿勢性低血壓，姿勢改變要慢。
+神經|D|重症肌無力病人服用Pyridostigmine的最佳時間為何？|飯前30–60分鐘|飯後立即|每日睡前一次|感覺無力時才服用|使藥效高峰落在用餐時，改善咀嚼吞嚥並降低嗆咳；需準時服藥。
+神經|D|顱內壓升高的病人應避免使用下列何種輸液？|5%葡萄糖液（D5W）|0.9%生理食鹽水|3%食鹽水|Mannitol|D5W輸入後葡萄糖被代謝，形同給予自由水，會加重腦水腫。
+神經|L|細菌性腦膜炎病人的腦脊髓液檢查，最可能呈現下列何者？|外觀混濁、蛋白質上升、葡萄糖下降|外觀清澈、蛋白質與葡萄糖正常|外觀清澈、蛋白質下降、葡萄糖上升|外觀血性、葡萄糖上升|細菌消耗葡萄糖並引起發炎，另可見壓力上升與嗜中性球增加。
+神經|L|意識不清被送至急診的病人，下列何項快速檢查應最優先執行？|血糖|血脂肪|甲狀腺功能|尿酸|低血糖可迅速造成意識改變且能立即矯正，應優先排除。
+神經|L|低血鈉矯正速度過快，最可能造成下列何種合併症？|滲透性去髓鞘症候群|腦水腫|高血鉀|肺栓塞|血鈉上升過快使腦細胞脫水、髓鞘受損，故需緩慢矯正並頻繁追蹤血鈉。
+神經|L|下列何者為腰椎穿刺的禁忌？|顱內壓明顯升高|發燒|頭痛|頸部僵硬|顱內壓升高時抽取腦脊髓液可能造成腦疝。
+神經|N|顱內壓升高病人的護理措施，下列何者正確？|床頭抬高30度，頭頸維持正中|採垂頭仰臥式|鼓勵用力咳嗽排痰|髖關節屈曲超過90度|促進靜脈回流；咳嗽、用力與髖部過度屈曲都會使顱內壓上升。
+神經|N|病人癲癇大發作當下，護理師最適當的處置為何？|移開周圍危險物品，協助側臥並維持呼吸道通暢|將壓舌板塞入口中|用力約束四肢|立即餵水服藥|發作時不可強行塞物或約束，應防受傷並記錄發作時間與型態。
+神經|N|顱內壓升高晚期出現的庫欣氏三徵象（Cushing's triad）為何？|收縮壓上升且脈壓變寬、心跳變慢、呼吸不規則|血壓下降、心跳變快、呼吸變快|血壓上升、心跳變快、體溫下降|血壓下降、心跳變慢、呼吸深快|為腦幹受壓的危急徵象，需立即通報。
+內分泌|D|混合抽取Regular insulin與NPH insulin時，正確的順序為何？|先抽Regular insulin（清澈），再抽NPH（混濁）|先抽NPH，再抽Regular insulin|順序沒有影響|兩者不可混合|先清後濁，避免中效胰島素污染短效胰島素藥瓶。
+內分泌|D|下列何種胰島素可經靜脈給予？|Regular insulin|NPH insulin|Insulin glargine|Insulin detemir|短效Regular insulin為澄清溶液，是DKA靜脈滴注的標準用藥。
+內分泌|D|服用抗甲狀腺藥物（Methimazole）的病人出現發燒與喉嚨痛，最適當的指導為何？|立即回診檢查白血球|多喝水多休息即可|自行購買感冒藥服用|將藥物加倍服用|需警覺顆粒性白血球缺乏症，為嚴重副作用。
+內分泌|D|有關Levothyroxine的衛教，下列何者正確？|每日早晨空腹服用，需長期規則服藥|症狀改善後即可停藥|與鈣片、鐵劑同時服用|睡前與牛奶一起服用|鈣、鐵、制酸劑會影響吸收，需間隔約4小時；甲狀腺低下通常需終身補充。
+內分泌|D|長期服用類固醇的病人，下列衛教何者正確？|不可自行突然停藥|感染發燒時應先自行停藥|空腹服用可增加療效|不需注意血糖變化|長期使用會抑制腎上腺，驟停可能引發腎上腺危象；壓力情境反而需依醫囑加量。
+內分泌|L|糖化血色素（HbA1c）反映的是多久的平均血糖？|過去2–3個月|過去24小時|過去1週|過去1年|與紅血球壽命約120天有關，不適合用來判斷急性血糖變化。
+內分泌|L|糖尿病酮酸中毒（DKA）病人的檢驗結果，最可能為下列何者？|血糖升高、酮體陽性、pH下降、HCO₃⁻下降|血糖下降、酮體陰性、pH正常|pH上升、HCO₃⁻上升|血糖正常、PaCO₂上升|DKA為高陰離子間隙代謝性酸中毒，並常見Kussmaul呼吸代償。
+內分泌|L|原發性甲狀腺機能低下的檢驗結果為何？|TSH上升、Free T4下降|TSH下降、Free T4上升|TSH與Free T4皆上升|TSH與Free T4皆下降|甲狀腺素不足使腦下垂體回饋性分泌更多TSH。
+內分泌|L|愛迪生氏病（Addison's disease）病人常見的電解質變化為何？|低血鈉、高血鉀|高血鈉、低血鉀|高血鈉、高血鉀|低血鈉、低血鉀|醛固酮不足使鈉流失、鉀滯留，並伴隨低血壓與低血糖。
+內分泌|N|意識清醒的糖尿病病人冒冷汗、手抖，血糖55 mg/dL。首要處置為何？|立即給予15公克單醣，15分鐘後複測血糖|靜脈注射胰島素|給予無糖飲料|請病人臥床休息觀察1小時|此為15-15原則；意識不清者才改用靜脈葡萄糖或肌肉注射Glucagon。
+內分泌|N|糖尿病病人的足部照護，下列何者正確？|每日檢查雙足，穿合腳鞋襪，不赤腳行走|用熱水泡腳促進血液循環|雞眼與厚繭可自行修剪|趾甲應剪成圓弧並剪短貼肉|感覺神經病變使病人不易察覺燙傷與傷口；趾甲應平剪。
+內分泌|N|甲狀腺切除術後病人主訴口唇周圍麻木、手足抽搐，最可能的原因為何？|副甲狀腺受損導致低血鈣|甲狀腺風暴|喉返神經受損|傷口出血|應備妥Calcium gluconate；喉返神經受損表現為聲音沙啞。
+血液腫瘤|D|有關口服鐵劑的衛教，下列何者正確？|與維生素C併服可增加吸收，解黑便屬正常|與牛奶併服可保護胃|可與茶一起服用|出現黑便須立即停藥|茶、咖啡、牛奶與制酸劑會降低鐵吸收。
+血液腫瘤|D|使用Cyclophosphamide的病人，預防出血性膀胱炎最重要的措施為何？|增加水分攝取並勤排尿|限制水分攝取|安排於睡前給藥以減少排尿|憋尿以訓練膀胱|代謝物會刺激膀胱黏膜，需大量水化，並可依醫囑併用Mesna。
+血液腫瘤|D|使用Doxorubicin的病人，最需監測下列何種毒性？|心臟毒性|出血性膀胱炎|周邊神經病變|肺纖維化|與累積劑量相關，治療前後需評估左心室射出分率；尿液呈紅色為正常。
+血液腫瘤|D|Vincristine最常見的毒性為何？|周邊神經病變與便秘|心臟毒性|出血性膀胱炎|聽力受損|Vincristine影響神經微小管，可造成麻木、腱反射下降與麻痺性腸阻塞。
+血液腫瘤|D|高劑量Methotrexate治療後給予Leucovorin的目的為何？|保護正常細胞，降低毒性|增強抗癌效果|預防噁心嘔吐|預防過敏反應|Leucovorin為活性葉酸，可解救正常細胞，稱為leucovorin rescue。
+血液腫瘤|L|缺鐵性貧血的檢驗結果，下列何者最符合？|MCV下降、Ferritin下降、TIBC上升|MCV上升、Ferritin上升|MCV下降、TIBC下降|MCV正常、Ferritin上升|缺鐵為小球性貧血，鐵儲存量下降而運鐵蛋白結合能力上升。
+血液腫瘤|L|血小板15,000/µL的病人，下列護理措施何者正確？|避免肌肉注射與量肛溫，使用軟毛牙刷|鼓勵使用牙線清潔|可使用刀片式刮鬍刀|便秘時給予甘油球灌腸|血小板低於20,000/µL有自發性出血風險，應避免任何造成黏膜損傷的處置。
+血液腫瘤|L|瀰漫性血管內凝血（DIC）的檢驗結果，下列何者最符合？|血小板下降、Fibrinogen下降、PT/aPTT延長、D-dimer上升|血小板上升、Fibrinogen上升|PT縮短、D-dimer下降|血小板正常、僅aPTT縮短|凝血因子與血小板被大量消耗，同時纖維蛋白分解產物增加。
+血液腫瘤|L|化學治療後骨髓抑制的最低點（nadir）通常出現在何時？|化療後約7–14天|化療當天|化療後1個月|化療後3個月|此期間感染與出血風險最高，需加強防護與監測。
+血液腫瘤|N|輸血開始15分鐘後，病人出現寒顫、腰痛與血壓下降。首要處置為何？|立即停止輸血，更換管路並以生理食鹽水維持靜脈通路|減慢輸血速度繼續觀察|給退燒藥後繼續輸血|立即拔除靜脈留置針|疑似急性溶血反應；需保留血袋與管路送驗並通報。
+血液腫瘤|N|有關輸血的護理，下列何者正確？|血品只能與生理食鹽水使用同一管路|可與5%葡萄糖液同時輸注|可將藥物加入血袋內|血袋可於室溫放置8小時後再輸|葡萄糖液會造成溶血；每袋血應於4小時內輸完。
+血液腫瘤|N|周邊靜脈輸注起疱性化療藥物時發生外滲，首要處置為何？|立即停止輸注，保留針頭並回抽殘餘藥物|繼續輸注並局部熱敷|立即拔針並用力按壓|加快輸注速度以沖淡藥物|之後依藥物種類給予解毒劑與冰敷或熱敷，並通報、記錄。
+產兒|D|接受硫酸鎂治療的子癇前症產婦，下列何項發現需立即停藥並通報？|膝反射消失、呼吸10次/分|尿量每小時50 mL|呼吸16次/分|臉部潮紅與溫熱感|鎂中毒徵象依序為反射消失、呼吸抑制、心跳停止；潮紅溫熱為常見反應。
+產兒|D|硫酸鎂中毒的解毒劑為何？|Calcium gluconate|Protamine sulfate|Naloxone|Vitamin K|使用硫酸鎂時床旁應備妥Calcium gluconate。
+產兒|D|Oxytocin催生中，子宮收縮持續100秒且胎心音出現晚期減速。首要處置為何？|立即停止Oxytocin輸注|加快滴注速度|協助產婦平躺|準備灌腸|子宮過度刺激造成胎盤灌流不足；接著左側臥、給氧、加快主輸液並通報。
+產兒|D|產後出血給予Methylergonovine前，必須先評估下列何者？|血壓|體溫|血糖|尿量|麥角類藥物會使血管收縮，高血壓或子癇前症者禁用。
+產兒|D|有關Rh免疫球蛋白（RhoGAM），下列何者正確？|用於Rh陰性且尚未致敏的母親，產後72小時內給予|用於Rh陽性的母親|應注射在新生兒身上|間接Coombs試驗陽性者才需要給予|間接Coombs陽性表示已致敏，給藥已無預防效果。
+產兒|D|兒童病毒感染發燒時應避免使用Aspirin，主要是為了預防下列何者？|雷氏症候群（Reye's syndrome）|川崎病|腸套疊|熱痙攣|雷氏症候群會造成急性腦病變與肝衰竭；兒童退燒建議使用Acetaminophen。
+產兒|L|妊娠糖尿病的篩檢（口服葡萄糖耐受試驗）建議於何時進行？|妊娠24–28週|妊娠8–12週|妊娠16–20週|妊娠34–36週|此時胎盤荷爾蒙造成的胰島素阻抗漸趨明顯。
+產兒|L|新生兒出生後18小時，皮膚與鞏膜出現黃疸。最適當的判斷為何？|屬病理性黃疸，需立即通報評估|屬生理性黃疸，觀察即可|屬母乳性黃疸|為正常膚色變化|出生24小時內出現的黃疸為病理性，需排除血型不合溶血等原因。
+產兒|L|孕婦乙型鏈球菌（GBS）篩檢的建議時間為何？|妊娠35–37週|妊娠12週|妊娠20週|待產時|篩檢陽性者於待產時給予預防性抗生素，以預防新生兒早發型感染。
+產兒|L|子癇前症的診斷依據，下列何者最符合？|妊娠20週後血壓≥140/90 mmHg合併蛋白尿|妊娠20週前出現高血壓|僅有下肢水腫|血糖升高|妊娠20週前即有的高血壓屬慢性高血壓；單純水腫不具診斷意義。
+產兒|N|產後2小時，產婦子宮底柔軟、位於臍上2指且惡露量多。首要處置為何？|按摩子宮底並評估膀胱是否脹滿|協助下床活動|給予止痛藥|冰敷會陰|子宮收縮不良是產後出血最常見原因；膀胱脹滿會妨礙子宮收縮。
+產兒|N|待產婦破水後，於陰道口見到臍帶脫出。首要處置為何？|協助採膝胸臥位，戴無菌手套將先露部往上推|將臍帶推回陰道內|鼓勵產婦用力|協助下床走動|目的是解除臍帶受壓；不可將臍帶推回，並準備緊急剖腹產。
+產兒|N|新生兒接受照光治療時，下列護理措施何者正確？|遮蓋眼睛與生殖器，定時翻身並監測體溫|穿著衣物並以包巾包裹|限制餵食次數|全身塗抹乳液保濕|需裸露皮膚增加照光面積；增加餵食可促進膽紅素由糞便排出，乳液可能造成灼傷。
+精神|D|服用Haloperidol的病人出現高燒、肌肉僵硬與意識混亂，最可能為下列何者？|抗精神病藥物惡性症候群（NMS）|急性肌張力異常|遲發性運動障礙|靜坐不能|NMS為致命性急症，需立即停藥、降溫、輸液並通報。
+精神|D|服用Clozapine的病人必須定期監測下列何者？|白血球與嗜中性球數|血中藥物濃度|聽力|視力|Clozapine可引起顆粒性白血球缺乏症。
+精神|D|有關鋰鹽（Lithium）的衛教，下列何者正確？|維持正常的鹽分與水分攝取|應採低鈉飲食|應限制水分|大量流汗時不需補充水分|低鈉或脫水時腎臟會增加鋰的再吸收，容易中毒。
+精神|D|下列何者為鋰鹽中毒的早期徵象？|嘔吐、腹瀉、粗大手抖|便秘、口乾|體重減輕、失眠|皮疹、發燒|進一步會出現步態不穩、意識混亂與抽搐；輕微細顫則可為常見副作用。
+精神|D|有關選擇性血清素再吸收抑制劑（SSRI）的衛教，下列何者正確？|約需2–4週才出現療效，不可自行停藥|服藥當天即可見效|心情好轉後即可停藥|需避免含酪胺的食物|治療初期體力先恢復時自殺風險可能上升；酪胺飲食限制是針對MAOI。
+精神|D|服用單胺氧化酶抑制劑（MAOI）的病人，應避免下列何類食物？|起司、醃製發酵食品、紅酒|新鮮蔬菜|白飯|新鮮水果|富含酪胺（tyramine）的食物會引發高血壓危象。
+精神|L|鋰鹽維持治療的血中濃度範圍為何？|0.6–1.2 mEq/L|0.1–0.5 mEq/L|1.5–2.5 mEq/L|2.5–3.5 mEq/L|超過1.5 mEq/L中毒風險明顯上升；抽血時間為末次服藥後約12小時。
+精神|L|長期服用Olanzapine的病人，應定期追蹤下列何者？|體重、血糖、血脂|白血球分類|甲狀腺功能|聽力檢查|非典型抗精神病藥常見代謝症候群。
+精神|L|服用Clozapine的病人嗜中性球絕對值明顯偏低並出現發燒，最適當的處置為何？|暫停給藥並立即通報醫師|繼續給藥並給予退燒藥|增加藥物劑量|下次回診時再告知醫師|可能為顆粒性白血球缺乏合併感染，屬緊急狀況。
+精神|N|病人說：「有人在我的飯菜裡下毒。」護理師最適當的回應為何？|「你覺得飯菜被下毒，這讓你很害怕；我沒有看到這樣的情形。」|「不可能，沒有人會害你。」|「是誰下的毒？我幫你查。」|「你不要想太多。」|對妄想不爭辯也不附和，接納其感受並提供現實感。
+精神|N|評估憂鬱症病人的自殺危險性，下列何者最適當？|直接詢問是否有自殺的想法與計畫|避免談論自殺以免誘發|轉移話題談愉快的事|向病人保證一切都會變好|直接詢問不會誘發自殺，反而能評估危險程度並讓病人感到被理解。
+精神|N|躁症發作病人的護理措施，下列何者最適當？|提供低刺激環境與可隨手取食的高熱量食物|安排競爭性的團體活動|與病人辯論其誇大的想法|鼓勵參加熱鬧的多人活動|需減少刺激、補充熱量與水分，並給予一致的設限。
+精神|N|服用抗精神病藥物的病人坐立不安、不停來回踱步，最可能為下列何者？|靜坐不能（akathisia）|急性肌張力異常|遲發性運動障礙|類巴金森氏症|容易被誤認為精神症狀惡化而加藥，需仔細鑑別。
+疼痛急救|D|過敏性休克的第一線治療藥物為何？|Epinephrine肌肉注射|Diphenhydramine靜脈注射|Hydrocortisone靜脈注射|Salbutamol吸入|Epinephrine應注射於大腿前外側；抗組織胺與類固醇為輔助治療。
+疼痛急救|D|使用嗎啡止痛的病人呼吸8次/分、嗜睡難以叫醒。應準備下列何種藥物？|Naloxone|Flumazenil|Atropine|Protamine sulfate|Naloxone為鴉片類拮抗劑；其作用時間短，給藥後仍需持續觀察。
+疼痛急救|D|Acetaminophen過量中毒的解毒劑為何？|N-acetylcysteine|Naloxone|Vitamin K|Flumazenil|N-acetylcysteine可補充glutathione以保護肝臟。
+疼痛急救|D|有關Fentanyl經皮貼片的衛教，下列何者正確？|每72小時更換，貼片處不可熱敷|每天更換一次|疼痛加劇時可剪半加貼|貼上後立即止痛，適合處理突發痛|熱會加速吸收造成過量；首次貼上需12–24小時才達穩定效果。
+疼痛急救|D|有機磷農藥中毒的解毒劑為何？|Atropine與Pralidoxime（PAM）|Naloxone|Flumazenil|N-acetylcysteine|Atropine對抗膽鹼過度刺激症狀，PAM使乙醯膽鹼酶再活化；處置前須先除污。
+疼痛急救|L|一氧化碳中毒病人的脈衝式血氧飽和度為99%。下列何者正確？|脈衝式血氧計無法分辨一氧化碳血紅素，仍應給予100%氧氣|表示氧合正常，不需給氧|應降低氧氣濃度|表示儀器故障，不需處理|SpO₂會假性正常，需抽血檢驗COHb。
+疼痛急救|L|低血容積性休克病人，下列何者最能即時反映組織灌流狀態？|每小時尿量與乳酸值|白血球數|血糖值|血脂肪|尿量低於0.5 mL/kg/hr與乳酸上升皆表示灌流不足。
+疼痛急救|L|大面積燒傷病人在急性期（48小時內）常見的檢驗變化為何？|血比容上升、血鉀上升|血比容下降、血鉀下降|血比容下降、血鈉上升|檢驗值皆無變化|血漿外滲造成血液濃縮；細胞破壞釋出鉀離子。
+疼痛急救|L|心跳停止時，下列何種心律適合電擊去顫？|心室顫動與無脈性心室頻脈|心搏停止（asystole）|無脈性電氣活動（PEA）|竇性心搏過緩|Asystole與PEA為不可電擊心律，應持續CPR並給予Epinephrine。
+疼痛急救|N|成人心肺復甦術的胸部按壓，下列何者正確？|深度5–6公分，速率每分鐘100–120次|深度2–3公分，速率每分鐘60次|深度8公分，速率每分鐘150次|深度5公分，速率每分鐘80次|並需讓胸廓完全回彈、儘量減少中斷，按壓與通氣比為30:2。
+疼痛急救|N|體重70公斤、燒傷面積40%的成人，依Parkland公式，燒傷後前8小時應輸注的液體量為何？|5,600 mL|11,200 mL|2,800 mL|1,400 mL|4 mL×70 kg×40＝11,200 mL，為24小時總量；前8小時給一半。
+疼痛急救|N|成人軀幹前面與整個右上肢燒傷，依九法則估算的燒傷面積為何？|27%|18%|36%|45%|軀幹前面18%＋單側上肢9%＝27%。
+疼痛急救|N|癌症疼痛的給藥原則，下列何者正確？|按時給藥，並備有突發痛的用藥|痛到無法忍受時才給藥|優先採用肌肉注射|擔心成癮應儘量減少劑量|應以口服為優先、按時、依階梯給藥並個別化調整。
+`;
+
+window.APP = {"mode":"drugs","links":{"sys":"護理國考-六大系統_檢驗藥物連動導航_MAX_v2.html","drugs":"護理國考-真實藥物高頻庫_MAX_v4.html","labs":"護理國考-真實檢驗高頻庫_MAX_v4.html"}};
+(function(){
+'use strict';
+var MODE = window.APP.mode, LINKS = window.APP.links;
+var SYSTEMS = ['呼吸','心血管','感染','泌尿','消化','神經','內分泌','血液腫瘤','產兒','精神','疼痛急救'];
+
+function parse(raw, keys, kind){
+  return raw.trim().split('\n').map(function(line, i){
+    var p = line.split('|'), o = {kind:kind, id:kind+i};
+    keys.forEach(function(k, j){ o[k] = (p[j]||'').trim(); });
+    o.f = +o.f || 3;
+    o.sys = o.s.split('/');
+    o.hay = p.join(' ').toLowerCase();
+    return o;
+  });
+}
+var DRUGS = parse(DRUG_RAW, ['n','z','c','s','f','m','r','k','e','b','t','q','a'], 'drug');
+var LABS  = parse(LAB_RAW,  ['n','c','s','f','v','d','m','k','b','t','q','a'], 'lab');
+var TYPE = {D:'藥物', L:'檢驗', N:'護理'};
+var EXAMS = EXAM_RAW.trim().split('\n').map(function(line, i){
+  var p = line.split('|');
+  return {i:i, s:p[0], t:p[1], q:p[2], o:p.slice(3, 7), x:p[7], hay:line.toLowerCase()};
+}).filter(function(e){ return MODE==='sys' || (MODE==='drugs' ? e.t==='D' : e.t==='L'); });
+var BYID = {};
+DRUGS.concat(LABS).forEach(function(e){ BYID[e.id] = e; });
+
+var TITLE = {sys:'六大系統 × 檢驗 × 藥物｜連動導航', drugs:'真實藥物高頻庫', labs:'真實檢驗高頻庫'}[MODE];
+var EX = ['exam','國考題 '+EXAMS.length];
+var TABS = MODE==='sys' ? [['nav','系統導航'],['lab','檢驗 '+LABS.length],['drug','藥物 '+DRUGS.length],EX,['quiz','病例快問'],['tips','高分秘笈']]
+         : MODE==='drugs' ? [['drug','藥物 '+DRUGS.length],EX,['quiz','病例快問'],['tips','高分秘笈']]
+         : [['lab','檢驗 '+LABS.length],EX,['quiz','病例快問'],['tips','高分秘笈']];
+
+// ---------- 個人紀錄（只存在這台裝置的瀏覽器） ----------
+var KEY = 'nursing-max-v4';
+var store = {fav:{}, known:{}, wrong:{}, compact:false};
+try { var s = JSON.parse(localStorage.getItem(KEY)); if (s) store = Object.assign(store, s); } catch(e){}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e){} }
+function pkey(e){ return e.kind+':'+e.n; }
+
+var st = {tab:TABS[0][0], q:'', sys:'', cat:'', status:'', quiz:null, score:{ok:0, no:0}, exam:null};
+
+// ---------- 小工具 ----------
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function tokens(){ return st.q.toLowerCase().split(/\s+/).filter(Boolean); }
+function hl(s){
+  var out = esc(s), t = tokens();
+  if (!t.length) return out;
+  var re = new RegExp('(' + t.map(function(x){ return esc(x).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|') + ')', 'gi');
+  return out.replace(re, '<mark>$1</mark>');
+}
+function match(hay){ return tokens().every(function(t){ return hay.indexOf(t) >= 0; }); }
+function stars(n){ return '★★★★★'.slice(0, n) + '☆☆☆☆☆'.slice(0, 5-n); }
+function $(id){ return document.getElementById(id); }
+function find(kind, key){
+  var list = kind==='drug' ? DRUGS : LABS;
+  for (var i=0;i<list.length;i++) if (list[i].n.indexOf(key) === 0) return list[i];
+  for (i=0;i<list.length;i++) if (list[i].n.indexOf(key) > 0) return list[i];
+  return null;
+}
+
+// ---------- 卡片 ----------
+function row(label, val, cls){ return val ? '<div class="row '+(cls||'')+'"><dt>'+label+'</dt><dd>'+hl(val)+'</dd></div>' : ''; }
+function card(e){
+  var k = pkey(e), isDrug = e.kind==='drug';
+  var rows = isDrug
+    ? row('機制', e.m) + row('重要風險', e.r) + row('護理監測', e.k) + row('最常考', e.e)
+    : row('參考值', e.v, 'range') + row('異常方向', e.d) + row('代表', e.m) + row('護理重點', e.k);
+  return '<article class="card '+e.kind+(store.known[k]?' known':'')+'" data-id="'+e.id+'">'
+    + '<div class="head" data-act="open"><h3>'+hl(e.n)+(isDrug && e.z ? '<small>'+hl(e.z)+'</small>' : '')+'</h3><span class="stars" title="學習優先級">'+stars(e.f)+'</span></div>'
+    + '<div class="tags"><span class="tag cat">'+hl(e.c)+'</span>'+e.sys.map(function(x){ return '<span class="tag">'+esc(x)+'</span>'; }).join('')+'</div>'
+    + '<dl class="rows">'+rows+'</dl>'
+    + '<div class="memo"><b>一句背法｜</b>'+hl(e.b)+'</div>'
+    + '<div class="trap"><b>最易混淆｜</b>'+hl(e.t)+'</div>'
+    + '<details class="case"><summary>病例題：'+hl(e.q)+'</summary><p>'+hl(e.a)+'</p></details>'
+    + '<div class="acts"><button data-act="fav" class="'+(store.fav[k]?'on':'')+'">'+(store.fav[k]?'★ 已收藏':'☆ 收藏')+'</button>'
+    + '<button data-act="known" class="'+(store.known[k]?'on':'')+'">'+(store.known[k]?'✓ 已熟':'標記已熟')+'</button></div>'
+    + '</article>';
+}
+function filtered(list){
+  return list.filter(function(e){
+    var k = pkey(e);
+    return (!st.sys || e.sys.indexOf(st.sys) >= 0)
+      && (!st.cat || e.c === st.cat)
+      && (st.status!=='fav' || store.fav[k])
+      && (st.status!=='todo' || !store.known[k])
+      && (st.status!=='five' || e.f === 5)
+      && match(e.hay);
+  });
+}
+
+// ---------- 各分頁 ----------
+function viewList(kind){
+  var all = kind==='drug' ? DRUGS : LABS, list = filtered(all);
+  $('count').textContent = '顯示 ' + list.length + ' / ' + all.length + ' 筆';
+  return list.length ? '<div class="grid'+(store.compact?' compact':'')+'">'+list.map(card).join('')+'</div>'
+                     : '<div class="empty">找不到符合的資料，換個關鍵字或清除篩選試試。</div>';
+}
+function linkBtn(kind, key){
+  var e = find(kind, key);
+  return e ? '<button class="link '+(kind==='drug'?'d':'l')+'" data-act="peek" data-id="'+e.id+'">'+hl(key)+'</button>'
+           : '<span class="link x">'+hl(key)+'</span>';
+}
+function viewNav(){
+  var list = SYS.filter(function(s){
+    return (!st.sys || s.k === st.sys) && match(JSON.stringify(s).toLowerCase());
+  });
+  $('count').textContent = '顯示 ' + list.length + ' / ' + SYS.length + ' 個系統';
+  if (!list.length) return '<div class="empty">找不到符合的系統。</div>';
+  return '<div class="note">讀法｜病例紅旗 → 系統 → 機制 → 檢驗證據 → 藥物作用 → 護理監測 → 最易混淆 → 換病例再測。點任一檢驗或藥物可直接看完整卡片。</div>'
+    + list.map(function(s){
+      return '<section class="sys"><h3>'+s.i+' '+esc(s.k)+'</h3>'
+        + '<div class="flag"><b>🚩 紅旗｜</b>'+hl(s.flag)+'</div>'
+        + '<h4>檢驗證據</h4><div class="links">'+s.labs.map(function(k){ return linkBtn('lab', k); }).join('')+'</div>'
+        + '<h4>藥物</h4><div class="links">'+s.drugs.map(function(k){ return linkBtn('drug', k); }).join('')+'</div>'
+        + '<h4>高頻病例鏈</h4><div class="tblwrap"><table class="chain"><tr><th>情境</th><th>機制</th><th>檢驗證據</th><th>藥物／處置</th><th>護理監測</th></tr>'
+        + s.chains.map(function(c){ return '<tr>'+c.map(function(x){ return '<td>'+hl(x)+'</td>'; }).join('')+'</tr>'; }).join('')+'</table></div>'
+        + '<div class="memo"><b>護理重點｜</b>'+hl(s.nurse)+'</div>'
+        + '<div class="trap"><b>最易混淆｜</b>'+hl(s.trap)+'</div></section>';
+    }).join('');
+}
+function quizPool(){
+  var base = MODE==='sys' ? DRUGS.concat(LABS) : MODE==='drugs' ? DRUGS : LABS;
+  return filtered(base);
+}
+function nextQuiz(){
+  var pool = quizPool();
+  if (pool.length > 1 && st.quiz) pool = pool.filter(function(e){ return e.id !== st.quiz.id; });
+  st.quiz = pool.length ? {id: pool[Math.floor(Math.random()*pool.length)].id, show:false} : null;
+}
+function viewQuiz(){
+  var pool = quizPool();
+  $('count').textContent = '題庫 ' + pool.length + ' 題';
+  if (!pool.length) return '<div class="empty">目前篩選條件下沒有題目。</div>';
+  if (!st.quiz || !BYID[st.quiz.id] || pool.indexOf(BYID[st.quiz.id]) < 0) nextQuiz();
+  var e = BYID[st.quiz.id];
+  var h = '<div class="quiz"><div class="meta"><span>'+(e.kind==='drug'?'💊 藥物':'🧪 檢驗')+'｜'+esc(e.s)+'</span><span>本次：會 '+st.score.ok+'　再練 '+st.score.no+'</span></div>'
+        + '<div class="q">'+esc(e.q)+'</div>';
+  if (!st.quiz.show) return h + '<div class="go"><button class="btn pri" data-act="reveal">看答案</button><button class="btn" data-act="skip">跳過</button></div></div>';
+  return h + '<div class="a"><b>'+esc(e.n)+'</b><br>'+esc(e.a)+'<div class="memo">'+esc(e.b)+'</div></div>'
+    + '<div class="go"><button class="btn pri" data-act="ok">✓ 會了（標記已熟）</button><button class="btn" data-act="no">✗ 再練</button><button class="btn" data-act="peek" data-id="'+e.id+'">看完整卡片</button></div></div>';
+}
+// ---------- 國考題測驗 ----------
+function shuffle(a){ a = a.slice(); for (var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)), x=a[i]; a[i]=a[j]; a[j]=x; } return a; }
+function examPool(){ return EXAMS.filter(function(e){ return (!st.sys || e.s===st.sys) && match(e.hay); }); }
+function wrongPool(){ return EXAMS.filter(function(e){ return store.wrong[e.q]; }); }
+function startExam(list, n){
+  list = shuffle(list); if (n) list = list.slice(0, n);
+  st.exam = list.length ? {qs:list, i:0, perm:shuffle([0,1,2,3]), pick:null, miss:[]} : null;
+}
+function examQ(e, perm, pick){
+  return '<div class="q">'+esc(e.q)+'</div><div class="optlist">'+perm.map(function(o, k){
+    var cls = pick===null ? '' : o===0 ? ' right' : k===pick ? ' wrong' : '';
+    return '<button class="opt'+cls+'" data-act="pick" data-k="'+k+'"'+(pick===null?'':' disabled')+'><b>'+'ABCD'[k]+'</b>'+esc(e.o[o])+'</button>';
+  }).join('')+'</div>';
+}
+function viewExam(){
+  var x = st.exam, pool = examPool(), wp = wrongPool();
+  if (!x) {
+    $('count').textContent = '題庫 ' + pool.length + ' / ' + EXAMS.length + ' 題';
+    return '<div class="quiz"><div class="q">國考題型測驗</div>'
+      + '<p>四選一單選題，作答後立即顯示答案與解析，答錯的題目會自動收進錯題本。可先用上方系統標籤或搜尋縮小範圍。</p>'
+      + '<p class="meta"><span>目前範圍：'+esc(st.sys||'全部系統')+'，共 '+pool.length+' 題</span><span>錯題本 '+wp.length+' 題</span></p>'
+      + (pool.length ? '<div class="go">'+[10,20,50].filter(function(n){ return n < pool.length; }).map(function(n){ return '<button class="btn pri" data-act="exam" data-n="'+n+'">考 '+n+' 題</button>'; }).join('')
+          + '<button class="btn pri" data-act="exam" data-n="0">全部 '+pool.length+' 題</button></div>' : '<div class="empty">此範圍沒有題目。</div>')
+      + (wp.length ? '<div class="go" style="margin-top:8px"><button class="btn" data-act="examwrong">只練錯題本（'+wp.length+' 題）</button><button class="btn" data-act="clearwrong">清空錯題本</button></div>' : '')
+      + '<p class="meta" style="margin-top:14px">題目為依護理師國考題型編寫的練習題，並非歷屆原題。</p></div>';
+  }
+  $('count').textContent = '';
+  if (x.i >= x.qs.length) {
+    var n = x.qs.length, ok = n - x.miss.length;
+    return '<div class="quiz"><div class="q">完成！答對 '+ok+' / '+n+' 題（'+Math.round(ok/n*100)+' 分）</div>'
+      + '<div class="go"><button class="btn pri" data-act="examback">回測驗首頁</button>'
+      + (x.miss.length ? '<button class="btn" data-act="examredo">重考這次的錯題（'+x.miss.length+'）</button>' : '')+'</div>'
+      + (x.miss.length ? '<h2 class="sec">本次錯題</h2>'+x.miss.map(function(e){
+          return '<div class="tip" style="margin-bottom:10px"><h3>'+esc(e.q)+'</h3><div class="memo"><b>正解｜</b>'+esc(e.o[0])+'</div><p>'+esc(e.x)+'</p></div>'; }).join('') : '<p>全部答對，太強了。</p>')
+      + '</div>';
+  }
+  var e = x.qs[x.i];
+  var h = '<div class="quiz"><div class="meta"><span>第 '+(x.i+1)+' / '+x.qs.length+' 題｜'+esc(e.s)+'・'+TYPE[e.t]+'</span><span>答錯 '+x.miss.length+'　<button class="btn" data-act="examback" style="padding:2px 10px;font-size:13px">結束</button></span></div>'
+        + examQ(e, x.perm, x.pick);
+  if (x.pick !== null) h += '<div class="a"><b>'+(x.perm[x.pick]===0 ? '✓ 答對了' : '✗ 答錯了，正解：'+'ABCD'[x.perm.indexOf(0)])+'</b><br>'+esc(e.x)+'</div>'
+        + '<div class="go"><button class="btn pri" data-act="examnext">'+(x.i+1 < x.qs.length ? '下一題' : '看成績')+'</button></div>';
+  return h + '</div>';
+}
+function tipCards(arr, kind){
+  var out = arr.filter(function(t){ return match(t.join(' ').toLowerCase()); }).map(function(t){
+    if (kind === 3) return '<div class="tip"><h3>'+hl(t[0])+'</h3><p>'+hl(t[1])+'</p><div class="memo">'+hl(t[2])+'</div></div>';
+    return '<div class="tip"><h3>'+hl(t[0])+'</h3><p>'+hl(t[1])+'</p><div class="memo"><b>背這句｜</b>'+hl(t[2])+'</div><div class="trap"><b>掉分陷阱｜</b>'+hl(t[3])+'</div></div>';
+  });
+  return out.length ? '<div class="grid">'+out.join('')+'</div>' : '';
+}
+function sec(title, body){ return body ? '<h2 class="sec">'+title+'</h2>'+body : ''; }
+function viewTips(){
+  $('count').textContent = '';
+  var h = '<div class="note"><b>最高拿分OS｜</b>'+esc(TIPS.os)+'</div>';
+  h += sec('全科通用 12 招', tipCards(TIPS.common, 4));
+  if (MODE !== 'labs') h += sec('藥物題 8 招', tipCards(TIPS.drug, 4));
+  if (MODE !== 'drugs') h += sec('檢驗題 8 招', tipCards(TIPS.lab, 4));
+  h += sec('最常見的 6 個錯誤', tipCards(TIPS.errors, 3));
+  h += sec('最需要補的邊界', tipCards(TIPS.edges, 3));
+  h += sec('答題最精準的四句話', '<div class="grid">'+TIPS.say.map(function(x){ return '<div class="tip"><p>不要說：'+esc(x[0])+'</p><div class="memo"><b>改說｜</b>'+esc(x[1])+'</div></div>'; }).join('')+'</div>');
+  h += sec('錯題省察 6 問', '<div class="tip">'+TIPS.review.map(function(x, i){ return (i+1)+'. '+esc(x); }).join('<br>')+'<div class="memo">原題會＝答案更新；換題仍會＝能力更新。</div></div>');
+  return h;
+}
+
+// ---------- 畫面 ----------
+function render(){
+  var isList = st.tab==='drug' || st.tab==='lab';
+  $('tabs').innerHTML = TABS.map(function(t){ return '<button data-tab="'+t[0]+'" class="'+(st.tab===t[0]?'on':'')+'">'+t[1]+'</button>'; }).join('');
+  $('chips').innerHTML = '<button class="chip'+(st.sys?'':' on')+'" data-sys="">全部系統</button>'
+    + SYSTEMS.map(function(s){ return '<button class="chip'+(st.sys===s?' on':'')+'" data-sys="'+s+'">'+s+'</button>'; }).join('');
+  $('filters').style.display = st.tab==='tips' ? 'none' : '';
+  $('cat').style.display = isList ? '' : 'none';
+  $('compact').style.display = isList ? '' : 'none';
+  $('status').style.display = (st.tab==='nav' || st.tab==='exam') ? 'none' : '';
+  if (isList) {
+    var cats = [], src = st.tab==='drug' ? DRUGS : LABS;
+    src.forEach(function(e){ if ((!st.sys || e.sys.indexOf(st.sys) >= 0) && cats.indexOf(e.c) < 0) cats.push(e.c); });
+    cats.sort(function(a, b){ return a.localeCompare(b, 'zh-Hant'); });
+    if (cats.indexOf(st.cat) < 0) st.cat = '';
+    $('cat').innerHTML = '<option value="">全部分類</option>' + cats.map(function(c){ return '<option'+(c===st.cat?' selected':'')+'>'+esc(c)+'</option>'; }).join('');
+  }
+  $('compact').textContent = store.compact ? '展開全部內容' : '精簡檢視';
+  $('view').innerHTML = st.tab==='nav' ? viewNav() : st.tab==='quiz' ? viewQuiz() : st.tab==='exam' ? viewExam() : st.tab==='tips' ? viewTips() : viewList(st.tab);
+}
+
+function init(){
+  document.title = '護理國考－' + TITLE;
+  $('title').textContent = '護理國考｜' + TITLE;
+  $('sub').textContent = '藥物 ' + DRUGS.length + ' 筆・檢驗 ' + LABS.length + ' 筆・' + SYS.length + ' 個系統・國考題 ' + EXAMS.length + ' 題';
+  $('apps').innerHTML = [['sys','🧭 系統導航'],['drugs','💊 藥物庫'],['labs','🧪 檢驗庫']].map(function(a){
+    return '<a href="'+encodeURI(LINKS[a[0]])+'" class="'+(a[0]===MODE?'on':'')+'">'+a[1]+'</a>';
+  }).join('');
+  $('q').placeholder = MODE==='labs' ? '搜尋 WBC、K、Troponin、黃疸、子癇…（空白分隔可多關鍵字）'
+                     : '搜尋 aspirin、高血鉀、EPS、解毒劑…（空白分隔可多關鍵字）';
+
+  $('q').addEventListener('input', function(){ st.q = this.value; render(); });
+  $('clear').addEventListener('click', function(){ st.q = st.sys = st.cat = st.status = ''; $('q').value = ''; $('status').value = ''; render(); $('q').focus(); });
+  $('cat').addEventListener('change', function(){ st.cat = this.value; render(); });
+  $('status').addEventListener('change', function(){ st.status = this.value; render(); });
+  $('compact').addEventListener('click', function(){ store.compact = !store.compact; save(); render(); });
+  $('dlg').addEventListener('click', function(ev){ if (ev.target === this) this.close(); });
+
+  document.addEventListener('click', function(ev){
+    var t = ev.target.closest('[data-tab],[data-sys],[data-act]');
+    if (!t) return;
+    if (t.dataset.tab) { st.tab = t.dataset.tab; render(); window.scrollTo(0, 0); return; }
+    if (t.dataset.sys !== undefined) { st.sys = t.dataset.sys; render(); return; }
+    var act = t.dataset.act, cardEl = t.closest('.card'), e = cardEl && BYID[cardEl.dataset.id];
+    if (act === 'open') { if (store.compact) cardEl.classList.toggle('open'); return; }
+    if (act === 'fav' || act === 'known') {
+      var k = pkey(e); store[act][k] ? delete store[act][k] : store[act][k] = 1; save();
+      var inDlg = !!t.closest('dialog');
+      render();
+      if (inDlg) $('dlgBody').innerHTML = card(e);
+      return;
+    }
+    if (act === 'peek') { $('dlgBody').innerHTML = card(BYID[t.dataset.id]); $('dlg').showModal(); return; }
+    if (act === 'close') { $('dlg').close(); return; }
+    if (act === 'exam') { startExam(examPool(), +t.dataset.n); render(); return; }
+    if (act === 'examwrong') { startExam(wrongPool(), 0); render(); return; }
+    if (act === 'examredo') { startExam(st.exam.miss, 0); render(); return; }
+    if (act === 'examback') { st.exam = null; render(); return; }
+    if (act === 'clearwrong') { store.wrong = {}; save(); render(); return; }
+    if (act === 'pick') {
+      var x = st.exam, cur = x.qs[x.i]; x.pick = +t.dataset.k;
+      if (x.perm[x.pick] === 0) delete store.wrong[cur.q]; else { store.wrong[cur.q] = 1; x.miss.push(cur); }
+      save(); render(); return;
+    }
+    if (act === 'examnext') { var y = st.exam; y.i++; y.pick = null; y.perm = shuffle([0,1,2,3]); render(); window.scrollTo(0, 0); return; }
+    if (act === 'reveal') { st.quiz.show = true; render(); return; }
+    if (act === 'skip') { nextQuiz(); render(); return; }
+    if (act === 'ok' || act === 'no') {
+      var q = BYID[st.quiz.id];
+      if (act === 'ok') { st.score.ok++; store.known[pkey(q)] = 1; save(); } else st.score.no++;
+      nextQuiz(); render(); return;
+    }
+  });
+  render();
+}
+init();
+})();
+
+</script>
+</body>
+</html>

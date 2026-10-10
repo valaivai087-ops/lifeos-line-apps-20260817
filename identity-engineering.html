@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>身份工程 Identity OS｜人生操作系統</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#040610;--s1:#070B1C;--s2:#0A1028;--card:#0E1835;--bdr:#152044;--bdr2:#1C3060;
+  --txt:#D5E5F8;--dim:#4A6888;--dim2:#2E4868;
+  --gold:#E8A820;--gold2:#C08010;--gg:rgba(232,168,32,.1);
+  --purple:#9B5CF6;--purple2:#7B3CD6;--gp:rgba(155,92,246,.1);
+  --rose:#F43F5E;--teal:#14B8A6;--blue:#3B82F6;--green:#10B981;--orange:#F97316;
+  --health:#F97316;--learn:#8B5CF6;--wealth:#10B981;--relation:#F43F5E;--life:#3B82F6;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--txt);font-family:'Noto Sans TC','Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden;padding-bottom:56px;}
+
+/* ── TOP BAR ── */
+.topbar{position:sticky;top:0;z-index:300;background:rgba(4,6,16,.97);backdrop-filter:blur(18px);border-bottom:1px solid var(--bdr);padding:0 16px;display:flex;align-items:center;height:50px;gap:0;}
+.brand{font-size:15px;font-weight:900;background:linear-gradient(135deg,var(--purple),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:.3px;flex-shrink:0;margin-right:12px;white-space:nowrap;}
+.nav{display:flex;flex:1;overflow-x:auto;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
+.nb{flex:none;padding:0 10px;height:50px;font-size:11px;font-weight:600;border:none;background:none;color:var(--dim);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap;font-family:inherit;}
+.nb.on{color:var(--purple);border-bottom-color:var(--purple);}
+.nb:hover:not(.on){color:var(--txt);}
+
+.pg{display:none;} .pg.on{display:block;}
+.wrap{max-width:960px;margin:0 auto;padding:22px 16px;}
+.sec-h{font-size:clamp(19px,4vw,28px);font-weight:900;letter-spacing:-1px;margin-bottom:6px;}
+.sec-s{font-size:13px;color:var(--dim);margin-bottom:20px;font-weight:300;}
+.divider{border:none;border-top:1px solid var(--bdr);margin:40px 0;}
+
+/* ── HERO ── */
+.hero{min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:52px 16px;text-align:center;position:relative;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.11;pointer-events:none;}
+.oa{width:580px;height:580px;background:var(--purple);top:-190px;left:-160px;}
+.ob{width:380px;height:380px;background:var(--gold);bottom:-80px;right:-80px;}
+.oc{width:320px;height:320px;background:#1D4ED8;top:43%;left:52%;transform:translate(-50%,-50%);}
+.hero-tag{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--purple);text-transform:uppercase;margin-bottom:13px;}
+.hero-h1{font-size:clamp(42px,9vw,92px);font-weight:900;line-height:.93;letter-spacing:-3px;margin-bottom:13px;background:linear-gradient(140deg,var(--txt) 20%,var(--purple) 60%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-p{font-size:clamp(13px,2vw,16px);color:var(--dim);max-width:490px;margin:0 auto 28px;line-height:2;font-weight:300;}
+.id-formula{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:32px;}
+.idf{padding:6px 14px;border-radius:22px;font-size:12px;font-weight:700;border:1px solid;}
+.idf.p{background:rgba(155,92,246,.08);border-color:rgba(155,92,246,.3);color:var(--purple);}
+.idf.g{background:rgba(232,168,32,.08);border-color:rgba(232,168,32,.3);color:var(--gold);}
+.idf.x{color:var(--dim);border-color:transparent;background:transparent;font-size:15px;}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-p{padding:12px 26px;background:linear-gradient(135deg,var(--purple),var(--purple2));color:#F0EAFF;font-size:13px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block;transition:.2s;}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(155,92,246,.28);}
+.btn-g{padding:12px 26px;background:transparent;color:var(--gold);font-size:13px;font-weight:700;border:1.5px solid rgba(232,168,32,.35);border-radius:10px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block;transition:.2s;}
+.btn-g:hover{border-color:var(--gold);background:var(--gg);}
+
+/* ── DIAGNOSIS ── */
+.quiz-intro{background:linear-gradient(135deg,rgba(155,92,246,.1),rgba(232,168,32,.06));border:1px solid rgba(155,92,246,.2);border-radius:16px;padding:20px;text-align:center;margin-bottom:20px;}
+.quiz-intro h2{font-size:19px;font-weight:900;background:linear-gradient(135deg,var(--purple),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;}
+.quiz-intro p{font-size:13px;color:var(--dim);line-height:1.7;}
+.qp-bar-bg{height:6px;background:var(--bdr);border-radius:3px;margin-bottom:8px;}
+.qp-bar-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--gold));border-radius:3px;transition:.4s;}
+.qp-row{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:16px;}
+.mod-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
+.mc{padding:5px 13px;border-radius:16px;border:1px solid var(--bdr);font-size:11px;font-weight:700;color:var(--dim);font-family:inherit;background:transparent;cursor:default;transition:.15s;}
+.mc.on{color:#040200;border-color:transparent;font-weight:800;}
+.q-area{background:var(--card);border:1px solid var(--bdr2);border-radius:14px;padding:20px;margin-bottom:16px;min-height:260px;}
+.q-num-tag{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--purple);text-transform:uppercase;margin-bottom:10px;}
+.q-text{font-size:16px;font-weight:700;margin-bottom:18px;line-height:1.5;}
+.q-opts-list{display:grid;gap:8px;}
+.q-opt{background:var(--s2);border:1.5px solid var(--bdr);border-radius:10px;padding:12px 15px;font-size:13px;cursor:pointer;text-align:left;color:var(--txt);font-family:inherit;transition:.18s;display:flex;align-items:center;gap:10px;}
+.q-opt:hover{border-color:var(--purple);background:var(--gp);}
+.q-opt.sel{border-color:var(--purple);background:var(--gp);color:var(--purple);}
+.qr{width:17px;height:17px;border-radius:50%;border:2px solid var(--bdr2);flex-shrink:0;transition:.18s;}
+.q-opt.sel .qr{border-color:var(--purple);background:var(--purple);}
+.q-nav{display:flex;gap:10px;justify-content:center;}
+.btn{padding:10px 22px;border-radius:9px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:.17s;}
+.btn-purple{background:var(--purple);color:#F0EAFF;}
+.btn-purple:hover{background:var(--purple2);}
+.btn-ghost{background:var(--card);color:var(--dim);border:1px solid var(--bdr);}
+.btn-ghost:hover{border-color:var(--bdr2);color:var(--txt);}
+
+/* ── RESULT ── */
+.result-area{display:none;} .result-area.show{display:block;}
+.res-hero{background:linear-gradient(135deg,rgba(155,92,246,.12),rgba(232,168,32,.07));border:1px solid rgba(155,92,246,.25);border-radius:18px;padding:24px;text-align:center;margin-bottom:20px;}
+.res-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1px;padding:4px 13px;border-radius:18px;text-transform:uppercase;margin-bottom:10px;}
+.res-id-name{font-size:36px;font-weight:900;letter-spacing:-1px;margin-bottom:5px;}
+.res-quote{font-size:14px;font-style:italic;color:var(--dim);line-height:1.8;padding:12px 16px;background:rgba(255,255,255,.04);border-radius:9px;margin-bottom:14px;}
+.res-bars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px;}
+.rb-item{text-align:center;}
+.rb-bar-wrap{height:80px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:4px;}
+.rb-bar{width:30px;border-radius:4px 4px 0 0;transition:.8s;}
+.rb-lbl{font-size:10px;color:var(--dim);}
+.dom-dist{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin-bottom:20px;}
+.dd-card{background:var(--card);border-radius:10px;padding:12px;border:1px solid var(--bdr);}
+.dd-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.dd-name{font-size:12px;font-weight:700;}
+.dd-val{font-size:12px;font-weight:700;}
+.dd-bg{height:4px;background:var(--bdr);border-radius:2px;}
+.dd-fill{height:100%;border-radius:2px;transition:.6s;}
+.up-path{display:flex;flex-direction:column;align-items:center;gap:0;max-width:300px;margin:0 auto 20px;}
+.up-node{width:100%;border-radius:9px;padding:10px 15px;font-size:13px;font-weight:700;text-align:center;border:1px solid;transition:.15s;}
+.up-node.cur{font-size:15px;font-weight:900;}
+.up-arr{font-size:17px;color:var(--purple);opacity:.35;padding:3px 0;text-align:center;}
+
+/* ── MAP ── */
+.map-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:11px;}
+.map-card{background:var(--card);border:1px solid var(--bdr2);border-radius:15px;padding:17px;position:relative;overflow:hidden;}
+.map-stripe{position:absolute;top:0;left:0;right:0;height:3px;}
+.map-head{display:flex;align-items:center;gap:10px;margin-bottom:13px;}
+.map-ico{font-size:22px;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.map-dname{font-size:16px;font-weight:800;}
+.map-den{font-size:11px;color:var(--dim);font-style:italic;}
+.level-list{display:flex;flex-direction:column;gap:5px;}
+.lv-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:8px;border:1px solid var(--bdr);}
+.lv-tag{font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.lv-name{font-size:13px;font-weight:700;margin-bottom:1px;}
+.lv-desc{font-size:11px;color:var(--dim);line-height:1.4;}
+
+/* ── DAILY ── */
+.daily-wrap{max-width:620px;margin:0 auto;}
+.today-card{background:linear-gradient(135deg,rgba(155,92,246,.12),rgba(232,168,32,.08));border:1px solid rgba(155,92,246,.22);border-radius:16px;padding:20px;text-align:center;margin-bottom:16px;}
+.tc-label{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--purple);text-transform:uppercase;margin-bottom:7px;}
+.tc-name{font-size:26px;font-weight:900;margin-bottom:4px;}
+.tc-quote{font-size:14px;font-style:italic;color:var(--dim);line-height:1.7;}
+.score-box{background:var(--card);border:1px solid var(--bdr2);border-radius:13px;padding:15px;text-align:center;margin-bottom:14px;}
+.sb-pts{font-size:46px;font-weight:900;color:var(--gold);margin-bottom:2px;}
+.sb-lbl{font-size:12px;color:var(--dim);}
+.task-box{background:var(--card);border:1px solid var(--bdr2);border-radius:13px;padding:17px;margin-bottom:14px;}
+.tb-title{font-size:11px;font-weight:700;color:var(--purple);letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;}
+.task-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bdr);}
+.task-item:last-child{border-bottom:none;}
+.t-check{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--bdr2);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s;}
+.t-check.done{background:var(--purple);border-color:var(--purple);color:#fff;font-size:13px;font-weight:700;}
+.t-text{font-size:13px;flex:1;}
+.t-text.striked{text-decoration:line-through;color:var(--dim);}
+.t-pts{font-size:11px;font-weight:700;color:var(--gold);}
+.daily-q-list{display:flex;flex-direction:column;gap:10px;}
+.dq{background:var(--card);border-left:3px solid var(--purple);border-radius:0 11px 11px 0;padding:14px 16px;}
+.dq-text{font-size:15px;font-weight:700;line-height:1.7;}
+.dq-sub{font-size:11px;color:var(--dim);margin-top:5px;font-weight:400;font-style:italic;}
+
+/* ── AI COACH ── */
+.ai-wrap{max-width:640px;margin:0 auto;}
+.ai-quick-btns{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
+.aqb{padding:7px 14px;background:var(--s2);border:1px solid var(--bdr);border-radius:20px;font-size:12px;color:var(--dim);cursor:pointer;font-family:inherit;transition:.14s;}
+.aqb:hover{border-color:var(--purple);color:var(--purple);}
+.ai-chat-box{background:var(--card);border:1px solid var(--bdr2);border-radius:14px;padding:18px;margin-bottom:14px;min-height:320px;display:flex;flex-direction:column;gap:14px;max-height:480px;overflow-y:auto;}
+.ai-msg{display:flex;gap:9px;}
+.ai-msg.user{justify-content:flex-end;}
+.ai-bubble{padding:12px 15px;font-size:13px;line-height:1.75;max-width:88%;border-radius:14px;}
+.ai-msg.user .ai-bubble{background:var(--purple);color:#F0EAFF;border-radius:14px 14px 4px 14px;}
+.ai-msg.bot .ai-bubble{background:var(--s2);border:1px solid var(--bdr2);border-radius:14px 14px 14px 4px;}
+.ai-bubble b{color:var(--gold);}
+.ai-bubble .hl{color:var(--purple);}
+.ai-ico{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;align-self:flex-end;background:rgba(155,92,246,.2);}
+.ai-input-row{display:flex;gap:9px;}
+.ai-inp{flex:1;padding:12px 15px;background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);font-size:13px;font-family:inherit;outline:none;transition:.2s;}
+.ai-inp:focus{border-color:var(--purple);}
+.ai-inp::placeholder{color:var(--dim);}
+.ai-send{padding:12px 20px;background:var(--purple);color:#F0EAFF;font-size:13px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;transition:.18s;flex-shrink:0;}
+.ai-send:hover{background:var(--purple2);}
+.ai-send:disabled{opacity:.5;cursor:not-allowed;}
+.ai-thinking{display:flex;gap:4px;align-items:center;padding:8px 0;}
+.ai-dot{width:7px;height:7px;border-radius:50%;background:var(--purple);opacity:.4;animation:bounce .9s infinite;}
+.ai-dot:nth-child(2){animation-delay:.2s;}
+.ai-dot:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px);opacity:1}}
+
+/* ── QUOTES ── */
+.quotes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:9px;}
+.qcard{background:var(--card);border:1px solid var(--bdr2);border-radius:13px;padding:17px;cursor:copy;position:relative;overflow:hidden;transition:.15s;}
+.qcard:hover{border-color:var(--purple);}
+.qcard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;}
+.qc-num{font-size:10px;color:var(--dim);margin-bottom:7px;letter-spacing:.5px;}
+.qc-text{font-size:15px;font-weight:700;line-height:1.75;margin-bottom:8px;}
+.qc-type{font-size:10px;font-weight:700;padding:2px 9px;border-radius:5px;display:inline-block;}
+.copy-toast{display:none;position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:var(--purple);color:#F0EAFF;font-size:12px;font-weight:700;padding:8px 18px;border-radius:9px;z-index:600;animation:cpop .4s ease;}
+
+/* ── XP BAR ── */
+.xp-bar{background:var(--s1);border-top:1px solid var(--bdr);padding:8px 16px;position:fixed;bottom:0;left:0;right:0;z-index:200;display:flex;align-items:center;gap:12px;}
+.xp-lbl{font-size:11px;color:var(--dim);white-space:nowrap;}
+.xp-bg{flex:1;height:7px;background:var(--bdr);border-radius:4px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--gold));border-radius:4px;transition:.5s;}
+.xp-pts{font-size:12px;font-weight:700;color:var(--gold);white-space:nowrap;}
+
+/* ── COMBO ── */
+.combo{display:none;position:fixed;top:58px;right:14px;background:var(--purple);color:#F0EAFF;font-weight:800;font-size:13px;border-radius:9px;padding:7px 13px;z-index:600;animation:cpop .4s ease;}
+@keyframes cpop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.2)}100%{opacity:1;transform:scale(1)}}
+
+@media(max-width:600px){
+  .map-grid{grid-template-columns:1fr;}
+  .quotes-grid{grid-template-columns:1fr;}
+  .hero-h1{letter-spacing:-2px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">身份工程 Identity OS</div>
+  <nav class="nav">
+    <button class="nb on" onclick="gp('home',this)">🏠 首頁</button>
+    <button class="nb" onclick="gp('diag',this)">🧬 身份診斷</button>
+    <button class="nb" onclick="gp('map',this)">🗺 身份地圖</button>
+    <button class="nb" onclick="gp('daily',this)">📅 每日系統</button>
+    <button class="nb" onclick="gp('ai',this)">🤖 AI教練</button>
+    <button class="nb" onclick="gp('quotes',this)">✨ 升維金句</button>
+  </nav>
+</div>
+
+<div id="comboBadge" class="combo"></div>
+<div id="copyToast" class="copy-toast">✅ 已複製！</div>
+
+<!-- ════════ HOME ════════ -->
+<div class="pg on" id="pg-home">
+<div class="hero">
+  <div class="orb oa"></div><div class="orb ob"></div><div class="orb oc"></div>
+  <div style="position:relative;z-index:1;max-width:580px;margin:0 auto">
+    <div class="hero-tag">Identity OS / 人生操作系統</div>
+    <h1 class="hero-h1">改變<br>身份</h1>
+    <p class="hero-p">真正改變人生的往往不是新的方法。<br>而是<b style="color:var(--purple)">新的身份</b>。<br>身份改變，整個生命系統都會開始改變。</p>
+    <div class="id-formula">
+      <span class="idf p">身份</span><span class="idf x">→</span>
+      <span class="idf p">信念</span><span class="idf x">→</span>
+      <span class="idf p">預測</span><span class="idf x">→</span>
+      <span class="idf p">決策</span><span class="idf x">→</span>
+      <span class="idf p">行動</span><span class="idf x">→</span>
+      <span class="idf p">習慣</span><span class="idf x">→</span>
+      <span class="idf g">命運</span>
+    </div>
+    <div class="hero-btns">
+      <button class="btn-p" onclick="gp('diag',document.querySelectorAll('.nb')[1])">🧬 開始身份診斷（30題）</button>
+      <button class="btn-g" onclick="gp('ai',document.querySelectorAll('.nb')[4])">🤖 AI 身份教練</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" style="padding-top:0">
+  <!-- 5 domain quick chips -->
+  <div class="sec-h" style="text-align:center;margin-bottom:14px;">五大<span style="color:var(--purple)">身份模組</span></div>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:26px;">
+    <div onclick="gp('map',document.querySelectorAll('.nb')[2])" style="background:var(--card);border:1px solid var(--bdr);border-radius:11px;padding:12px 6px;cursor:pointer;text-align:center;transition:.2s" onmouseover="this.style.borderColor='var(--health)'" onmouseout="this.style.borderColor='var(--bdr)'"><div style="font-size:22px;margin-bottom:4px">❤️‍🔥</div><div style="font-size:11px;font-weight:700;color:var(--health)">健康</div><div style="font-size:9px;color:var(--dim);margin-top:1px">受害→傳遞者</div></div>
+    <div onclick="gp('map',document.querySelectorAll('.nb')[2])" style="background:var(--card);border:1px solid var(--bdr);border-radius:11px;padding:12px 6px;cursor:pointer;text-align:center;transition:.2s" onmouseover="this.style.borderColor='var(--learn)'" onmouseout="this.style.borderColor='var(--bdr)'"><div style="font-size:22px;margin-bottom:4px">📚</div><div style="font-size:11px;font-weight:700;color:var(--learn)">學習</div><div style="font-size:9px;color:var(--dim);margin-top:1px">背誦→教學者</div></div>
+    <div onclick="gp('map',document.querySelectorAll('.nb')[2])" style="background:var(--card);border:1px solid var(--bdr);border-radius:11px;padding:12px 6px;cursor:pointer;text-align:center;transition:.2s" onmouseover="this.style.borderColor='var(--wealth)'" onmouseout="this.style.borderColor='var(--bdr)'"><div style="font-size:22px;margin-bottom:4px">💰</div><div style="font-size:11px;font-weight:700;color:var(--wealth)">財富</div><div style="font-size:9px;color:var(--dim);margin-top:1px">打工→系統者</div></div>
+    <div onclick="gp('map',document.querySelectorAll('.nb')[2])" style="background:var(--card);border:1px solid var(--bdr);border-radius:11px;padding:12px 6px;cursor:pointer;text-align:center;transition:.2s" onmouseover="this.style.borderColor='var(--relation)'" onmouseout="this.style.borderColor='var(--bdr)'"><div style="font-size:22px;margin-bottom:4px">🤝</div><div style="font-size:11px;font-weight:700;color:var(--relation)">關係</div><div style="font-size:9px;color:var(--dim);margin-top:1px">索取→成全者</div></div>
+    <div onclick="gp('map',document.querySelectorAll('.nb')[2])" style="background:var(--card);border:1px solid var(--bdr);border-radius:11px;padding:12px 6px;cursor:pointer;text-align:center;transition:.2s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--bdr)'"><div style="font-size:22px;margin-bottom:4px">🌍</div><div style="font-size:11px;font-weight:700;color:var(--blue)">人生</div><div style="font-size:9px;color:var(--dim);margin-top:1px">生存→影響者</div></div>
+  </div>
+
+  <div style="background:linear-gradient(135deg,rgba(155,92,246,.07),rgba(232,168,32,.04));border:1px solid rgba(155,92,246,.18);border-radius:14px;padding:20px;text-align:center;max-width:620px;margin:0 auto">
+    <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:9px;">⚡ 身份改變的正確順序</div>
+    <div style="font-size:13px;color:var(--dim);line-height:2.3">
+      <b style="color:var(--txt)">先相信</b> → <b style="color:var(--txt)">再做到</b> → <b style="color:var(--txt)">再看見</b><br>
+      <b style="color:var(--txt)">先成為</b> → <b style="color:var(--txt)">再看見結果</b> → <b style="color:var(--txt)">再強化身份</b><br>
+      <span style="font-size:12px;font-style:italic;color:var(--dim)">不是先健康才成為健康的人，而是先活得像健康的人，才逐漸健康。</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════ DIAGNOSIS ════════ -->
+<div class="pg" id="pg-diag">
+<div class="wrap">
+  <div class="quiz-intro">
+    <h2>🧬 身份診斷系統</h2>
+    <p>回答 30 題，診斷你在五大維度的目前身份層級<br>診斷完成後獲得身份報告 + 升級路徑 + 個人化建議</p>
+  </div>
+
+  <div id="quizBody">
+    <div class="qp-bar-bg"><div class="qp-bar-fill" id="qpFill" style="width:0%"></div></div>
+    <div class="qp-row"><span id="qpCur">第 1 題 / 30 題</span><span id="qpMod">健康身份</span></div>
+    <div class="mod-chips" id="modChips"></div>
+    <div class="q-area">
+      <div class="q-num-tag" id="qTag"></div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-opts-list" id="qOpts"></div>
+    </div>
+    <div class="q-nav">
+      <button class="btn btn-ghost" id="qPrev" onclick="prevQ()">← 上一題</button>
+      <button class="btn btn-purple" id="qNext" onclick="nextQ()">下一題 →</button>
+    </div>
+  </div>
+
+  <div class="result-area" id="resultArea">
+    <div class="res-hero">
+      <div class="res-badge" id="resBadge"></div>
+      <div class="res-id-name" id="resName"></div>
+      <div style="font-size:13px;color:var(--dim);margin-bottom:10px" id="resScore"></div>
+      <div class="res-quote" id="resQuote"></div>
+      <div class="res-bars" id="resBars"></div>
+    </div>
+    <div class="sec-h" style="font-size:17px;margin-bottom:12px;">各維度身份分布</div>
+    <div class="dom-dist" id="domDist"></div>
+    <div class="sec-h" style="font-size:17px;margin:20px 0 12px">🏥 健康身份升級路徑</div>
+    <div class="up-path" id="upPath"></div>
+    <div style="text-align:center;margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-purple" onclick="gp('ai',document.querySelectorAll('.nb')[4])">🤖 諮詢 AI 教練</button>
+      <button class="btn btn-ghost" onclick="resetQuiz()">重新診斷</button>
+      <button class="btn btn-ghost" onclick="gp('daily',document.querySelectorAll('.nb')[3])">📅 今日任務</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════ MAP ════════ -->
+<div class="pg" id="pg-map">
+<div class="wrap">
+  <div class="sec-h">五大身份<span style="color:var(--purple)">地圖</span></div>
+  <div class="sec-s">找到你現在的位置，看見下一步 / 點擊任意層級了解更多</div>
+  <div class="map-grid" id="mapGrid"></div>
+</div>
+</div>
+
+<!-- ════════ DAILY ════════ -->
+<div class="pg" id="pg-daily">
+<div class="wrap">
+  <div class="daily-wrap">
+    <div class="today-card">
+      <div class="tc-label">今日身份提醒 Identity Reminder</div>
+      <div class="tc-name" id="todayName">修復者</div>
+      <div class="tc-quote" id="todayQuote">「你不是病人，你是正在修復的人」</div>
+    </div>
+
+    <div class="score-box">
+      <div class="sb-pts" id="todayPts">35</div>
+      <div class="sb-lbl">修復者積分 · 今日完成 <span id="doneC">0</span> / 5 項任務</div>
+    </div>
+
+    <div class="task-box">
+      <div class="tb-title">📅 今日任務 Daily Missions</div>
+      <div id="taskList"></div>
+    </div>
+
+    <div class="sec-h" style="font-size:17px;margin-bottom:12px;">✨ 今日金句</div>
+    <div class="daily-q-list" id="dailyQuoteList"></div>
+  </div>
+</div>
+</div>
+
+<!-- ════════ AI COACH ════════ -->
+<div class="pg" id="pg-ai">
+<div class="wrap">
+  <div class="sec-h">AI 身份<span style="color:var(--purple)">教練</span></div>
+  <div class="sec-s">輸入你的感受或困境，AI 分析身份層級並給出升級行動建議</div>
+  <div class="ai-wrap">
+    <div class="ai-quick-btns">
+      <button class="aqb" onclick="askAI(this.textContent)">我很害怕癌症復發</button>
+      <button class="aqb" onclick="askAI(this.textContent)">我覺得沒有希望</button>
+      <button class="aqb" onclick="askAI(this.textContent)">我想提升學習能力</button>
+      <button class="aqb" onclick="askAI(this.textContent)">我不知道自己的目標</button>
+      <button class="aqb" onclick="askAI(this.textContent)">如何從修復者升到建造者？</button>
+      <button class="aqb" onclick="askAI(this.textContent)">我想幫助別人但不知從哪開始</button>
+    </div>
+    <div class="ai-chat-box" id="aiChat">
+      <div class="ai-msg bot">
+        <div class="ai-ico">🤖</div>
+        <div class="ai-bubble">你好！我是你的 <b>AI 身份教練</b>。<br><br>我會根據「身份工程」的框架，幫你分析目前的身份層級，並給出具體的升級行動建議。<br><br>告訴我你的感受或困境，或點擊上方快速問題開始對話。</div>
+      </div>
+    </div>
+    <div class="ai-input-row">
+      <input class="ai-inp" id="aiInput" placeholder="輸入你的感受或問題..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAI()}">
+      <button class="ai-send" id="aiSendBtn" onclick="sendAI()">送出</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════ QUOTES ════════ -->
+<div class="pg" id="pg-quotes">
+<div class="wrap">
+  <div class="sec-h">升維<span style="color:var(--purple)">金句庫</span></div>
+  <div class="sec-s">40 個身份升維金句 + 癌友專屬版 · 點擊任意金句複製分享</div>
+  <div class="quotes-grid" id="quotesGrid"></div>
+</div>
+</div>
+
+<!-- XP BAR -->
+<div class="xp-bar">
+  <div class="xp-lbl" id="xpLabel">修復者 Lv3</div>
+  <div class="xp-bg"><div class="xp-fill" id="xpFill" style="width:35%"></div></div>
+  <div class="xp-pts" id="xpPts">35 / 100 XP</div>
+</div>
+
+<script>
+// ════════════════════════════════════════
+// 1. DATA
+// ════════════════════════════════════════
+const DOMAINS=[
+  {id:'health',ico:'❤️‍🔥',name:'健康身份',en:'Health',color:'var(--health)',
+   levels:[
+     {n:1,name:'受害者',desc:'認為命運決定一切，等待別人拯救',q:'「為什麼是我？」'},
+     {n:2,name:'病人',desc:'接受治療，但以疾病為生活中心',q:'「我只能配合醫生指示」'},
+     {n:3,name:'修復者',desc:'主動學習，從睡眠飲食能量著手',q:'「我每天都在修復」'},
+     {n:4,name:'健康建造者',desc:'建立完整健康系統與新生活習慣',q:'「我正在重建健康系統」'},
+     {n:5,name:'希望傳遞者',desc:'用自身經歷幫助他人，產生意義感',q:'「我的經歷能幫助別人」'},
+   ]},
+  {id:'learn',ico:'📚',name:'學習身份',en:'Learning',color:'var(--learn)',
+   levels:[
+     {n:1,name:'背誦者',desc:'靠死記硬背，學習是為了通過考試',q:'「背完就好了」'},
+     {n:2,name:'理解者',desc:'追求真正理解，問「為什麼」',q:'「我想知道原理」'},
+     {n:3,name:'建模者',desc:'建立思維框架，能舉一反三',q:'「我在建立自己的模型」'},
+     {n:4,name:'輸出者',desc:'用教學寫作鞏固知識，主動輸出',q:'「輸出才是真正的學習」'},
+     {n:5,name:'教學者',desc:'把知識傳給別人，倍增影響力',q:'「能教人才是真的懂」'},
+   ]},
+  {id:'wealth',ico:'💰',name:'財富身份',en:'Wealth',color:'var(--wealth)',
+   levels:[
+     {n:1,name:'打工者',desc:'用時間換金錢，沒有槓桿',q:'「努力工作就夠了」'},
+     {n:2,name:'專業者',desc:'靠技能提升收入，有一定議價力',q:'「我要成為行業專家」'},
+     {n:3,name:'創造者',desc:'創造產品或內容，開始有槓桿',q:'「我在創造獨特價值」'},
+     {n:4,name:'經營者',desc:'建立系統讓收入自動流入',q:'「我在經營可以擴展的系統」'},
+     {n:5,name:'投資者',desc:'讓資金繁殖，複利思維',q:'「讓錢為我工作」'},
+   ]},
+  {id:'relation',ico:'🤝',name:'關係身份',en:'Relationship',color:'var(--relation)',
+   levels:[
+     {n:1,name:'索取者',desc:'只問「我能得到什麼？」',q:'「別人應該幫助我」'},
+     {n:2,name:'合作者',desc:'雙贏思維，對等交換',q:'「我們可以一起合作」'},
+     {n:3,name:'貢獻者',desc:'先付出，相信回報自然來',q:'「我能貢獻什麼？」'},
+     {n:4,name:'支持者',desc:'支持他人成長，建立深度連結',q:'「你的成功就是我的成功」'},
+     {n:5,name:'成全者',desc:'成全別人實現夢想，獲得更大意義',q:'「我來成全你」'},
+   ]},
+  {id:'life',ico:'🌍',name:'人生身份',en:'Life',color:'var(--blue)',
+   levels:[
+     {n:1,name:'生存者',desc:'只求活下去，沒有清晰方向',q:'「能活過去就好」'},
+     {n:2,name:'探索者',desc:'開始尋找自我，嘗試不同可能',q:'「我在探索我是誰」'},
+     {n:3,name:'成長者',desc:'有意識地持續成長',q:'「我每天都在變好」'},
+     {n:4,name:'創造者',desc:'用人生創造獨特的持久價值',q:'「我在創造我的人生」'},
+     {n:5,name:'影響者',desc:'影響和啟發他人的生命軌跡',q:'「我的存在讓世界不同」'},
+   ]},
+];
+
+const QUESTIONS=[
+  // HEALTH (6)
+  {d:'health',q:'面對身體不適，你的第一反應通常是？',opts:[['完全不知道怎麼辦，感到無助',1],['去看醫生，配合治療，等待結果',2],['主動研究原因，找改善方法',3],['系統性地分析並調整生活模式',4],['把經驗整理後分享給需要的人',5]]},
+  {d:'health',q:'你如何看待目前的身體狀況？',opts:[['是命運，沒辦法改變',1],['是疾病，交給醫生處理',2],['是可以修復的系統問題',3],['是重建更好生活的起點',4],['是讓我能幫助他人的珍貴經歷',5]]},
+  {d:'health',q:'對睡眠品質，你的態度？',opts:[['沒特別注意，睡得著就好',1],['盡量遵從醫囑的建議',2],['主動學習睡眠知識並調整',3],['建立完整的睡眠優化系統',4],['分享睡眠改善方法給群友',5]]},
+  {d:'health',q:'面對恐懼或治療焦慮，你傾向？',opts:[['逃避，不想去想',1],['等待情緒自然過去',2],['主動找方法管理情緒',3],['建立心理調適的系統方法',4],['引導其他病友一起面對',5]]},
+  {d:'health',q:'當身體出現小改善時，你的反應？',opts:[['沒有特別感受',1],['感覺好一點點',2],['相信這是系統在往正確方向走',3],['記錄並繼續優化改善策略',4],['把改善過程分享給需要希望的人',5]]},
+  {d:'health',q:'你認為「修復」的本質是？',opts:[['吃藥打針',1],['治療等於修復',2],['身體、心理、環境的全面改善',3],['建立自我修復的完整生活系統',4],['幫助自己和他人共同提升修復能力',5]]},
+  // LEARN (6)
+  {d:'learn',q:'你學習新知識的主要動力是？',opts:[['被逼著學，沒有選擇',1],['完成任務，通過測驗',2],['真的想理解和掌握這個主題',3],['用知識建立自己的思維框架',4],['學習後能更好地幫助他人',5]]},
+  {d:'learn',q:'遇到不懂的概念時，你會？',opts:[['跳過繼續讀',1],['查一下大致了解',2],['深入研究直到真正理解',3],['放入更大的知識框架中思考',4],['思考如何用簡單語言解釋給別人',5]]},
+  {d:'learn',q:'學完一個主題，你如何鞏固？',opts:[['重複閱讀筆記',1],['劃重點，考前複習',2],['主動回憶，蓋住筆記自己回想',3],['整合成思維導圖或模型',4],['教給別人，透過教學確認是否真懂',5]]},
+  {d:'learn',q:'你通常用什麼衡量自己學習成效？',opts:[['考試分數',1],['記住了多少',2],['能不能用自己的話解釋清楚',3],['能否應用到全新的情境中',4],['是否改變了他人的思維或行動',5]]},
+  {d:'learn',q:'面對你不擅長的科目或技能？',opts:[['避開，不想面對',1],['接受自己不擅長',2],['主動找方法突破弱點',3],['分析弱點根因，系統性改善',4],['把克服弱點的過程分享給他人',5]]},
+  {d:'learn',q:'對「學習學習方法」（元學習）這件事？',opts:[['沒想過這件事',1],['偶爾會注意效率',2],['主動研究高效學習方法',3],['建立屬於自己的學習系統',4],['研究並傳授學習方法給他人',5]]},
+  // WEALTH (6)
+  {d:'wealth',q:'你目前主要的收入方式是？',opts:[['完全靠出售時間',1],['靠專業技能收費',2],['有一些產品或內容收入',3],['有多元且可擴展的收入系統',4],['收入系統持續運作，不需要親力親為',5]]},
+  {d:'wealth',q:'你如何看待金錢？',opts:[['很難得到，需要辛苦才能換來',1],['努力工作就能賺到',2],['是創造和提供價值的工具',3],['是建立可擴展系統的資本',4],['是服務更大使命的資源',5]]},
+  {d:'wealth',q:'財務規劃上，你目前？',opts:[['沒有儲蓄或計畫',1],['有一點存款以防萬一',2],['開始投資理財',3],['有完整的財務系統和計畫',4],['資產正在自動增殖',5]]},
+  {d:'wealth',q:'對創業或建立副業，你的態度？',opts:[['太冒險，不考慮',1],['想做但不知道怎麼開始',2],['已經在嘗試了',3],['有穩定成長中的業外收入',4],['商業模式已系統化並可自動運轉',5]]},
+  {d:'wealth',q:'你認為財富主要來自？',opts:[['體力勞動',1],['專業技能',2],['創造獨特的價值',3],['建立可複製的系統',4],['讓系統自動產生複利效果',5]]},
+  {d:'wealth',q:'面對理財知識，你？',opts:[['完全不懂也沒興趣',1],['知道一些基本常識',2],['主動學習投資理財',3],['有完整的財務知識和策略',4],['指導他人建立財務系統',5]]},
+  // RELATION (6)
+  {d:'relation',q:'你在關係中通常扮演什麼角色？',opts:[['主要是接受別人的幫助',1],['對等交換，互相幫助',2],['主動付出，不計回報',3],['深度支持他人的成長和目標',4],['全力成全他人實現最大的可能',5]]},
+  {d:'relation',q:'遇到人際衝突時，你的第一反應？',opts:[['逃避或指責對方',1],['解決問題讓衝突消失',2],['從衝突中找到學習和成長的點',3],['用衝突加深彼此的理解和連結',4],['引導雙方都能成長並獲得更好的結果',5]]},
+  {d:'relation',q:'在你的社群或群組中，你傾向？',opts:[['主要是觀察，很少參與',1],['適度參與，避免太突出',2],['主動貢獻想法和資源',3],['帶動群體的學習和改變方向',4],['建立讓所有成員都能受益的系統',5]]},
+  {d:'relation',q:'幫助別人時，你的真實出發點？',opts:[['很少主動幫助別人',1],['互惠，期待對方回報',2],['真心幫助，不特別在意回報',3],['主動支持他人的成長與成就',4],['全心成全他人的夢想和最大潛能',5]]},
+  {d:'relation',q:'你如何建立和維護重要關係？',opts:[['隨機，有空才聯繫',1],['保持基本的聯繫',2],['定期主動關心和貢獻',3],['系統性地支持彼此的成長',4],['共同創造超越個人的更大意義',5]]},
+  {d:'relation',q:'給予與接受，你更自在哪一方？',opts:[['只習慣接受別人給予',1],['接受多於給予',2],['給予多於接受，樂於付出',3],['給予是我的核心驅動力',4],['給予到產生連鎖影響，影響更多人',5]]},
+  // LIFE (6)
+  {d:'life',q:'對人生方向，你目前的狀態？',opts:[['沒有方向，走一步看一步',1],['在探索中，嘗試不同可能',2],['有明確的成長目標和行動計畫',3],['正在實現獨特的人生價值',4],['用自己的人生影響更多人的生命',5]]},
+  {d:'life',q:'遇到人生低谷時，你通常？',opts:[['認為命運對我不公平',1],['等待情況自然好轉',2],['主動尋找出路和解決方法',3],['把危機視為系統升級的機會',4],['讓自己的低谷經歷成為幫助他人的資糧',5]]},
+  {d:'life',q:'你的每日行動，主要出於？',opts:[['被迫或純粹習慣',1],['完成眼前的責任',2],['實現個人的成長目標',3],['創造超越自我的長期價值',4],['完成一個比自己更大的使命',5]]},
+  {d:'life',q:'你如何面對生命中的不確定性？',opts:[['逃避，盡量不去想',1],['接受，隨遇而安',2],['主動準備，提升應對能力',3],['把不確定性視為創造的機會',4],['在不確定中引導他人找到方向',5]]},
+  {d:'life',q:'五年後，你最希望自己成為？',opts:[['說不上來，沒想太多',1],['比現在稍微好一點的人',2],['實現了具體成長和成就的人',3],['創造了持久的獨特價值的人',4],['影響了許多人生命的人',5]]},
+  {d:'life',q:'「人生意義」對你而言是？',opts:[['有些遙遠，還沒想到',1],['擁有舒適安全的生活',2],['充分實現自己的潛能',3],['創造超越自我的持久價值',4],['讓這個世界因為我而更好',5]]},
+];
+
+const QUOTES=[
+  {n:'01',t:'人生最大的限制不是能力，而是身份。',type:'身份本質',c:'var(--purple)'},
+  {n:'02',t:'你怎麼定義自己，就怎麼活出自己。',type:'身份本質',c:'var(--purple)'},
+  {n:'03',t:'身份決定信念，信念決定命運。',type:'身份本質',c:'var(--purple)'},
+  {n:'04',t:'先成為，再做到。先相信，再看見。',type:'升級原則',c:'var(--gold)'},
+  {n:'05',t:'不要只問我要做什麼，更要問我要成為誰。',type:'升級原則',c:'var(--gold)'},
+  {n:'06',t:'身份比方法重要，身份比技巧重要，身份比知識重要。',type:'升級原則',c:'var(--gold)'},
+  {n:'07',t:'身份是所有行為的源頭，行為會服從身份。',type:'身份本質',c:'var(--purple)'},
+  {n:'08',t:'不是先健康才成為健康的人，而是先活得像健康的人，才逐漸健康。',type:'升級原則',c:'var(--gold)'},
+  {n:'09',t:'病人身份等待被拯救。\n修復者身份主動找方法。',type:'健康身份',c:'var(--health)'},
+  {n:'10',t:'受害者身份尋找藉口。成長者身份尋找機會。',type:'對比金句',c:'var(--rose)'},
+  {n:'11',t:'恐懼者身份看見風險。希望者身份看見可能。',type:'對比金句',c:'var(--rose)'},
+  {n:'12',t:'旁觀者身份等待改變。行動者身份創造改變。',type:'對比金句',c:'var(--rose)'},
+  {n:'13',t:'不要把自己定義成疾病。你的身份大於你的症狀。',type:'健康身份',c:'var(--health)'},
+  {n:'14',t:'你不是問題本身，你是解決問題的人。',type:'健康身份',c:'var(--health)'},
+  {n:'15',t:'你不是受困的人，你是正在重建生命的人。',type:'健康身份',c:'var(--health)'},
+  {n:'16',t:'真正的改變始於身份改變。身份不變，人生很難改變。',type:'升級原則',c:'var(--gold)'},
+  {n:'17',t:'結果來自習慣，習慣來自身份。',type:'身份本質',c:'var(--purple)'},
+  {n:'18',t:'身份是命運的起點，也是人生的導航系統。',type:'身份本質',c:'var(--purple)'},
+  {n:'19',t:'當身份是「病人」，大腦搜尋症狀和恐懼。\n當身份是「修復者」，大腦搜尋方法和希望。',type:'預測編碼',c:'var(--teal)'},
+  {n:'20',t:'成績不是能力，修正速度才是能力。',type:'學習身份',c:'var(--learn)'},
+  {n:'21',t:'輸出是最強的學習。造句一次勝過重看十次。',type:'學習身份',c:'var(--learn)'},
+  {n:'22',t:'能教人才是真的懂。費曼是最好的老師。',type:'學習身份',c:'var(--learn)'},
+  {n:'23',t:'高手研究學習方法，普通人只研究學習內容。',type:'學習身份',c:'var(--learn)'},
+  {n:'24',t:'我不是等待奇蹟的人，我是每天創造修復條件的人。',type:'癌友金句',c:'var(--health)'},
+  {n:'25',t:'我不是被疾病定義的人，我是用行動定義自己的人。',type:'癌友金句',c:'var(--health)'},
+  {n:'26',t:'我不是受害者，我是修復者。\n我不是絕望者，我是希望傳遞者。',type:'癌友金句',c:'var(--health)'},
+  {n:'27',t:'希望不是等來的，而是行動後產生的。\n小行動→小改善→小成功→希望增加。',type:'希望金句',c:'var(--gold)'},
+  {n:'28',t:'不要只看終點，開始關注今天能進步什麼。',type:'希望金句',c:'var(--gold)'},
+  {n:'29',t:'真正改變人生的往往不是新的藥，而是新的身份。',type:'身份本質',c:'var(--purple)'},
+  {n:'30',t:'當你把自己從「病人」升級成「修復者」，生命就開始朝不同方向前進。',type:'身份本質',c:'var(--purple)'},
+  {n:'31',t:'身份是人生的控制器，決定你的注意力、決策和行為。',type:'控制論',c:'var(--teal)'},
+  {n:'32',t:'大腦會努力證明身份是對的。選擇正確的身份，大腦就是你的盟友。',type:'控制論',c:'var(--teal)'},
+  {n:'33',t:'索取者問「我能得到什麼？」\n成全者問「我能給予什麼？」',type:'關係身份',c:'var(--relation)'},
+  {n:'34',t:'生存者問「今天能活過去嗎？」\n影響者問「今天能讓誰的生命更好？」',type:'人生身份',c:'var(--blue)'},
+  {n:'35',t:'財富身份的躍升：從「用時間換錢」到「創造讓錢自動進來的系統」。',type:'財富身份',c:'var(--wealth)'},
+  {n:'36',t:'身份升級順序：先相信→再行動→再看見結果→再強化身份。',type:'升級原則',c:'var(--gold)'},
+  {n:'37',t:'你的身份大於你的遭遇。你的身份大於你的挫折。',type:'升級原則',c:'var(--gold)'},
+  {n:'38',t:'先活出修復者的樣子，修復才會真正開始發生。',type:'癌友金句',c:'var(--health)'},
+  {n:'39',t:'最高的身份不是「成功者」，而是「讓他人成功的人」。',type:'人生身份',c:'var(--blue)'},
+  {n:'40',t:'身份工程的終極目標：從受害者變成建造者，從建造者變成希望傳遞者。',type:'終極金句',c:'var(--purple)'},
+];
+
+const TASKS_DATA=[
+  {text:'喝足 2000cc 水（腸道修復基礎）',pts:10},
+  {text:'步行或輕度運動 30 分鐘',pts:15},
+  {text:'晚上 11:30 前準備入睡',pts:20},
+  {text:'閱讀或學習 20 分鐘',pts:10},
+  {text:'寫下今天 3 個小改善或感謝',pts:15},
+];
+const DAILY_Q=[
+  {text:'你不是病人，你是正在修復的人。',sub:'修復者身份 · 今日提醒'},
+  {text:'今天的每一個小行動，都是明天希望的種子。',sub:'希望模型'},
+  {text:'身份決定命運。今天，你選擇成為誰？',sub:'身份工程核心'},
+];
+
+// ════════════════════════════════════════
+// 2. STATE
+// ════════════════════════════════════════
+let curQ=0, ans=new Array(30).fill(0), xp=35;
+let taskDone=new Array(5).fill(false);
+
+window.onload=()=>{
+  renderModChips(); renderQuestion(); renderMap(); renderQuotes();
+  renderTasks(); renderDailyQ();
+};
+
+// ── NAV ──
+function gp(id,btn){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  if(btn)btn.classList.add('on');
+}
+
+// ════════════════════════════════════════
+// 3. QUIZ
+// ════════════════════════════════════════
+const DOM_NAMES={health:'健康身份',learn:'學習身份',wealth:'財富身份',relation:'關係身份',life:'人生身份'};
+const DOM_ORDER=['health','learn','wealth','relation','life'];
+
+function renderModChips(){
+  document.getElementById('modChips').innerHTML=DOM_ORDER.map((d,i)=>`
+    <span class="mc" id="mc-${d}" style="${i===0?`background:var(--${d==='life'?'blue':d});color:#040200`:''}">${DOM_NAMES[d].replace('身份','')}</span>`).join('');
+}
+function renderQuestion(){
+  const q=QUESTIONS[curQ];
+  const modIdx=Math.floor(curQ/6);
+  const pct=(curQ/30)*100;
+  document.getElementById('qpFill').style.width=pct+'%';
+  document.getElementById('qpCur').textContent=`第 ${curQ+1} 題 / 30 題`;
+  document.getElementById('qpMod').textContent=DOM_NAMES[q.d];
+  // update chips
+  DOM_ORDER.forEach((d,i)=>{
+    const el=document.getElementById('mc-'+d);if(!el)return;
+    const col=d==='life'?'var(--blue)':`var(--${d})`;
+    if(i===modIdx){el.style.background=col;el.style.color='#040200';}
+    else{el.style.background='';el.style.color='';}
+  });
+  document.getElementById('qTag').textContent=DOM_NAMES[q.d]+' · 第 '+(curQ%6+1)+' / 6 題';
+  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qOpts').innerHTML=q.opts.map(([lbl,val])=>`
+    <div class="q-opt${ans[curQ]===val?' sel':''}" onclick="selOpt(${val},this)">
+      <span class="qr"></span>${lbl}
+    </div>`).join('');
+  document.getElementById('qPrev').style.opacity=curQ===0?.3:1;
+  document.getElementById('qNext').textContent=curQ===29?'查看結果 ✨':'下一題 →';
+}
+function selOpt(val,el){
+  ans[curQ]=val;
+  document.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function prevQ(){if(curQ>0){curQ--;renderQuestion();}}
+function nextQ(){
+  if(!ans[curQ]){alert('請先選擇一個選項');return;}
+  if(curQ<29){curQ++;renderQuestion();}
+  else showResult();
+}
+
+function showResult(){
+  // calc
+  const scores={health:0,learn:0,wealth:0,relation:0,life:0};
+  const counts={health:0,learn:0,wealth:0,relation:0,life:0};
+  QUESTIONS.forEach((q,i)=>{scores[q.d]+=ans[i];counts[q.d]++;});
+  const avgs={};let total=0;
+  Object.keys(scores).forEach(d=>{avgs[d]=scores[d]/counts[d];total+=avgs[d];});
+  total/=5;
+  const hlv=Math.round(avgs.health);
+  const hdom=DOMAINS.find(d=>d.id==='health');
+  const hlvObj=hdom.levels.find(l=>l.n===hlv)||hdom.levels[0];
+  // result hero
+  document.getElementById('resBadge').textContent='主要診斷 · 健康維度';
+  document.getElementById('resBadge').style.cssText='background:rgba(249,115,22,.15);color:var(--health);border:1px solid rgba(249,115,22,.3);border-radius:20px;padding:4px 14px;';
+  document.getElementById('resName').textContent=hlvObj.name;
+  document.getElementById('resName').style.color='var(--health)';
+  document.getElementById('resScore').textContent='整體身份指數：'+Math.round(total/5*100)+'%  ·  健康維度：'+hlvObj.name;
+  document.getElementById('resQuote').textContent='「'+hlvObj.q+'」';
+  // bars
+  const domColors={health:'var(--health)',learn:'var(--learn)',wealth:'var(--wealth)',relation:'var(--relation)',life:'var(--blue)'};
+  const domLabels={health:'健康',learn:'學習',wealth:'財富',relation:'關係',life:'人生'};
+  document.getElementById('resBars').innerHTML=DOM_ORDER.map(d=>{
+    const pct=Math.round((avgs[d]-1)/4*100);
+    return `<div class="rb-item"><div class="rb-bar-wrap"><div class="rb-bar" style="background:${domColors[d]};height:${Math.max(pct,8)}%"></div></div><div class="rb-lbl">${domLabels[d]}<br><b style="color:${domColors[d]}">${pct}%</b></div></div>`;
+  }).join('');
+  // domain dist
+  document.getElementById('domDist').innerHTML=DOM_ORDER.map(d=>{
+    const pct=Math.round((avgs[d]-1)/4*100);
+    const lvn=Math.round(avgs[d]);
+    const dom=DOMAINS.find(x=>x.id===d);
+    const lvobj=dom.levels.find(l=>l.n===lvn)||dom.levels[0];
+    return `<div class="dd-card"><div class="dd-top"><span class="dd-name" style="color:${domColors[d]}">${domLabels[d]}</span><span class="dd-val" style="color:${domColors[d]}">${lvobj.name}</span></div><div class="dd-bg"><div class="dd-fill" style="background:${domColors[d]};width:${pct}%"></div></div></div>`;
+  }).join('');
+  // upgrade path (health)
+  document.getElementById('upPath').innerHTML=hdom.levels.map(l=>`
+    <div class="up-node${l.n===hlv?' cur':''}" style="color:${l.n===hlv?'var(--health)':'var(--dim)'};border-color:${l.n===hlv?'rgba(249,115,22,.45)':'var(--bdr)'};background:${l.n===hlv?'rgba(249,115,22,.1)':'var(--card)'}">${l.n===hlv?'👉 ':''}${l.name}${l.n===hlv?' ← 你現在在這裡':''}</div>
+    ${l.n<5?'<div class="up-arr">↓</div>':''}`).join('');
+  // update daily identity
+  document.getElementById('todayName').textContent=hlvObj.name;
+  document.getElementById('todayQuote').textContent='「'+hlvObj.q+'」';
+  // show
+  document.getElementById('quizBody').style.display='none';
+  document.getElementById('resultArea').classList.add('show');
+}
+function resetQuiz(){
+  curQ=0;ans=new Array(30).fill(0);
+  document.getElementById('quizBody').style.display='block';
+  document.getElementById('resultArea').classList.remove('show');
+  renderQuestion();
+}
+
+// ════════════════════════════════════════
+// 4. MAP
+// ════════════════════════════════════════
+function renderMap(){
+  document.getElementById('mapGrid').innerHTML=DOMAINS.map(d=>`
+    <div class="map-card">
+      <div class="map-stripe" style="background:${d.color}"></div>
+      <div class="map-head">
+        <div class="map-ico" style="background:${d.color}18">${d.ico}</div>
+        <div><div class="map-dname" style="color:${d.color}">${d.name}</div><div class="map-den">${d.en} Identity</div></div>
+      </div>
+      <div class="level-list">
+        ${d.levels.map(l=>`<div class="lv-item">
+          <span class="lv-tag" style="color:${d.color}">Lv${l.n}</span>
+          <div><div class="lv-name">${l.name}</div><div class="lv-desc">${l.desc}</div></div>
+        </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════
+// 5. DAILY
+// ════════════════════════════════════════
+function renderTasks(){
+  document.getElementById('taskList').innerHTML=TASKS_DATA.map((t,i)=>`
+    <div class="task-item">
+      <div class="t-check${taskDone[i]?' done':''}" onclick="toggleTask(${i})">${taskDone[i]?'✓':''}</div>
+      <div class="t-text${taskDone[i]?' striked':''}">${t.text}</div>
+      <div class="t-pts">+${t.pts} XP</div>
+    </div>`).join('');
+  const pts=35+taskDone.reduce((s,d,i)=>d?s+TASKS_DATA[i].pts:s,0);
+  const done=taskDone.filter(Boolean).length;
+  document.getElementById('todayPts').textContent=pts;
+  document.getElementById('doneC').textContent=done;
+  updateXP(pts);
+}
+function toggleTask(i){
+  taskDone[i]=!taskDone[i];
+  const gain=taskDone[i]?TASKS_DATA[i].pts:-TASKS_DATA[i].pts;
+  xp=Math.max(35,xp+gain);
+  renderTasks();
+  const cb=document.getElementById('comboBadge');
+  if(taskDone[i]){cb.textContent=(gain>0?'+':'')+gain+' XP 🎉';cb.style.display='block';setTimeout(()=>cb.style.display='none',1200);}
+}
+function renderDailyQ(){
+  document.getElementById('dailyQuoteList').innerHTML=DAILY_Q.map(q=>`
+    <div class="dq"><div class="dq-text">${q.text}</div><div class="dq-sub">${q.sub}</div></div>`).join('');
+}
+function updateXP(pts){
+  const v=Math.min(pts,100);
+  document.getElementById('xpFill').style.width=v+'%';
+  document.getElementById('xpPts').textContent=v+' / 100 XP';
+  const lv=v>=80?'希望傳遞者 Lv5':v>=60?'健康建造者 Lv4':v>=40?'修復者 Lv3':v>=20?'學習者 Lv2':'病人 Lv1';
+  document.getElementById('xpLabel').textContent=lv;
+}
+
+// ════════════════════════════════════════
+// 6. AI COACH (Claude API)
+// ════════════════════════════════════════
+const AI_SYSTEM=`你是「身份工程 Identity OS」的 AI 身份教練。
+你的任務：根據使用者的輸入，用以下框架分析並給出建議：
+
+一、身份診斷：判斷使用者目前在哪個身份層級（從五維度分析）
+- 健康身份：受害者→病人→修復者→健康建造者→希望傳遞者
+- 學習身份：背誦者→理解者→建模者→輸出者→教學者
+- 財富身份：打工者→專業者→創造者→經營者→投資者
+- 關係身份：索取者→合作者→貢獻者→支持者→成全者
+- 人生身份：生存者→探索者→成長者→創造者→影響者
+
+二、升級建議：針對最相關的身份維度給出下一層級的具體行動步驟（3個以內）
+
+三、身份金句：給一句對應的身份升維金句
+
+格式要求：
+- 用繁體中文回覆
+- 回覆要有溫度和鼓勵性，不說教
+- 具體行動建議要簡潔可執行（今天就能做的事）
+- 長度控制在 200-280 字以內
+- 回覆結構：【身份識別】→【升級建議】→【今日行動】→【金句】`;
+
+let chatHistory=[];
+
+async function sendAI(){
+  const inp=document.getElementById('aiInput');
+  const msg=inp.value.trim();
+  if(!msg||document.getElementById('aiSendBtn').disabled)return;
+  inp.value='';
+  addMsg('user',msg);
+  chatHistory.push({role:'user',content:msg});
+  document.getElementById('aiSendBtn').disabled=true;
+  // thinking indicator
+  const thinkId='think-'+Date.now();
+  addMsg('bot','<div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>',thinkId);
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system:AI_SYSTEM,
+        messages:chatHistory
+      })
+    });
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'抱歉，請再試一次。';
+    document.getElementById(thinkId)?.remove();
+    addMsg('bot',reply.replace(/\n/g,'<br>'));
+    chatHistory.push({role:'assistant',content:reply});
+  }catch(e){
+    document.getElementById(thinkId)?.remove();
+    addMsg('bot','連線發生問題，請稍後再試。');
+  }
+  document.getElementById('aiSendBtn').disabled=false;
+}
+function addMsg(role,html,id){
+  const chat=document.getElementById('aiChat');
+  const div=document.createElement('div');
+  div.className='ai-msg '+role;
+  if(id)div.id=id;
+  if(role==='user'){
+    div.innerHTML=`<div class="ai-bubble">${html}</div>`;
+  }else{
+    div.innerHTML=`<div class="ai-ico">🤖</div><div class="ai-bubble">${html}</div>`;
+  }
+  chat.appendChild(div);
+  chat.scrollTop=chat.scrollHeight;
+}
+function askAI(msg){document.getElementById('aiInput').value=msg;sendAI();}
+
+// ════════════════════════════════════════
+// 7. QUOTES
+// ════════════════════════════════════════
+function renderQuotes(){
+  document.getElementById('quotesGrid').innerHTML=QUOTES.map(q=>`
+    <div class="qcard" onclick="copyQuote(this,'${q.t.replace(/'/g,"&#39;").replace(/\n/g,'\\n')}')" style="border-bottom-color:${q.c}">
+      <div class="qcard" style="position:absolute;bottom:0;left:0;right:0;height:2px;background:${q.c};border-radius:0 0 11px 11px"></div>
+      <div class="qc-num" style="color:${q.c}">#${q.n} · ${q.type}</div>
+      <div class="qc-text">${q.t.replace(/\n/g,'<br>')}</div>
+      <span class="qc-type" style="background:${q.c}18;color:${q.c}">點擊複製</span>
+    </div>`).join('');
+}
+function copyQuote(el,text){
+  const plain=text.replace(/\\n/g,'\n');
+  navigator.clipboard&&navigator.clipboard.writeText(plain).then(()=>{
+    el.style.borderColor='var(--purple)';
+    const t=document.getElementById('copyToast');t.style.display='block';
+    setTimeout(()=>{t.style.display='none';el.style.borderColor='';},1400);
+  });
+}
+</script>
+
+
+
+
+
+<!-- SOUP-START -->
+<style>
+/* ── 心靈雞湯卡 + 搜尋 ── */
+.sp-card{margin:0 0 18px;padding:14px 16px;border-radius:14px;border:1px solid #E6D3A3;background:linear-gradient(135deg,#FFF9EA,#FFF1DC);color:#4A3A12;text-align:left;cursor:default;font-family:inherit;line-height:1.6;}
+.sp-dark .sp-card{background:linear-gradient(135deg,rgba(232,168,32,.12),rgba(255,255,255,.03));border-color:rgba(232,168,32,.3);color:#F3E8CC;}
+.sp-h{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;letter-spacing:.5px;color:#B07A08;margin-bottom:6px;}
+.sp-dark .sp-h{color:#E8A820;}
+.sp-n{font-weight:400;opacity:.7;}
+.sp-q{font-size:16px;font-weight:600;line-height:1.75;white-space:pre-line;}
+.sp-b{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.sp-fz{bottom:166px;font-size:16px;font-weight:700;}
+.sp-fh{font-size:12px;font-weight:700;padding:8px 6px 4px;color:#C9960C;}
+.sp-it{position:relative;}
+.sp-it[data-f]{padding-right:34px;}
+.sp-x{position:absolute;right:8px;top:8px;opacity:.5;padding:0 4px;}
+.sp-x:hover{opacity:1;}
+.sp-b button{padding:5px 13px;border-radius:16px;border:1px solid currentColor;background:transparent;color:inherit;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;opacity:.75;transition:.15s;}
+.sp-b button:hover{opacity:1;}
+.sp-note{font-size:11px;opacity:.65;margin-top:8px;text-align:center;}
+.sp-fab{position:fixed;right:14px;z-index:900;width:42px;height:42px;border-radius:50%;border:none;cursor:pointer;font-size:18px;line-height:42px;padding:0;background:#1A2B5F;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.sp-dark .sp-fab{background:#E8A820;color:#1a1200;}
+.sp-fs{bottom:116px;}
+.sp-ft{bottom:66px;display:none;}
+.sp-ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;background:rgba(0,0,0,.55);padding:8vh 14px 14px;}
+.sp-ov.on{display:block;}
+.sp-box{max-width:560px;margin:0 auto;background:#fff;color:#1A2040;border-radius:14px;padding:14px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.35);font-size:14px;}
+.sp-dark .sp-box{background:#0E1835;color:#D5E5F8;border:1px solid #1C3060;}
+.sp-row{display:flex;gap:8px;}
+.sp-row input{flex:1;min-width:0;padding:10px 12px;border-radius:9px;border:1.5px solid #C9960C;font-size:15px;font-family:inherit;outline:none;background:transparent;color:inherit;}
+.sp-row button{padding:0 14px;border-radius:9px;border:none;background:rgba(128,128,128,.2);color:inherit;font-size:15px;cursor:pointer;}
+.sp-r{overflow-y:auto;margin-top:10px;}
+.sp-it{padding:9px 10px;border-radius:9px;cursor:pointer;line-height:1.6;border-bottom:1px solid rgba(128,128,128,.18);}
+.sp-it:hover{background:rgba(201,150,12,.14);}
+.sp-it mark{background:#F0C040;color:#1a1200;border-radius:3px;padding:0 2px;}
+.sp-tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:10px;background:rgba(201,150,12,.2);margin-right:6px;}
+.sp-em{padding:16px 6px;opacity:.6;text-align:center;}
+.sp-hit{outline:3px solid #E8A820 !important;outline-offset:3px;}
+#spToast{display:none;position:fixed;bottom:120px;left:50%;transform:translateX(-50%);z-index:1100;background:#1A2B5F;color:#fff;font-size:13px;font-weight:700;padding:8px 18px;border-radius:9px;}
+#spToast.on{display:block;}
+</style>
+<script>
+window.SOUP={key:'身分工程',dark:true,nav:'.nb',panel:'.pg',host:'.wrap',skip:'.topbar,.xp-bar,.combo,.copy-toast',extra:['你不是你的過去，你是你接下來的選擇。','先像那個人一樣過一天，你就開始是了。','別人怎麼看你不重要，你怎麼稱呼自己才重要。','每一次說「我可以」，都在重寫自己。','你值得一個更好的名字來形容自己。','改變很慢，但你已經不是昨天的你了。'],soups:{
+'pg-home':['你不必等到準備好，才開始成為想成為的人。','你怎麼看自己，世界就怎麼回應你。','今天做的每個小選擇，都在替新的自己投票。'],
+'pg-diag':['看見現在的自己，是為了走向更好的自己。','層級不是標籤，是你下一步的地圖。','沒有哪個位置丟臉，停在原地不看才可惜。'],
+'pg-map':['每個人都是從第一層走上來的。','找到自己的位置，下一步就清楚了。','你現在站的地方，是起點，不是終點。'],
+'pg-daily':['每完成一件小事，新的身分就更真實一點。','身分不是想出來的，是每天做出來的。','今天打一個勾，就是對自己守一次信用。'],
+'pg-ai':['把困惑說出口，答案常常就在路上。','你不是問題本身，你是正在解決問題的人。','每一次提問，都是往上走的一步。'],
+'pg-quotes':['一句好話，可以改寫你對自己的看法。','把喜歡的句子抄下來，它會慢慢變成你。','挑一句，今天就帶著它過。']
+},coach:{steps:['今天喝足水，並對自己說一次：「我正在修復。」','寫下今天的三個小改善，再小都算。','挑一個想成為的身分，今天做一件那個人會做的事。','把今天學到的一件事，講給一個人聽。','睡前問自己：今天我為誰帶來了一點好？']}};
+</script>
+<script>
+// ── 心靈雞湯卡 + 搜尋 + 記住分頁 + 離線教練（共用模組，完全離線）──
+(function(){
+var C=window.SOUP||{},K='soup:'+(C.key||'app')+':';
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function lsGet(k){try{return localStorage.getItem(K+k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(K+k,v);}catch(e){}}
+function navs(){return C.nav?$$(C.nav):[];}
+function panels(){
+  if(C.panels)return C.panels();
+  return $$(C.panel||'.pg').map(function(el){return{el:el,id:el.id,host:(C.host&&el.querySelector(C.host))||el};});
+}
+// 通用句庫：接在每個分頁專屬句子後面，「換一碗」時輪到
+var POOL=['慢慢來，比較快。','你已經走了很遠，回頭看看就知道。','今天不必完美，只要比昨天多一點點。','允許自己休息，也是一種前進。','每一個小小的開始，都值得被肯定。','你現在做的每件小事，未來的你都會感謝。','不用和別人比，你有自己的時區。','卡住的時候，先深呼吸，再走一小步。','把今天過好，就是對未來最好的準備。','你比昨天的自己，又多懂了一點。','再難的日子，也是一天一天過完的。','對自己溫柔一點，你正在努力。'];
+function specOf(id){return (C.soups&&C.soups[id])||C.common||[];}
+function quotesOf(id){var s=specOf(id);return s.length?s.concat(C.extra||[],POOL):s;}
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+var day=Math.floor(Date.now()/864e5),off={};
+function favs(){try{return JSON.parse(lsGet('fav'))||[];}catch(e){return [];}}
+function setFavs(a){lsSet('fav',JSON.stringify(a));}
+
+// ── 雞湯卡 ──
+function fill(card){
+  var id=card.getAttribute('data-sp'),q=quotesOf(id);if(!q.length)return;
+  // 每天預設先出該分頁的專屬句，按「換一碗」再輪到其他句
+  var i=((day+hash(id))%specOf(id).length+(off[id]||0))%q.length;
+  card.querySelector('.sp-q').textContent=q[i];
+  card.querySelector('.sp-n').textContent=(i+1)+' / '+q.length;
+  card.querySelector('[data-a=n]').style.display=q.length>1?'':'none';
+  card.querySelector('[data-a=f]').textContent=favs().indexOf(q[i])>=0?'♥ 已收藏':'♡ 收藏';
+}
+function say(text){
+  if(!('speechSynthesis' in window)){toast('這個瀏覽器不支援朗讀');return;}
+  speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);u.lang='zh-TW';u.rate=0.9;speechSynthesis.speak(u);
+}
+// 存成 1080×1080 圖卡（PNG），可直接貼到臉書 / LINE
+function saveImage(text){
+  var S=1080,cv=document.createElement('canvas');cv.width=cv.height=S;
+  var x=cv.getContext('2d'),g=x.createLinearGradient(0,0,S,S);
+  g.addColorStop(0,'#1A2B5F');g.addColorStop(1,'#0A7A72');x.fillStyle=g;x.fillRect(0,0,S,S);
+  x.strokeStyle='rgba(240,192,64,.55)';x.lineWidth=4;x.strokeRect(48,48,S-96,S-96);
+  var F='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+  x.textAlign='center';x.textBaseline='middle';
+  x.fillStyle='#F0C040';x.font='bold 40px '+F;x.fillText('心靈雞湯',S/2,150);
+  var size=text.length>60?50:text.length>32?58:68,lh=size*1.6,max=S-240,lines=[];
+  x.font='bold '+size+'px '+F;
+  text.split('\n').forEach(function(par){
+    var line='';
+    for(var i=0;i<par.length;i++){
+      var ch=par[i],keep=/[，。！？、；：」』）]/.test(ch);   // 標點不放行首
+      if(line&&!keep&&x.measureText(line+ch).width>max){lines.push(line);line=ch;}else line+=ch;
+    }
+    if(line)lines.push(line);
+  });
+  x.fillStyle='#fff';
+  var y=S/2-(lines.length-1)*lh/2;
+  lines.forEach(function(l,i){x.fillText(l,S/2,y+i*lh);});
+  x.fillStyle='rgba(255,255,255,.7)';x.font='32px '+F;
+  x.fillText(C.brand||document.title.split(/[｜|]/)[0].trim(),S/2,S-140);
+  cv.toBlob(function(b){
+    var a=document.createElement('a');a.href=URL.createObjectURL(b);
+    a.download='心靈雞湯_'+text.replace(/[\s\\/:*?"<>|，。！？、]/g,'').slice(0,10)+'.png';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
+    toast('圖卡已下載 ✓');
+  },'image/png');
+}
+function toast(m){
+  var t=document.getElementById('spToast');if(!t)return;
+  t.textContent=m;t.classList.add('on');clearTimeout(toast.t);
+  toast.t=setTimeout(function(){t.classList.remove('on');},1300);
+}
+function copy(text){
+  function fb(){var a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}a.remove();}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).catch(fb);else fb();
+  toast('已複製 ✓');
+}
+function makeCard(id){
+  var d=document.createElement('div');d.className='sp-card';d.setAttribute('data-sp',id);
+  d.innerHTML='<div class="sp-h"><span>🍲 心靈雞湯</span><span class="sp-n"></span></div><div class="sp-q"></div><div class="sp-b"><button type="button" data-a="n">換一碗</button><button type="button" data-a="f">♡ 收藏</button><button type="button" data-a="c">複製</button><button type="button" data-a="s">朗讀</button><button type="button" data-a="i">存圖卡</button></div>';
+  d.addEventListener('click',function(e){
+    e.stopPropagation();
+    var a=e.target.getAttribute&&e.target.getAttribute('data-a'),t=d.querySelector('.sp-q').textContent;
+    if(a==='n'){off[id]=(off[id]||0)+1;fill(d);}
+    else if(a==='c'){copy(t);}
+    else if(a==='s'){say(t);}
+    else if(a==='i'){saveImage(t);}
+    else if(a==='f'){
+      var f=favs(),k=f.indexOf(t);
+      if(k>=0)f.splice(k,1);else f.unshift(t);
+      setFavs(f);fill(d);toast(k>=0?'已取消收藏':'已收藏 ♥（按 🔍 可看全部收藏）');
+    }
+  });
+  fill(d);return d;
+}
+function ensure(){
+  panels().forEach(function(p){
+    if(!p||!p.el)return;
+    var host=p.host||p.el,ex=null;
+    for(var c=host.firstElementChild;c;c=c.nextElementSibling){if(c.classList.contains('sp-card')){ex=c;break;}}
+    if(ex){if(ex.getAttribute('data-sp')===p.id)return;ex.remove();}
+    if(!quotesOf(p.id).length)return;
+    var card=makeCard(p.id);
+    if(p.after&&p.after.parentNode===host)host.insertBefore(card,p.after.nextSibling);
+    else host.insertBefore(card,host.firstChild);
+  });
+}
+
+// ── 搜尋 ──
+var SKIP='script,style,noscript,nav,.nav,.nav-tabs,.sp-card,.sp-ov,.sp-fab,.sp-note,#spToast,.fbx-b,.fbx-fab,#fbxMask';
+var cache=null;
+function blocks(){
+  var out=[],seen=new Set(),w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null),n;
+  while((n=w.nextNode())){
+    var el=n.parentElement;
+    if(!el||!n.nodeValue.trim()||el.closest(SKIP)||(C.skip&&el.closest(C.skip)))continue;
+    while(el.parentElement&&el.parentElement!==document.body&&/^(B|I|EM|STRONG|SPAN|A|U|SMALL|CODE|SUP|SUB)$/.test(el.tagName))el=el.parentElement;
+    if(seen.has(el))continue;seen.add(el);
+    var t=el.textContent.replace(/\s+/g,' ').trim();
+    if(t.length>=2)out.push({el:el,t:t});
+  }
+  return out;
+}
+function tabOf(el){
+  if(C.tabs===false)return -1;
+  var ps=panels();
+  for(var i=0;i<ps.length;i++)if(ps[i].el&&ps[i].el.contains(el))return i;
+  return -1;
+}
+function labelOf(el,ti){
+  if(C.label)return C.label(el)||'';
+  var nv=navs();return ti>=0&&nv[ti]?nv[ti].textContent.trim():'';
+}
+function snippet(t,k,len){
+  var s=Math.max(0,k-18);
+  return (s>0?'…':'')+t.substr(s,len)+(t.length>s+len?'…':'');
+}
+function domSearch(q){
+  var ql=q.toLowerCase(),hit=[],bs=cache||(cache=blocks());
+  for(var i=0;i<bs.length&&hit.length<300;i++){
+    var k=bs[i].t.toLowerCase().indexOf(ql);
+    if(k>=0)hit.push({el:bs[i].el,t:snippet(bs[i].t,k,72)});
+  }
+  // 只留最內層，避免同一段文字重複出現
+  hit=hit.filter(function(a){return !hit.some(function(b){return b!==a&&a.el.contains(b.el);});});
+  return hit.slice(0,40).map(function(h){var ti=tabOf(h.el);return{el:h.el,t:h.t,ti:ti,label:labelOf(h.el,ti)};});
+}
+function flash(el){
+  setTimeout(function(){
+    var t=el;if(!t||!document.body.contains(t))return;
+    while(t&&t!==document.body&&t.offsetParent===null)t=t.parentElement;
+    if(!t||t===document.body)return;
+    t.scrollIntoView({block:'center',behavior:'smooth'});
+    t.classList.add('sp-hit');setTimeout(function(){t.classList.remove('sp-hit');},1800);
+  },140);
+}
+function reveal(r){
+  var el=r.el;
+  if(r.go){el=r.go()||el;}
+  else if(C.reveal){C.reveal(el);}
+  else{var nv=navs();if(r.ti>=0&&nv[r.ti])nv[r.ti].click();}
+  flash(el);
+}
+function ui(){
+  if(C.dark)document.body.classList.add('sp-dark');
+  var t=document.createElement('div');t.id='spToast';document.body.appendChild(t);
+  var top=document.createElement('button');top.type='button';top.className='sp-fab sp-ft';top.title='回到頂端';top.textContent='↑';
+  top.onclick=function(){window.scrollTo({top:0,behavior:'smooth'});};
+  document.body.appendChild(top);
+  window.addEventListener('scroll',function(){top.style.display=window.scrollY>500?'block':'none';},{passive:true});
+
+  // 字體大小：標準 → 大 → 特大
+  var Z=[1,1.15,1.3],zi=+lsGet('zoom')||0,zb=document.createElement('button');
+  zb.type='button';zb.className='sp-fab sp-fz';zb.title='字體大小';zb.textContent='字';
+  function zoom(){document.documentElement.style.zoom=Z[zi]===1?'':Z[zi];}
+  zb.onclick=function(){zi=(zi+1)%Z.length;lsSet('zoom',String(zi));zoom();toast(['標準字體','大字體','特大字體'][zi]);};
+  zoom();document.body.appendChild(zb);
+
+  var fb=document.createElement('button');fb.type='button';fb.className='sp-fab sp-fs';fb.title='搜尋（按 / 開啟）';fb.textContent='🔍';
+  var ov=document.createElement('div');ov.className='sp-ov';
+  ov.innerHTML='<div class="sp-box"><div class="sp-row"><input type="search" placeholder="搜尋本 APP 內容…（Esc 關閉）"><button type="button" title="關閉">✕</button></div><div class="sp-r"></div></div>';
+  document.body.appendChild(fb);document.body.appendChild(ov);
+  var inp=ov.querySelector('input'),box=ov.querySelector('.sp-r'),res=[];
+  function close(){ov.classList.remove('on');}
+  function open(){cache=null;ov.classList.add('on');inp.focus();inp.select();render();}
+  function render(){
+    var q=inp.value.trim();
+    if(!q){
+      res=[];var f=favs();
+      box.innerHTML='<div class="sp-em">輸入關鍵字，搜尋所有分頁的內容</div>'+(f.length
+        ?'<div class="sp-fh">♥ 我的收藏（'+f.length+'）· 點一下複製</div>'+f.map(function(t,i){return '<div class="sp-it" data-f="'+i+'">'+esc(t)+'<span class="sp-x" data-x="'+i+'" title="移除">✕</span></div>';}).join('')
+        :'<div class="sp-em">按雞湯卡上的「♡ 收藏」，喜歡的句子會存在這裡</div>');
+      return;
+    }
+    res=(C.search?C.search(q):domSearch(q))||[];
+    if(!res.length){box.innerHTML='<div class="sp-em">找不到「'+esc(q)+'」</div>';return;}
+    var re=new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+    box.innerHTML=res.map(function(r,i){
+      return '<div class="sp-it" data-i="'+i+'">'+(r.label?'<span class="sp-tag">'+esc(r.label)+'</span>':'')+esc(r.t).replace(re,function(m){return '<mark>'+m+'</mark>';})+'</div>';
+    }).join('');
+  }
+  fb.onclick=open;
+  inp.addEventListener('input',render);
+  ov.querySelector('.sp-row button').onclick=close;
+  ov.addEventListener('click',function(e){
+    if(e.target===ov){close();return;}
+    var xi=e.target.getAttribute('data-x');
+    if(xi!==null){var f=favs();f.splice(+xi,1);setFavs(f);render();$$('.sp-card').forEach(fill);return;}
+    var it=e.target.closest('.sp-it');if(!it)return;
+    if(it.hasAttribute('data-f')){copy(favs()[+it.getAttribute('data-f')]||'');return;}
+    var r=res[+it.getAttribute('data-i')];close();if(r)reveal(r);
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){close();return;}
+    if(e.key==='/'&&!/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName||''))&&!e.target.isContentEditable){e.preventDefault();open();}
+  });
+}
+
+// ── 記住上次分頁 ──
+function remember(){
+  if(C.remember===false||!C.nav)return;
+  var nv=navs();
+  nv.forEach(function(b,i){b.addEventListener('click',function(){lsSet('tab',String(i));});});
+  var s=parseInt(lsGet('tab'),10);
+  if(s>0&&nv[s])nv[s].click();
+}
+
+// ── 離線教練（取代需要連網 / API 的版本）──
+var STOP={};'我很 我的 我想 我是 我不 我會 我要 怎麼 什麼 如何 可以 覺得 不知 知道 自己 沒有 是不 不是 為什 麼辦 還是 因為 所以 但是 一直 有點 的人 的時 時候 開始 想要 要怎 麼做 是否 已經 可能 真的 好像 這樣 那樣 的事 一個 現在'.split(' ').forEach(function(g){STOP[g]=1;});
+var SYN=['害怕 恐懼 擔心 焦慮 不安 緊張','希望 絕望 無望 放棄 沒救','累 疲勞 疲倦 沒力 能量 精神 活力','睡 失眠 睡眠 熬夜 休息','吵架 衝突 爭吵 溝通 冷戰','孤單 孤獨 寂寞 連結 陪伴','生氣 憤怒 情緒 委屈','目標 方向 迷茫 意義 使命','學習 讀書 記憶 專注 理解','錢 財富 收入 賺錢 金錢','幫助 貢獻 付出 給予 成全','復發 修復 恢復 重建','癌 病人 疾病 治療 症狀','壓力 放鬆 呼吸 緊繃','吃 飲食 營養 血糖 代謝','運動 走路 步行 肌肉','痛 疼痛 發炎 不舒服','信任 背叛 安全感 界線','孩子 小孩 親子 教養','伴侶 另一半 婚姻 夫妻 親密','漸行漸遠 疏遠 距離 連結 陪伴','胖 體重 腰圍 減重','身份 身分 角色 定義'].map(function(s){return s.split(' ');});
+var AD=/DHA|EPA|GABA|NMN|Q10|鎂|鋅|益生菌|補充|營養素|保健|生技|購買|團購|下單|膠囊|魚油|維生素|維他命|毫克|mg/i;
+function coach(){
+  if(!C.coach||typeof window.addMsg!=='function')return;
+  var inp=document.getElementById('aiInput');if(!inp)return;
+  var row=inp.parentElement,note=document.createElement('div');
+  note.className='sp-note';note.textContent='離線教練：不連網、不需 API，回覆整理自本 APP 的內容。';
+  row.parentNode.insertBefore(note,row.nextSibling);
+  var skip=C.coach.skip||'#pg-ai,#pg-quiz,#pg-flash,#pg-diag,.hero,.nt-card,.nt-grid,.tech-card,.tech-row,.bb';
+  function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+  window.sendAI=function(){
+    var msg=inp.value.trim();if(!msg)return;
+    inp.value='';window.addMsg('user',esc(msg));
+    var g={};
+    msg.replace(/[\s，。！？、,.!?「」『』（）()：:；;～~…]+/g,' ').split(' ').forEach(function(w){
+      if(/^[\x00-\x7f]+$/.test(w)){if(w.length>1)g[w.toLowerCase()]=1;}
+      else for(var i=0;i<w.length-1;i++){var b=w.substr(i,2);if(!STOP[b])g[b]=1;}
+    });
+    // 同義詞擴充：使用者說「害怕」，也找「恐懼」「擔心」的內容
+    SYN.forEach(function(grp){
+      if(grp.some(function(w){return msg.indexOf(w)>=0;}))grp.forEach(function(w){if(w.length>1)g[w]=1;});
+    });
+    var keys=Object.keys(g),seen={},cand=[];
+    blocks().forEach(function(b){
+      // 只取完整句子（有標點），略過標籤、編號這類短字
+      // 也略過產品 / 補充品段落：教練只給觀念和行動，不推薦產品
+      if(b.t.length<8||b.t.length>160||seen[b.t]||!/[，。；！？：,]/.test(b.t)||AD.test(b.t)||b.el.closest(skip))return;
+      var tl=b.t.toLowerCase(),sc=0;
+      keys.forEach(function(k){if(tl.indexOf(k)>=0)sc++;});
+      if(sc>0){seen[b.t]=1;cand.push({el:b.el,t:b.t,sc:sc});}
+    });
+    cand=cand.filter(function(a){return !cand.some(function(b){return b!==a&&a.el.contains(b.el);});});
+    cand.sort(function(a,b){return b.sc-a.sc||a.t.length-b.t.length;});
+    var top=[],h='';
+    cand.forEach(function(c){
+      if(top.length<3&&!top.some(function(t){return t.t.indexOf(c.t)>=0||c.t.indexOf(t.t)>=0;}))top.push(c);
+    });
+    if(top.length){
+      h+='<b>【相關重點】</b><br>'+top.map(function(x){
+        var lb=labelOf(x.el,tabOf(x.el));
+        return '• '+(lb?'〔'+esc(lb)+'〕':'')+esc(x.t);
+      }).join('<br>')+'<br><br>';
+    }else{
+      h+='這個問題在 APP 裡沒有直接對應的段落，可以換個關鍵字，或用右下角 🔍 搜尋。先給你一個方向：<br><br>';
+    }
+    var qs=quotesOf('pg-ai');
+    if(C.coach.steps&&C.coach.steps.length)h+='<b>【今日一小步】</b><br>'+esc(rnd(C.coach.steps))+'<br><br>';
+    if(qs.length)h+='<b>【心靈雞湯】</b><br>'+esc(rnd(qs));
+    setTimeout(function(){window.addMsg('bot',h);},300);
+  };
+}
+
+// ── 每日任務：記住今天勾過的項目 + 連續打卡天數 ──
+function tasks(){
+  var td;try{td=taskDone;}catch(e){return;}
+  if(!Array.isArray(td)||typeof window.toggleTask!=='function')return;
+  var today=new Date().toDateString(),yest=new Date(Date.now()-864e5).toDateString(),s=null,orig=window.toggleTask;
+  try{s=JSON.parse(lsGet('tasks'));}catch(e){}
+  s=s||{date:'',done:[],streak:0,last:''};
+  if(s.date===today&&s.done.length===td.length){
+    s.done.forEach(function(d,i){if(d&&!td[i])orig(i);});
+    var cb=document.getElementById('comboBadge');if(cb)setTimeout(function(){cb.style.display='none';},0);
+  }
+  window.toggleTask=function(i){
+    orig(i);
+    s.date=today;s.done=taskDone.slice();
+    if(taskDone[i]&&s.last!==today){
+      s.streak=s.last===yest?s.streak+1:1;s.last=today;
+      toast('今日打卡 ✓ 連續 '+s.streak+' 天');
+    }
+    lsSet('tasks',JSON.stringify(s));
+  };
+}
+
+function init(){
+  ui();ensure();remember();coach();tasks();
+  if(C.init)try{C.init();}catch(e){}
+  ensure();
+  var pend=false;
+  function later(){if(pend)return;pend=true;setTimeout(function(){pend=false;ensure();},60);}
+  new MutationObserver(later).observe(document.body,{childList:true,subtree:true});
+  document.addEventListener('click',later,true);
+}
+if(document.readyState==='complete')setTimeout(init,0);
+else window.addEventListener('load',function(){setTimeout(init,0);});
+})();
+</script>
+<!-- SOUP-END -->
+<!-- FBX-START -->
+<script>
+window.FBX={"brand": "身份工程 Identity OS", "tags": "#身份工程 #自我成長 #人生操作系統", "theme": 4, "items": ".kpi-card,.nt-card,.tech-card,.lrk,.lcard,.q-card,.qcard,.map-card,.dq,.stage-card,.dvs-card,.ss-card,.body-card,.act-card,.vocab-card,.root-card,.grammar-card,.hl-box,.pred-card", "groups": ".n-content,.v-content,.sys-content,.s-content,.l-content,.mod-content,.e-content,.prac-section", "quote": ".q-card,.qcard,.dq", "note": "※ 本文為保健知識分享，不能取代專業醫療；身體不適請諮詢醫師。", "noteRe": "補充|營養|血糖|胰島素|癌|發炎|免疫|褪黑|粒線體|腸道|荷爾蒙|症|藥|mg"};
+</script>
+<script>
+// ── 臉書文圖：每一欄、每個項目都能產生臉書貼文 + 圖卡（共用模組，完全離線）──
+(function(){
+var F=window.FBX||{},S=window.SOUP||{};
+var ITEM=F.items||'',GROUP=F.groups||'',QUOTE=F.quote||'',PAIR=F.pair||null;
+var ALL=[ITEM,GROUP].filter(Boolean).join(',');
+var ZH='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+var THEMES=[{c:'#1A2B5F',t:'#E8ECF7'},{c:'#0A7A72',t:'#E2F4F1'},{c:'#C2416B',t:'#FCE9EF'},{c:'#B4690E',t:'#FBF0DC'},{c:'#5B3FA8',t:'#EEE9FA'},{c:'#1F7A3A',t:'#E4F4E8'}];
+var K='fbx:'+(S.key||'app')+':';
+function $$(s,r){return s?Array.prototype.slice.call((r||document).querySelectorAll(s)):[];}
+function $(id){return document.getElementById(id);}
+function is(el,sel){return !!sel&&el.matches(sel);}
+function hash(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
+function cut(s,n){s=String(s);return s.length>n?s.slice(0,n-1)+'…':s;}
+function lsGet(k){try{return localStorage.getItem(K+k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(K+k,v);}catch(e){}}
+
+// ── 從畫面上的項目取出文字 ──
+var PIC=/^(?:[←-⯿〰〽㊗㊙️‍]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDC00-\uDFFF]|\s)+/;
+var DROP=/^(點擊複製|已複製.*|點擊翻面.*|tap to flip.*|speak|發音|例句\s*#?\d+|vol\s*\d+)$/i;
+var LABEL=/^(低維|高維)\s*(low|high)?$/i;
+function word(s){return /[A-Za-z一-鿿]/.test(s);}
+function tidy(s){return s.replace(/[⭐★]+/g,'').replace(/\s+/g,' ').trim();}
+function bare(s){return tidy(s.replace(PIC,''));}
+function grab(el){
+  var raw=[],cur='',subs=[];
+  function flush(){var s=tidy(cur);if(s)raw.push(s);cur='';}
+  (function walk(n){
+    for(var c=n.firstChild;c;c=c.nextSibling){
+      if(c.nodeType===3){cur+=c.nodeValue;continue;}
+      if(c.nodeType!==1)continue;
+      if(/^(BUTTON|SCRIPT|STYLE|INPUT|SELECT|TEXTAREA|CANVAS|A)$/.test(c.tagName)||c.classList.contains('sp-card'))continue;
+      if(c.tagName==='BR'){flush();continue;}
+      if(is(c,ALL)){flush();var t=titleOf(c);if(t)subs.push(t);continue;}
+      var inl=/^inline/.test(getComputedStyle(c).display);
+      if(!inl)flush();
+      walk(c);
+      if(!inl)flush();
+    }
+  })(el);
+  flush();
+  var lines=[],pre='';
+  raw.forEach(function(s){
+    if(DROP.test(s))return;
+    if(!word(s)){if(!lines.length&&!pre&&PIC.test(s)&&!/\d/.test(s))pre=s.split(' ')[0];return;}
+    // 「標籤：」接下一行
+    if(lines.length&&/[:：]$/.test(lines[lines.length-1]))lines[lines.length-1]+=s;else lines.push(s);
+  });
+  return {lines:lines,subs:subs,pre:pre};
+}
+function noNum(s){return s.replace(/^#?\d+\s*[·.、:：\-]?\s*/,'');}
+function titleOf(el){
+  if(PAIR&&is(el,PAIR.sel)){
+    var t=PAIR.title&&el.querySelector(PAIR.title),lo=el.querySelector(PAIR.low);
+    return bare(t?t.textContent:lo?part(lo)[0]||'':'');
+  }
+  var g=grab(el);if(!g.lines.length)return '';
+  if(is(el,QUOTE))return g.lines.slice().sort(function(a,b){return b.length-a.length;})[0];
+  return noNum(bare(g.lines[0]))||g.lines[0];
+}
+function part(el){return grab(el).lines.filter(function(s){return !LABEL.test(s);}).map(bare);}
+
+function panels(){
+  if(S.panels)return S.panels()||[];
+  return $$(S.panel||'.pg').map(function(el){return{el:el,id:el.id,host:(S.host&&el.querySelector(S.host))||el};});
+}
+function shown(el){return !!(el&&el.getClientRects().length);}
+function navText(){
+  var b=$$(S.nav).filter(function(x){return /(^|\s)(on|active)(\s|$)/.test(x.className);})[0];
+  return b?tidy(b.textContent):'';
+}
+function panelFor(el){
+  var ps=panels(),hit=null;
+  ps.forEach(function(p){if(p&&p.el&&p.el.contains(el)&&(!hit||hit.el.contains(p.el)))hit=p;});
+  return hit;
+}
+function labelFor(p){
+  var t=navText(),h=p&&p.after;
+  if(h&&/^H[1-4]$/.test(h.tagName))t+=(t?'｜':'')+tidy(h.textContent);
+  return t;
+}
+function quotesFor(p){
+  var q=(p&&S.soups&&S.soups[p.id])||[];
+  return q.length?q:(S.common||S.extra||[]);
+}
+
+function entry(el){
+  var p=panelFor(el),g=grab(el),e={el:el,tab:labelFor(p),quotes:quotesFor(p),pre:g.pre,subs:g.subs,lines:g.lines};
+  if(PAIR&&is(el,PAIR.sel)){
+    var lo=part(el.querySelector(PAIR.low)||el),hi=part(el.querySelector(PAIR.high)||el);
+    e.kind='pair';e.title=titleOf(el)||lo[0]||'';
+    e.low=lo[0]||'';e.high=hi[0]||'';e.lowEn=lo[1]||'';e.highEn=hi[1]||'';
+    var used=lo.concat(hi,[e.title]);
+    e.lines=g.lines.filter(function(s){var b=bare(s);return !LABEL.test(s)&&used.indexOf(b)<0&&used.indexOf(noNum(b))<0&&!/^#\d+/.test(s);});
+  }else if(is(el,QUOTE)){
+    e.kind='quote';e.title=titleOf(el);
+    e.lines=g.lines.filter(function(s){return s!==e.title;}).map(function(s){return noNum(s);}).filter(Boolean);
+  }else{
+    e.kind=is(el,GROUP)?'group':'item';
+    e.title=titleOf(el);e.lines=g.lines.slice(1);
+  }
+  return e;
+}
+function tabEntry(p){
+  var raw=labelFor(p)||F.brand||'',m=raw.match(PIC),seen={},heads=[],subs=[];
+  $$('h1,h2,h3,.sec-h,.sec-s,.hero-p,.section-title,.model-title,.subtitle',p.el).forEach(function(h){
+    if(h.closest('.sp-card')||(ALL&&h.closest(ALL))||heads.length>=4)return;
+    var t=tidy(h.textContent);
+    if(t.length>3&&t.length<90&&!seen[t]){seen[t]=1;heads.push(t);}
+  });
+  $$(ALL,p.el).forEach(function(el){
+    if(ALL&&el.parentElement.closest(ALL)&&p.el.contains(el.parentElement.closest(ALL)))return;
+    var t=titleOf(el);if(t&&!seen[t]){seen[t]=1;subs.push(t);}
+  });
+  return {kind:'tab',p:p,el:p.el,tab:F.brand||'',title:bare(raw)||raw,pre:m?tidy(m[0]).split(' ')[0]:'',lines:heads,subs:subs,quotes:quotesFor(p)};
+}
+
+// ── 貼文 ──
+var HOOK=[
+ function(t){return '你有沒有發現，「'+t+'」這件事，其實每天都在影響你？';},
+ function(t){return '今天想跟你分享一個小重點：「'+t+'」。';},
+ function(t){return '很多時候我們卡住，不是不夠努力，而是還沒看懂「'+t+'」。';},
+ function(t){return '如果今天只記得一件事，就記這個——「'+t+'」。';}
+];
+var HOOKL=['這一段，想送給今天的你。','看到這裡，先停三秒，慢慢讀。','有些話，早一點知道，就少走一點冤枉路。','今天的小提醒，留給正在努力的你。'];
+var TURN=['看懂了，就不會只是硬撐。知道原理，才知道力氣要用在哪裡。','不用一次全部做到。先懂一點、做一點，改變就開始了。','這不是要你更用力，而是換一個更省力的方向。','知道，是第一步；願意試一次，是第二步。'];
+var TURNP=['語言不只是在描述事情，它也在決定你接下來怎麼想、怎麼做。同一件事換一個說法，眼前就多一條路。','不是要你假裝沒事，而是把「我完了」換成「我還可以做什麼」。','一句話說久了會變成信念，信念久了會變成人生。先從換一句話開始。','低維的說法把門關上，高維的說法把門打開。你值得多一扇門。'];
+var ASK=[
+ function(t){return '我在哪個情境，最需要「'+t+'」？';},
+ function(t){return '如果今天就用上它，第一步會是什麼？';},
+ function(t){return '我身邊誰把這件事做得很好？他是怎麼做的？';},
+ function(t){return '一個月後回頭看，我希望這件事有什麼不同？';}
+];
+var ASKQ=['這句話，讓你想到誰？','今天哪一刻，最需要這句話？','如果把這句話送給一個人，你會送給誰？','這句話裡，哪幾個字最打動你？'];
+var STEP=['今天只挑一個重點，寫下來，貼在看得到的地方。','把這一段講給一個人聽，講得出來才是真的懂。','選一件五分鐘內做得到的小事，現在就做。','睡前花一分鐘，想想今天哪裡用上了它。'];
+var CLOSE=['把這篇留給今天的自己，也分享給那個正在努力的人。','慢慢來，比較快；一點點，就很多。','有共鳴的話，留言告訴我你的想法。','覺得有幫助，就分享給需要的朋友吧。'];
+function pick(a,k){return a[k%a.length];}
+function build(e,v){
+  var T=e.title,k=hash(T)+(v||0),L=[],card,tab=e.kind==='tab';
+  var steps=(F.steps&&F.steps.length?F.steps:(S.coach&&S.coach.steps)||[]).concat(STEP);
+  var q=e.quotes.length?pick(e.quotes,k):'';
+  function sec(h,arr,n){
+    if(!arr.length)return;
+    L.push('▍'+h);arr.slice(0,n).forEach(function(s){L.push('・'+cut(s,140));});
+    if(arr.length>n)L.push('…共 '+arr.length+' 項');L.push('');
+  }
+  if(e.kind==='pair'){
+    L.push('【換句話說｜'+T+'】','你是不是也常這樣說、這樣想？','');
+    L.push('✗ 低維：「'+e.low+'」');if(e.lowEn)L.push('　'+e.lowEn);
+    L.push('✓ 高維：「'+e.high+'」');if(e.highEn)L.push('　'+e.highEn);L.push('');
+    sec('補充說明',e.lines,4);
+    L.push('▍為什麼要換一句話',pick(TURNP,k),'');
+    card={kind:'pair',head:T===e.low?'換句話說':T,low:e.low,high:e.high,quote:q};
+  }else if(e.kind==='quote'){
+    L.push('「'+T+'」','',pick(HOOKL,k),'');
+    L.push('▍想一想','・'+pick(ASKQ,k),'・'+pick(ASKQ,k+1),'');
+    L.push('▍換個角度看',pick(TURN,k),'');
+    card={kind:'quote',quote:T,sub:e.lines[0]||''};
+  }else{
+    L.push('【'+(tab&&F.brand?F.brand+'｜':'')+(e.pre?e.pre+' ':'')+T+'】',T.length>16?pick(HOOKL,k):pick(HOOK,k)(T),'');
+    sec(tab?'這一欄在說什麼':'重點整理',e.lines,tab?4:7);
+    sec(tab?'這一欄的項目':'裡面有這些重點',e.subs,10);
+    if(tab&&e.quotes.length){L.push('▍三句心靈雞湯');e.quotes.slice(0,3).forEach(function(s){L.push('「'+s+'」');});L.push('');}
+    if(!tab&&e.lines.length<3)L.push('▍想一想','・'+pick(ASK,k)(T),'・'+pick(ASK,k+1)(T),'');
+    L.push('▍換個角度看',pick(TURN,k),'');
+    card={kind:'item',head:(e.pre?e.pre+' ':'')+T,lines:(e.lines.length?e.lines:e.subs).slice(0,tab?5:4).map(function(s){return cut(s,46);}),quote:q};
+  }
+  L.push('🌱 今天的小步｜'+pick(steps,k),'');
+  if(q&&e.kind!=='quote'&&!tab)L.push('🍲 「'+q+'」','');
+  L.push(pick(CLOSE,k),'');
+  var body=L.join('\n');
+  if(F.note&&(!F.noteRe||new RegExp(F.noteRe).test(body)))L.push(F.note,'');
+  var tt=T.replace(/[^A-Za-z0-9一-鿿]/g,'');
+  L.push([F.tags||'',e.kind!=='quote'&&tt.length>1&&tt.length<=10&&!/^\d/.test(tt)?'#'+tt:'','#心靈雞湯 #自我成長 #LifeOS'].filter(Boolean).join(' '));
+  card.tab=[F.brand,e.tab!==F.brand?bare(e.tab):''].filter(Boolean).join(' · ');
+  return {text:L.join('\n'),card:card};
+}
+
+// ── 圖卡（1080×1350）──
+function wrap(x,text,maxW){
+  var tk=String(text).match(/[A-Za-z0-9'’\-]+[.,!?;:]?\s?|\s+|[^\sA-Za-z0-9]/g)||[],noHead='，。！？、；：」』）)…—',out=[],cur=[];
+  function push(){var s=cur.join('').trim();if(s)out.push(s);}
+  tk.forEach(function(w){
+    if(cur.join('').trim()&&x.measureText(cur.join('')+w).width>maxW){
+      var carry=[];if(noHead.indexOf(w)>=0&&cur.length>1)carry.unshift(cur.pop());   // 標點不放行首
+      push();cur=carry.concat(w.replace(/^\s+/,''));
+    }else cur.push(w);
+  });
+  push();return out;
+}
+function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
+function draw(cv,c,th){
+  var W=1080,H=1350,X=84,MW=W-168,x=cv.getContext('2d');cv.width=W;cv.height=H;
+  function lay(s,paint,off){
+    function f(px,wt){x.font=(wt||'')+' '+Math.round(px*s)+'px '+ZH;}
+    function put(arr,a,y,lh,col){if(paint){x.fillStyle=col;arr.forEach(function(l,i){x.fillText(l,a,y+i*lh);});}return y+arr.length*lh;}
+    function box(arr,y,lh,bg,bar,col,label){
+      var h=arr.length*lh+(label?104:64)*s;
+      if(paint){x.fillStyle=bg;rr(x,X-20,y,MW+40,h,28);x.fill();x.fillStyle=bar;x.fillRect(X-20,y+24,10,h-48);}
+      if(label){f(28,'bold');put([label],X+32,y+30*s,40*s,bar);}
+      f(c.kind==='pair'?48:36,c.kind==='pair'?'bold':'');
+      put(arr,X+32,y+(label?78:34)*s,lh,col);
+      return y+h;
+    }
+    x.textBaseline='top';x.textAlign='left';
+    f(58,'bold');var head=c.head?wrap(x,c.head,MW):[];
+    var hh=Math.round(150+(head.length?head.length*78*s+50:0));
+    if(paint){
+      x.fillStyle='#FAF6EF';x.fillRect(0,0,W,H);x.fillStyle=th.c;x.fillRect(0,0,W,hh);
+      x.font='30px '+ZH;x.fillStyle='rgba(255,255,255,.85)';var tb=c.tab;while(tb.length>4&&x.measureText(tb).width>MW)tb=tb.slice(0,-2)+'…';x.fillText(tb,X,64);
+    }
+    f(58,'bold');put(head,X,124,78*s,'#fff');
+    var y=hh+70*s+off;
+    if(c.kind==='pair'){
+      f(48,'bold');var lo=wrap(x,c.low,MW-90),hi=wrap(x,c.high,MW-90);
+      y=box(lo,y,68*s,'#FBE7EA','#B4233C','#5A1622','✗ 低維｜舊說法');
+      f(54,'bold');if(paint){x.fillStyle=th.c;x.fillText('↓',W/2-16*s,y+14*s);}y+=92*s;
+      y=box(hi,y,68*s,th.t,th.c,'#1F2937','✓ 高維｜新說法')+56*s;
+    }else if(c.kind==='quote'){
+      f(70,'bold');y=put(wrap(x,'「'+c.quote+'」',MW),X,y,102*s,'#2B2622')+30*s;
+      if(c.sub){f(34,'');y=put(wrap(x,'— '+c.sub,MW),X,y,50*s,'#8A7F76');}
+    }else if(c.lines.length){
+      f(36,'');var bl=[];c.lines.forEach(function(l){wrap(x,'・'+l,MW-90).forEach(function(w){bl.push(w);});});
+      y=box(bl,y,58*s,th.t,th.c,'#3A332E')+56*s;
+    }
+    if(c.quote&&c.kind!=='quote'){
+      f(27,'bold');var pw=x.measureText('心靈雞湯').width+48,ph=54*s;
+      if(paint){x.fillStyle=th.c;rr(x,X,y,pw,ph,ph/2);x.fill();x.fillStyle='#fff';x.fillText('心靈雞湯',X+24,y+(ph-27*s)/2-2);}
+      y+=ph+22*s;f(40,'bold');y=put(wrap(x,'「'+c.quote+'」',MW),X,y,62*s,'#2B2622');
+    }
+    return y;
+  }
+  var s=1.25;while(s>0.5&&lay(s,false,0)>H-170)s-=0.03;
+  lay(s,true,Math.max(0,Math.min(150,(H-170-lay(s,false,0))/2)));
+  x.fillStyle='#E4DAD0';x.fillRect(X,H-130,MW,3);
+  x.textBaseline='top';x.font='bold 32px '+ZH;x.fillStyle=th.c;x.fillText(cut(F.brand||'LifeOS',22),X,H-96);
+  x.font='28px '+ZH;x.fillStyle='#8A7F76';var tg='#心靈雞湯';x.fillText(tg,W-X-x.measureText(tg).width,H-94);
+}
+
+// ── 介面 ──
+var cur=null,ver=0,list=[],ti=parseInt(lsGet('theme'),10);
+if(!(ti>=0&&ti<THEMES.length))ti=F.theme||0;
+function toast(b,t){var o=b.textContent;b.textContent=t;setTimeout(function(){b.textContent=o;},1200);}
+function save(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},2000);}
+function fname(){return ((F.brand||'LifeOS')+'_'+cur.title).replace(/[\\/:*?"<>|\s，。！？、]+/g,'_').slice(0,40);}
+function count(t){return (t.match(/[一-鿿]/g)||[]).length+(t.match(/[A-Za-z][A-Za-z'’\-]*/g)||[]).length;}
+function show(){
+  var r=build(cur,ver);
+  $('fbxTitle').textContent='📘 '+(cur.kind==='tab'?'本頁：':'')+cut(cur.title,28);
+  $('fbxText').value=r.text;$('fbxCnt').textContent='約 '+count(r.text)+' 字';
+  draw($('fbxCanvas'),r.card,THEMES[ti]);
+}
+function chips(){
+  var kw=$('fbxSearch').value.trim().toLowerCase(),box=$('fbxList');box.innerHTML='';
+  list.forEach(function(it){
+    if(kw&&it.find.indexOf(kw)<0)return;
+    var b=document.createElement('button');b.type='button';b.textContent=(it.tab?'📄 本頁｜':'')+cut(it.title,18);
+    if(cur&&it.el===cur.el&&!!it.tab===(cur.kind==='tab'))b.className='on';
+    b.onclick=function(){open(it.tab?tabEntry(it.p):entry(it.el));};box.appendChild(b);
+  });
+  if(!box.firstChild)box.innerHTML='<span style="opacity:.6;padding:4px">找不到符合的項目</span>';
+}
+function scan(){
+  list=[];
+  panels().forEach(function(p){
+    if(!p||!shown(p.el))return;
+    list.push({tab:1,p:p,el:p.el,title:bare(labelFor(p))||F.brand||'本頁',find:''});
+    $$(ALL,p.el).forEach(function(el){
+      var t=titleOf(el);if(t)list.push({el:el,title:t,find:el.textContent.toLowerCase()});
+    });
+  });
+}
+function open(e){
+  if(!e||!e.title)return;
+  cur=e;ver=0;scan();$('fbxMask').classList.add('on');chips();show();
+  var on=$('fbxList').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
+}
+function close(){$('fbxMask').classList.remove('on');}
+function ui(){
+  var st=document.createElement('style');
+  st.textContent='.fbx-b{display:inline-flex;align-items:center;gap:4px;margin:8px 0 0 auto;padding:4px 11px;border-radius:999px;border:1px solid rgba(24,119,242,.45);background:rgba(24,119,242,.1);color:#1877F2;font:700 11px/1.4 '+ZH+';cursor:pointer;white-space:nowrap;flex:none;align-self:center;width:auto;height:auto;letter-spacing:0;text-transform:none}'+
+  '.sp-dark .fbx-b{color:#7DB4FF;border-color:rgba(125,180,255,.45);background:rgba(125,180,255,.1)}.fbx-b:hover{background:#1877F2;color:#fff}'+
+  '.fbx-g{display:flex;margin:0 0 12px}.fbx-fab{bottom:216px;background:#1877F2!important;color:#fff!important}'+
+  '#fbxMask{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1200;background:rgba(20,16,12,.6);display:none;align-items:center;justify-content:center;padding:12px}#fbxMask.on{display:flex}'+
+  '#fbxBox{background:#FAF6EF;color:#2B2622;width:min(1040px,100%);max-height:94vh;border-radius:16px;display:flex;flex-direction:column;overflow:hidden;font:14px/1.6 '+ZH+';text-align:left}'+
+  '#fbxTop{display:flex;gap:8px;align-items:center;padding:12px 14px;background:#1877F2;color:#fff}#fbxTop b{flex:1;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
+  '#fbxSearch{flex:0 1 260px;min-width:110px;padding:7px 12px;border:0;border-radius:999px;font:14px '+ZH+';color:#2B2622;background:#fff;outline:none}'+
+  '#fbxX{background:none;border:0;color:#fff;font-size:22px;cursor:pointer;line-height:1;padding:0 4px}'+
+  '#fbxList{max-height:118px;overflow-y:auto;flex:none;padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid #E4DAD0;background:#fff}'+
+  '#fbxList button{border:1px solid #E4DAD0;background:#FAF6EF;color:#2B2622;border-radius:999px;padding:3px 10px;font:12px '+ZH+';cursor:pointer}#fbxList button.on{background:#1877F2;color:#fff;border-color:#1877F2}'+
+  '#fbxMain{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;padding:14px;overflow:auto}'+
+  '#fbxText{width:100%;height:52vh;min-height:240px;box-sizing:border-box;padding:12px;border:1px solid #E4DAD0;border-radius:12px;background:#fff;color:#2B2622;font:14px/1.75 '+ZH+';resize:vertical}'+
+  '#fbxCanvas{width:100%;height:auto;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15);display:block}'+
+  '#fbxBar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}#fbxBar button{padding:7px 13px;border-radius:999px;border:1px solid #1877F2;background:#1877F2;color:#fff;font:700 13px/1.2 '+ZH+';cursor:pointer}#fbxBar button.g{background:#fff;color:#1877F2}'+
+  '#fbxCnt{font-size:12px;color:#8A7F76;margin-left:auto}#fbxTip{font-size:12px;color:#8A7F76;margin-top:8px}'+
+  '@media(max-width:760px){#fbxMain{grid-template-columns:minmax(0,1fr)}#fbxText{height:34vh}#fbxCanvas{max-width:280px;margin:0 auto}}'+
+  '@media print{.fbx-b,.fbx-fab,#fbxMask{display:none!important}}';
+  document.head.appendChild(st);
+  var fab=document.createElement('button');fab.type='button';fab.className='sp-fab fbx-fab';fab.title='臉書文圖';fab.textContent='📘';
+  fab.onclick=function(){scan();if(list[0])open(tabEntry(list[0].p));};
+  document.body.appendChild(fab);
+  var m=document.createElement('div');m.id='fbxMask';
+  m.innerHTML='<div id="fbxBox"><div id="fbxTop"><b id="fbxTitle"></b><input id="fbxSearch" type="search" placeholder="搜尋本頁項目…"><button id="fbxX" type="button" title="關閉">×</button></div>'+
+   '<div id="fbxList"></div><div id="fbxMain"><div><textarea id="fbxText" spellcheck="false"></textarea><div id="fbxBar">'+
+   '<button type="button" id="fbxCopy">📋 複製貼文</button><button type="button" id="fbxPng">🖼️ 下載圖卡</button>'+
+   '<button type="button" class="g" id="fbxNext">🔄 換一版</button><button type="button" class="g" id="fbxTheme">🎨 換配色</button>'+
+   '<button type="button" class="g" id="fbxTxt">💾 存成 TXT</button><span id="fbxCnt"></span></div>'+
+   '<div id="fbxTip">貼文可以直接在框裡修改。到臉書發文：貼上文字，再加入下載的圖卡。</div></div>'+
+   '<div><canvas id="fbxCanvas"></canvas></div></div></div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',function(e){if(e.target===m)close();});
+  $('fbxX').onclick=close;
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+  $('fbxSearch').addEventListener('input',chips);
+  $('fbxNext').onclick=function(){ver++;show();};
+  $('fbxTheme').onclick=function(){ti=(ti+1)%THEMES.length;lsSet('theme',String(ti));draw($('fbxCanvas'),build(cur,ver).card,THEMES[ti]);};
+  $('fbxCopy').onclick=function(){
+    var t=$('fbxText'),b=this;function fb(){t.select();try{document.execCommand('copy');}catch(e){}}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t.value).catch(fb);else fb();
+    toast(b,'✅ 已複製');
+  };
+  $('fbxPng').onclick=function(){$('fbxCanvas').toBlob(function(b){save(b,fname()+'.png');},'image/png');};
+  $('fbxTxt').onclick=function(){save(new Blob(['﻿'+$('fbxText').value],{type:'text/plain;charset=utf-8'}),fname()+'.txt');};
+}
+function btn(text,fn){
+  var b=document.createElement('button');b.type='button';b.className='fbx-b';b.textContent=text;
+  b.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();fn();});
+  return b;
+}
+function own(el,cls){for(var c=el.firstElementChild;c;c=c.nextElementSibling)if(c.classList.contains(cls))return c;return null;}
+function decorate(){
+  $$(ALL).forEach(function(el){
+    if(own(el,'fbx-b')||el.closest('.sp-card,.sp-ov,#fbxMask')||el.textContent.trim().length<4)return;
+    var b=btn('📘 臉書文圖',function(){open(entry(el));});
+    if(is(el,GROUP)&&el.firstElementChild){b.classList.add('fbx-g');el.insertBefore(b,el.firstElementChild.nextSibling);}
+    else el.appendChild(b);
+  });
+  $$('.sp-card .sp-b').forEach(function(bar){
+    if(own(bar,'fbx-b'))return;
+    var b=btn('📘 本頁臉書文圖',function(){var p=panelFor(bar);if(p)open(tabEntry(p));});
+    b.style.cssText='margin:0;opacity:1';bar.appendChild(b);
+  });
+}
+function init(){
+  ui();decorate();
+  var pend=false;
+  new MutationObserver(function(){if(pend)return;pend=true;setTimeout(function(){pend=false;decorate();},90);}).observe(document.body,{childList:true,subtree:true});
+}
+if(document.readyState==='complete')setTimeout(init,60);
+else window.addEventListener('load',function(){setTimeout(init,60);});
+})();
+</script>
+<!-- FBX-END -->
+</body>
+</html>
