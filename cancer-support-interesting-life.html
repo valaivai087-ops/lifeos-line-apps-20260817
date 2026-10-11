@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>今天也要活得有趣｜癌友心靈雞湯</title>
+<style>
+:root{
+  --bg:#fbf6ee; --card:#fffdf9; --ink:#3b3029; --soft:#7d6e62; --line:#eadfd0;
+  --accent:#c9683f; --accent-soft:#f6e3d6; --ok:#5d8a5a; --ok-soft:#e4efe0;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#1f1a17; --card:#2a2420; --ink:#f1e8dd; --soft:#b3a496; --line:#40372f;
+    --accent:#e8926a; --accent-soft:#4a3226; --ok:#9cc497; --ok-soft:#2c3a2a;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif;font-size:18px;line-height:1.75}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 80px}
+header h1{font-size:1.5rem;margin:0 0 2px;letter-spacing:.04em}
+header p{margin:0;color:var(--soft);font-size:.95rem}
+nav{display:flex;gap:6px;margin:18px 0 16px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
+nav button{flex:1;padding:10px 4px;border:1px solid var(--line);background:var(--card);color:var(--soft);border-radius:999px;font:inherit;font-size:.95rem;cursor:pointer}
+nav button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+section{display:none}
+section.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 18px 14px;margin-bottom:12px}
+.card.done{border-color:var(--ok)}
+.no{color:var(--accent);font-weight:700;font-size:.85rem;letter-spacing:.08em}
+.q{font-size:1.2rem;font-weight:700;margin:4px 0 4px;text-wrap:pretty}
+.long{margin:0 0 10px;color:var(--soft);font-size:1rem}
+.act{background:var(--accent-soft);border-radius:12px;padding:10px 14px;font-size:1rem}
+.done .act{background:var(--ok-soft)}
+.act b{color:var(--accent);font-size:.85rem;display:block}
+.done .act b{color:var(--ok)}
+.ind{display:block;margin-top:4px;font-size:.9rem;color:var(--soft)}
+.row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:6px 14px;font:inherit;font-size:.9rem;cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--accent)}
+.btn.fav.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.btn.chk.on{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.btn.main{background:var(--accent);border-color:var(--accent);color:#fff}
+.hero{padding:28px 22px 18px;text-align:center}
+.hero .q{font-size:1.6rem;line-height:1.6;margin:10px 0 8px}
+.hero .long{margin-bottom:18px}
+.hero .act{text-align:left}
+.hero .row{justify-content:center}
+.note{color:var(--soft);font-size:.9rem;margin:6px 2px 14px}
+#search,#psearch{width:100%;padding:12px 16px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:inherit}
+#search:focus,#psearch:focus,textarea:focus,select:focus,input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:10px 0 12px}
+.chips button{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--soft);border-radius:999px;padding:5px 12px;font:inherit;font-size:.85rem;cursor:pointer}
+.chips button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+h2{font-size:1.05rem;margin:22px 2px 10px;color:var(--accent)}
+label{display:block;font-weight:700;margin:14px 0 6px}
+textarea,select,input[type=number]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;font-weight:400;margin-top:6px}
+textarea{min-height:56px;resize:vertical}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+@media (max-width:520px){.grid{grid-template-columns:1fr}}
+ul.plain{list-style:none;padding:0;margin:6px 0 0}
+ul.plain li{padding:6px 12px;border-radius:10px}
+ul.plain li.today{background:var(--accent-soft);font-weight:700}
+.letter p{margin:0 0 6px}
+.warn{border-left:4px solid var(--accent)}
+.empty{text-align:center;color:var(--soft);padding:30px 0}
+summary{cursor:pointer;font-weight:700}
+.card details{margin-top:10px;font-size:.92rem;color:var(--soft)}
+.card details summary{font-weight:400;font-size:.88rem}
+.card details p{margin:6px 0 0}
+.pre{white-space:pre-line;margin:0}
+ol.flow{margin:8px 0 0;padding-left:1.3em}
+ol.flow li{margin-bottom:12px}
+ol.flow b{display:block;color:var(--accent)}
+ol.flow span{display:block;color:var(--soft);font-size:.95rem}
+.need b{display:block}
+.need p{margin:4px 0 0;font-size:.95rem}
+.need .ind{margin-top:6px}
+.tag{display:inline-block;border-radius:999px;padding:1px 10px;font-size:.82rem;font-weight:700;margin:2px 4px 2px 0;background:var(--accent-soft);color:var(--accent)}
+dialog{border:none;border-radius:16px;padding:16px;background:var(--card);color:var(--ink);width:min(560px,94vw);max-height:94vh}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+dialog img{display:block;width:100%;border-radius:10px;border:1px solid var(--line)}
+dialog pre{white-space:pre-wrap;font:inherit;font-size:.9rem;background:var(--bg);border-radius:10px;padding:12px;margin:12px 0 0;max-height:30vh;overflow:auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>今天也要活得有趣</h1>
+    <p>病友 LifeOS｜每天選 1 句，做 1 件小事，觀察 1 個變化</p>
+  </header>
+
+  <nav>
+    <button data-tab="today" class="on">今日</button>
+    <button data-tab="all">100 句</button>
+    <button data-tab="daily">回饋</button>
+    <button data-tab="nutri">營養</button>
+    <button data-tab="remind">提醒</button>
+  </nav>
+
+  <section id="today" class="on">
+    <div id="hero"></div>
+    <p class="note" id="progress"></p>
+    <div class="card">
+      <b>七日溫柔行動</b>
+      <ul class="plain" id="week"></ul>
+    </div>
+  </section>
+
+  <section id="all">
+    <input id="search" type="search" placeholder="搜尋金句、小行動或指標，例如：休息、家人、回診、焦慮">
+    <div class="chips" id="chips"></div>
+    <div id="list"></div>
+  </section>
+
+  <section id="daily">
+    <p class="note">30 秒就好。想填就填，空著也沒關係；內容只存在這台裝置上。</p>
+    <div class="card" id="feedback"></div>
+    <div class="card" id="history"></div>
+    <div class="card">
+      <b>每週模型更新</b>
+      <ul class="plain">
+        <li>有效的行動 → 保留。</li>
+        <li>太累的行動 → 縮小。</li>
+        <li>不適合的行動 → 更換。</li>
+        <li>增加負擔的行動 → 暫停。</li>
+        <li>需要專業協助的問題 → 求助。</li>
+        <li>感受沒有改善 → 不代表失敗，重新確認需求。</li>
+      </ul>
+    </div>
+    <details class="card">
+      <summary>想多寫一點：一分鐘七問</summary>
+      <div id="questions"></div>
+    </details>
+  </section>
+
+  <section id="nutri">
+    <div class="card warn">
+      <b>先看這裡</b>
+      <p>產品是可選擇的營養支持，不是癌症治療的替代品。真正重要的，不是補充得越多，而是讓每一份照顧更符合病友的需要。</p>
+      <p>治療期間使用補充品前，請帶著產品標示和醫療團隊討論。</p>
+    </div>
+
+    <div class="card">
+      <b>三層決策流程</b>
+      <ol class="flow">
+        <li><b>第一層｜需求</b>目前最困擾的是什麼？
+          <span>從下方的需求找出最接近的一項。</span></li>
+        <li><b>第二層｜安全</b>成分、劑量、治療交互作用都確認了嗎？
+          <span>確認了 → 進第三層。</span>
+          <span>還沒 → 帶著產品標示，請醫療團隊核對。</span></li>
+        <li><b>第三層｜回饋</b>營養攝取、生活品質、耐受性有變化嗎？
+          <span>有幫助 → 保留。</span>
+          <span>不明顯 → 重新確認需求，再調整。</span></li>
+      </ol>
+    </div>
+
+    <h2>13 項需求 × 團購產品</h2>
+    <div id="needs"></div>
+
+    <h2>產品 × 健康與治療期間的幫助</h2>
+    <input id="psearch" type="search" placeholder="搜尋產品或關鍵字，例如：魚油、睡眠、蛋白質、腸道">
+    <div id="products" style="margin-top:12px"></div>
+
+    <h2>推薦文案</h2>
+    <div class="card">
+      <p id="promo" class="pre"></p>
+      <div class="row"><button class="btn" data-act="promo">複製文案</button></div>
+    </div>
+  </section>
+
+  <section id="remind">
+    <div class="card warn">
+      <b>最重要的提醒</b>
+      <p>小行動不是另一張必須完成的功課表。做得到很好，做不到也沒有關係。行動可以縮小、延後或跳過。</p>
+      <p>所有行動依個人體力、治療與醫囑調整；回饋分數僅供自我觀察，不代表療效。</p>
+      <p>嚴重或持續不適，請及時聯絡醫療團隊。如果持續悲傷、焦慮或失眠，已經明顯影響生活，也可以請醫療團隊協助轉介心理支持。</p>
+    </div>
+    <div class="card letter">
+      <b>送給每位病友</b>
+      <p>你不必每天勇敢。你不必永遠微笑。</p>
+      <p>你可以哭，可以累，可以休息。</p>
+      <p>今天做得到一件小事，很好。今天什麼都做不到，也值得被愛。</p>
+      <p>真正的進步，不是每天變得更堅強，而是越來越懂得如何照顧自己。</p>
+    </div>
+    <div class="card">
+      <b>臉書文圖</b>
+      <p class="note">100 句各有一張圖卡與一篇貼文，都放在「癌友心靈雞湯_臉書貼文圖卡」資料夾（001.png＋001.txt…）。另有三張通用圖卡：</p>
+      <div class="row" id="extras"></div>
+    </div>
+  </section>
+</div>
+
+<dialog id="dlg">
+  <img id="dlgImg" alt="">
+  <p class="note" id="dlgMiss" hidden>找不到圖檔。請確認「癌友心靈雞湯_臉書貼文圖卡」資料夾和這個檔案放在同一層。</p>
+  <pre id="dlgText"></pre>
+  <div class="row">
+    <a class="btn main" id="dlgDown" download>下載圖卡</a>
+    <button class="btn" id="dlgCopy">複製貼文</button>
+    <button class="btn" id="dlgClose">關閉</button>
+  </div>
+</dialog>
+
+<script>
+// 每行：完整金句|完整小行動；# 開頭為章節（章名以下方 RAW2 為準）
+const RAW = `
+#生病了，人生還沒有結束
+一張診斷書，改變了生活，卻改變不了你的價值。|寫下自己除了病人以外，仍然擁有的三個身分。
+生病是人生的一部分，不是人生的全部。|今天安排五分鐘，做一件與疾病無關的喜歡小事。
+人生突然轉彎，不代表前方沒有風景。|寫下一件目前仍然可以期待的事情。
+你只是生病了，不是失去了被愛的資格。|對自己說一句「我依然值得被好好照顧」。
+疾病可以打亂計畫，卻不能定義你的人生。|列出一件因治療需要調整、但仍可保留的生活習慣。
+今天走得慢，也是在好好生活。|把今天的待辦事項減少一件。
+人生不必照原本的劇本，才能繼續精彩。|為今天安排一個不費力的小小新體驗。
+不必急著想通一生，先好好度過今天。|只寫下今天最需要完成的一件事。
+你不是一個疾病名稱，而是一個值得珍惜的人。|回想自己最喜歡的一個個性或優點。
+生命的故事還在繼續，不必急著替未來寫結局。|寫下一句「今天，我想好好珍惜＿＿」。
+#你不必每天都堅強
+想哭就哭，眼淚不是軟弱。|給自己五分鐘，允許真實情緒存在。
+累了就休息，不必向誰證明堅強。|安排一段不需要完成任何任務的休息時間。
+今天不想微笑，也沒有關係。|告訴一位信任的人「今天我心情不太好」。
+勇敢不是不害怕，而是害怕時願意尋求幫助。|寫下一件最擔心的事，準備向適當的人詢問。
+你可以脆弱，也可以被愛。|向家人提出一個具體的小請求。
+不必把每一天，都過成一場戰鬥。|取消一件非必要、讓自己有壓力的安排。
+有些傷痛不需要鼓勵，只需要陪伴。|邀請一位朋友陪你聊十分鐘，或安靜坐一會兒。
+撐不住的時候，請讓別人接住你。|建立一份三人的支持名單，記下可以找誰幫忙。
+不必強迫自己樂觀，悲傷也值得被理解。|用一句話描述今天最真實的感受。
+你不需要成為英雄，只需要做真實的自己。|今天不說「我沒事」，試著說出一個真正的需要。
+#重新溫柔對待身體
+身體已經很辛苦，請別再責怪它。|把一句責備身體的話，改成一句理解自己的話。
+慢慢走，不代表你沒有前進。|依醫療建議與當天體力，選擇短暫活動或休息。
+休息不是偷懶，而是身體需要照顧。|為今天安排一段不受打擾的休息時間。
+外貌改變了，你的美好依然存在。|挑選一件讓自己感到舒適、喜歡的衣物。
+疤痕不會減少你的價值。|對鏡子裡的自己說一句溫柔的話，不必勉強喜歡所有改變。
+體力變少了，生命的尊嚴沒有變少。|把一件耗費體力的工作交給願意協助的人。
+不要用健康時的標準，要求生病的自己。|依今天的體力，重新調整一件生活任務。
+今天能做多少，就溫柔地做到多少。|把一件任務拆成三個小步驟，只做身體允許的部分。
+愛自己，是在脆弱時也不嫌棄自己。|今天練習不批評自己的身體一次。
+你不必恢復原來的模樣，才值得被珍惜。|寫下現在的自己仍然擁有的一項能力。
+#治療路上，給自己多一點力量
+不知道怎麼辦，就先問問自己有哪些選擇。|下次回診詢問「目前有哪些適合我的治療方案？」
+尋求第二意見，是為了讓決定更清楚。|詢問主治醫師取得第二意見的方式與安全時間範圍。
+你可以相信醫療專業，也可以提出自己的疑問。|回診前寫下最想了解的三個問題。
+治療很辛苦，不代表你必須獨自承受。|邀請一位信任的人陪診，協助記錄醫師說明。
+有疼痛就說，有需要就求助。|記錄疼痛或不舒服的時間、程度與變化，依醫囑回報。
+治療結果不如預期，不代表你不夠努力。|詢問醫師目前的治療評估，以及下一步可能的調整。
+不必一次走完所有路，先走好眼前一步。|確認下一次回診、檢查或治療的時間與準備事項。
+你值得被治療，也值得被理解。|向醫療團隊說明一件最影響生活品質的困擾。
+照顧疾病很重要，照顧生活品質也很重要。|詢問醫療團隊是否有適合的營養、復健、心理或緩和醫療支持。
+真正的力量，是懂得為自己尋找適當的支持。|記下醫療團隊的聯絡方式與需要緊急求助的警訊。
+#別讓明天的擔心，偷走今天
+明天還沒來，別讓恐懼先住滿今天。|把一件對未來的擔心寫下來，區分事實與猜測。
+未來有未知，今天也可以有溫暖。|留意今天一件讓自己感到舒服的小事。
+希望不是保證，而是仍然看見可能。|列出一件現在還能主動選擇的事情。
+想不通的事，允許自己慢慢想。|把暫時沒有答案的問題放進回診提問清單。
+今天能安心吃飯，就是值得珍惜的幸福。|在醫療飲食建議允許下，選擇一樣自己喜歡、吃得舒服的食物。
+不要用最壞的想像，提前判決自己的未來。|問自己「我擔心的事情，現在有確定發生嗎？」
+不確定的日子，也值得被好好度過。|安排一件不需要等待檢查結果就能享受的小事。
+看不清遠方，就先照顧腳下。|今天只專注完成一個最重要的小任務。
+有些答案需要等待，生活卻不必全部暫停。|等待報告期間，安排一段喜歡的音樂或閱讀時間。
+即使未來模糊，眼前的愛依然真實。|向一位重要的人表達一句感謝。
+#你值得被愛，也值得被照顧
+真正的陪伴，是你難過時，我仍願意留下。|告訴一位信任的人，自己需要陪伴的方式。
+你不必假裝沒事，才能讓別人愛你。|用一句話表達今天真實的心情。
+一句「我陪你」，勝過無數句「你要堅強」。|邀請家人一起散步、聊天，或安靜待一會兒。
+被照顧不是負擔，而是讓愛有機會流動。|接受別人一次具體而適合的幫助。
+你可以說出需要，不必凡事自己承擔。|說出「我今天需要你幫我＿＿」。
+真正的愛，不替你決定，而是尊重你的選擇。|與家人分享一項自己重視的治療或生活目標。
+你不必有用，才值得被愛。|今天允許自己不完成任何額外的家庭責任。
+有人願意聽你說話，就是生命裡的溫暖。|傳一則訊息給願意傾聽的朋友。
+不必把所有眼淚，都留給獨處的夜晚。|選擇一個安全的時機，分享自己最近最難受的事情。
+最好的陪伴，是讓你安心做自己。|告訴家人「什麼樣的陪伴會讓我比較舒服」。
+#重新發現生活的小幸福
+幸福不必很大，一杯熱茶就能溫暖片刻。|在飲食限制允許下，慢慢享用一杯喜歡的飲品。
+今天還能微笑，就是值得珍惜的時光。|看一段自己喜歡的輕鬆影片。
+生命不只剩下治療，還有音樂、陽光與愛。|播放一首最喜歡的歌曲。
+不必等到康復，才允許自己快樂。|安排十分鐘，做一件讓自己開心的小事。
+一頓喜歡的飯，也能成為今天的小期待。|依照營養與治療建議，選擇一樣喜歡的餐點。
+平凡的日子，藏著最真實的幸福。|拍下一張今天覺得美好的照片。
+能和喜歡的人說說話，就是珍貴的禮物。|打電話或傳訊息給一位想念的人。
+人生不必天天精彩，也可以天天值得珍惜。|睡前寫下一件今天值得感謝的小事；想不到也沒關係。
+快樂不必盛大，心裡有一點暖就很好。|找一個舒服的位置，安靜欣賞窗外景色。
+別忘了，你仍然可以喜歡這個世界。|重新接觸一項過去喜歡、現在仍適合的興趣。
+#人生改變了，也能重新開始
+人生不能重來，生活方式卻可以重新選擇。|調整一項已不適合目前身體狀況的生活習慣。
+放慢腳步，不代表放棄人生。|把今天的行程留出一段彈性休息時間。
+昨天的計畫失效了，今天可以重新安排。|重新排列今天三件事情的優先順序。
+不必回到過去，才能找到新的幸福。|尋找一種目前仍能享受的休閒方式。
+有些路走不通，不代表所有路都關上。|為一件暫時做不到的事，想出一個更輕鬆的替代方法。
+改變不是認輸，而是重新理解自己的需要。|寫下最近身體或心情最明顯的一個變化。
+真正的自由，是不被昨天的自己困住。|放下一項已不適合自己的舊要求。
+你可以重新定義成功，也重新定義幸福。|完成一句話「對現在的我來說，幸福是＿＿」。
+人生不必完美，依然可以活得有意義。|今天允許一件事情不完美。
+生命的韌性，是改變之後仍然願意生活。|選擇一件小事，嘗試用新的方式完成。
+#把自己放回生命的中心
+不要只關心檢查報告，也要關心自己的心。|用0到10分記錄今天的心情困擾程度。
+你不是為了滿足別人的期待而活著。|婉拒一件目前不適合自己的要求。
+想休息就休息，不必為此感到虧欠。|今天保留一段沒有義務的個人時間。
+你的感受很重要，你的選擇也很重要。|寫下目前最重視的一項生活品質需求。
+不必和別人的康復故事比較。|減少接觸一則讓自己焦慮的比較性資訊。
+每個人的路不同，請尊重自己的步調。|依自身情況，設定一個不需要和別人比較的小目標。
+今天沒有完成什麼，也不代表今天沒有價值。|睡前對自己說「今天辛苦了」。
+把時間留給真正重要的人與事。|寫下目前最重要的三件事。
+別忘了問自己：今天我真正需要什麼？|從休息、陪伴、資訊、活動或安靜中選出一項需要。
+照顧好自己，不是自私，而是尊重生命。|今天優先滿足一項基本需求。
+#願你今天，也能活得有趣
+願你害怕時有人陪，疲憊時有人懂。|建立一位可以談心的固定聯絡對象。
+願你的眼淚被理解，笑容被珍惜。|分享今天一件開心或難過的小事。
+願你在辛苦的日子裡，仍能遇見溫柔。|對自己做一件溫柔的小事。
+願你不必逞強，也能安心被愛。|向身邊的人坦白一件目前做不到的事。
+願每一次休息，都讓你少一點負擔。|安排一段安靜休息，不要求自己一定要睡著。
+願你在未知之中，仍保有選擇的自由。|寫下明天一件可以由自己決定的小事。
+願你不只被看見疾病，也被看見完整的自己。|和朋友聊一個與疾病無關、自己真正感興趣的話題。
+願你不必每天快樂，卻每天都能善待自己。|發現自我批評時，試著換成一句較溫柔的說法。
+願你在有限的今天，找到一件值得珍惜的小事。|睡前回想今天一個舒服、安心或被陪伴的片刻。
+願你不必戰勝每一場風雨，依然能被愛、被理解，活出屬於自己的生命風景。|寫下一句送給自己的祝福，留在手機裡，想看時再打開。
+`;
+
+// 每行：滑讀金句|精簡小行動|回饋指標；# 開頭為章節
+const RAW2 = `
+#接納疾病，重新生活
+診斷改變生活，不改變你的價值|寫3個自我身分|0～3個
+生病是人生一部分，不是全部|做一件喜歡的小事|愉悅感0～10分
+人生轉彎，仍有風景|寫1件期待的事|期待事項數
+生病了，依然值得被愛|說1句溫柔的話|自我接納0～10分
+疾病打亂計畫，不能定義人生|保留1個喜歡的習慣|每週次數
+走得慢，也是在前進|減少1件待辦|負擔感0～10分
+人生換劇本，也能繼續生活|嘗試1件小事|舒適度0～10分
+不必想通一生，先過好今天|設定1個小目標|完成狀態
+你不是疾病名稱|寫1個自己的優點|優點數
+別急著替未來寫結局|寫下今天珍惜的事|完成與否
+#允許脆弱，不必逞強
+想哭就哭，眼淚不是軟弱|辨識真實情緒|情緒清晰度0～10分
+累了就休息，不必證明堅強|安排休息|疲勞前後分數
+今天不微笑，也沒關係|說出心情|壓力前後分數
+勇敢不是不害怕|寫下1個擔憂|焦慮0～10分
+脆弱的你，也值得被愛|提出1個請求|需求是否被理解
+人生不必天天戰鬥|取消1件非必要安排|壓力變化
+有些傷痛只需要陪伴|找朋友聊10分鐘|孤單感變化
+撐不住，就讓別人幫忙|列3位支持者|可聯絡人數
+悲傷也值得被理解|寫1句真實感受|是否能說出情緒
+不必當英雄，做自己就好|說出1個需要|被理解程度
+#善待身體，尊重節奏
+身體已經辛苦，別再責怪|改寫1句自責|自責程度
+慢慢走，也是在前進|依醫囑活動或休息|活動後不適程度
+休息不是偷懶|安排安靜休息|疲勞前後分數
+外貌改變，美好依然存在|穿喜歡的衣服|舒適度
+疤痕不減少你的價值|對自己說溫柔的話|外貌困擾程度
+體力減少，尊嚴不減|請人分擔1件事|疲勞變化
+別用健康時的標準要求自己|調整1項任務|身體負擔
+今天能做多少，就做多少|任務拆3步|完成步驟數
+愛自己，是脆弱時不嫌棄自己|減少1次自我批評|自責次數
+不必恢復原樣才值得珍惜|寫1項現有能力|能力數
+#醫療決策，找回自主
+不知道怎麼辦，先問有哪些選擇|詢問治療方案|理解方案數
+第二意見，讓選擇更清楚|確認第二意見與時限|是否確認
+相信專業，也可以提問|準備3個問題|獲得解答數
+治療辛苦，不必獨自承受|邀請陪診|是否獲得協助
+疼痛要說，需要就求助|記錄症狀|疼痛0～10分及是否回報
+療效不如預期，不是你的錯|詢問下一步|是否理解方案
+先走好眼前一步|確認回診事項|待確認事項數
+你值得治療，也值得理解|說出1項困擾|是否獲得建議
+治療重要，生活品質也重要|詢問支持照護|可用資源數
+懂得求助，也是一種力量|保存緊急聯絡方式|資訊是否齊全
+#減少焦慮，珍惜今天
+別讓明天的恐懼占滿今天|區分事實與猜測|可分類事項數
+未來未知，今天仍有溫暖|找1件舒服的事|舒適感
+希望不是保證，而是仍有可能|寫1個選擇|可行選項數
+想不通，就慢慢想|記錄待問問題|反覆擔憂程度
+安心吃一餐，也是幸福|選合適食物|餐後舒適度
+別提前判決未來|核對擔心是否屬實|事實辨識數
+不確定的日子，也值得生活|安排1件小事|參與後感受
+看不清遠方，就先看腳下|完成1個小任務|完成狀態
+等待答案，也能繼續生活|聽歌或閱讀|焦慮變化
+未來模糊，眼前的愛真實|表達1句感謝|連結感
+#接受陪伴，讓愛流動
+難過時有人留下，就是溫暖|說出陪伴需求|被理解程度
+不必假裝沒事才值得被愛|表達心情|壓力變化
+一句我陪你，勝過百句加油|邀請家人陪伴|陪伴滿意度
+被照顧不是負擔|接受1次協助|負擔變化
+有需要，就說出來|提出1項請求|是否獲得回應
+真正的愛，尊重你的選擇|分享1個目標|理解程度
+不必有用，才值得被愛|放下1件責任|罪惡感變化
+有人願意傾聽，就是幸福|聯絡1位朋友|孤單感變化
+眼淚不必留給深夜|分享1件難受的事|安全感
+好的陪伴，讓你安心做自己|說明陪伴偏好|符合程度
+#找回日常的小幸福
+幸福不必很大，一杯茶也溫暖|享用合適飲品|舒適度
+今天能微笑，就是珍貴片刻|看輕鬆影片|心情變化
+生命不只有治療|聽1首歌|放鬆程度
+不必等康復才快樂|做10分鐘喜歡的事|愉悅程度
+喜歡的一餐，也是期待|選合適餐點|食慾與舒適度
+平凡日子，也藏著幸福|拍1張照片|是否願意保存
+與喜歡的人聊天，就是禮物|聯絡1位朋友|連結感
+不必天天精彩|記錄1件小事|記錄後感受
+快樂不必盛大|欣賞窗外風景|平靜程度
+你仍然可以喜歡世界|接觸1項興趣|活動後舒適度
+#更新人生，重新選擇
+人生不能重來，生活可以調整|改1項習慣|適合程度
+放慢不是放棄|增加彈性休息|疲勞變化
+舊計畫失效，就重新安排|重排3件事|壓力變化
+不必回到過去，才能幸福|找1種新休閒|可行選項數
+一條路不通，還能找別的方法|提出替代方案|可行性
+改變不是認輸|記錄身心變化|是否需要回報
+自由是不被昨天綁住|放下1項舊要求|心理負擔
+幸福可以重新定義|寫下現在的幸福|是否符合需求
+不完美，也有意義|允許1件事不完美|焦慮變化
+韌性是願意重新生活|嘗試新方法|可行性與舒適度
+#把自己放回生命中心
+關心報告，也要關心心情|記錄心理困擾|0～10分
+你不是為別人的期待而活|婉拒1件事|壓力變化
+休息不必有罪惡感|保留個人時間|休息分鐘數
+你的感受與選擇都重要|寫1項生活需求|是否表達
+別和別人的康復故事比較|減少焦慮資訊|比較焦慮程度
+每個人都有自己的步調|設定合適目標|執行後負擔
+今天沒完成，也有價值|對自己說辛苦了|自責變化
+把時間留給重要的人事物|列3個優先事項|安排符合度
+問自己真正需要什麼|選1項需求|需求滿足度
+照顧自己不是自私|滿足1項基本需求|舒適程度
+#今天也要活得有趣
+願你害怕有人陪，疲憊有人懂|找1位談心對象|支持感
+願眼淚被理解，笑容被珍惜|分享1件心事|被理解程度
+願辛苦日子仍有溫柔|做1件善待自己的事|舒適度
+不必逞強，也值得被愛|說出1件做不到的事|心理負擔
+願每次休息都少一點負擔|安靜休息|疲勞變化
+未知之中，仍有選擇|決定明天1件小事|掌控感
+你不只是病人，更是完整的人|聊疾病以外的話題|自我完整感
+不必每天快樂，也要善待自己|改寫1句自責|自責程度
+今天仍有值得珍惜的片刻|回想1件小事|回想後感受
+風雨之中，依然值得被愛|寫1句祝福|自我接納程度
+`;
+
+const QUESTIONS = [
+  '今天身體最需要的是什麼？',
+  '今天心裡最明顯的感受是什麼？',
+  '今天有什麼問題需要詢問醫療團隊？',
+  '今天我可以為自己做哪一件小事？',
+  '今天需要誰的陪伴或幫助？',
+  '今天有哪一個值得珍惜的片刻？',
+  '明天有什麼事情可以調整得更適合自己？'
+];
+// 索引對應 Date.getDay()：0 = 星期日
+const WEEK = [
+  ['星期日', '回顧這週最需要保留或調整的生活習慣。'],
+  ['星期一', '寫下今天最真實的心情。'],
+  ['星期二', '向一位信任的人提出一個小請求。'],
+  ['星期三', '依身體狀況安排休息或適合的活動。'],
+  ['星期四', '整理下一次回診最想問的三個問題。'],
+  ['星期五', '做一件自己喜歡的小事。'],
+  ['星期六', '與一位重要的人分享生活。']
+];
+const ADJ_HINT = {
+  '保留': '有效的行動，就保留下來。',
+  '縮小': '太累的行動，縮小一點就好。',
+  '更換': '不適合的行動，換一個也很好。',
+  '暫停': '增加負擔的行動，先暫停沒關係。',
+  '停止': '不適合的就先停止，重新確認需求。',
+  '詢問醫師': '把產品名稱、成分和劑量帶去回診，請醫療團隊核對。',
+  '求助': '需要專業協助的問題，請聯絡醫療團隊。'
+};
+
+// ---- 營養導航 ----
+// [需求, 產品, 生理機制與定位, 回饋指標]
+const NEEDS = [
+  ['營養不足', ['王牌', '美寶'], '依配方補充蛋白質、熱量或微量營養素。', '進食量、體重'],
+  ['腸道照護', ['腸寶', '丁酸鈉複方', '孢子益生菌'], '丁酸參與腸道細胞能量代謝；益生菌作用依菌株而異。', '腹脹、排便'],
+  ['睡眠放鬆', ['GABA', '鎂', '青春方'], 'GABA 與神經抑制訊號相關；鎂參與神經肌肉功能。', '入睡時間、夜醒'],
+  ['疲勞管理', ['Q10', '粒線寶', 'NMN'], 'Q10 與 NAD⁺ 參與細胞能量代謝。', '疲勞 0～10 分'],
+  ['體重肌肉', ['王牌', '美寶', 'EPA＋DHA粉包'], '足夠蛋白質及熱量有助維持營養狀態。', '體重、活動能力'],
+  ['脂肪酸營養', ['EPA＋DHA粉包', '亞麻仁油'], '提供不同形式的 Omega-3 脂肪酸。', '飲食、耐受度'],
+  ['口腔皮膚', ['透明質酸鈉'], '保水特性；依實際劑型及用途選擇。', '乾燥、疼痛'],
+  ['情緒支持', ['GABA', '鎂'], 'GABA 與神經抑制訊號相關；鎂參與神經肌肉功能。', '情緒、壓力'],
+  ['氧化還原研究', ['NAC', 'Q10', '薑黃素＋胡椒鹼'], '涉及穀胱甘肽、粒線體或細胞訊號。', '醫師核對結果'],
+  ['生活品質', [], '以生活支持與症狀管理為主，依需求個別選擇。', '生活品質 0～10 分'],
+  ['草本飲食', ['憂遁草'], '傳統草本植物，可作為茶飲或入菜的日常飲食選擇。', '飲用後舒適度、耐受度'],
+  ['溫熱放鬆', ['高濃度負離子灸'], '溫熱型的居家照護，作為休息時的放鬆與舒適支持。', '放鬆程度、舒適度'],
+  ['日常飲水', ['銘泉富氫氧水機'], '提供日常飲用水，幫助維持每天的水分攝取。', '每日飲水量']
+];
+// 產品: [在身體裡的角色, 治療期間的照護角色]
+const INFO = {
+  '王牌': ['蛋白質是肌肉、免疫細胞與傷口修復的原料；依配方補充蛋白質、熱量與微量營養素。', '治療期間吃不夠時，補足蛋白質與熱量缺口；維持體重與肌肉量，是營養照護指引的重點，也和體力、治療耐受度有關。'],
+  '美寶': ['依配方補充蛋白質、熱量與微量營養素，支持日常營養攝取。', '食慾差、進食量少的日子，少量多次補充，幫助維持體重與活動能力。'],
+  '腸寶': ['腸道照護配方，支持排便規律與腸道舒適。', '治療期間腸胃容易不穩定，腸道舒服了，進食意願和生活品質也比較好維持。'],
+  '丁酸鈉複方': ['丁酸是大腸細胞的主要能量來源，參與維持腸道黏膜屏障。', '支持腸道黏膜的營養需求，搭配纖維與水分攝取，一起照顧排便與腹脹。'],
+  '孢子益生菌': ['孢子型菌種耐胃酸，較能到達腸道；益生菌參與維持腸道菌相平衡。', '支持腸道菌相，幫助維持排便規律。'],
+  'GABA': ['體內主要的抑制性神經傳導物質，與放鬆、入睡有關。', '研究探討 GABA 補充與壓力感、睡眠品質的關係；睡得好一點，白天的體力和心情比較穩。'],
+  '鎂': ['參與三百多種酵素反應，與神經傳導、肌肉放鬆、能量代謝有關。', '部分治療會讓鎂流失，血鎂是醫療團隊常追蹤的項目；足夠的鎂支持肌肉與神經的正常運作。'],
+  '青春方': ['睡眠放鬆方向的複方營養配方。', '作為睡前放鬆習慣的一部分，搭配固定作息一起建立睡眠節奏。'],
+  'Q10': ['粒線體產生能量（ATP）時需要的輔酶，也是脂溶性抗氧化營養素。', '支持細胞的能量代謝，是疲勞相關營養研究的方向之一。'],
+  '粒線寶': ['粒線體營養方向的複方配方，支持細胞能量代謝。', '搭配足夠的蛋白質、熱量與適度活動，一起照顧體力。'],
+  'NMN': ['NAD⁺ 的前驅物；NAD⁺ 參與能量代謝與細胞修復相關的酵素反應。', '屬於細胞能量與修復的營養研究方向。'],
+  'EPA＋DHA粉包': ['Omega-3 脂肪酸，是細胞膜的組成成分，參與調節發炎反應。', '營養照護指引建議，體重下降或食慾不佳的病友可考慮補充魚油，幫助維持食慾、進食量、體重與瘦體組織。'],
+  '亞麻仁油': ['富含 ALA（植物性 Omega-3 必需脂肪酸），身體無法自行合成，需從飲食取得。', '拌入粥、湯、優格就能增加熱量密度，吃得少的時候，每一口更有營養。'],
+  '透明質酸鈉': ['高保水分子，幫助皮膚與黏膜維持濕潤。', '口乾、皮膚乾燥是治療期間常見的困擾，保濕照護能提升舒適感，也讓進食、說話比較自在。'],
+  'NAC': ['穀胱甘肽的前驅物；穀胱甘肽是細胞內主要的抗氧化系統。', '屬於細胞氧化還原平衡的營養研究方向。'],
+  '薑黃素＋胡椒鹼': ['薑黃素是研究很多的植化素，具抗氧化與調節發炎訊號的特性；胡椒鹼可提高薑黃素的吸收率。', '屬於發炎與細胞訊號的營養研究方向。'],
+  '憂遁草': ['傳統草本植物，含類黃酮等植化素，可泡茶或入菜。', '作為無咖啡因的茶飲，增加每天的水分與植物性飲食攝取。'],
+  '高濃度負離子灸': ['溫熱能帶來肌肉放鬆與舒適感。', '作為睡前或休息時的放鬆儀式，幫身體從緊繃切換到休息。'],
+  '銘泉富氫氧水機': ['足夠的水分幫助維持體液平衡、排便順暢與口腔濕潤。', '治療期間的補水是基本照護；把好喝、方便的水放在手邊，比較容易喝得夠。有小型研究探討富氫水與放療期間生活品質的關係。']
+};
+
+// 各主題的營養導航原則；prod 為 false 的主題不對應產品
+const GUIDE = [
+  { text: '以陪伴與情緒支持為主。', prod: false },
+  { text: '可討論 GABA、鎂等營養選項。', prod: true },
+  { text: '可討論的方向：營養（王牌、美寶）、腸道（腸寶）、口腔皮膚（透明質酸鈉）。', prod: true },
+  { text: '與醫療團隊一起核對產品成分。', prod: false },
+  { text: '優先建立睡眠與心理支持。', prod: false },
+  { text: '優先建立家人、朋友與病友支持網絡。', prod: false },
+  { text: '以飲食營養為主，可討論 EPA＋DHA粉包、亞麻仁油。', prod: true },
+  { text: '先評估營養、活動及疲勞原因，再討論 Q10、粒線寶等。', prod: true },
+  { text: '依主要症狀評估營養補充的方向。', prod: true },
+  { text: '持續追蹤生活品質。', prod: false }
+];
+// 逐句對應需求：只在可對應產品的主題裡，依金句與小行動的內容判斷
+const NEED_RULES = [[/茶|飲品/, 12], [/吃|飯|餐|飲|食/, 0], [/睡|休息/, 2], [/疲|體力|累/, 3], [/心情|情緒|焦慮|壓力|悲傷/, 7]];
+function needOf(it) {
+  if (!GUIDE[it.c].prod) return -1;
+  const hit = NEED_RULES.find(r => r[0].test(it.q + it.a));
+  return hit ? hit[1] : -1;
+}
+const PROMO = `癌症照護，不只關心治療，也關心每天的生活。
+吃得下、睡得好一點、有人陪伴、能說出自己的需要，都是值得重視的照護目標。
+我們從營養、腸胃、睡眠、活動與情緒出發，整理不同營養產品的成分與研究方向，協助病友和醫療團隊討論適合自己的選擇。
+
+產品是可選擇的營養支持，不是癌症治療的替代品。
+真正重要的，不是補充得越多，而是讓每一份照顧更符合病友的需要。`;
+const CIRCLED = '①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬';
+// 臉書文圖：圖卡與貼文檔放在同層的這個資料夾
+const DIR = '癌友心靈雞湯_臉書貼文圖卡/';
+const TAGS = ['接納自己', '允許脆弱', '善待身體', '醫病溝通', '活在當下', '陪伴', '小幸福', '重新開始', '照顧自己', '祝福'];
+const EXTRAS = ['101_每日30秒回饋表', '102_每週模型更新', '103_送給每位病友'];
+
+const chapters = [];
+const items = [];
+const longs = RAW.trim().split('\n').filter(l => l[0] !== '#').map(l => l.split('|'));
+RAW2.trim().split('\n').forEach(line => {
+  if (line[0] === '#') { chapters.push(line.slice(1)); return; }
+  const [s, sa, ind] = line.split('|');
+  const [q, a] = longs[items.length];
+  items.push({ n: items.length + 1, c: chapters.length - 1, s, sa, ind, q, a });
+});
+
+// 與資料夾裡的 .txt 貼文同一個格式
+function postText(it) {
+  return `【${it.s}】\n\n${it.q}\n\n🌱 今天的小行動：${it.a}\n📊 觀察一個變化：${it.ind}\n\n做得到很好，做不到也沒有關係。\n行動可以縮小、延後或跳過。\n\n※ 行動依個人體力、治療與醫囑調整；回饋分數僅供自我觀察，不代表療效。嚴重或持續不適請及時聯絡醫療團隊。\n\n#今天也要活得有趣 #病友LifeOS #癌友 #抗癌 #心靈雞湯 #療癒 #${TAGS[it.c]}`;
+}
+
+// 儲存（無痕模式等情況下可能失敗，失敗就只留在記憶體）
+const KEY = 'cancer-soup-v1';
+let state = { fav: {}, done: {}, daily: {}, fb: {} };
+try { state = Object.assign(state, JSON.parse(localStorage.getItem(KEY)) || {}); } catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+const pad = (n, w = 2) => String(n).padStart(w, '0');
+const now = new Date();
+const todayKey = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 864e5);
+const todayIdx = (dayOfYear - 1) % items.length;
+
+let heroIdx = todayIdx;
+let chapter = -1;   // -1 全部，-2 收藏
+let keyword = '';
+
+function copyText(text, btn) {
+  if (!navigator.clipboard) return;
+  const label = btn.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '已複製';
+    setTimeout(() => btn.textContent = label, 1200);
+  }, () => {});
+}
+
+const prodTag = p => `<span class="tag">${esc(p)}</span>`;
+
+function guideBlock(it) {
+  const k = needOf(it);
+  const need = k < 0 ? '' : `<p>這一句對應需求 ${CIRCLED[k]} ${NEEDS[k][0]}：${NEEDS[k][1].map(prodTag).join('')}<br>觀察：${NEEDS[k][3]}。先走完三層決策流程再決定。</p>`;
+  return `<details><summary>營養導航</summary><p>${esc(GUIDE[it.c].text)}</p>${need}</details>`;
+}
+
+function renderNutri() {
+  $('needs').innerHTML = NEEDS.map((n, i) => `<div class="card need">
+    <b>${CIRCLED[i]} ${n[0]}</b>
+    <div>${n[1].length ? n[1].map(prodTag).join('') : '<span class="ind">不預設產品</span>'}</div>
+    <p>${esc(n[2])}</p>
+    <span class="ind">回饋指標：${esc(n[3])}</span>
+  </div>`).join('');
+  $('promo').textContent = PROMO;
+  renderProducts('');
+}
+
+function renderProducts(kw) {
+  kw = kw.trim().toLowerCase();
+  const needsOf = p => NEEDS.map((n, i) => n[1].includes(p) ? CIRCLED[i] + n[0] : '').filter(Boolean).join('、');
+  const shown = Object.keys(INFO).filter(p => !kw || (p + INFO[p].join('') + needsOf(p)).toLowerCase().includes(kw));
+  $('products').innerHTML = shown.map(p => `<div class="card need">
+    <b>${esc(p)}</b>
+    <span class="ind">對應需求：${needsOf(p)}</span>
+    <p><b style="display:inline">在身體裡的角色｜</b>${esc(INFO[p][0])}</p>
+    <p><b style="display:inline">治療期間的照護｜</b>${esc(INFO[p][1])}</p>
+  </div>`).join('') || '<div class="empty">找不到符合的產品，換個詞試試看。</div>';
+}
+
+function showTab(tab) {
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === tab));
+  window.scrollTo(0, 0);
+}
+
+function cardBody(it, actLabel) {
+  return `<div class="q">${esc(it.s)}</div>
+    <p class="long">${esc(it.q)}</p>
+    <div class="act"><b>${actLabel}</b>${esc(it.a)}<span class="ind">觀察一個變化：${esc(it.ind)}</span></div>
+    <div class="row">
+      <button class="btn chk ${state.done[it.n] ? 'on' : ''}" data-act="done" data-n="${it.n}">${state.done[it.n] ? '✓ 做到了' : '○ 做了小行動'}</button>
+      <button class="btn fav ${state.fav[it.n] ? 'on' : ''}" data-act="fav" data-n="${it.n}">${state.fav[it.n] ? '♥ 已收藏' : '♡ 收藏'}</button>
+      <button class="btn" data-act="card" data-n="${it.n}">臉書文圖</button>
+      <button class="btn" data-act="copy" data-n="${it.n}">複製貼文</button>
+    </div>
+    ${guideBlock(it)}`;
+}
+
+function renderHero() {
+  const it = items[heroIdx];
+  $('hero').innerHTML = `<div class="card hero ${state.done[it.n] ? 'done' : ''}">
+    <div class="no">${heroIdx === todayIdx ? '今日一句' : '再抽一句'}・${pad(it.n)}｜${esc(chapters[it.c])}</div>
+    ${cardBody(it, '今天的小行動')}
+    <div class="row"><button class="btn main" data-act="random">換一句</button></div>
+  </div>`;
+  const d = Object.keys(state.done).length, f = Object.keys(state.fav).length;
+  $('progress').textContent = d || f ? `已做過 ${d} 個小行動・收藏 ${f} 句。不用趕進度，照自己的步調就好。` : '今天只做一件小事，也可以是好好愛自己的開始。';
+}
+
+function renderWeek() {
+  $('week').innerHTML = [1, 2, 3, 4, 5, 6, 0].map(d =>
+    `<li class="${d === now.getDay() ? 'today' : ''}">${WEEK[d][0]}｜${esc(WEEK[d][1])}</li>`).join('');
+}
+
+function renderChips() {
+  const num = '一二三四五六七八九十';
+  const chip = (v, label) => `<button data-c="${v}" class="${chapter === v ? 'on' : ''}">${label}</button>`;
+  $('chips').innerHTML = chip(-1, '全部') + chip(-2, '♥ 收藏') +
+    chapters.map((t, i) => chip(i, num[i] + '｜' + esc(t))).join('');
+}
+
+function renderList() {
+  const kw = keyword.trim().toLowerCase();
+  const shown = items.filter(it =>
+    (chapter === -1 || (chapter === -2 ? state.fav[it.n] : it.c === chapter)) &&
+    (!kw || (it.s + it.q + it.a + it.sa + it.ind + chapters[it.c]).toLowerCase().includes(kw)));
+  if (!shown.length) {
+    $('list').innerHTML = `<div class="empty">${chapter === -2 && !kw ? '還沒有收藏。看到喜歡的句子，按 ♡ 就會留在這裡。' : '找不到符合的句子，換個詞試試看。'}</div>`;
+    return;
+  }
+  let last = -1, html = '';
+  shown.forEach(it => {
+    if (it.c !== last) { html += `<h2>${esc(chapters[it.c])}</h2>`; last = it.c; }
+    html += `<div class="card ${state.done[it.n] ? 'done' : ''}"><div class="no">${pad(it.n)}</div>${cardBody(it, '小行動')}</div>`;
+  });
+  $('list').innerHTML = html;
+}
+
+function renderFeedback() {
+  const fb = state.fb[todayKey] || {};
+  const opts = (arr, v) => '<option value="">—</option>' + arr.map(x => `<option ${x === v ? 'selected' : ''}>${x}</option>`).join('');
+  $('feedback').innerHTML = `<b>${todayKey}｜每日 30 秒回饋表</b>
+    <div class="grid">
+      <label>今天選擇第幾句<input type="number" min="1" max="100" data-f="n" value="${esc(fb.n || heroIdx + 1)}"></label>
+      <label>行動狀態<select data-f="st">${opts(['完成', '部分完成', '未完成'], fb.st)}</select></label>
+      <label>今日需求<select data-f="need">${opts(['營養', '腸胃', '睡眠', '疲勞', '情緒'], fb.need)}</select></label>
+      <label>今日產品（如有）<input type="text" data-f="prod" value="${esc(fb.prod || '')}"></label>
+      <label>行動／使用前（0～10 分）<input type="number" min="0" max="10" data-f="b" value="${esc(fb.b || '')}"></label>
+      <label>行動／使用後（0～10 分）<input type="number" min="0" max="10" data-f="a" value="${esc(fb.a || '')}"></label>
+      <label>下次調整<select data-f="adj">${opts(Object.keys(ADJ_HINT), fb.adj)}</select></label>
+    </div>
+    <p class="note" id="fbHint"></p>`;
+  renderHistory();
+}
+
+function renderHistory() {
+  const fb = state.fb[todayKey] || {};
+  let hint = ADJ_HINT[fb.adj] || '';
+  if (fb.b !== '' && fb.a !== '' && fb.b != null && fb.a != null && +fb.a <= +fb.b && fb.st) {
+    hint = '感受沒有改善，不代表失敗，重新確認需求就好。' + hint;
+  }
+  $('fbHint').textContent = hint;
+  const days = Object.keys(state.fb).sort().reverse().slice(0, 7);
+  $('history').hidden = !days.length;
+  $('history').innerHTML = '<b>最近的紀錄</b><ul class="plain">' + days.map(k => {
+    const r = state.fb[k];
+    return `<li>${k.slice(5)}｜第 ${esc(r.n || '—')} 句｜${esc(r.st || '—')}${r.prod ? '｜' + esc(r.prod) : ''}｜${esc(r.b || '—')} → ${esc(r.a || '—')}｜下次：${esc(r.adj || '—')}</li>`;
+  }).join('') + '</ul>';
+}
+
+function renderQuestions() {
+  const ans = state.daily[todayKey] || [];
+  $('questions').innerHTML = QUESTIONS.map((q, i) =>
+    `<label>${i + 1}. ${q}<textarea data-i="${i}">${esc(ans[i] || '')}</textarea></label>`).join('');
+}
+
+// 圖卡視窗：file 為資料夾內不含副檔名的檔名
+let dlgPost = '';
+function openCard(file, text) {
+  dlgPost = text;
+  $('dlgMiss').hidden = true;
+  $('dlgImg').hidden = false;
+  $('dlgImg').src = DIR + file + '.png';
+  $('dlgDown').href = DIR + file + '.png';
+  $('dlgDown').download = file + '.png';
+  $('dlgText').textContent = text;
+  $('dlgText').hidden = !text;
+  $('dlgCopy').hidden = !text;
+  $('dlg').showModal();
+}
+$('dlgImg').addEventListener('error', () => { $('dlgImg').hidden = true; $('dlgMiss').hidden = false; });
+$('dlgClose').addEventListener('click', () => $('dlg').close());
+$('dlgCopy').addEventListener('click', e => copyText(dlgPost, e.target));
+$('dlg').addEventListener('click', e => { if (e.target === $('dlg')) $('dlg').close(); });
+
+$('extras').innerHTML = EXTRAS.map(f => `<button class="btn" data-act="extra" data-file="${f}">${f.slice(4)}</button>`).join('');
+
+document.querySelector('nav').addEventListener('click', e => {
+  if (e.target.dataset.tab) showTab(e.target.dataset.tab);
+});
+
+document.body.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  const n = +b.dataset.n, act = b.dataset.act;
+  if (act === 'random') {
+    let r;
+    do { r = Math.floor(Math.random() * items.length); } while (r === heroIdx);
+    heroIdx = r;
+    renderHero();
+  } else if (act === 'copy') {
+    copyText(postText(items[n - 1]), b);
+  } else if (act === 'card') {
+    openCard(pad(n, 3), postText(items[n - 1]));
+  } else if (act === 'extra') {
+    openCard(b.dataset.file, '');
+  } else if (act === 'promo') {
+    copyText(PROMO, b);
+  } else {
+    const bag = state[act];
+    if (bag[n]) delete bag[n]; else bag[n] = 1;
+    save();
+    renderHero();
+    renderList();
+  }
+});
+
+$('chips').addEventListener('click', e => {
+  if (e.target.dataset.c === undefined) return;
+  chapter = +e.target.dataset.c;
+  renderChips();
+  renderList();
+});
+$('search').addEventListener('input', e => { keyword = e.target.value; renderList(); });
+$('psearch').addEventListener('input', e => renderProducts(e.target.value));
+$('feedback').addEventListener('input', () => {
+  const fb = {};
+  $('feedback').querySelectorAll('[data-f]').forEach(el => fb[el.dataset.f] = el.value);
+  state.fb[todayKey] = fb;
+  save();
+  renderHistory();
+});
+$('questions').addEventListener('input', e => {
+  if (e.target.dataset.i === undefined) return;
+  const ans = state.daily[todayKey] || (state.daily[todayKey] = []);
+  ans[+e.target.dataset.i] = e.target.value;
+  save();
+});
+
+renderHero();
+renderWeek();
+renderChips();
+renderList();
+renderFeedback();
+renderQuestions();
+renderNutri();
+</script>
+</body>
+</html>
