@@ -69,7 +69,11 @@ th{color:var(--soft);font-size:13px}
 @media(min-width:800px){#mask{align-items:center}#modal{border-radius:18px}}
 .mh{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center}
 .mh b{flex:1;font-size:17px}
-#ptext{padding:16px 18px;overflow:auto;white-space:pre-wrap;word-break:break-word;font-size:16px;line-height:1.85;flex:1}
+#pbody{overflow:auto;flex:1}
+#pimgs{display:flex;gap:10px;overflow-x:auto;padding:14px 18px 4px}
+#pimgs a{flex:none;display:block;text-align:center;font-size:12px;color:var(--soft);text-decoration:none}
+#pimgs img{display:block;width:150px;height:auto;border-radius:8px;border:1px solid var(--line);margin-bottom:4px}
+#ptext{padding:12px 18px 16px;white-space:pre-wrap;word-break:break-word;font-size:16px;line-height:1.85}
 .mf{padding:12px 18px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .mf .count{flex:1;min-width:160px}
 footer{color:var(--soft);font-size:13px;text-align:center;padding:20px 16px 40px}
@@ -91,10 +95,14 @@ footer{color:var(--soft);font-size:13px;text-align:center;padding:20px 16px 40px
 <div id="mask">
   <div id="modal" role="dialog" aria-modal="true">
     <div class="mh"><b id="ptitle">臉書貼文</b><button class="btn gray" id="pclose">關閉</button></div>
-    <div id="ptext"></div>
+    <div id="pbody">
+      <div id="pimgs"></div>
+      <div id="ptext"></div>
+    </div>
     <div class="mf">
       <span class="count" id="pcount"></span>
       <button class="btn gray" id="pshuf">換一種寫法</button>
+      <button class="btn" id="pdl">下載全部圖片</button>
       <button class="btn fill" id="pcopy">複製貼文</button>
     </div>
   </div>
@@ -175,7 +183,7 @@ const OPEN = [
 "有時候，困住我們的不是生活，而是我們形容生活的那句話。一句話說久了，就成了信念；信念住久了，就成了命運。今天，我們來換一句話。",
 "夜深了，想跟你說一件小事。人生真正的轉彎，往往不是發生在大事件裡，而是發生在某一天，你忽然願意對自己、對別人，換一種說法。",
 "你有沒有發現，我們對陌生人客氣，對最親的人和自己，卻最不留情？一句脫口而出的話，可能在心裡留很多年。今天，一起練習把話說得更準、更暖。",
-"如果人生是一套作業系統，那麼語言就是其中最常執行的程式。舊程式跑久了會當機，心也是。今天不談大道理，只做一件事：更新一句話。",
+"外婆常說，話是有溫度的。一句熱的話，能讓人暖一整個冬天；一句冷的話，能讓人記一輩子。今天不談大道理，只做一件小事：把一句冷的話，換成熱的。",
 "早安。新的一天，不需要全新的自己，只需要一句新的話。願你今天讀到的這段文字，像一杯溫熱的水，慢慢把心裡打結的地方泡開。"
 ];
 const WHY = [
@@ -234,8 +242,8 @@ const T = {
 19:{n:"產品與營養",zh:"分享健康產品的時候，真心想幫人，更要說實話。沒有一樣東西適合所有人，也沒有一樣東西能解決所有問題。先了解需求、看清證據、說明限制；對方若不舒服，就請他先評估、找專業確認。誠實，才是最長久的信任。",en:"When recommending health products, honesty comes first. Nothing suits everyone or fixes everything. Clarify needs, evidence, and limits; discomfort needs proper evaluation."},
 20:{n:"思辨與溝通",zh:"討論事情的時候，我們很容易把「我不同意你」說成「你這個人有問題」。可是，真正有智慧的對話，不是比誰聲音大，而是一起把證據攤開來看。願意說「什麼會讓我改變想法」的人，才是真正站得穩的人。",en:"In debate, 'I disagree' easily becomes 'something's wrong with you.' Wise talk lays the evidence on the table. Ask: what would change my mind?"},
 c1:{zh:"「靈魂」和「母體」聽起來很玄，在這裡其實很生活：靈魂，是那個會感受、會在乎、會想變更好的你；母體，是你身邊的人、環境、資訊和限制。兩個都只是幫我們整理人生的工具，不是已經被科學證實的神祕力場。",en:"Here, 'soul' is the you who feels, cares, and wants to grow; 'matrix' is the people, environment, and limits around you. Both are thinking tools, not proven mystical fields."},
-c2:{zh:"七位「老師」，給了我們七副看世界的眼鏡。每一副都很好用，卻也都有看不到的地方，所以每個理論後面，都老實地附上了它的邊界。會用工具的人很厲害，知道工具限制的人，更有智慧。",en:"Seven teachers hand us seven pairs of glasses. Each is useful, and each has blind spots — so every theory comes with an honest boundary."},
-c3:{zh:"我們都愛替自己的人生找原因：一定是童年、一定是潛意識、一定是命。可是，單一的答案雖然痛快，卻常常不準。人生更像一張網，過去、身體、關係、環境，都在其中。看得更完整，才改得更到位。",en:"We love a single cause: childhood, the unconscious, fate. But life is more like a web — past, body, relationships, environment. See more fully, change more precisely."},
+c2:{zh:"七個生活的提醒，就像七副看世界的眼鏡。每一副都很好用，卻也都有看不到的地方，所以每一個提醒的後面，都老實地寫上了它的限制。會用工具的人很厲害，知道工具有限的人，更有智慧。",en:"Seven reminders are like seven pairs of glasses. Each is useful, and each has blind spots — so every one comes with an honest limit."},
+c3:{zh:"我們都愛替自己的人生找原因：一定是童年、一定是我心裡不想成功、一定是命。可是，單一的答案雖然痛快，卻常常不準。人生更像一張網，過去、身體、關係、環境，都在其中。看得更完整，才改得更到位。",en:"We love a single cause: childhood, the unconscious, fate. But life is more like a web — past, body, relationships, environment. See more fully, change more precisely."},
 c8:{zh:"道理懂了很多，卡住的時候卻一句也想不起來？所以這一頁把所有的智慧，濃縮成隨手可用的提問和公式。心亂的時候，不必想很多，只要挑一句來問自己，就像在黑暗裡，先摸到電燈的開關。",en:"When you're stuck, wisdom is hard to recall. This page condenses it into ready questions and formulas — like finding the light switch in the dark."},
 h:{zh:"這個小小的工具，裝著兩百句「舊話換新話」。它不是要你變成另一個人，而是陪你每天更新一句話：對自己說得溫柔一點，對別人說得清楚一點。話變了，心就鬆了；心鬆了，路就寬了。",en:"This little tool holds two hundred 'old words, new words.' It doesn't ask you to become someone else — just to update one sentence a day."}
 };
@@ -518,35 +526,69 @@ const S = RAW.trim().split("\n").map((l,i)=>{
           ch:4+Math.floor(i/50), self:(Math.floor(i/50)%2===0), tp:Math.floor(i/10)+1};
 });
 
+/* ============ 貼文專用：生活化說法與人生故事（不用專業術語） ============ */
+const PLAIN = {
+"語":{prop:"我們看見的世界，是被我們說出來的世界。",flip:"你以為傷你的是那件事，其實是你替它取的名字。",pn:"把話說準",pnEn:"Saying it accurately",bd:"把話說準，是幫自己看清楚，不是要你否定自己的感受。",
+ st:["朋友小雯有一次傳訊息給先生，兩個小時都沒有回。她盯著手機，心裡的小劇場一幕接一幕：他是不是嫌我煩？他是不是不在乎我了？等先生回到家，她已經氣得不想說話。結果先生一臉疲憊地說：「今天開了一下午的會，手機放在抽屜裡。」那一刻她才發現，讓她難過了兩個小時的，不是「他沒回」，而是她自己加上去的那句「他不在乎我」。事情只有一行字，其餘的，都是我們自己寫的旁白。所以難過之前，先問自己一句：這是我看到的，還是我猜的？",
+ "小時候考試考不好，媽媽說了一句：「你就是粗心。」這句話，我背了二十年。每次出錯，心裡就自動響起那三個字，好像那是刻在我身上的名字。直到有一天，我把錯的題目一題一題攤開來看，才發現：我不是粗心，我只是每次寫到最後十分鐘就會慌。原來，「粗心」是一頂帽子，「最後十分鐘會慌」才是事實。帽子戴上去很快，卻讓人動彈不得；事實說出來很慢，卻讓人知道下一步該往哪裡走。把話說準一點，人生就會鬆一點。"],
+ en:"A friend once waited two hours for a reply and decided, 'He doesn't care about me.' The truth was a long meeting and a phone left in a drawer. What hurt her was not the silence, but the sentence she added to it. The event is one line; the rest is our own narration. Before you feel hurt, ask: is this what I saw, or what I guessed?"},
+"境":{prop:"沒有人活在真空裡，每個人都活在自己的一天裡。",flip:"你以為他在冷落你，其實他只是在努力撐過今天。",pn:"看見處境",pnEn:"Seeing the whole picture",bd:"體諒別人的處境，不代表要委屈你自己。",
+ st:["有一天晚上，爸爸下班回家，一句話也沒說，坐在沙發上，看著沒開的電視。我本來想抱怨他都不理人，話到嘴邊，卻看見他鞋子還沒脫，領口濕了一圈。後來才知道，那天他被主管當著所有人的面罵了一頓。原來，沉默不是冷淡，是一個大人把委屈吞下去的聲音。我們常常只看見別人做了什麼，卻沒看見他今天經歷了什麼。當你願意多看一眼他身後的那一天，責備就會慢下來，心也會軟下來。當然，體諒他，不代表要委屈你自己。",
+ "菜市場裡賣菜的阿姨，有一陣子脾氣特別差，找錢也常常找錯，客人私下都說她態度不好。後來才聽說，她先生住院，她每天凌晨三點批完菜，收攤後還要趕去醫院。知道以後，再看她皺著的眉頭，就只剩下心疼。這個世界上，每個人都背著一個你看不見的包袱在走路。對別人是這樣，對自己也是——那個最近什麼都做不好的你，也許不是懶，只是已經撐了太久。先看見處境，再決定怎麼說話，話就不會那麼傷人。"],
+ en:"One evening my father came home and sat in silence. I almost complained — until I noticed he hadn't even taken off his shoes. He'd had a terrible day. Silence isn't always coldness; sometimes it is a grown-up swallowing a hard day. Everyone carries a bag you cannot see. Look at the day behind the person, and blame slows down. And being understanding never means wronging yourself."},
+"預":{prop:"痛苦，常常住在期待與現實之間的那道縫裡。",flip:"你以為是現實辜負了你，其實現實從來沒看過你的劇本。",pn:"放下心裡的劇本",pnEn:"Letting go of the script",bd:"心情不好的原因有很多，身體累了、關係卡住了，也都算在內。",
+ st:["結婚第三年的生日，阿芳一整天都在等。她在心裡排好了劇本：他會訂餐廳、會買花、會說一句肉麻的話。結果先生加班到九點，進門只問了一句：「吃飽了嗎？」她的眼淚一下子掉下來。可是冷靜之後她才想到，那個劇本，從頭到尾只演在她自己的心裡，先生連一頁都沒看過。我們常常是這樣受傷的：不是對方做錯了什麼，而是現實沒有照我們偷偷寫好的劇本演。期待沒有錯，但期待不是約定。想要什麼，說出來，才算數。",
+ "阿明第一次開店，算好了三個月就能回本，結果半年過去，帳本上還是紅字。他一度覺得自己是個失敗的人，直到一位老前輩問他：「是你失敗了，還是你當初算得太樂觀？」這句話點醒了他。原來讓他痛苦的，不只是結果，而是結果和他心裡那張藍圖之間的距離。這段距離不是誰在懲罰你，它只是輕輕地提醒：地圖該重畫了。就像開車走錯了路，導航不會罵你，它只會說一句「重新規劃路線」。人生也可以這樣，溫柔地改，繼續往前。"],
+ en:"On her birthday she waited all day for flowers and a dinner. He came home late and asked, 'Have you eaten?' She cried — then realized the script had only ever played in her own head. We are often hurt not by what happened, but because life didn't follow a script nobody else had read. Hoping is fine. But a hope is not a promise. Say what you want out loud."},
+"探":{prop:"答案很少在想裡，多半在路上。",flip:"你以為要想清楚才能走，其實要走了，才想得清楚。",pn:"開口問一問",pnEn:"Asking instead of guessing",bd:"不是每件事都要追問到底；請尊重對方的節奏，也顧好自己的安全。",
+ st:["大學最好的朋友，畢業後漸漸少了聯絡。有一年，我發現她連我的生日都沒有留言，心裡涼了半截：是不是我哪裡得罪她了？是不是她有了新的朋友？我就這樣猜了大半年，越猜越不敢聯絡。後來鼓起勇氣傳了一句：「最近好嗎？很想妳。」她馬上回：「我媽生病了，這一年過得好亂，我也好想妳。」那一刻我好後悔，原來隔在我們中間的不是誤會，只是一句沒問出口的話。很多事，在腦袋裡想一百遍，不如開口問一遍。",
+ "阿姨五十歲那年說想學游泳，卻總是說：「等我準備好再去。」這一等，就是三年。有一天，她只是陪孫子去泳池，順便把腳泡進水裡。水沒有想像中的冷，教練也沒有想像中的兇。第二個星期，她報了名；半年後，她游完了人生第一個二十五公尺。她笑著說：「原來我怕了三年的東西，把腳放進去就知道了。」很多答案，不在想裡面，在做裡面。你不必一次游到對岸，只要先把腳放進水裡。當然，什麼時候下水，由你自己決定。"],
+ en:"I once spent half a year wondering why an old friend had gone quiet. Had I offended her? Finally I wrote, 'How are you? I miss you.' She replied at once: her mother had been ill, and she missed me too. What stood between us was never a grudge — only a question I hadn't asked. Thinking it over a hundred times is no match for asking once."},
+"系":{prop:"困住人的，常常不是某個人，而是一個不斷重複的圈。",flip:"你以為要改變對方，其實只要改變你的下一步。",pn:"跳出重複的圈圈",pnEn:"Stepping out of the loop",bd:"遇到暴力、威脅或控制，那不是「兩個人都有責任」，請先保護自己。",
+ st:["有一對夫妻，吵了十年同一種架。太太覺得先生不說話，所以一直追問；先生覺得太太咄咄逼人，所以更不想開口。她越問，他越躲；他越躲，她越急。兩個人都覺得錯的是對方，卻沒發現，他們其實是一起被困在同一個圈圈裡，像兩隻追著彼此尾巴的小狗。直到有一天，太太換了一個做法：她不追問了，只說一句：「你想說的時候，我都在。」那天晚上，先生自己走過來，說了很多話。有時候，不必換人，只要換一個動作，結局就會不一樣。",
+ "小傑的數學一直考不好，媽媽罵他不用功，他就更討厭數學；越討厭，越不想寫；越不寫，考得越差；考得越差，媽媽罵得越兇。一家人就在這個圈圈裡，轉了整整兩年。後來，一位老師沒有罵他，只是陪他把考卷攤開來看，才發現他不是不會算，是題目的字太多，他讀到一半就慌了。於是，他們先練習把題目畫成圖。三個月後，小傑第一次考及格，回家的路上，一路都是跳著走的。很多時候，不是誰不好，而是哪個地方卡住了。找到它，輕輕轉開就好。"],
+ en:"A couple fought the same fight for ten years. She pressed because he was silent; he went silent because she pressed. Each blamed the other, yet both were trapped in one circle. One day she simply said, 'Whenever you want to talk, I'm here.' That night he came and talked for a long time. Sometimes you don't need a different person — just a different move."},
+"練":{prop:"人不是生來如此，而是練成如此。",flip:"你以為那是你的個性，其實那只是你練得最久的習慣。",pn:"慢慢練就會了",pnEn:"Practicing, one more time",bd:"進步有快有慢，請別拿別人的速度來量自己。",
+ st:["阿嬤七十歲才學用手機。第一天，她連螢幕都不敢碰，怕一按就壞掉。孫女把步驟寫在月曆背面，貼在電話旁邊。第一個星期，她每天練習打一通視訊；第一個月，她學會了傳貼圖；半年後，她在家族群組裡發的早安圖，比誰都勤。她說：「我不是學不會，我是以前沒練過。」我們常常說「我就是這樣的人」，其實只是「我一直這樣做，做久了」。走慣的路最好走，可是新的路，多走幾次，也會被踩出來。第一次彆扭，第十次順一點，第一百次，就成了你。",
+ "學騎腳踏車的那個下午，我摔了七次。膝蓋破了皮，我坐在地上哭著說：「我就是學不會。」爸爸沒有多說什麼，只是把車扶起來，說：「再一次就好。」第八次，我歪歪斜斜地騎出去十公尺，回頭一看，爸爸早就放手了。長大以後才懂，人生很多事都像學騎車：脾氣、說話的方式、面對挫折的反應，沒有一樣是天生就會的。舊的習慣很快，是因為練了很多年；新的習慣很慢，只是因為才剛開始。別急，再一次就好。"],
+ en:"My grandmother learned to use a phone at seventy. At first she was afraid to touch the screen. One video call a day, with the steps written on the back of a calendar — and six months later she was the busiest person in the family chat. 'It's not that I couldn't learn,' she said. 'I just hadn't practiced.' Old habits are fast because they are old. New ones only need more tries."},
+"彈":{prop:"情緒是過客，選擇才是主人。",flip:"你以為要等情緒走了才能前進，其實可以帶著它一起走。",pn:"帶著情緒做選擇",pnEn:"Choosing with feelings on board",bd:"這不是要你把情緒壓下去，更不是要你忍受傷害。",
+ st:["有一次，我在電話裡被客人罵得很難聽。掛上電話，我的手還在發抖，第一個念頭是立刻回一封很兇的信。我把信寫好了，游標停在「傳送」上面。後來，我先去茶水間倒了一杯水，站在窗邊，看了三分鐘的雲。回到座位，我把那封信刪掉，重新寫了一封：把事情說清楚，也把我的底線說清楚。那天我學到，生氣沒有錯，它只是在告訴我：有人踩到我在乎的東西了。但是要怎麼回應，可以等那杯水喝完再決定。情緒可以上車，方向盤，還是在我手上。",
+ "媽媽住院的那段日子，我每天在病房和公司之間來回跑。大家都說：「你要堅強。」於是我不敢哭，也不敢說累。直到有一天，在醫院的樓梯間，我終於蹲下來大哭了一場。哭完之後，很奇怪，我反而有力氣站起來，去問醫生下一步該怎麼做。那一刻我才明白，堅強不是不掉眼淚，而是掉完眼淚，還記得自己要往哪裡走。你可以害怕，可以難過，可以不想撐。帶著這些情緒，往重要的方向再走一小步，就已經很了不起了。"],
+ en:"After a customer yelled at me, I wrote a furious reply and hovered over 'send.' Then I went to get a glass of water and watched the clouds for three minutes. I deleted the email and wrote a calmer one — clear about the facts and clear about my limits. Anger isn't wrong; it tells you something you care about was stepped on. But the reply can wait until the water is finished."}
+};
+
 /* ============ 貼文產生器 ============ */
 const pick=(arr,i)=>arr[((i%arr.length)+arr.length)%arr.length];
 function buildPost(o,shift){
-  const A=AB[o.ab], s=(o.seed||0)+(shift||0);
+  const A=AB[o.ab], P=PLAIN[o.ab], s=(o.seed||0)+(shift||0);
   const zh=[
     pick(OPEN,s),
-    "【"+o.tag+"】\n"+o.lead.zh,
+    "💭「"+P.prop+"」",
+    "〈"+o.tag+"〉\n"+o.lead.zh,
     o.topic.zh,
+    pick(P.st,s),
+    "🔁 "+P.flip,
     pick(WHY,s+1),
-    "【帶出能力｜"+A.name+"】\n"+A.para,
-    "【排比句】\n"+A.pai,
-    "【三步小練習】\n"+A.steps,
-    "【金句】\n"+A.quotes.map(x=>"✨ "+x).join("\n"),
-    "【寫給正在更新的你】\n"+pick(GROW,s+3),
-    "🔄 今日更新："+A.upd+"\n💪 帶出能力："+A.name+"（"+A.theory+"）\n🌱 收下智慧："+(o.wis||A.wis)+"\n❓ 隨身提問："+A.q,
-    "⚠️ 溫柔提醒："+A.bd+SAFE,
+    A.pai,
+    "🌿 今天的小練習\n"+A.steps,
+    A.quotes.map(x=>"✨ "+x).join("\n"),
+    "💌 寫給正在更新的你\n"+pick(GROW,s+3),
+    "🔄 今天更新的一句話："+A.upd+"\n💪 長出來的能力："+P.pn+"\n🌱 帶走的智慧："+(o.wis||A.wis)+"\n❓ 隨身問自己："+A.q,
+    "⚠️ 溫柔提醒："+P.bd+SAFE,
     pick(CLOSE,s+2)
   ].join("\n\n");
   const en=[
     pick(OPEN_EN,s),
     o.lead.en,
     o.topic.en,
-    "【Ability | "+A.en.name+"】\n"+A.en.para,
+    P.en,
     A.en.lines,
-    "🔄 Update: "+A.en.upd+"\n💪 Ability: "+A.en.name+"\n🌱 Wisdom: "+A.en.wis,
+    "🔄 Update: "+A.en.upd+"\n💪 Ability: "+P.pnEn+"\n🌱 Wisdom: "+A.en.wis,
     SAFE_EN,
     pick(CLOSE_EN,s+1)
   ].join("\n\n");
-  return zh+"\n\n— — — English — — —\n\n"+en+"\n\n#LifeOS #心靈雞湯 #新舊語言 #"+A.name+" #每天更新一句話 #SoulAndMatrix #OldWordsNewWords";
+  return zh+"\n\n— — — English — — —\n\n"+en+"\n\n#LifeOS #心靈雞湯 #新舊語言 #"+P.pn+" #每天更新一句話 #OldWordsNewWords";
 }
 function countWords(t){
   const zh=(t.match(/[㐀-鿿　-〿＀-￯]/g)||[]).length;
@@ -561,36 +603,289 @@ function postOfSentence(e){
   const en=e.self
    ? "I used to tell myself: “"+e.oldEn+".” It sat on my heart like a stone. Now I'm learning to say: “"+e.newEn+"” Same event, new words — and a little light comes in."
    : "In a rush, we used to say: “"+e.oldEn+".” The other person's door closed at once. Now let's try: “"+e.newEn+"” Same care, new words — an invitation instead of blame.";
-  return {title:"No."+e.no+"｜"+e.nw, tag:"舊話換新話 No."+e.no+"｜"+(e.self?"對自己說":"對他人說"), lead:{zh,en}, topic:T[e.tp], ab:e.ab, seed:e.n};
+  return {sent:e, title:"No."+e.no+"｜"+e.nw, tag:"舊話換新話・第 "+e.no+" 句・"+(e.self?"對自己說":"對他人說"), lead:{zh,en}, topic:T[e.tp], ab:e.ab, seed:e.n};
 }
 function postOfTheory(t,i){
-  return {title:t.no+" "+t.name+"｜"+t.field, tag:"七大理論 "+t.no+"｜"+t.name+"・"+t.field, ab:t.ab, seed:i+3, topic:T.c2, wis:t.wis,
-    lead:{zh:"生活裡常見的一幕："+t.cs+"。這時候，可以試著這樣說：「"+t.say+"」這句話背後，走的是這樣一條路："+t.chain+"。"+t.p,
+  return {title:t.no+" "+t.name+"｜"+t.field, tag:t.cs, ab:t.ab, seed:i+3, topic:T.c2, wis:t.wis,
+    lead:{zh:"日子裡有一件很值得記住的小事："+t.cs+"。遇到的時候，與其悶在心裡，不如試著這樣說：「"+t.say+"」"+t.p,
           en:"A scene from daily life: "+t.csEn+" Try saying: “"+t.sayEn+"”"}};
 }
-function postOfBlock(b,i,topic,tagHead){
-  let zh=b.p, en=b.en;
-  if(b.old){ zh="舊的說法是：「"+b.old+"」新的看法是："+b.nw+b.p; en="Old model: “"+b.oldEn+"” New model: "+b.newEn; }
-  return {title:b.t, tag:tagHead+"｜"+b.t, ab:b.ab, seed:i+1, topic, lead:{zh,en}};
+/* 貼文用的白話標題與內文（避開專有名詞） */
+CORE[2].pp="「靈魂」和「母體」這兩個詞，只是幫我們整理生活的小工具，就像地圖不是土地本身。它們不代表真的有人證實了什麼神祕的力量。把話老實說清楚，路才走得安心。";
+CORE[3].pt="人生是一圈一圈變好的";
+CORE[4].pt="感受是真的，故事要查證";
+CORE[5].pt="再有名的說法，也只是一種看法";
+CORE[5].pp="一百多年前，有兩位很有名的心理學家，原本情同父子，後來卻因為看法不同而分道揚鑣。一位相信，人的煩惱藏在心裡看不見的角落；一位相信，人一生都在學著成為完整的自己。他們的故事很精彩，卻也提醒我們：再有名的人說的話，也只是一種看法，不是誰已經證明的定論。";
+CORE[6].pt="相信感受，也相信證據";
+CORE[6].pp="研究人心的學問沒有過時，它一直在往前走，而且越來越講求「拿得出證據」。這給我們一個很好的示範：相信自己的感受，也願意看看事實怎麼說，兩個都要。";
+CAUSE[3].pt="把零散的自己，一片一片拼回來";
+CAUSE[3].pp="有三個認識自己的小方法。第一，把故事裡的角色當成鏡子，問問自己：我像誰？我想成為誰？第二，溫柔地看看自己不太想承認的那一面——愛計較的、會嫉妒的、很害怕的自己，他們也是你。第三，把這些零零散散的自己，一片一片拼回來。人不是變完美才完整，而是願意接納全部的自己，才完整。";
+CAUSE[4].pt="考差了，不是罵自己笨";
+CAUSE[5].pt="七級階梯，通往自由選擇";
+FORM[3].pt="事情不順時，先別急著怪誰";
+FORM[3].pp="事情不順的時候，不必急著怪自己，也不必急著怪別人。先問問：是不是看漏了什麼？是不是話說得不夠準？是不是時間點不對、做法不合適，或者目標本身該調整了？一項一項看，就能找到真正該修的地方。";
+FORM[4].pt="三個少一點，三個多一點";
+function postOfBlock(b,i,topic){
+  let zh=b.pp||b.p, en=b.en;
+  if(b.old){ zh="以前我們會說：「"+b.old+"」現在，可以換個看法："+b.p; en="We used to say: “"+b.oldEn+"” A fuller view: "+b.newEn; }
+  return {title:b.t, tag:b.pt||b.t, ab:b.ab, seed:i+1, topic, lead:{zh,en}};
 }
 const PAGE_POST = {
-home:{title:"首頁｜LifeOS 靈魂 × 母體",tag:"LifeOS｜靈魂 × 母體 × 七大理論 × 200句新舊語言",ab:"練",seed:5,topic:T.h,lead:{zh:"LifeOS 是一個「人生作業系統」的比喻：手機要更新，心也要更新。這裡整理了靈魂與母體的核心觀念、七大理論、兩百句新舊語言，還有隨手可查的說話公式。",en:"LifeOS is a metaphor: phones need updates, and so do hearts. Here are the core ideas, seven theories, two hundred old-and-new sentences, and handy speaking formulas."}},
-core:{title:"第一章｜核心本體與認知更新",tag:"第一章｜核心本體與認知更新",ab:"預",seed:1,topic:T.c1,lead:{zh:"第一章想說的只有一件事：人生是一圈一圈更新出來的。遇到事情、看清楚、給解釋、去行動、看結果、修正想法，再試一次。感受永遠值得被接住，但我們替感受編的故事，值得多查證一次。",en:"Chapter one says one thing: life improves loop by loop — notice, interpret, act, get feedback, update, try again. Hold the feeling; check the story."}},
-theory:{title:"第二章｜七大理論、機制鏈與生活對話",tag:"第二章｜七大理論、機制鏈與生活對話",ab:"境",seed:2,topic:T.c2,lead:{zh:"第二章請來七位老師：維根斯坦教我們把話說準，海德格教我們看見處境，預測處理教我們校準期待，主動推論教我們小步去試，複雜系統教我們找出循環，神經可塑性教我們反覆練習，心理彈性教我們帶著情緒做選擇。",en:"Chapter two invites seven teachers: say it precisely, see the situation, calibrate expectations, test in small steps, find the loop, practice, and choose with emotions on board."}},
-cause:{title:"第三章｜佛洛伊德、榮格與因果敘事更新",tag:"第三章｜佛洛伊德、榮格與因果敘事更新",ab:"系",seed:3,topic:T.c3,lead:{zh:"第三章陪我們放下「一定是因為……」的習慣。不安不一定是童年，失敗不一定是潛意識。把單一的答案，換成一張完整的檢查表：目標、資源、技能、環境、策略、回饋，一項一項看。",en:"Chapter three loosens the habit of 'it must be because…'. Trade the single answer for a full checklist: goals, resources, skills, environment, strategy, feedback."}},
+home:{title:"首頁｜LifeOS 靈魂 × 母體",tag:"換一句話，心就多一條路",ab:"練",seed:5,topic:T.h,lead:{zh:"手機用久了要更新，心也是。這裡收著兩百句「舊話換新話」，有對自己說的，也有對家人、孩子、同事說的。不必一次讀完，像翻一本放在床頭的小書，今天翻到哪一句，就帶著那一句過一天。",en:"LifeOS is a metaphor: phones need updates, and so do hearts. Here are the core ideas, seven theories, two hundred old-and-new sentences, and handy speaking formulas."}},
+core:{title:"第一章｜核心本體與認知更新",tag:"人生，是一圈一圈變好的",ab:"預",seed:1,topic:T.c1,lead:{zh:"第一章想說的只有一件事：人生是一圈一圈更新出來的。遇到事情、看清楚、給解釋、去行動、看結果、修正想法，再試一次。感受永遠值得被接住，但我們替感受編的故事，值得多查證一次。",en:"Chapter one says one thing: life improves loop by loop — notice, interpret, act, get feedback, update, try again. Hold the feeling; check the story."}},
+theory:{title:"第二章｜七大理論、機制鏈與生活對話",tag:"七個生活的提醒",ab:"境",seed:2,topic:T.c2,lead:{zh:"這一頁，收著七個生活的提醒：把話說準、看見處境、放下心裡的劇本、開口問一問、跳出重複的圈圈、慢慢練習、帶著情緒做選擇。七件小事，都不難，難的只是在最生氣、最難過的那一刻，還記得它們。",en:"Chapter two invites seven teachers: say it precisely, see the situation, calibrate expectations, test in small steps, find the loop, practice, and choose with emotions on board."}},
+cause:{title:"第三章｜佛洛伊德、榮格與因果敘事更新",tag:"放下那句「一定是因為……」",ab:"系",seed:3,topic:T.c3,lead:{zh:"這一頁陪我們放下「一定是因為……」的習慣。不安，不一定是童年的錯；失敗，也不一定是你心裡不想成功。把單一的答案，換成一張完整的檢查表：目標、資源、技能、環境、策略、回饋，一項一項看。",en:"Chapter three loosens the habit of 'it must be because…'. Trade the single answer for a full checklist: goals, resources, skills, environment, strategy, feedback."}},
 s0:{title:"200句新舊語言｜全部",tag:"200句新舊語言｜舊話換新話",ab:"練",seed:4,topic:T.h,lead:{zh:"兩百句新舊語言，全在這一頁。前面是我們說慣了的舊話，後面是可以練習的新話；一半對自己，一半對別人。不必全部背起來，挑一句今天最有感的，就夠了。",en:"All two hundred are here: the old line we're used to, and the new line to practice. Half for yourself, half for others. Pick one today."}},
 s4:{title:CH[4],tag:CH[4],ab:"語",seed:6,topic:T[1],lead:{zh:"第四章是寫給自己的五十句話（001–050）。從「我就是失敗者」到「我找到終極真理」，每一句舊話的旁邊，都放著一句更準、更暖的新話。",en:"Chapter four: fifty sentences for yourself (001–050). Beside every old line sits a truer, warmer new one."}},
 s5:{title:CH[5],tag:CH[5],ab:"境",seed:7,topic:T[6],lead:{zh:"第五章是對別人說的五十句話（051–100）。對伴侶、對孩子、對同事、對朋友，把「你怎麼又這樣」換成一句對方聽得進去的話。",en:"Chapter five: fifty sentences for others (051–100) — partners, children, colleagues, friends. Words that can actually be heard."}},
 s6:{title:CH[6],tag:CH[6],ab:"彈",seed:8,topic:T[11],lead:{zh:"第六章再給自己五十句（101–150）。談認識自己、身心壓力、金錢決策、關係模式，還有靈性與意義，一句一句把心裡的結鬆開。",en:"Chapter six: fifty more for yourself (101–150) — self-knowledge, stress, money, relationship patterns, and meaning."}},
 s7:{title:CH[7],tag:CH[7],ab:"探",seed:9,topic:T[16],lead:{zh:"第七章再給別人五十句（151–200）。談親密關係、陪讀、照顧健康、分享產品與理性討論，讓關心不再變成壓力。",en:"Chapter seven: fifty more for others (151–200) — intimacy, tutoring, health care, product advice, and reasoned discussion."}},
-quick:{title:"第八章｜七大能力快速查找與統一說話公式",tag:"第八章｜七大能力快速查找與統一說話公式",ab:"語",seed:10,topic:T.c8,lead:{zh:"第八章是整本的口袋版：七個隨身提問、對自己和對別人的說話流程、九句萬用公式、十種「哪裡出錯了」的檢查方向，還有最重要的安全界線。",en:"Chapter eight is the pocket edition: seven questions, two speaking flows, nine all-purpose lines, ten places errors hide, and the safety line."}},
+quick:{title:"第八章｜七大能力快速查找與統一說話公式",tag:"心亂時的口袋小抄",ab:"語",seed:10,topic:T.c8,lead:{zh:"這一頁是整本的口袋版：七個隨身提問、對自己和對別人的說話流程、九句萬用公式、十種「哪裡出錯了」的檢查方向，還有最重要的安全界線。",en:"Chapter eight is the pocket edition: seven questions, two speaking flows, nine all-purpose lines, ten places errors hide, and the safety line."}},
 safe:{title:"安全界線",tag:"安全界線｜有些事，不該只靠換一句話",ab:"彈",seed:11,topic:T.c8,lead:{zh:"這是整套工具最重要的一句話：遇到威脅、暴力、持續的控制，或是身體的疾病，不應該只用「換個說法」來處理。先讓自己安全，再找專業的人幫忙。保護自己，從來不是自私。",en:"The most important line in this whole tool: threats, violence, ongoing control, or physical illness should not be handled with words alone. Safety and professional help come first."}}
 };
 function postOfAbility(k,i){
   const A=AB[k];
-  return {title:k+"｜"+A.name, tag:"七大能力｜"+k+"・"+A.name, ab:k, seed:i+2, topic:T.c8,
-    lead:{zh:"代碼「"+k+"」，對應的是"+A.theory+"。它的隨身提問只有一句：「"+A.q+"」心亂的時候，把這一句拿出來問自己，就夠了。",
-          en:"Code “"+k+"” stands for "+A.en.name+". Its pocket wisdom: "+A.en.wis}};
+  return {title:k+"｜"+A.name, tag:"隨身一問・"+PLAIN[k].pn, ab:k, seed:i+2, topic:T.c8,
+    lead:{zh:"有些話，值得放在口袋裡隨身帶著。這一句是：「"+A.q+"」心亂的時候、想發脾氣的時候、覺得自己很糟的時候，把這一句拿出來，輕輕問自己一次，就夠了。",
+          en:"Some questions are worth carrying in your pocket. This one is about "+PLAIN[k].pnEn.toLowerCase()+". "+A.en.wis}};
+}
+
+/* ============ 臉書圖文長文（每章一篇：哲學命題・情境衝突・反問・對比・排比・認知翻轉・層層遞進・詩性收束） ============ */
+const RHET = ["哲學命題","情境衝突","反問句","對比句","排比句","認知翻轉","層層遞進","詩性收束"];
+const ARTS = [
+{key:"core",ch:"第一章",type:"生活覺醒",theme:"感受與故事",pain:"被腦中的猜想折磨",
+title:"你心裡那個故事，是真的嗎？",
+prop:"我們從來不是活在事情裡，而是活在我們對事情的解釋裡。",
+open:`晚上十一點，美君第三次點開對話框。「已讀」兩個字，安安靜靜地掛在那裡。她打了一行字：「你是不是覺得我很煩？」刪掉。又打：「沒事，你忙。」又刪掉。手機蓋在枕頭上，又翻了過來。
+
+同一個晚上，志豪坐在公司樓梯間。開會時，主管看了他一眼，什麼也沒說。他想說服自己沒事，心裡卻有另一個聲音冷冷地回：「你明明知道，下一個被裁的就是你。」一個聲音要他放心，一個聲音要他害怕，他在兩個聲音中間，坐了整整一個小時。
+
+事情只發生了一秒，心裡的戲，卻演了一整夜。`,
+ask:`那份難受，是假的嗎？不，心痛是真的，失眠也是真的。
+可是，感受是真的，就代表理由也是真的嗎？
+再往下問：如果理由不一定是真的，我們為什麼那麼急著相信它？
+再往更深處問：我們害怕的，究竟是那件事，還是「不知道」本身？`,
+secs:[
+{h:"一、感受是天氣，故事是你寫的天氣預報",t:"天氣來了就是來了，不必假裝晴天；可是預報，是我們自己寫的。古人說「杯弓蛇影」：酒杯裡的蛇，嚇病了一個人，抬頭一看，原來只是牆上的弓。害怕是真的，蛇卻從來不在杯子裡。",q:"接住感受，查證故事。"},
+{h:"二、心寧可相信最壞的，也不願忍受空白",t:"空白太難熬了。於是心拿起筆，替空白填上答案——而且總是挑最壞的那一個，因為最壞的答案，至少讓人以為自己有所準備。可是，填滿空白的，真的是答案嗎？還是恐懼換了一件衣服？志豪後來才知道，主管看他，是想請他下週帶新人。",q:"心在保護你，只是保護過了頭。"},
+{h:"三、翻轉：讓你痛的，常常不是事情，是那句旁白",t:"我們以為，是「他沒回」讓我難過；其實，是「他不在乎我」讓我難過。我們以為，是「主管看我」讓我害怕；其實，是「我要被裁了」讓我害怕。事情只有一行字，旁白卻寫了半本書。",q:"事實很輕，是猜測讓它變重。"},
+{h:"四、換一句話，就換一條路",t:"「他嫌我煩」，是一面牆；「他還沒回，我還不知道為什麼」，是一扇門。牆讓人困住，門讓人呼吸；牆讓明天變窄，門讓明天變寬。",q:"話是門，不是牆。"}],
+practice:"下一次心裡又開始演戲時，拿一張紙，畫一條直線。左邊寫「我真的看到的」，右邊寫「我心裡加上去的」。寫完之後，只對左邊那一欄做反應。",
+close:"那天夜裡，美君沒有傳出那行字。她在紙上寫下左右兩欄：左邊只有一行，右邊寫了半頁。她看著看著，笑了。隔天早上，訊息來了：「昨天太累，一沾枕頭就睡著了。」",
+poem:["夜還是那個夜，","手機還是那支手機。","只是她終於明白——","把她關起來的，從來不是沉默，","是她替沉默寫下的那句話。","而鑰匙，一直在她自己手裡。"]},
+
+{key:"theory",ch:"第二章",type:"數字清單",theme:"關係裡的說話方式",pain:"越在乎越受傷",
+title:"越在乎，越受傷？五個讓關係鬆一點的提醒",
+prop:"愛不只是一種感覺，也是一種說話的方式。",
+open:`淑芬傳了「到家了嗎？」給女兒，四十分鐘沒有回。第二通電話，第三通電話。最後女兒回了一句：「媽，妳很煩欸。」她想回「我是擔心妳」，打到一半，眼淚先掉在螢幕上。
+
+阿凱的生日，女朋友忘了。她問：「你怎麼了？」他說：「沒事。」嘴上說沒事，心裡卻在倒數：看她什麼時候才想起來。
+
+還有一對結婚二十年的夫妻。太太說：「你都不講話。」先生說：「講了妳又要唸。」一個想靠近，一個想喘氣；一個越追，一個越逃。`,
+ask:`他們都很愛對方，那為什麼越在乎，越受傷？
+是愛不夠嗎？不，他們每一個都愛得很用力。
+那會不會，問題不在愛得多少，而在愛得「怎麼說」？
+如果是說法出了錯，那麼——說法，是不是可以重新學？`,
+secs:[
+{h:"一、已讀不回，不等於不愛",t:"舊習慣：對方沒回，就判定「我不重要」。\n新理解：我們看到的是「還沒回」，聽到的卻是「不在乎」。看到的是一個逗點，心裡卻讀成了句號。\n具體行動：「我注意到你還沒回，是在忙嗎？」",q:"事實是逗點，別急著讀成句號。"},
+{h:"二、沉默，常常只是累了",t:"舊習慣：對方不說話，就覺得被冷落。\n新理解：他不是不想說，是今天已經用完了所有力氣。你看到的是冷淡，他身上背的卻是一整天。\n具體行動：「你今天比較安靜，是不是累了？我們晚點聊好嗎？」",q:"先懂他的一天，再談他的態度。"},
+{h:"三、期待不是約定",t:"舊習慣：心裡寫好劇本，等對方照著演。\n新理解：你在考試，他卻不知道有這場考試；你在等答案，他卻連題目都沒看過。這樣公平嗎？\n具體行動：「我原本希望你記得，有點失落；下次一起安排好嗎？」",q:"想要的，說出來，才算數。"},
+{h:"四、不是誰錯，是兩個人跳錯了舞",t:"舊習慣：吵架時追究「是誰先開始的」。\n新理解：你進一步，他退一步；他退一步，你再進一步。沒有壞人，只有一支跳錯的舞。\n具體行動：「我們好像又在追和躲裡打轉了，換個方式談好嗎？」",q:"不必換舞伴，只要換舞步。"},
+{h:"五、生氣可以有，傷人可以不必",t:"舊習慣：一生氣，就把最狠的話丟出去。\n新理解：生氣是鈴聲，不是命令；它提醒你在乎，卻沒有規定你傷人。\n具體行動：「我現在很生氣，需要先冷靜，等等再談。」",q:"有情緒，仍有選擇。"}],
+practice:"挑一句你最常對家人說的「指責句」，翻成一句「請求句」。把「你都不講話」，翻成「我想聽聽你今天過得怎樣」。不必改得漂亮，先說一次就好。",
+close:"那個週末，太太沒有再說「你都不講話」。她泡了兩杯茶，一杯放在先生旁邊：「今天累嗎？」先生愣了一下，然後慢慢說起公司的事。",
+poem:["茶涼了，又添了一次。","話說了，又多說了一些。","原來愛一直都在，","只是它需要一條路，","才走得到對方心裡。"]},
+
+{key:"cause",ch:"第三章",type:"經典轉譯",theme:"原因與判決",pain:"把一切怪到童年和命",
+title:"都是童年害的嗎？一百年前的「影子」，給了另一種答案",
+prop:"原因，是為了讓人走出去，不是為了讓人住下來。",
+open:`雅婷三十五歲，每次男朋友晚回訊息，她就慌得手心冒汗。她讀了很多文章，終於得出結論：「因為我小時候爸媽常吵架，所以我沒有安全感。」說完，她鬆了一口氣——終於找到兇手了。可是下一秒，她更絕望了：童年已經過去，兇手抓不到，案子也翻不了。
+
+志明開店失敗了兩次。朋友安慰他：「可能你心裡其實害怕成功吧。」這句話像一句安慰，又像一道符咒。從此，他再也不敢試第三次。`,
+ask:`找到原因，本來應該讓人更自由，為什麼反而讓人更走不動？
+是原因找錯了嗎？還是，我們找到的根本不是原因，而是一張判決書？
+如果人生的原因不只一個，那我們是不是太早，就替自己的人生結了案？`,
+secs:[
+{h:"一、老觀念：每個人心裡都有一個「影子」",t:"一百多年前，心理學家榮格說：每個人心裡，都住著一個不願被看見的自己——會嫉妒的、愛計較的、很害怕的那一面。他叫它「影子」。他的意思不是「你有影子，所以你不好」，而是：你越假裝它不存在，它越會在你不注意的時候，替你說話。",q:"看見影子，不是放縱它，是終於能和它說話。"},
+{h:"二、今天的處境：我們太愛一個答案",t:"單一的答案，像一顆止痛藥：吞下去很快，藥效過了更痛。雅婷的慌，可能來自小時候，也可能來自最近每天只睡五小時，來自工作壓力，來自男朋友真的常常說話不算話。少看一個原因，就少一個能改變的地方。",q:"人生不是一條線，是一張網。"},
+{h:"三、翻轉：原因是地圖，不是判決書",t:"同一盞燈，可以照亮路，也可以照得人睜不開眼。「影子」本來是一盞燈，幫你看見自己；拿它來宣判「我就是這樣」，燈就變成了鎖。志明需要的，不是一句「你怕成功」，而是一張檢查表：目標清楚嗎？錢夠嗎？手藝到位嗎？時機對嗎？",q:"判決讓人停下，地圖讓人出發。"},
+{h:"四、從找原因，到拼回完整的自己",t:"榮格還說，人一輩子都在學著成為完整的自己。完整，不是沒有裂縫，而是把驕傲的、羞愧的、勇敢的、膽小的自己，都放進同一個人生。難道要先變完美，才配被愛嗎？",q:"不完美的你，也是完整的你。"}],
+practice:"找一件你一直怪罪給過去的事，在紙上寫：「除了過去，還有哪些可能？」至少寫五個：身體、睡眠、現在的關係、環境、心裡的期待。然後圈出一個今天就能動一動的。",
+close:"雅婷寫下那五個可能，發現自己已經很久沒有好好睡覺。她先試著早一小時上床。一個月後，男朋友晚回訊息，她還是會慌，只是慌得沒那麼久了。",
+poem:["童年是一條回不去的河，","可是今天，是一座還能走的橋。","你不必改寫上游，","只要在此刻，","選一個新的方向，","讓水慢慢流向海。"]},
+
+{key:"s4",ch:"第四章",type:"生活覺醒",theme:"對自己說的話",pain:"自我否定、怕不完美",
+title:"「我就是失敗者」——你對自己說的話，比任何人都狠",
+prop:"人不是被失敗打倒的，是被自己對失敗的說法打倒的。",
+open:`早上七點，佩珊站在鏡子前。報告被主管退回了，理由只有一行字。她對鏡子裡的人說：「妳就是這麼沒用。」鏡子裡的人沒有回嘴，只是眼眶紅了。昨天晚上，她還在安慰失戀的同事：「這不是妳的錯，妳已經很好了。」對別人，她是最溫柔的人；對自己，她是最嚴厲的法官。
+
+小宇段考考了五十八分，把考卷塞進書包最底層。媽媽還沒開口，他已經替自己判了刑：「我很笨，我天生就不是讀書的料。」
+
+五十五歲的阿珍，電腦班的報名表填了一半又放下：「這麼老了，來不及了啦。」她笑著說，笑得有點苦。`,
+ask:`這三個人，有誰被別人罵了嗎？沒有。最狠的那句話，是他們自己說的。
+為什麼我們能原諒全世界，卻不能原諒自己？
+是因為我們相信，罵自己會讓自己變好嗎？
+如果罵了這麼多年，人並沒有變得更好——那錯的，會不會不是我們，而是罵的方法？`,
+secs:[
+{h:"一、一次的結果，不是你的名字",t:"「我失敗了」和「我是失敗者」，只差一個字，卻隔著兩個世界。前一句說的是一件事，後一句判的是一個人；事情可以修，人一旦被判了刑，連修的力氣都沒了。佩珊被退回的，是一份報告，不是她這個人。",q:"失敗是一件事，不是你的名字。"},
+{h:"二、翻轉：罵自己，其實是一種逃避",t:"聽起來很奇怪，卻是真的。說「我就是笨」，比坐下來看錯在哪裡，輕鬆多了；一句總結，就可以不必面對那些細節。小宇如果把考卷攤開，一題一題看，也許會發現：他不是笨，是單字背不熟、閱讀題看太慢。",q:"把「我不行」拆成「哪一步不行」，山就變成了石頭。"},
+{h:"三、完美，是最溫柔的牢籠",t:"完美看起來像目標，其實像一扇只有入口的門：走進去的人，再也走不出來。剛學寫字的孩子，第一個字總是歪歪扭扭，可是有誰因為那個歪掉的字，就說他不會寫字？我們對孩子那麼寬容，為什麼對自己就不行？",q:"不完美的開始，勝過完美的等待。"},
+{h:"四、只要還在路上，就不算晚",t:"「來不及」，到底是跟誰比？跟二十歲的人比，當然晚；跟昨天的自己比，今天開始，就是早。社區電腦班裡，有一位七十二歲的阿伯，每次都坐第一排，筆記抄得比誰都認真。",q:"人生沒有截止日，只有下一步。"}],
+practice:"找出一句你最常對自己說的狠話，把它翻成一個問句：「我就是失敗者」→「這次沒成功，我要調整哪一步？」「我什麼都不會」→「我目前最需要補強哪一項？」寫在便利貼上，貼在鏡子旁邊。",
+close:"隔天早上，佩珊又站在鏡子前。黑眼圈還在，報告也還沒改完。她看了看便利貼，小聲地說：「這次沒過，我要改哪一段？」說完，她發現自己沒有那麼想哭了。",
+poem:["鏡子裡的人沒有變，","變的是對她說話的那個聲音。","從法官，變成朋友；","從判決，變成提問。","原來溫柔不只能給別人，","也能，留一點給自己。"]},
+
+{key:"s5",ch:"第五章",type:"數字清單",theme:"對家人與孩子說的話",pain:"好意變成傷害",
+title:"五句以愛為名的話，正在把你愛的人推遠",
+prop:"傷人最深的話，往往不是出於恨，而是出於急著去愛。",
+open:`女兒哭著說被同學排擠。媽媽一邊切菜一邊說：「妳就是太敏感了，不要想那麼多。」刀聲沒有停，女兒的話停了。她回到房間，輕輕關上門。媽媽以為事情結束了，其實，是一扇門關上了。
+
+兒子數學考了四十分，爸爸把考卷拍在桌上：「你怎麼這麼笨？別人都會，你為什麼不會？」爸爸心裡想的是「我好擔心你」，嘴裡說出來的，卻是「你讓我丟臉」。
+
+朋友失戀，在電話裡哭了半小時。你說：「好了啦，想開一點。」電話那頭安靜了，然後說：「嗯，我知道了。」`,
+ask:`這些話的出發點，都是愛。那為什麼，聽的人反而離我們更遠？
+是對方太脆弱嗎？還是我們說話的時候，其實更急著讓自己安心？
+如果安慰的目的，是讓對方好過一點——那我們有沒有先問過，他需要的是什麼？
+其實，很多傷人的話都不是故意的，只是太快了：快到心還沒到，話就先到了。`,
+secs:[
+{h:"一、「你太敏感」",t:"舊習慣：用一句話，把對方的感受打發掉。\n新理解：你說的是「別在意」，他聽到的是「你的痛不算數」。\n具體行動：「這件事，讓你最在意的是什麼？」",q:"先接住感受，再談道理。"},
+{h:"二、「你怎麼這麼笨」",t:"舊習慣：用評價代替陪伴。\n新理解：「笨」是一個句點，孩子只能低頭；提問是一個逗點，孩子還能抬頭。\n具體行動：「這題，從哪一步開始不懂？」",q:"一句提問，讓孩子重新抬起頭。"},
+{h:"三、「別人都會，你為什麼不會」",t:"舊習慣：拿別人當尺。\n新理解：比較讓人看見自己的不足，卻看不見自己的路。起跑點都不一樣，怎麼能比終點？\n具體行動：「跟上次比，你已經進步在哪裡？」",q:"被看見進步的人，才有力氣繼續進步。"},
+{h:"四、「想開一點就好」",t:"舊習慣：急著把人拉出難過。\n新理解：難過的人不是想不開，是還沒走完。感冒都要好幾天才會好，心裡的傷，難道一句話就能好？\n具體行動：「現在，你最需要什麼樣的支持？」",q:"陪伴，有時候就是什麼都不急。"},
+{h:"五、「我都是為你好」",t:"舊習慣：把自己的答案塞給對方。\n新理解：沒有問過的好意，是一份壓力；問過的好意，才是一份禮物。\n具體行動：「你需要的是建議、陪伴，還是實際的幫忙？」",q:"問一句，比猜十次更溫柔。"}],
+practice:"在你最常對家人說的話裡，找出一句「評價」，換成一句「提問」。問完之後，什麼都不必補充，只要安靜地聽。",
+close:"那天晚上，媽媽敲了敲女兒的房門，端著一盤切好的水果進去。她沒有再說「妳太敏感」，只是問：「今天那件事，最讓妳難過的是哪一部分？」女兒愣了很久，然後一邊哭，一邊說了好多好多。",
+poem:["原來她要的，","從來不是答案，","是一雙願意停下來的耳朵。","刀聲停了，","門開了，","愛，終於走了進去。"]},
+
+{key:"s6",ch:"第六章",type:"哲學與AI",theme:"第一個念頭可信嗎",pain:"太相信直覺和第一反應",
+title:"你的直覺，也會像AI一樣「很有自信地說錯」",
+prop:"確信是一種感覺，真實是一件事情；兩者常常一起出現，卻不是同一回事。",
+open:`文華的群組裡，每天都有人貼賺錢的截圖。理智說：「再看看吧。」心跳說：「再不買就來不及了！」那天晚上，心跳贏了，他把一半的存款投了進去。
+
+惠玲最近常常失眠。她很確定：「一定是我想太多。」於是她買了好幾本教人放鬆的書，讀到凌晨兩點，卻從沒想過，也許該去看醫生、檢查一下身體。
+
+還有你。也許某天早上抽到一張牌、做了一個夢，心裡一震：「這一定是在告訴我什麼。」`,
+ask:`這些念頭有一個共同點：來得很快，而且非常篤定。
+可是，篤定，就等於正確嗎？
+一個念頭重複了一百次，它是變得更真了，還是只是變得更熟了？
+如果連機器都會很有自信地說錯，我們憑什麼確定，自己腦中的聲音從不出錯？`,
+secs:[
+{h:"一、想像一下：如果你的腦袋，是一台很會聊天的機器",t:"你問一台很會說話的機器：「明天會下雨嗎？」它用很肯定的語氣說：「會，而且是大雨。」你會怎麼做？你會打開窗看看天，或者查一下氣象。因為你知道，說得流暢，不代表說得準確。那為什麼，我們對自己腦中的聲音，從來不查？",q:"說得很肯定，不等於說得對。"},
+{h:"二、熟悉，不是真實",t:"一則謠言被轉傳一千次，它還是謠言；一個念頭被想了一千次，它還是念頭。熟悉讓人安心，真實讓人清醒；熟悉靠重複，真實靠查證。文華覺得「不買就虧了」，是因為群組每天都在重複，不是因為他真的算過。",q:"重複出現的念頭，不等於證據變多了。"},
+{h:"三、AI 是一面鏡子：它會一本正經地說錯，我們也會",t:"現在的 AI 很厲害，卻有一個出名的毛病：有時會把不存在的事，說得頭頭是道。因為它是照著「最像答案的樣子」說話，而不是照著事實說話。人的直覺也很像：它從過去的經驗裡，拼出一個「最像真的」故事。大部分時候很好用，偶爾，也會很有自信地說錯。",q:"我們會檢查 AI 的答案，為什麼不檢查自己的？"},
+{h:"四、回到生活：直覺是敲門聲，不是判決書",t:"這不是要你不信直覺。直覺像煙霧警報器——它響了，值得去看一看；但不是每次響，都代表失火。惠玲的失眠，也許和壓力有關，也許和身體有關；看一次醫生，就多一分安心。",q:"聽見敲門聲，先開門看看，再決定要不要逃。"}],
+practice:"當心裡出現「一定是……」的念頭時，停下來問三句話：我有什麼證據？有沒有別的可能？如果我錯了，代價是什麼？問完再決定，大概只要一杯水的時間。",
+close:"三個月後，文華那支股票跌了一半。他沒有責怪自己太久，只在筆記本上寫：「下次，先問自己能承受多少損失。」惠玲做了檢查，醫生幫她調整了作息，她終於一覺睡到天亮。",
+poem:["直覺還是會來，","聲音還是很大。","只是現在，他們學會了——","在相信之前，","先溫柔地問一句：","「真的嗎？」"]},
+
+{key:"s7",ch:"第七章",type:"生活覺醒",theme:"陪伴生病的家人",pain:"想照顧卻說錯話",
+title:"「你要堅強」——為什麼這句話，讓生病的人更孤單？",
+prop:"真正的陪伴，不是要對方變好，而是讓對方不再一個人。",
+open:`病房裡，阿玉看著化療後掉了一把頭髮的姊姊，心裡一酸：「妳一定會好起來的！要堅強喔！」姊姊笑了笑，把臉轉向窗戶。阿玉以為自己給了力量，姊姊卻覺得，自己連害怕都不被允許了。
+
+志偉的爸爸有糖尿病，卻常常偷吃甜點。志偉氣得大吼：「你到底要不要命？醫生講的你都不聽！」爸爸放下叉子，一整晚沒有說話。一個人在怕失去，一個人在怕被管；兩個人都在怕，卻吵成了一場架。
+
+還有一位熱心的朋友，拿了一瓶保健食品給生病的親戚：「這個很有效，吃了就不用一直跑醫院。」`,
+ask:`每一句話，都是出於關心。可是為什麼，聽的人好像更孤單了？
+是不是因為，這些話都在說「你應該怎樣」，卻沒有人問「你現在怎樣」？
+如果照顧的目的，是讓他不再一個人面對——那我們說出口的話，是把他拉近，還是推遠？`,
+secs:[
+{h:"一、「要堅強」，有時候是不准他軟弱",t:"我們說「要堅強」，他聽到的是「不准哭」。堅強不是不掉眼淚，而是掉眼淚的時候，旁邊有人。\n可以改說：「你現在最難受的是什麼？我可以怎麼陪你？」",q:"允許脆弱，才是真正的支持。"},
+{h:"二、翻轉：責罵，是著急穿錯了衣服",t:"志偉吼的是「你不聽話」，心裡喊的卻是「我好怕失去你」。可是人被罵的時候，只會築牆，不會開門。\n可以改說：「最近哪些習慣最難維持？我們一起想辦法。」然後一起把甜點換成水果，一起去散步。",q:"每一句兇巴巴的話底下，都藏著一句「我好怕」。"},
+{h:"三、太美的承諾，反而不誠實",t:"「一定會好」「吃了就有效」，聽起來很溫暖，可是誰能保證？承諾一旦落空，他失去的不只是希望，還有對你的信任。任何產品，都只能是照顧的一小部分，不能取代醫生的診斷和治療。\n可以改說：「我們先問問醫生，再看看什麼方法真的適合你。」",q:"誠實的溫柔，走得比美麗的保證更遠。"},
+{h:"四、照顧別人的人，也需要被照顧",t:"一直撐著的人，也會累，也會崩潰。如果連你都倒下了，誰來陪他？請別人幫忙，不是失敗，是讓這份愛可以走得更久。",q:"先戴好自己的氧氣面罩，才有力氣扶住別人。"}],
+practice:"去看望或打一通電話給生病的家人，不給任何建議，只問一句：「今天身體還好嗎？最讓你不舒服的是什麼？」然後安靜地聽完，不急著回答。",
+close:"第二天，阿玉帶了一頂柔軟的毛帽去病房。她沒有再說「要堅強」，只是幫姊姊戴上帽子：「今天會怕嗎？我在這裡。」姊姊點點頭，眼淚掉下來，輕輕握住了她的手。",
+poem:["那天，她們沒有聊病情，","只是一起看窗外的雲。","雲慢慢地走，","手緊緊地握。","有時候，最有力量的話，","不是「你會好起來」，","而是「我在這裡」。"]},
+
+{key:"quick",ch:"第八章",type:"經典轉譯",theme:"隨身帶著的好問題",pain:"道理都懂，情緒一來卻全忘了",
+title:"兩千年前的一句老話：沒好好問過的人生，值得再問一次",
+prop:"答案讓人停下來，問題讓人走下去。",
+open:`冠宇和太太又為了「誰該洗碗」吵起來。太太說：「每次都是我。」冠宇說：「我上班就不累嗎？」話越說越大聲，碗還泡在水槽裡。他甩門出去，站在樓下吹風，心裡想：「為什麼每次都這樣？」
+
+淑惠陪國中的兒子讀書，一個晚上吼了三次。兒子哭著睡著之後，她坐在書桌前，看著一桌子的教養書。書上的道理她都畫了重點，可是吼出來的那一刻，一句也想不起來。`,
+ask:`我們讀過那麼多溫暖的句子，為什麼最需要的時候，總是派不上用場？
+是我們不夠努力嗎？還是道理太大，生活裡的那一刻太小？
+如果是這樣，我們缺的，也許不是更多道理，而是一兩句隨身帶著、隨時能問的話。`,
+secs:[
+{h:"一、老話：「沒有好好檢視過的人生，不值得活。」",t:"兩千多年前的雅典，有一個老人叫蘇格拉底。他沒有寫過書，每天在市場上跟人聊天，最愛問：「你說的那個，是什麼意思？」「你怎麼知道是這樣？」很多人被他問得很煩，可是他相信：人只有在願意追問自己的時候，才是真正在過自己的人生。",q:"問題，是照進生活的一道光。"},
+{h:"二、今天的處境：我們很會回答，卻很少提問",t:"手機裡有無數答案，心裡卻很少有一個好問題。吵架時，我們急著回嘴；挫折時，我們急著下結論。冠宇那句「為什麼每次都這樣」，其實是個好問題，只是他問完就丟了，沒有往下問。",q:"答案讓人停下來，問題讓人走下去。"},
+{h:"三、把大道理，變成九句小問題",t:"如果把那位老人請到今天，他也許會給我們一張小抄：我注意到什麼？這讓我感到什麼？我原本以為怎樣？我理解得對嗎？還有哪些我不知道的背景？我真正需要什麼？我們先試什麼？如果又發生，我會怎麼做？下次可以怎麼調整？九句話不深奧，卻能讓一場吵架，變成一次對話。",q:"好問題不會馬上給答案，但會給你一條路。"},
+{h:"四、知道什麼時候，不再自己扛",t:"有些事，不是多問幾句就能解決的。遇到威脅、暴力、長期被控制，或身體出了狀況，請先讓自己安全，再找專業的人幫忙。",q:"懂得求助，也是一種智慧。"}],
+practice:"挑一句你最近最常問自己、卻總是問完就算了的問題，例如「為什麼每次都這樣？」今天在它後面，多問一句：「這一次，我可以先改哪一步？」把答案寫下來，一步就好。",
+close:"那天吹完風，冠宇在樓下站了一會兒，問自己：「這一次，我可以先改哪一步？」他上樓，把碗洗了，然後對太太說：「我們找一天，把家事重新分一分，好嗎？」太太看了他一眼，眼神軟了下來。",
+poem:["水槽空了，","夜也安靜了。","人生不一定有標準答案，","但只要還願意問，","就還有路；","只要還有路，","就還有明天。"]}
+];
+ARTS.forEach(a=>{ a.body=a.open+"\n\n"+a.ask+"\n\n"+a.secs.map(s=>s.h+"\n"+s.t+"\n✦ "+s.q).join("\n\n")+"\n\n【今天的小練習】\n"+a.practice+"\n\n"+a.close+"\n\n"+a.poem.join("\n"); });
+const ART_BY = {}; ARTS.forEach(a=>ART_BY[a.key]=a);
+const artText=a=>a.title+"\n\n「"+a.prop+"」\n\n"+a.body+"\n\n#LifeOS #心靈雞湯 #新舊語言 #"+a.theme.replace(/\s/g,"");
+
+/* ============ 圖卡（1080×1350，臉書直式） ============ */
+const FONT='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+const NOHEAD="，。、；：！？」』）】…—,.!?";
+function wrapText(ctx,text,maxW){
+  const out=[];
+  String(text).split("\n").forEach(par=>{
+    let line="";
+    for(const ch of par){
+      const t=line+ch;
+      if(ctx.measureText(t).width>maxW && line && !NOHEAD.includes(ch)){ out.push(line); line=ch; }
+      else line=t;
+    }
+    out.push(line);
+  });
+  return out;
+}
+function drawCard(c){
+  const W=1080,H=1350,cv=document.createElement("canvas"); cv.width=W; cv.height=H;
+  const x=cv.getContext("2d"), dark=c.style==="quote";
+  const g=x.createLinearGradient(0,0,W,H);
+  if(dark){ g.addColorStop(0,"#6f5a4a"); g.addColorStop(1,"#3b322b"); }
+  else if(c.style==="poem"){ g.addColorStop(0,"#e9efe6"); g.addColorStop(1,"#f8f4ec"); }
+  else { g.addColorStop(0,"#f3dcc6"); g.addColorStop(1,"#fbf3e8"); }
+  x.fillStyle=g; x.fillRect(0,0,W,H);
+  x.strokeStyle=dark?"rgba(255,240,220,.35)":"rgba(194,104,74,.35)"; x.lineWidth=3; x.strokeRect(48,48,W-96,H-96);
+  const ink=dark?"#fbf3e8":"#3b322b", soft=dark?"#e7cfb5":"#8a6f5c", acc=dark?"#f0b98f":"#c2684a";
+  x.textBaseline="top";
+  x.fillStyle=acc; x.font="bold 34px "+FONT; x.fillText(c.label||"LifeOS",100,100);
+  const blocks=[]; // [文字,字級,顏色,粗體,段距,特效]
+  if(c.title) blocks.push([c.title,c.tsize||64,ink,true,30]);
+  if(c.old) blocks.push([c.old,48,soft,false,24,"strike"]);
+  if(c.big) blocks.push([c.big,c.bsize||72,ink,true,36]);
+  if(c.mid) blocks.push([c.mid,c.msize||40,soft,false,24]);
+  if(c.lines) c.lines.forEach(l=>blocks.push([l,c.lsize||50,ink,false,10]));
+  const maxW=W-200; let total=0; const laid=[];
+  blocks.forEach(b=>{ x.font=(b[3]?"bold ":"")+b[1]+"px "+FONT; const ls=wrapText(x,b[0],maxW); laid.push([b,ls]); total+=ls.length*b[1]*1.5+b[4]; });
+  let y=Math.max(200,(H-total)/2-20);
+  if(dark){ x.fillStyle="rgba(240,185,143,.45)"; x.font="bold 220px Georgia,serif"; x.fillText("“",86,Math.max(150,y-190)); }
+  laid.forEach(([b,ls])=>{
+    x.font=(b[3]?"bold ":"")+b[1]+"px "+FONT; x.fillStyle=b[2];
+    ls.forEach(l=>{
+      const lw=x.measureText(l).width, lx=c.center?(W-lw)/2:100;
+      x.fillText(l,lx,y);
+      if(b[5]==="strike") x.fillRect(lx,y+b[1]*0.6,lw,4);
+      y+=b[1]*1.5;
+    });
+    y+=b[4];
+  });
+  x.fillStyle=soft; x.font="28px "+FONT;
+  x.fillText("LifeOS｜換一句話，心就多一條路",100,H-120);
+  if(c.page){ x.fillText(c.page,W-100-x.measureText(c.page).width,H-120); }
+  return cv.toDataURL("image/png");
+}
+function cardsOf(cfg){
+  if(cfg.art){
+    const a=cfg.art, n=a.secs.length+3, L=a.ch+"｜"+a.type;
+    const cs=[{label:L,title:a.title,tsize:70,mid:"「"+a.prop+"」",msize:44}];
+    a.secs.forEach(s=>cs.push({label:L,style:"quote",mid:s.h.replace(/^[一二三四五六七八九十]+、/,""),msize:38,big:s.q,bsize:68}));
+    cs.push({label:"今天的小練習",title:"今天，試一件小事",tsize:58,mid:a.practice,msize:40});
+    cs.push({label:L,style:"poem",lines:a.poem,lsize:50,center:true});
+    cs.forEach((c,i)=>c.page=(i+1)+" / "+n);
+    return cs;
+  }
+  const A=AB[cfg.ab], P=PLAIN[cfg.ab];
+  if(cfg.sent){ const e=cfg.sent; return [{label:"舊話換新話・第 "+e.no+" 句",old:e.old,big:e.nw,bsize:70,mid:"✦ "+P.prop,msize:38}]; }
+  return [{label:"LifeOS",title:cfg.tag,tsize:60,mid:"「"+P.prop+"」",msize:42,lines:["✦ "+A.quotes[0]],lsize:46}];
 }
 
 /* ============ 畫面 ============ */
@@ -638,9 +933,22 @@ function safetyCard(){
   return '<div class="warn"><b>🛟 安全界線</b><br>遇到威脅、暴力、持續的控制，或是身體的疾病，請不要只靠「換一句話」來撐。先讓自己安全，再找專業的人幫忙。保護自己，從來不是自私。<div class="orig" style="border-color:#efc7b6">原文｜'+esc(SAFETY_O)+'</div><div class="row">'+pbtn(PAGE_POST.safe)+'</div></div>';
 }
 const soup=t=>'<div class="soup">'+esc(t)+'</div>';
-const pageHead=(title,key,intro)=>'<h1>'+esc(title)+'</h1>'+soup(intro)+'<div class="row" style="margin:0 0 18px">'+pbtn(PAGE_POST[key],"📣 本頁臉書雙語貼文",true)+'</div>';
+const abtn=(a,label)=>pbtn({art:a,title:a.title},label||"📖 本頁臉書長文");
+const pageHead=(title,key,intro)=>'<h1>'+esc(title)+'</h1>'+soup(intro)+'<div class="row" style="margin:0 0 18px">'+pbtn(PAGE_POST[key],"📣 本頁臉書雙語貼文",true)+(ART_BY[key]?abtn(ART_BY[key]):"")+'</div>';
+function artCard(a){
+  return '<div class="card"><div><span class="lab">'+esc(a.ch)+'</span><span class="badge">'+esc(a.type)+'</span></div>'
+   +'<h3 style="margin-top:6px">'+esc(a.title)+'</h3>'
+   +'<div><span class="lab">主題</span>'+esc(a.theme)+'　<span class="lab">讀者困境</span>'+esc(a.pain)+'</div>'
+   +'<div><span class="lab">哲學命題</span><b>「'+esc(a.prop)+'」</b></div>'
+   +'<div class="chips">'+RHET.map(r=>'<span class="chip" style="cursor:default">'+r+'</span>').join("")+'</div>'
+   +'<p class="count" style="margin-top:6px">'+esc(a.open.slice(0,70))+'……</p>'
+   +'<div class="row">'+abtn(a,"🖼️ 圖文全文（"+(a.secs.length+3)+" 張圖）")+cbtn(artText(a),"複製全文")+'</div></div>';
+}
+function vArts(){
+  return '<h1>臉書長文｜八章八篇</h1>'+soup("每一章都有一篇可以直接貼上臉書的長文。從生活裡的小場景開始，問幾個好問題，再給你一個今天就能做的小練習。不講術語，只講人生。")+ARTS.map(artCard).join("");
+}
 
-const TABS=[["home","首頁"],["core","核心觀念"],["theory","七大理論"],["cause","因果更新"],["s","200句"],["quick","速查公式"]];
+const TABS=[["home","首頁"],["core","核心觀念"],["theory","七大理論"],["cause","因果更新"],["s","200句"],["quick","速查公式"],["arts","臉書長文"]];
 const st={tab:"home",ch:0,ab:"",q:"",daily:Math.floor(Math.random()*200)};
 
 function vHome(){
@@ -685,6 +993,7 @@ function vSearch(){
   sec("七大理論",THEORY.map((t,i)=>has(t.name,t.field,t.chain,t.cs,t.say,t.wis,t.abn,t.bd,t.p,t.ab)?theoryCard(t,i):"").filter(Boolean));
   sec("核心觀念",CORE.map((b,i)=>has(b.t,b.o,b.p,b.en)?blockCard(b,i,T.c1,"第一章"):"").filter(Boolean));
   sec("因果更新",CAUSE.map((b,i)=>has(b.t,b.o||"",b.p,b.old||"",b.nw||"",b.chain||"")?blockCard(b,i,T.c3,"第三章"):"").filter(Boolean));
+  sec("臉書長文",ARTS.filter(a=>has(a.title,a.body,a.theme,a.pain,a.type,a.ch)).map(artCard));
   sec("速查公式",FORM.map((b,i)=>has(b.t,b.o,b.p,b.chain||"",b.ten?TEN.join(" "):"",b.nine?NINE.join(" "):"")?blockCard(b,i,T.c8,"第八章"):"").filter(Boolean));
   if(has(SAFETY_O,"安全界線")){ h+='<h2>安全界線</h2>'+safetyCard(); n++; }
   return '<h1>搜尋「'+esc(st.q)+'」</h1><p class="count">找到 '+n+' 筆。'+(n?"慢慢看，挑一句最有感的就好。":"換個字試試看，例如：界線、期待、手機、原諒。")+'</p>'+h;
@@ -692,7 +1001,7 @@ function vSearch(){
 function render(){
   POSTS.length=0;
   $("nav").innerHTML=TABS.map(t=>'<button data-tab="'+t[0]+'" class="'+(!st.q&&st.tab===t[0]?"on":"")+'">'+t[1]+'</button>').join("");
-  const v=st.q.trim()?vSearch():({home:vHome,core:vCore,theory:vTheory,cause:vCause,s:vS,quick:vQuick}[st.tab])();
+  const v=st.q.trim()?vSearch():({home:vHome,core:vCore,theory:vTheory,cause:vCause,s:vS,quick:vQuick,arts:vArts}[st.tab])();
   $("app").innerHTML=v;
 }
 function go(tab){ st.tab=tab; st.q=""; $("q").value=""; render(); window.scrollTo(0,0); }
@@ -700,10 +1009,13 @@ function go(tab){ st.tab=tab; st.q=""; $("q").value=""; render(); window.scrollT
 /* 貼文視窗 */
 let cur=null, shift=0;
 function showPost(){
-  const t=buildPost(cur,shift), c=countWords(t);
+  const t=cur.art?artText(cur.art):buildPost(cur,shift), c=countWords(t);
   $("ptitle").textContent=cur.title;
-  $("ptext").textContent=t; $("ptext").scrollTop=0;
-  $("pcount").textContent="約 "+c.total+" 字（中文 "+c.zh+" 字＋英文 "+c.en+" words）";
+  $("ptext").textContent=t; $("pbody").scrollTop=0;
+  const base=(cur.art?cur.art.ch:(cur.sent?"No"+cur.sent.no:"LifeOS"))+"_圖卡";
+  $("pimgs").innerHTML=cardsOf(cur).map((c,i)=>{ const u=drawCard(c); return '<a href="'+u+'" download="'+base+"_"+(i+1)+'.png" title="點一下下載這張圖"><img src="'+u+'" alt="圖卡 '+(i+1)+'">第 '+(i+1)+' 張</a>'; }).join("");
+  $("pshuf").style.display=cur.art?"none":"";
+  $("pcount").textContent=cur.art?("臉書長文｜"+cur.art.type+"｜中文約 "+c.zh+" 字"):("約 "+c.total+" 字（中文 "+c.zh+" 字＋英文 "+c.en+" words）");
 }
 async function copyText(t,btn){
   const old=btn.textContent;
@@ -727,6 +1039,7 @@ $("pclose").onclick=()=>$("mask").classList.remove("show");
 $("mask").addEventListener("click",e=>{ if(e.target.id==="mask") $("mask").classList.remove("show"); });
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") $("mask").classList.remove("show"); });
 $("pshuf").onclick=()=>{ shift++; showPost(); };
+$("pdl").onclick=()=>{ [...$("pimgs").querySelectorAll("a")].forEach((a,i)=>setTimeout(()=>a.click(),i*350)); };
 $("pcopy").onclick=e=>copyText($("ptext").textContent,e.target);
 render();
 </script>

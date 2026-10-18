@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>臉書貼文排程器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f3ee;--card:#fff;--ink:#22201c;--mute:#77716a;--line:#e3ded4;--acc:#9a5b34;--acc2:#f3e6da;--ok:#3f7a52;--okbg:#e5f1e8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Noto Sans TC","Microsoft JhengHei",sans-serif}
+header{position:sticky;top:0;z-index:5;background:rgba(245,243,238,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);padding:12px 16px}
+.bar{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+h1{font:700 20px "Noto Serif TC",serif;margin:0 12px 0 0;white-space:nowrap}
+input,select,textarea,button{font:inherit;color:inherit}
+#q{flex:1;min-width:200px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 12px;cursor:pointer}
+button:hover{border-color:var(--acc)}
+button.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.stats{max-width:1200px;margin:6px auto 0;color:var(--mute);font-size:13px}
+main{max-width:1200px;margin:0 auto;padding:16px}
+details.set{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:16px}
+details.set summary{cursor:pointer;font-weight:500}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px 16px;margin-top:10px}
+.grid2 label{display:flex;flex-direction:column;font-size:13px;color:var(--mute);gap:4px}
+.grid2 input,.grid2 select{padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.times{display:flex;gap:6px}
+.day{margin:0 0 22px}
+.day h2{font:700 16px "Noto Serif TC",serif;margin:0 0 8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.day h2 .sub{font:400 13px "Noto Sans TC",sans-serif;color:var(--mute)}
+.day h2 button{font-size:12px;padding:3px 9px}
+.day.today h2::before{content:"今天";background:var(--acc);color:#fff;font:500 12px sans-serif;padding:2px 8px;border-radius:99px}
+.row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.post{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;gap:10px}
+.post.done{background:var(--okbg);border-color:#bcd9c4}
+.post canvas{width:108px;height:135px;border-radius:6px;flex:none;cursor:pointer;background:#ddd}
+.post .info{min-width:0;display:flex;flex-direction:column;gap:4px}
+.post .meta{font-size:12px;color:var(--mute)}
+.post .meta b{color:var(--acc);font-weight:500}
+.post .ttl{font:700 14px/1.45 "Noto Serif TC",serif;cursor:pointer;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.post .act{margin-top:auto;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.post .act button{font-size:12px;padding:3px 8px}
+.post .act label{font-size:12px;display:flex;align-items:center;gap:3px;cursor:pointer}
+mark{background:#ffe08a;padding:0 1px}
+.empty{background:#fff;border:1px dashed var(--line);border-radius:14px;padding:28px;text-align:center;color:var(--mute)}
+dialog{border:none;border-radius:16px;padding:0;max-width:min(1100px,96vw);width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(20,18,15,.5)}
+.dlg{padding:18px;display:flex;flex-direction:column;gap:10px;max-height:92vh;overflow:auto}
+.dlg h3{margin:0;font:700 18px "Noto Serif TC",serif}
+.dlg textarea{width:100%;min-height:300px;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:14px;line-height:1.7}
+.det{display:grid;grid-template-columns:minmax(260px,420px) 1fr;gap:16px}
+.det canvas{width:100%;border-radius:10px;box-shadow:0 4px 18px rgba(0,0,0,.12)}
+.det label{font-size:12px;color:var(--mute);display:block;margin-top:6px}
+.det input{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:8px}
+.det textarea{min-height:360px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.preview{font-size:13px;background:var(--acc2);border-radius:10px;padding:10px 12px;white-space:pre-wrap}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#22201c;color:#fff;padding:8px 16px;border-radius:99px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:99}
+#toast.on{opacity:1}
+@media(max-width:900px){.row{grid-template-columns:1fr}.det{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <h1>臉書貼文排程器</h1>
+    <input id="q" type="search" placeholder="搜尋標題、內文、系列…">
+    <button id="bToday">跳到今天</button>
+    <button id="bImport" class="pri">匯入文章</button>
+    <button id="bCsv">匯出排程表</button>
+    <button id="bBackup">備份</button>
+    <button id="bRestore">還原</button>
+    <input id="fRestore" type="file" accept=".json" hidden>
+  </div>
+  <div class="stats" id="stats"></div>
+</header>
+<main>
+  <details class="set">
+    <summary>排程與圖卡設定</summary>
+    <div class="grid2">
+      <label>開始日期<input id="sStart" type="date"></label>
+      <label>每日三個時段<span class="times"><input id="t0" type="time"><input id="t1" type="time"><input id="t2" type="time"></span></label>
+      <label>排列方式<select id="sOrder"><option value="seq">依系列順序</option><option value="mix">各系列交錯</option></select></label>
+      <label>圖卡配色<select id="sTheme"><option value="series">每個系列一種配色</option><option value="rotate">每篇輪替配色</option></select></label>
+      <label>圖卡底部署名（粉絲頁名稱）<input id="sBrand" type="text"></label>
+      <label>沒有 hashtag 的文章自動補上<input id="sTags" type="text"></label>
+    </div>
+  </details>
+  <div id="list"></div>
+</main>
+
+<dialog id="dImport"><div class="dlg">
+  <h3>匯入文章</h3>
+  <div style="font-size:13px;color:var(--mute)">把整批系列文章貼進來（可一次貼多個系列）。會自動辨識「# 《系列名》」、「## 第01篇｜標題」、「# 01｜標題」等格式。</div>
+  <textarea id="raw" placeholder="在此貼上文章…"></textarea>
+  <label id="appendWrap" style="font-size:14px;display:flex;align-items:center;gap:6px"><input type="checkbox" id="append" checked>接在現有排程後面（不取代已匯入的文章）</label>
+  <div id="impPrev" class="preview" hidden></div>
+  <div class="btns"><button id="bCancelImp">取消</button><button id="bParse">解析預覽</button><button id="bDoImp" class="pri" disabled>確定匯入</button></div>
+</div></dialog>
+
+<dialog id="dDet"><div class="dlg">
+  <h3 id="detH"></h3>
+  <div class="det">
+    <div>
+      <canvas id="big" width="1080" height="1350"></canvas>
+      <label>圖卡標題</label><input id="eTitle">
+      <label>圖卡命題</label><input id="eProp">
+      <label>圖卡金句</label><input id="eQuote">
+    </div>
+    <div>
+      <label>貼文內容（可直接修改，會自動儲存）</label>
+      <textarea id="eBody"></textarea>
+    </div>
+  </div>
+  <div class="btns"><button id="bDetCopy">複製文字</button><button id="bDetPng">下載圖片</button><button id="bDetClose" class="pri">關閉</button></div>
+</div></dialog>
+
+<div id="toast"></div>
+
+<script>
+const KEY = 'lifeos_fb_scheduler_v1';
+const SERIF = '"Noto Serif TC","Source Han Serif TC","PMingLiU",serif';
+const SANS = '"Noto Sans TC","Microsoft JhengHei",sans-serif';
+const THEMES = [
+  {bg:['#f7f1e6','#e8dcc6'], ink:'#3a2e24', acc:'#a8613a'},
+  {bg:['#10293b','#1d4a5e'], ink:'#f3eee3', acc:'#e6b56a'},
+  {bg:['#1e3a2d','#2f5a43'], ink:'#f1ede2', acc:'#d9c47c'},
+  {bg:['#2a2137','#4a3857'], ink:'#f5eff6', acc:'#e8a9ba'},
+  {bg:['#fbfaf6','#ece9e0'], ink:'#25231f', acc:'#5f7a52'}
+];
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2, '0');
+
+function isoDate(d){ return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()); }
+function tomorrow(){ const d = new Date(); d.setDate(d.getDate()+1); return isoDate(d); }
+const DEF = {start: tomorrow(), times: ['08:00','12:30','20:30'], brand: 'LifeOS 生命更新', tags: '#LifeOS #生命更新 #哲學思考', order: 'seq', theme: 'series'};
+let state = {series: [], posts: [], done: {}, settings: {...DEF}};
+
+function load(){
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY));
+    if (s && s.posts) state = {series: s.series || [], posts: s.posts, done: s.done || {}, settings: {...DEF, ...s.settings}};
+  } catch(e) {}
+}
+function save(){
+  try { localStorage.setItem(KEY, JSON.stringify(state)); }
+  catch(e) { toast('瀏覽器無法儲存，請按「備份」匯出檔案'); }
+}
+function toast(msg){ const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 1800); }
+
+/* ---------- 解析 ---------- */
+function shortName(name){ return name.length > 12 && name.includes('，') ? name.split('，')[0] : name; }
+
+function setTotals(series, posts){
+  posts.forEach(p => {
+    const ps = posts.filter(q => q.s === p.s);
+    p.total = Math.max((series[p.s] || {}).declared || 0, ps.length, ...ps.map(q => q.num));
+  });
+}
+function toNum(s){
+  s = s.replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+  if (/^\d+$/.test(s)) return +s;
+  const D = '一二三四五六七八九';
+  if (!s.includes('十')) return D.indexOf(s) + 1;
+  const [a, b] = s.split('十');
+  return (a ? D.indexOf(a) + 1 : 1) * 10 + (b ? D.indexOf(b) + 1 : 0);
+}
+
+function parse(raw){
+  let t = raw.replace(/\r/g, '');
+  t = t.replace(/\\$/gm, '').replace(/\\#/g, '#').replace(/\\([*_\[\]()>~`-])/g, '$1');
+  // 修正黏在一起的標題與系列說明
+  t = t.replace(/([^\n#])(#{1,3}[ \t]*《)/g, '$1\n$2');
+  t = t.replace(/([^\n#])(#{1,3}[ \t]*(?:第[ \t]*)?(?:[0-9０-９]{1,2}|[一二三四五六七八九十]{1,3})[ \t]*篇?[ \t]*[｜|])/g, '$1\n$2');
+  t = t.replace(/([^\n\s])(以下\s*\d+\s*篇)/g, '$1\n$2');
+
+  const series = [], posts = [];
+  let cur = null, lastNum = 0, pending = null, pendingN = 0, sCur = -1;
+  const finish = () => { if (cur) { posts.push(build(cur)); cur = null; } };
+  const newSeries = (name, declared) => { series.push({name, short: shortName(name), declared: declared || 0}); sCur = series.length - 1; lastNum = 0; };
+
+  for (const line of t.split('\n')) {
+    const s = line.trim();
+    let m;
+    if ((m = s.match(/^#{1,3}\s*《(.+?)》/))) {
+      finish();
+      const dm = s.slice(s.indexOf('》')).match(/(\d+)\s*篇/);
+      if (sCur < 0 || series[sCur].name !== m[1]) newSeries(m[1], dm ? +dm[1] : 0);
+      pending = null; continue;
+    }
+    if ((m = s.match(/^#{1,3}\s*(?:第\s*)?([0-9０-９]{1,2}|[一二三四五六七八九十]{1,3})\s*篇?\s*[｜|]\s*(.+)$/))) {
+      finish();
+      const n = toNum(m[1]);
+      if (sCur < 0 || n <= lastNum) newSeries(pending || ('系列' + (series.length + 1)), pending ? pendingN : 0);
+      pending = null; lastNum = n;
+      cur = {s: sCur, num: n, title: m[2].replace(/\*\*/g, '').trim(), lines: []};
+      continue;
+    }
+    if (/^以下\s*\d+\s*篇/.test(s)) { finish(); const n = s.match(/《(.+?)》/); pending = n ? n[1] : null; pendingN = +s.match(/\d+/)[0]; continue; }
+    if (/^(創作說明|本批|下一批)/.test(s)) { finish(); continue; }
+    if (cur) cur.lines.push(s);
+  }
+  finish();
+  setTotals(series, posts);
+  return {series, posts};
+}
+
+function build(c){
+  const lines = c.lines;
+  let prop = '', quote = '';
+  for (const l of lines) {
+    if (/哲學命題/.test(l)) { prop = l.replace(/\*\*/g, '').replace(/^【?\s*(系列終極)?哲學命題\s*】?\s*[：:｜|]?\s*/, '').replace(/】$/, '').trim(); break; }
+  }
+  const content = lines.filter(l => l && !/^#\S/.test(l));
+  // 沒有「哲學命題」時，用第一句整行粗體當命題
+  let propLine = -1;
+  if (!prop) {
+    propLine = content.findIndex(l => /^\*\*(.+)\*\*$/.test(l));
+    if (propLine >= 0) prop = content[propLine].slice(2, -2);
+  }
+  for (let i = content.length - 1; i > propLine; i--) {
+    const m = content[i].match(/^\*\*(.+)\*\*$/);
+    if (m && !/哲學命題/.test(m[1])) { quote = m[1].replace(/^系列終極命題\s*[｜：:]\s*/, ''); break; }
+  }
+  let end = content.length - 1;
+  while (end > propLine + 1 && /^(最小行動|【?(最小行動|認知翻轉)】?$)/.test(content[end])) end--;
+  if (!quote && end > propLine) {
+    let i = end; quote = content[i].replace(/\*\*/g, '');
+    while (quote.length < 26 && i > 0 && !/哲學命題|^【/.test(content[i-1])) { i--; quote = content[i].replace(/\*\*/g, '') + quote; }
+  }
+  quote = quote.replace(/^[^｜：]{0,6}(金句|命題)\s*[｜：:]\s*/, '');
+  const out = lines.map(l => l.replace(/\*\*/g, '').replace(/^#{1,3}\s+/, '')).filter(l => l);
+  const tagIdx = out.findIndex(l => /^#\S/.test(l));
+  const hasTags = tagIdx >= 0;
+  if (hasTags && tagIdx > 0) out.splice(tagIdx, 0, '');
+  return {id: c.s + '-' + c.num, s: c.s, num: c.num, title: c.title, prop, quote, body: out.join('\n'), hasTags};
+}
+
+/* ---------- 排程 ---------- */
+function ordered(){
+  if (state.settings.order !== 'mix') return state.posts.slice();
+  const groups = state.series.map((_, i) => state.posts.filter(p => p.s === i));
+  const res = [];
+  for (let k = 0; groups.some(g => g.length); k++) {
+    for (const g of groups) if (g.length) res.push(g.shift());
+  }
+  return res;
+}
+function schedule(){
+  const [y, mo, d] = state.settings.start.split('-').map(Number);
+  return ordered().map((p, i) => {
+    const day = Math.floor(i / 3), slot = i % 3;
+    const dt = new Date(y, mo - 1, d + day);
+    return {p, i, day, slot, date: isoDate(dt), dt, time: state.settings.times[slot]};
+  });
+}
+function heading(p){ return '第' + pad(p.num) + '篇｜' + p.title; }
+function composeText(p){
+  let t = heading(p) + '\n' + p.body;
+  if (!p.hasTags && state.settings.tags.trim()) t += '\n\n' + state.settings.tags.trim();
+  return t;
+}
+function fileName(it){ return it.date + '_' + it.time.replace(':', '') + '_' + state.series[it.p.s].short + '_第' + pad(it.p.num) + '篇.png'; }
+
+/* ---------- 圖卡 ---------- */
+const NOSTART = '，。、；：？！」』）》〉,.;:?!)…—';
+function wrap(ctx, text, maxW){
+  const lines = []; let line = '';
+  for (const ch of text) {
+    const test = line + ch;
+    if (ctx.measureText(test).width > maxW && line && !NOSTART.includes(ch)) { lines.push(line); line = ch; }
+    else line = test;
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+function titleLines(ctx, title, maxW){
+  return title.split(/(?<=[，；？！：])/).flatMap(seg => {
+    seg = seg.trim();
+    const lines = wrap(ctx, seg, maxW);
+    if (lines.length < 2) return lines;
+    // 讓換行後每行長度平均，避免最後一行只剩兩三個字
+    const target = ctx.measureText(seg).width / lines.length + ctx.measureText('字').width;
+    const even = wrap(ctx, seg, Math.min(maxW, target));
+    return even.length === lines.length ? even : lines;
+  });
+}
+function themeOf(p){
+  const idx = state.settings.theme === 'rotate' ? state.posts.indexOf(p) : p.s;
+  return THEMES[((idx % THEMES.length) + THEMES.length) % THEMES.length];
+}
+function drawCard(ctx, p){
+  const W = 1080, H = 1350, th = themeOf(p);
+  const g = ctx.createLinearGradient(0, 0, W * .4, H);
+  g.addColorStop(0, th.bg[0]); g.addColorStop(1, th.bg[1]);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.globalAlpha = .08; ctx.fillStyle = th.acc;
+  ctx.beginPath(); ctx.arc(960, 150, 360, 0, Math.PI * 2); ctx.fill();
+  ctx.globalAlpha = .18; ctx.strokeStyle = th.acc; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(110, 1210, 170, 0, Math.PI * 2); ctx.stroke();
+  ctx.globalAlpha = 1;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+
+  const ser = state.series[p.s] || {short: ''};
+  ctx.fillStyle = th.acc; ctx.font = '500 30px ' + SANS;
+  ctx.fillText('《' + ser.short + '》 · 第 ' + pad(p.num) + ' 篇', W / 2, 105);
+
+  // 自動縮放排版
+  const AREA = 930;
+  let L;
+  for (let f = 1; f >= .6; f -= .05) {
+    const T = Math.round(82 * f), P = Math.round(46 * f), Q = Math.round(44 * f);
+    ctx.font = '700 ' + T + 'px ' + SERIF; const tl = titleLines(ctx, p.title, 860);
+    ctx.font = '400 ' + P + 'px ' + SERIF; const pl = p.prop ? wrap(ctx, p.prop, 800) : [];
+    ctx.font = '400 ' + Q + 'px ' + SERIF; const ql = p.quote ? wrap(ctx, p.quote, 800) : [];
+    const th_ = tl.length * T * 1.4, ph = pl.length ? 56 + pl.length * P * 1.7 : 0, qh = ql.length ? 70 + ql.length * Q * 1.75 : 0;
+    L = {T, P, Q, tl, pl, ql, th: th_, ph, qh, total: th_ + 90 + ph + (qh ? 80 + qh : 0)};
+    if (L.total <= AREA) break;
+  }
+  while (L.total > AREA && L.ql.length > 1) { L.ql.pop(); L.ql[L.ql.length-1] = L.ql[L.ql.length-1].replace(/.$/, '…'); L.qh -= L.Q * 1.75; L.total -= L.Q * 1.75; }
+  let y = 200 + Math.max(0, (AREA - L.total) / 2);
+
+  ctx.fillStyle = th.ink; ctx.font = '700 ' + L.T + 'px ' + SERIF;
+  for (const l of L.tl) { ctx.fillText(l, W / 2, y); y += L.T * 1.4; }
+  y += 40; ctx.fillStyle = th.acc; ctx.fillRect(W / 2 - 40, y, 80, 4); y += 50;
+
+  if (L.pl.length) {
+    ctx.font = '500 28px ' + SANS; ctx.fillStyle = th.acc;
+    ctx.fillText('哲 學 命 題', W / 2, y); y += 56;
+    ctx.globalAlpha = .88; ctx.fillStyle = th.ink; ctx.font = '400 ' + L.P + 'px ' + SERIF;
+    for (const l of L.pl) { ctx.fillText(l, W / 2, y); y += L.P * 1.7; }
+    ctx.globalAlpha = 1;
+  }
+  if (L.ql.length) {
+    y += 80;
+    ctx.fillStyle = th.acc; ctx.globalAlpha = .55; ctx.font = '700 90px ' + SERIF;
+    ctx.fillText('“', W / 2, y - 30); ctx.globalAlpha = 1; y += 70;
+    ctx.fillStyle = th.ink; ctx.font = '400 ' + L.Q + 'px ' + SERIF;
+    for (const l of L.ql) { ctx.fillText(l, W / 2, y); y += L.Q * 1.75; }
+  }
+
+  ctx.globalAlpha = .25; ctx.fillStyle = th.ink; ctx.fillRect(80, 1240, W - 160, 1.5); ctx.globalAlpha = .75;
+  ctx.font = '400 26px ' + SANS; ctx.textAlign = 'left'; ctx.fillStyle = th.ink;
+  ctx.fillText(state.settings.brand, 80, 1262);
+  ctx.textAlign = 'right'; ctx.fillText(pad(p.num) + ' / ' + pad(p.total), W - 80, 1262);
+  ctx.globalAlpha = 1;
+}
+const fontCache = new Set();
+async function ensureFonts(p){
+  const text = p.title + p.prop + p.quote + (state.series[p.s] || {}).short + state.settings.brand + '《》·第篇哲學命題“0123456789/';
+  const key = text;
+  if (fontCache.has(key)) return;
+  try {
+    await Promise.race([
+      Promise.all([
+        document.fonts.load('700 82px "Noto Serif TC"', text),
+        document.fonts.load('400 46px "Noto Serif TC"', text),
+        document.fonts.load('500 30px "Noto Sans TC"', text),
+        document.fonts.load('400 26px "Noto Sans TC"', text)
+      ]),
+      new Promise(r => setTimeout(r, 4000))
+    ]);
+  } catch(e) {}
+  fontCache.add(key);
+}
+async function renderTo(canvas, p, scale){
+  await ensureFonts(p);
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(scale, 0, 0, scale, 0, 0);
+  drawCard(ctx, p);
+}
+async function downloadPng(it){
+  const c = document.createElement('canvas'); c.width = 1080; c.height = 1350;
+  await renderTo(c, it.p, 1);
+  await new Promise(res => c.toBlob(b => {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = fileName(it);
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 3000); res();
+  }, 'image/png'));
+}
+async function copyText(t){
+  try { await navigator.clipboard.writeText(t); }
+  catch(e) { const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+  toast('已複製貼文文字');
+}
+
+/* ---------- 列表 ---------- */
+const WD = '日一二三四五六';
+let SCHED = [];
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { io.unobserve(e.target); const it = SCHED[+e.target.dataset.i]; renderTo(e.target, it.p, .25); }
+}), {rootMargin: '300px'});
+function esc(s){ return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]); }
+function hl(s, q){ const e = esc(s); if (!q) return e; return e.split(esc(q)).join('<mark>' + esc(q) + '</mark>'); }
+
+function render(){
+  SCHED = schedule();
+  const list = $('list'), q = $('q').value.trim();
+  if (!state.posts.length) {
+    list.innerHTML = '<div class="empty">還沒有文章。按右上角「匯入文章」，把系列文章整批貼進來即可。</div>';
+    $('stats').textContent = ''; return;
+  }
+  const today = isoDate(new Date());
+  const doneN = state.posts.filter(p => state.done[p.id]).length;
+  const days = Math.ceil(SCHED.length / 3);
+  $('stats').textContent = '共 ' + state.series.length + ' 個系列、' + state.posts.length + ' 篇 · 每日 3 篇共 ' + days + ' 天（' +
+    SCHED[0].date.replace(/-/g, '/') + ' ～ ' + SCHED[SCHED.length-1].date.replace(/-/g, '/') + '） · 已排程 ' + doneN + ' 篇';
+  let html = '';
+  for (let d = 0; d < days; d++) {
+    const items = SCHED.slice(d * 3, d * 3 + 3).filter(it => !q || (state.series[it.p.s].name + heading(it.p) + it.p.body).includes(q));
+    if (!items.length) continue;
+    const dt = SCHED[d * 3].dt, date = SCHED[d * 3].date;
+    html += '<section class="day' + (date === today ? ' today' : '') + '" id="day-' + date + '"><h2>第 ' + (d + 1) + ' 天　' +
+      (dt.getMonth() + 1) + '/' + dt.getDate() + '（' + WD[dt.getDay()] + '）<span class="sub">' + date + '</span>' +
+      '<button data-dayall="' + d + '">下載本日 3 張圖</button></h2><div class="row">';
+    for (const it of items) {
+      const p = it.p, done = !!state.done[p.id];
+      html += '<div class="post' + (done ? ' done' : '') + '"><canvas width="270" height="338" data-i="' + it.i + '" data-open="' + it.i + '"></canvas>' +
+        '<div class="info"><div class="meta"><b>' + it.time + '</b>　' + esc(state.series[p.s].short) + ' · ' + pad(p.num) + '/' + pad(p.total) + '</div>' +
+        '<div class="ttl" data-open="' + it.i + '">' + hl(p.title, q) + '</div>' +
+        '<div class="act"><button data-copy="' + it.i + '">複製文字</button><button data-png="' + it.i + '">下載圖片</button>' +
+        '<label><input type="checkbox" data-done="' + p.id + '"' + (done ? ' checked' : '') + '>已排程</label></div></div></div>';
+    }
+    html += '</div></section>';
+  }
+  list.innerHTML = html || '<div class="empty">找不到符合「' + esc(q) + '」的文章</div>';
+  list.querySelectorAll('canvas[data-i]').forEach(c => io.observe(c));
+}
+
+$('list').addEventListener('click', async e => {
+  const t = e.target, ds = t.dataset;
+  if (ds.copy) copyText(composeText(SCHED[+ds.copy].p));
+  else if (ds.png) { await downloadPng(SCHED[+ds.png]); toast('已下載圖片'); }
+  else if (ds.open) openDetail(SCHED[+ds.open]);
+  else if (ds.dayall) {
+    for (const it of SCHED.slice(+ds.dayall * 3, +ds.dayall * 3 + 3)) { await downloadPng(it); await new Promise(r => setTimeout(r, 400)); }
+    toast('已下載本日圖片');
+  }
+});
+$('list').addEventListener('change', e => {
+  const id = e.target.dataset.done; if (!id) return;
+  if (e.target.checked) state.done[id] = true; else delete state.done[id];
+  save(); e.target.closest('.post').classList.toggle('done', e.target.checked);
+  render();
+});
+
+/* ---------- 詳細 ---------- */
+let detIt = null, detTimer = null;
+function openDetail(it){
+  detIt = it; const p = it.p;
+  $('detH').textContent = it.date + ' ' + it.time + '　《' + state.series[p.s].short + '》第' + pad(p.num) + '篇';
+  $('eTitle').value = p.title; $('eProp').value = p.prop; $('eQuote').value = p.quote; $('eBody').value = composeText(p);
+  renderTo($('big'), p, 1);
+  $('dDet').showModal();
+}
+function detChanged(){
+  const p = detIt.p;
+  p.title = $('eTitle').value; p.prop = $('eProp').value; p.quote = $('eQuote').value;
+  clearTimeout(detTimer);
+  detTimer = setTimeout(() => { renderTo($('big'), p, 1); save(); }, 250);
+}
+['eTitle','eProp','eQuote'].forEach(id => $(id).addEventListener('input', detChanged));
+$('eBody').addEventListener('input', () => {
+  const p = detIt.p, lines = $('eBody').value.split('\n');
+  if (lines[0] === heading(p)) lines.shift();
+  p.body = lines.join('\n'); p.hasTags = /(^|\n)#\S/.test(p.body);
+  clearTimeout(detTimer); detTimer = setTimeout(save, 400);
+});
+$('bDetCopy').onclick = () => copyText($('eBody').value);
+$('bDetPng').onclick = async () => { await downloadPng(detIt); toast('已下載圖片'); };
+$('bDetClose').onclick = () => $('dDet').close();
+$('dDet').addEventListener('close', render);
+
+/* ---------- 匯入 / 匯出 ---------- */
+let parsed = null;
+$('bImport').onclick = () => {
+  $('impPrev').hidden = true; $('bDoImp').disabled = true;
+  $('appendWrap').style.display = state.posts.length ? 'flex' : 'none';
+  $('dImport').showModal();
+};
+$('append').onchange = () => { if (!$('impPrev').hidden) $('bParse').click(); };
+$('bCancelImp').onclick = () => $('dImport').close();
+$('bParse').onclick = () => {
+  parsed = parse($('raw').value);
+  const pv = $('impPrev'); pv.hidden = false;
+  if (!parsed.posts.length) { pv.textContent = '沒有辨識到任何文章，請確認標題格式（例如「## 第01篇｜標題」）。'; $('bDoImp').disabled = true; return; }
+  const app = state.posts.length && $('append').checked;
+  const dup = app ? parsed.posts.filter(p => {
+    const i = state.series.findIndex(x => x.name === parsed.series[p.s].name);
+    return i >= 0 && state.posts.some(x => x.s === i && x.num === p.num);
+  }).length : 0;
+  const total = (app ? state.posts.length : 0) + parsed.posts.length - dup;
+  pv.textContent = '辨識到 ' + parsed.series.length + ' 個系列、' + parsed.posts.length + ' 篇：\n' +
+    parsed.series.map((s, i) => {
+      const ps = parsed.posts.filter(p => p.s === i);
+      return '・《' + s.name + '》' + ps.length + ' 篇（' + pad(ps[0].num) + '～' + pad(ps[ps.length-1].num) + '）' +
+        (s.declared > ps.length ? '，全系列 ' + s.declared + ' 篇，其餘可之後再貼入補上' : '');
+    }).join('\n') + (dup ? '\n※ 其中 ' + dup + ' 篇與現有篇號相同，會以新版取代。' : '') +
+    (!state.posts.length ? '' : app ? '\n\n※ 會接在現有 ' + state.posts.length + ' 篇後面，' : '\n\n※ 會取代目前的 ' + state.posts.length + ' 篇文章，') +
+    '匯入後共 ' + total + ' 篇、每日 3 篇共 ' + Math.ceil(total / 3) + ' 天。';
+  $('bDoImp').disabled = false;
+};
+$('bDoImp').onclick = () => {
+  if (!parsed) return;
+  if (state.posts.length && $('append').checked) {
+    // 同名系列併入原系列（例如之後補貼第七～二十四篇），同篇號則以新版取代
+    const map = parsed.series.map(s => {
+      let i = state.series.findIndex(x => x.name === s.name);
+      if (i < 0) { state.series.push(s); i = state.series.length - 1; }
+      return i;
+    });
+    for (const p of parsed.posts) {
+      p.s = map[p.s]; p.id = p.s + '-' + p.num;
+      const old = state.posts.findIndex(x => x.id === p.id);
+      if (old >= 0) state.posts[old] = p; else state.posts.push(p);
+    }
+    state.posts.sort((a, b) => a.s - b.s || a.num - b.num);
+  } else { state.series = parsed.series; state.posts = parsed.posts; }
+  setTotals(state.series, state.posts);
+  save(); $('dImport').close(); $('raw').value = ''; render(); toast('已匯入 ' + parsed.posts.length + ' 篇');
+};
+function dl(name, data, type){
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data], {type})); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+$('bCsv').onclick = () => {
+  if (!state.posts.length) return toast('還沒有文章');
+  const q = v => '"' + String(v).replace(/"/g, '""') + '"';
+  const rows = [['日期','時間','系列','篇號','標題','圖片檔名','貼文內容','已排程']];
+  for (const it of schedule()) rows.push([it.date, it.time, state.series[it.p.s].name, it.p.num, it.p.title, fileName(it), composeText(it.p), state.done[it.p.id] ? '是' : '']);
+  dl('臉書排程表.csv', '﻿' + rows.map(r => r.map(q).join(',')).join('\r\n'), 'text/csv');
+};
+$('bBackup').onclick = () => dl('臉書排程備份_' + isoDate(new Date()) + '.json', JSON.stringify(state), 'application/json');
+$('bRestore').onclick = () => $('fRestore').click();
+$('fRestore').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try { const s = JSON.parse(await f.text()); if (!s.posts) throw 0; state = {series: s.series, posts: s.posts, done: s.done || {}, settings: {...DEF, ...s.settings}}; save(); syncSettings(); render(); toast('已還原'); }
+  catch(err) { toast('檔案格式不正確'); }
+  e.target.value = '';
+};
+
+/* ---------- 設定 ---------- */
+function syncSettings(){
+  const s = state.settings;
+  $('sStart').value = s.start; $('t0').value = s.times[0]; $('t1').value = s.times[1]; $('t2').value = s.times[2];
+  $('sOrder').value = s.order; $('sTheme').value = s.theme; $('sBrand').value = s.brand; $('sTags').value = s.tags;
+}
+function readSettings(){
+  const s = state.settings;
+  s.start = $('sStart').value || s.start; s.times = [$('t0').value || '08:00', $('t1').value || '12:30', $('t2').value || '20:30'];
+  s.order = $('sOrder').value; s.theme = $('sTheme').value; s.brand = $('sBrand').value; s.tags = $('sTags').value;
+  save(); render();
+}
+['sStart','t0','t1','t2','sOrder','sTheme','sBrand','sTags'].forEach(id => $(id).addEventListener('change', readSettings));
+$('q').addEventListener('input', render);
+$('bToday').onclick = () => {
+  const today = isoDate(new Date());
+  const el = $('day-' + today) || [...document.querySelectorAll('.day')].find(d => d.id.slice(4) >= today);
+  if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'}); else toast('排程中沒有今天之後的日期');
+};
+
+load(); syncSettings(); render();
+</script>
+</body>
+</html>

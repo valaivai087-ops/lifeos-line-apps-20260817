@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>七把魔法鑰匙</title>
+<style>
+:root{--bg:#fff8ec;--card:#fff;--ink:#3a3128;--mute:#8a7d6e;--line:#f0e2c8;--acc:#e8833a;--accs:#fdebd6;--g:#3f9a5b;--gs:#e5f4e8;--y:#c98a12;--ys:#fbf0d5;--r:#d0553f;--rs:#fbe3dd;--hl:#ffe27a}
+@media (prefers-color-scheme:dark){:root{--bg:#1d1a16;--card:#27231e;--ink:#f1e9dc;--mute:#b3a693;--line:#3d362d;--acc:#f3a364;--accs:#3a2c1e;--g:#7fcf96;--gs:#1f3326;--y:#ecc062;--ys:#382e19;--r:#f08a76;--rs:#3d231e;--hl:#8a6d10}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.8 "Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif}
+header{position:sticky;top:0;z-index:9;background:var(--bg);border-bottom:2px dashed var(--line);padding:10px 16px 6px}
+.wrap{max-width:1000px;margin:0 auto}
+h1{font-size:21px;margin:0 0 8px}
+h1 small{font-weight:400;color:var(--mute);font-size:14px;margin-left:6px}
+.sbar{display:flex;gap:8px}
+#q{flex:1;min-width:0;padding:10px 14px;border:2px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);font-size:16px}
+#clr{border:2px solid var(--line);background:var(--card);color:var(--mute);border-radius:14px;padding:0 14px;cursor:pointer;font-size:15px}
+nav{display:flex;gap:6px;overflow-x:auto;margin-top:8px;padding-bottom:4px}
+nav button{flex:none;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 14px;font-size:15px;cursor:pointer}
+nav button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+nav button .n{font-size:12px;margin-left:4px}
+main{max-width:1000px;margin:0 auto;padding:16px}
+.pane{display:none}.pane.on{display:block}
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:16px 18px;margin-bottom:16px}
+h2{font-size:20px;margin:0 0 8px}
+h3{font-size:17px;margin:14px 0 6px;color:var(--acc)}
+.mute{color:var(--mute);font-size:15px}
+.hero{background:var(--accs);border-color:transparent;text-align:center}
+.hero h2{font-size:24px}
+.big{font-size:44px;line-height:1.2}
+.warm{background:var(--ys);border-radius:14px;padding:8px 14px;margin:10px 0 0;font-weight:600}
+.warm::before{content:"🍵 "}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.chip{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:3px 12px;font-size:15px;cursor:pointer;text-decoration:none}
+.tag{display:inline-block;font-size:14px;border-radius:8px;padding:0 8px;background:var(--accs);color:var(--acc);font-weight:700;margin-right:4px;white-space:nowrap}
+.flow{display:flex;flex-wrap:wrap;gap:5px;align-items:center;font-size:15px}
+.flow span{background:var(--gs);border-radius:10px;padding:2px 10px}
+.flow i{color:var(--mute);font-style:normal}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.box{border:2px solid var(--line);border-radius:16px;padding:10px 14px}
+.box b.t{display:block;color:var(--mute);font-size:14px}
+.key{border:2px solid var(--line);border-radius:18px;padding:12px 14px;cursor:pointer;background:var(--card)}
+.key:hover{border-color:var(--acc)}
+.key .e{font-size:32px}
+.story{border-bottom:2px dashed var(--line);padding:10px 0}
+.story:last-child{border-bottom:0}
+.story .no{display:inline-block;min-width:34px;font-weight:700;color:var(--acc)}
+.row{display:flex;gap:8px;margin-top:2px}
+.row b{flex:none;font-size:14px;border-radius:8px;padding:0 7px;height:fit-content;margin-top:3px}
+.th{background:var(--ys);color:var(--y)}.do{background:var(--gs);color:var(--g)}
+.old{color:var(--r)}.new{color:var(--g)}
+.pair{padding:8px 0;border-bottom:1px dashed var(--line)}
+.pair:last-child{border-bottom:0}
+.abc{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:8px}
+.A,.B,.C{border-radius:16px;padding:10px 14px}
+.A{background:var(--gs)}.B{background:var(--ys)}.C{background:var(--rs)}
+.A>b{color:var(--g)}.B>b{color:var(--y)}.C>b{color:var(--r)}
+.safe{background:var(--rs);border-radius:16px;padding:10px 14px}
+ol,ul{margin:4px 0;padding-left:24px}
+.dl{display:grid;grid-template-columns:6.5em 1fr;gap:4px 12px}
+.dl dt{color:var(--mute);font-size:15px}.dl dd{margin:0}
+label{display:block;font-size:15px;color:var(--mute);margin:10px 0 3px}
+input[type=date],select,textarea{width:100%;padding:8px 10px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;font-size:16px}
+textarea{min-height:50px;resize:vertical}
+.btn{border:0;background:var(--acc);color:#fff;border-radius:14px;padding:8px 18px;font-size:16px;cursor:pointer;margin:12px 6px 0 0}
+.btn.g{background:var(--card);color:var(--ink);border:2px solid var(--line)}
+.f2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0 14px}
+.moods{display:flex;gap:6px;flex-wrap:wrap}
+.moods button{font-size:26px;border:2px solid var(--line);background:var(--card);border-radius:14px;padding:2px 8px;cursor:pointer}
+.moods button.on{border-color:var(--acc);background:var(--accs)}
+.log{border-top:2px dashed var(--line);padding:10px 0}
+.empty{color:var(--mute);text-align:center;padding:30px 0}
+.hidden{display:none!important}
+mark{background:var(--hl);color:inherit;border-radius:3px}
+.stars{display:flex;gap:4px;flex-wrap:wrap}
+.stars button{font-size:15px;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:3px 9px;cursor:pointer}
+.stars button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.score{font-size:30px;font-weight:700;color:var(--acc)}
+@media (max-width:600px){.dl{grid-template-columns:1fr}.dl dt{margin-top:6px}h1 small{display:block;margin:0}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>🗝️ 七把魔法鑰匙<small>遇到困難時，帶著這七把鑰匙慢慢打開</small></h1>
+<div class="sbar"><input id="q" type="search" placeholder="🔍 找找看：手機、吵架、拒絕、考試、休息…"><button id="clr">清除</button></div>
+<nav id="nav"></nav>
+</div></header>
+<main id="main"></main>
+
+<script>
+/* ========== 100個小故事 ========== */
+const LAYERS=[
+{e:"💬",t:"換一句話說，事情就不一樣",who:"維根斯坦（一位研究「語言」的哲學家）",core:"同一件事，用不同的話來說，我們就會想到不同的辦法。",w:"你對自己說的話，會變成你看見的路。",c:`考試考不好|說「我好笨」，會讓你以為自己永遠學不會。|問自己：「我是單字、文法，還是閱讀錯最多？」
+孩子一直玩手機|說他「不乖」只是在罵人，還沒找到原因。|看看他都在什麼時間、什麼心情下拿起手機。
+爸爸媽媽常常吵架|「你都不關心我」會讓對方想反駁。|改說：「我希望我們每個星期好好聊一次天。」
+朋友沒有回訊息|沒回訊息，不一定是不喜歡你。|分清楚：哪些是真的發生的事？哪些是我猜的？
+覺得壓力好大|「壓力大」太模糊，不知道從哪裡改。|拆開來看：是事情太多？時間不夠？還是和人相處有困難？
+覺得自己很失敗|一次沒做好，不代表你這個人不好。|寫下這次可以改進的三個地方。
+覺得做什麼都沒意思|沒有方向、沒有成就、沒有朋友，是不一樣的問題。|先想想：我最缺的是哪一個？
+大人說孩子不孝順|「孝順」可以是陪伴、聽話、照顧，每個人想的不一樣。|說清楚：你真正希望對方做什麼？
+覺得沒有人愛我|每個人感受到「愛」的方式不一樣。|說出三件讓你覺得「被關心」的事。
+覺得生活亂七八糟|很亂，常常是好多不同的問題混在一起。|把問題分成四堆：時間、錢、身體、人際關係。`},
+{e:"🏠",t:"想了解一個人，先看看他過著什麼生活",who:"海德格（一位研究「人怎麼活著」的哲學家）",core:"每個人都住在自己的生活裡，有家人、有責任、有忙不完的事。",w:"看懂一個人的處境，就比較不會誤會他。",c:`同學上課睡覺|上課睡覺，不一定是懶惰。|先關心：他睡得夠嗎？上學很遠嗎？身體好嗎？家裡還好嗎？
+孩子不想回家|不想去一個地方，有時是不喜歡在那裡發生的事。|溫柔地問：「回家以後，什麼事讓你最不舒服？」
+家人不想說話|不說話，可能是習慣、害怕、太累，或不知道怎麼說。|找一個大家都放鬆的時候再問，不要直接責怪。
+爺爺奶奶一直抱怨|抱怨的背後，可能是覺得自己不能做主了。|讓他們自己決定一些小事，例如今天吃什麼。
+生病的人害怕治療|害怕的可能是痛、家人、錢，還有未來。|問問他：「你最擔心的是哪一件事？」
+老師好像不開心了|很累，不代表不愛教書。|看看老師是不是事情太多、太少休息。
+大哥哥大姊姊不想結婚|每個人的選擇，都和生活條件、想法有關係。|先聽聽他想過怎樣的生活。
+好朋友慢慢變遠了|長大了，大家的生活會改變。|問問彼此：現在需要什麼？有多少時間可以一起？
+大人想換工作|人會想：剩下的時間，要花在什麼地方？|寫下想留下的三件事，和想放下的三件事。
+總是想讓別人開心的人|一直討好別人，可能是他以前學會的保護自己方法。|從一件小小的事，練習說出「我有不一樣的想法」。`},
+{e:"🔮",t:"我們的腦袋很會「猜」，但有時候猜錯",who:"預測處理模型（科學家研究大腦怎麼猜下一步）",core:"大腦會用以前的經驗猜接下來會怎樣。猜錯的時候，正好可以學到新東西。",w:"長大不是每次都猜對，而是猜錯時願意改一改。",c:`看到英文長文章就害怕|還沒讀就覺得「我一定看不懂」，會讓人不想試。|先讀第一段，看看自己其實懂多少。
+孩子覺得爸媽一定會罵他|以前被罵過，現在就會先躲起來。|試一次：先不罵，聽孩子把話說完。
+朋友遲到就覺得被看不起|腦袋常把不知道的原因，想成壞事。|先問問看：「你剛剛怎麼了？」
+賠過錢就再也不敢存錢投資|一次不好的經驗，會讓人覺得壞事一定再發生。|找可信任的大人一起重新想想，不要只靠害怕做決定。
+被排擠過就害怕交朋友|受過傷，就會特別怕被拒絕。|從輕鬆、安全的小互動開始，慢慢累積新經驗。
+覺得自己英文永遠學不好|以前的成績，不能決定新方法有沒有用。|連續兩個星期，試一種新的學習方法。
+大人一皺眉就好緊張|皺眉只是一個表情，不等於他在生你的氣。|直接問：「這件事需要我怎麼做？」
+身體不舒服就以為生大病|不舒服是真的，但亂猜原因會更害怕。|把不舒服記下來，告訴大人，需要時去看醫生。
+覺得某個人永遠不會改|以前的樣子可以參考，但要看他之後真的怎麼做。|約好一個看得到的小改變，和一個檢查的日子。
+第一次做生意失敗就放棄|一個方法不行，不代表所有方法都不行。|去問問客人：到底哪裡不喜歡？`},
+{e:"🕸️",t:"很多小事連在一起，變成大事",who:"複雜系統（研究很多東西互相影響的學問）",core:"一件事的結果，常常是好幾個原因一起造成的，不只一個。",w:"真正厲害的人，會去改變讓問題一直出現的地方。",c:`英文一直沒有進步|單字、讀的速度、理解、考試方法，都會互相影響。|先找出：哪一個地方讓我錯最多？
+家裡天天為小事吵架|太累、家事分配、錢、說話方式，會互相放大。|先改善一件最常吵的事。
+每天拖拖拉拉寫功課|太難、太多誘惑、時間、心情，都會讓人拖延。|把功課切成十分鐘就能做完的小塊。
+商店生意越來越差|東西、價格、服務、有沒有人知道，都會一起影響。|一步一步看客人從看到、喜歡到買下來的過程。
+想變健康卻一直失敗|吃的、動的、睡的、環境，都會影響身體。|先記錄兩個星期的生活習慣。
+班上越來越吵|同學會看老師和其他同學怎麼做。|訂好清楚、每天都一樣的上課規則。
+照顧生病的家人好累|照顧的工作不應該只落在一個人身上。|大家排班，找幫手，準備好緊急聯絡方法。
+團購賣不好|內容、互動、服務、回頭客，彼此有關係。|看看有多少新朋友、多少人再回來買。
+學校有電腦卻沒幫助|有工具，不等於知道怎麼用。|把工具放進「找問題、練習、回饋、再測一次」的流程裡。
+好多問題一起出現|時間、錢、身體、人際關係會互相拉扯。|先改善一個「改好了，其他也會變輕鬆」的問題。`},
+{e:"🌀",t:"為什麼我總是回到老樣子？",who:"吸引子理論（研究東西為什麼會一直回到同一個狀態）",core:"就像球會滾回碗底，習慣也會一直把我們拉回老樣子。",note:"這只是拿來比喻，不是說人的習慣真的是數學公式喔。",w:"改變不只是離開老習慣一次，而是布置好不容易被拉回去的環境。",c:`每次吵架都變成不說話|兩個人一直重複同樣的吵法。|先約好：生氣時暫停，冷靜後再談。
+壓力大就一直吃東西|熟悉的方法，最容易一用再用。|先準備另一個讓自己放鬆的方法，例如散步。
+想讀書就一直滑手機|手機在旁邊，就很容易分心。|讀書前，把手機放到另一個房間。
+零用錢一拿到就花光|習慣會比決心更厲害。|拿到錢先存一點，剩下的再用。
+被批評就覺得自己很糟|會把「做錯一件事」想成「我整個人都不好」。|只寫下可以改進的那一個行為。
+交朋友總是付出太多|熟悉的角色會一直重演。|答應之前，先問自己：我有時間嗎？我想要嗎？
+每次考試前才熬夜|拖到最後一刻，會變成固定的循環。|每個星期給自己一次小考。
+想做的事情太多太多|一直增加，力氣會被分散。|先專心做好一件最重要的事。
+累了就一直喝提神飲料|暫時有精神，卻遮住了「睡不夠」。|先檢查：我睡得夠不夠？
+被拒絕一次就不敢再試|躲開不舒服，也躲開了好機會。|試一個「失敗也沒關係」的小嘗試。`},
+{e:"🔁",t:"做了之後，要看看結果，再修正",who:"控制論（研究「看結果→再調整」的學問）",core:"目標、行動、看結果、修正，要像腳踏車輪子一樣一直轉。",w:"只努力不看結果，容易原地打轉；看了結果再調整，才會越來越好。",c:`每天背英文卻沒進步|花時間，不等於真的學會。|每個星期考考自己，看記住了多少。
+每天運動體力卻沒變好|運動也要觀察累不累、有沒有休息夠。|記錄運動量、累的程度和身體變化。
+功課常常忘記交|只有罵，不會變成好習慣。|建立「提醒→交出→檢查→補交」的小步驟。
+家人說了很多次還是沒改|答應不等於做到。|約好看得到的行動，再約一天一起檢查。
+廣告很多卻沒人買|被看到，不等於被信任。|記錄：有多少人點、多少人問、多少人買、多少人再回來。
+每天讀書兩小時還是考不好|努力要和成果連起來看。|看看讀了一小時以後，答對率有沒有變高。
+想睡好卻一直睡不好|不能只靠吃東西，要找到原因。|記錄幾點睡、半夜有沒有醒、白天有沒有精神。
+想讓班上更團結|班級氣氛要常常觀察、慢慢調整。|每個星期聽聽同學的想法。
+想做一門好課程|內容很多，不等於學生學會了。|看看學生有沒有上完、有沒有做到、會不會用。
+想和孩子更親近|不只看自己說了什麼，也要看對方怎麼感受。|每個星期問一次：「哪一次相處讓你最開心？」`},
+{e:"🗂️",t:"重要的細節要留下來",who:"資訊理論（研究怎麼整理消息的學問）",core:"整理資料時，要把沒用的拿掉，但重要的差別一定要留下來。",w:"聰明不是把事情說得越簡單越好，而是剛好清楚到能做出好決定。",c:`老師只說「程度很差」|一句話看不出到底哪裡需要幫忙。|分開記錄：單字、文法、閱讀、寫作。
+跟醫生只說「不舒服」|醫生需要知道哪裡、多痛、什麼時候開始。|把不舒服的情形寫清楚，帶去給醫生看。
+只說「我們合不來」|習慣不同、想法不同、安全問題，是不一樣的事。|把吵架的種類和真的發生的事分開寫。
+只看會賺多少錢|賺得多，也可能虧得多。|也要看風險、費用和最壞的情況。
+只介紹東西多好用|大家也需要知道什麼時候不適合用。|寫清楚注意事項和不適合的人。
+孩子只說「好煩」|煩可能是委屈、太累、擔心或失望。|請孩子選出最接近的心情。
+把一整本書壓成一頁|太簡單，會把重要的東西弄丟。|每個主題留下：重點、例子、常見錯誤。
+電腦的回答看起來很完整|說得很順，不代表一定正確。|重要的數字和來源，要自己再查一次。
+看到一則新聞就以為大家都這樣|一件事不等於全部。|多看幾個時間、幾個不同的消息來源。
+朋友說某個東西超有效|朋友的經驗值得聽，但不一定適合每個人。|查查看有沒有可靠的研究，安不安全。`},
+{e:"🔢",t:"神奇數字不會決定你的人生",who:"精細結構常數 1/137（物理學家用的一個數字）",core:"1/137 是科學家用來描述「電和磁的力量有多強」的數字。它不能用來量愛情、運氣或交朋友。",note:"這一層是在練習：聽到很厲害的名詞時，先問「它真的能證明這件事嗎？」",w:"真正尊重科學，是知道一個知識能說明什麼、不能說明什麼。",c:`有人說兩個人「靈魂頻率」一樣|覺得很合得來是真的，但那不是可以量的物理頻率。|用「我們想法像不像、互相信任嗎」來描述友誼。
+有人說「想著錢就會有錢」|想像不能代替真正的管錢方法。|看清楚：收入多少、花了多少、存了多少。
+有人說某個數字可以治病|數字有數學意思，不代表能治病。|問：有沒有可以重複驗證的人體研究？
+有人說愛可以用能量來量|愛可以從行動看出來，不是一種物理能量。|觀察：有沒有支持、尊重、信任和合作。
+有人說宇宙數字決定命運|科學上的數字，不能直接算出你的命運。|分清楚：這是科學，還是比喻？
+有人用「量子」兩個字賣東西|用很難的名詞，不代表東西有效。|請他說清楚：怎麼有效？有沒有證據？
+有人說好朋友都有固定比例|人和人之間，沒有一個固定公式。|看看你們真正的相處情形。
+有人說某個神聖數字代表開悟|數字可以有文化意義，但不會自己產生魔法。|把它當成提醒自己的小卡片，不是科學證明。
+有人說「能量越高越好運」|沒說清楚的「能量」，沒辦法檢查。|改看：睡得好嗎？有力氣嗎？心情好嗎？有沒有行動？
+有人說科學證明了靈魂和宇宙相連|想法和實驗是不一樣的。|問：他們量了什麼？怎麼驗證？別人做也一樣嗎？`},
+{e:"🌈",t:"未來有很多可能，先別太早關上門",who:"波函數（物理學家描述微小粒子的數學工具）",core:"這裡只是借用它來比喻：還沒發生的事，有很多種可能。",note:"這不是說「心裡想什麼就會成真」喔，而是提醒我們多看看不同的路。",w:"未來有很多扇門，不是因為想像就能打開，而是因為我們願意一扇一扇去試。",c:`不知道以後要讀什麼|還沒決定，不等於沒有方向。|去了解三個有興趣的科系在學什麼。
+不知道自己適合什麼工作|喜歡什麼、擅長什麼，要試了才知道。|找機會體驗看看，或問問做這行的大人。
+大人的感情走到十字路口|可能和好，也可能分開。|先確認大家安全，再好好看實際情況。
+做新東西不知道會不會成功|想像成功不能代替真的試試看。|先做一小批，看看有沒有人需要。
+生病的人不知道治療結果|不知道，不代表沒有資訊可以參考。|和醫生好好討論好處、風險和其他選擇。
+不知道股票會漲還是跌|不確定，不代表每種結果機會都一樣。|為好的、壞的情況都先想好計畫。
+老師不知道新教法有沒有用|好想法也需要試試看。|先在一個單元小小試一下。
+覺得成功只有一條路|人生通常不只一條路。|寫下三條不同的路，和各自要付出什麼。
+朋友對未來很迷惘|不知道答案時，也可以先走一小步。|選一個便宜、簡單、可以回頭的探索計畫。
+想改變又怕做錯|不是每個決定都要一次決定一輩子。|先選一個可以試、可以停、可以改的方法。`},
+{e:"🪙",t:"丟銅板，看見自己真正的心",who:"擲銅板（一個簡單的小遊戲）",core:"銅板不能被心念控制，也不能決定你的命運。",note:"最有用的，不是銅板掉在哪一面，而是你看到結果時的感覺。",w:"銅板不會決定你的人生，它只是幫你聽見心裡還沒說出口的話。",c:`不知道晚餐吃什麼|看到結果那一刻的感覺，會告訴你真正想吃什麼。|看看自己是不是偷偷希望是另一面。
+不知道要不要換工作|隨機的結果，可以讓你發現自己在擔心什麼。|寫下兩種結果你期待什麼、害怕什麼。
+不知道要不要去聚會|猶豫，可能是想休息，也可能怕別人失望。|問自己：我現在需要朋友，還是需要休息？
+不知道要不要報名課程|重要的不是丟到哪一面，而是課程適不適合你。|列出：學到什麼、花多少錢、要多少時間。
+不知道要不要傳訊息給朋友|可以幫你發現自己希望對方怎麼回。|先想清楚：我傳訊息是想做什麼？
+不知道要不要買很貴的東西|需要銅板幫忙決定，可能代表你還沒想清楚。|等24小時，再想一次。
+不知道要不要原諒別人|原諒、相信、和好，是三件不一樣的事。|分開想：我的感受、我的安全、我的界線。
+不知道要不要開始新計畫|猶豫可能是不確定、不夠用，或怕失敗。|把計畫變小，小到一天就能試完。
+不知道兩個方法哪個好|銅板可以幫你開始想，但不能代替你負責。|比一比：花費、風險、能不能回頭、長久好不好。
+不知道自己想過什麼樣的人生|銅板不會告訴你命運，卻能讓你注意到自己的反應。|寫下你最在乎的三件事，安排一個小行動。`}
+];
+const ABILITY10=[["換句話說","把說不清楚的難過，變成可以討論的問題。"],["看見處境","看見一個人行為背後的生活。"],["更新猜測","發現以前的經驗，不一定適合現在。"],["看見連結","發現很多事情是一起造成的。"],["認出習慣","找到一直重複出現的樣子。"],["看看結果","做完事情要看結果，再修正。"],["抓住重點","留下真正重要的細節。"],["分清真假","分清楚比喻、猜測和真正的知識。"],["多想幾條路","不知道答案時，多準備幾個方法。"],["自己做決定","工具可以幫忙想，但決定要自己負責。"]];
+
+/* ========== 七把鑰匙 ========== */
+const NODES=[
+{id:"S01",n:"表徵",k:"看清楚",e:"👀",one:"分清楚「真的發生的事」和「我心裡猜的事」。",q:"我看到的是事實，還是我猜的？",act:"把一句生氣的話，改成真的看到的事。",old:"他考不好，就是不認真。",neu:"可能是單字不夠、看不懂題目，或時間不夠。",tpl:"我看到＿＿，我原本以為＿＿，但也可能是＿＿。",w:"話說得越清楚，心就越不會迷路。",use:"考試考不好",chant:"少一個壞標籤，多一個真事實。",
+stars:["說出一件真的發生的事","說出自己原本是怎麼猜的","想到另一種可能"],lv:["看了例子會分","有人提醒時會分","自己就能分清楚","換到別的地方也會用"],
+dg:`跟家人說話|你都不關心我！|這個星期我們只聊了一次天，我想多跟你聊聊。
+考試考不好|你就是不認真！|這次閱讀錯了六題，我們一起看看是哪裡不懂。
+同學做錯事|你很隨便耶！|這裡有三個地方要改，我們一起看看。
+朋友沒回訊息|你根本不在乎我！|我昨天傳了訊息，想問你是不是在忙？
+罵自己的時候|我好沒用。|這次沒做到，我來找找哪一步可以改。
+叫人收東西|你永遠不聽話！|我說了兩次，你還沒開始收，發生什麼事了嗎？
+提議沒被接受|他一定是討厭我。|這次沒被接受，我想問問他是怎麼考慮的。
+很擔心的時候|我完蛋了！|現在有三件事還沒做完，我先做最急的那一件。
+對方不說話|你一定在生氣！|你剛剛好安靜，我不確定你的感覺，想聊聊嗎？
+看到同學沒交作業|他就是懶。|他這週有三次沒交作業，我想知道他遇到什麼困難。`,
+sc:{s:"家人覺得你太敏感，你覺得家人不關心你。",start:"這個星期我們只好好聊過一次天，我想多跟你聊聊。",A:["好呀，我們找時間。","謝謝你！那我們選一天好好聊。","一起約好一個聊天時間。"],B:["我們不是每天都有講話嗎？","我說的是可以專心聊天的時間，不只是有講話。","各自舉一個例子，看看我們想的哪裡不一樣。"],C:["你永遠都不滿意！","我想說的是相處的時間，不是在說誰不好。","先不要一直解釋，需要的話先停一下。"],w:"先把事情說清楚，才能把問題處理好。"},
+mei:{o:"所有事情都只能靠我。",ask:"最近有哪些事情，真的只有你能做？",ans:"同事請我整理資料，晚上孩子又請我幫忙準備書包。",a:"把今天三件要做的事寫下來，圈出一件不一定要自己做的。",f:"小美發現：孩子其實可以自己準備書包！",n:"有些事情，可以讓別人一起做。",say:"我覺得事情都丟給我，但我想先把這週真的發生的事列出來。"}},
+
+{id:"S02",n:"位置",k:"找位置",e:"📍",one:"看清楚自己是什麼角色，哪些是我的事，哪些不是。",q:"在這件事裡，我站在哪裡？",act:"寫下：哪些是我的責任？哪些不用我一個人扛？",old:"我一定要把所有事情做好。",neu:"每個人都有自己的角色，事情不用全部放在一個人身上。",tpl:"在這件事裡，我是＿＿，我負責＿＿，但＿＿不用我一個人扛。",w:"幫助別人很好，但不用把別人的事全部背在自己身上。",use:"家裡分工吵架",chant:"少扛一點別人的事，多一份清楚的分工。",
+stars:["說出自己的角色","說出自己該負責的事","說出一件不用自己一個人扛的事"],lv:["看了例子會說","會列出自己的角色","自己能說出界線","情況改變也會重新分工"],
+dg:`家事|為什麼都是我在做？|這個星期，我們可以重新分配三件家事嗎？
+同學請你幫忙|這又不是我的事！|我願意幫忙，但我們先確認這件事主要是誰負責。
+孩子什麼都要人幫|你什麼都要我幫！|這件事你先自己試試看，需要時我再幫你。
+希望家人幫忙|你應該知道我要什麼！|我希望你幫我的是這件事，我們來討論怎麼分。
+照顧爺爺奶奶|只有我能照顧！|照顧要很久，我們一起看看每個人可以做哪些。
+老師和學生|你怎麼都不會？|我負責教你，你負責練習，有不會的要告訴我。
+事情全丟給我|全部都給我？|這件事誰來決定、誰來做，可以先說清楚嗎？
+朋友需要幫忙|我一定要幫你全部！|我可以幫這一部分，其他的可能要找別人一起幫。
+大人和長大的孩子|你要照我的方法做！|我可以分享經驗，但最後還是你自己決定。
+做不到的要求|我不能拒絕。|這件事超過我現在能做的，我們需要再討論一下。`,
+sc:{s:"同學常常把自己的工作丟給你。",start:"我們可以先確認一下，這件事是誰負責、怎麼分工嗎？",A:["好，我們一人做一半。","好！我們把各自要做的事和時間說清楚。","寫下一件清楚的分工。"],B:["你就幫我一下嘛！","我可以幫一部分，但沒辦法全部幫你做。","說出我能幫的，和我不能幫的。"],C:["你現在是在計較喔？","我很願意合作，但要公平分工，我們寫下來確認。","不吵誰的態度不好，改成把分工寫清楚。"],w:"幫助別人，不代表要替別人做完所有的事。"},
+mei:{o:"我能做，就應該做。",ask:"你在公司和家裡，分別是什麼角色？",ans:"在公司我是資深員工，在家裡我是媽媽。",a:"選一件事，寫下：我負責什麼、對方負責什麼。",f:"小美確認：孩子已經長大，可以自己準備書包了。",n:"我可以提醒孩子，讓孩子自己完成。",say:"我很願意幫大家，但我們要先確認哪些是我本來該做的工作。"}},
+
+{id:"S03",n:"關係",k:"連連看",e:"🔗",one:"一件事不是單獨發生的，看看它和哪些事連在一起。",q:"有哪些事情互相影響？",act:"找出兩件有關係的事，畫一條線連起來。",old:"他一直玩手機，就是沒有自制力。",neu:"玩手機可能和壓力大、太無聊、想跟朋友聯絡、生活安排有關。",tpl:"當＿＿變多的時候，＿＿是不是也跟著變了？",w:"問題常常不在某一個人身上，而是在大家相處的方式裡。",use:"和家人溝通不順",chant:"少一次怪別人，多一次問為什麼。",
+stars:["找到兩件有關係的事","說出它們可能怎麼連在一起","想到一個要再確認的問題"],lv:["看了例子會連","能找到兩件事","自己畫出關係圖","會檢查連得對不對"],
+dg:`家人變冷淡|你變了！|最近我們比較少聊天，是不是有什麼事影響了我們？
+一直玩手機|都是手機害的！|最近功課壓力、睡覺和玩手機，有沒有關係呢？
+大人工作很累|都是老闆害我好累！|工作量、時間和人手，可能要一起看看。
+親子吵架|你故意跟我作對！|我們是不是一講到某些事，就容易誤會？
+家裡的錢|你都亂花錢！|我們一起看看收入、固定要花的錢和臨時要花的錢。
+朋友變遠|你不把我當朋友了！|我們最近比較少聯絡，是時間變了，還是有其他原因？
+成績退步|你最近都不用功！|我們一起看看睡覺、練習和讀書方法有沒有改變。
+兩個人吵架|都是你的錯！|我們各自希望的事，哪裡一直沒對上？
+小組合作|他就是不配合！|是不是消息沒傳到、分工不清楚，或時間沒說好？
+覺得好累|我就是體力差。|最近睡覺、事情多不多、身體狀況有沒有變化？`,
+sc:{s:"孩子常常拖著不寫功課，大家一直吵。",start:"我想知道你為什麼很難開始，我們一起找原因。",A:["我不知道怎麼寫。","那我們一起看看最難的第一題。","陪孩子找到一個卡住的地方。"],B:["我就是不想寫！","我聽到你不想寫，是太累了，還是題目太難？","問一個問題，然後安靜等孩子回答。"],C:["不要再煩我了！","我們現在都不適合吵下去，等一下再談。","先不追問，約一個等一下再聊的時間。"],w:"想讓關係變好，先了解彼此，不急著找誰錯。"},
+mei:{o:"別人需要我，我就不能拒絕。",ask:"別人請你幫忙時，你通常怎麼回答？",ans:"我通常馬上答應，因為不想讓別人失望。",a:"下次有人請她幫忙，先問：「什麼時候要？誰負責哪一部分？」",f:"同事答應自己做一部分資料。",n:"我可以幫忙，也可以好好討論。",say:"我發現自己常常馬上答應，想和大家重新討論怎麼分工。"}},
+
+{id:"S04",n:"權重",k:"排順序",e:"⚖️",one:"看看自己把什麼放在第一位，需要的話重新排一排。",q:"我把什麼看得最重要？",act:"寫下三件在乎的事，排出先後順序。",old:"別人不開心，就是我做錯了。",neu:"別人的感受很重要，我的需要也很重要。",tpl:"我現在把＿＿放第一，但我也想讓＿＿變得更重要。",w:"愛別人之前，也要記得好好愛自己。",use:"太在意別人怎麼看我",chant:"少一次勉強答應，多一次好好排順序。",
+stars:["寫下三件在乎的事","排出順序並說出原因","挑一件想讓它更重要的事"],lv:["看了例子會排","能排出順序","自己說出排序的理由","有新情況時會重新排"],
+dg:`不敢拒絕|我怕你不開心。|我很在乎你的感覺，但我也要想想我自己的時間。
+做太多事|工作最重要！|工作很重要，休息也很重要，才能走得長久。
+對孩子的期待|你一定要考第一名！|成績很重要，聽得懂、喜歡學習也一樣重要。
+兩人意見不同|你一定要同意我！|我希望你懂我，我也想聽聽你在乎什麼。
+想買東西|想買就買！|我們先想想，這筆錢現在最該用在哪裡。
+很在意別人眼光|別人怎麼看我最重要。|別人的話可以參考，但我也要看看自己的目標。
+照顧家人|我不能休息！|照顧家人很重要，把自己照顧好也很重要。
+讀書好焦慮|每一科我都要讀完！|我先讀最需要加強的那一科。
+想讓大家開心|大家開心就好。|我很願意合作，也希望我的需要被考慮到。
+不知道怎麼選|我不知道選哪個！|我們先寫下最重要的三個條件，再來比較。`,
+sc:{s:"家人希望你取消原本的休息時間。",start:"我知道你需要幫忙，但我也需要休息一下。",A:["好，那我們改時間。","謝謝你願意調整！我們來選新的時間。","把排好的休息時間留下來。"],B:["你的休息比我的事重要嗎？","不是誰比較重要，是我們兩個人的需要都要想到。","想一個不用把休息全部取消的辦法。"],C:["你好自私！","我願意討論，但不會因為被罵就馬上答應。","不急的事情先不要決定，不在壓力下答應。"],w:"尊重別人的需要，不代表要忘記自己的需要。"},
+mei:{o:"讓別人滿意最重要。",ask:"你決定要不要幫忙時，最在意什麼？",ans:"我最怕別人覺得我不夠好。休息的時間，被我排到最後面。",a:"選一件想讓它更重要的事——小美選了「自己的休息時間」。",f:"小美這個星期，成功留下30分鐘給自己休息。",n:"我的休息時間，也值得被放進計畫裡。",say:"我很重視工作，也希望每個星期留一點時間給自己休息。"}},
+
+{id:"S05",n:"耦合",k:"找圈圈",e:"🔄",one:"有些事情會互相推來推去，像轉圈圈一樣越轉越大。",q:"哪些事情一直互相推，讓問題越來越大？",act:"畫出一個「越來越…」的圈圈，找到一個可以停下來的地方。",old:"我脾氣不好，因為我個性就是不好。",neu:"可能是太累、睡不夠、和人吵架，三件事互相推來推去。",tpl:"當＿＿變多，＿＿也變多，然後＿＿又變得更嚴重。",w:"有時候越用力越糟，是因為我們還在原本的圈圈裡轉。",use:"壓力越來越大",chant:"少一次重複吵架，多找一個停下來的點。",
+stars:["找到兩件互相推的事","說出它們怎麼一直轉","找到一個可以停下來的地方"],lv:["看了例子會畫","能找到圈圈裡的事","自己畫出整個圈圈","會試著改變並檢查"],
+dg:`吵架|我們又吵架了！|我發現我越急著解釋，你就越不想說話，我們換個方法好嗎？
+管孩子|我越管你越不聽！|我們是不是越催，大家就越緊張？
+事情越來越多|事情怎麼越做越多？|我每次都馬上答應，所以事情都跑到我這裡來了。
+睡不著|越想睡越睡不著！|我越擔心睡不好，就越難放鬆，今晚先不要逼自己。
+考試緊張|越緊張越考不好！|緊張會讓我寫得慢，我們先練習慢慢、穩穩地寫。
+花錢|越沒錢越亂買！|心情不好和亂花錢可能有關，先看看買東西前的心情。
+冷戰|他不說，我也不說！|我們越不說話越不懂對方，要不要先各說一件希望的事？
+拖拖拉拉|越拖越不想做！|事情越堆越難開始，我先做最小的一點點。
+玩手機|越禁止越偷玩！|我們要不要一起訂一個大家都做得到的規則？
+罵自己|越失敗越不敢試！|我越怕犯錯就越少練習，這次先試一個小小的。`,
+sc:{s:"家人越問越多，你越不想說；你越不說，家人越生氣。",start:"我們好像越急著解釋，越聽不進彼此的話。",A:["對耶，我們慢慢說。","那我們一次只說一件事。","每次只聊一個問題。"],B:["都是你不想溝通！","我願意想想自己的反應，也希望我們一起看看剛剛怎麼了。","一步一步說剛剛發生什麼，先不判誰對誰錯。"],C:["你又在分析我！","我不是在說你不好，我們先停下來，不要越吵越大。","停下來，不再追問也不再反駁。"],w:"同樣的方法一直得到同樣的結果，就換一個方法試試看。"},
+mei:{o:"事情越多，我就只能更努力。",ask:"別人請求→小美答應→事情變多→大家更常找她→又有新請求。這個圈圈像你嗎？",ans:"很像，不過有些工作真的是老闆交代的。（所以要把「本來的工作」和「額外幫忙」分開）",a:"有新工作時先問：「如果這件先做，我手上哪一件可以晚一點？」",f:"老闆同意把另一件工作延後。",n:"事情可以排先後，不用全部同時做完。",say:"如果新工作一直跑到我這裡，原本的事就會延後，我們可以先排一下順序嗎？"}},
+
+{id:"S06",n:"主導狀態",k:"認出老習慣",e:"🐾",one:"發現自己一直重複的老樣子，它不是命運，是可以改的習慣。",q:"我是不是又回到老樣子了？",act:"比一比最近兩次很像的事，找出自己一樣的反應。",old:"為什麼我老是遇到一樣的問題？",neu:"可能是我在不同的地方，用了一樣的方法。",tpl:"上次遇到＿＿，我＿＿；這次遇到＿＿，我又＿＿。",w:"看見自己常走的老路，才能選擇一條新的路。",use:"一直討好別人",chant:"少一次自動反應，多一次自己選擇。",
+stars:["寫下兩次很像的事","找到自己一樣的反應","找到一次不一樣的例外"],lv:["看了例子會找","能比較兩件事","自己認出老習慣","換地方也能認出來並改變"],
+dg:`不會拒絕|我就是不會拒絕。|我發現我常常先答應，這次想先看看自己做不做得到。
+一直吵架|我們永遠合不來！|我們好像在差不多的時候吵架，先找找看哪裡一樣。
+做太多|我就是勞碌命。|我常常主動接很多事，這個習慣可以重新想想。
+交朋友不順|我總是遇到不好的人。|我想比一比以前的經驗，看看自己有沒有一樣的選擇。
+考試失常|我每次都考不好！|我們比一比最近三次考試，看看是不是錯在一樣的地方。
+存不到錢|我永遠存不到錢！|我想看看每個月，哪些錢一直重複花掉。
+孩子不聽|孩子永遠不聽！|我們是不是每次都在一樣的時間、用一樣的方法開始吵？
+沒有自信|我就是沒自信。|我發現遇到新挑戰時，我常常先覺得自己會失敗。
+拖延|我天生就懶！|我常在不知道從哪開始時拖延，先試試把事情拆小。
+不敢交朋友|我不適合交朋友。|我怕被拒絕時就會躲起來，可以先試試輕鬆的小聊天。`,
+sc:{s:"以前你總是馬上答應別人，現在你想練習先想一想。",start:"我想先看看自己的時間，再決定能幫多少。",A:["好，你先看看。","謝謝你！我看完再告訴你。","第一次不馬上答應，先看看自己的安排。"],B:["你以前都會幫忙耶。","以前我比較少想到自己有多累，現在正在學。","就算對方不習慣，也溫柔地守住一次新決定。"],C:["你現在只想到自己！","我還是很在乎我們，但我也需要自己做選擇。","不用一直解釋，需要的話先結束對話。"],w:"真正的改變，是老情況又出現時，我開始能做新的選擇。"},
+mei:{o:"我天生就是勞碌命。",ask:"這個月，有沒有發生兩次以上很像的事？",ans:"同事請我幫忙，我答應，結果加班；家人臨時找我，我答應，休息取消；朋友找我，我答應，自己的事延後。",a:"下次有人請她幫忙時，注意自己第一個反應是什麼。",f:"小美發現自己又想馬上答應，但這次先問了「什麼時候要」。",n:"老習慣還在，但我已經開始會做新的選擇了。",say:"我發現自己常常別人一開口就答應，這次想先看看時間。"}},
+
+{id:"S07",n:"翻轉",k:"試試新方法",e:"🚀",one:"改變一件小小的、自己做得到的事，然後看看結果。",q:"今天我可以做哪一個不一樣的小選擇？",act:"選一個安全、小小的、可以回頭的行動，今天就試試。",old:"要等環境變好，我才能改變。",neu:"就算不能改變全部，我也可以先改變一件小事。",tpl:"如果我把＿＿改成＿＿，我猜＿＿會變得不一樣。",w:"改變不用等奇蹟，一個小小的新行動，就是新的開始。",use:"想改變卻不敢開始",chant:"少一次光想不做，多一次動手試試。",
+stars:["選一個做得到的小行動","先猜猜看結果會怎樣","做完後記下真正的結果，想想下次怎麼改"],lv:["看了例子會做","有人提醒時會做","自己設計小實驗","會看結果、改方法、再試一次"],
+dg:`事情太多|我只能一直做下去。|這件事可以先排一下順序，再決定什麼時候完成嗎？
+家事|都沒人幫我！|這個星期可以請你負責倒垃圾嗎？我們試一週看看。
+學習|你一定要改！|我們先試三天，每天練習15分鐘，再一起看看效果。
+溝通|講了也沒用！|這次我們只談一件事，看看能不能想出辦法。
+想換方向|我不敢改變！|我先多了解一些資訊，再決定下一步。
+覺得做不到|我就是做不到！|我先做兩分鐘，看看開始以後感覺怎麼樣。
+存錢|我永遠存不了錢！|這個月先存一點點做得到的錢，月底看看。
+拒絕別人|拒絕一定會傷感情。|我先用溫柔、清楚的方式，拒絕一次不重要的請求。
+讀書|怎麼讀都沒用！|這週改用整理錯題的方法，看看答對率有沒有變高。
+好累|我沒有時間休息！|明天先留15分鐘什麼都不安排，看看做不做得到。`,
+sc:{s:"你太累了，想重新討論多出來的工作。",start:"我們先試著重新分配一次，看看效果怎麼樣。",A:["好，我們試試看。","那我們先說好內容，一週後一起檢查。","約好一個分工和一個檢查的日子。"],B:["我不想改。","我知道你習慣原本的方法，但我需要調整自己能做的量。","先改變自己做得到的事，例如不馬上接新工作。"],C:["你敢改，我就不跟你好！","我希望我們好好合作，但我不會在被威脅時做決定，我先停下來。","安全地離開現場，需要時找可信任的大人幫忙。"],w:"改變不是控制別人，而是改變自己做得到的事，再看看結果。"},
+mei:{o:"只能等別人改變。",ask:"哪一個小改變最容易做到，又不會太冒險？",ans:"小美選擇：下一次有新工作時，先討論順序。",a:"小美說：「我願意幫忙，但我現在時間不多，我們一起決定先做哪一件好嗎？」",f:"老闆同意延後一件工作！小美原本以為一定會被拒絕，結果不一樣。",n:"好好討論，有時候是會成功的。下次，她想在家裡也試試看。",say:"這次我可以幫其中一部分，剩下的我們一起確認誰來做。"}}
+];
+const LEVELS=["🌱 還在發芽","🌿 看了例子會做","🌳 有人提醒會做","🌟 自己就會做","🌈 換地方也會用"];
+const MOODS=["😊","😌","😐","😟","😢","😠","😴"];
+
+/* ========== 工具 ========== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pad=n=>String(n).padStart(2,"0");
+const lines=s=>s.trim().split("\n").map(l=>l.split("|"));
+const keyTag=n=>`<span class="tag">${n.e} ${n.k}</span>`;
+const flow=a=>`<div class="flow">${a.map(x=>`<span>${x}</span>`).join("<i>→</i>")}</div>`;
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const CN="一二三四五六七八九十";
+
+/* ========== 頁面 ========== */
+const TABS=[["home","🏠 首頁"],["keys","🗝️ 七把鑰匙"],["stories","📚 100個小故事"],["talk","💬 好好說話"],["abc","🎭 對方會怎樣"],["mei","👩 小美的故事"],["star","⭐ 我的星星"],["diary","📔 心情日記"]];
+
+function pHome(){
+ return `<div class="card hero"><div class="big">🗝️</div><h2>你不用馬上知道答案</h2>
+ <p>遇到難過、生氣、卡住的時候，<br>先停下來，慢慢看清楚發生了什麼事。</p>
+ <p class="mute">這裡有七把魔法鑰匙，每一把都能幫你打開一扇小門。</p></div>
+ <div class="card grp"><h2>七把魔法鑰匙</h2><div class="grid">
+ ${NODES.map((n,i)=>`<div class="key item" data-go="K${n.id}"><span class="e">${n.e}</span><b> 第${CN[i]}把：${n.k}</b><div>${n.one}</div><div class="mute">問問自己：${n.q}</div></div>`).join("")}</div>
+ <h3>使用順序</h3>${flow(NODES.map(n=>n.e+n.k))}</div>
+ <div class="card grp"><h2>每天5分鐘小練習</h2><ol>
+ ${["今天最讓我煩惱的事是什麼？","哪些是真的發生的事？哪些是我猜的？","我是不是又回到老習慣了？","今天我可以改變哪一件小事？","先猜猜結果，做完再看看真的怎麼樣。"].map(x=>`<li class="item">${x}</li>`).join("")}</ol>
+ <p class="warm">每天一點點，就是很大的進步。</p></div>
+ <div class="card grp"><h2>十種好能力</h2><div class="grid">${ABILITY10.map((a,i)=>`<div class="box item"><b class="t">能力 ${i+1}</b><b>${a[0]}</b>：${a[1]}</div>`).join("")}</div></div>
+ <div class="card grp"><h2>成長的魔法圈</h2>${flow(["發生一件事","說出真的發生什麼","想想自己的處境","找到一件小事","試試看","看看結果","改一改","再試一次"])}
+ <p class="warm">人生不是一下子就變好，而是一次又一次，越來越懂自己。</p>
+ <p class="mute item">真正的自由，不是什麼事都能控制，而是遇到變化時，還能想一想、選一選、改一改、重新開始。</p></div>`;
+}
+
+function pKeys(){
+ let h=`<div class="chips">${NODES.map(n=>`<a class="chip" href="#K${n.id}">${n.e} ${n.k}</a>`).join("")}</div>`;
+ NODES.forEach((n,i)=>{
+  h+=`<div class="card grp" id="K${n.id}"><h2>${n.e} 第${CN[i]}把鑰匙：${n.k} <span class="mute">（${n.id} ${n.n}）</span></h2>
+  <p class="item">${n.one}</p>
+  <div class="grid item"><div class="box"><b class="t">🤔 問問自己</b>${n.q}</div><div class="box"><b class="t">✋ 小行動</b>${n.act}</div></div>
+  <h3>換個想法</h3><div class="item"><div class="old">❌ 以前想：${n.old}</div><div class="new">✅ 換成想：${n.neu}</div></div>
+  <h3>說說看</h3><p class="item">「${n.tpl}」</p>
+  <h3>什麼時候用？</h3><p class="item">例如：${n.use}</p>
+  <h3>完成就得星星 ⭐</h3><ul>${n.stars.map(s=>`<li class="item">${s}</li>`).join("")}</ul>
+  <p class="warm item">${n.w}</p><div class="mute item">小口訣：${n.chant}</div></div>`;
+ });
+ return h;
+}
+
+function pStories(){
+ let h=`<div class="chips">${LAYERS.map((L,i)=>`<a class="chip" href="#L${i}">${L.e} ${CN[i]}</a>`).join("")}</div>`;let no=0;
+ LAYERS.forEach((L,i)=>{
+  h+=`<div class="card grp" id="L${i}"><h2>${L.e} ${CN[i]}、${L.t}</h2>
+  <div class="item"><div class="mute">靈感來自：${L.who}</div>${L.core}${L.note?`<div class="mute">💡 ${L.note}</div>`:""}</div>
+  ${lines(L.c).map(r=>{no++;return `<div class="story item"><span class="no">${pad(no)}</span><b>${r[0]}</b>
+   <div class="row"><b class="th">想一想</b><span>${r[1]}</span></div><div class="row"><b class="do">試試看</b><span>${r[2]}</span></div></div>`}).join("")}
+  <p class="warm item">${L.w}</p></div>`;
+ });
+ return h;
+}
+
+function pTalk(){
+ let h=`<div class="card hero"><h2>💬 換一句話說說看</h2><p>生氣的話會讓人想吵架，<br>清楚又溫柔的話，會讓人想一起想辦法。</p></div>
+ <div class="chips">${NODES.map(n=>`<a class="chip" href="#T${n.id}">${n.e} ${n.k}</a>`).join("")}</div>`;
+ NODES.forEach(n=>{
+  h+=`<div class="card grp" id="T${n.id}"><h2>${n.e} ${n.k}的說話練習</h2>
+  ${lines(n.dg).map((r,i)=>`<div class="pair item"><span class="tag">${r[0]}</span><div class="old">❌「${r[1]}」</div><div class="new">✅「${r[2]}」</div></div>`).join("")}
+  <p class="warm item">${n.chant}</p></div>`;
+ });
+ h+=`<div class="card grp"><h2>👩 小美這樣說</h2>${NODES.map(n=>`<div class="item" style="margin-bottom:6px">${keyTag(n)}「${n.mei.say}」</div>`).join("")}
+ <p class="warm">把事情說清楚 → 說好誰做什麼 → 了解彼此 → 說出自己的需要 → 停下壞圈圈 → 認出老習慣 → 試試新方法</p></div>`;
+ return h;
+}
+
+function pABC(){
+ let h=`<div class="card grp"><h2>🎭 說完以後，對方可能有三種反應</h2><div class="abc">
+ <div class="A item"><b>🤝 A：對方願意一起想辦法</b><br>太好了！把好意變成約定：誰做什麼、什麼時候做、什麼時候一起檢查。</div>
+ <div class="B item"><b>🙅 B：對方說不要</b><br>先別急著吵贏。聽聽對方的困難，也溫柔地守住自己的界線，再想別的辦法。</div>
+ <div class="C item"><b>🌋 C：對方很生氣</b><br>先保護自己，讓大家冷靜。不用逼自己馬上讓對方不生氣，可以先停下來。</div></div>
+ <div class="safe item" style="margin-top:12px">🛡️ <b>最重要的事：安全第一！</b><br>如果有人打人、威脅你、跟蹤你，或不讓你離開，不用再練習說話了。請先離開危險的地方，告訴你信任的大人（家人、老師），緊急時打 <b>110</b>，或打 <b>113</b> 保護專線。</div></div>
+ <div class="chips">${NODES.map(n=>`<a class="chip" href="#B${n.id}">${n.e} ${n.k}</a>`).join("")}</div>`;
+ NODES.forEach(n=>{const s=n.sc;
+  h+=`<div class="card grp" id="B${n.id}"><h2>${n.e} ${n.k}</h2>
+  <div class="item"><b>情況：</b>${s.s}<br><b>我先說：</b>「${s.start}」</div>
+  <div class="abc">${[["A","🤝 願意"],["B","🙅 說不要"],["C","🌋 很生氣"]].map(([k,t])=>`<div class="${k} item"><b>${t}</b><br>對方：「${s[k][0]}」<br>我說：「${s[k][1]}」<div class="mute">👉 ${s[k][2]}</div></div>`).join("")}</div>
+  <p class="warm item">${s.w}</p></div>`;
+ });
+ h+=`<div class="card"><p class="warm">好好說話，不是讓每個人都滿意，而是不管對方怎麼反應，我都能想清楚、守住界線，再選一個好方法。</p></div>`;
+ return h;
+}
+
+function pMei(){
+ let h=`<div class="card grp hero"><div class="big">👩</div><h2>小美的故事</h2>
+ <p class="item">小美是一位很認真的媽媽，也在公司上班。<br>同事常找她幫忙，家人也什麼事都找她。<br>她每天好累，幾乎沒有時間休息。</p>
+ <p class="item">她常說：「<b>如果我不做，就沒有人做了。</b>」</p>
+ <p class="item mute">她希望：工作穩定、和大家感情好，而且每個星期多三個小時休息。</p></div>`;
+ NODES.forEach((n,i)=>{const m=n.mei;
+  h+=`<div class="card grp"><h2>${n.e} 第${CN[i]}把鑰匙：${n.k}</h2><dl class="dl item">
+  <dt>原本想法</dt><dd class="old">${m.o}</dd><dt>🤔 問問她</dt><dd>${m.ask}</dd><dt>小美說</dt><dd>${m.ans}</dd>
+  <dt>✋ 小行動</dt><dd>${m.a}</dd><dt>🎉 結果</dt><dd>${m.f}</dd><dt>新的想法</dt><dd class="new">${m.n}</dd></dl></div>`;
+ });
+ h+=`<div class="card grp"><h2>🌈 小美學到了什麼？</h2><dl class="dl">
+ <dt>以前</dt><dd class="item">有人請求 → 馬上答應 → 事情變多 → 沒時間休息。</dd>
+ <dt>現在</dt><dd class="item">先問清楚誰負責、什麼先做，再決定怎麼幫忙。</dd>
+ <dt>成果</dt><dd class="item">成功討論了一次，也留下30分鐘給自己休息。</dd>
+ <dt>還要觀察</dt><dd class="item">新方法能不能一直做下去？在家裡、在朋友面前也有用嗎？</dd></dl>
+ <p class="warm">人生不用一下子全部改變。找到一個小地方，做一次不一樣的事，新的路就開始了。</p></div>`;
+ return h;
+}
+
+function pStar(){
+ const r=store.get("kid7_rate",{});
+ return `<div class="card hero"><div class="big">⭐</div><h2>我的星星表</h2><p>每一把鑰匙，看看自己現在走到哪裡了。<br><span class="mute">這不是考試，也不是說你好不好，只是看見自己的成長。</span></p></div>
+ <div class="card grp">${NODES.map(n=>`<div class="item" style="margin-bottom:14px"><b>${n.e} ${n.k}</b>
+ <div class="stars" data-node="${n.id}">${LEVELS.map((l,i)=>`<button data-v="${i}" class="${(r[n.id]|0)===i?"on":""}">${l}</button>`).join("")}</div>
+ <div class="mute">${["",...n.lv][r[n.id]|0]||"還沒開始也沒關係，種子正在長大。"}</div></div>`).join("")}
+ <p>我的星星：<span class="score" id="tot">0</span> / 28</p><p class="warm" id="cheer"></p></div>
+ <div class="card grp"><h2>🌱 星星等級</h2>${LEVELS.map((l,i)=>`<div class="item">${l}：${["只覺得卡住，還看不出原因。","看了例子，可以跟著做。","有人提醒，就能找到重點。","不用提醒，自己就會用。","在學校、家裡、朋友之間都會用，還會自己修正。"][i]}</div>`).join("")}</div>`;
+}
+
+const DF=[["what","📝 今天發生什麼事？","只寫真的發生的事"],["think","💭 我原本怎麼想？","我心裡的猜測"],["new","🌈 換個想法","還有什麼可能？"],["act","✋ 我要試的小行動","小小的、做得到的"],["guess","🔮 我猜會怎樣？","先猜猜看"],["real","👀 結果真的怎樣？","做完再寫"],["learn","🌟 下次我會…","我學到了什麼？"]];
+function pDiary(){
+ const t=new Date(),d=`${t.getFullYear()}-${pad(t.getMonth()+1)}-${pad(t.getDate())}`;
+ return `<div class="card"><h2>📔 今天的心情日記</h2><div class="mute">日記只存在這台電腦裡，可以按「存成檔案」備份。</div>
+ <div class="f2"><div><label>📅 日期</label><input type="date" id="d_date" value="${d}"></div>
+ <div><label>🗝️ 今天用哪一把鑰匙？</label><select id="d_key">${NODES.map(n=>`<option value="${n.id}">${n.e} ${n.k}</option>`).join("")}</select></div></div>
+ <label>😊 今天的心情</label><div class="moods" id="moods">${MOODS.map(m=>`<button type="button" data-m="${m}">${m}</button>`).join("")}</div>
+ <p class="mute" id="d_hint"></p>
+ <div class="f2">${DF.map(f=>`<div><label>${f[1]}</label><textarea id="d_${f[0]}" placeholder="${f[2]}"></textarea></div>`).join("")}</div>
+ <button class="btn" id="saveD">💾 存下來</button><button class="btn g" id="clearD">清空</button><button class="btn g" id="expD">📤 存成檔案</button></div>
+ <div class="card grp"><h2>我的日記本 <span class="mute" id="dCount"></span></h2><div id="dList"></div></div>`;
+}
+let mood="";
+function drawDiary(){
+ const L=store.get("kid7_diary",[]);$("#dCount").textContent=`（${L.length} 篇）`;
+ $("#dList").innerHTML=L.length?L.slice().reverse().map(x=>{const n=NODES.find(k=>k.id===x.key)||NODES[0];
+  return `<div class="log item"><b>${esc(x.date)}</b> ${x.mood||""} ${keyTag(n)}<dl class="dl" style="margin-top:4px">${DF.filter(f=>x[f[0]]).map(f=>`<dt>${f[1]}</dt><dd>${esc(x[f[0]]).replace(/\n/g,"<br>")}</dd>`).join("")}</dl><button class="btn g" data-del="${x.t}">刪除</button></div>`}).join("")
+  :`<div class="empty">📖 日記本還是空的。<br>今天試一個小行動，回來寫下發生了什麼吧！</div>`;
+ applySearch();
+}
+function hint(){const n=NODES.find(k=>k.id===$("#d_key").value);$("#d_hint").innerHTML=`${n.e} 問問自己：${n.q}<br>說說看：「${n.tpl}」`}
+
+/* ========== 組裝 ========== */
+const R={home:pHome,keys:pKeys,stories:pStories,talk:pTalk,abc:pABC,mei:pMei,star:pStar,diary:pDiary};
+$("#nav").innerHTML=TABS.map(t=>`<button data-tab="${t[0]}">${t[1]}<span class="n"></span></button>`).join("");
+$("#main").innerHTML=TABS.map(t=>`<section class="pane" id="p_${t[0]}">${R[t[0]]()}<div class="empty hidden nores">這一頁沒有找到喔，看看其他頁籤的數字 👆</div></section>`).join("");
+function show(tab){document.querySelectorAll(".pane").forEach(p=>p.classList.toggle("on",p.id==="p_"+tab));document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));store.set("kid7_tab",tab)}
+function jump(id){const t=document.getElementById(id);if(t)window.scrollTo({top:t.getBoundingClientRect().top+scrollY-$("header").offsetHeight-8,behavior:"smooth"})}
+$("#nav").addEventListener("click",e=>{const b=e.target.closest("button");if(b){show(b.dataset.tab);scrollTo(0,0)}});
+document.addEventListener("click",e=>{
+ const a=e.target.closest("a.chip");if(a){e.preventDefault();jump(a.getAttribute("href").slice(1));return}
+ const k=e.target.closest("[data-go]");if(k){show("keys");jump(k.dataset.go);return}
+ const s=e.target.closest(".stars button");if(s){const r=store.get("kid7_rate",{});r[s.parentNode.dataset.node]=+s.dataset.v;store.set("kid7_rate",r);const p=$("#p_star");p.innerHTML=pStar()+'<div class="empty hidden nores"></div>';calc();return}
+ const m=e.target.closest("#moods button");if(m){mood=m.dataset.m;document.querySelectorAll("#moods button").forEach(b=>b.classList.toggle("on",b===m));return}
+ const d=e.target.dataset.del;if(d&&confirm("確定要刪除這篇日記嗎？")){store.set("kid7_diary",store.get("kid7_diary",[]).filter(x=>String(x.t)!==d));drawDiary()}
+});
+function calc(){const r=store.get("kid7_rate",{});const t=NODES.reduce((s,n)=>s+(r[n.id]|0),0);$("#tot").textContent=t;
+ $("#cheer").textContent=t===0?"每一顆種子，都是從土裡慢慢長出來的。":t<14?"你已經開始了，這就很了不起！":t<21?"你越來越會用鑰匙了，繼續加油！":t<28?"好厲害！你已經能自己打開很多扇門了！":"太棒了！你已經能把七把鑰匙帶到任何地方！"}
+calc();
+
+/* 搜尋 */
+function unmark(el){el.querySelectorAll("mark").forEach(m=>m.replaceWith(m.textContent));el.normalize()}
+function markIn(el,kw){const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),hits=[];let t;
+ while(t=w.nextNode())if(t.nodeValue.toLowerCase().includes(kw))hits.push(t);
+ hits.forEach(t=>{const s=t.nodeValue,low=s.toLowerCase(),f=document.createDocumentFragment();let i=0,j;
+  while((j=low.indexOf(kw,i))>-1){f.append(s.slice(i,j));const m=document.createElement("mark");m.textContent=s.slice(j,j+kw.length);f.append(m);i=j+kw.length}f.append(s.slice(i));t.replaceWith(f)})}
+function applySearch(){const kw=$("#q").value.trim().toLowerCase();
+ document.querySelectorAll(".pane").forEach(p=>{let c=0;unmark(p);
+  p.querySelectorAll(".item").forEach(it=>{const ok=!kw||it.textContent.toLowerCase().includes(kw);it.classList.toggle("hidden",!ok);if(ok&&kw){c++;markIn(it,kw)}});
+  p.querySelectorAll(".grp").forEach(g=>g.classList.toggle("hidden",!!kw&&!g.querySelector(".item:not(.hidden)")));
+  const nr=p.querySelector(".nores");if(nr)nr.classList.toggle("hidden",!kw||c>0);
+  document.querySelector(`nav button[data-tab="${p.id.slice(2)}"] .n`).textContent=kw?c:""});
+ if(kw){const cur=$(".pane.on");if(!cur.querySelector(".item:not(.hidden)")){const f=[...document.querySelectorAll(".pane")].find(p=>p.querySelector(".item:not(.hidden)"));if(f)show(f.id.slice(2))}}}
+let tm;$("#q").addEventListener("input",()=>{clearTimeout(tm);tm=setTimeout(applySearch,180)});
+$("#clr").onclick=()=>{$("#q").value="";applySearch();$("#q").focus()};
+
+/* 日記 */
+$("#d_key").addEventListener("change",hint);hint();
+function clearD(){DF.forEach(f=>$("#d_"+f[0]).value="");mood="";document.querySelectorAll("#moods button").forEach(b=>b.classList.remove("on"))}
+$("#saveD").onclick=()=>{const x={t:Date.now(),date:$("#d_date").value,key:$("#d_key").value,mood};DF.forEach(f=>x[f[0]]=$("#d_"+f[0]).value.trim());
+ if(!x.what&&!x.act){alert("至少寫一下「今天發生什麼事」或「小行動」喔！");return}
+ const L=store.get("kid7_diary",[]);L.push(x);store.set("kid7_diary",L);clearD();drawDiary()};
+$("#clearD").onclick=clearD;
+$("#expD").onclick=()=>{const L=store.get("kid7_diary",[]);if(!L.length){alert("日記本還是空的喔");return}
+ const txt=L.map(x=>{const n=NODES.find(k=>k.id===x.key)||NODES[0];return [`【${x.date}】${x.mood||""} ${n.e}${n.k}`,...DF.filter(f=>x[f[0]]).map(f=>`${f[1]}：${x[f[0]]}`)].join("\n")}).join("\n\n");
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+txt],{type:"text/plain;charset=utf-8"}));a.download="我的心情日記.txt";a.click()};
+drawDiary();
+show(store.get("kid7_tab","home"));
+</script>
+</body>
+</html>

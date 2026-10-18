@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>逆熵心靈雞湯</title>
+<style>
+:root{--bg:#fff8ec;--card:#fff;--ink:#3a2e22;--mute:#8a7a68;--line:#f0dfc4;--acc:#e8873a;--acc2:#3f9b7a;--red:#d9604c;--mark:#ffe27a;--soft:#fff1db}
+@media (prefers-color-scheme:dark){:root{--bg:#1d1913;--card:#28221a;--ink:#f3e9dc;--mute:#b3a48f;--line:#40362a;--acc:#f0a35e;--acc2:#6cc4a2;--red:#ef8a76;--mark:#7a6320;--soft:#302719}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.8 "Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif}
+header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:2px dashed var(--line)}
+.top{display:flex;gap:10px;align-items:center;max-width:960px;margin:0 auto;padding:10px 16px 6px}
+h1{font-size:20px;margin:0;white-space:nowrap;color:var(--acc)}
+#q{flex:1;min-width:0;font:inherit;font-size:16px;padding:8px 16px;border:2px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);outline:none}
+#q:focus{border-color:var(--acc)}
+nav{display:flex;gap:6px;overflow-x:auto;max-width:960px;margin:0 auto;padding:0 12px 8px}
+nav button{flex:none;font:inherit;font-size:15px;border:2px solid transparent;background:none;color:var(--mute);padding:3px 12px;border-radius:999px;cursor:pointer}
+nav button.on{background:var(--card);color:var(--ink);border-color:var(--acc);font-weight:700}
+main{max-width:960px;margin:0 auto;padding:16px 16px 60px}
+h2{font-size:24px;color:var(--acc);margin:6px 0 4px}
+.lead{color:var(--mute);margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px 18px;transition:box-shadow .3s}
+.card h3{margin:0 0 6px;font-size:19px;color:var(--acc2)}
+.card p{margin:4px 0}
+.card.flash{box-shadow:0 0 0 4px var(--acc)}
+.full{grid-column:1/-1}
+.no{display:inline-block;min-width:1.8em;color:var(--acc);font-weight:700}
+.bad,.good{border-radius:10px;padding:4px 10px;margin:5px 0;font-size:17px}
+.bad{background:rgba(217,96,76,.10)}
+.good{background:rgba(63,155,122,.12)}
+.soup{background:linear-gradient(135deg,#ffe6c4,#fff5e3);border:2px solid var(--line);border-radius:24px;padding:24px;text-align:center}
+@media (prefers-color-scheme:dark){.soup{background:linear-gradient(135deg,#3a2c1b,#2a2218)}}
+.soup .bowl{font-size:56px;line-height:1}
+.soup .say{font-size:24px;font-weight:700;margin:12px 0 16px;min-height:3em}
+.btn{font:inherit;font-size:16px;padding:6px 16px;border:2px solid var(--acc);border-radius:999px;background:var(--card);color:var(--ink);cursor:pointer}
+.btn.pri{background:var(--acc);color:#fff}
+.links{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:16px 0}
+.links button{font:inherit;font-size:16px;padding:12px;border:2px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);cursor:pointer}
+.links button span{display:block;font-size:28px}
+.srow{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line)}
+.sb{display:flex;gap:4px;flex:none}
+.sb button{min-width:46px;height:40px;font:inherit;font-size:16px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);cursor:pointer}
+.sb button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.tot{font-size:22px;font-weight:700;color:var(--acc);margin:12px 0 4px}
+.msg{color:var(--acc2);font-weight:700}
+.hrow{display:flex;gap:8px;align-items:center;margin:4px 0;font-size:16px}
+.bar{flex:1;height:12px;background:var(--soft);border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc2)}
+.del{border:0;background:none;color:var(--red);cursor:pointer;font:inherit}
+input[type=date]{font:inherit;font-size:16px;padding:4px 8px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.nf{display:block;margin:10px 0}
+.nf span{display:block;font-weight:700}
+.nf textarea{width:100%;font:inherit;font-size:17px;padding:8px 12px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);resize:vertical}
+details.rec{border:2px solid var(--line);border-radius:12px;padding:6px 12px;margin:6px 0}
+#results{position:fixed;z-index:30;left:50%;transform:translateX(-50%);top:100px;width:min(920px,calc(100% - 24px));max-height:70vh;overflow:auto;background:var(--card);border:2px solid var(--line);border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.18);padding:8px}
+.rh{font-size:15px;color:var(--mute);padding:4px 8px}
+.r{display:block;width:100%;text-align:left;font:inherit;font-size:17px;background:none;border:0;border-radius:12px;padding:8px;color:var(--ink);cursor:pointer}
+.r:hover{background:var(--soft)}
+.tg{font-size:13px;color:var(--acc2);border:1px solid var(--line);border-radius:8px;padding:0 6px;margin-right:6px}
+.sn{display:block;font-size:15px;color:var(--mute)}
+mark{background:var(--mark);color:inherit;border-radius:3px}
+.post summary{cursor:pointer;color:var(--acc2);font-weight:700;margin:6px 0}
+.strip{display:flex;gap:12px;overflow-x:auto;padding:6px 2px 10px}
+.cv{flex:none;width:230px;text-align:center}
+.cv canvas{width:100%;height:auto;border-radius:14px;box-shadow:0 4px 14px rgba(0,0,0,.15);display:block;margin-bottom:6px}
+.cv .btn{font-size:14px;padding:3px 10px}
+.pbody{white-space:pre-wrap;font-size:18px;line-height:1.95;padding:8px 2px}
+footer{max-width:960px;margin:0 auto;padding:0 16px 30px;font-size:14px;color:var(--mute)}
+@media (max-width:600px){h1{font-size:16px}.srow{flex-direction:column;align-items:flex-start}.soup .say{font-size:20px}}
+</style>
+</head>
+<body>
+<header>
+<div class="top"><h1>🍲 逆熵心靈雞湯</h1><input id="q" type="search" placeholder="想找什麼？例如：睡覺、手機、生氣" autocomplete="off"></div>
+<nav id="tabs"></nav>
+</header>
+<div id="results" hidden></div>
+<main id="main"></main>
+<footer>這是陪自己慢慢長大的小本子，不是看病的工具。身體不舒服，要告訴家人、老師或醫生。你填的東西只存在這台電腦裡。</footer>
+<script>
+(function(){
+'use strict';
+// ===== 內容（國小語言版） =====
+const D={
+what:{t:'🧹 熵是什麼？',lead:'用整理房間的故事，認識「熵增」和「逆熵」。',cards:[
+ ['房間會自己變亂','房間不整理，東西會越堆越亂，這就叫「熵增」。','每天整理一點點，房間就會變乾淨，這叫「逆熵」。'],
+ ['身體和生活也一樣','不睡覺、不吃好、不運動，身體就會累、會亂。','好好照顧自己，身體就會有精神。'],
+ ['生命不是魔法','生命靠吃飯、喝水、休息、學習，一天一天把自己整理好。','我們不是打敗時間，是學會跟時間好好相處。'],
+ ['健康是什麼？','健康不是永遠不生病。','是生病或難過以後，還能慢慢好起來。'],
+ ['修理是什麼？','修理不是回到以前一模一樣。','是讓自己重新變好，必要時學會新的方法。'],
+ ['智慧是什麼？','智慧不是什麼都知道。','是猜錯了，願意改一改。'],
+ ['自由是什麼？','自由不是想做什麼就做什麼。','是不再被壞習慣牽著走。'],
+ ['小心！這是比喻','這裡的「熵」是用來比喻生活亂不亂。','它不是魔法，也不能讓人不會長大變老。'],
+ ['🌌 宇宙','時間一直往前走，東西會慢慢變舊。',''],
+ ['🌱 生命','吃東西、休息、修理自己。',''],
+ ['📚 資訊','把知道的事情分類收好，才找得到。',''],
+ ['🧠 想法','專心、猜猜看、猜錯就改。',''],
+ ['🏠 生活','有規律、有朋友、會動手做。',''],
+ ['✨ 信仰','心裡有希望，每天練習變更好。','']]},
+body:{t:'🦸 身體的十個小幫手',lead:'它們是好朋友，一個累了，其他的也會跟著累。',cards:[
+ ['😴 睡眠小精靈','累了的樣子：晚上睡不著，早上爬不起來。','幫幫它：每天差不多同一時間上床睡覺。'],
+ ['🔋 小電池（粒線體）','累了的樣子：很容易沒力氣。','幫幫它：動一動、吃營養、好好休息。'],
+ ['🌷 肚子裡的小花園（腸道）','累了的樣子：肚子不舒服、便便不順。','幫幫它：多吃不同顏色的蔬菜水果。'],
+ ['🚒 身體的消防隊（發炎）','累了的樣子：警報一直響，停不下來。','幫幫它：找出原因，不讓小火一直燒。'],
+ ['⛽ 身體的油箱（血糖）','累了的樣子：一下滿一下空，容易暴躁。','幫幫它：三餐規律，少喝甜飲料。'],
+ ['🚰 水管的力氣（血壓）','累了的樣子：力氣一直太大。','幫幫它：量一量、多運動、聽醫生的話。'],
+ ['🥁 身體的小鼓（心跳）','累了的樣子：沒做事也跳很快。','幫幫它：睡飽、放鬆，必要時看醫生。'],
+ ['💪 力氣（肌肉）','累了的樣子：不動就慢慢變弱。','幫幫它：多跑跳、吃肉蛋豆魚。'],
+ ['🪨 心裡的大石頭（壓力）','累了的樣子：一直緊張，放不下來。','幫幫它：說出來、找人幫忙。'],
+ ['📮 身體的小信差（荷爾蒙）','累了的樣子：身體的節奏亂掉。','幫幫它：規律生活，需要時讓醫生檢查。'],
+ ['🤝 小幫手是一家人','睡飽了，心情就好；心情好，就比較想運動；運動完，又更好睡。','找到最卡住的那一個先照顧，其他的也會跟著變好。']]},
+day:{t:'🌞 每天十件好事',lead:'不用一次全部做到，每天多做一件就很棒。',cards:[
+ ['1. 早上曬曬太陽','讓身體知道：天亮了，該起床囉！',''],
+ ['2. 準時睡、準時起','每天差不多同一時間，身體最喜歡。',''],
+ ['3. 每餐吃好東西','肉、蛋、豆、魚和蔬菜，都要有。',''],
+ ['4. 每天動一動','不要一直坐著，起來走走、跳跳。',''],
+ ['5. 練一點力氣','爬樓梯、伏地挺身，做得到多少就做多少。',''],
+ ['6. 讀一陣子就休息','眼睛和腦袋也需要喘口氣。',''],
+ ['7. 不一直想不開心的事','問自己：我現在可以做什麼？',''],
+ ['8. 整理書桌','東西放好，找東西就不會急。',''],
+ ['9. 每天記一件小事','今天睡幾小時？心情幾分？寫下來就能比較。',''],
+ ['10. 改掉一個小壞習慣','每天一點點，就會越來越好。',''],
+ ['🔁 五個好循環','吃飯 → 有力氣 → 玩和修理 → 休息','太陽 → 白天活動 → 晚上睡覺 → 明天有精神'],
+ ['🔁 還有三個','受傷 → 身體修理 → 好起來 → 檢查一下','看一看 → 猜一猜 → 試試看 → 看結果；發現錯 → 改方法 → 再試 → 留下好方法'],
+ ['🪜 我的十步小實驗','① 記下來 ② 找常常發生的亂 ③ 找最卡的地方 ④ 選一件重要又安全的事 ⑤ 想一個每天做得到的小動作','⑥ 猜猜一週後會怎樣 ⑦ 記下真正的結果 ⑧ 比一比猜的和真的 ⑨ 改方法 ⑩ 再試一次'],
+ ['📖 小故事：小明好累','小明每天很晚睡，早上好累，上課一直打瞌睡。他以前想：「我不夠努力。」','後來他想：「可能是我睡太少。」他試了兩週準時睡覺，記下每天的精神。如果沒變好，就再找別的原因。不罵自己，改方法就好！']]},
+magic:{t:'🪄 五個逆行魔法',lead:'順著老習慣走很容易；停下來想一想，就能選一條更好的路。',cards:[
+ ['🌬️ 呼吸魔法：由亂到靜','以前：生氣時呼吸好快，馬上吼回去。','現在：先慢慢吸氣、吐氣，再決定怎麼說。'],
+ ['🍎 吃東西魔法：由想要到剛好','以前：心情不好就一直吃零食。','現在：先問自己：「我是肚子餓，還是心裡累？」'],
+ ['⚡ 力氣魔法：由用完到補滿','以前：一直做一直做，累倒才停。','現在：累了先休息，也可以說：「我做不了那麼多。」'],
+ ['💭 心情魔法：由卡住到看見','以前：朋友沒回訊息，就以為他討厭我。','現在：先想想：「他可能在忙。」'],
+ ['💡 想法魔法：由迷路到明白','以前：考不好就說：「我很笨。」','現在：「我是哪裡還沒學會？」'],
+ ['✨ 心裡的小金燈','太極裡藏著一點金光，就像心裡的小燈。','它提醒我們：再亂的時候，也能停下來看清楚。'],
+ ['🖐️ 五個小步驟','看一看：什麼習慣讓我好累？ 想一想：是身體、心情，還是老想法？','換一換：試一個新做法。 記一記：結果怎麼樣？ 改一改：下次做得更好。'],
+ ['📌 小提醒','逆行不是跟大自然作對。','是不再傻傻跟著壞習慣走。']]},
+rooms:{t:'🏠 心裡的十二個房間',lead:'每個房間都需要整理，先從最亂的那一間開始。',cards:[
+ ['1. 身體房','睡飽、吃好、動一動。','以前常熬夜 → 現在準時睡覺。'],
+ ['2. 大腦房','一次專心做一件事。','手機一直叫 → 每天留 30 分鐘專心時間。'],
+ ['3. 知識房','學到的東西分類收好。','收藏一百篇 → 整理成十個會用的重點。'],
+ ['4. 說話房','用好話對自己說話。','「我什麼都不會」→「我還在學」。'],
+ ['5. 心情房','心情是訊號，不是老闆。','一生氣就回嘴 → 先想想我需要什麼。'],
+ ['6. 時間房','先做最重要的事。','一天忙十件 → 先完成最重要的一件。'],
+ ['7. 做事房','先做一小步。','等完美計畫 → 每天做一個小實驗。'],
+ ['8. 朋友房','說清楚、互相幫忙。','什麼都替別人扛 → 分清楚誰的事。'],
+ ['9. 零用錢房','想一想再買，存一點。','有錢就花 → 先存一點備用。'],
+ ['10. 環境房','東西放固定的位置。','找東西找好久 → 貼標籤、分類放。'],
+ ['11. 我是誰房','我可以變成更好的自己。','「我就是愛拖拉」→「我正在學準時」。'],
+ ['12. 智慧房','錯了就改，越改越聰明。','「我一定對」→「有什麼證據會讓我改想法？」'],
+ ['🪜 整理三階段','① 先不亂：找出最亂的地方。 ② 再整齊：建立好習慣。','③ 會變通：遇到新狀況，也能調整，不被舊規則卡住。'],
+ ['❤️ 最重要的一句','最棒的整齊，不是永遠不犯錯，','而是永遠願意把錯誤改好。']]},
+quotes:['時間一直走，我們每天做一點好事，生活就會亮起來。','跌倒不可怕，站起來再走就好。','修好身體，不只是多吃，還要好好用。','健康就是會自己調整，不是永遠不生病。','事情越多，越需要簡單的好習慣。','力氣有限，所以先做最重要的事。','不是每種努力都有用，有時候休息更重要。','長大不是知道最多，是錯了會改。','舊方法沒用，就換新方法，不用更用力。','不知道明天會怎樣也沒關係，我可以慢慢準備。','不用每件事都管，把重要的事顧好就好。','時間不會幫我整理，但我可以每天整理一點點。','看見自己的老習慣，就能選新的路。','停下來想一想，比衝出去更勇敢。','身體要規律，心裡要看清楚，腦袋要常更新。','累不是厲害，會休息才是真本領。','想要的東西不一定是壞的，先想清楚就好。','心情可以聽，但不用什麼都聽它的。','心裡那盞小燈，就是看清楚自己的力量。','老想法出現時，我還是可以選新的做法。','身體的整理，是早睡早起。','專心，就是把跑走的注意力請回來。','學會的東西要收好，才找得到。','用好話跟自己說話。','心情有起伏沒關係，不被它拖著走就好。','時間不是塞滿，是先做重要的。','做做看，才知道結果。','愛朋友，也要說清楚界線。','零用錢要用在重要的地方。','房間整齊了，好習慣就容易做到。','我不是以前的我，我正在變更好。','每一次錯誤，都是讓我更聰明的禮物。','不用一次看見整條路，先走一步就好。','害怕可以提醒我小心，但不能幫我決定未來。','錯誤不是處罰，是學習的資料。','過去的事可以當經驗，但不能決定我的未來。','我不是不行，是還沒學會。','慢慢來，比較快。','今天的小進步，明天的大不同。','照顧好自己，才有力氣照顧別人。'],
+beh:[['我是誰','考不好就說「我很笨」','找出哪一題不會，再練習'],['目標','看到別人學什麼就跟著學','想想自己最想做的一件事'],['相信','只聽自己愛聽的話','也聽聽不一樣的意見'],['責任','把別人的事都攬過來','分清楚哪些是我的事'],['自由','一生氣就照老樣子發脾氣','停一下，選新的做法'],['時間','把時間排得滿滿的','留一點時間休息'],['收東西','東西一直收，卻找不到','分類放好，貼上標籤'],['手機','一直滑停不下來','先想好要看什麼、看多久'],['做事','很多事一起做，都沒做完','一次做一件，做完再換'],['朋友','心裡想什麼都不說','好好說出自己的需要'],['零用錢','想買就買','記下花了什麼，存一點'],['身體','很累還硬撐','早點睡、多喝水、動一動'],['判斷','把自己猜的當成真的','分清楚「看到的」和「猜的」'],['猜結果','做完才說「我早就知道」','先寫下猜測，再看結果'],['犯錯','錯了就怪自己或別人','找找哪裡出問題'],['學習','看懂就以為會了','自己做做看，錯的再練'],['用AI','叫電腦寫完就交','自己檢查、自己想一想'],['改進','沒用的方法一直更用力做','換個方法試試看'],['開始','等心情好才要開始','先做一個很小的步驟'],['生氣','生氣時馬上傳訊息','等冷靜了再說'],['整理','只買新東西，不整理舊的','定時清掉不用的'],['休息','覺得休息是偷懶','休息是在幫身體充電'],['求助','卡住了也不說','告訴老師或家人哪裡卡住'],['回想','一天很忙，不知道做了什麼','睡前想想今天完成了什麼'],['被批評','別人一句話就難過好久','想想哪些話能幫我進步'],['比較','拿自己的開始比別人的成果','跟昨天的自己比'],['想要','每個想要都一定要','分清楚「需要」和「想要」'],['成功','只看分數和獎狀','也看自己快不快樂、健不健康'],['答應','為了當好人什麼都答應','做得到的才答應'],['失敗','把失敗藏起來','記下來，下次就知道'],['不知道','急著亂猜一個答案','說「我還不知道」，再去查'],['改主意','覺得改主意很丟臉','有新發現就可以改'],['幫忙','幫到最後別人都靠我','教他自己學會做'],['做有意義的事','只想被別人需要','做自己覺得有價值的事'],['訊息','一有訊息就馬上看','集中一段時間一起看'],['待辦','要做的事散在腦袋裡','寫在同一本小本子'],['工具','一遇到問題就買新東西','先用手邊有的'],['版本','好幾份都叫「最新版」','寫上日期'],['從哪學來','只記答案，忘了哪裡看到','記下是從哪裡學來的'],['交接','事情只有一個人記得','寫下步驟，大家都看得懂'],['開會','說很多卻沒有決定','最後說好誰做什麼、何時做完'],['分工','每個人都做一點，沒人負責','每件事有一個負責的人'],['等待','什麼都要等一個人說好','說好哪些事可以自己決定'],['備用','只有一個辦法','多準備一個辦法'],['問題','還沒搞懂就急著找答案','先說清楚想解決什麼'],['原因','兩件事一起發生就說有關','多想想還有沒有別的原因'],['記錄','只記花了多少時間','也記做出了什麼'],['實驗','一次改很多樣','一次只改一樣'],['不一樣','遇到不一樣的就不理','想想為什麼不一樣'],['意見','只想聽稱讚','問問哪裡不好用'],['每個人不同','別人有效，我一定有效','看看自己適不適合'],['記憶','憑感覺說「每次都這樣」','記下次數再說'],['停下來','沒效也一直做','先說好什麼時候要換方法'],['猜得準','解釋很多，卻一直猜錯','看看下次能不能猜得更準'],['準備','一直準備，都不開始','先做一點點，再補工具'],['太難','第一天就訂超難的目標','從做得到的開始'],['拖拉','一直罵自己不要拖','找出是太難、太大，還是害怕'],['中斷','一天沒做就整個放棄','明天再從小步驟開始'],['收尾','做到一半就放著','做完、收好，再休息'],['說話','一次把不開心全倒出來','說一件事和一個請求'],['吵架','一直要證明自己對','想想我們要解決什麼'],['買東西','用買東西代替做事','先想想真的會用嗎'],['恢復','累了還一直加油','累了就少做一點，先休息'],['寫東西','寫很多但重複又亂','整理好，刪掉重複的']],
+behEnd:[['🤔 每天問自己三個問題','今天什麼事讓我變累、變亂？','今天什麼事讓我變得更好？今天哪件事告訴我，要換個方法？'],['⚠️ 容易搞錯的地方','很忙不等於很棒，要看有沒有做出東西。整齊不等於好用，要看找不找得到。','休息不是偷懶，是在充電。新想法一開始有點亂沒關係。規則太多也會累，要簡單一點。']],
+t39:[['亂是開始，整理是智慧','吵架後想想發生什麼事，下次就能做得更好。'],['記憶會影響現在','以前被笑過，不代表現在別人也在笑我。'],['生命要吃也要休息','吃飯、睡覺、休息，身體才有力氣修理自己。'],['小問題會變大問題','收據不收好，月底就要花好多時間找。'],['一千個整理方法','大人想把整理的方法寫成很多條，方便查。（資料還在整理中）'],['七個好習慣、五個動作','睡覺、吃好、散步、學習、寫字、修行、想通；整理、濃縮、對一對、寫回去、更新。'],['健康十個主題','睡眠、小電池、肚子……一次只觀察一個就好。'],['不浪費力氣','做一個好用的表格，下次直接拿來用。'],['少一點壓力','把誰負責什麼寫清楚，就不用一直提醒別人。'],['睡得好','記錄睡眠，一次只改一件事。'],['存生命力','每天記一件休息的事、一件學會的事、一件累的事。'],['讓神經放鬆','收到訊息先停一下，再決定要不要馬上回。'],['五行小分類','用木火土金水幫心情取名字，再想想可以怎麼做。'],['亂滑手機會變亂','打開手機前，先想好要做什麼。'],['亂亂和整齊比一比','專心做、分類收、留時間整理、把需要說清楚。'],['人生也要整理','每週選一件最需要整理的事。'],['六十個生活小方法','整理空間、整理想法、整理和朋友的關係。（原文還沒整理完）'],['整理小外掛','用記事本記下來，不用全部放在腦袋裡。'],['創造整齊的六十個方法','每天整理一點點，比一直堆東西好用。（原文還沒整理完）'],['把經驗變成故事','把自己的經驗寫下來，別人也學得會。'],['把知識變成方法','文法變成三步驟：找主詞、找動詞、看怎麼連接。'],['把步驟變成系統','作業沒交：登記、提醒、補交、完成。'],['換一句話說','「我不會英文」→「我看長句子還常看錯」。'],['整理的力氣','看看哪裡停下來了，把它修好。'],['二十六塊想法積木','拖拉不是個性壞，可能是太難、太累或沒方向。'],['生命會自己長','做完一件事，也學到一個新本領。'],['大家互相影響','我怎麼回應，會影響別人下一次怎麼做。'],['智慧是濃縮','一百題錯題，整理成幾種常犯的錯。'],['目標、檢查、修正','想讀懂長句子 → 找出錯在哪 → 練那一種題目。'],['信仰也能整理生活','讀經、禱告、感恩、休息，每天對一對方向。'],['三十六課和二十七層','把心裡的問題找到它的位置，再慢慢練習。'],['重要的事放前面','別人請我幫忙，先想想我做不做得到。'],['自由是能換新做法','被批評時，聽有用的話，也保護好自己。'],['整理也要花力氣','想想整理完是不是真的更好用。（資料還在整理中）'],['新發現讓我更聰明','跟以前想的不一樣時，就改一改想法。（資料還在整理中）'],['要有進也有出','團隊要聽到新消息，問題也要說得出來。（資料還在整理中）'],['AI 和更新','做事時記下目標、做到哪裡、最新的決定。（資料還在整理中）'],['學了要會用','看懂答案後，換一題自己做做看。（資料還在整理中）'],['把大問題切小','「我什麼都做不好」→ 拆成三件小事，先做一件。（資料還在整理中）']]
+};
+const DAILY=['我有按時睡覺嗎？','我今天有動一動嗎？','我有吃蔬菜和好的食物嗎？','我有休息一下嗎？','讓我煩惱的事，我有處理或說出來嗎？','我有少滑一點手機嗎？','我有完成一件重要的事嗎？','我有和家人朋友好好相處嗎？','我有發現一個想錯的地方嗎？','我有改掉一個小壞習慣嗎？'];
+const ROOMS=['身體房','大腦房','知識房','說話房','心情房','時間房','做事房','朋友房','零用錢房','環境房','我是誰房','智慧房'];
+const POSTS=[
+{type:'生活覺醒',who:'一直硬撐、不敢休息',title:'越用力，越混亂？——你缺的不是力氣，是整理',prop:'秩序不是用力撐出來的，\n而是溫柔整理出來的。',
+secs:[['亂，是世界的本性；整理，是人的選擇','萬物都在變亂，\n唯有整理，\n讓生活重新有光。'],['硬撐不是堅強，是把問題往後推','你以為在前進，\n其實只是在借\n未來的力氣。'],['大掃除會累垮人，小整理才救得了人','改變不是一場暴雨，\n而是每天\n一點點的細雨。'],['休息不是退後，是為了走得更遠','懂得停下來的人，\n才走得到遠方。']],
+practice:'今晚只整理一個最小的地方：\n一個抽屜、一個包包。\n然後對自己說：\n「我今天，有照顧自己一點點。」',
+end:'生活會亂，\n這是時間的事；\n生活能被整理，\n這是你的事。\n不必更用力，\n只要更溫柔。',
+body:`晚上十一點，她洗完最後一個碗，終於坐下來。身體說：「去睡吧。」心卻說：「再滑一下，這是我唯一的時間。」於是，最累的人，熬得最晚。
+
+早上八點，他灌下第二杯咖啡。昨天發誓要早睡，今天又在會議室裡打瞌睡。他對自己說：「再努力一點就好。」可是努力了一年，他只是更累了。
+
+週末午後，一位媽媽打開衣櫃，衣服像雪崩一樣掉下來。她站了很久，關上門，說：「下次吧。」下次，就這樣過了一年。
+
+我們都相信一件事：亂，是因為不夠努力。
+可是，如果努力就能解決，為什麼最努力的人，往往最疲憊？
+如果撐下去就會變好，為什麼撐得越久，崩得越重？
+會不會，我們把力氣，用錯了地方？
+
+一、亂，是世界的本性；整理，是人的選擇
+花不澆會枯，房不掃會亂，身體不休息會垮。這不是懲罰，是時間的規律。
+所以，亂不是罪名，是提醒；累不是失敗，是訊號。
+不是你不夠好，是你太久沒有被好好照顧。
+「萬物都在變亂，唯有整理，讓生活重新有光。」
+
+二、硬撐不是堅強，是把問題往後推
+少睡一小時，明天用兩杯咖啡還；忍下一句委屈，下個月用一場爭吵還；今天不肯停，明天就被迫停。
+撐，看起來很勇敢；其實，只是把今天的帳，寫在明天的名下。
+「你以為在前進，其實只是在借未來的力氣。」
+
+三、大掃除會累垮人，小整理才救得了人
+一次整理全部，三天就放棄；一天整理一點，一年就不同。
+大，讓人害怕；小，讓人開始。
+那位媽媽後來每天只整理一層。一個月後，衣櫃整齊了，她的嘆氣也少了。
+「改變不是一場暴雨，而是每天一點點的細雨。」
+
+四、休息不是退後，是為了走得更遠
+手機沒電要充，車子沒油要加，那人呢？
+我們記得手機的電量，卻忘了自己的；我們心疼別人的疲憊，卻責怪自己的。
+「懂得停下來的人，才走得到遠方。」
+
+【今天的小練習】
+今晚只整理一個最小的地方：一個抽屜、一個包包、一個資料夾。然後對自己說：「我今天，有照顧自己一點點。」
+
+那個深夜滑手機的女生，後來把「屬於自己的時間」搬到早晨：一杯茶，一扇窗，十分鐘的安靜。
+她才發現，她要的從來不是手機，
+是一段，不必再撐的時間。
+
+生活會亂，
+這是時間的事；
+生活能被整理，
+這是你的事。
+不必更用力，
+只要更溫柔。`},
+{type:'數字清單',who:'情緒一來就失控，事後後悔',title:'你以為你在發脾氣，其實你是在求救',prop:'情緒不是敵人，\n它是一封\n還沒拆開的信。',
+secs:[['吼出口的，常常不是憤怒，是疲憊','你吼的是孩子，\n痛的是自己。'],['嘴巴想要的不是零食，是擁抱','餓的不是胃，\n是心。'],['讓你痛的不是事實，是你寫的劇本','事情只有一行字，\n恐懼卻寫成\n一本小說。'],['慢三秒，不是軟弱，是把方向盤拿回來','先呼吸，再說話；\n先看見，再回應。']],
+practice:'下次情緒來時，\n先問自己一句：\n「這封信，想告訴我什麼？」\n是累了？怕了？還是委屈了？',
+end:'情緒會敲門，\n這沒有錯；\n你可以不開門就吼，\n也可以先問一聲：\n「是誰？\n你想告訴我什麼？」',
+body:`孩子把牛奶打翻在剛擦好的地板上。她還來不及想，聲音已經衝出口：「你為什麼每次都這樣！」孩子嚇得不敢動，她的心卻比孩子更痛。
+
+他傳出一則訊息，等了一整個下午。對方已讀，沒回。他越想越慌：「我是不是說錯話？他是不是討厭我？」一句沒回的訊息，偷走了他一整夜的睡眠。
+
+加班到深夜，她打開冰箱，拿出一包餅乾，一片，又一片。吃到最後才發現，自己一點也不餓。
+
+我們都說：我脾氣不好，我自制力太差。
+可是，真的是我們太壞，還是我們太累？
+我們真的在對別人生氣嗎？還是在對那個無能為力的自己生氣？
+如果情緒是一封信，我們有沒有，哪怕一次，好好讀過它？
+
+一、吼出口的，常常不是憤怒，是疲憊
+牛奶打翻只是一秒，壓在心上的，卻是一整天、一整年的累。
+我們以為自己在生孩子的氣，其實是在對生活喊：「我撐不住了。」
+所以，責怪自己沒有用，照顧自己才有用。
+「你吼的是孩子，痛的是自己。」
+
+二、嘴巴想要的不是零食，是擁抱
+心空了，手就忙了；人孤單了，嘴巴就饞了。
+我們用食物填洞，用購物填洞，用滑手機填洞；洞越填越大，心越填越空。
+下次伸手之前，問自己：我是肚子餓，還是心裡累？
+「餓的不是胃，是心。」
+
+三、讓你痛的不是事實，是你寫的劇本
+事實是：他還沒回。
+劇本是：他討厭我、他看不起我、我又搞砸了。
+事實只有一行，劇本卻有一百頁；事實很安靜，劇本卻很吵。
+「事情只有一行字，恐懼卻寫成一本小說。」
+
+四、慢三秒，不是軟弱，是把方向盤拿回來
+衝出口，很快；收回來，很難。
+吸一口氣，數到四，再吐出來。這三秒，不是退讓，是讓自己重新坐回駕駛座。
+「先呼吸，再說話；先看見，再回應。」
+
+【今天的小練習】
+下次情緒來時，先問自己一句：「這封信，想告訴我什麼？」是累了？怕了？還是委屈了？讀懂它，你就不必用吼的。
+
+後來，孩子又打翻了東西。她深吸一口氣，蹲下來，輕輕說：「我們一起擦。」
+孩子愣了一下，笑了。
+那一刻她明白：牛奶沒變，地板沒變，
+變的，是她讀懂了自己。
+
+情緒會敲門，
+這沒有錯；
+你可以不開門就吼，
+也可以先問一聲：
+「是誰？
+你想告訴我什麼？」`},
+{type:'經典轉譯',who:'一直重複同樣的人生',title:'你不是走錯路，你只是太熟悉這條路——讀「順生人，逆成仙」',prop:'順著走，是本能；\n轉身，才是選擇。',
+secs:[['熟悉的，不一定是對的','最難改的不是壞習慣，\n是熟悉的習慣。'],['逆，不是對抗，是看見','停下來的那一刻，\n你就有了選擇。'],['仙，不在天上，在清醒的心裡','清楚，\n就是一種自由。'],['一次轉身，就是一條新路','新的路，\n不是想出來的，\n是走出來的。']],
+practice:'找一個最常重複的習慣，寫下：\n它什麼時候出現？\n出現時，我能換成哪個小動作？\n明天，只試一次。',
+end:'順水而下，\n是河的方向；\n逆流而上，\n是魚的回家。\n你不必對抗整條河，\n只要記得，\n自己要去哪裡。',
+body:`每個週五，他都說：「這週末一定早睡、一定運動。」每個週一，他都說：「下週一定。」一年說了五十次，路還是同一條路。
+
+她和每一任男友分手的理由都一樣：他不夠在乎我。朋友輕聲問：「會不會，你一直在等別人證明你值得被愛？」那一晚，她沉默得像一面鏡子。
+
+一位爸爸好想靠近兒子，可是一開口，就變成當年父親罵他的語氣。他恨那種語氣，卻一字不差地，傳了下去。
+
+我們都想改變，卻總在原地繞圈。
+是我們不夠努力，還是那條路太熟了，熟到腳會自己走？
+是我們不想離開，還是從來沒發現，自己一直在同一個路口轉同一個彎？
+如果想走出來，要往哪裡走？
+
+古人說：「順生人，逆成仙。」
+這原是修行的話。今天，我們不談飛天成仙，只讀它留給生活的提醒。
+
+一、熟悉的，不一定是對的
+餓了就吃，累了就滑，被罵就回嘴。順著走，最輕鬆，因為不必想。
+可是，輕鬆的路，常常也是困住我們的路；熟悉的聲音，常常也是傷害我們的聲音。
+那位爸爸不是不愛，他只是順著小時候聽見的語氣，走了幾十年。
+「最難改的不是壞習慣，是熟悉的習慣。」
+
+二、逆，不是對抗，是看見
+「逆」聽起來很苦，像在逼自己、壓自己。其實不是。
+逆，不是跟自己打仗，是在習慣要接手的那一秒，停下來問：「我真的要這樣嗎？」
+河裡的魚多半順水而游，可是要回家時，牠會轉身。不是為了跟河吵架，是因為牠知道自己要去哪裡。
+「停下來的那一刻，你就有了選擇。」
+
+三、仙，不在天上，在清醒的心裡
+我們不必離開人間，也能活得像仙：心更清楚，步伐更穩，不再被情緒牽著走。
+那個等人證明愛的女生，開始問自己：「我能不能先好好待自己？」她沒有立刻遇見對的人，卻先遇見了不慌的自己。
+「清楚，就是一種自由。」
+
+四、一次轉身，就是一條新路
+不必一夜翻轉人生。想回嘴時，先吸一口氣；想熬夜時，早半小時關燈；想說「我就是這樣」時，改成「我正在學」。
+一次轉身，是一個腳印；一百個腳印，就是一條路。
+「新的路，不是想出來的，是走出來的。」
+
+【今天的小練習】
+找一個你最常重複的習慣，寫下：它什麼時候出現？出現時，我能換成哪個小動作？明天，只試一次。
+
+那位爸爸開始在開口前，先問一句：「今天還好嗎？」
+第一次，兒子說「還好」；第五次，兒子說起了學校的事。
+那條傳了三代的路，在他這裡，轉了一個彎。
+
+順水而下，
+是河的方向；
+逆流而上，
+是魚的回家。
+你不必對抗整條河，
+只要記得，
+自己要去哪裡。`},
+{type:'哲學與AI',who:'害怕犯錯，一錯就否定自己',title:'導航從不罵你笨，你為什麼要罵自己？',prop:'錯誤不是你的答案，\n而是你的路標。',
+secs:[['錯，是路標，不是判決','錯誤告訴你路在哪裡，\n不是告訴你\n你是誰。'],['會改的，比不錯的更強','不是不跌倒的人強，\n是跌倒了\n還願意站起來的人。'],['舊地圖，到不了新地方','拿著舊地圖，\n到不了新地方。'],['機器會重算，人更值得被溫柔','對自己說話，\n就像對你\n最愛的人說話。']],
+practice:'今天犯了小錯，\n把責怪自己的話寫下，\n改成「導航版」：\n「我真笨」→\n「這裡還沒學會，下次多看一遍」',
+end:'人生沒有\n一條不轉錯的路；\n真正的勇敢，\n是錯了以後，\n還能輕輕地說：\n「重新規劃路線。」',
+body:`考卷發下來，滿滿的紅字。她把考卷翻過去，像要把自己也藏起來：「我就知道，我果然很笨。」
+
+他第一次上台，講到一半忘詞，台下傳來一聲笑。從此，每一次開口，他都先聽見那聲笑；每一個機會，他都讓給了別人。
+
+她第一次煮湯，鹹了。先生只說了一句「有點鹹」，她卻整晚不說話：「我連這個都做不好。」
+
+我們好怕錯。錯一題，就覺得整個人都錯了。
+可是，錯了，真的代表我不好嗎？
+如果錯誤那麼可怕，為什麼沒有一個人，從來不錯？
+有沒有可能，錯誤不是來懲罰我們，而是來帶路的？
+
+先做一個小小的思想實驗。
+你開車轉錯了路口，手機導航會說什麼？
+它不會說：「你這個笨蛋。」它只會說：「重新規劃路線。」
+它不責怪、不翻舊帳、不停在原地難過，只問一件事：下一個路口，怎麼走？
+
+一、錯，是路標，不是判決
+導航知道你轉錯，是因為「你在哪裡」和「你要去哪裡」不一樣了。這個不一樣，就是錯誤。
+紅字不是在說「你不行」，而是在說「這裡，還沒學會」。
+判決讓人停下，路標讓人前進。
+「錯誤告訴你路在哪裡，不是告訴你你是誰。」
+
+二、會改的，比不錯的更強
+今天很多聰明的電腦程式，都是錯了千萬次、改了千萬次，才越來越聰明。沒有人說它笨，因為大家知道：改，就是它學習的方式。
+小孩學走路，跌倒一百次，沒有人說他失敗，只說他在學。
+為什麼對機器、對孩子那麼寬容，對自己卻那麼嚴厲？
+「不是不跌倒的人強，是跌倒了還願意站起來的人。」
+
+三、舊地圖，到不了新地方
+導航改得快，因為它願意放下舊路線；人改得慢，因為我們緊抓著舊想法：「我一直都這樣」「我就是不會說話」。
+那個怕上台的男生，心裡的地圖還停在被笑的那一天。地圖不更新，他就永遠走在那一天。
+「拿著舊地圖，到不了新地方。」
+
+四、機器會重算，人更值得被溫柔
+導航不會痛，所以它不需要安慰；可我們會痛、會怕、會難過，所以更需要一句溫柔的話。
+同樣一鍋鹹湯，「我什麼都做不好」讓人沉默一整晚；「下次鹽少放一點」，讓人明天再試一次。
+「對自己說話，就像對你最愛的人說話。」
+
+【今天的小練習】
+今天只要犯了一個小錯，就把心裡責怪自己的那句話寫下來，再改寫成「導航版」：「我真笨」，改成「這裡還沒學會，下次多看一遍」。
+
+後來，她把考卷翻回來，一題一題看。下一次考試，她還是有錯，
+可是她說：「至少，我知道該往哪裡走了。」
+
+人生沒有
+一條不轉錯的路；
+真正的勇敢，
+是錯了以後，
+還能輕輕地說：
+「重新規劃路線。」`},
+{type:'生活覺醒',who:'覺得人生一團亂，不知道從哪裡開始',title:'人生亂成一團時，你只需要打開一扇門',prop:'人生不是一次整理好的，\n是一間一間\n點亮的。',
+secs:[['看見全部讓人窒息，看見一間讓人呼吸','看見全部，讓人害怕；\n看見一間，\n就能開始。'],['房間之間有門：亂會走路，光也會','一間房亮了，\n隔壁的\n也會跟著亮。'],['從最容易的那一間開始','先求亮一盞燈，\n不求亮整棟樓。'],['空出來的房間，是給新的自己','空，\n不是失去，\n是留給新的自己。']],
+practice:'畫十二個格子：\n身體、心情、時間、朋友、錢……\n每格給一到五顆星，\n只選一格，\n寫下明天能做的一件小事。',
+end:'人生不會一次整理好，\n你也不必。\n今天，\n先打開一扇門，\n把一間房的燈，\n點亮。',
+body:`書桌上，帳單、聯絡簿、沒回的訊息、明天要交的報告，堆成一座小山。她深吸一口氣，然後拿起手機，滑了一個小時。事情一件也沒少，心卻更重了。
+
+他覺得什麼都不對：工作卡住，夫妻常吵，存款變少，身體變重。半夜躺在床上，他問天花板：「我的人生，是不是整個壞掉了？」
+
+一位剛退休的阿姨說，孩子大了，工作沒了，鬧鐘不必響了。她卻在最自由的日子裡，第一次不知道自己是誰。
+
+當所有事一起亂掉，人最常做的不是解決，是愣住。
+為什麼事情越多，我們越動不了？
+是我們能力不夠，還是我們想一口氣，整理整棟房子？
+如果把人生分成一間一間的房間，會不會，終於知道從哪裡開始？
+
+一、看見全部讓人窒息，看見一間讓人呼吸
+身體是一間，心情是一間，時間是一間；家人、朋友、金錢、工作、「我是誰」，也都是一間間房。
+每間房都會亂，這很正常；同時看著十間亂房，誰都會腿軟。
+那個愣住的女生不是不會做事，她只是一次看了太多扇門。
+「看見全部，讓人害怕；看見一間，就能開始。」
+
+二、房間之間有門：亂會走路，光也會
+身體那間亂了，睡不好；心情那間就跟著亂；心情一亂，家人那間也開始吵。
+亂會沿著門縫走路，好消息是：光也會。
+那位先生後來發現，一切是從半年前天天熬夜開始的。不是整棟房壞了，是一間房的亂，走進了其他房間。
+「一間房亮了，隔壁的也會跟著亮。」
+
+三、從最容易的那一間開始
+不要先挑最難的那扇門。先選一間，整理一點就看得見光的。
+早點睡，是一盞燈；把桌上分成三疊，是一盞燈；傳一句「謝謝你」，也是一盞燈。
+那位先生先點亮的是身體那間：十一點前關燈。兩週後，他吵架少了，說話也溫柔了。
+「先求亮一盞燈，不求亮整棟樓。」
+
+四、空出來的房間，是給新的自己
+那位阿姨的房間裡，原本貼滿「媽媽」「員工」的標籤。標籤撕下來，房間空了。
+空，看起來像失去；其實，是騰出位置。她開始學畫，每週到公園陪孩子讀故事。
+「空，不是失去，是留給新的自己。」
+
+【今天的小練習】
+拿一張紙畫十二格：身體、腦袋、學習、說話、心情、時間、做事、朋友、錢、環境、我是誰、想法。每格給一到五顆星，只選一格，寫下明天能做的一件小事。
+
+後來，那個女生只選了「時間」那一格，隔天先把最急的一件事做完。
+事情沒有變少，
+她卻不再愣住了。
+
+人生不會一次整理好，
+你也不必。
+今天，
+先打開一扇門，
+把一間房的燈，
+點亮。`},
+{type:'數字清單',who:'過度討好，替所有人扛',title:'你對全世界溫柔，為什麼唯獨對自己殘忍？',prop:'愛別人，\n不等於替別人活。',
+secs:[['分清楚：這是誰的責任','你扛起所有人，\n誰來扛起你？'],['先看電量，再說好','做得到才答應，\n是對別人誠實，\n也是對自己溫柔。'],['最好的幫忙，是讓人站起來','讓人站起來，\n比一直扶著他\n更好。'],['說出累，不是抱怨，是誠實','你不說，\n別人就以為\n你永遠不會累。'],['休息不是自私，是把自己放回生命裡','把自己，\n放回\n自己的生命裡。']],
+practice:'今天練習說一次：\n「我想一下再回你。」\n不一定要拒絕，\n只是給自己一點空間，\n聽聽心裡的聲音。',
+end:'你的好，很珍貴。\n所以別把它全部送光，\n留一些，\n給那個一直付出、\n也很需要被疼的\n自己。',
+body:`同事把報告推過來：「你最厲害了，幫我看一下嘛。」她笑著說好。別人準時下班，她加班到九點。她的好，成了別人的方便。
+
+家族聚會，他接送長輩、訂位、收拾。大家吃得熱熱鬧鬧，他吃到的，都是涼掉的菜。回家的路上，他忽然好委屈，卻說不出為什麼。
+
+朋友半夜來電哭訴，她陪著聽到凌晨兩點。隔天頭痛欲裂，她還安慰自己：「朋友需要我啊。」可是，那個需要被陪的她，誰來陪？
+
+我們以為：對別人好，別人就會喜歡我；大家開心，我就安全了。
+可是，如果你對每個人都好，誰來對你好？
+那些「好」，是真心想給，還是害怕被討厭？
+有沒有一種溫柔，是不用拿自己去換的？
+
+一、分清楚：這是誰的責任
+舊習慣：別人的問題，全部接過來。
+新理解：替別人扛，對方學不會長大，你卻先倒下。幫忙是禮物，扛起一切卻是枷鎖。
+行動：下次有人求助，先問自己：「這是誰的事？我能幫的是哪一塊？」
+「你扛起所有人，誰來扛起你？」
+
+二、先看電量，再說好
+舊習慣：為了當好人，什麼都答應。
+新理解：力氣像手機電量，每答應一件，就少一格。電量歸零的人，給不出任何溫暖。
+行動：練習說：「我想一下再回你。」給自己五分鐘，看看還剩多少電。
+「做得到才答應，是對別人誠實，也是對自己溫柔。」
+
+三、最好的幫忙，是讓人站起來
+舊習慣：每次都幫到底，最後大家都靠你。
+新理解：扶一次，是幫忙；扶一輩子，是綁住。真正的幫助，讓人越來越有力，不是越來越離不開你。
+行動：下次可以說：「我教你我怎麼做，你試試看。」
+「讓人站起來，比一直扶著他更好。」
+
+四、說出累，不是抱怨，是誠實
+舊習慣：撐到極限，才在某天為小事爆炸。
+新理解：沒說出口的委屈不會消失，只會悄悄堆高。你的沉默，不是體貼，是讓別人永遠看不見你。
+行動：「我最近有點累，這次可以換別人幫忙嗎？」
+「你不說，別人就以為你永遠不會累。」
+
+五、休息不是自私，是把自己放回生命裡
+舊習慣：一休息，就覺得對不起大家。
+新理解：照顧好自己，不是背叛別人，是讓愛能走得更久。
+行動：這週留一個小時，只為自己。
+「把自己，放回自己的生命裡。」
+
+【今天的小練習】
+今天練習說一次：「我想一下再回你。」不一定要拒絕，只是給自己一點空間，聽聽心裡真正的聲音。
+
+下一次聚會前，那位先生鼓起勇氣說：「這次我想好好吃頓飯，接送可以輪流嗎？」
+沒想到，大家都說好。
+那一晚，他第一次吃到熱騰騰的菜，
+也第一次發現：被照顧，原來這麼暖。
+
+你的好，很珍貴。
+所以別把它全部送光，
+留一些，
+給那個一直付出、
+也很需要被疼的
+自己。`}
+];
+const WEEK=['我想變好的事','現在是什麼樣子？','這週只做一件小事','我猜一週後會怎樣？','一週後，真的怎樣了？','猜的和真的差在哪裡？','下週要繼續，還是換方法？'];
+
+// ===== 工具 =====
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const reEsc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+function today(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
+const SK='lifeos-soup-kids-v1';let ST={};try{ST=JSON.parse(localStorage.getItem(SK)||'{}')||{}}catch(e){ST={}}
+const save=()=>{try{localStorage.setItem(SK,JSON.stringify(ST))}catch(e){}};
+const card=(h,lines,cls)=>'<div class="card'+(cls?' '+cls:'')+'" data-t="'+esc(h)+'"><h3>'+esc(h)+'</h3>'+lines.filter(Boolean).map(l=>'<p>'+esc(l)+'</p>').join('')+'</div>';
+const sec=o=>'<h2>'+o.t+'</h2><p class="lead">'+o.lead+'</p><div class="grid">'+o.cards.map(c=>card(c[0],[c[1],c[2]])).join('')+'</div>';
+
+const TABS=[['home','🏡 首頁'],['what','🧹 熵是什麼'],['body','🦸 身體小幫手'],['day','🌞 每天好事'],['magic','🪄 五個魔法'],['rooms','🏠 十二個房間'],['beh','🔄 亂亂vs整齊'],['t39','📖 39個小故事'],['quotes','🍲 金句雞湯'],['posts','📣 臉書圖文'],['check','⭐ 小星星檢查']];
+$('#tabs').innerHTML=TABS.map(([id,n])=>'<button type="button" data-tab="'+id+'">'+n+'</button>').join('');
+$('#main').innerHTML=TABS.map(([id])=>'<section class="panel" id="p-'+id+'" hidden></section>').join('');
+const P=id=>document.getElementById('p-'+id);
+
+P('home').innerHTML='<div class="soup"><div class="bowl">🍲</div><div class="say" id="say"></div><button type="button" class="btn pri" id="more">再喝一碗雞湯</button></div>'+
+ '<div class="card" style="margin-top:16px" data-t="今天的小提醒"><h3>今天的小提醒</h3><p>時間一直走，身體和生活會慢慢變亂；我們每天做一點好事，就能把它整理好。</p><p>看一看 → 猜一猜 → 試試看 → 看結果 → 改一改 → 再試一次。</p></div>'+
+ '<div class="links">'+TABS.slice(1).map(([id,n])=>{const m=n.split(' ');return '<button type="button" data-go="'+id+'"><span>'+m[0]+'</span>'+m.slice(1).join(' ')+'</button>'}).join('')+'</div>';
+['what','body','day','magic','rooms'].forEach(k=>P(k).innerHTML=sec(D[k]));
+P('beh').innerHTML='<h2>🔄 亂亂的做法 vs 整齊的做法</h2><p class="lead">64 張小卡，看看自己比較像哪一邊。</p><div class="grid">'+
+ D.beh.map((b,i)=>'<div class="card" data-t="'+esc((i+1)+'. '+b[0])+'"><h3><span class="no">'+(i+1)+'</span>'+esc(b[0])+'</h3><div class="bad">😵 '+esc(b[1])+'</div><div class="good">🌱 '+esc(b[2])+'</div></div>').join('')+
+ D.behEnd.map(c=>card(c[0],[c[1],c[2]],'full')).join('')+'</div>';
+P('t39').innerHTML='<h2>📖 39 個小故事</h2><p class="lead">大人研究的 39 個題目，用一句話說給你聽。</p><div class="grid">'+D.t39.map((c,i)=>'<div class="card" data-t="'+esc((i+1)+'. '+c[0])+'"><h3><span class="no">'+(i+1)+'</span>'+esc(c[0])+'</h3><p>'+esc(c[1])+'</p></div>').join('')+'</div>';
+P('quotes').innerHTML='<h2>🍲 金句雞湯</h2><p class="lead">每天挑一句，放在心裡。</p><div class="grid">'+D.quotes.map((q,i)=>'<div class="card" data-t="金句 '+(i+1)+'"><p><span class="no">'+(i+1)+'</span>'+esc(q)+'</p></div>').join('')+'</div>';
+// ===== 臉書圖卡（1080×1350，可下載 PNG） =====
+const PAL=[['#fde8cf','#f7c99b','#4a3222','#c4581f'],['#e3f1ea','#b9dccb','#22413a','#2f8466'],['#e9e4f6','#c9bfe8','#30284d','#6a4fb3'],['#e2eef8','#b7d3ec','#1f3550','#2d6aa8'],['#fbe7e7','#f1c2c0','#4d2626','#b8473f'],['#fff3cf','#f6dc8e','#4a3b12','#a77b0c']];
+const FONT='"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif';
+const cardsOf=p=>[{k:'cover'}].concat(p.secs.map(s=>({k:'sec',h:s[0],q:s[1]})),[{k:'practice'},{k:'end'}]);
+function wrapText(ctx,text,maxW){const out=[];const NOHEAD='，。、；：？！」』）…—';
+ String(text).split('\n').forEach(par=>{let line='';for(const ch of par){const tryL=line+ch;if(ctx.measureText(tryL).width>maxW&&line){if(NOHEAD.includes(ch)){line=tryL;continue}out.push(line);line=ch}else line=tryL}out.push(line)});return out}
+function block(ctx,lines,x,yc,lh,align){ctx.textAlign=align||'center';const h=lines.length*lh;let y=yc-h/2+lh*0.72;lines.forEach(l=>{ctx.fillText(l,x,y);y+=lh});return yc+h/2}
+function drawCard(cv,p,pi,card,ci,n){const W=1080,H=1350;cv.width=W;cv.height=H;const c=cv.getContext('2d');const [b1,b2,ink,acc]=PAL[pi%PAL.length];
+ const g=c.createLinearGradient(0,0,W,H);g.addColorStop(0,b1);g.addColorStop(1,b2);c.fillStyle=g;c.fillRect(0,0,W,H);
+ c.globalAlpha=.18;c.fillStyle='#fff';c.beginPath();c.arc(W-120,170,260,0,7);c.fill();c.beginPath();c.arc(90,H-150,200,0,7);c.fill();c.globalAlpha=1;
+ c.fillStyle=acc;c.font='bold 34px '+FONT;c.textAlign='left';c.fillText('🍲 逆熵心靈雞湯｜'+p.type,80,110);c.textAlign='right';c.fillText((ci+1)+' / '+n,W-80,110);
+ c.fillStyle=acc;c.fillRect(80,140,120,8);
+ c.fillStyle=ink;
+ if(card.k==='cover'){let fs=80,L;for(fs of [80,74,68,62,56]){c.font='bold '+fs+'px '+FONT;L=wrapText(c,p.title.replace('——','\n——'),W-180);if(L.every(l=>l.length>3))break}const end=block(c,L,W/2,560,Math.round(fs*1.4));
+   c.fillStyle=acc;c.fillRect(W/2-60,end+60,120,6);c.fillStyle=ink;c.font='58px '+FONT;block(c,wrapText(c,p.prop,W-220),W/2,end+300,88)}
+ else if(card.k==='sec'){c.fillStyle=acc;c.font='bold 46px '+FONT;const end=block(c,wrapText(c,card.h,W-200),W/2,380,68);
+   c.fillStyle=ink;c.font='bold 140px '+FONT;c.globalAlpha=.22;c.textAlign='left';c.fillText('「',120,end+200);c.globalAlpha=1;
+   c.font='bold 82px '+FONT;block(c,wrapText(c,card.q,W-220),W/2,Math.max(end+400,800),124)}
+ else if(card.k==='practice'){c.fillStyle=acc;c.font='bold 60px '+FONT;c.textAlign='center';c.fillText('✏️ 今天的小練習',W/2,400);c.fillStyle=ink;c.font='54px '+FONT;block(c,wrapText(c,p.practice,W-220),W/2,800,90)}
+ else{c.font='bold 68px '+FONT;block(c,wrapText(c,p.end,W-220),W/2,740,106)}
+ c.fillStyle=ink;c.globalAlpha=.7;c.font='32px '+FONT;c.textAlign='center';c.fillText('每天一點點，把生活整理回來',W/2,H-80);c.globalAlpha=1}
+function saveCanvas(cv,name){cv.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),3000)},'image/png')}
+P('posts').innerHTML='<h2>📣 臉書圖文貼文</h2><p class="lead">每篇有一組圖卡（臉書直式 1080×1350）和一篇長文。下載圖卡、複製文字，一起貼上臉書就是圖文貼文。</p>'+
+ POSTS.map((p,i)=>{const n=cardsOf(p).length;return '<div class="card post" data-t="'+esc(p.title)+'" style="margin-bottom:14px"><p><span class="tg">'+esc(p.type)+'</span><span class="tg">寫給：'+esc(p.who)+'</span><span class="tg">約 '+p.body.replace(/\s/g,'').length+' 字</span><span class="tg">'+n+' 張圖卡</span></p><h3>'+esc(p.title)+'</h3><p class="lead" style="white-space:pre-line">命題：'+esc(p.prop.replace(/\n/g,''))+'</p><p><button type="button" class="btn pri cp" data-i="'+i+'">複製貼文</button> <span class="cpok msg"></span></p>'+
+ '<details class="imgs" data-i="'+i+'"><summary>看圖卡（'+n+' 張）</summary><p><button type="button" class="btn dlall" data-i="'+i+'">下載這篇全部圖卡</button></p><div class="strip"></div></details>'+
+ '<details><summary>展開全文</summary><div class="pbody">'+esc(p.body)+'</div></details></div>'}).join('');
+P('posts').addEventListener('toggle',e=>{const d=e.target;if(!d.classList||!d.classList.contains('imgs')||!d.open)return;const st=d.querySelector('.strip');if(st.childElementCount)return;
+ const i=+d.dataset.i,p=POSTS[i],cs=cardsOf(p);cs.forEach((cd,ci)=>{const w=document.createElement('div');w.className='cv';const cv=document.createElement('canvas');drawCard(cv,p,i,cd,ci,cs.length);
+  const bt=document.createElement('button');bt.type='button';bt.className='btn';bt.textContent='下載第 '+(ci+1)+' 張';bt.onclick=()=>saveCanvas(cv,'貼文'+(i+1)+'_圖卡'+(ci+1)+'.png');w.append(cv,bt);st.appendChild(w)})},true);
+P('posts').addEventListener('click',e=>{const b=e.target.closest('.dlall');if(!b)return;const i=+b.dataset.i,p=POSTS[i],cs=cardsOf(p);
+ cs.forEach((cd,ci)=>setTimeout(()=>{const cv=document.createElement('canvas');drawCard(cv,p,i,cd,ci,cs.length);saveCanvas(cv,'貼文'+(i+1)+'_圖卡'+(ci+1)+'.png')},ci*500))});
+P('posts').addEventListener('click',e=>{const b=e.target.closest('.cp');if(!b)return;const p=POSTS[+b.dataset.i],txt=p.title+'\n\n'+p.body,ok=b.nextElementSibling;
+ const done=()=>{ok.textContent='已複製 ✔';setTimeout(()=>ok.textContent='',2000)};
+ const fb=()=>{const t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();try{document.execCommand('copy');done()}catch(err){ok.textContent='請手動選取全文複製'}t.remove()};
+ if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(txt).then(done,fb);else fb()});
+P('check').innerHTML='<h2>⭐ 小星星檢查</h2><p class="lead">不是考試，是看看自己今天過得怎麼樣。重點是跟昨天的自己比。</p>'+
+ '<div class="card" data-t="每天十顆小星星"><h3>① 每天十顆小星星</h3><div id="c-day"></div></div>'+
+ '<div class="card" style="margin-top:14px" data-t="十二個房間的愛心"><h3>② 十二個房間整理得怎麼樣？</h3><div id="c-room"></div></div>'+
+ '<div class="card" style="margin-top:14px" data-t="本週小實驗卡"><h3>③ 本週小實驗卡</h3><p>例子：小美每天滑手機到很晚。她試著睡前把手機放到客廳，猜這週有四天能早點睡。一週後看看做到幾天，沒做到是卡在哪裡，再換個方法。</p><div id="c-week"></div></div>';
+
+function stars(box,key,items,labels,max,msgs){
+ const n=items.length,total=n*max;let s=Array(n).fill(null);
+ box.innerHTML='<p class="lead">'+labels.map((l,i)=>i+'＝'+l).join('　')+'</p>'+items.map((it,i)=>'<div class="srow" data-i="'+i+'"><span>'+esc(it)+'</span><span class="sb">'+labels.map((l,v)=>'<button type="button" data-v="'+v+'" title="'+esc(l)+'">'+v+'</button>').join('')+'</span></div>').join('')+
+  '<div class="tot"></div><div class="msg"></div><p><input type="date" class="dt"> <button type="button" class="btn pri sv">存起來</button> <button type="button" class="btn rs">重來</button></p><div class="hist"></div>';
+ box.querySelector('.dt').value=today();
+ const upd=()=>{box.querySelectorAll('.srow').forEach(r=>r.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.v===s[+r.dataset.i])));
+  const sum=s.reduce((a,v)=>a+(v||0),0),f=s.filter(v=>v!==null).length;box.querySelector('.tot').textContent='得到 '+sum+' / '+total+'（填了 '+f+'/'+n+'）';
+  let m='';if(f===n){const r=sum/total;m=r<.4?msgs[0]:r<.75?msgs[1]:msgs[2];const mn=Math.min(...s);m+='　最需要照顧的是：'+items.filter((_,i)=>s[i]===mn).join('、')}box.querySelector('.msg').textContent=m};
+ const hist=()=>{const o=ST[key]||{},ds=Object.keys(o).sort().reverse().slice(0,30);box.querySelector('.hist').innerHTML=ds.length?'<p><b>我的紀錄</b>（點日期可以看）</p>'+ds.map(d=>'<div class="hrow"><button type="button" class="btn ld" data-d="'+d+'">'+d+'</button><span class="bar"><i style="width:'+o[d].t/total*100+'%"></i></span><b>'+o[d].t+'</b><button type="button" class="del" data-d="'+d+'">×</button></div>').join(''):''};
+ box.addEventListener('click',e=>{const b=e.target.closest('.sb button');if(b){s[+b.closest('.srow').dataset.i]=+b.dataset.v;upd();return}
+  const d=e.target.dataset.d;if(!d)return;if(e.target.classList.contains('ld')){s=ST[key][d].s.slice();box.querySelector('.dt').value=d;upd()}else if(e.target.classList.contains('del')&&confirm('要刪掉 '+d+' 的紀錄嗎？')){delete ST[key][d];save();hist()}});
+ box.querySelector('.rs').onclick=()=>{s.fill(null);upd()};
+ box.querySelector('.sv').onclick=()=>{if(s.some(v=>v===null)&&!confirm('還有題目沒填，沒填的算 0 分，要存嗎？'))return;ST[key]=ST[key]||{};ST[key][box.querySelector('.dt').value||today()]={s:s.map(v=>v||0),t:s.reduce((a,v)=>a+(v||0),0)};save();hist()};
+ upd();hist();
+}
+stars($('#c-day'),'day',DAILY,['還沒做到','做到一點點','做得很好'],2,['今天辛苦了，明天選一件小事開始就好 💛','很棒！你有在照顧自己 🌱','太厲害了，給自己一個大大的抱抱 🌟']);
+stars($('#c-room'),'room',ROOMS,['好亂','常常亂','偶爾整齊','有一點規律','大致整齊','超級整齊'],5,['房間有點亂沒關係，先整理一間就好 💛','已經整理好幾間了，繼續加油 🌱','你的房間好整齊，真不簡單 🌟']);
+(function(box){ST.notes=ST.notes||{};const d=ST.notes.week||{};
+ box.innerHTML=WEEK.map((f,i)=>'<label class="nf"><span>'+esc(f)+'</span><textarea rows="2" data-i="'+i+'">'+esc(d[i]||'')+'</textarea></label>').join('')+'<p><button type="button" class="btn pri sv">存成一筆紀錄</button> <button type="button" class="btn rs">清空</button></p><div class="hist"></div>';
+ const get=()=>{const o={};box.querySelectorAll('textarea').forEach(t=>o[t.dataset.i]=t.value);return o};
+ box.addEventListener('input',()=>{ST.notes=ST.notes||{};ST.notes.week=get();save()});
+ const hist=()=>{const L=ST.weekLog||[];box.querySelector('.hist').innerHTML=L.map((r,j)=>'<details class="rec"><summary>'+r.d+'｜'+esc((r.v[0]||'').slice(0,20))+'</summary>'+WEEK.map((f,i)=>r.v[i]?'<p><b>'+esc(f)+'</b><br>'+esc(r.v[i])+'</p>':'').join('')+'<button type="button" class="del" data-j="'+j+'">刪掉這筆</button></details>').join('')};
+ box.querySelector('.sv').onclick=()=>{const v=get();if(!Object.values(v).some(x=>x.trim())){alert('還沒寫東西喔！');return}(ST.weekLog=ST.weekLog||[]).unshift({d:today(),v});save();hist()};
+ box.querySelector('.rs').onclick=()=>{if(!confirm('要清空嗎？'))return;box.querySelectorAll('textarea').forEach(t=>t.value='');ST.notes.week={};save()};
+ box.querySelector('.hist').addEventListener('click',e=>{if(e.target.matches('.del')&&confirm('要刪掉這筆嗎？')){ST.weekLog.splice(+e.target.dataset.j,1);save();hist()}});
+ hist();})($('#c-week'));
+
+const say=()=>{$('#say').textContent='「'+D.quotes[Math.floor(Math.random()*D.quotes.length)]+'」'};say();$('#more').onclick=say;
+
+function show(id,top){if(!P(id))id='home';document.querySelectorAll('.panel').forEach(p=>p.hidden=p.id!=='p-'+id);
+ document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===id));
+ try{localStorage.setItem(SK+'-tab',id)}catch(e){}if(top)window.scrollTo(0,0)}
+$('#tabs').onclick=e=>{const b=e.target.closest('button');if(b)show(b.dataset.tab,true)};
+$('#main').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)show(b.dataset.go,true)});
+let last='home';try{last=localStorage.getItem(SK+'-tab')||'home'}catch(e){}show(last);
+
+// ===== 搜尋 =====
+const NAME=Object.fromEntries(TABS);const IDX=[];
+document.querySelectorAll('.panel').forEach(p=>{const tab=p.id.slice(2);if(tab==='home')return;p.querySelectorAll('.card').forEach(c=>IDX.push({tab,el:c,title:c.dataset.t,low:c.textContent.toLowerCase()}))});
+const R=$('#results'),Q=$('#q');let RES=[],TERMS=[],tm=0;
+function clearHl(){document.querySelectorAll('mark.hit').forEach(m=>{const p=m.parentNode;m.replaceWith(document.createTextNode(m.textContent));p.normalize()})}
+function hl(el){clearHl();const re=new RegExp(TERMS.map(reEsc).join('|'),'gi');const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);const ns=[];while(w.nextNode())ns.push(w.currentNode);
+ ns.forEach(n=>{re.lastIndex=0;if(!re.test(n.data))return;re.lastIndex=0;const f=document.createDocumentFragment();let l=0,m;while((m=re.exec(n.data))){f.append(n.data.slice(l,m.index));const k=document.createElement('mark');k.className='hit';k.textContent=m[0];f.append(k);l=m.index+m[0].length}f.append(n.data.slice(l));n.replaceWith(f)})}
+function search(){TERMS=Q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);if(!TERMS.length){R.hidden=true;clearHl();return}
+ RES=IDX.filter(u=>TERMS.every(t=>u.low.includes(t)));const re=new RegExp(TERMS.map(t=>reEsc(esc(t))).join('|'),'gi');
+ R.innerHTML='<div class="rh">找到 '+RES.length+' 張卡片　按 Esc 關掉</div>'+(RES.length?RES.map((u,i)=>{const tx=u.el.textContent.replace(/\s+/g,' ');const p=Math.max(0,tx.toLowerCase().indexOf(TERMS[0])-20);return '<button type="button" class="r" data-k="'+i+'"><span class="tg">'+NAME[u.tab]+'</span><b>'+esc(u.title)+'</b><span class="sn">'+esc(tx.slice(p,p+70)).replace(re,m=>'<mark>'+m+'</mark>')+'</span></button>'}).join(''):'<div class="rh">找不到耶，換個字試試看 🙂</div>');R.hidden=false}
+function go(u){R.hidden=true;show(u.tab);u.el.querySelectorAll('details').forEach(d=>d.open=true);hl(u.el);const mk=u.el.querySelector('mark.hit');if(mk){mk.scrollIntoView({block:'center'});u.el.classList.add('flash');setTimeout(()=>u.el.classList.remove('flash'),1600);return}u.el.scrollIntoView({block:'center'});u.el.classList.add('flash');setTimeout(()=>u.el.classList.remove('flash'),1600)}
+Q.addEventListener('input',()=>{clearTimeout(tm);tm=setTimeout(search,180)});
+Q.addEventListener('keydown',e=>{if(e.key==='Enter'&&RES.length)go(RES[0])});
+R.addEventListener('click',e=>{const b=e.target.closest('.r');if(b)go(RES[+b.dataset.k])});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')R.hidden=true});
+document.addEventListener('click',e=>{if(!R.hidden&&!R.contains(e.target)&&e.target!==Q)R.hidden=true});
+})();
+</script>
+</body>
+</html>
