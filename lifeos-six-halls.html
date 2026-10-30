@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LifeOS 六館總入口</title>
+<style>
+:root{--paper:#f6f3ea;--ink:#2c3d35;--muted:#717a6c;--line:#ddd3bf;--green:#2f4a3e;--gold:#a77c3d}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.75 system-ui,'Microsoft JhengHei',sans-serif}a{color:inherit}main{max-width:1180px;margin:auto;padding:40px 22px 90px}.eyebrow{font-size:11px;letter-spacing:3px;color:var(--gold)}h1{font:600 clamp(30px,4vw,46px)/1.3 Georgia,'Microsoft JhengHei',serif;margin:10px 0}.lead{color:var(--muted);max-width:720px}.search{display:flex;gap:10px;margin:26px 0 8px}.search input{flex:1;border:1px solid var(--line);border-radius:12px;padding:14px 18px;font:inherit;background:#fff;color:inherit}.deep{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 20px}.deep a{text-decoration:none;background:#ece6d6;border-radius:999px;padding:6px 13px;font-size:13px}.apps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:26px 0}.app{display:flex;flex-direction:column;text-decoration:none;background:#fffdf7;border:1px solid var(--line);border-radius:16px;padding:22px;transition:transform .15s}.app:hover{transform:translateY(-2px);border-color:#b9975c}.app b{font-size:20px}.app small{color:var(--gold);letter-spacing:1px}.app p{color:var(--muted);font-size:14px;margin:10px 0 0}.app span{margin-top:auto;padding-top:12px;font-size:13px;color:var(--green)}h2{font-size:22px;margin:40px 0 6px}.how{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.how div{background:#fffdf7;border:1px solid var(--line);border-radius:12px;padding:16px;font-size:14px}.how b{display:block;color:var(--gold);font-size:13px}.hits .lh-entry{margin-bottom:10px}footer{color:var(--muted);font-size:12px;margin-top:40px}@media(max-width:900px){.apps,.how{grid-template-columns:1fr 1fr}}@media(max-width:600px){.apps,.how{grid-template-columns:1fr}main{padding:26px 16px 90px}}
+</style>
+<script id="lifeos-hub">/* LifeOS 六館整合模組 v1（2026-10-24）：共用導覽、跨館搜尋、學習指南。各館內嵌相同副本，離線可用。 */
+(function(){
+const APPS=[
+ {id:'haoyun',file:'good-fortune-six-halls.html',name:'創造好運',sub:'好運練習所',desc:'91 個能力節點、17 種情緒與 250 句內在語言、10 階段學習路徑。'},
+ {id:'xin',file:'a-place-within-six-halls.html',name:'心之所居',sub:'雙語閱讀',desc:'心病筆記 1,306 段原文、20 個中英雙語主題與心智圖。'},
+ {id:'v3',file:'lifeos-v3-six-halls.html',name:'業力病 v3',sub:'中英對照',desc:'20 篇生命模式雙語短文、金句、生命心智圖與臉書圖文庫。'},
+ {id:'p9000',file:'philosophy-six-halls.html',name:'知識生活庫',sub:'9000 字長文版',desc:'178 則原文、60 個細分主題、250 篇長文與成分機制資料。'},
+ {id:'houde',file:'houde-six-halls.html',name:'厚德載物',sub:'知行之境',desc:'厚、德、載、物 18 項核心能力與 180 句金句。'},
+ {id:'jibing',file:'illness-six-halls.html',name:'疾病翻轉',sub:'身心靈系統',desc:'身體、心理、靈魂 72 個系統與 99 項團購產品對照。'}
+];
+const HEALTH='健康相關內容僅供衛教參考，不保證療效、不取代診斷與治療；正在用藥、懷孕哺乳或有慢性病者，使用任何補充品或改變作息前，請先詢問醫師或藥師。';
+/* 共同閱讀原則：所有館共用 */
+const COMMON=[
+ {t:'先分辨「資料的等級」',k:'閱讀方法',b:'同一個說法可能來自系統性回顧、隨機對照試驗、觀察研究、個案故事或個人經驗，可信度依序遞減。原文裡的見證、口號與「研究顯示」若沒有出處，宜視為待查證的線索。',u:'讀到數字或療效說法時，先找出處、樣本與研究類型，再決定要不要相信。',s:[['Oxford CEBM：證據等級（Levels of Evidence）','https://www.cebm.ox.ac.uk/']]},
+ {t:'相關不等於因果',k:'閱讀方法',b:'「常一起出現」不代表「一個造成另一個」。例如情緒壓力與某些疾病同時出現，可能是彼此影響、共同受第三因素影響，或只是巧合。',u:'看到「A 導致 B」時，問的是研究設計：有沒有對照組、有沒有排除其他因素。',s:[['Bradford Hill（1965）因果判斷準則','']]},
+ {t:'身心相關，不是「病由心生」',k:'健康觀念',b:'長期壓力會影響睡眠、血壓、免疫與消化，這是有研究支持的身心交互作用；但「疾病是因為想法錯誤或業力」並沒有證據，也容易讓病人自責。',u:'把心理練習當成生活品質與壓力調節的支持，而不是治療本身。',s:[['APA：Stress effects on the body','https://www.apa.org/topics/stress/body']]},
+ {t:'哲學視角是「閱讀工具」',k:'哲學',b:'六館都借用維根斯坦（語言的用法與生活形式）與海德格（在世存在、有限性）的視角。這些是詮釋方式，不是兩位哲學家的原句，也不是科學結論。',u:'需要原典時，可從史丹佛哲學百科的條目開始，再讀原著譯本。',s:[['SEP：Ludwig Wittgenstein','https://plato.stanford.edu/entries/wittgenstein/'],['SEP：Martin Heidegger','https://plato.stanford.edu/entries/heidegger/']]},
+ {t:'需要幫助時的求助資源（臺灣）',k:'安全',b:'安心專線 1925（24 小時免付費）、生命線 1995、張老師 1980；遭受家暴、性侵或兒少虐待可撥 113 保護專線；緊急危險請撥 119 或 110。',u:'任何一館的內容讓你感到難以承受時，先暫停閱讀、找人陪伴或撥打專線。',s:[['衛生福利部','https://www.mohw.gov.tw/']]},
+ {t:'健康與產品資訊的合規界線',k:'健康觀念',b:'依《食品安全衛生管理法》第 28 條，食品不得宣稱醫療效能；經審核的「健康食品」才能標示特定保健功效（小綠人標章）。本系列各館的產品對照，只說明成分或設計原理。',u:'分享產品貼文時，避免「治療、改善疾病、逆轉」等字眼，並附上用藥者先問醫師或藥師的提醒。',s:[['全國法規資料庫：食品安全衛生管理法','https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=L0040001'],['衛生福利部食品藥物管理署','https://www.fda.gov.tw/']]}
+];
+const GUIDES={
+haoyun:[
+ {t:'「運氣」可以被研究嗎？',k:'心理學',b:'英國心理學家 Richard Wiseman 訪談自認幸運與不幸的人，歸納出四種傾向：較常注意到機會、會參考直覺、對未來抱持合理期待、遇到挫折時重新詮釋。研究以自陳和小型實驗為主，適合當作行為假說，不是定律。',u:'把「好運」理解成「讓機會比較容易被看見的習慣」，再用本 App 的最小行動去練習。',s:[['Wiseman, R.（2003）The Luck Factor','']]},
+ {t:'注意力決定你看得見什麼',k:'心理學',b:'「看不見的大猩猩」實驗中，約半數專心數傳球的受試者沒注意到穿猩猩裝的人走過畫面，這叫「不注意視盲」。我們只會看見注意力放在的地方。',u:'在「能力節點」裡選一個主題，當天刻意留意相關的人事物，機會通常就藏在原本沒看見的地方。',s:[['Simons & Chabris（1999）Perception','']]},
+ {t:'「如果…就…」的執行意圖',k:'行為科學',b:'事先寫好「如果遇到情境 X，我就做 Y」，比只立下目標更容易做到。整合分析顯示這種「執行意圖」對達成目標有中等程度的效果。',u:'把節點裡的「最小行動」改寫成一句「如果…就…」，例如「如果晚上滑手機超過十分鐘，我就起身倒一杯水」。',s:[['Gollwitzer（1999）American Psychologist','']]},
+ {t:'習慣需要多久才養成？',k:'行為科學',b:'倫敦大學學院的研究追蹤 96 人養成新習慣，達到「自動化」的中位數約 66 天，個別差異從 18 天到 254 天都有。偶爾漏掉一天，對長期結果影響不大。',u:'「學習路徑」的十個階段不必一週一階；用兩個月的眼光看一個習慣，比追求每天完美更實際。',s:[['Lally et al.（2010）European Journal of Social Psychology','']]},
+ {t:'弱連結帶來新機會',k:'社會學',b:'社會學家 Granovetter 發現，新的工作資訊常來自「不太熟」的人，因為他們接觸到與你不同的圈子。好運有一部分來自人際網絡的多樣性。',u:'練習「關係」類節點時，可以聯絡一位很久沒說話的朋友，分享近況。',s:[['Granovetter（1973）The Strength of Weak Ties','']]},
+ {t:'替情緒命名，有助於調節',k:'情緒科學',b:'腦造影研究發現，用文字標記情緒（affect labeling）時，杏仁核的反應會降低。這是本 App「17 種情緒」頁要先命名情緒的科學背景之一。',u:'讀情緒頁時，試著用更精確的詞（例如「失望」而不是「不爽」）描述此刻的感受。',s:[['Lieberman et al.（2007）Psychological Science','']]},
+ {t:'霍金斯意識層級的證據界線',k:'來源辨識',b:'圖中 20–1000 的數值來自 David Hawkins《Power vs. Force》，原作以肌肉測試（應用肌動學）評定，這種方法在對照研究中沒有得到支持。App 保留這些數值作為原始標籤，不代表可量測的情緒頻率或人格高低。',u:'把各層當作「情緒主題」來閱讀，不必依照數字逐級上升，也不必用它評價自己或別人。',s:[['Hawkins（1995）Power vs. Force','']]},
+ {t:'佛教「三身」與「緣起」',k:'佛學',b:'三身指法身（真理本身）、報身（修行圓滿所成之身）、化身（應化度眾之身）。緣起是佛法核心：事物依條件而生、依條件而滅，常以「此有故彼有，此生故彼生」概括。',u:'第一系統的節點要你寫下「造成結果的三個條件」，就是把緣起用在日常：少怪單一原因，多看條件。',s:[['CBETA 中華電子佛典','https://cbetaonline.dila.edu.tw/']]},
+ {t:'正念練習的研究現況',k:'健康',b:'正念減壓（MBSR）由 Jon Kabat-Zinn 於 1979 年在麻州大學醫學院發展。2014 年 JAMA Internal Medicine 的整合分析指出，冥想課程對焦慮、憂鬱與疼痛有中等程度證據，對其他結果證據有限。',u:'把「正念」節點當成三到十分鐘的注意力練習；有創傷經驗或嚴重焦慮者，可在專業人員陪同下進行。',s:[['NCCIH：Meditation and Mindfulness','https://www.nccih.nih.gov/health/meditation-and-mindfulness-what-you-need-to-know'],['Goyal et al.（2014）JAMA Internal Medicine','']]},
+ {t:'倖存者偏差：別只聽成功故事',k:'來源辨識',b:'我們常聽到「做了某件事就轉運」的故事，卻聽不到做了同樣的事卻沒轉運的人。只看成功者會高估方法的效果。',u:'讀到好運見證時，記得問：有多少人做了同樣的事卻沒有結果？',s:[['Kahneman（2011）《快思慢想》','']]}
+],
+xin:[
+ {t:'感恩研究：效果真實但不神奇',k:'心理學',b:'Emmons 與 McCullough 的實驗中，每週寫下感恩事項的人，比記錄煩惱的人回報較高的幸福感與較多運動。後續整合分析顯示效果多為小到中等。原文中「2%、5%、9%」等數字未附出處，宜視為待查證。',u:'「感恩與不完美」主題的行動，一週做一到三次就好，不必天天勉強。',s:[['Emmons & McCullough（2003）Journal of Personality and Social Psychology','']]},
+ {t:'正向肯定句不一定對每個人有用',k:'心理學',b:'2009 年的實驗發現，自尊較低的人重複「我是一個值得被愛的人」，心情反而可能變差，因為句子和自我認知落差太大。比較有效的是「價值肯定」：寫下自己重視的價值與相關經驗。',u:'讀「把肯定句放回生活」時，選一句你此刻能相信八成的話，並搭配一個行動。',s:[['Wood, Perunovic & Lee（2009）Psychological Science','']]},
+ {t:'防衛機制：保護也會遮蔽',k:'心理學',b:'防衛機制的概念由佛洛伊德提出，安娜・佛洛伊德於 1936 年系統整理。精神科醫師 Vaillant 的長期研究把防衛分成不成熟到成熟的層次，幽默、昇華、預期等屬於較成熟的方式。',u:'閱讀「看見防衛的角色」時，把防衛當成曾經保護過你的方式，再看它今天是否仍然合用。',s:[['Anna Freud（1936）《自我與防衛機制》','']]},
+ {t:'自我慈悲的三個要素',k:'心理學',b:'Kristin Neff 把自我慈悲定義為三部分：善待自己（而非苛責）、共同人性（知道困難是人類共同經驗）、正念（如實看見痛苦，不誇大也不壓抑）。它和自我放縱不同。',u:'原文提到「偽自我關懷」，可對照這三要素，看看哪一個是今天最缺的。',s:[['Neff（2003）Self and Identity','https://self-compassion.org/']]},
+ {t:'寬恕的研究：一段歷程，不是一個決定',k:'心理學',b:'Robert Enright 的寬恕歷程模式與 Everett Worthington 的 REACH 模式都把寬恕看成多階段的過程，並強調寬恕不等於和好、也不等於否認傷害。持續受傷的關係，安全優先。',u:'讀原文中寬恕相關段落時，可以把「寬恕」與「是否繼續相處」分開思考。',s:[['Enright（2001）Forgiveness Is a Choice','']]},
+ {t:'海德格的「有限性」',k:'哲學',b:'海德格在《存在與時間》（1927）中提出「向死存在」：意識到生命有限，能讓人從「大家都這樣」的常人狀態中，回到自己真正願意承擔的可能性。',u:'「有限生命的美好」主題不是要你焦慮時間，而是幫你排出今天的先後次序。',s:[['SEP：Martin Heidegger','https://plato.stanford.edu/entries/heidegger/']]},
+ {t:'維根斯坦的「語言遊戲」',k:'哲學',b:'《哲學研究》（1953）主張詞語的意義在於它在生活中的用法。「失敗」在考試、在工作、在親子對話裡，指的事情與帶來的後果都不同。',u:'讀到讓你難受的詞，先找出它是在什麼場合、對誰、為了什麼被使用。',s:[['SEP：Ludwig Wittgenstein','https://plato.stanford.edu/entries/wittgenstein/']]},
+ {t:'雙語閱讀怎麼讀最有效',k:'學習方法',b:'語言學家 Krashen 主張大量「可理解輸入」有助習得；記憶研究則顯示分散複習（間隔重複）比集中背誦更持久。中英並列適合先讀懂中文，再讀英文找對應詞。',u:'用「中 / EN」模式讀一個主題，挑三個英文詞記下來，隔天、三天後、一週後各看一次。',s:[['Cepeda et al.（2006）Psychological Bulletin（間隔學習整合分析）','']]},
+ {t:'壓力與身體：有關聯，不等於病因',k:'健康',b:'長期壓力會透過神經內分泌系統影響睡眠、血壓、消化與免疫，這是研究支持的身心交互作用。但原文「心病」相關段落中，若把特定疾病直接歸因於情緒或信念，並無證據。',u:'把心靈練習當作壓力調節的支持；身體不適持續或加重，請就醫。',s:[['APA：Stress effects on the body','https://www.apa.org/topics/stress/body']]},
+ {t:'情緒低落時的專業資源',k:'安全',b:'持續兩週以上情緒低落、失眠或失去興趣，已影響工作與生活時，建議就醫評估；憂鬱症是可治療的疾病。臺灣可撥安心專線 1925（24 小時）。',u:'閱讀心病主題時若觸發強烈情緒，先停下來，找可信任的人或撥打專線。',s:[['衛生福利部','https://www.mohw.gov.tw/']]}
+],
+v3:[
+ {t:'「業」原本的意思',k:'佛學',b:'「業」譯自梵語 karman，原意是「行為、作為」。佛教強調意念的作用，巴利經典有「諸比丘，我說思（意志）即是業」的說法（增支部 6.63）。業在本 App 被轉譯為「反覆累積的認知與行動模式」，不是懲罰或命定。',u:'讀二十篇時，把「業力」理解為「習慣的慣性」，重點是下一次的選擇。',s:[['SuttaCentral：AN 6.63','https://suttacentral.net/an6.63'],['Britannica：Karma','https://www.britannica.com/topic/karma']]},
+ {t:'習慣是怎麼形成的',k:'行為科學',b:'心理學家 Wendy Wood 的研究指出，日常行為約有四成是在相同情境下重複發生的習慣。習慣由「情境線索」觸發，不太經過意志思考，所以改變情境往往比靠意志力有效。',u:'「命運的重複」一篇的行動，可先找出觸發舊反應的情境，再調整環境。',s:[['Wood & Neal（2007）Psychological Review','']]},
+ {t:'常見的認知扭曲',k:'心理學',b:'認知治療創始者 Aaron Beck 與 David Burns 整理出常見的思考陷阱：以偏概全（「總是」「永遠」）、讀心術（猜別人怎麼想）、災難化、標籤化等。辨認它們是認知行為治療的基本功。',u:'本 App 把「總是」換成「這一次」，就是處理以偏概全；讀金句時可以留意自己常用哪一種陷阱。',s:[['Burns（1980）《好心情：新情緒療法》','']]},
+ {t:'解釋風格與習得無助',k:'心理學',b:'Martin Seligman 發現，把壞事解釋成「永久的、全面的、都是我的錯」的人，較容易陷入無助與憂鬱；把它看成「暫時的、特定的、有多重原因」的人，較能重新行動。',u:'「痛苦的意義」與「心智成熟」兩篇，可對照這三個面向閱讀。',s:[['Seligman（1990）《學習樂觀・樂觀學習》','']]},
+ {t:'預測處理：大腦是一台預測機器',k:'認知科學',b:'預測處理理論認為大腦不斷預測接下來會發生什麼，再用實際感覺修正預測。App 的「預測、行動、回饋、更新」借用這個框架當作設計比喻，它是研究中的理論，不是療法，也不能推出業力致病或量子療癒。',u:'讀「生命心智圖」的四層框架時，把它當作理解自己的模型，而不是醫學事實。',s:[['Clark（2013）Behavioral and Brain Sciences','']]},
+ {t:'創傷知情：先問發生了什麼',k:'心理健康',b:'美國 SAMHSA 2014 年提出創傷知情照護六原則：安全、信任與透明、同儕支持、合作、賦權與選擇、文化與性別議題。重點是把「你有什麼問題」換成「你經歷了什麼」。',u:'「創傷的療癒」一篇的練習請在安全的關係中進行；創傷反應嚴重時，請尋求受過訓練的專業人員。',s:[['SAMHSA（2014）Concept of Trauma and Guidance for a Trauma-Informed Approach','']]},
+ {t:'棉花糖實驗的新發現',k:'來源辨識',b:'Mischel 的延遲滿足實驗常被用來說明「自律決定成就」。2018 年的大樣本重複研究發現，控制家庭背景後，預測力明顯縮小。自律受環境與資源影響，不只是個人品格。',u:'讀「自律的本質」時，先調整環境讓開始變容易，比責怪自己意志力不足更有效。',s:[['Watts, Duncan & Quan（2018）Psychological Science','']]},
+ {t:'夢的科學：記憶整理，不是預言',k:'睡眠科學',b:'目前的研究多把夢與記憶鞏固、情緒處理連結；Hobson 與 McCarley 的「活化—整合」假說則認為夢是大腦整合睡眠中神經活動的結果。沒有可靠證據顯示夢能預知未來。',u:'「夢境的意義」一篇的作法是記錄感受與生活的連結，保留不確定，不要把象徵當答案。',s:[['Hobson & McCarley（1977）American Journal of Psychiatry','']]},
+ {t:'疾病不是業報',k:'健康',b:'世界衛生組織指出，約 30–50% 的癌症可透過避免危險因子（如菸、酒、不健康飲食、缺乏運動、特定感染）與實施預防策略來預防；其餘與年齡、遺傳等不可控因素有關。把疾病歸因於罪過或錯誤想法，沒有根據，也會傷害病人。',u:'「疾病與生命」主題請搭配醫療決策：整理就醫問題、與醫師討論治療選項。',s:[['WHO：Cancer fact sheet','https://www.who.int/news-room/fact-sheets/detail/cancer']]},
+ {t:'匱乏會占據心智頻寬',k:'行為經濟學',b:'Mullainathan 與 Shafir 的研究指出，錢或時間長期不夠時，注意力會被眼前缺口占滿，較難做長期規劃。這解釋了為什麼「財富的智慧」不能只歸因於努力或思維。',u:'讀財富相關篇章時，先處理一項讓你喘不過氣的固定支出，再談長期目標。本 App 不提供投資建議。',s:[['Mullainathan & Shafir（2013）《匱乏經濟學》','']]}
+],
+p9000:[
+ {t:'卡普曼戲劇三角與贏家三角',k:'溝通',b:'Stephen Karpman 於 1968 年在交流分析期刊提出「戲劇三角」：迫害者、受害者、拯救者三種角色輪流轉換，讓衝突無法解決。Acey Choy 於 1990 年提出「贏家三角」：以果斷、脆弱（說出需要）與關懷取代上述角色。',u:'原文第一則就是這個主題；讀到關係衝突時，可先辨認自己正站在哪個角色。',s:[['Karpman（1968）Transactional Analysis Bulletin','']]},
+ {t:'睡眠：成人每晚七小時以上',k:'健康',b:'美國睡眠醫學會與睡眠研究學會 2015 年的共識建議，成人規律睡眠 7 小時以上。慢性失眠的第一線處置是失眠認知行為治療（CBT-I），美國內科醫學會 2016 年指引建議優先於安眠藥。',u:'「睡眠與失眠」分類的原文若提到補充品，先從固定起床時間、減少睡前螢幕開始。',s:[['Watson et al.（2015）Sleep（AASM/SRS 共識）',''],['Qaseem et al.（2016）Annals of Internal Medicine','']]},
+ {t:'腸道菌群：熱門，但多數是相關研究',k:'健康',b:'國際益生菌與益生元科學協會（ISAPP）把益生菌定義為「足量攝取時對宿主健康有益的活微生物」。效果因菌株而異，不能把一種菌的研究結果套用到所有產品。',u:'「腸道與菌群」分類資料很多，讀的時候注意它講的是哪一株菌、哪一種研究。',s:[['ISAPP','https://isappscience.org/'],['NCCIH：Probiotics','https://www.nccih.nih.gov/health/probiotics-what-you-need-to-know']]},
+ {t:'營養補充品的上限攝取量',k:'健康',b:'補充品不是越多越好。美國國家衛生院膳食補充品辦公室（NIH ODS）列出成人上限攝取量，例如維生素 D 每日 100 微克（4,000 IU）、補充品來源的菸鹼酸 35 毫克。長期超過上限應在醫師監測下進行。',u:'讀到原文提及劑量時，先對照 NIH ODS 的資料；本 App 的產品對照只說明成分機制。',s:[['NIH ODS：Vitamin D','https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/'],['NIH ODS：Niacin','https://ods.od.nih.gov/factsheets/Niacin-HealthProfessional/']]},
+ {t:'慢呼吸與放鬆',k:'健康',b:'系統性回顧發現，每分鐘約 6 次左右的緩慢呼吸，與心率變異度增加、放鬆感提升有關，但研究規模多半不大。它是安全、低成本的壓力調節方式之一。',u:'「壓力與放鬆」分類讀完一則，可試三分鐘的慢呼吸，感覺頭暈就恢復自然呼吸。',s:[['Zaccaro et al.（2018）Frontiers in Human Neuroscience','']]},
+ {t:'辨識「科學包裝」的用語',k:'來源辨識',b:'「量子」「頻率」「能量場」等詞在物理學中有精確定義，被用在療癒或財富話術時，常缺乏可檢驗的定義與實驗。判斷方式：有沒有說清楚測量方法、對照組與可能出錯的條件。',u:'「靈性與能量用語」「前沿概念用語」兩個分類，可當作語言現象來閱讀，不當作已證實的機制。',s:[['Sagan（1995）《魔鬼盤據的世界》','']]},
+ {t:'操控關係的警訊',k:'關係',b:'「煤氣燈操縱」（gaslighting）一詞源自 1944 年電影《煤氣燈下》，指讓對方懷疑自己的記憶與判斷。常見警訊包括：否認明顯發生過的事、孤立你與親友、把責任全推給你。',u:'「操控與人際辨識」分類讀到相似情境時，可把事件記錄下來；有人身安全疑慮請撥 113 或 110。',s:[['衛生福利部保護服務司（113 保護專線）','https://www.mohw.gov.tw/']]},
+ {t:'理財基本功：先有緊急預備金',k:'生活',b:'常見的理財建議是先準備 3 到 6 個月的必要生活費作為緊急預備金，再談投資；高利率的卡債優先償還。這是一般性原則，不是個人化投資建議。',u:'「金錢與豐盛」分類若談到吸引力法則，可搭配一份真實的收支紀錄一起看。',s:[['金融監督管理委員會：金融知識普及','https://www.fsc.gov.tw/']]},
+ {t:'信仰文本怎麼讀',k:'信仰',b:'原文收錄聖經與佛學段落。閱讀宗教文本時，可查看原文出處與前後文，並分辨「信仰的意義」與「醫療或科學主張」兩種不同層次。',u:'聖經段落可用和合本對照章節；佛典可在 CBETA 查詢原經文。',s:[['CBETA 中華電子佛典','https://cbetaonline.dila.edu.tw/']]},
+ {t:'讀長文的方法：摘要、連結、行動',k:'學習方法',b:'長文適合分段讀：每讀完一節，用一句話寫下它在說什麼（摘要），再找它和你生活中哪件事有關（連結），最後挑一個能在一週內完成的小事（行動）。這比劃很多重點更能記住內容。',u:'用側欄的分類找到一個主題，只讀一篇長文的三到五節就好，在閱讀筆記寫下三行摘要。',s:[['Brown, Roediger & McDaniel（2014）《超牢記憶法》','']]}
+],
+houde:[
+ {t:'「厚德載物」的出處',k:'經典',b:'語出《周易・坤卦・象傳》：「地勢坤，君子以厚德載物。」意思是大地寬厚，能承載萬物；君子效法大地，以深厚的德行包容、承擔。乾卦象傳則說：「天行健，君子以自強不息。」',u:'能力地圖的「厚、德、載、物」是本 App 的延伸架構，原典本身沒有十八項能力的分法。',s:[['中國哲學書電子化計劃：周易','https://ctext.org/book-of-changes/zh']]},
+ {t:'清華大學校訓的由來',k:'經典',b:'1914 年梁啟超在清華學校以〈君子〉為題演講，引用乾坤二卦的象辭勉勵學生，「自強不息，厚德載物」後來成為清華大學校訓。',u:'讀「品格穩定」「承擔能力」時，可以想想這八個字為什麼被用來描述「君子」。',s:[['梁啟超（1914）〈君子〉演講','']]},
+ {t:'儒家的「德」',k:'經典',b:'古人常以「德者，得也」解釋：德是把道理實踐後真正得之於心的品質。《論語・里仁》說「德不孤，必有鄰」，表示有德行的人不會孤立。',u:'「能力顯現」的金句可以對照這個觀念：德要在行動與關係中被看見。',s:[['中國哲學書電子化計劃：論語','https://ctext.org/analects/zh']]},
+ {t:'三不朽：立德、立功、立言',k:'經典',b:'《左傳・襄公二十四年》：「太上有立德，其次有立功，其次有立言，雖久不廢，此之謂不朽。」這可以對照本 App 的終極能力「生命價值生成」。',u:'讀「成果生成」與「生命價值生成」時，可分辨哪些是品格、哪些是事功、哪些是思想。',s:[['中國哲學書電子化計劃：春秋左傳','https://ctext.org/chun-qiu-zuo-zhuan/zh']]},
+ {t:'品格優勢的現代研究',k:'心理學',b:'Peterson 與 Seligman 2004 年整理跨文化的品格研究，提出 6 大美德（智慧、勇氣、仁愛、正義、節制、超越）與 24 項品格優勢，並發展 VIA 量表。它和「厚德」都把品格看成可以培養的能力。',u:'十八項能力中，「內在價值」「品格穩定」可對照 VIA 的正直、毅力與自我調節。',s:[['VIA Institute on Character','https://www.viacharacter.org/']]},
+ {t:'心理韌性是「平凡的魔法」',k:'心理學',b:'美國心理學會把韌性定義為面對逆境、創傷或重大壓力時良好適應的過程。發展心理學家 Ann Masten 稱之為「平凡的魔法」：它主要來自日常的關係、能力與支持系統，而非少數人的天賦。',u:'「心理韌性」的最小行動多半涉及求助與連結，這和研究結果一致。',s:[['APA：Resilience','https://www.apa.org/topics/resilience'],['Masten（2001）American Psychologist','']]},
+ {t:'衝突處理的五種模式',k:'溝通',b:'Thomas–Kilmann 模型以「在意自己」與「在意對方」兩個軸向，分出競爭、合作、妥協、迴避、遷就五種處理衝突的方式。沒有哪一種永遠最好，要看議題重要性與關係。',u:'讀「衝突處理」時，找出自己最常用的模式，再挑一個情境試另一種。',s:[['Thomas & Kilmann（1974）Conflict Mode Instrument','']]},
+ {t:'非暴力溝通的四個步驟',k:'溝通',b:'Marshall Rosenberg 提出的非暴力溝通分成：觀察（不加評論地描述事實）、感受、需要、請求（具體可行的請求）。它常用在親子、伴侶與職場對話。',u:'「關係經營」的金句可以用這四步改寫成一句真正說得出口的話。',s:[['Rosenberg（2003）《非暴力溝通》','']]},
+ {t:'有限的時間如何分配',k:'生活',b:'艾森豪矩陣把事情分成「重要／緊急」四格，提醒我們重要但不緊急的事（健康、關係、學習）最容易被擠掉。研究時間運用的學者也指出，先安排重要事項的時段比待辦清單更有效。',u:'「資源配置」的行動是替珍惜的事預留十分鐘，可以直接寫進行事曆。',s:[['Covey（1989）《與成功有約》','']]},
+ {t:'承擔與界線並存',k:'心理健康',b:'長期照顧者與「什麼都扛」的人，容易出現照顧者耗竭。臺灣有長照 1966 專線可諮詢照顧資源。承擔能力也包含知道何時請別人一起分工。',u:'讀「承擔能力」「責任管理」時，可同時列出能求助的人與資源。',s:[['衛生福利部長照專區（1966 專線）','https://1966.gov.tw/']]}
+],
+jibing:[
+ {t:'恆定與異態負荷',k:'生理學',b:'生理學家 Walter Cannon 以「恆定」（homeostasis）描述身體維持內在穩定的能力。神經內分泌學者 Bruce McEwen 提出「異態負荷」（allostatic load）：長期壓力讓調節系統持續運轉，累積的耗損會增加疾病風險。',u:'「身體」系統的 B03 壓力反應、B01 自主神經，可以用這兩個概念來讀。',s:[['McEwen（1998）New England Journal of Medicine','']]},
+ {t:'身體活動建議量',k:'健康',b:'世界衛生組織 2020 年指引建議成人每週 150–300 分鐘中等強度或 75–150 分鐘高強度有氧活動，並每週至少 2 天肌力訓練；少量活動也比完全不動好。',u:'B18 肌肉骨骼系統的「5 次坐站練習」是很好的起點；有心血管疾病或關節問題者先問醫師。',s:[['WHO：Physical activity fact sheet','https://www.who.int/news-room/fact-sheets/detail/physical-activity']]},
+ {t:'居家量血壓的「722」原則',k:'健康',b:'台灣高血壓學會推廣「722」：連續 7 天、每天早晚 2 回、每回量 2 次取平均。量前休息 5 分鐘、坐姿、手臂與心臟同高。2022 年台灣高血壓指引建議多數成人目標低於 130/80 mmHg，實際目標請與醫師討論。',u:'B15 心血管循環系統的「依正確方式測量血壓」可照這個方法做，並把紀錄帶去回診。',s:[['台灣高血壓學會（2022）台灣高血壓治療指引','']]},
+ {t:'成人預防保健與癌症篩檢',k:'健康',b:'國民健康署提供成人預防保健服務（含血壓、血糖、血脂等檢查），以及大腸癌、乳癌、子宮頸癌、口腔癌與特定高風險族群肺癌篩檢。各項年齡與間隔會調整，請以國健署最新公告為準。',u:'B10、B12、B13、B17 的「整理最近一次檢驗」，可以搭配預防保健結果一起看。',s:[['衛生福利部國民健康署','https://www.hpa.gov.tw/']]},
+ {t:'中風辨識：微笑、舉手、說你好',k:'安全',b:'突然出現臉部歪斜、單側手腳無力、說話不清楚，可能是中風。臺灣推廣「微笑、舉手、說你好，快打 119」，把握黃金治療時間。胸痛、呼吸困難、意識改變也應立即就醫。',u:'閱讀任何身體系統時，若有這些警訊，請先就醫，不要等待生活調整。',s:[['衛生福利部國民健康署','https://www.hpa.gov.tw/']]},
+ {t:'補充品與藥物的交互作用',k:'用藥安全',b:'部分補充品會與藥物互相影響：銀杏、高劑量魚油可能增加正在使用抗凝血藥者的出血風險；聖約翰草會降低多種藥物（含避孕藥、部分抗憂鬱藥）的效果；薑黃也可能與抗凝血藥相互作用。',u:'產品對照中有銀杏、魚油、薑黃等成分；正在用藥者使用前請把產品標示拿給醫師或藥師看。',s:[['NCCIH：Ginkgo','https://www.nccih.nih.gov/health/ginkgo'],['NCCIH：St. John’s Wort','https://www.nccih.nih.gov/health/st-johns-wort'],['NCCIH：Turmeric','https://www.nccih.nih.gov/health/turmeric']]},
+ {t:'維生素 D 與菸鹼酸的上限',k:'用藥安全',b:'NIH ODS 列出成人維生素 D 上限攝取量為每日 4,000 IU（100 微克），產品清單中的 D3 5000IU 已超過此值，長期使用宜經醫師評估。菸鹼酸（B3）補充品上限為每日 35 毫克，常見副作用是皮膚潮紅。',u:'B24 的「檢查是否有不必要的補充品」，可以從核對每日總劑量開始。',s:[['NIH ODS：Vitamin D','https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/'],['NIH ODS：Niacin','https://ods.od.nih.gov/factsheets/Niacin-HealthProfessional/']]},
+ {t:'用藥五大核心能力',k:'用藥安全',b:'食藥署推廣民眾用藥五大核心能力：做身體的主人、清楚表達自己的身體狀況、看清楚藥品標示、清楚用藥方法與時間、與醫師藥師做朋友。',u:'B10 的「整理正在使用的藥物與補充品」，可以做成一張清單帶去看診。',s:[['衛生福利部食品藥物管理署','https://www.fda.gov.tw/']]},
+ {t:'壓力與免疫：適度比「越強越好」',k:'生理學',b:'免疫系統需要平衡，過度活化與過敏、自體免疫有關。急性壓力短期內會動員免疫反應，長期慢性壓力則與免疫調節失衡有關。沒有任何單一產品能「提升免疫力」到治療疾病的程度。',u:'B06、B07 的原文已提醒避免「無限制提高免疫力」，可對照疫苗與預防保健需求來規劃。',s:[['Segerstrom & Miller（2004）Psychological Bulletin','']]},
+ {t:'心理系統的專業協助',k:'心理健康',b:'P 系列 24 個心理系統的翻轉點，多數對應認知行為治療、情緒調節與人際界線等有研究基礎的技巧。若困擾持續兩週以上、影響工作或睡眠，建議尋求精神科或臨床心理師協助；可撥安心專線 1925。',u:'把 P 系列的最小行動當成日常練習，若症狀嚴重請以專業治療為主。',s:[['衛生福利部','https://www.mohw.gov.tw/']]}
+]
+};
+const DEEP={haoyun:'在能力節點、情緒與原文中搜尋',xin:'在 20 個主題中搜尋',v3:'在二十篇中搜尋',p9000:'在 178 則原文中搜尋',houde:'在完整對話中搜尋',jibing:'在 72 個系統中搜尋'};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const appOf=id=>APPS.find(a=>a.id===id);
+function entryHTML(e,appId){const a=appOf(appId);return `<article class="lh-entry"><div class="lh-entry-top"><span class="lh-tag">${esc(e.k)}</span>${a?`<span class="lh-from">${esc(a.name)}</span>`:'<span class="lh-from">共同原則</span>'}</div><h4>${esc(e.t)}</h4><p>${esc(e.b)}</p><p class="lh-use"><b>在本館怎麼用</b>${esc(e.u)}</p><div class="lh-src">來源：${e.s.map(([n,u])=>u?`<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(n)} ↗</a>`:`<span>${esc(n)}</span>`).join('；')}</div></article>`}
+function allEntries(){return [...Object.entries(GUIDES).flatMap(([id,list])=>list.map(e=>({e,id}))),...COMMON.map(e=>({e,id:''}))]}
+function match(e,q){return !q||[e.t,e.k,e.b,e.u,...e.s.map(x=>x[0])].join(' ').toLowerCase().includes(q.toLowerCase())}
+/* 內嵌在各館頁面中的學習指南（取代原本的自我問答頁） */
+function guideHTML(appId,opts={}){const a=appOf(appId),list=GUIDES[appId]||[];return `<div class="lh-guide" data-lh-guide="${esc(appId)}"><div class="lh-guide-head"><span class="lh-eyebrow">LIFEOS 六館 · 學習指南</span><h2>${esc(opts.title||((a?a.name:'LifeOS')+'：背景知識與延伸閱讀'))}</h2><p>${esc(opts.intro||'每一則都標示類別與來源，說明這個主題目前的研究或典籍出處，以及在本館可以怎麼用。')}</p></div><div class="lh-guide-bar"><input type="search" class="lh-guide-q" placeholder="搜尋指南，例如：睡眠、習慣、出處…" aria-label="搜尋學習指南"><select class="lh-guide-scope" aria-label="指南範圍"><option value="app">本館指南</option><option value="common">共同閱讀原則</option><option value="all">六館全部指南</option></select></div><div class="lh-guide-count" role="status"></div><div class="lh-guide-list"></div><p class="lh-health">${esc(HEALTH)}</p></div>`}
+function fillGuide(root){if(!root||root.dataset.lhReady)return;root.dataset.lhReady='1';const appId=root.dataset.lhGuide,q=root.querySelector('.lh-guide-q'),sc=root.querySelector('.lh-guide-scope'),out=root.querySelector('.lh-guide-list'),cnt=root.querySelector('.lh-guide-count');if(!GUIDES[appId])sc.value='all';const draw=()=>{const v=q.value.trim();let items=sc.value==='app'?(GUIDES[appId]||[]).map(e=>({e,id:appId})):sc.value==='common'?COMMON.map(e=>({e,id:''})):allEntries();items=items.filter(x=>match(x.e,v));cnt.textContent=`${items.length} 則`;out.innerHTML=items.map(x=>entryHTML(x.e,x.id)).join('')||'<p class="lh-empty">沒有符合的指南，試試其他關鍵字或切換範圍。</p>'};q.oninput=draw;sc.onchange=draw;draw()}
+const css=`.lh-dock{position:fixed;right:16px;bottom:16px;z-index:2147483000;display:flex;gap:8px;font:14px/1.5 system-ui,'Microsoft JhengHei',sans-serif}.lh-dock button{all:unset;cursor:pointer;background:#2f4a3e;color:#fffdf6;padding:10px 15px;border-radius:999px;box-shadow:0 6px 20px #1d2e2633;font-size:13px;letter-spacing:.5px}.lh-dock button.lh-alt{background:#fffaf0;color:#2f4a3e;border:1px solid #d9cfb8}.lh-dock button:focus-visible{outline:3px solid #c6914a;outline-offset:2px}.lh-panel{position:fixed;right:16px;bottom:68px;width:min(400px,calc(100vw - 32px));max-height:min(78vh,640px);overflow:auto;background:#fffdf7;color:#2c3d35;border:1px solid #ddd3bf;border-radius:16px;padding:18px;z-index:2147483001;box-shadow:0 18px 50px #1d2e2640;font:14px/1.6 system-ui,'Microsoft JhengHei',sans-serif;display:none}.lh-panel.open{display:block}.lh-panel h3{margin:0 0 4px;font-size:16px}.lh-panel small{color:#7b7a69}.lh-apps{display:grid;gap:7px;margin:12px 0}.lh-apps a{display:block;text-decoration:none;color:inherit;border:1px solid #e6dfcf;border-radius:10px;padding:9px 12px;background:#fff}.lh-apps a:hover{border-color:#b9975c}.lh-apps a.cur{background:#eef2e6;border-color:#9fb38f}.lh-apps b{font-size:14px}.lh-apps span{display:block;font-size:12px;color:#7b7a69}.lh-panel input{width:100%;box-sizing:border-box;border:1px solid #d9cfb8;border-radius:10px;padding:10px 12px;font:inherit;background:#fff;color:inherit}.lh-deep{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.lh-deep a{font-size:12px;text-decoration:none;color:#2f4a3e;background:#f3efe3;border-radius:999px;padding:5px 10px}.lh-hits .lh-entry{padding:12px}.lh-guide-dialog{width:min(980px,94vw);max-height:90vh;border:1px solid #ddd3bf;border-radius:18px;padding:0;background:#fbf8f0;color:#2c3d35}.lh-guide-dialog::backdrop{background:#1d2e2666}.lh-guide-dialog .lh-close{position:sticky;top:0;float:right;margin:12px;all:unset;cursor:pointer;width:34px;height:34px;border-radius:50%;background:#efe9da;text-align:center;line-height:34px;font-size:18px}.lh-guide{font:15px/1.8 system-ui,'Microsoft JhengHei',sans-serif;color:#2c3d35;padding:26px;box-sizing:border-box}.lh-guide *{box-sizing:border-box}.lh-guide-head h2{margin:6px 0 4px;font-size:clamp(20px,2.4vw,28px);font-weight:600;line-height:1.4}.lh-guide-head p{margin:0;color:#6f7a6c;font-size:14px}.lh-eyebrow{font-size:11px;letter-spacing:3px;color:#a77c3d}.lh-guide-bar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 8px}.lh-guide-bar input{flex:1;min-width:200px;border:1px solid #d9cfb8;border-radius:10px;padding:11px 14px;font:inherit;background:#fff;color:inherit}.lh-guide-bar select{border:1px solid #d9cfb8;border-radius:10px;padding:10px;font:inherit;background:#fff;color:inherit}.lh-guide-count{font-size:12px;color:#7b7a69;margin-bottom:8px}.lh-guide-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.lh-entry{background:#fff;border:1px solid #e6dfcf;border-radius:14px;padding:18px}.lh-entry h4{margin:8px 0 6px;font-size:17px;line-height:1.5}.lh-entry p{margin:0 0 8px;font-size:14px;line-height:1.85}.lh-entry-top{display:flex;justify-content:space-between;gap:8px;font-size:11px}.lh-tag{color:#fff;background:#6f8a6a;border-radius:999px;padding:1px 9px}.lh-from{color:#a77c3d}.lh-use{background:#f4f1e6;border-radius:8px;padding:9px 11px}.lh-use b{display:block;font-size:12px;color:#a77c3d}.lh-src{font-size:12px;color:#6f7a6c;overflow-wrap:anywhere}.lh-src a{color:#2f5a48}.lh-health{margin-top:18px;font-size:12px;color:#7a5f3a;background:#f7eedc;border-radius:10px;padding:11px 14px}.lh-empty{color:#7b7a69}@media(max-width:720px){.lh-guide-list{grid-template-columns:1fr}.lh-guide{padding:18px}.lh-dock{right:10px;bottom:10px}.lh-dock button{padding:8px 12px;font-size:12px}}`;
+function mount(){const cur=(window.LIFEOS_HUB||{}).app||'';const st=document.createElement('style');st.textContent=css;document.head.append(st);
+ const dock=document.createElement('div');dock.className='lh-dock';dock.innerHTML=`<button type="button" class="lh-alt" id="lh-guide-btn" aria-haspopup="dialog">📘 學習指南</button><button type="button" id="lh-hub-btn" aria-expanded="false" aria-controls="lh-panel">◎ LifeOS 六館</button>`;
+ const panel=document.createElement('div');panel.className='lh-panel';panel.id='lh-panel';panel.setAttribute('role','dialog');panel.setAttribute('aria-label','LifeOS 六館導覽');
+ panel.innerHTML=`<h3>LifeOS 六館</h3><small>六個 APP 共用這個導覽列，可互相切換與跨館搜尋。</small><div class="lh-apps">${APPS.map(a=>`<a href="${encodeURI(a.file)}" class="${a.id===cur?'cur':''}"><b>${esc(a.name)}</b> · ${esc(a.sub)}${a.id===cur?'（目前）':''}<span>${esc(a.desc)}</span></a>`).join('')}<a href="${encodeURI('lifeos-six-halls.html')}" class="${cur==='hub'?'cur':''}"><b>六館總入口</b><span>全部 APP 介紹、跨館搜尋與完整學習指南。</span></a></div><label for="lh-q"><small>跨館搜尋（學習指南＋開啟各館搜尋）</small></label><input id="lh-q" type="search" placeholder="例如：睡眠、焦慮、習慣、責任…"><div class="lh-deep" id="lh-deep"></div><div class="lh-hits" id="lh-hits"></div>`;
+ const dlg=document.createElement('dialog');dlg.className='lh-guide-dialog';dlg.innerHTML=`<button type="button" class="lh-close" aria-label="關閉學習指南">×</button>${guideHTML(GUIDES[cur]?cur:'all')}`;
+ document.body.append(dock,panel,dlg);fillGuide(dlg.querySelector('.lh-guide'));
+ dlg.querySelector('.lh-close').onclick=()=>dlg.close();dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+ dock.querySelector('#lh-guide-btn').onclick=()=>{panel.classList.remove('open');dlg.showModal()};
+ const hb=dock.querySelector('#lh-hub-btn');hb.onclick=()=>{const o=panel.classList.toggle('open');hb.setAttribute('aria-expanded',o);if(o)panel.querySelector('#lh-q').focus()};
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open')){panel.classList.remove('open');hb.setAttribute('aria-expanded','false')}});
+ const q=panel.querySelector('#lh-q');q.oninput=()=>{const v=q.value.trim();panel.querySelector('#lh-deep').innerHTML=v?APPS.map(a=>`<a href="${encodeURI(a.file)}?q=${encodeURIComponent(v)}">${esc(a.name)}：${esc(DEEP[a.id])} ↗</a>`).join(''):'';const hits=v?allEntries().filter(x=>match(x.e,v)).slice(0,8):[];panel.querySelector('#lh-hits').innerHTML=v?(hits.length?`<small>學習指南中找到 ${hits.length} 則（最多顯示 8 則）</small>`+hits.map(x=>entryHTML(x.e,x.id)).join(''):'<small>學習指南中沒有符合的內容，可點上方連結到各館搜尋。</small>'):''};
+ const want=new URLSearchParams(location.search).get('q');const hook=(window.LIFEOS_HUB||{}).search;if(want&&typeof hook==='function'){try{hook(want)}catch(err){console.warn('LifeOS hub search',err)}}
+}
+window.LifeOSHub={APPS,GUIDES,COMMON,HEALTH,guideHTML,fillGuide,entryHTML,allEntries,match};
+/* 各館把 guideHTML() 放進頁面後，自動啟用搜尋 */
+new MutationObserver(()=>document.querySelectorAll('[data-lh-guide]:not([data-lh-ready])').forEach(fillGuide)).observe(document.documentElement,{childList:true,subtree:true});
+if(document.readyState==='complete')mount();else window.addEventListener('load',mount);
+})();
+</script></head><body><main>
+<div class="eyebrow">LIFEOS · 六館總入口</div>
+<h1>六個 APP，一個入口。</h1>
+<p class="lead">創造好運、心之所居、業力病 v3、知識生活庫、厚德載物、疾病翻轉，共用同一個導覽列、跨館搜尋與學習指南。每個 APP 右下角都有「◎ LifeOS 六館」按鈕，可以隨時回到這裡或切換到其他館。</p>
+<div class="search"><input id="q" type="search" placeholder="跨館搜尋，例如：睡眠、焦慮、習慣、責任、寬恕…" aria-label="跨館搜尋"></div>
+<div class="deep" id="deep"></div><div class="hits" id="hits"></div>
+<div class="apps" id="apps"></div>
+<h2>整合方式</h2>
+<div class="how"><div><b>共用導覽</b>六館右下角同一組按鈕，可互相切換。</div><div><b>跨館搜尋</b>輸入關鍵字，可直接開啟任一館並帶入搜尋。</div><div><b>學習指南</b>每館 10 則背景知識與 6 則共同原則，皆附來源。</div><div><b>一致界線</b>原文保留、延伸內容標示來源，健康內容不保證療效。</div></div>
+<h2>六館學習指南</h2>
+<div id="guide"></div>
+<footer>本頁與六個 APP 同放在 LifeOS 資料夾即可互相連結；全部離線運作，不串接 AI 或外部 API。</footer>
+</main>
+<script>
+const H=LifeOSHub,esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+document.getElementById('apps').innerHTML=H.APPS.map(a=>`<a class="app" href="${encodeURI(a.file)}"><small>${esc(a.sub)}</small><b>${esc(a.name)}</b><p>${esc(a.desc)}</p><span>開啟 ↗</span></a>`).join('');
+document.getElementById('guide').innerHTML=H.guideHTML('all',{title:'六館全部指南與共同閱讀原則',intro:'可用範圍選單切換「共同閱讀原則」或「六館全部指南」，也可直接搜尋。'});
+const q=document.getElementById('q');
+function find(){const v=q.value.trim();document.getElementById('deep').innerHTML=v?H.APPS.map(a=>`<a href="${encodeURI(a.file)}?q=${encodeURIComponent(v)}">在「${esc(a.name)}」搜尋 ↗</a>`).join(''):'';const hits=v?H.allEntries().filter(x=>H.match(x.e,v)):[];document.getElementById('hits').innerHTML=v?(hits.length?`<p class="lead">學習指南中找到 ${hits.length} 則：</p>`+hits.slice(0,12).map(x=>H.entryHTML(x.e,x.id)).join(''):'<p class="lead">學習指南中沒有符合的內容，可點上方連結到各館搜尋。</p>'):''}
+q.oninput=find;
+window.LIFEOS_HUB={app:'hub',search(v){q.value=v;find()}};
+</script></body></html>
