@@ -834,5 +834,88 @@
   </div>
 
 </div><!-- /book -->
+
+<!-- LifeOS 臉書圖文：每頁一篇，八段手法 -->
+<style>
+#lfbOpen{position:fixed;right:16px;bottom:16px;z-index:2147483000;font:600 16px/1 system-ui,"Microsoft JhengHei",sans-serif;min-height:48px;padding:0 20px;border:0;border-radius:24px;background:#1f5f4c;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
+#lfb{position:fixed;inset:0;z-index:2147483001;display:none;background:rgba(10,20,16,.55)}
+#lfb.on{display:block}
+#lfb .lfb-box{position:absolute;inset:16px;max-width:980px;margin:auto;background:#fffdf8;color:#1d2b26;border-radius:14px;display:flex;flex-direction:column;overflow:hidden;font:17px/1.85 system-ui,"Microsoft JhengHei",sans-serif;text-align:left}
+#lfb .lfb-head{display:flex;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid #e3e6df;flex-wrap:wrap}
+#lfb .lfb-head b{font-size:17px;margin-right:auto}
+#lfb input{flex:1 1 220px;min-height:44px;padding:8px 12px;border:1px solid #cfd8d0;border-radius:8px;font:inherit;font-size:15px;background:#fff;color:#1d2b26}
+#lfb button{font:inherit;font-size:15px;min-height:44px;padding:6px 14px;border-radius:8px;border:1px solid #1f5f4c;background:#fff;color:#1f5f4c;cursor:pointer;line-height:1.3}
+#lfb button.pri{background:#1f5f4c;color:#fff}
+#lfb .lfb-main{display:grid;grid-template-columns:240px 1fr;min-height:0;flex:1}
+#lfb .lfb-list{overflow:auto;border-right:1px solid #e3e6df;padding:8px}
+#lfb .lfb-list button{display:block;width:100%;text-align:left;margin-bottom:6px;border-color:#e3e6df;color:#1d2b26;font-size:14px}
+#lfb .lfb-list button.cur{border-color:#1f5f4c;background:#e8f1ec;font-weight:600}
+#lfb .lfb-list small{display:block;color:#6a7a72;font-size:12px}
+#lfb .lfb-post{overflow:auto;padding:20px 26px 30px}
+#lfb .lfb-eye{color:#1f5f4c;font-size:13px;font-weight:700;letter-spacing:1px}
+#lfb h2{font-size:25px;line-height:1.45;margin:4px 0 2px;color:#17352b}
+#lfb .lfb-meta{color:#6a7a72;font-size:14px;margin-bottom:14px}
+#lfb .lfb-part{margin:0 0 16px}
+#lfb .lfb-part p{margin:0}
+#lfb .lfb-tag{display:inline-block;font-size:12px;color:#1f5f4c;border:1px solid #1f5f4c;border-radius:4px;padding:0 7px;line-height:1.6;margin-bottom:3px}
+#lfb .notag .lfb-tag{display:none}
+#lfb .lfb-tags{color:#1f5f4c;margin-bottom:14px}
+#lfb .lfb-act{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#lfb .lfb-st{color:#1f5f4c;font-size:14px}
+#lfb .lfb-qs{display:grid;gap:10px;margin:4px 0 16px}
+#lfb .lfb-q{background:#f3f7f1;border-left:4px solid #1f5f4c;border-radius:6px;padding:10px 14px}
+#lfb .lfb-q.act{background:#fbf5e8;border-left-color:#a86a12}
+#lfb .lfb-q small{display:block;font-size:12px;font-weight:700;color:#1f5f4c;letter-spacing:1px}
+#lfb .lfb-q.act small{color:#a86a12}
+#lfb .lfb-q b{display:block;font-size:17px;line-height:1.7}
+#lfb .lfb-q i{display:block;font-style:normal;color:#4b5a53;font-size:15px;line-height:1.6;font-family:Georgia,"Times New Roman",serif}
+@media(max-width:720px){#lfb .lfb-box{inset:0;border-radius:0}#lfb .lfb-main{grid-template-columns:1fr;grid-template-rows:auto 1fr}#lfb .lfb-list{display:flex;gap:6px;overflow-x:auto;border-right:0;border-bottom:1px solid #e3e6df}#lfb .lfb-list button{flex:0 0 auto;width:auto;margin:0}#lfb .lfb-post{padding:16px}}
+</style>
+<button id="lfbOpen" type="button" aria-haspopup="dialog">臉書圖文</button>
+<div id="lfb" role="dialog" aria-modal="true" aria-label="每頁臉書圖文">
+<div class="lfb-box">
+<div class="lfb-head"><b>每頁臉書圖文｜愛的覺醒之書</b><input type="search" id="lfbQ" placeholder="搜尋圖文…" aria-label="搜尋圖文"><button type="button" id="lfbClose">關閉</button></div>
+<div class="lfb-main"><nav class="lfb-list" id="lfbList" aria-label="頁面"></nav><article class="lfb-post" id="lfbPost"></article></div>
+</div></div>
+<script>
+(function(){
+var TAG=['情境衝突','反問句','哲學命題','對比句','排比句','認知翻轉','層層遞進','詩性收束'];
+var P=[{"page": "愛的本質——從恐懼到自由", "t": "你以為自己在追求愛，其實你一直在躲避恐懼", "tags": "#愛與恐懼 #內在自由 #愛的覺醒 #LifeOS", "s": ["她把手機放在枕頭邊，每隔十分鐘就亮一次螢幕。訊息已讀了，對方卻沒有回。她開始在心裡排演：是不是我說錯了什麼？是不是他覺得我太黏？是不是他身邊有了別人？一個晚上，她把自己審判了二十次。天亮的時候，對方回了一句：「昨天太累，睡著了。」她鬆了一口氣，卻也忽然很疲倦，因為她發現，自己整夜守著的不是愛，而是一種害怕被丟下的感覺。", "如果那真的是愛，為什麼它讓我們這麼不安？如果我們追求的是幸福，為什麼越用力抓住，心裡越像懸在半空？我們究竟是在愛一個人，還是在拜託一個人，替我們擋住那個從小就住在心裡、怕被羞辱、怕被遺忘、怕不被需要的黑洞？", "愛與恐懼，不是同一條路上的兩種心情，而是兩個方向。恐懼讓人收緊，愛讓人打開；恐懼想要確定，愛允許未知。每一種幻相，不論披上什麼樣的外衣，底下幾乎都是恐懼。所以平安從來不是從別人那裡拿來的，它只能從我們不再害怕的地方，慢慢長出來。", "恐懼型的愛問：「你會不會離開我？」覺醒的愛問：「我在這段關係裡，是否還是完整的自己？」一個把對方當成救生圈，一個把對方當成同行的人；一個靠控制得到安全感，一個靠信任得到自由；一個越愛越窄，一個越愛越寬。", "被羞辱的恐懼、被藐視的恐懼、被責難的恐懼、被冤枉的恐懼、被訕笑的恐懼、被遺忘的恐懼……我們以為它們是敵人，於是用盡力氣去對抗；我們以為只要夠好、夠乖、夠成功，它們就會消失；我們以為愛是一場需要不斷證明自己值得的考試。", "可是，認出這些恐懼，不是為了打敗它們，而是為了看見：每一種恐懼的背面，都寫著一個沒有被滿足的愛的需要。那個怕被遺忘的你，其實是渴望被記得；那個怕被責難的你，其實是渴望被接住。當你看見了這一層，恐懼就不再是怪獸，而是一個需要被抱一抱的孩子。我們無法同時緊握與擁抱；當手鬆開一點，愛才有地方停留。", "所以，從今晚開始，當不安又升起時，先別急著拿起手機，先問自己一句：「我現在怕的是什麼？」第一次，你只是說得出它的名字；第二次，你能陪它坐一會兒；第三次，你發現它沒有那麼巨大；慢慢地，你不再需要別人每分每秒的回應來證明自己值得被愛，因為你已經開始，學著自己回應自己。", "恐懼像夜裡的霧，看起來吞沒了整片山谷，可是太陽一出來，它就安靜地退去，山一直都在那裡。願你不必再守著一盞忽明忽滅的螢幕過夜；願你終於明白，真正的愛，不是讓你害怕失去誰，而是讓你在任何人面前，都不再失去自己。"], "q": [["真正的愛，不是讓你害怕失去誰，而是讓你不再失去自己。", "True love doesn't make you afraid of losing someone; it keeps you from losing yourself."], ["今晚不安時先問自己：我現在怕的是什麼？", "When unease comes tonight, ask first: what am I afraid of right now?"]]}, {"page": "接納自己——解開自我批判的枷鎖", "t": "你那麼努力想變好，是因為你一直不肯先接受現在的自己", "tags": "#接納自己 #停止比較 #陰影 #LifeOS", "s": ["她打開社群，看見大學同學升了職，國中同學買了房，連小她五歲的表妹都出了書。她把手機蓋在桌上，對著鏡子裡的自己說：「妳到底在幹嘛？」那天晚上，她報了三堂課，訂了一本自我成長的書，列了一份改造自己的計畫。可是躺上床，她還是睡不著，因為心裡那個聲音沒有停：「不夠，還是不夠，妳永遠都不夠。」", "如果我們拚命讓自己變好，為什麼內心反而越來越吵？如果比較能讓人進步，為什麼越比較的人，越不快樂？我們想改造的，真的是自己的缺點嗎？還是那個從小就被告訴「你應該要更好」、卻從來沒有被好好接住過的小孩？", "比較，往往源自不接受自己的生命：不接受自己的身體、自己的能力、自己的出身、自己的情緒。當我們抗拒事實，想成為某個不是自己的樣子，憤怒、嫉妒、沮喪就會跟著來，而這些情緒會讓人失去智慧。接納不是努力之後的獎賞，接納是當你不再抗拒時，自然發生的事。真正的成長不是把自己修成別人的樣子，而是把自己完整地認回來。", "自我批判說：「等我改掉這些缺點，我才值得被愛。」自我接納說：「我現在就值得被愛，所以我願意溫柔地成長。」一個在鞭打自己前進，一個在陪伴自己前進；一個把陰影藏起來，一個把陰影攤在陽光下；一個越修越累，一個越活越鬆。", "接納你的妒忌，因為它告訴你，你也渴望被看見；接納你的虛榮，因為它告訴你，你也害怕不被重視；接納你的傲慢，因為它常常是自卑穿上的盔甲；接納你的脆弱，因為那裡正是你最真實、也最能與人相遇的地方。", "我們以為改變要從「修正自己」開始，其實真正的改變，常常從「不再跟自己作對」開始。當你願意看見並經驗內在的傷痛，什麼都不用做，衝突就開始鬆動。原來那些你最想丟掉的陰影，正是讓生命重獲自由的出口；你一直往外找的那扇門，原來就藏在你最不敢看的地方。當你不再急著修理自己，你才第一次看清楚，原來自己一直值得被溫柔地對待。", "今天，試著對自己說一句以前說不出口的話：「我現在這樣，也可以。」第一次說，你可能會覺得假；說到第七次，你會開始聽見心裡的抗議變小了；說到一個月，你發現自己在別人面前不必再那麼用力；說到某一天，你忽然不再需要靠贏過誰，來確認自己存在。", "花園裡的花，從來不會因為隔壁那朵開得比較大，就拒絕開花。它只是按照自己的時節，安靜地長，安靜地開。願你放下手裡那把一直量著自己的尺；願你不再需要任何面具與盾牌；願你終於敢於成為自己，然後，全然地綻放。"], "q": [["接納不是努力之後的獎賞，而是你不再抗拒時，自然發生的事。", "Acceptance isn't a reward for effort; it happens when you stop resisting."], ["對自己說一句：「我現在這樣，也可以。」", "Say to yourself: \"I am enough, just as I am now.\""]]}, {"page": "關係的鏡子——與父母、家人的療癒", "t": "你和世界之間的每一道距離，都可能從家裡的那張餐桌開始", "tags": "#家庭關係 #和父母和解 #關係是一面鏡子 #LifeOS", "s": ["過年回家，飯桌上爸爸又開口了：「你那份工作到底有沒有前途？」你筷子停在半空，三十五歲的人，瞬間變回十二歲那個考不好、被罰站在客廳的孩子。你沒有回答，草草吃完，提早回到自己的城市。在高鐵上你想著：為什麼我在公司可以從容應對最難纏的客戶，卻在爸爸一句話面前，潰不成軍？", "如果我們早就長大了，為什麼父母的一個眼神，還能讓我們瞬間縮小？如果那些傷都過去了，為什麼我們和伴侶、和主管、和孩子之間，總是一再上演似曾相識的劇情？我們逃離了那個家，可是，我們真的離開它了嗎？", "我們和父母的關係，常常是我們所有其他關係的第一個模子。我們在那裡學會怎麼被愛，也學會怎麼害怕；學會怎麼開口，也學會怎麼沉默。關係就像一面鏡子：你在外面一再遇見的，往往是心裡還沒看清的那一張臉。療癒，不是改寫過去，而是不再讓過去，替你演出現在。", "逃離的人說：「我離他們越遠，我就越自由。」療癒的人說：「我看懂了他們，我才真的自由。」一個把父母當成傷口的來源，一個把父母當成另一個也曾受傷的人；一個用距離保護自己，一個用理解鬆開自己；一個帶著舊劇本走進每段新關係，一個終於有機會寫一個新的故事。", "問問爸媽，他們小時候是什麼樣子；問問他們，你小時候是什麼樣子；問問他們，什麼事讓他們最驕傲，什麼事讓他們最遺憾；問問他們，他們的父母是怎麼對待他們的。你會發現，那個讓你害怕的大人，也曾經是一個沒有被好好愛過的孩子。", "我們以為要等父母先道歉、先改變，我們才能好起來。其實不必。理解一個人，不等於同意他做過的每一件事；和解，也不一定要回到過去的距離。如果某些關係仍然不安全，保持界線同樣是愛自己。真正的翻轉是：當你看見他們的限制，你就不再需要用一生，去等待一份他們給不出的東西。", "這個月，試著打一通電話，只問一個問題，不急著辯解，也不急著教育。第一通，也許只有三分鐘；第二通，你聽見了一段從沒聽過的往事；第三通，你發現他嘴硬的背後藏著擔心；有一天，你在另一段關係裡又被觸動時，你會先停下來，認出那是舊的回聲，然後選擇用新的方式回應。", "一個家，像一棵樹的根，深埋在土裡，看不見，卻撐著整棵樹的高度。根受過傷，樹仍然可以長出新的枝葉。願你不必再用逃跑證明自己長大；願你回家吃飯時，終於可以只是吃一頓飯；願你留給下一代的，不只是你的遺產，還有一份已經被你溫柔修補過的愛。"], "q": [["理解父母，不是為了回到過去，而是為了不再被過去拉住。", "Understanding your parents isn't about going back; it's about no longer being pulled back."], ["這個月打一通電話，只問一個問題，然後好好聽。", "Make one call this month, ask one question, and truly listen."]]}, {"page": "內在靜默——靜心與活在當下", "t": "你的腦袋一直在說話，所以你聽不見自己的心", "tags": "#靜心 #活在當下 #頭腦與心 #LifeOS", "s": ["週末的午後，你終於有一段空白的時間。你泡了一壺茶，坐到陽台，準備好好休息。可是五分鐘不到，腦袋就開始上班：下週的報告、昨天那句說錯的話、孩子的成績、帳單、還有那個你已經三天沒回的訊息。茶還沒涼，你已經拿起手機，因為坐在安靜裡，竟然比工作還讓人不安。", "如果休息就是停下來，為什麼我們停下來的時候，反而最累？如果我們想要平靜，為什麼一安靜下來，就急著找點聲音塞滿？我們害怕的，究竟是無聊，還是在沒有任何事情可以分心的時候，終於要面對自己？", "頭腦是很好的工具，它讓我們擁有知識，能應付工作與生活。但頭腦也是一個是非婆，它習慣二元對立，東想完又想西，是製造衝突與分裂的高手。心的品質剛好相反：它安靜、包容、不急著判斷，它只是留出空間。靜心，不是要你什麼都不想，而是回到那個不需要一直說話的地方。安靜不是空無，而是所有聲音退下之後，你終於聽見自己。", "頭腦問：「接下來要做什麼？」心問：「此刻，我在哪裡？」一個活在過去的懊悔與未來的擔心裡，一個活在呼吸與呼吸之間；一個不斷評斷，一個單純感受；一個讓時間飛快地流走，一個讓一分鐘，像一整個下午那麼寬。", "你可以一邊吃飯一邊滑手機，也可以只是好好嘗一口飯的味道；你可以一邊走路一邊在腦中開會，也可以感覺腳掌踩在地上的重量；你可以一邊聽人說話一邊準備反駁，也可以只是聽；你可以一直趕往下一刻，也可以，完整地活在這一刻。", "我們以為靜心是一種需要努力練成的技巧，其實靜心是一種放下努力的狀態，是完全不造作的深度放鬆。你不需要把念頭趕走，只需要不再跟著它們跑。就像天空不需要趕走雲，雲來雲去，天空始終是天空。原來平靜一直都在，只是被我們的聲音蓋住了。你越不急著抓住平靜，平靜越願意留下來陪你。", "今天先給自己三分鐘。閉上眼，想像自己是一棵樹：根往下扎進大地，枝葉往上伸向天空，陽光落在葉子上，你只是呼吸。第一天，你會發現念頭多得驚人；第一週，你開始能在念頭之間，看見一點點空隙；一個月後，那段空隙慢慢變寬；有一天，你在最忙的時刻，也能找回那三分鐘的安靜。", "湖水被風吹皺的時候，看不見月亮；風停了，月亮就自己出現在水面上。你不必去找它，你只要不再攪動。願你在這個喧鬧的世界裡，仍然能為自己留一小片湖；願你今天的某一刻，時間慢了下來，而你，就在那裡。"], "q": [["湖水不再攪動，月亮就會自己出現。", "When the lake stops stirring, the moon appears on its own."], ["今天給自己三分鐘，什麼都不做，只是呼吸。", "Give yourself three minutes today: do nothing, just breathe."]]}, {"page": "情緒的智慧——讓感受成為通道", "t": "你一直想甩掉的那份難過，其實是想帶你回家", "tags": "#情緒智慧 #寬恕 #擁抱傷痛 #LifeOS", "s": ["告別式結束後，大家都說她很堅強。她沒有哭，照常上班，把所有事情處理得井井有條。三個月後的某個晚上，她在超市看見媽媽最愛吃的那種餅乾，突然站在貨架前，崩潰大哭，哭到店員走過來問她需不需要幫忙。她才發現，那些她以為已經收好的悲傷，從來沒有離開，只是一直在等一個出口。", "如果壓下情緒就能讓自己好過，為什麼它總在最意想不到的時候反撲？如果堅強就是不哭，為什麼那些最「堅強」的人，往往最疲憊？我們拚命逃開的那份感受，會不會其實是我們最需要好好聽一聽的聲音？", "情緒不是敵人，它是通道。越是忽略傷口，我們越被它耗盡，因為它會一直纏著我們，佔據我們的思緒。悲傷要被認出、被承認，才會轉化與移動。感受不會因為被否認而消失，它只會換一個地方繼續說話：在失眠裡，在胃痛裡，在一次莫名其妙的脾氣裡。被允許的情緒會流動，被禁止的情緒會沉澱；而沉澱太久的，總有一天會變成身體替你說出口的話。", "壓抑的人說：「不要想，就不會痛。」覺察的人說：「我讓自己痛，痛才會過去。」一個把情緒關在門外，一個打開門請它坐下；一個把寬恕當成對別人的恩典，一個明白寬恕是放過自己的鑰匙；一個越逃越遠，一個越走越近，最後回到自己身邊。", "悲傷，是愛還沒有找到去處；憤怒，是界線被踩過的提醒；害怕，是心在說它需要安全；委屈，是一個沒有被聽見的需要；羞愧，是一個渴望被接納的你。每一種情緒，都不是要來毀掉你，而是要來告訴你，你身上有一個地方，正在等你回頭。", "我們以為寬恕是原諒別人做錯的事，其實寬恕更深的意思，是放下我們加在事件上的那些詮釋與評斷。寬恕不是為了別人，而是為了自己。如果此刻還做不到，也不必勉強。你可以先做一件更溫柔的事：像抱著一個新生嬰兒那樣，抱著你的傷痛，不批判，不辯護，只是抱著。", "下一次，當情緒湧上來，先別急著處理它，試著說出它的名字：「我現在很難過。」第一次，你只是承認；第二次，你允許眼淚流下來；第三次，你發現它來了又走，沒有吞沒你；慢慢地，你不再害怕自己的感受，因為你知道，每一場雨落完之後，你都還在。如果痛苦大到無法負荷，也請讓專業的人陪你。", "河水遇到石頭，不會停下來跟石頭吵架，它繞過去，轉個彎，繼續往前流。情緒也是一條河，你越想堵住它，它越氾濫；你讓它流，它就會帶你到更寬的地方。願你今天，允許自己難過一下；願你哭完之後，能輕輕對自己笑一笑。"], "q": [["被允許的情緒會流動，被禁止的情緒會沉澱。", "Emotions that are allowed will flow; emotions that are forbidden will settle and stay."], ["難過的時候，先說出它的名字：「我現在很難過。」", "When you're sad, name it first: \"I am sad right now.\""]]}, {"page": "服務與感恩——業瑜伽的精髓", "t": "你幫了那麼多人，為什麼自己還是越來越空？", "tags": "#感恩 #無我的服務 #不掉進問題裡 #LifeOS", "s": ["他是朋友圈裡最熱心的那一個。誰搬家，他去扛；誰失戀，他陪到半夜；誰工作出事，他第一個打電話。大家都說：「有你真好。」可是有一天，他自己生病發燒，躺在床上滑著通訊錄，突然發現自己誰也不想打。不是沒有人，而是他早就習慣了只當那個給的人。他累得說不出話，心裡有一個聲音問他：你到底在給什麼？", "如果幫助別人是好事，為什麼有些人越幫越累，越幫越怨？如果感恩讓人快樂，為什麼我們總要等到失去，才想起要說謝謝？我們的付出，究竟是從滿溢的地方流出來的，還是從一個害怕不被需要的洞裡，硬擠出來的？", "真正的感謝，來自內在的感動與盈滿，它必然帶來謙遜與奉獻。服務也是一樣：無我的服務，不是犧牲自己去填滿別人，而是你內在先有了平靜，再把這份平靜分享出去。越不愛自己，能量消耗得越快；內在找到平靜的人，把光和愛傳給別人，自己卻不會乾涸。一杯水如果自己是空的，倒得再用力，也倒不出一滴。", "討好的服務問：「我做這些，你會不會更喜歡我？」覺醒的服務問：「我做這些，是因為我願意。」一個在交換認可，一個在分享豐盛；一個掉進別人的問題裡，跟著一起沉下去，一個站在岸上，伸出手，讓對方看見自己有力氣上岸；一個越給越空，一個越給越滿。", "感謝餵養你的土地，感謝撫育你的母親，感謝給你安全的父親，感謝教你知識的老師，感謝路邊替你開門的陌生人，也感謝那個今天仍然願意起床、願意努力、願意再愛一次的自己。感恩不是一種禮貌，而是一種看見：原來我們從來不是一個人活著。", "我們以為幫助就是替別人解決問題，其實最好的幫助，是讓對方看見自己的問題，並且相信自己有能力解決它。處理事情，要對事情本身處理，而不是掉進問題裡。最深的翻轉是：當你不再需要靠被需要來證明自己的價值，你的付出，才第一次變得自由而輕盈。", "從今天起，每天睡前寫下三件想感謝的事，再寫下一件今天為別人做、而且心甘情願的小事。第一週，你會發現自己其實擁有很多；第一個月，你開始分得出哪些付出是委屈，哪些是喜悅；三個月後，你敢對不想做的事說不；有一天，你的善意不再讓你疲憊，而是讓你越活越亮。", "泉水從來不急著把自己倒空，它只是不斷從深處湧出來，所以永遠清澈，永遠豐盈。願你先成為一口有源頭的泉，再去滋潤別人的田；願你的每一份善意，都是從滿溢裡流出來的；願你在給予的時候，也記得把一份溫柔，留給自己。"], "q": [["一口有源頭的泉，才能一直滋潤別人的田。", "Only a spring with a source can keep watering others' fields."], ["每晚寫下三件感謝的事，和一件心甘情願的付出。", "Each night, write three things you're grateful for and one gift you gave freely."]]}, {"page": "愛自己——生命最根本的法則", "t": "你不可能給出你沒有的東西，包括愛", "tags": "#愛自己 #自我犧牲不是愛 #療癒 #LifeOS", "s": ["她是一個很好的媽媽、很好的太太、很好的女兒、很好的員工。每天早上五點半起床做早餐，晚上十一點還在改孩子的作業，週末陪公婆，假日加班。所有人都需要她，她也習慣被需要。直到有一天，孩子對她說：「媽媽，妳為什麼都不笑？」她愣住了，在廁所裡對著鏡子看了很久，發現自己已經想不起來，上一次真心為自己開心，是什麼時候。", "如果犧牲自己就是愛，為什麼被我們這樣愛著的人，並沒有更快樂？如果照顧好別人就夠了，為什麼我們心裡，還是有一塊越來越乾的地方？一個連自己都不肯好好對待的人，真的能把好的東西，交到別人手上嗎？", "愛自己，是生命的法則。你不可能給出你沒有的東西；你的愛只能經由你，流向別人。若你是乾涸的，別人就無法被你滋養，那樣的付出就不是真愛，而是一種自我犧牲。療癒，就是愛自己；當你提升了自己，你也改善了你的世界。這不是自私，而是一切關係的源頭。", "自我犧牲說：「我先把大家都照顧好，最後再說我自己。」愛自己說：「我先把自己照顧好，才有力氣好好照顧大家。」一個讓人感到虧欠，一個讓人感到輕鬆；一個默默累積委屈，一個誠實說出需要；一個讓孩子學會犧牲，一個讓孩子學會被愛也是可以的。", "愛自己，是累了就休息，而不是撐到倒下；是餓了就好好吃一頓，而不是站著隨便扒兩口；是不想去的聚會可以說不，而不必編一個理由；是犯了錯可以原諒自己，而不是在心裡懲罰一整個月；是記得你也是一個人，不只是一個角色。", "我們以為愛自己是一種奢侈，要等事情都做完了才輪得到；其實愛自己是一種基礎，就像飛機上的氧氣面罩，要先替自己戴好，才有辦法幫身邊的人。快樂有一部分是可以選擇的：透過行為和想法，我們能增進自己的快樂。原來你最該先學會好好愛的那個人，一直就是你自己。", "這週，替自己留一個小時，不為任何人，只為自己。第一次，你可能會有罪惡感，覺得浪費時間；第二次，你開始知道自己喜歡什麼；第三次，你發現家裡並沒有因此崩塌；一個月後，你的笑容多了，脾氣少了；有一天，孩子看著你說：「媽媽，妳最近好像很開心。」那一刻你會懂，你愛自己，也是在愛他。", "請你愛我之前，先愛你自己；愛我的同時，也愛著你自己。這是愛的法則，也是我想對你說的話。願你不再把自己放在最後一個；願你的愛像一口井，先有水，才能分給別人喝；願你被你自己，好好地愛著。"], "q": [["你不可能給出你沒有的東西，包括愛。", "You cannot give what you don't have, and that includes love."], ["這週替自己留一小時，不為任何人，只為自己。", "Keep one hour this week for no one but yourself."]]}, {"page": "覺醒——回到合一的美好世界", "t": "你一直在找的出口，原來一直都在你心裡", "tags": "#覺醒 #合一 #放下執著 #LifeOS", "s": ["他走過很多地方，上過很多課，讀過很多經典，試過很多方法。每一個老師都說得很好，每一個方法都讓他激動一陣子，可是一回到生活裡，那份空虛又悄悄回來。有一天夜裡，他坐在陽台，看著遠處一盞一盞亮起的燈，突然很想知道：我這麼多年一直往外走，到底是在找什麼？", "如果答案在外面，為什麼走了那麼遠，心裡還是一樣空？如果覺醒是一種境界，為什麼越追求，它越像海市蜃樓？我們一直在等待某一天被點醒，可是，會不會那扇門從來沒有鎖上，只是我們一直背對著它？", "當你能夠看見並接納自己內在的一切，完整地經驗你所有的情緒與痛苦，內在的衝突就會消失；衝突消失之後，喜悅會出現，喜悅會轉化為愛；隨著愛在心中綻放，你開始覺得自己和所看見、所聽見、所感受的一切，都連在一起。這就是合一：不是去到某個地方，而是回到本來的地方。覺醒不是遠方的山頂，而是你腳下這一步，終於被你完整地踏實了。", "追尋的人問：「我要怎樣才能變得更好？」覺醒的人問：「我能不能先看見，此刻已經擁有的？」一個把成長當成累積，一個把成長當成放下；一個模仿別人的路，一個尊重自己獨特的路；一個活在分裂裡，處處與世界為敵，一個活在連結裡，把生活當成一場嬉戲。", "放下對完美的執著，你就看見真實的美；放下對控制的執著，你就看見生命的流動；放下對別人的期待，你就看見他們原本的樣子；放下對過去的執著，你就看見今天的陽光；放下對答案的執著，你終於能夠，好好地活在問題裡。", "我們以為靈性成長是學會更多，其實靈性成長的藝術，在於你多快放下自己的執著。每個人都有自己的路要走，不必複製別人的旅程。聆聽自己的心，聽聽你真正需要什麼，從各種法門裡，只取用對自己有幫助的部分。原來覺醒不是成為另一個人，而是終於，第一次成為自己。那些你曾經以為要捨棄的部分，原來都是回家路上的一部分。", "今天，試著做一件很小的事：走路時，好好看一次天空；吃飯時，好好嚐一次味道；說話時，好好看一次對方的眼睛。一天，你多了一點點覺察；一個月，你發現自己比較少被小事牽著走；一年，你的世界沒有變，可是你看世界的眼睛變了；有一天你會發現，你找了很久的那份平安，早就在這裡等你。", "當你覺醒時，你會第一次開始過生活，你會看見這世界是多麼美麗。不是因為它變得完美，而是因為你終於不再與它對抗。願你不必再遠行去尋找回家的路；願你在某一個平凡的清晨，推開窗，就明白：原來你一直都在家。"], "q": [["你一直在找的出口，原來一直都在你心裡。", "The way out you've been searching for has always been inside you."], ["今天好好看一次天空，好好嚐一口飯，好好看一次對方的眼睛。", "Today, look at the sky, taste your food, and look into someone's eyes, fully."]]}];
+var cur=0,hide=false;
+function g(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var QL=[['心靈雞湯｜Soul Soup',''],['激勵｜Motivation','act']];
+function qtext(p){return p.q?'\n\n'+p.q.map(function(x,k){return '【'+QL[k][0]+'】\n'+x[0]+'\n'+x[1]}).join('\n\n'):''}
+function qhtml(p){return p.q?'<div class="lfb-qs">'+p.q.map(function(x,k){return '<div class="lfb-q '+QL[k][1]+'"><small>'+QL[k][0]+'</small><b>'+esc(x[0])+'</b><i lang="en">'+esc(x[1])+'</i></div>'}).join('')+'</div>':''}
+function text(p){return '【'+p.t+'】\n\n'+p.s.join('\n\n')+qtext(p)+'\n\n'+p.tags}
+function list(){
+  var q=g('lfbQ').value.trim().toLowerCase();
+  g('lfbList').innerHTML=P.map(function(p,i){
+    if(q&&(p.page+' '+text(p)).toLowerCase().indexOf(q)<0)return '';
+    return '<button type="button" data-i="'+i+'" class="'+(i===cur?'cur':'')+'"><small>第 '+(i+1)+' 頁｜'+esc(p.page)+'</small>'+esc(p.t)+'</button>';
+  }).join('')||'<p style="padding:8px;font-size:14px">沒有符合的圖文</p>';
+}
+function show(i){
+  cur=i;var p=P[i];
+  g('lfbPost').innerHTML='<div class="lfb-eye">第 '+(i+1)+' / '+P.length+' 頁｜'+esc(p.page)+'</div><h2>'+esc(p.t)+'</h2><div class="lfb-meta">約 '+p.s.join('').replace(/\s/g,'').length+' 字 · 八種手法 · 文中情境為示例</div><div id="lfbBody" class="'+(hide?'notag':'')+'">'+p.s.map(function(x,k){return '<div class="lfb-part"><span class="lfb-tag">'+TAG[k]+'</span><p>'+esc(x)+'</p></div>'}).join('')+'</div>'+qhtml(p)+'<div class="lfb-tags">'+esc(p.tags)+'</div><div class="lfb-act"><button type="button" class="pri" id="lfbCopy">複製貼文</button><button type="button" id="lfbHide">'+(hide?'顯示':'隱藏')+'手法標籤</button><span class="lfb-st" id="lfbSt" role="status"></span></div>';
+  g('lfbPost').scrollTop=0;list();
+}
+function copy(){
+  var t=text(P[cur]),st=g('lfbSt');
+  function fall(){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}a.remove();st.textContent=ok?'已複製，可直接貼到臉書。':'無法自動複製，請手動選取內文。'}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){st.textContent='已複製，可直接貼到臉書。'},fall)}else fall();
+}
+g('lfbOpen').onclick=function(){g('lfb').classList.add('on');show(cur);g('lfbQ').focus()};
+g('lfbClose').onclick=function(){g('lfb').classList.remove('on');g('lfbOpen').focus()};
+g('lfb').addEventListener('click',function(e){
+  if(e.target===g('lfb'))g('lfbClose').onclick();
+  var b=e.target.closest&&e.target.closest('[data-i]');if(b)show(+b.getAttribute('data-i'));
+  if(e.target.id==='lfbCopy')copy();
+  if(e.target.id==='lfbHide'){hide=!hide;show(cur)}
+});
+g('lfbQ').addEventListener('input',list);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&g('lfb').classList.contains('on'))g('lfbClose').onclick()});
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>三大64系統雙語金句</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#22201c;--sub:#6b665d;--line:#e4dfd4;--acc:#8a5a14;--acc2:#2f6b5a;--chip:#f1ebdf;--mark:#ffe59a;--speak:#e6f3ee}
+@media (prefers-color-scheme:dark){:root{--bg:#16150f;--card:#211f19;--ink:#ece7dc;--sub:#a59f92;--line:#36322a;--acc:#e0b061;--acc2:#7fc7ad;--chip:#2c2921;--mark:#6b5414;--speak:#1d3a31}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 "Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px 8px}
+.bar{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+h1{font-size:18px;margin:0 8px 0 0;white-space:nowrap}
+h1 small{font-weight:400;color:var(--sub);font-size:12px;margin-left:6px}
+#q{flex:1 1 220px;min-width:0;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:15px}
+select,button{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:5px 9px;cursor:pointer}
+button:hover{border-color:var(--acc)}
+.ctl{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--sub)}
+#voice{max-width:190px}
+.tabs{max-width:1100px;margin:8px auto 0;display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.tab{white-space:nowrap;border-radius:999px;font-size:14px}
+.tab.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.tab .c{font-size:11px;opacity:.8;margin-left:4px}
+main{max-width:1100px;margin:0 auto;padding:14px 16px 60px}
+.info{color:var(--sub);font-size:13px;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px}
+.grp{grid-column:1/-1;margin:10px 0 0;font-size:16px;color:var(--acc);border-bottom:1px dashed var(--line);padding-bottom:4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.card.flash{outline:3px solid var(--acc)}
+.card header{display:flex;gap:10px;align-items:flex-start;margin-bottom:6px}
+.num{font-weight:700;color:var(--acc);font-size:13px;padding-top:3px;min-width:20px}
+.glyph{font-size:34px;line-height:1;color:var(--acc2)}
+.card h3{margin:0;font-size:16px}
+.card header .en{margin:0;color:var(--sub);font-size:13px}
+.card header .hd{flex:1}
+.row{display:grid;grid-template-columns:62px 1fr;gap:8px;padding:7px 0;border-top:1px solid var(--line)}
+.lab{font-size:12px;background:var(--chip);border-radius:6px;padding:2px 6px;align-self:start;text-align:center;line-height:1.35}
+.lab em{display:block;font-style:normal;color:var(--sub);font-size:10.5px}
+.txt p{margin:0}
+.txt .en{color:var(--acc2);font-size:14px;margin-top:2px}
+.say{border:none;background:none;padding:0 4px 0 0;font-size:14px}
+.speaking{background:var(--speak);border-radius:6px}
+.note{font-size:12.5px;color:var(--sub);border-top:1px dashed var(--line);margin-top:4px;padding-top:6px}
+mark{background:var(--mark);color:inherit;border-radius:3px}
+body.m-zh .en:not(.keep),body.m-zh .lab em{display:none}
+body.m-en .zh{display:none}
+.empty{color:var(--sub);text-align:center;padding:40px}
+@media (max-width:520px){.grid{grid-template-columns:1fr}h1 small{display:none}.row{grid-template-columns:52px 1fr}}
+</style>
+</head>
+<body>
+<div class="top">
+ <div class="bar">
+  <h1>三大64系統<small>192法則 × 576句 · Bilingual</small></h1>
+  <input id="q" type="search" placeholder="搜尋中文或英文… Search">
+ </div>
+ <div class="bar ctl" style="margin-top:6px">
+  顯示 <select id="mode"><option value="both">中英對照</option><option value="zh">只看中文</option><option value="en">English only</option></select>
+  語音 <select id="voice"></select>
+  速度 <input id="rate" type="range" min="0.6" max="1.3" step="0.05" value="0.9" style="width:80px"><span id="rv">0.9</span>
+  <button id="stop" title="停止朗讀">⏹ 停止</button>
+  <button id="rand" title="隨機一張">🎲 隨機</button>
+ </div>
+ <nav class="tabs" id="tabs"></nav>
+</div>
+<main><p class="info" id="info"></p><div class="grid" id="grid"></div></main>
+<script>
+// [中文名, English, 本質zh, en, 智慧zh, en, 行動zh, en]
+const U=[
+["吸引力法則","Law of Attraction","你持續關注的事，會影響你看見哪些機會。","What you keep focusing on shapes which opportunities you notice.","不要只期待好事發生，要讓自己具備接住機會的能力。","Don't just hope good things happen; build the ability to catch opportunities when they come.","每天主動創造一次有價值的連結。","Create one valuable connection on your own initiative every day."],
+["振動法則","Law of Vibration","人的情緒與行為狀態，會影響互動品質。","Your emotional and behavioral state affects the quality of your interactions.","改變狀態不是提高神秘頻率，而是調整身心與行動。","Changing your state isn't about raising a mystical frequency; it's about adjusting body, mind and action.","情緒不穩時，先整理呼吸與思緒再決策。","When your emotions are unstable, steady your breathing and thoughts before deciding."],
+["能量法則","Law of Energy","人的時間、體力與注意力都是有限資源。","Time, physical energy and attention are all limited resources.","真正的強大，是把有限資源投入重要事情。","True strength is investing limited resources in what matters.","每天保留一段不受干擾的專注時間。","Reserve one block of uninterrupted focus time every day."],
+["對應法則","Law of Correspondence","個人的習慣會影響他與外在環境的互動。","Personal habits affect how you interact with the world around you.","外在結果不一定反映內心，但行為模式值得檢查。","Outer results don't always mirror your inner world, but your behavior patterns are worth examining.","找出一個經常重複的問題與自己的應對習慣。","Identify one recurring problem and your habitual response to it."],
+["循環法則","Law of Cycles","許多生命與社會現象存在週期性變化。","Many natural and social phenomena change in cycles.","低潮不是永久狀態，高峰也需要維護。","A low point is not permanent, and a peak needs maintenance.","記錄自己的學習與情緒週期。","Track your own learning and mood cycles."],
+["因果法則","Law of Cause and Effect","結果通常來自多種條件共同作用。","Outcomes usually come from many conditions acting together.","不要只找一個原因，要理解整個因果網絡。","Don't look for just one cause; understand the whole web of causes.","分析問題時至少列出三個可能因素。","When analyzing a problem, list at least three possible factors."],
+["頻率法則","Law of Frequency","重複行動會逐漸塑造習慣。","Repeated actions gradually shape habits.","比起偶爾爆發，穩定練習更容易累積能力。","Steady practice builds ability more reliably than occasional bursts.","每天固定練習一項核心技能。","Practice one core skill at a set time every day."],
+["共振法則","Law of Resonance","共同目標可能促進人際協調。","Shared goals can foster coordination between people.","真正的同頻不是想法完全相同，而是能夠合作。","Being truly in sync doesn't mean thinking exactly alike; it means being able to work together.","尋找一位願意互相督促的夥伴。","Find a partner willing to keep each other accountable."],
+["顯化法則","Law of Manifestation","想法可以成為計畫的起點。","Ideas can be the starting point of a plan.","願望本身不會保證結果，執行與回饋才會推動改變。","Wishing alone guarantees nothing; execution and feedback are what drive change.","把一個願望拆成今天能完成的第一步。","Break one wish into a first step you can finish today."],
+["信念法則","Law of Belief","信念會影響你對資訊與機會的判斷。","Beliefs influence how you judge information and opportunities.","好的信念不是永遠正確，而是願意接受修正。","A good belief isn't one that's always right, but one that's open to correction.","檢查一個限制自己的舊觀念。","Examine one old belief that limits you."],
+["平衡法則","Law of Balance","不同需求會競爭有限的時間與資源。","Different needs compete for limited time and resources.","平衡不是平均，而是根據重要性動態調整。","Balance isn't splitting things equally; it's adjusting dynamically by importance.","重新分配學習、睡眠與休息時間。","Reallocate your time for study, sleep and rest."],
+["專注法則","Law of Focus","注意力越分散，完成複雜任務通常越困難。","The more scattered your attention, the harder complex tasks usually become.","專注的第一步不是增加努力，而是減少干擾。","The first step to focus isn't more effort; it's fewer distractions.","完成一次25分鐘無手機學習。","Complete one 25-minute study session without your phone."],
+["意圖法則","Law of Intention","清楚的目的能改善行動選擇。","A clear purpose improves your choice of actions.","沒有目標的忙碌，容易變成低效率消耗。","Busyness without a goal easily turns into inefficient drain.","每天寫下最重要的一個成果。","Write down your single most important outcome each day."],
+["無限法則","Law of Infinity","人的能力可以成長，但仍受到現實條件限制。","Human abilities can grow, but are still bound by real-world conditions.","突破限制需要學習與資源，而非相信自己無所不能。","Breaking limits takes learning and resources, not believing you can do anything.","挑戰一件目前尚不熟練的小事。","Take on one small thing you're not yet good at."],
+["光明法則","Law of Light","清楚的資訊能提高判斷品質。","Clear information improves the quality of judgment.","真正的光明，是願意看見不符合期待的事實。","True light is the willingness to see facts that don't match your expectations.","對重要問題尋找可靠證據。","Look for reliable evidence on important questions."],
+["直覺法則","Law of Intuition","直覺是經驗與快速判斷形成的訊號。","Intuition is a signal formed by experience and quick judgment.","直覺值得聆聽，但重大決策需要驗證。","Intuition is worth listening to, but major decisions need verification.","記錄一次直覺及最後的實際結果。","Record one intuition and what actually happened."],
+["觀察法則","Law of Observation","沒有觀察，就難以知道真正的問題。","Without observation, it's hard to know the real problem.","先描述現象，再推測原因。","Describe the phenomenon first, then guess at the cause.","用三句話記錄一件事實。","Record one fact in three sentences."],
+["結構法則","Law of Structure","元素之間的關係，會影響系統整體表現。","The relationships between elements shape how the whole system performs.","不要只修補個人努力，要改善支持行動的結構。","Don't just patch personal effort; improve the structure that supports action.","重新設計一個低效率流程。","Redesign one inefficient process."],
+["維度法則","Law of Dimensions","不同視角可能揭露不同問題。","Different perspectives may reveal different problems.","換角度不代表升到神秘維度，而是增加解釋能力。","Changing perspective isn't rising to a mystical dimension; it's gaining explanatory power.","用三種角色分析同一件事。","Analyze the same situation from three different roles."],
+["全息法則","Law of Holography","局部與整體可能存在相互關聯。","Parts and the whole may be interconnected.","看見局部線索，不代表已掌握整體真相。","Seeing a local clue doesn't mean you've grasped the whole truth.","分析一個問題對其他環節的影響。","Analyze how one problem affects other parts of the system."],
+["連接法則","Law of Connection","資訊、資源與人際關係透過連結產生流動。","Information, resources and relationships flow through connections.","連結數量不如連結品質重要。","The quality of connections matters more than their number.","維護一段有互信的合作關係。","Maintain one cooperative relationship built on mutual trust."],
+["三位一體法則","Law of Trinity","複雜目標需要多個條件共同支持。","Complex goals need several conditions supporting them together.","只有想法沒有能力，只有能力沒有行動，都難以完成目標。","Ideas without ability, or ability without action, rarely reach a goal.","檢查目標、資源與行動是否一致。","Check whether your goals, resources and actions are aligned."],
+["成長法則","Law of Growth","能力會在練習與回饋中逐步改變。","Abilities change gradually through practice and feedback.","成長不是永遠向上，而是能從退步中修正。","Growth isn't always upward; it's being able to correct course after setbacks.","每天記錄一個進步或錯誤。","Record one improvement or mistake every day."],
+["純粹法則","Law of Purity","減少干擾，有助於辨識真正重要的需求。","Reducing distractions helps you identify what truly matters.","簡單不是逃避複雜，而是保留核心。","Simplicity isn't avoiding complexity; it's keeping the core.","移除一項不必要的生活負擔。","Remove one unnecessary burden from your life."],
+["定位法則","Law of Positioning","清楚自己的能力與處境，才能選擇適當策略。","Knowing your abilities and situation lets you choose the right strategy.","自我認識不是貼標籤，而是建立可更新的能力地圖。","Self-knowledge isn't labeling yourself; it's building an updatable map of your abilities.","列出三項優勢與一項瓶頸。","List three strengths and one bottleneck."],
+["積累法則","Law of Accumulation","可保留的成果經過時間可能產生複利。","Results you can keep may compound over time.","重複不一定是成長，必須累積有效經驗。","Repetition isn't always growth; you must accumulate effective experience.","建立一份可持續更新的學習筆記。","Start a learning notebook you can keep updating."],
+["層級法則","Law of Levels","不同發展階段需要不同工具。","Different stages of development need different tools.","不要用高手的方法，忽略初學者真正的瓶頸。","Don't copy experts' methods while ignoring a beginner's real bottleneck.","選擇符合目前程度的下一個挑戰。","Choose a next challenge that fits your current level."],
+["路徑法則","Law of Path","目標可以相同，抵達的方法可以不同。","The goal can be the same while the way there differs.","當道路失效，改路不等於放棄。","When a road fails, changing routes doesn't mean giving up.","替重要目標準備一個替代方案。","Prepare a backup plan for an important goal."],
+["節奏法則","Law of Rhythm","持續行動需要配合恢復與負荷。","Sustained action requires balancing load and recovery.","不是每天都要衝刺，而是建立可持續的速度。","You don't need to sprint every day; build a sustainable pace.","安排專注與休息交替的學習節奏。","Set a study rhythm that alternates focus and rest."],
+["感恩法則","Law of Gratitude","感謝能表達對他人貢獻的看見。","Gratitude shows that you see others' contributions.","真正的感恩不是否認困難，而是記得支持與資源。","True gratitude doesn't deny hardship; it remembers support and resources.","具體感謝一位曾幫助自己的人。","Specifically thank someone who has helped you."],
+["保護法則","Law of Protection","重要資源需要風險管理。","Important resources need risk management.","保護自己不是拒絕挑戰，而是控制不可承受的損失。","Protecting yourself isn't refusing challenges; it's controlling losses you can't afford.","為一項重要決策設定停損條件。","Set a stop-loss condition for one important decision."],
+["方向法則","Law of Direction","方向決定努力如何配置。","Direction determines how effort is allocated.","方向不必永遠固定，但需要定期檢查。","Direction needn't be fixed forever, but it needs regular checking.","確認今天的行動是否接近長期目標。","Check whether today's actions move you toward your long-term goal."],
+["流動法則","Law of Flow","資源流動能支持系統運作。","The flow of resources keeps a system running.","囤積不等於安全，流動也需要界線。","Hoarding isn't safety, and flow also needs boundaries.","讓一份有用知識成為可分享的資源。","Turn one piece of useful knowledge into a shareable resource."],
+["釋放法則","Law of Release","過度負荷會降低系統彈性。","Overload reduces a system's flexibility.","放下無效負擔，才能保留重要能力。","Let go of useless burdens to preserve important capacities.","停止一項不再有價值的承諾。","Drop one commitment that no longer has value."],
+["蛻變法則","Law of Transformation","環境改變時，舊模式可能失效。","When the environment changes, old patterns may stop working.","真正的蛻變不是換外表，而是更新底層策略。","Real transformation isn't a new look; it's updating your underlying strategy.","替一項反覆失敗的任務設計新方法。","Design a new method for a task that keeps failing."],
+["重生法則","Law of Rebirth","失敗後仍可能建立新的發展路徑。","After failure, a new path of development is still possible.","重生不是抹除過去，而是把經驗轉成新能力。","Rebirth doesn't erase the past; it turns experience into new ability.","從一次挫折中提取一項可用教訓。","Extract one usable lesson from a setback."],
+["挑戰法則","Law of Challenge","挑戰會暴露能力與資源的限制。","Challenges expose the limits of your abilities and resources.","困難不一定使人成長，正確的支持與修正才有幫助。","Hardship doesn't automatically make you grow; the right support and correction do.","選擇一個有難度且能獲得回饋的任務。","Choose a difficult task that gives you feedback."],
+["目標法則","Law of Goals","可衡量的目標能提供回饋基準。","Measurable goals provide a baseline for feedback.","只有遠大夢想，沒有下一步，就很難持續。","Big dreams without a next step are hard to sustain.","將一個目標轉成兩週任務。","Turn one goal into a two-week task."],
+["成就法則","Law of Achievement","成果是能力、條件、行動與機會共同作用。","Results come from ability, conditions, action and opportunity working together.","不要只崇拜成果，要研究產生成果的過程。","Don't just worship results; study the process that produces them.","分析一次成功的可重複因素。","Analyze the repeatable factors behind one success."],
+["奇蹟法則","Law of Miracles","低機率的好結果仍可能發生。","Unlikely good outcomes can still happen.","不要把偶然成功當成必然規律。","Don't mistake a lucky success for a reliable rule.","用長期準備提高接住機會的能力。","Use long-term preparation to improve your ability to catch opportunities."],
+["整合法則","Law of Integration","不同資源需要協調才能形成整體價值。","Different resources need coordination to create overall value.","整合不是堆疊，而是減少衝突與重複。","Integration isn't stacking; it's reducing conflict and duplication.","整合兩種能互相支持的學習方法。","Combine two learning methods that support each other."],
+["互補法則","Law of Complementarity","不同能力可以彌補彼此不足。","Different abilities can make up for each other's gaps.","真正的合作不是所有人都一樣，而是差異能互補。","True cooperation isn't everyone being the same; it's differences complementing each other.","與一位優勢不同的同學合作。","Team up with a classmate whose strengths differ from yours."],
+["公正法則","Law of Fairness","公平需要一致規則與適當程序。","Fairness requires consistent rules and proper procedures.","公平不代表每個人結果相同，而是尊重合理差異。","Fairness doesn't mean equal outcomes for everyone; it means respecting reasonable differences.","處理衝突時先確認事實與規則。","When handling conflict, confirm the facts and rules first."],
+["合作法則","Law of Cooperation","合作能降低重複成本並整合能力。","Cooperation reduces duplicated costs and combines abilities.","合作不是把責任推給別人，而是共同承擔。","Cooperation isn't pushing responsibility onto others; it's sharing it.","在團隊中主動完成一項具體貢獻。","Make one concrete contribution to your team on your own initiative."],
+["社群法則","Law of Community","社群透過信任、互動與共享資源形成價值。","Communities create value through trust, interaction and shared resources.","人數不是社群品質的唯一指標。","Headcount is not the only measure of a community's quality.","分享一項能真正幫助成員的資訊。","Share one piece of information that genuinely helps members."],
+["溝通法則","Law of Communication","溝通是減少資訊落差的過程。","Communication is the process of reducing information gaps.","說得多不等於溝通好，理解與確認更重要。","Talking more isn't communicating better; understanding and confirming matter more.","重要對話後重述彼此的共識。","After an important conversation, restate what you both agreed on."],
+["根基法則","Law of Foundation","任何成長都需要基本條件支持。","All growth needs basic conditions to support it.","忽略睡眠與健康，再好的計畫也可能失去持續性。","Neglect sleep and health, and even the best plan may lose its staying power.","優先改善一項基本生活習慣。","Improve one basic daily habit first."],
+["知識法則","Law of Knowledge","知識是可以被檢查與應用的理解。","Knowledge is understanding that can be checked and applied.","知道很多不等於真正會用。","Knowing a lot isn't the same as being able to use it.","把今天學到的知識應用一次。","Apply something you learned today at least once."],
+["智慧法則","Law of Wisdom","智慧是根據情境選擇適當方法的能力。","Wisdom is the ability to choose the right method for the situation.","背誦答案不如理解答案何時失效。","Memorizing answers is less valuable than knowing when an answer stops working.","為一個觀念列出適用條件。","List the conditions under which one idea applies."],
+["探索法則","Law of Exploration","探索能擴大已知世界的邊界。","Exploration expands the boundaries of the known world.","好奇心需要方法，才能從疑問走向發現。","Curiosity needs method to move from questions to discoveries.","針對一個問題尋找新的可靠資料。","Find new, reliable sources on one question."],
+["實驗法則","Law of Experimentation","實驗能協助比較不同假設。","Experiments help compare different hypotheses.","不要只爭論哪個方法好，先設計小規模測試。","Don't just argue about which method is better; design a small test first.","用七天比較兩種學習策略。","Compare two learning strategies over seven days."],
+["系統法則","Law of Systems","整體表現來自各部分的互動。","Overall performance comes from the interaction of the parts.","個人失敗有時不是意志薄弱，而是流程設計不良。","Personal failure is sometimes not weak willpower but poor process design.","找出影響成果最大的系統瓶頸。","Find the system bottleneck that most affects your results."],
+["量子法則","Quantum Law","量子理論描述微觀物理現象，不是心想事成的證明。","Quantum theory describes microscopic physics; it is not proof that wishes come true.","借用科學名詞之前，先確認概念是否正確。","Before borrowing scientific terms, make sure the concept is used correctly.","查證一個聽起來很科學的流行說法。","Fact-check one popular claim that sounds scientific."],
+["時間法則","Law of Time","時間會改變條件、成本與機會。","Time changes conditions, costs and opportunities.","同一個決策，在不同時間可能有不同價值。","The same decision can have different value at different times.","替重要目標設定檢查日期。","Set a review date for an important goal."],
+["耐心法則","Law of Patience","有些成果需要較長時間才能觀察。","Some results take a long time to become visible.","耐心不是無限等待，而是持續檢查方向。","Patience isn't waiting forever; it's checking your direction as you go.","為長期目標設定短期回饋指標。","Set short-term feedback indicators for a long-term goal."],
+["突破法則","Law of Breakthrough","突破可能來自新方法，而非更大投入。","Breakthroughs may come from new methods rather than more input.","當努力不再有效，應先重新檢查問題定義。","When effort stops working, first re-examine how the problem is defined.","用另一種方法解決同一難題。","Solve the same hard problem a different way."],
+["機會法則","Law of Opportunity","機會來自外在條件與個人準備的交會。","Opportunity arises where outside conditions meet personal preparation.","真正的機會需要辨識，不是每個邀請都值得接受。","Real opportunities must be recognized; not every invitation is worth accepting.","評估一項新機會的價值與代價。","Evaluate the value and cost of one new opportunity."],
+["進步法則","Law of Progress","進步需要可比較的基準。","Progress needs a baseline for comparison.","感覺變強不如能證明能力提升。","Feeling stronger is not as good as proving your ability has improved.","用同等難度的新題檢查進步。","Check your progress with new questions of the same difficulty."],
+["簡化法則","Law of Simplicity","減少不必要的複雜度可以降低維護成本。","Cutting unnecessary complexity lowers maintenance costs.","簡化不是刪除重要細節，而是保留核心功能。","Simplifying isn't deleting important details; it's keeping the core functions.","把一個流程濃縮成三個必要步驟。","Condense one process into three essential steps."],
+["減法法則","Law of Subtraction","資源有限，增加一件事通常意味著犧牲其他事。","Resources are limited; adding one thing usually means sacrificing another.","成長有時不是多學，而是停止無效投入。","Sometimes growth isn't learning more but stopping wasted effort.","刪除一項低價值活動。","Delete one low-value activity."],
+["中心法則","Law of Center","核心價值可以作為複雜選擇的判斷依據。","Core values can guide complex choices.","沒有中心的人，容易被每個新機會拉走。","People without a center are easily pulled away by every new opportunity.","寫下自己目前最重要的三個原則。","Write down your three most important principles right now."],
+["影響法則","Law of Influence","人的行動可能透過關係網絡產生擴散。","Your actions may spread through networks of relationships.","影響力不等於控制力，別人的選擇仍屬於他們。","Influence is not control; other people's choices still belong to them.","用一個具體好行為做示範。","Set an example with one concrete good action."],
+["思維法則","Law of Thinking","思維模型決定你如何解釋資訊。","Mental models determine how you interpret information.","真正的聰明，是能夠淘汰錯誤模型。","True intelligence is being able to discard wrong models.","每週修正一個不符合證據的觀念。","Each week, revise one belief that doesn't fit the evidence."],
+["宇宙法則","Universal Law","自然世界存在可研究的規律，也存在尚未理解的現象。","The natural world has laws we can study, and phenomena we don't yet understand.","尊重未知，不等於把任何神秘主張當成事實。","Respecting the unknown doesn't mean treating every mystical claim as fact.","對重要主張分清證據、假設與信念。","For important claims, separate evidence, assumptions and beliefs."]
+];
+
+// 易經 [卦名, 卦全名, English, 本質zh, en, 智慧zh, en, 行動zh, en]
+const I=[
+["乾卦","乾為天","Qian · The Creative (Heaven)","剛健進取，象徵主動創造。","Strong and enterprising, symbolizing proactive creation.","真正的強大，是持續精進而不自滿。","True strength is constant improvement without complacency.","每天完成一項自主設定的挑戰。","Complete one self-set challenge every day."],
+["坤卦","坤為地","Kun · The Receptive (Earth)","柔順承載，象徵包容與支持。","Yielding and supportive, symbolizing tolerance and support.","能承載別人的成長，也是一種力量。","Being able to carry others' growth is also a kind of strength.","主動支持一位需要協助的人。","Proactively support someone who needs help."],
+["屯卦","水雷屯","Zhun · Difficulty at the Beginning","萬事初創，往往伴隨混亂。","Every new venture tends to begin in chaos.","開始困難，不代表方向錯誤。","A hard start doesn't mean the direction is wrong.","把新計畫拆成最小可執行步驟。","Break a new plan into the smallest doable steps."],
+["蒙卦","山水蒙","Meng · Youthful Folly","未知需要啟蒙與學習。","The unknown calls for enlightenment and learning.","承認不懂，是進入真正理解的起點。","Admitting you don't know is the starting point of real understanding.","每天提出一個有品質的問題。","Ask one quality question every day."],
+["需卦","水天需","Xu · Waiting","條件未成熟時，需要等待與準備。","When conditions aren't ripe, you need to wait and prepare.","等待不是停止，而是累積可用資源。","Waiting isn't stopping; it's accumulating usable resources.","在等待結果期間完成一項準備工作。","Finish one piece of preparation while waiting for results."],
+["訟卦","天水訟","Song · Conflict","不同立場可能引發爭議。","Different positions may lead to disputes.","贏得爭論，不一定贏得長期關係。","Winning an argument doesn't necessarily win the long-term relationship.","衝突時先確認事實與共同利益。","In a conflict, confirm the facts and shared interests first."],
+["師卦","地水師","Shi · The Army","集體行動需要組織與紀律。","Collective action requires organization and discipline.","好的團隊靠責任與秩序，不只靠熱情。","Good teams run on responsibility and order, not just enthusiasm.","明確完成自己的團隊分工。","Clearly complete your share of the team's work."],
+["比卦","水地比","Bi · Holding Together","互相親近能形成合作。","Drawing close to each other creates cooperation.","真正的關係不是依附，而是互信互助。","A real relationship isn't dependence; it's mutual trust and help.","主動維護一段可信關係。","Actively maintain one trustworthy relationship."],
+["小畜卦","風天小畜","Xiao Chu · Small Accumulation","小量累積，等待力量成熟。","Accumulating a little at a time while strength matures.","微小成果值得保存，因為它可能成為下一步的基礎。","Small results are worth keeping, because they may become the base for the next step.","每天累積一項可驗證的學習成果。","Accumulate one verifiable learning result every day."],
+["履卦","天澤履","Lü · Treading","面對風險時需要謹慎行動。","Facing risk requires careful action.","勇敢不是無視風險，而是理解風險後仍能行動。","Courage isn't ignoring risk; it's acting after understanding it.","重大決定前先列出可能後果。","Before a major decision, list the possible consequences."],
+["泰卦","地天泰","Tai · Peace","不同力量交流，形成通達。","Different forces interact and things flow freely.","好的系統讓資訊與資源保持流動。","A good system keeps information and resources flowing.","改善一項團隊溝通障礙。","Fix one communication barrier in your team."],
+["否卦","天地否","Pi · Standstill","交流受阻，系統容易停滯。","When exchange is blocked, a system easily stagnates.","當事情不通，不要只增加努力，要找出阻塞。","When things are stuck, don't just add effort; find the blockage.","找出一個最重要的瓶頸。","Identify the single most important bottleneck."],
+["同人卦","天火同人","Tong Ren · Fellowship","共同志向能促進合作。","Shared aspirations promote cooperation.","真正的團結不是沒有差異，而是有共同方向。","True unity isn't the absence of differences; it's a shared direction.","與夥伴建立一項共同目標。","Set one shared goal with a partner."],
+["大有卦","火天大有","Da You · Great Possession","資源充足，也帶來責任。","Abundant resources also bring responsibility.","擁有越多，越需要學會合理分配。","The more you have, the more you need to learn to share it fairly.","將一項優勢轉化為對別人的幫助。","Turn one of your strengths into help for others."],
+["謙卦","地山謙","Qian · Modesty","謙遜使人保持學習空間。","Humility keeps room for learning.","真正有能力的人，不需要假裝自己無所不知。","Truly capable people don't need to pretend they know everything.","主動接受一次具體回饋。","Actively accept one piece of specific feedback."],
+["豫卦","雷地豫","Yu · Enthusiasm","振奮與準備能推動行動。","Inspiration and preparation drive action.","熱情可以啟動，紀律才能延續。","Passion can get you started; discipline keeps you going.","把一項興趣安排成固定練習。","Turn one interest into a regular practice."],
+["隨卦","澤雷隨","Sui · Following","順應環境需要判斷與彈性。","Adapting to circumstances requires judgment and flexibility.","適應不是盲從，而是知道何時調整。","Adapting isn't blind following; it's knowing when to adjust.","依新資訊修正一次計畫。","Revise your plan once based on new information."],
+["蠱卦","山風蠱","Gu · Repairing Decay","長期積弊需要整治。","Long-standing problems need fixing.","問題拖得越久，越需要檢查底層結構。","The longer a problem drags on, the more you need to examine its underlying structure.","修復一項反覆出現的舊問題。","Fix one old problem that keeps coming back."],
+["臨卦","地澤臨","Lin · Approach","接近現場才能深入理解。","Only by getting close to the scene can you understand deeply.","真正的關心不是遠遠評論，而是願意了解處境。","Real care isn't commenting from afar; it's being willing to understand someone's situation.","主動傾聽一位需要支持的人。","Actively listen to someone who needs support."],
+["觀卦","風地觀","Guan · Contemplation","觀察有助於建立判斷。","Observation helps build judgment.","看見不等於理解，理解需要比較與反思。","Seeing isn't understanding; understanding requires comparison and reflection.","記錄一件事情的事實與自己的推論。","Record the facts of one event and your own inferences."],
+["噬嗑卦","火雷噬嗑","Shi He · Biting Through","障礙需要明確處理。","Obstacles need to be dealt with clearly.","有些問題不能只靠忍耐，必須採取適當行動。","Some problems can't be solved by endurance alone; appropriate action is required.","處理一項拖延已久的困難。","Tackle one difficulty you've long been putting off."],
+["賁卦","山火賁","Bi · Grace","形式能增加表達效果。","Form can enhance expression.","好的包裝應該服務真實內容。","Good packaging should serve genuine content.","改善一份報告的清晰度與內容品質。","Improve the clarity and content quality of one report."],
+["剝卦","山地剝","Bo · Splitting Apart","舊結構可能逐漸衰退。","Old structures may gradually decline.","當優勢消失，先保存根基再尋求重建。","When an advantage fades, protect your foundation first, then seek to rebuild.","找出一項必須保留的核心能力。","Identify one core ability you must keep."],
+["復卦","地雷復","Fu · Return","衰退之後可能重新開始。","After decline, a new beginning is possible.","真正的恢復，是重新建立有效的行動循環。","Real recovery is rebuilding an effective cycle of action.","恢復一個中斷的好習慣。","Restart one good habit you dropped."],
+["無妄卦","天雷無妄","Wu Wang · Innocence","真誠行事，不妄作。","Act sincerely, without recklessness.","不要用幻想代替現實，也不要用投機取代準備。","Don't replace reality with fantasy, or preparation with speculation.","檢查一項決策是否建立在真實資訊上。","Check whether one decision is based on real information."],
+["大畜卦","山天大畜","Da Chu · Great Accumulation","積蓄力量與培養能力。","Building strength and cultivating ability.","真正的底氣來自長期準備。","Real confidence comes from long-term preparation.","建立一項可以持續累積的專業技能。","Build one professional skill you can keep developing."],
+["頤卦","山雷頤","Yi · Nourishment","滋養是生命與能力的基礎。","Nourishment is the foundation of life and ability.","你每天攝取的食物與資訊，都可能影響未來狀態。","The food and information you take in every day may shape your future state.","改善一項飲食或資訊習慣。","Improve one eating or information habit."],
+["大過卦","澤風大過","Da Guo · Great Exceeding","負荷過重可能使結構失衡。","Excessive load can throw a structure off balance.","當責任超過承載能力，需要調整系統而非硬撐。","When responsibility exceeds capacity, adjust the system instead of forcing through.","移除一項不必要的負擔。","Remove one unnecessary burden."],
+["坎卦","坎為水","Kan · The Abysmal (Water)","風險可能反覆出現。","Risks may appear again and again.","成熟不是從不遇險，而是建立應對能力。","Maturity isn't never facing danger; it's building the ability to cope.","為重要任務準備備案。","Prepare a backup plan for an important task."],
+["離卦","離為火","Li · The Clinging (Fire)","光明象徵辨識與理解。","Light symbolizes discernment and understanding.","真正的清醒，是看見事實而非只看見希望。","True clarity is seeing facts, not just hopes.","用可靠資料驗證一個觀點。","Verify one viewpoint with reliable data."],
+["咸卦","澤山咸","Xian · Influence","互相感應形成關係。","Mutual response forms relationships.","好的影響力來自尊重與真誠互動。","Good influence comes from respect and sincere interaction.","主動理解一位同學的需求。","Take the initiative to understand a classmate's needs."],
+["恆卦","雷風恆","Heng · Duration","長期維持適當原則。","Upholding sound principles over the long term.","持續不是重複錯誤，而是方向穩定、方法更新。","Persistence isn't repeating mistakes; it's a steady direction with updated methods.","每週檢查一次長期目標。","Review your long-term goals once a week."],
+["遯卦","天山遯","Dun · Retreat","適時退避能保存力量。","Timely retreat preserves strength.","懂得退出無效競爭，也是一種自主能力。","Knowing when to exit pointless competition is also a form of autonomy.","拒絕一項不符合目標的活動。","Decline one activity that doesn't fit your goals."],
+["大壯卦","雷天大壯","Da Zhuang · Great Power","力量增長需要節制。","Growing strength needs restraint.","真正的強者不靠力量壓迫別人。","The truly strong don't use their power to oppress others.","用自己的能力解決一個共同問題。","Use your abilities to solve a shared problem."],
+["晉卦","火地晉","Jin · Progress","逐漸前進，走向光明。","Advancing gradually toward the light.","每一次有證據的進步，都值得累積。","Every evidence-backed step forward is worth accumulating.","記錄一項能力提升。","Record one improvement in your abilities."],
+["明夷卦","地火明夷","Ming Yi · Darkening of the Light","困難時需要保存內在力量。","In hard times, preserve your inner strength.","暫時不被看見，不代表能力沒有價值。","Not being seen for a while doesn't mean your abilities have no value.","低潮時維持一項基本好習慣。","Keep one basic good habit during low periods."],
+["家人卦","風火家人","Jia Ren · The Family","關係需要角色、責任與秩序。","Relationships need roles, responsibilities and order.","好的家庭與班級，不只靠感情，也靠合理分工。","Good families and classes run not only on affection but also on a fair division of labor.","主動承擔一項共同責任。","Take on one shared responsibility."],
+["睽卦","火澤睽","Kui · Opposition","差異可能造成分歧。","Differences may lead to divisions.","成熟不是要求別人跟自己一樣，而是理解不同。","Maturity isn't demanding that others be like you; it's understanding differences.","與意見不同的人完成一次理性對話。","Have one rational conversation with someone who disagrees with you."],
+["蹇卦","水山蹇","Jian · Obstruction","前進遇到障礙，需要重新評估。","When progress meets obstacles, reassess.","求助不是軟弱，而是合理運用資源。","Asking for help isn't weakness; it's using resources wisely.","向適當的人請教一項困難。","Ask the right person about one difficulty."],
+["解卦","雷水解","Xie · Deliverance","障礙解除後，系統恢復流動。","Once obstacles are removed, the system flows again.","解決問題不只是停止痛苦，也要避免再次發生。","Solving a problem isn't just ending the pain; it's preventing it from happening again.","修正一項造成反覆困擾的原因。","Fix one cause of a recurring trouble."],
+["損卦","山澤損","Sun · Decrease","適當減少能改善整體配置。","Appropriate reduction can improve the overall arrangement.","真正的成長有時從減法開始。","Real growth sometimes starts with subtraction.","停止一項低價值消耗。","Stop one low-value drain."],
+["益卦","風雷益","Yi · Increase","互相支持可以增加整體價值。","Mutual support can increase overall value.","最好的合作，是讓彼此都有成長。","The best cooperation helps everyone grow.","分享一項自己擅長的技能。","Share one skill you're good at."],
+["夬卦","澤天夬","Guai · Breakthrough","需要果斷處理的重要問題。","Important problems that call for decisive handling.","拖延不會讓所有問題消失，有時必須明確決定。","Procrastination won't make every problem disappear; sometimes you must decide clearly.","完成一項已經準備充分的決策。","Make one decision you're already fully prepared for."],
+["姤卦","天風姤","Gou · Coming to Meet","意外相遇可能帶來新變化。","Unexpected encounters may bring new changes.","新機會值得觀察，但不必急著接受。","New opportunities are worth watching, but there's no rush to accept them.","評估一次新邀請的價值與風險。","Evaluate the value and risks of one new invitation."],
+["萃卦","澤地萃","Cui · Gathering Together","聚集形成群體力量。","Gathering forms collective strength.","好的社群不只聚人，更能聚集共同價值。","A good community gathers not just people but shared values.","為班級或社群貢獻一份有用資源。","Contribute one useful resource to your class or community."],
+["升卦","地風升","Sheng · Pushing Upward","穩定累積，逐步上升。","Steady accumulation, gradual rise.","不必一步登天，但要持續向前。","You don't have to reach the top in one step, but keep moving forward.","完成一項比昨天稍難的練習。","Complete one exercise slightly harder than yesterday's."],
+["困卦","澤水困","Kun · Oppression (Exhaustion)","資源不足時，行動受到限制。","When resources are short, action is limited.","困境不是人格失敗，而是需要重新配置資源。","Hardship isn't a personal failure; it calls for reallocating resources.","找出目前最需要的外部支持。","Identify the outside support you need most right now."],
+["井卦","水風井","Jing · The Well","共同資源需要長期維護。","Shared resources need long-term maintenance.","真正有價值的系統，能持續滋養更多人。","Truly valuable systems keep nourishing more people.","維護一份大家都能使用的學習資源。","Maintain one learning resource everyone can use."],
+["革卦","澤火革","Ge · Revolution","舊制度不適用時，需要改革。","When old systems no longer fit, reform is needed.","改變不是否定過去，而是回應新的現實。","Change isn't denying the past; it's responding to a new reality.","更新一項無效的工作流程。","Update one ineffective workflow."],
+["鼎卦","火風鼎","Ding · The Cauldron","新結構能支持新的秩序。","New structures can support a new order.","真正的改革不只拆舊，更要建立可持續的新系統。","Real reform doesn't just tear down the old; it builds a sustainable new system.","為新方法設計固定執行流程。","Design a fixed routine for carrying out a new method."],
+["震卦","震為雷","Zhen · The Arousing (Thunder)","突發變化可能帶來警醒。","Sudden change may bring a wake-up call.","受到驚嚇時，先穩定判斷再採取行動。","When startled, steady your judgment before acting.","面對意外時先確認最重要的事實。","When something unexpected happens, confirm the most important facts first."],
+["艮卦","艮為山","Gen · Keeping Still (Mountain)","知道何時停止，是重要的控制能力。","Knowing when to stop is an important form of self-control.","停止錯誤，比繼續努力更有價值。","Stopping a mistake is worth more than continuing to push.","停止一項正在降低效率的干擾。","Stop one distraction that is lowering your efficiency."],
+["漸卦","風山漸","Jian · Gradual Development","發展需要適當次序。","Development needs proper order.","急著跨越基礎，可能增加後續修復成本。","Rushing past the basics may raise the cost of later repairs.","先補強一項基礎能力。","Strengthen one basic skill first."],
+["歸妹卦","雷澤歸妹","Gui Mei · The Marrying Maiden","關係結合需要合宜的角色與條件。","Joining together in a relationship requires suitable roles and conditions.","合作不只看熱情，也要看責任與時機。","Cooperation depends not only on passion but also on responsibility and timing.","確認一段合作中的共同期待。","Confirm the shared expectations in one partnership."],
+["豐卦","雷火豐","Feng · Abundance","成果達到高峰時，仍有變化風險。","Even at the peak of success, there is still risk of change.","成功時最需要維護系統，而不是停止學習。","Success is when you most need to maintain the system, not stop learning.","為目前的優勢建立維護計畫。","Create a maintenance plan for your current strengths."],
+["旅卦","火山旅","Lü · The Wanderer","陌生環境需要適應與謹慎。","Unfamiliar environments require adaptation and caution.","離開熟悉環境，可能成為重新認識自己的機會。","Leaving a familiar environment can be a chance to rediscover yourself.","主動學習一項新環境需要的技能。","Learn one skill your new environment requires."],
+["巽卦","巽為風","Xun · The Gentle (Wind)","柔和而持續的作用可以逐步產生影響。","Gentle, persistent action can gradually create influence.","不必每次都強勢，穩定示範也能帶來改變。","You needn't always be forceful; a steady example can also bring change.","持續實踐一個值得模仿的習慣。","Keep practicing one habit worth imitating."],
+["兌卦","兌為澤","Dui · The Joyous (Lake)","交流與喜悅能促進互動。","Exchange and joy encourage interaction.","好的溝通不是只讓人開心，也能容納真實意見。","Good communication doesn't just make people happy; it also makes room for honest opinions.","在討論中給予一項真誠回饋。","Give one piece of sincere feedback in a discussion."],
+["渙卦","風水渙","Huan · Dispersion","阻塞可以透過疏通重新調整。","Blockages can be cleared and readjusted.","當團隊失去凝聚力，需要找回共同方向。","When a team loses cohesion, it needs to find its shared direction again.","釐清一次合作中的誤解。","Clear up one misunderstanding in a collaboration."],
+["節卦","水澤節","Jie · Limitation","節制能避免資源過度消耗。","Moderation prevents overuse of resources.","自由不是沒有界線，而是能管理自己的選擇。","Freedom isn't having no limits; it's being able to manage your own choices.","為手機使用設定合理時間。","Set a reasonable time limit for phone use."],
+["中孚卦","風澤中孚","Zhong Fu · Inner Truth","真誠與信用是長期關係的重要基礎。","Sincerity and trustworthiness are key foundations of long-term relationships.","真正的信任，不是說得好聽，而是持續可靠。","Real trust isn't about saying nice things; it's being consistently reliable.","完成一項已答應別人的事情。","Complete one thing you promised someone."],
+["小過卦","雷山小過","Xiao Guo · Small Exceeding","小事需要謹慎與適度。","Small matters require care and moderation.","重大突破之前，先把小步驟做好。","Before a major breakthrough, do the small steps well.","用小規模測試驗證一個新想法。","Test a new idea with a small-scale trial."],
+["既濟卦","水火既濟","Ji Ji · After Completion","事情完成後，仍可能出現新的問題。","Even after something is done, new problems may arise.","完成不是永遠安全，而是進入維護階段。","Completion isn't permanent safety; it's the start of the maintenance phase.","為已完成的成果建立檢查機制。","Set up a checking mechanism for a completed result."],
+["未濟卦","火水未濟","Wei Ji · Before Completion","尚未完成，代表仍存在變化空間。","Not yet complete means there is still room for change.","人生不是一次得到標準答案，而是持續更新。","Life isn't getting the standard answer once; it's continuous updating.","為未完成的目標設定下一步。","Set the next step for an unfinished goal."]
+];
+// 社會生存 [中文名, English, 本質zh, en, 智慧zh, en, 行動zh, en]
+const S=[
+["叢林法則","Law of the Jungle","社會存在競爭，也需要規則與合作。","Society involves competition, but also needs rules and cooperation.","不要只追求勝過別人，更要建立真正的適應力。","Don't just aim to beat others; build real adaptability.","每天強化一項核心能力。","Strengthen one core skill every day."],
+["馬太效應","Matthew Effect","既有優勢可能帶來更多資源。","Existing advantages may bring even more resources.","與其羨慕別人的優勢，不如開始累積自己的優勢。","Instead of envying others' advantages, start building your own.","固定投入一項長期能力。","Invest steadily in one long-term skill."],
+["二八定律","Pareto Principle (80/20 Rule)","少數因素有時產生多數成果。","A few factors sometimes produce most of the results.","努力之前，先找出真正重要的事情。","Before working hard, find out what truly matters.","每天優先完成兩項高價值任務。","Each day, finish two high-value tasks first."],
+["長尾理論","Long Tail Theory","大量小眾需求可能形成重要市場。","Many small niche demands can form an important market.","不必人人都一樣，獨特能力也能創造價值。","You don't have to be like everyone else; unique abilities can also create value.","探索一項有實際需求的小眾技能。","Explore one niche skill with real demand."],
+["破窗效應","Broken Windows Effect","可見的失序可能影響人們對環境的判斷。","Visible disorder may affect how people judge an environment.","小問題值得處理，但不能把犯罪原因簡化成環境外觀。","Small problems are worth fixing, but the causes of crime can't be reduced to how a place looks.","修正一項反覆出現的小問題。","Fix one small problem that keeps recurring."],
+["蝴蝶效應","Butterfly Effect","複雜系統可能對初始條件敏感。","Complex systems can be sensitive to initial conditions.","小行動值得重視，但不是每個小變化都會產生巨大結果。","Small actions matter, but not every small change leads to huge results.","測試一個能改善生活的小習慣。","Test one small habit that could improve your life."],
+["羊群效應","Herd Effect","群體選擇可能影響個人判斷。","Group choices may influence individual judgment.","跟隨多數人不一定錯，但必須知道理由。","Following the majority isn't necessarily wrong, but you must know why.","對熱門觀點尋找一項反面證據。","Look for one piece of counter-evidence to a popular view."],
+["旁觀者效應","Bystander Effect","群體情境可能造成責任分散。","Group situations can diffuse responsibility.","不要只等別人行動，自己也可以成為解決問題的人。","Don't just wait for others to act; you can be the one who solves the problem.","遇到需要協助的情境，主動承擔適當責任。","When someone needs help, take on appropriate responsibility."],
+["首因效應","Primacy Effect","最先接觸的資訊可能影響印象。","The first information you encounter may shape your impression.","第一印象值得經營，但不能取代長期表現。","First impressions are worth managing, but they can't replace long-term performance.","準時、守信並做好準備。","Be on time, keep your word and come prepared."],
+["近因效應","Recency Effect","最近的資訊容易影響判斷。","The most recent information easily sways judgment.","不要讓最近一次失敗否定整個成長過程。","Don't let your most recent failure negate your whole growth process.","同時比較短期與長期表現。","Compare short-term and long-term performance side by side."],
+["暈輪效應","Halo Effect","單一特質可能影響整體評價。","A single trait may color an overall evaluation.","欣賞一個人的優點，不代表所有觀點都要接受。","Admiring someone's strengths doesn't mean accepting all their views.","分開評估能力、品格與專業。","Evaluate ability, character and expertise separately."],
+["刻板印象","Stereotyping","人容易用群體標籤快速分類。","People tend to sort others quickly using group labels.","標籤可以簡化認知，卻可能遮蔽個人的真實差異。","Labels simplify thinking, but may hide real individual differences.","用具體行為而非身份標籤判斷他人。","Judge others by concrete behavior, not identity labels."],
+["投射效應","Projection Effect","人可能把自己的想法套用到別人身上。","People may project their own thoughts onto others.","理解別人之前，先放下自己預設的答案。","Before trying to understand others, set aside the answers you've assumed.","主動詢問對方真正的需求。","Ask the other person what they actually need."],
+["刺蝟法則","Hedgehog Principle","親密與界線需要適當協調。","Closeness and boundaries need to be balanced.","真正的關心，不等於有權控制別人。","Genuine care doesn't give you the right to control others.","尊重朋友的個人選擇。","Respect your friends' personal choices."],
+["互惠法則","Law of Reciprocity","互相幫助可能促進信任。","Helping each other may foster trust.","高品質關係不是計算誰欠誰，而是持續創造共同價值。","Quality relationships aren't about who owes whom, but about continually creating shared value.","主動提供一次真誠協助。","Offer sincere help once, on your own initiative."],
+["富蘭克林效應","Ben Franklin Effect","提供協助可能影響人際態度。","Doing someone a favor may change how you feel about them.","適當求助能促進互動，但不應利用別人的善意。","Asking for help appropriately can build connection, but don't exploit others' kindness.","向一位同學請教他擅長的事情。","Ask a classmate about something they're good at."],
+["登門檻效應","Foot-in-the-Door Effect","小承諾可能影響後續較大承諾。","Small commitments may lead to larger commitments later.","先從小步驟開始，但不要被逐步加碼的要求綁架。","Start with small steps, but don't get trapped by requests that keep escalating.","為困難任務設定五分鐘起步。","Give a hard task a five-minute start."],
+["留面子效應","Door-in-the-Face Effect","要求的順序可能改變接受意願。","The order of requests may change people's willingness to accept.","理解心理機制，是為了更透明地協商，不是操控別人。","Understanding psychological mechanisms is for more transparent negotiation, not for manipulating others.","提出清楚且合理的請求。","Make clear and reasonable requests."],
+["皮格馬利翁效應","Pygmalion Effect","期待與支持可能影響表現。","Expectations and support may affect performance.","相信成長很重要，具體資源與回饋更重要。","Believing in growth matters; concrete resources and feedback matter more.","設定一個可衡量的兩週進步目標。","Set a measurable two-week improvement goal."],
+["沉默的螺旋","Spiral of Silence","害怕孤立可能使人不願表達不同意見。","Fear of isolation may keep people from voicing different opinions.","沒有人反對，不代表所有人都同意。","No one objecting doesn't mean everyone agrees.","邀請尚未發言的人表達觀點。","Invite those who haven't spoken yet to share their views."],
+["搭便車效應","Free-Rider Effect","共同成果可能產生貢獻不均。","Shared results may lead to unequal contributions.","真正的團隊精神，是人人有權利也有責任。","True team spirit means everyone has both rights and responsibilities.","明確完成自己的團隊分工。","Clearly complete your share of the team's work."],
+["零和博弈","Zero-Sum Game","某些競爭中，一方所得等於另一方所失。","In some competitions, one side's gain equals the other's loss.","不要把所有關係都想成輸贏，合作可能增加總價值。","Don't see every relationship as win-or-lose; cooperation can increase total value.","設計一個雙方都能獲益的方案。","Design a plan where both sides benefit."],
+["囚徒困境","Prisoner's Dilemma","個人短期誘因可能破壞共同利益。","Short-term individual incentives can undermine shared interests.","缺乏信任的合作，容易讓所有人付出更高成本。","Cooperation without trust tends to cost everyone more.","建立明確承諾與回饋規則。","Set clear commitments and feedback rules."],
+["納什均衡","Nash Equilibrium","每個人的選擇都受到他人策略影響。","Everyone's choices are shaped by others' strategies.","改變系統，不能只要求個人更努力，也要調整誘因。","To change a system, don't just demand more effort from individuals; adjust the incentives too.","分析團隊中每個人的利益與限制。","Analyze each team member's interests and constraints."],
+["沉沒成本謬誤","Sunk Cost Fallacy","已經付出的成本不能決定未來價值。","Costs already paid cannot determine future value.","停止錯誤，不代表過去的努力全部白費。","Stopping a mistake doesn't mean all past effort was wasted.","重新評估一項長期無效的投入。","Re-evaluate one long-term investment that isn't working."],
+["機會成本","Opportunity Cost","選擇一件事，就放棄其他可能。","Choosing one thing means giving up other possibilities.","真正昂貴的，不一定是花出去的錢，而是錯過的機會。","What's truly expensive isn't always the money spent, but the opportunities missed.","決策前寫下最佳替代方案。","Before deciding, write down your best alternative."],
+["邊際效用遞減","Diminishing Marginal Utility","額外增加的消費，可能帶來逐漸減少的滿足。","Each extra unit of consumption may bring less and less satisfaction.","更多不一定更好，要找到適當投入量。","More isn't always better; find the right amount of input.","檢查增加投入是否仍帶來有效成果。","Check whether extra input still produces real results."],
+["路徑依賴","Path Dependence","過去的選擇可能限制現在的選項。","Past choices may limit present options.","習慣不是命運，舊路徑可以重新評估。","Habit is not destiny; old paths can be re-evaluated.","挑戰一個「一直以來都這樣」的做法。","Challenge one ‘we've always done it this way’ practice."],
+["網路效應","Network Effect","某些網絡會因參與者增加而提高價值。","Some networks become more valuable as more people join.","真正好的網絡，不只人多，更要能有效連結。","A truly good network isn't just big; it connects people effectively.","為學習社群增加一份有用資源。","Add one useful resource to a learning community."],
+["飛輪效應","Flywheel Effect","成果可以成為下一輪成長的動力。","Results can power the next round of growth.","最好的系統，讓每次努力都不必重新歸零。","The best systems keep each effort from resetting to zero.","建立學習、測驗、訂正與再測循環。","Build a cycle of study, test, correct and retest."],
+["奧卡姆剃刀","Occam's Razor","解釋力相近時，較少不必要假設的模型通常更值得優先考慮。","When explanations are equally strong, the one with fewer unnecessary assumptions usually deserves priority.","真正的聰明，不是把事情說複雜，而是說清楚。","True intelligence isn't making things complicated, but making them clear.","把一個問題濃縮成三個核心因素。","Boil one problem down to three core factors."],
+["漢隆剃刀","Hanlon's Razor","他人的錯誤不一定出於惡意。","Other people's mistakes are not necessarily malicious.","在沒有證據之前，不要急著把疏忽解讀成攻擊。","Without evidence, don't rush to read carelessness as an attack.","先詢問原因，再評估責任。","Ask about the reason first, then assess responsibility."],
+["帕金森定律","Parkinson's Law","工作可能膨脹到填滿可用時間。","Work may expand to fill the time available.","沒有完成標準的努力，容易變成無止境消耗。","Effort without a completion standard easily becomes an endless drain.","替一項任務設定期限與完成條件。","Set a deadline and completion criteria for one task."],
+["彼得原理","Peter Principle","舊職務能力不一定能轉移到新職務。","Skills from an old role don't necessarily transfer to a new one.","升級之前，先確認自己是否具備新階段的能力。","Before moving up, make sure you have the abilities the next stage requires.","列出下一個目標需要的新技能。","List the new skills your next goal requires."],
+["墨菲定律","Murphy's Law","意外風險值得提前考慮。","Unexpected risks are worth considering in advance.","真正的準備，不是假設一定成功，而是知道失敗時怎麼辦。","Real preparation isn't assuming success; it's knowing what to do if you fail.","為重要任務建立備案。","Create a backup plan for an important task."],
+["海恩法則","Heinrich's Law","事故前可能存在可觀察的風險訊號。","Before an accident, there may be observable warning signs.","不要只處理重大失敗，也要重視反覆的小失誤。","Don't just deal with major failures; take repeated small mistakes seriously too.","修正一項重複發生的錯誤。","Fix one recurring mistake."],
+["費斯汀格法則","Festinger's Principle (10/90 Rule)","事件與個人反應可以分開觀察。","Events and your reactions to them can be observed separately.","無法控制所有遭遇，但可以練習更有效的回應。","You can't control everything that happens to you, but you can practice responding more effectively.","把事實、情緒與下一步分開記錄。","Record facts, emotions and next steps separately."],
+["德西效應","Deci Effect (Overjustification)","外在獎勵可能影響內在動機。","External rewards may affect intrinsic motivation.","讓自己知道為何而學，比只等待獎賞更能支持長期投入。","Knowing why you learn supports long-term commitment better than waiting for rewards.","寫下一個個人的學習理由。","Write down one personal reason for learning."],
+["蘑菇定律","Mushroom Management","新人可能因資訊不足而難以成長。","Newcomers may struggle to grow due to a lack of information.","成長不必靠被忽略，好的指導可以降低學習成本。","Growth doesn't have to come from being ignored; good guidance lowers the cost of learning.","主動協助一位新加入的成員。","Help one new member on your own initiative."],
+["溫水煮青蛙","Boiling Frog","漸進的變化可能不容易察覺。","Gradual change can be hard to notice.","不要只注意突發危機，也要追蹤長期惡化。","Don't just watch for sudden crises; track long-term decline too.","每週檢查一項重要生活指標。","Check one important life indicator every week."],
+["手錶定律","Segal's Law (Watch Law)","互相矛盾的標準可能造成判斷混亂。","Conflicting standards can confuse judgment.","衡量標準越多，不代表決策越準確。","More metrics don't make decisions more accurate.","替一個目標選擇主要指標。","Choose one main metric for a goal."],
+["框架效應","Framing Effect","相同資訊的表達方式可能影響選擇。","How the same information is presented may affect choices.","不要只被說法打動，要回到實際數據。","Don't be moved by wording alone; go back to the actual data.","用正反兩種方式重新描述問題。","Restate a problem in both positive and negative terms."],
+["錨定效應","Anchoring Effect","最先接觸的數字可能成為判斷基準。","The first number you see may become your reference point.","第一個價格或評價，不一定是真正的價值。","The first price or rating isn't necessarily the true value.","重要比較至少蒐集三份資料。","Gather at least three sources for important comparisons."],
+["稟賦效應","Endowment Effect","人可能高估自己已擁有的東西。","People may overvalue what they already own.","真正的價值，不會因為東西屬於自己就自動增加。","Real value doesn't increase just because something belongs to you.","用旁觀者角度重新評估一項選擇。","Re-evaluate one choice from an outsider's perspective."],
+["達克效應","Dunning–Kruger Effect","能力與自我評估可能存在落差。","There can be a gap between ability and self-assessment.","真正的自信，不是認為自己會，而是能通過驗證。","Real confidence isn't thinking you can; it's passing the test.","用陌生題目測試自己的理解。","Test your understanding with unfamiliar questions."],
+["證實偏差","Confirmation Bias","人容易優先注意支持既有觀點的資訊。","People tend to notice information that supports their existing views first.","真正的理性，是願意尋找可能證明自己錯誤的證據。","True rationality is being willing to look for evidence that might prove you wrong.","替重要判斷尋找一個反例。","Find one counterexample for an important judgment."],
+["倖存者偏差","Survivorship Bias","只看成功者，容易忽略失敗樣本。","Looking only at winners makes it easy to ignore the failures.","學習成功之前，先了解有多少人使用相同方法卻失敗。","Before copying success, find out how many people used the same method and failed.","比較一個成功與一個失敗案例。","Compare one success case with one failure case."],
+["基本歸因錯誤","Fundamental Attribution Error","人可能高估性格、低估情境對行為的影響。","People may overestimate personality and underestimate situations when explaining behavior.","評價別人之前，先理解他面對的條件。","Before judging others, understand the conditions they face.","替一件衝突列出兩個情境因素。","List two situational factors behind one conflict."],
+["自我服務偏見","Self-Serving Bias","人容易把成功歸功自己、失敗歸咎外部。","People tend to credit themselves for success and blame outside factors for failure.","真正的成熟，是能同時看見自己的貢獻與責任。","True maturity is seeing both your contribution and your responsibility.","每次結果出現後分析內外部因素。","After each outcome, analyze internal and external factors."],
+["習得性無助","Learned Helplessness","反覆無法控制的經驗可能降低行動意願。","Repeated experiences of having no control may reduce the will to act.","過去無法改變，不代表現在所有選擇都無效。","Being unable to change the past doesn't make all present choices useless.","完成一件自己確實能控制的小事。","Complete one small thing you can truly control."],
+["斯德哥爾摩症候群","Stockholm Syndrome","在某些脅迫情境中，受害者可能出現複雜依附反應。","In some coercive situations, victims may develop complex attachment responses.","依附不等於安全，關係需要尊重與自主。","Attachment is not safety; relationships need respect and autonomy.","檢查一段關係是否存在恐懼與控制。","Check whether a relationship involves fear and control."],
+["巴納姆效應","Barnum Effect","模糊且普遍的描述容易被認為很個人化。","Vague, general descriptions are easily perceived as highly personal.","覺得說得準，不代表真的有預測能力。","Feeling that something is accurate doesn't mean it truly predicts anything.","要求一個描述提供具體可驗證的證據。","Ask for specific, verifiable evidence behind a description."],
+["安慰劑效應","Placebo Effect","期待與治療情境可能影響部分症狀體驗。","Expectations and the treatment setting may influence how some symptoms are experienced.","主觀改善值得記錄，但不能取代客觀療效證據。","Subjective improvement is worth recording, but cannot replace objective evidence of effectiveness.","區分期待、感受與可測量結果。","Distinguish expectations, feelings and measurable results."],
+["蔡格尼克效應","Zeigarnik Effect","未完成任務可能持續吸引注意力。","Unfinished tasks may keep pulling at your attention.","減少心理負擔的方法之一，是把模糊焦慮變成明確下一步。","One way to ease mental load is to turn vague anxiety into a clear next step.","列出三項未完成任務與處理時間。","List three unfinished tasks and when you'll handle them."],
+["踢貓效應","Kick-the-Cat Effect","負面情緒可能向其他人轉移。","Negative emotions can be passed on to others.","受傷不是傷害別人的理由。","Being hurt is no excuse for hurting others.","生氣時先辨識情緒真正來源。","When angry, first identify the real source of the emotion."],
+["牛鞭效應","Bullwhip Effect","供應鏈中的小幅需求變化可能逐級放大。","Small changes in demand along a supply chain may be amplified at each level.","資訊失真會提高整個系統的成本。","Distorted information raises costs for the whole system.","重要消息先查原始資料再傳遞。","Check the original source before passing on important news."],
+["鯰魚效應","Catfish Effect","適度的新刺激可能改變團隊表現。","A moderate new stimulus may change a team's performance.","健康挑戰能促進成長，但不必製造無止境競爭。","Healthy challenge promotes growth, but there's no need to create endless competition.","安排一項適度超出舒適圈的練習。","Plan one practice slightly beyond your comfort zone."],
+["酒與污水定律","Wine and Sewage Law","少數嚴重缺陷可能破壞整體品質。","A few serious flaws can ruin overall quality.","改善平均表現之前，有時應先處理最大風險。","Before improving average performance, sometimes deal with the biggest risk first.","找出團隊最具破壞性的問題。","Identify the most damaging problem in your team."],
+["南風效應","South Wind Effect","溫和且尊重的互動可能促進合作。","Gentle, respectful interaction may encourage cooperation.","真正的影響力不一定來自壓力，也可以來自理解。","Real influence doesn't have to come from pressure; it can come from understanding.","把一次責備改成具體建議。","Turn one criticism into a specific suggestion."],
+["承諾一致原則","Commitment and Consistency","人傾向維持承諾與行動的一致。","People tend to keep their actions consistent with their commitments.","守信值得珍惜，但錯誤承諾仍應合理修正。","Keeping your word is valuable, but wrong commitments should still be reasonably revised.","完成一項已答應的任務。","Complete one task you've agreed to do."],
+["社會認同原則","Social Proof","人會參考群體行為來判斷選擇。","People look to group behavior to judge their choices.","多數人的選擇可以提供線索，但不能代替自己的思考。","The majority's choice can offer clues, but can't replace your own thinking.","做選擇前確認個人需求。","Confirm your personal needs before choosing."],
+["喜好原則","Liking Principle","喜歡與熟悉可能增加接受意願。","Liking and familiarity may increase willingness to accept.","喜歡一個人，不代表他的每項建議都正確。","Liking someone doesn't make every suggestion of theirs right.","把人際好感與事實判斷分開。","Separate personal liking from factual judgment."],
+["稀缺原則","Scarcity Principle","稀少可能提高主觀價值感。","Scarcity may increase perceived value.","真正值得追求的，不只是難得到，而是對自己有用。","What's truly worth pursuing isn't just hard to get, but useful to you.","面對限量機會先評估實際需求。","Facing a limited offer, assess your actual needs first."],
+["權威原則","Authority Principle","專業、地位與身份可能影響判斷。","Expertise, status and identity may influence judgment.","尊重專業不是停止思考，而是理解專業的證據與界線。","Respecting expertise isn't stopping thinking; it's understanding the evidence and limits behind it.","查核一項權威主張的來源與適用範圍。","Check the source and scope of one authoritative claim."]
+];
+
+// 圖案 [圖案zh, en, 象徵zh, en, 智慧zh, en, 行動zh, en]（名稱沿用 U）
+const P=[
+["太極陰陽魚","Yin-yang (Taiji) fish","相反力量互相依存，形成動態平衡。","Opposing forces depend on each other, forming a dynamic balance.","注意力會影響你看見哪些機會，但想法不會自動創造外部現實。","Attention affects which opportunities you see, but thoughts don't automatically create outer reality.","每天明確寫下一個目標，主動尋找可執行的機會。","Write down one clear goal every day and actively look for actionable opportunities."],
+["多層同心圓","Layered concentric circles","波動由中心向外傳遞。","Waves spreading outward from the center.","個人的情緒與行為會影響互動氣氛。","Your emotions and behavior affect the atmosphere of interactions.","先調整呼吸與語氣，再處理重要對話。","Adjust your breathing and tone before handling an important conversation."],
+["八卦環繞中心","Eight trigrams around a center","不同力量互相作用。","Different forces acting on each other.","時間、體力與注意力都是有限資源。","Time, energy and attention are all limited resources.","把最清醒的時間留給最重要的任務。","Save your most alert hours for your most important tasks."],
+["圓形中的水平線與垂直線","Horizontal and vertical lines in a circle","不同方向與層次之間的對照。","Contrasts between directions and levels.","個人的習慣會影響團隊與生活結構。","Personal habits affect team and life structures.","檢查每天的行為是否符合長期目標。","Check whether your daily behavior fits your long-term goals."],
+["首尾相接的圓形箭頭","Circular arrows joined head to tail","反覆循環與回饋。","Repeating cycles and feedback.","生活中的問題可能來自重複的行為模式。","Problems in life may come from repeated behavior patterns.","找出一個反覆出現的問題，修改其中一個環節。","Find one recurring problem and change one link in it."],
+["中心黑點與外圓","A central dot with an outer circle","一個起點與後續影響。","A starting point and its later effects.","結果通常來自多個條件共同作用，而不是單一原因。","Results usually come from several conditions together, not a single cause.","遇到失敗時，列出三個可能因素並逐一驗證。","When you fail, list three possible factors and test each one."],
+["平行排列的水平線","Parallel horizontal lines","節奏、規律與重複。","Rhythm, regularity and repetition.","穩定練習比偶爾大量投入更容易形成技能。","Steady practice forms skills more easily than occasional heavy effort.","每天固定練習英文15分鐘。","Practice English for 15 minutes at a set time every day."],
+["由中心向外展開的螺旋","A spiral unfolding from the center","互動、同步與逐漸擴大。","Interaction, synchronization and gradual expansion.","共同目標與良好溝通，有助於提高合作效率。","Shared goals and good communication help raise cooperation efficiency.","找到一位願意共同進步的學習夥伴。","Find a study partner willing to improve together."],
+["生命之花幾何圖","Flower of Life geometry","由簡單元素形成複雜結構。","Complex structures formed from simple elements.","抽象願望需要透過具體行動才能轉化為成果。","Abstract wishes need concrete action to become results.","把一個願望改寫成可測量的目標。","Rewrite one wish as a measurable goal."],
+["三個互相重疊的圓","Three overlapping circles","不同信念與經驗互相影響。","Different beliefs and experiences influence each other.","信念會影響判斷，但必須接受現實證據修正。","Beliefs affect judgment, but must be corrected by real evidence.","找出一個限制自己的想法，檢查它是否真的成立。","Find one limiting thought and check whether it's really true."],
+["六角星","Six-pointed star","不同方向的力量相互平衡。","Forces in different directions balancing each other.","學習、休息與人際關係需要合理配置。","Study, rest and relationships need sensible allocation.","每天安排一段真正的休息時間。","Schedule a period of real rest every day."],
+["圓形中的三角形","A triangle in a circle","力量集中於特定方向。","Power concentrated in one direction.","注意力分散會增加任務切換成本。","Scattered attention increases the cost of switching tasks.","每天進行一次25分鐘不分心練習。","Do one 25-minute distraction-free session every day."],
+["由小點構成的圓環","A ring made of small dots","多個小行動圍繞共同目標。","Many small actions surrounding a shared goal.","清楚的目的有助於選擇適當行動。","A clear purpose helps you choose suitable actions.","做事前先回答：我為什麼要做？","Before acting, answer: why am I doing this?"],
+["∞無限符號","The ∞ infinity symbol","持續延伸與沒有固定終點。","Continuous extension with no fixed end.","成長沒有必要被目前的能力限制。","Growth doesn't have to be limited by your current abilities.","每週挑戰一件稍微超出舒適圈的事情。","Each week, take on something slightly outside your comfort zone."],
+["日出","Sunrise","看見方向、希望與新的開始。","Seeing direction, hope and a new beginning.","清楚理解問題，比盲目樂觀更有力量。","Understanding a problem clearly is more powerful than blind optimism.","把一件煩惱寫成可以處理的具體問題。","Turn one worry into a concrete problem you can work on."],
+["新月","New moon","尚未完全顯現的訊息。","Information not yet fully revealed.","直覺可能來自經驗形成的快速判斷，但也可能出錯。","Intuition may be quick judgment formed from experience, but it can also be wrong.","重大決策先記錄直覺，再用資料驗證。","For major decisions, record your intuition first, then verify it with data."],
+["眼睛","Eye","覺察與辨識。","Awareness and recognition.","看見問題，是修正問題的第一步。","Seeing a problem is the first step to fixing it.","每天觀察一個自己的習慣。","Observe one of your own habits every day."],
+["立體金字塔","3D pyramid","基礎、層次與支撐。","Foundation, layers and support.","穩定成果需要可靠的底層結構。","Stable results need a reliable underlying structure.","把學習目標拆成基礎、練習與測驗三層。","Break learning goals into three layers: basics, practice and testing."],
+["立方體","Cube","從不同角度理解同一事物。","Understanding the same thing from different angles.","單一視角容易忽略重要因素。","A single perspective easily misses important factors.","分析問題時加入自己、他人及環境三個角度。","When analyzing problems, add three angles: yourself, others and the environment."],
+["具有橫向虛線的球體","A sphere with horizontal dashed lines","局部與整體的關係。","The relationship between parts and the whole.","局部現象可能反映整體系統問題，但不代表每個部分都包含全部資訊。","Local phenomena may reflect system-wide problems, but not every part contains all the information.","從一次考試失誤，檢查整體學習方法。","Use one exam mistake to review your whole learning method."],
+["中心節點連接多個外圍節點","A central node linked to many outer nodes","網絡與關係。","Networks and relationships.","能力會因知識、資源與合作連結而擴大。","Abilities expand through connections of knowledge, resources and cooperation.","每週主動與一位同學分享學習方法。","Each week, share a study method with a classmate."],
+["由多個三角形組成的大三角形","A large triangle made of smaller triangles","三個部分形成完整系統。","Three parts forming a complete system.","知識、能力與行動需要互相配合。","Knowledge, ability and action must work together.","每學一個觀念，就設計一次實際應用。","For each concept you learn, design one real application."],
+["水滴中的螺旋","A spiral inside a water drop","生命由內向外逐漸發展。","Life developing gradually from the inside out.","成長來自練習、回饋與修正。","Growth comes from practice, feedback and correction.","每週記錄一項真正進步的能力。","Each week, record one ability that has truly improved."],
+["蓮花","Lotus","清明、簡單與內在秩序。","Clarity, simplicity and inner order.","減少不必要的干擾，有助於看清重要事情。","Reducing unnecessary distractions helps you see what matters.","整理書桌，移除三個分心來源。","Tidy your desk and remove three sources of distraction."],
+["十字座標與中心圓","Cross axes with a central circle","確認目前位置。","Confirming your current position.","知道自己在哪裡，才能決定下一步。","Knowing where you are lets you decide your next step.","評估目前英文程度與目標分數的差距。","Assess the gap between your current English level and your target score."],
+["逐漸上升的長條圖與箭頭","Rising bar chart with an arrow","長期累積。","Long-term accumulation.","微小而穩定的改善可能形成顯著成果。","Small, steady improvements can lead to significant results.","每天累積10個真正會使用的單字。","Add 10 words you can actually use every day."],
+["多層同心圓與外側虛線","Concentric circles with an outer dashed line","不同層次的發展。","Different levels of development.","不同能力階段需要不同策略。","Different ability stages need different strategies.","依照自己的程度選擇適合難度的練習。","Choose practice at a difficulty that fits your level."],
+["方形螺旋迷宮","Square spiral maze","探索、選擇與修正方向。","Exploring, choosing and correcting direction.","達成目標通常不只有一條路。","There's usually more than one way to reach a goal.","原本方法無效時，測試另一種方法。","When your method isn't working, test another one."],
+["上下起伏的波形","Rising and falling wave","高低變化與節奏。","Highs, lows and rhythm.","人有專注與疲勞的週期。","People have cycles of focus and fatigue.","依精神狀態安排困難與簡單任務。","Schedule hard and easy tasks according to your energy."],
+["愛心","Heart","珍惜、關懷與感謝。","Cherishing, caring and thanking.","感謝能促進正向互動，但不保證外在回報。","Gratitude promotes positive interaction, but doesn't guarantee outside rewards.","每天具體感謝一位幫助過自己的人。","Each day, specifically thank someone who has helped you."],
+["盾牌","Shield","界線與風險防護。","Boundaries and risk protection.","真正的安全不是沒有風險，而是能辨識與管理風險。","Real safety isn't having no risk; it's being able to identify and manage risk.","對不合理要求練習禮貌拒絕。","Practice politely refusing unreasonable requests."],
+["指南針","Compass","方向與選擇。","Direction and choice.","努力需要與目標保持一致。","Effort needs to stay aligned with your goal.","每週確認自己的三項優先任務。","Confirm your three priority tasks each week."],
+["風的流線","Wind streamlines","移動與變化。","Movement and change.","保持調整能力，比固守單一方法更重要。","Staying adaptable matters more than clinging to a single method.","遇到阻礙時調整步驟，不立即放棄目標。","When blocked, adjust your steps instead of giving up on the goal right away."],
+["落入水面的水滴與漣漪","A drop falling into water, with ripples","放下與重新流動。","Letting go and flowing again.","不必讓過去的錯誤永久決定未來。","Past mistakes don't have to decide your future forever.","寫下一個需要放下的舊標籤。","Write down one old label you need to let go of."],
+["蝴蝶","Butterfly","形態與能力改變。","Change in form and ability.","真正改變不只是增加努力，而是更新方法。","Real change isn't just more effort; it's updating your methods.","淘汰一項長期無效的學習策略。","Drop one learning strategy that has long been ineffective."],
+["鳳凰","Phoenix","挫折後重新開始。","Starting over after setbacks.","失敗可以成為重新設計系統的起點。","Failure can be the starting point for redesigning your system.","考試失利後重新制定下一輪計畫。","After a failed exam, make a new plan for the next round."],
+["群山","Mountain range","困難與高度。","Difficulty and height.","適當難度的挑戰有助於能力提升。","Challenges of the right difficulty help raise ability.","每週完成一道比目前程度稍難的題目。","Each week, solve one problem slightly above your current level."],
+["旗幟","Flag","方向與里程碑。","Direction and milestones.","清楚目標有助於分配資源。","Clear goals help allocate resources.","設定一個兩週內可以驗證的目標。","Set one goal you can verify within two weeks."],
+["獎盃","Trophy","完成與成果。","Completion and results.","成就需要可觀察的證據，不只是主觀感覺。","Achievement needs observable evidence, not just a subjective feeling.","保存作品、測驗及練習紀錄。","Keep records of your work, tests and practice."],
+["閃耀星光","Sparkling stars","意外的好結果。","Unexpected good outcomes.","保持開放能讓人發現意料之外的機會，但不代表奇蹟必然發生。","Staying open helps you discover unexpected opportunities, but miracles aren't guaranteed.","每週嘗試一項以前沒做過的正向行動。","Each week, try one positive action you've never done before."],
+["拼圖","Jigsaw puzzle","不同部分組成整體。","Different parts forming a whole.","跨領域知識可以互相補強。","Cross-disciplinary knowledge can reinforce each other.","把英文、AI與生活議題結合成一個作品。","Combine English, AI and everyday issues into one project."],
+["陰陽魚","Yin-yang fish","不同優勢互相補足。","Different strengths complementing each other.","合作不是所有人都一樣，而是讓差異創造價值。","Cooperation isn't everyone being the same; it's letting differences create value.","與擅長不同能力的同學合作。","Work with a classmate who has different strengths."],
+["天秤","Scales","公平與權衡。","Fairness and weighing.","公平不一定是每個人得到完全相同的支持。","Fairness doesn't always mean everyone gets exactly the same support.","討論問題時同時考慮需求與責任。","When discussing problems, consider both needs and responsibilities."],
+["握手","Handshake","承諾、互信與共同完成。","Commitment, mutual trust and completing things together.","合作能結合不同能力，但需要清楚分工。","Cooperation combines different abilities but needs a clear division of labor.","Pairwork時明確分配雙方任務。","In pair work, clearly assign each person's tasks."],
+["三個人","Three people","群體與共同歸屬。","Groups and shared belonging.","好的社群能讓知識、支持與資源流動。","A good community lets knowledge, support and resources flow.","每週分享一項對班級有幫助的資源。","Each week, share one resource that helps your class."],
+["對話框","Speech bubbles","訊息交換。","Exchanging messages.","有效溝通需要表達，也需要確認對方理解。","Effective communication needs both expression and checking understanding.","重要對話結束前確認彼此的共識。","Before an important conversation ends, confirm what you've agreed on."],
+["具有根系的大樹","A big tree with roots","根基支撐長期成長。","Roots supporting long-term growth.","基礎能力越穩固，越能承受複雜挑戰。","The more solid your basic skills, the better you can handle complex challenges.","先補強核心單字與基本句型。","First strengthen core vocabulary and basic sentence patterns."],
+["打開的書本","Open book","學習與知識傳承。","Learning and passing on knowledge.","知識需要理解、驗證與應用。","Knowledge needs understanding, verification and application.","每學完一個概念，寫出一個生活例子。","After each concept you learn, write an example from daily life."],
+["燈泡","Light bulb","洞察與理解。","Insight and understanding.","智慧不是知道最多，而是能在適當情境做出合理判斷。","Wisdom isn't knowing the most; it's making sound judgments in the right situations.","每天記錄一個值得修正的決策。","Every day, record one decision worth revising."],
+["放大鏡","Magnifying glass","觀察、搜尋與發現。","Observing, searching and discovering.","未知不是威脅，也可能是新知識的來源。","The unknown isn't a threat; it can be a source of new knowledge.","針對一個好奇的問題查找可靠資料。","Look up reliable sources on something you're curious about."],
+["實驗燒瓶","Lab flask","假設與測試。","Hypothesis and testing.","好方法需要透過結果驗證。","Good methods need to be verified by results.","連續七天測試一種新的背單字策略。","Test a new vocabulary strategy for seven days in a row."],
+["齒輪","Gears","多個部分互相運作。","Many parts working together.","整體結果可能受最弱的關鍵環節限制。","The overall result may be limited by the weakest key link.","找出目前學習系統最大的瓶頸。","Find the biggest bottleneck in your current learning system."],
+["原子模型","Atomic model","微觀物理世界。","The microscopic physical world.","量子力學描述微觀系統的物理規律，不能直接推論意念能控制人生事件。","Quantum mechanics describes the physics of microscopic systems; it can't be used to infer that thoughts control life events.","學習區分科學理論與靈性比喻。","Learn to distinguish scientific theories from spiritual metaphors."],
+["沙漏","Hourglass","時間有限與不可逆。","Time is limited and irreversible.","時間管理的本質是優先順序管理。","The essence of time management is managing priorities.","每天先完成最重要的一件事。","Do the single most important thing first each day."],
+["由小點構成的圓環","A ring made of small dots","持續等待與累積。","Ongoing waiting and accumulation.","長期能力需要足夠練習時間。","Long-term ability needs enough practice time.","給新策略至少兩週的合理測試期。","Give a new strategy a fair test period of at least two weeks."],
+["鑰匙","Key","打開限制與新機會。","Unlocking limits and new opportunities.","突破常來自重新定義問題。","Breakthroughs often come from redefining the problem.","遇到卡關時問：真正限制我的是什麼？","When stuck, ask: what is really limiting me?"],
+["打開的門","Open door","新選擇與可能性。","New choices and possibilities.","機會通常需要準備與行動才能掌握。","Opportunities usually require preparation and action to seize.","主動參與一次適合自己的新活動。","Join one new activity that suits you."],
+["向上的階梯","Upward stairs","逐步提升。","Gradual improvement.","進步不必每天都很大，但需要可以追蹤。","Progress doesn't have to be big every day, but it should be trackable.","每週比較一次前測與後測結果。","Compare pre-test and post-test results once a week."],
+["圓形軌道與少數節點","A circular orbit with a few nodes","減少複雜度。","Reducing complexity.","有效系統不一定需要很多步驟。","Effective systems don't necessarily need many steps.","把複雜任務濃縮成三個核心步驟。","Condense a complex task into three core steps."],
+["圓形中的減號","A minus sign in a circle","移除不必要的部分。","Removing what's unnecessary.","有時候停止無效行動，比增加努力更重要。","Sometimes stopping ineffective actions matters more than adding effort.","刪除一個每天消耗時間的低價值習慣。","Delete one low-value habit that eats your time daily."],
+["中心點與同心圓","A center point with concentric circles","核心價值與穩定中心。","Core values and a stable center.","知道自己最重視什麼，才能避免被外界牽著走。","Knowing what you value most keeps you from being led around by the outside world.","寫下人生目前最重要的三項價值。","Write down the three values most important in your life right now."],
+["放射狀光芒","Radiating rays","影響向外擴散。","Influence spreading outward.","好的行動可能透過模仿與合作產生連鎖效應。","Good actions can create chain reactions through imitation and cooperation.","用一個實際行動帶動同學共同進步。","Use one real action to help classmates improve together."],
+["大腦","Brain","認知、判斷與學習。","Cognition, judgment and learning.","成長的重要能力，是根據新證據更新舊模型。","A key ability for growth is updating old models based on new evidence.","每天問自己：今天哪一個想法需要修正？","Ask yourself daily: which of today's ideas needs revising?"],
+["八卦與陰陽太極","Eight trigrams with yin-yang Taiji","變化、對立互補與整體秩序。","Change, complementary opposites and overall order.","世界持續變化，因此需要保持學習與調整能力。","The world keeps changing, so you need to keep learning and adjusting.","每月檢查一次自己的目標、方法與成果。","Each month, review your goals, methods and results."]
+];
+// 法則×卦象 [卦序, 上下卦, 卦象zh, en, 原典意義zh, en, 人生智慧zh, en, 最小行動zh, en, (備註zh, en)]
+const C=[
+[31,"兌艮","山上有澤，象徵感應與互相影響。","A lake on the mountain, symbolizing response and mutual influence.","感應、互動、相互吸引。","Response, interaction, mutual attraction.","吸引好的合作，靠的是尊重、能力與互信，而非單靠意念。","Attracting good cooperation depends on respect, ability and mutual trust, not on thoughts alone.","主動幫助一位同學解決問題。","Help a classmate solve a problem on your own initiative."],
+[51,"震震","雷聲接連響起。","Thunder rolling again and again.","震動、警醒、面對變化。","Shock, alertness, facing change.","外在衝擊可能打破舊習慣，迫使我們重新判斷。","Outside shocks may break old habits and force us to reassess.","遇到突發問題，先確認事實再反應。","When a sudden problem arises, confirm the facts before reacting."],
+[1,"乾乾","六條陽爻，象徵剛健與持續。","Six yang lines, symbolizing strength and persistence.","創造、奮發、自強不息。","Creation, striving, unceasing self-improvement.","真正的行動力，是能持續投入重要事情。","Real drive is sustained commitment to what matters.","每天完成一件最重要的任務。","Complete your most important task every day."],
+[13,"乾離","火在天下，象徵光明與共同方向。","Fire beneath heaven, symbolizing light and a shared direction.","志同道合、共同合作。","Shared ideals, working together.","個人方向與團隊目標一致，合作效率才會提高。","Cooperation becomes efficient only when personal direction aligns with team goals.","與夥伴確認一個共同目標。","Confirm one shared goal with your partner."],
+[24,"坤震","雷在地中，象徵新的活動力量開始萌生。","Thunder within the earth, symbolizing new energy beginning to stir.","返回、復甦、重新開始。","Return, revival, starting again.","重新開始不等於回到原點，而是帶著經驗再出發。","Starting over isn't returning to square one; it's setting out again with experience.","恢復一項中斷的好習慣。","Restart one good habit you dropped."],
+[10,"乾兌","澤上有天，強調謹慎行動。","Heaven above the lake, emphasizing careful action.","履行、禮節、審慎。","Carrying out, propriety, prudence.","每個選擇都有可能帶來後果，決策前應評估風險。","Every choice may have consequences; assess the risks before deciding.","做決定前列出三種可能結果。","List three possible outcomes before making a decision."],
+[60,"坎兌","澤上有水，象徵需要節制與調節。","Water above the lake, symbolizing the need for restraint and regulation.","節制、規律、適度。","Restraint, regularity, moderation.","穩定的節奏比偶爾過度努力更容易持續。","A steady rhythm is easier to sustain than occasional over-exertion.","每天固定練習英文15分鐘。","Practice English for 15 minutes at a set time every day."],
+[8,"坎坤","水在地上，象徵親近與相互依附。","Water on the earth, symbolizing closeness and mutual reliance.","親近、團結、互助。","Closeness, unity, mutual help.","共同目標與信任能讓合作更順利。","Shared goals and trust make cooperation smoother.","找一位願意互相回饋的學習夥伴。","Find a study partner willing to give each other feedback."],
+[30,"離離","火光相續，象徵光明與辨識。","Fire following fire, symbolizing light and discernment.","明辨、依附、光明。","Discernment, attachment, brightness.","願望必須轉化為具體計畫與行動，才可能產生成果。","Wishes must become concrete plans and actions to produce results.","把願望拆成三個可執行步驟。","Break a wish into three doable steps."],
+[61,"巽兌","澤上有風，象徵內在誠信與相互感通。","Wind over the lake, symbolizing inner sincerity and mutual understanding.","誠信、真實、可信。","Integrity, truthfulness, trustworthiness.","信念必須接受現實檢驗，不能只靠自我說服。","Beliefs must be tested against reality, not sustained by self-persuasion alone.","找出一個舊信念，檢查是否符合證據。","Find one old belief and check whether it fits the evidence."],
+[11,"坤乾","天地之氣相交，象徵交流通達。","The energies of heaven and earth meet, symbolizing open exchange.","通泰、協調、交流。","Flow, harmony, exchange.","平衡不是平均分配，而是讓不同需求獲得適當支持。","Balance isn't equal distribution; it's giving different needs appropriate support.","重新分配學習、休息與運動時間。","Reallocate your time for study, rest and exercise."],
+[52,"艮艮","兩山相重，象徵停止與穩定。","Two mountains stacked, symbolizing stillness and stability.","止、安定、知所止。","Stopping, stability, knowing where to stop.","專注的核心不是做更多，而是停止不重要的事。","The core of focus isn't doing more, but stopping what doesn't matter.","完成25分鐘不分心學習。","Complete 25 minutes of distraction-free study."],
+[14,"離乾","火在天上，象徵光明與豐富資源。","Fire in the heavens, symbolizing brightness and abundant resources.","大有、豐盛、承擔。","Great possession, abundance, responsibility.","擁有資源之後，更需要明確目標與責任。","Once you have resources, you need clear goals and responsibility even more.","寫下本週最重要的一個目標。","Write down your single most important goal this week."],
+[43,"兌乾","澤在天上，象徵需要果斷處理阻礙。","The lake above heaven, symbolizing the need to deal decisively with obstacles.","決斷、突破、去除阻礙。","Decisiveness, breakthrough, removing obstacles.","新的可能性來自突破限制，但不是保證無限成功。","New possibilities come from breaking limits, but unlimited success isn't guaranteed.","淘汰一項阻礙成長的習慣。","Eliminate one habit that blocks your growth."],
+[35,"離坤","太陽出現在大地之上。","The sun rising over the earth.","前進、提升、光明。","Advancing, rising, brightness.","進步需要方向，也需要持續累積。","Progress needs direction as well as steady accumulation.","每週記錄一項能力進步。","Record one improvement in your abilities each week."],
+[20,"巽坤","風行地上，象徵觀察與省察。","Wind moving over the earth, symbolizing observation and reflection.","觀察、理解、反思。","Observation, understanding, reflection.","直覺可以提供線索，但重大決策仍需證據。","Intuition can offer clues, but major decisions still need evidence.","先記錄直覺，再查證事實。","Record your intuition first, then check the facts."],
+[19,"坤兌","地臨澤上，象徵接近與關照。","Earth above the lake, symbolizing approaching and caring.","臨近、觀察、治理。","Approaching, observing, governing.","想真正了解問題，需要接近現場與事實。","To truly understand a problem, get close to the scene and the facts.","觀察一項問題實際發生的過程。","Observe how one problem actually unfolds."],
+[50,"離巽","木上有火，借鼎器烹飪象徵轉化。","Fire over wood; cooking in a cauldron symbolizes transformation.","革新、承載、建立秩序。","Renewal, holding, establishing order.","好的成果需要穩定結構與適當分工。","Good results need a stable structure and a proper division of labor.","重新設計自己的學習流程。","Redesign your own learning process."],
+[59,"巽坎","風吹水面，象徵渙散與疏通。","Wind blowing over water, symbolizing dispersal and clearing.","渙散、化解、重新聚合。","Dispersal, dissolving, regathering.","換一個視角，可能找到原本看不到的問題。","A new perspective may reveal problems you couldn't see before.","用自己、他人與環境三個角度分析事情。","Analyze things from three angles: yourself, others and the environment."],
+[63,"坎離","水在火上，象徵事情已完成但仍需維護。","Water over fire, symbolizing that things are done but still need upkeep.","完成、秩序、慎防變化。","Completion, order, guarding against change.","局部成功不代表整體系統永遠穩定。","Local success doesn't mean the whole system is stable forever.","完成目標後檢查三項潛在風險。","After reaching a goal, check three potential risks."],
+[45,"兌坤","澤在地上，象徵聚集。","The lake over the earth, symbolizing gathering.","集合、團結、共同目標。","Gathering, unity, shared goals.","高品質連結的核心是信任與共同成果。","The core of quality connections is trust and shared results.","參與一次有明確目標的合作。","Take part in one collaboration with a clear goal."],
+[3,"坎震","雲雷交動，象徵萬物初生的艱難。","Clouds and thunder stirring, symbolizing the hardship of new beginnings.","初創、困難、建立秩序。","Founding, difficulty, establishing order.","新計畫需要目標、資源與行動共同配合。","A new plan needs goals, resources and action working together.","列出新計畫的三個基本條件。","List three basic conditions for a new plan."],
+[46,"坤巽","木生地中，象徵逐步向上。","Wood growing within the earth, symbolizing a gradual rise.","上升、累積、漸進。","Rising, accumulating, gradual progress.","真正的成長不是一次跨越，而是持續累積。","Real growth isn't one big leap but steady accumulation.","每天完成一項小進步。","Make one small improvement every day."],
+[2,"坤坤","六條陰爻，象徵承載與柔順。","Six yin lines, symbolizing support and gentleness.","包容、承載、厚德載物。","Tolerance, support, carrying all things with great virtue.","內在穩定不是排斥不同，而是能夠承載變化。","Inner stability isn't rejecting difference; it's being able to hold change.","減少一項不必要的情緒消耗。","Cut one unnecessary emotional drain."],
+[15,"坤艮","高山藏於地中，象徵謙遜。","A high mountain hidden within the earth, symbolizing humility.","謙虛、自知、適度。","Humility, self-awareness, moderation.","正確認識自己的能力與限制，才能持續改善。","Only by knowing your abilities and limits accurately can you keep improving.","列出三項優勢與三項弱點。","List three strengths and three weaknesses."],
+[9,"巽乾","風行天上，象徵小量積蓄。","Wind moving across the sky, symbolizing small accumulation.","小積累、蓄養、等待成熟。","Small accumulation, nurturing, waiting for ripeness.","長期小進步可能形成顯著能力。","Long-term small gains can build significant ability.","每天累積10個英文單字。","Learn 10 English words every day."],
+[53,"巽艮","山上有木，象徵循序成長。","A tree on the mountain, symbolizing step-by-step growth.","漸進、次序、穩定發展。","Gradualness, order, steady development.","不同階段需要不同策略，不必急著跳級。","Different stages need different strategies; there's no need to rush ahead.","設定符合目前能力的下一階段目標。","Set a next-stage goal that fits your current ability."],
+[56,"離艮","山上有火，象徵行旅與暫居。","Fire on the mountain, symbolizing travel and temporary stays.","旅行、適應、謹慎。","Travel, adaptation, caution.","人生方向可能改變，因此需要保持適應能力。","Life's direction may change, so stay adaptable.","為重要目標設計替代路線。","Design an alternative route for an important goal."],
+[16,"震坤","雷出地上，象徵動員與振奮。","Thunder bursting from the earth, symbolizing mobilization and enthusiasm.","喜悅、準備、順勢行動。","Joy, preparation, acting with momentum.","動力需要與節奏配合，才能持續。","Motivation must match your rhythm to last.","依精神狀態安排學習難度。","Set study difficulty according to your mental energy."],
+[42,"巽震","風雷相助，象徵增益。","Wind and thunder helping each other, symbolizing increase.","增加、利益、互相成就。","Increase, benefit, helping each other succeed.","感恩不是只接受幫助，也要懂得回饋。","Gratitude isn't just receiving help; it's also giving back.","具體感謝一位幫助過自己的人。","Specifically thank someone who has helped you."],
+[29,"坎坎","重重水險，象徵反覆面對困難。","Danger upon danger of water, symbolizing repeated difficulties.","險阻、警覺、守信。","Danger, vigilance, keeping faith.","真正的安全來自風險辨識與應對能力。","Real safety comes from recognizing and handling risk.","為重要決策設定風險界線。","Set risk limits for an important decision."],
+[64,"離坎","火在水上，象徵事情尚未完成。","Fire over water, symbolizing things not yet complete.","未完成、持續調整、謹慎前進。","Incompletion, ongoing adjustment, careful progress.","方向不是一次決定就永遠正確，需要持續修正。","A direction chosen once isn't right forever; it needs ongoing correction.","每週確認行動是否接近目標。","Each week, check whether your actions bring you closer to your goal."],
+[48,"坎巽","木入水下，借汲井之象說明共同資源。","Wood going down into water; drawing from a well illustrates shared resources.","供應、滋養、維護公共資源。","Supply, nourishment, maintaining public resources.","好的系統能讓重要資源持續流動。","A good system keeps important resources flowing.","建立可重複使用的學習資料庫。","Build a reusable learning database."],
+[40,"震坎","雷雨交作，象徵困難得到緩解。","Thunder and rain together, symbolizing relief from hardship.","解除、舒緩、化解。","Release, relief, resolution.","放下不是否認過去，而是不再被舊問題控制。","Letting go isn't denying the past; it's no longer being controlled by old problems.","停止一項無效的自我責備。","Stop one pointless habit of self-blame."],
+[49,"兌離","澤中有火，象徵相互衝突與變革。","Fire within the lake, symbolizing conflict and transformation.","改革、更新、改變制度。","Reform, renewal, changing systems.","當舊方法不再有效，就需要更新結構。","When old methods stop working, the structure must be updated.","淘汰一個無效的學習策略。","Drop one ineffective learning strategy."],
+[23,"艮坤","山附於地，象徵舊結構逐漸剝落。","The mountain resting on the earth, symbolizing old structures gradually peeling away.","衰退、剝落、保存根基。","Decline, stripping away, preserving the foundation.","舊模式瓦解時，應先保存重要能力，再重新開始。","When old patterns collapse, preserve key abilities first, then start again.","分析一次失敗並重建行動計畫。","Analyze one failure and rebuild your action plan."],
+[39,"坎艮","山上有水，象徵前進受阻。","Water on the mountain, symbolizing blocked progress.","困難、阻礙、尋求協助。","Difficulty, obstruction, seeking help.","遇到困難時，懂得調整與求助也是能力。","When facing difficulty, knowing how to adjust and ask for help is also a skill.","為一項難題尋找適合的協助。","Find suitable help for one hard problem."],
+[7,"坤坎","地中有水，借軍隊之象強調組織與紀律。","Water within the earth; the image of an army stresses organization and discipline.","組織、紀律、共同任務。","Organization, discipline, shared missions.","目標需要清楚分工與穩定執行。","Goals need a clear division of labor and steady execution.","把目標拆成每週任務。","Break your goal into weekly tasks."],
+[34,"震乾","雷在天上，象徵強大力量。","Thunder in the heavens, symbolizing great power.","力量增長、謹慎運用。","Growing strength, careful use.","真正的成就不只是變強，也要懂得負責。","Real achievement isn't just becoming stronger; it's also being responsible.","把新能力用來解決一個問題。","Use a new ability to solve one problem."],
+[55,"震離","雷電交加，象徵盛大與明亮。","Thunder and lightning together, symbolizing grandeur and brightness.","豐盛、極盛、慎防衰退。","Abundance, peak, guarding against decline.","成果可能來自長期準備與時機交會，不是宇宙保證。","Results may come from long preparation meeting the right timing, not from a cosmic guarantee.","記錄一次成功背後的可重複條件。","Record the repeatable conditions behind one success."],
+[54,"震兌","澤上有雷，象徵關係結合與角色問題。","Thunder over the lake, symbolizing union and questions of roles.","婚嫁、角色、秩序。","Marriage, roles, order.","整合不同資源，需要清楚角色與責任。","Integrating different resources requires clear roles and responsibilities.","確認合作中的分工。","Confirm the division of labor in a collaboration."],
+[41,"艮兌","山下有澤，象徵減損與調整。","A lake below the mountain, symbolizing reduction and adjustment.","減少、取捨、調整配置。","Reducing, trade-offs, rearranging.","減少低價值投入，才能增加真正重要的能力。","Cut low-value input to grow the abilities that truly matter.","刪除一項低效活動。","Delete one inefficient activity."],
+[6,"乾坎","天與水運行方向不同，象徵爭議。","Heaven and water moving in opposite directions, symbolizing dispute.","爭訟、分歧、謹慎處理。","Litigation, disagreement, careful handling.","公平需要事實、規則與合理程序。","Fairness requires facts, rules and reasonable procedures.","處理衝突時先確認雙方觀點。","When handling conflict, first confirm both sides' views."],
+[17,"兌震","澤中有雷，象徵順應與跟隨。","Thunder within the lake, symbolizing adapting and following.","隨順、適應、協調。","Following, adapting, coordinating.","合作不是盲從，而是理解共同目標。","Cooperation isn't blind following; it's understanding the shared goal.","Pairwork前確認雙方任務。","Confirm both partners' tasks before pair work."],
+[58,"兌兌","兩澤相連，象徵交流與喜悅。","Two lakes joined, symbolizing exchange and joy.","喜悅、溝通、相互啟發。","Joy, communication, inspiring each other.","好的社群能促進分享與共同學習。","A good community promotes sharing and learning together.","分享一項對同學有用的資源。","Share one resource that's useful to classmates."],
+[38,"離兌","火向上、澤水向下，象徵方向分歧。","Fire rises while lake water sinks, symbolizing diverging directions.","差異、分歧、求同存異。","Difference, divergence, seeking common ground while respecting differences.","真正的溝通不是消滅差異，而是理解差異。","Real communication isn't eliminating differences but understanding them.","先重述對方觀點，再表達自己。","Restate the other person's view before expressing your own."],
+[27,"艮震","山下有雷，借口頤之象談滋養。","Thunder below the mountain; the image of the jaws speaks of nourishment.","養育、飲食、修養。","Nurturing, diet, self-cultivation.","沒有健康與基本能力，就難以維持長期成長。","Without health and basic skills, long-term growth is hard to sustain.","先改善睡眠與基礎學習習慣。","First improve your sleep and basic study habits."],
+[4,"艮坎","山下有險，象徵蒙昧與待啟發。","Danger below the mountain, symbolizing ignorance awaiting enlightenment.","啟蒙、學習、接受指導。","Enlightenment, learning, accepting guidance.","真正的學習，從承認自己還不懂開始。","Real learning starts with admitting you don't understand yet.","每天主動提出一個好問題。","Ask one good question every day."],
+[26,"艮乾","天在山中，象徵蓄積力量。","Heaven within the mountain, symbolizing stored-up strength.","積蓄、修養、培養能力。","Accumulating, cultivating, building ability.","智慧需要知識、經驗與反思累積。","Wisdom requires accumulated knowledge, experience and reflection.","建立個人錯誤與智慧資料庫。","Build a personal database of mistakes and lessons."],
+[21,"離震","雷電交作，借咬合之象談排除阻礙。","Thunder and lightning together; the image of biting through speaks of removing obstacles.","突破障礙、明辨、處理問題。","Breaking through obstacles, discernment, solving problems.","探索不是只找答案，而是深入問題核心。","Exploration isn't just finding answers; it's reaching the core of the problem.","對一個難題追問三次為什麼。","Ask ‘why’ three times about one hard problem."],
+[62,"震艮","山上有雷，象徵小事謹慎。","Thunder on the mountain, symbolizing care in small matters.","小步調整、謹慎行動。","Small adjustments, careful action.","重大改變之前，先用小實驗降低風險。","Before a major change, lower the risk with a small experiment.","用七天測試一種新策略。","Test a new strategy for seven days."],
+[37,"巽離","風自火出，象徵家庭內部秩序。","Wind coming forth from fire, symbolizing order within the family.","角色、責任、治理。","Roles, responsibilities, management.","系統品質取決於角色、規則與互動。","System quality depends on roles, rules and interaction.","建立一份清楚的班級工作流程。","Create a clear workflow for your class."],
+[5,"坎乾","雲在天上，象徵等待雨水。","Clouds in the sky, symbolizing waiting for rain.","等待時機、準備、耐心。","Waiting for the right time, preparation, patience.","不確定時要蒐集證據，而不是把量子物理當成意念顯化的證明。","When uncertain, gather evidence rather than treating quantum physics as proof of manifestation.","列出一項決策的已知與未知條件。","List the known and unknown conditions of one decision."],
+[32,"震巽","雷風相與，象徵持續運作。","Thunder and wind together, symbolizing continuous operation.","持久、穩定、持續。","Endurance, stability, continuity.","長期主義不是方法永遠不變，而是持續更新。","Long-termism doesn't mean never changing methods; it means continually updating.","每週檢查一次目標與方法。","Review your goals and methods once a week."],
+[47,"兌坎","澤中無水之象，象徵受困。","A lake without water, symbolizing being trapped.","困難、受限、守住志向。","Hardship, restriction, holding on to your aspirations.","耐心不是盲目忍受，而是知道何時堅持與調整。","Patience isn't blind endurance; it's knowing when to persist and when to adjust.","分析目前最大的阻礙。","Analyze your biggest obstacle right now."],
+[28,"兌巽","澤滅木，象徵承受過重。","The lake submerging the trees, symbolizing an excessive load.","過度負荷、非常時期、需要調整。","Overload, extraordinary times, a need for adjustment.","真正的突破可能不是增加努力，而是重新設計結構。","Real breakthroughs may come not from more effort but from redesigning the structure.","找出一個過度負荷的生活環節。","Identify one overloaded part of your life."],
+[44,"乾巽","天下有風，象徵突然相遇。","Wind beneath heaven, symbolizing sudden encounters.","相遇、意外接觸、慎重判斷。","Encounters, unexpected contact, careful judgment.","機會需要辨識，不能只因為出現就接受。","Opportunities need to be assessed; don't accept them just because they appear.","評估一項新機會的收益與風險。","Evaluate the benefits and risks of one new opportunity."],
+[36,"坤離","光明進入地中，象徵光明受傷。","Light entering the earth, symbolizing wounded brightness.","艱難、隱忍、保存力量。","Hardship, forbearance, preserving strength.","短期退步不代表長期成長失敗。","A short-term setback doesn't mean long-term growth has failed.","同時追蹤短期成績與長期趨勢。","Track short-term scores and long-term trends together."],
+[22,"艮離","山下有火，象徵文飾與形式。","Fire below the mountain, symbolizing adornment and form.","修飾、形式、內外關係。","Decoration, form, the relation between inner and outer.","外在包裝不能取代真正有用的內容。","Outer packaging can't replace genuinely useful content.","把複雜計畫濃縮成三步驟。","Condense a complex plan into three steps."],
+[12,"乾坤","天地不交，象徵閉塞。","Heaven and earth not meeting, symbolizing blockage.","阻塞、不通、交流中斷。","Blockage, obstruction, broken communication.","改善系統有時需要先移除阻塞。","Improving a system sometimes requires removing blockages first.","刪除一項長期無效的工作。","Delete one task that has long been ineffective."],
+[33,"乾艮","天下有山，象徵適時退避。","A mountain beneath heaven, symbolizing timely retreat.","退避、保存力量、審時度勢。","Retreat, preserving strength, reading the situation.","真正的主動，不是每件事都參與，而是守住重要價值。","True initiative isn't joining everything but guarding what you value most.","拒絕一項不符合目標的低價值活動。","Decline one low-value activity that doesn't fit your goals."],
+[57,"巽巽","風風相續，象徵柔和而持續的影響。","Wind following wind, symbolizing gentle, lasting influence.","順入、滲透、持續影響。","Gentle entry, penetration, sustained influence.","持久的影響力常來自穩定示範。","Lasting influence often comes from a steady example.","用一個好習慣帶動同學。","Inspire classmates with one good habit."],
+[18,"艮巽","山下有風，象徵積弊需要整治。","Wind below the mountain, symbolizing accumulated problems that need fixing.","整治、修復、更新。","Rectifying, repairing, renewing.","真正的思考能力，是能淘汰不再適用的舊模型。","Real thinking ability is discarding old models that no longer apply.","每週修正一個錯誤觀念。","Correct one mistaken idea each week."],
+[25,"乾震","天下雷行，象徵順應自然、真實不妄。（本APP補充）","Thunder rolling beneath heaven, symbolizing following nature, genuine and unpretentious. (added by this app)","真實、不妄為、順其自然。（本APP補充）","Genuineness, not acting recklessly, going with nature. (added by this app)","宇宙與人生存在變化，但不能把現代靈性法則視為已證實的自然定律。","The universe and life involve change, but modern spiritual laws shouldn't be treated as proven natural laws.","以證據、行動與回饋檢驗自己的世界觀。","Test your worldview with evidence, action and feedback.","原文此項未完成：「64卦的一對一配對必須逐一檢查，避免重複、錯號與遺漏。本版前63項已列出卦象與卦義，但最後一項仍應以完整64卦清單校對後才能確認。」經逐一核對，前63項唯一未用到的是 ䷘ 無妄卦25，故補上。","The original left this item unfinished, noting the last pairing should be checked against the full list of 64 hexagrams. After checking, the only hexagram unused by the first 63 items is Wu Wang (No. 25), so it is filled in here."]
+];
+const CG=[["第一組｜宇宙運作與基本規律","Group 1 · Cosmic Workings & Basic Laws"],["第二組｜信念、意識與方向","Group 2 · Belief, Consciousness & Direction"],["第三組｜認知、結構與成長","Group 3 · Cognition, Structure & Growth"],["第四組｜定位、累積與方向","Group 4 · Positioning, Accumulation & Direction"],["第五組｜變化、挑戰與成果","Group 5 · Change, Challenge & Results"],["第六組｜關係、合作與知識","Group 6 · Relationships, Cooperation & Knowledge"],["第七組｜智慧、實驗與突破","Group 7 · Wisdom, Experiments & Breakthroughs"],["第八組｜機會、更新與整體","Group 8 · Opportunity, Renewal & the Whole"]];
+// 總覽 [標題zh, en, [[標籤, zh, en], ...]]
+const OV=[
+["三大64系統｜核心架構與說明","Three 64-Systems · Framework & Notes",[
+["核心架構","宇宙64法則＝理解變化與自我成長。","64 Universal Laws = understanding change and self-growth."],
+["核心架構","易經64卦＝理解處境、時機與策略。","64 I Ching Hexagrams = understanding situations, timing and strategy."],
+["核心架構","社會生存64法則＝理解人性、關係與現實決策。","64 Social Survival Laws = understanding human nature, relationships and real-world decisions."],
+["三種金句","①本質金句：看懂底層規律。","① Essence: see the underlying pattern."],
+["三種金句","②智慧金句：修正舊有認知。","② Wisdom: correct old assumptions."],
+["三種金句","③行動金句：轉化為可執行的選擇。","③ Action: turn it into a doable choice."],
+["重要說明","宇宙64法則屬現代靈性概念集合，並非64條經科學證實的自然定律。","The 64 Universal Laws are a collection of modern spiritual concepts, not 64 scientifically proven natural laws."],
+["重要說明","易經64卦屬古代變化哲學，以下金句為現代生活應用，不是古籍原文。","The 64 hexagrams of the I Ching are an ancient philosophy of change; these sayings are modern applications, not quotations from the classic."],
+["重要說明","社會生存64法則混合研究概念、經濟原理與生活比喻，適合當作思考工具，不宜視為絕對定律。","The 64 Social Survival Laws mix research concepts, economic principles and life metaphors; use them as thinking tools, not absolute laws."]]],
+["三大64系統｜終極整合","Three 64-Systems · Ultimate Integration",[
+["宇宙64法則","提醒自己觀察變化，但不把靈性比喻當成科學定律。","Remind yourself to observe change, without treating spiritual metaphors as scientific laws."],
+["易經64卦","提醒自己理解時機，但不把卦象當成不可改變的命運。","Remind yourself to understand timing, without treating hexagrams as unchangeable fate."],
+["社會生存64法則","提醒自己辨識人性，但不把心理技巧當成操控別人的工具。","Remind yourself to recognize human nature, without using psychological techniques to manipulate others."],
+["第一層｜本體","世界持續變化，人也具有學習與調整的可能。","Layer 1 · Ontology: The world keeps changing, and people can learn and adjust."],
+["第二層｜結構","個人、關係、制度與環境相互影響。","Layer 2 · Structure: Individuals, relationships, institutions and environments influence one another."],
+["第三層｜機制","觀察差異、建立假設、採取行動、驗證結果。","Layer 3 · Mechanism: Observe differences, form hypotheses, take action, verify results."],
+["第四層｜行動","每天修正一個錯誤、建立一項能力、創造一份價值。","Layer 4 · Action: Each day, fix one mistake, build one ability and create one piece of value."],
+["終極金句","真正的智慧，不是背熟192個名稱，而是知道何時使用、何時懷疑、何時更新。","True wisdom isn't memorizing 192 names, but knowing when to use them, when to doubt them and when to update them."],
+["終極金句","真正的成長，不是永遠正確，而是讓下一次判斷比上一次更準。","True growth isn't always being right, but making your next judgment more accurate than the last."],
+["終極金句","真正的自由，不是沒有規律，而是不再被錯誤的舊模型綁架。","True freedom isn't the absence of rules, but no longer being held hostage by wrong old models."]]],
+["64圖案｜先看懂兩張圖的本質","64 Symbols · Understanding the Two Images",[
+["第一張圖","以64種幾何、自然及文化符號，呈現64個人生法則。","Presents 64 life laws through 64 geometric, natural and cultural symbols."],
+["第二張圖","以類似《易經》卦象的圖形，呈現另一套64個靈性法則。","Presents another set of 64 spiritual laws using figures resembling I Ching hexagrams."],
+["重要區別","兩張圖並不是同一套64法則，名稱、編號與排列方式都有差異。","The two images are not the same set of 64 laws; their names, numbering and arrangement all differ."],
+["易經原典","64卦由六條陰爻或陽爻組成，每一卦都有特定卦名、卦象及變化意義。","Each of the 64 hexagrams consists of six yin or yang lines and has its own name, image and meaning of change."],
+["圖片中的法則","多數屬於現代靈性、哲學及個人成長概念，不是《易經》原典的64個卦名。","Most are modern spiritual, philosophical and self-growth concepts, not the 64 hexagram names of the I Ching."],
+["圖案定位","第一張圖的符號主要是視覺隱喻，不是經過科學驗證的宇宙能量符號。","The symbols in Image 1 are mainly visual metaphors, not scientifically verified symbols of cosmic energy."],
+["核心智慧","可以把64法則當成人生反思工具，但不能把吸引力、意念顯化或量子共振當成已證實的物理定律。","Use the 64 laws as tools for reflection, but don't treat attraction, manifestation or quantum resonance as proven physical laws."]]],
+["第二張圖｜東方卦象 × 現代靈性法則","Image 2 · Eastern Hexagrams × Modern Spiritual Laws",[
+["","第二張圖使用大量六爻符號作為視覺元素，中心則是太極陰陽圖。","Image 2 uses many six-line figures as visual elements, with a yin-yang Taiji symbol at the center."],
+["","它呈現的是現代靈性概念與易經符號的藝術性結合。","It is an artistic blend of modern spiritual concepts and I Ching symbols."],
+["","不能因為畫面出現六爻，就認定64個符號已經依照《周易》原典正確排列。","The presence of six-line figures doesn't mean the 64 symbols are correctly arranged according to the Zhou Yi."],
+["主題","第二張圖可辨識的主題包括吸引力、振動、共振、能量守恆、磁力、頻率、宇宙連接、純粹潛能、心智、意念、專注、潛意識、鏡像、投射、覺察、信念、因果、陰陽、節奏、週期、極性、相對、輪迴、補償、豐盛、流動、接收、感恩、交換、無限、行動、顯化、意圖、臣服、允許、當下、互動、尊重、包容、奉獻、犧牲、共鳴、邊界、愛、成長、蛻變、挑戰、秩序、混亂、覺醒、召喚、命運、一體、對應、同一、自由意志、真理、永恆、奇蹟及宇宙本源等。","Recognizable themes include attraction, vibration, resonance, conservation of energy, magnetism, frequency, cosmic connection, pure potential, mind, thought, focus, the subconscious, mirroring, projection, awareness, belief, cause and effect, yin and yang, rhythm, cycles, polarity, relativity, reincarnation, compensation, abundance, flow, receiving, gratitude, exchange, infinity, action, manifestation, intention, surrender, allowing, the present moment, interaction, respect, tolerance, dedication, sacrifice, sympathy, boundaries, love, growth, transformation, challenge, order, chaos, awakening, calling, destiny, oneness, correspondence, sameness, free will, truth, eternity, miracles and the source of the universe."],
+["提醒","其中「能量守恆」在物理學有明確定義，但不能據此證明靈性能量的存在。","‘Conservation of energy’ has a precise definition in physics, but it cannot prove the existence of spiritual energy."],
+["提醒","「量子」「振動」「共振」在物理學也有特定意義，不能直接等同於情緒頻率、吸引財富或意念治療。","‘Quantum’, ‘vibration’ and ‘resonance’ also have specific meanings in physics, and can't be equated with emotional frequencies, attracting wealth or healing by thought."],
+["提醒","「命運」「輪迴」「宇宙本源」則屬於哲學或宗教信念，不是已獲科學驗證的自然定律。","‘Destiny’, ‘reincarnation’ and ‘the source of the universe’ are philosophical or religious beliefs, not scientifically verified natural laws."]]],
+["真正的易經64卦｜八卦基礎","The Real 64 Hexagrams · Eight Trigrams",[
+["乾☰｜天","剛健、主動、創造。","Qian ☰ · Heaven: strong, proactive, creative."],
+["坤☷｜地","承載、包容、配合。","Kun ☷ · Earth: supporting, tolerant, cooperative."],
+["震☳｜雷","啟動、變動、警醒。","Zhen ☳ · Thunder: initiating, changing, alerting."],
+["巽☴｜風","滲透、柔順、逐步影響。","Xun ☴ · Wind: penetrating, gentle, gradual influence."],
+["坎☵｜水","風險、困難、適應。","Kan ☵ · Water: risk, difficulty, adaptation."],
+["離☲｜火","光明、依附、辨識。","Li ☲ · Fire: brightness, attachment, discernment."],
+["艮☶｜山","停止、界線、穩定。","Gen ☶ · Mountain: stopping, boundaries, stability."],
+["兌☱｜澤","喜悅、交流、表達。","Dui ☱ · Lake: joy, exchange, expression."],
+["","真正的64卦，是由上下兩個三爻卦組合形成。","The real 64 hexagrams are formed by combining an upper and a lower trigram."],
+["","每一卦都有卦名、卦辭、六爻及相應的解釋傳統。","Each hexagram has a name, a judgment text, six lines and a tradition of interpretation."],
+["","例如乾卦重視剛健與持續精進，坤卦重視承載與順勢配合。","For example, Qian stresses strength and constant improvement, while Kun stresses support and going with the flow."],
+["","復卦象徵陽氣返回，可用來比喻重新開始。","Fu symbolizes the return of yang energy and can be a metaphor for starting over."],
+["","困卦描述受限處境，重點在於如何面對困境。","Kun (Oppression) describes a constrained situation; the focus is on how to face it."],
+["","泰卦象徵天地交泰與通達，但不代表困卦之後必然立即轉成泰卦。","Tai symbolizes heaven and earth in harmony and flow, but it doesn't mean Oppression will necessarily turn into Tai right away."],
+["","因此，圖片文章所說「下一步必定是泰卦」，並不是《易經》能保證的結果。","So the image article's claim that ‘the next step must be Tai’ is not something the I Ching can guarantee."]]],
+["64法則整合為八大LifeOS能力","Eight LifeOS Abilities from the 64 Laws",[
+["01｜認知更新力","觀察、知識、探索、思維、智慧、實驗、直覺、信念。核心能力：辨識事實、修正偏誤、提高預測精度。","Cognitive Updating: observation, knowledge, exploration, thinking, wisdom, experimentation, intuition, belief. Core ability: identify facts, correct biases, improve prediction accuracy."],
+["02｜系統理解力","結構、維度、全息、連接、層級、整合、系統、因果。核心能力：理解關係、找到瓶頸、辨識連鎖反應。","Systems Understanding: structure, dimensions, holography, connection, levels, integration, systems, cause and effect. Core ability: understand relationships, find bottlenecks, recognize chain reactions."],
+["03｜自我管理力","專注、意圖、定位、方向、目標、節奏、時間、中心。核心能力：管理注意力、資源與優先順序。","Self-Management: focus, intention, positioning, direction, goals, rhythm, time, center. Core ability: manage attention, resources and priorities."],
+["04｜行動成長力","積累、成長、挑戰、成就、機會、進步、突破、蛻變。核心能力：從目標轉化為成果。","Action and Growth: accumulation, growth, challenge, achievement, opportunity, progress, breakthrough, transformation. Core ability: turn goals into results."],
+["05｜恢復調整力","循環、流動、釋放、重生、耐心、簡化、減法、平衡。核心能力：降低無效消耗、修復系統、重新開始。","Recovery and Adjustment: cycles, flow, release, rebirth, patience, simplicity, subtraction, balance. Core ability: reduce wasted effort, repair systems, start again."],
+["06｜人際共創力","感恩、互補、公正、合作、社群、溝通、影響、保護。核心能力：建立信任、合作與界線。","Relational Co-creation: gratitude, complementarity, fairness, cooperation, community, communication, influence, protection. Core ability: build trust, cooperation and boundaries."],
+["07｜哲學反思力","吸引力、振動、能量、對應、頻率、共振、顯化、無限。核心能力：把抽象比喻轉化為可驗證的生活行動。","Philosophical Reflection: attraction, vibration, energy, correspondence, frequency, resonance, manifestation, infinity. Core ability: turn abstract metaphors into verifiable life actions."],
+["08｜生命意義力","光明、純粹、三位一體、奇蹟、根基、量子、宇宙、路徑。核心能力：探索價值、理解限制、保持開放與持續學習。","Meaning of Life: light, purity, trinity, miracles, foundation, quantum, universe, path. Core ability: explore values, understand limits, stay open and keep learning."]]],
+["最高智慧｜可驗證的人生模型","Highest Wisdom · A Verifiable Life Model",[
+["本體層","世界存在自然規律，但人類提出的每一個「法則」不一定都是科學定律。","The world has natural laws, but not every ‘law’ humans propose is a scientific law."],
+["結構層","人生結果受到個人能力、環境條件、資源、機率與他人行動共同影響。","Life outcomes are shaped by personal ability, environment, resources, probability and other people's actions together."],
+["機制層","觀察現實→建立假設→採取行動→蒐集回饋→修正模型。","Observe reality → form hypotheses → take action → gather feedback → revise the model."],
+["行動層","每天選一個法則，將其轉化為可執行、可觀察、可修正的小行動。","Each day, pick one law and turn it into a small action that is doable, observable and correctable."],
+["最高金句01","不要把希望當成因果，要把希望轉化為行動。","Don't treat hope as cause and effect; turn hope into action."],
+["最高金句02","不要把巧合當成宇宙保證，要學會辨識機率與證據。","Don't treat coincidence as a cosmic guarantee; learn to recognize probability and evidence."],
+["最高金句03","不要被神秘符號限制，要用符號幫助自己思考。","Don't be limited by mystical symbols; use symbols to help you think."],
+["最高金句04","真正的成長，不是相信自己掌握宇宙，而是持續提高理解現實的能力。","Real growth isn't believing you've mastered the universe, but continually improving your ability to understand reality."],
+["最高金句05","真正的自由，不是世界永遠符合期待，而是現實改變時，你仍有能力更新自己的模型。","Real freedom isn't the world always meeting your expectations, but still being able to update your model when reality changes."],
+["終極閉環","認知→選擇→行動→結果→誤差→更新→新能力→新智慧。","Cognition → choice → action → result → error → update → new ability → new wisdom."]]],
+["法則×卦象｜說明與讀卦","Laws × Hexagrams · Notes & How to Read",[
+["核心定位","以第一張圖的64法則為主軸，對應《周易》64卦的圖案、卦義與人生策略。","Using the 64 laws of Image 1 as the main axis, matched to the symbols, meanings and life strategies of the 64 hexagrams of the Zhou Yi."],
+["重要說明","以下是現代概念與古代卦義的創意配對，不是《易經》原典所訂的64法則對照。","These are creative pairings of modern concepts and ancient hexagram meanings, not a mapping defined by the I Ching itself."],
+["本版修正","採用64個不同的易經卦，避免前版重複與遺漏。","Uses 64 different hexagrams to avoid the repetitions and omissions of the earlier version."],
+["陽爻","━━━｜完整的一條線，象徵陽。","━━━ | A solid line, symbolizing yang."],
+["陰爻","━　━｜中間斷開的線，象徵陰。","━ ━ | A line broken in the middle, symbolizing yin."],
+["組成","每一卦由六條陰陽爻組成，三條構成下卦，三條構成上卦。","Each hexagram has six yin or yang lines: three form the lower trigram and three the upper."],
+["讀卦順序","由下往上讀，最下面是初爻，最上面是上爻。","Read from bottom to top: the bottom is the first line and the top is the top line."],
+["八卦圖案","乾☰天、坤☷地、震☳雷、巽☴風、坎☵水、離☲火、艮☶山、兌☱澤。","Qian ☰ Heaven, Kun ☷ Earth, Zhen ☳ Thunder, Xun ☴ Wind, Kan ☵ Water, Li ☲ Fire, Gen ☶ Mountain, Dui ☱ Lake."],
+["符號","以下使用Unicode六十四卦符號，並標示上下卦，方便直接複製到LINE。","Unicode hexagram symbols are used, with the upper and lower trigrams marked, so they're easy to copy into LINE."]]],
+["法則×卦象｜LifeOS最高整合","Laws × Hexagrams · LifeOS Integration",[
+["本體層","64卦是描述變化的古代符號系統，64法則則是現代概念的集合。","The 64 hexagrams are an ancient symbol system describing change; the 64 laws are a collection of modern concepts."],
+["結構層","卦象可以協助辨識情境、關係、阻礙、資源與時機。","Hexagrams can help identify situations, relationships, obstacles, resources and timing."],
+["機制層","觀察→理解→假設→行動→回饋→修正。","Observe → understand → hypothesize → act → get feedback → revise."],
+["行動層","每天選一卦，將卦義轉化為一個可以驗證的小行動。","Each day, pick one hexagram and turn its meaning into a small, verifiable action."],
+["最高智慧","不要把卦象當成不可改變的命運，而要把它當成幫助自己理解處境與調整行動的思考工具。","Don't treat hexagrams as unchangeable fate; use them as thinking tools to understand your situation and adjust your actions."],
+["終極閉環","變化→辨識→選擇→行動→結果→誤差修正→新智慧。","Change → recognition → choice → action → result → error correction → new wisdom."]]]
+];
+
+// ===== APP =====
+const TRI={乾:["☰","天","Qian","Heaven"],坤:["☷","地","Kun","Earth"],震:["☳","雷","Zhen","Thunder"],巽:["☴","風","Xun","Wind"],坎:["☵","水","Kan","Water"],離:["☲","火","Li","Fire"],艮:["☶","山","Gen","Mountain"],兌:["☱","澤","Dui","Lake"]};
+const hx=n=>String.fromCodePoint(0x4DC0+n-1);
+const pad=n=>String(n).padStart(2,"0");
+const L3=[["本質","Essence"],["智慧","Wisdom"],["行動","Action"]];
+const three=(d,o)=>L3.map((l,k)=>({lab:l[0],labEn:l[1],zh:d[o+k*2],en:d[o+k*2+1]}));
+const rowsOf=(labs,d,o)=>labs.map((l,k)=>({lab:l[0],labEn:l[1],zh:d[o+k*2],en:d[o+k*2+1]}));
+const TABS=[
+ {zh:"宇宙64法則",en:"Universal Laws",info:"宇宙64法則 × 三種金句（本質｜智慧｜行動）。現代靈性概念集合，非科學定律。",
+  cards:U.map((d,i)=>({num:pad(i+1),title:d[0],titleEn:d[1],rows:three(d,2)}))},
+ {zh:"易經64卦",en:"I Ching",info:"易經64卦 × 三種金句。金句為現代生活應用，不是古籍原文。",
+  cards:I.map((d,i)=>({num:pad(i+1),glyph:hx(i+1),title:d[0]+"｜"+d[1],titleEn:d[2],rows:three(d,3)}))},
+ {zh:"社會生存64法則",en:"Social Survival",info:"社會生存64法則 × 三種金句。思考工具，不宜視為絕對定律。",
+  cards:S.map((d,i)=>({num:pad(i+1),title:d[0],titleEn:d[1],rows:three(d,2)}))},
+ {zh:"64圖案解析",en:"64 Symbols",info:"第一張圖：64法則 × 圖案 × 象徵 × 智慧 × 行動。",
+  cards:P.map((d,i)=>({num:pad(i+1),title:U[i][0],titleEn:U[i][1],rows:rowsOf([["圖案","Pattern"],["象徵","Symbol"],["智慧","Wisdom"],["行動","Action"]],d,0)}))},
+ {zh:"法則×卦象",en:"Laws × Hexagrams",info:"宇宙64法則 × 易經64卦：現代概念與古代卦義的創意配對（由下往上讀卦）。",
+  cards:C.map((d,i)=>{const h=d[0],g=hx(h),up=TRI[d[1][0]],lo=TRI[d[1][1]],ic=I[h-1];
+   const rows=[{lab:"圖案",labEn:"Symbol",zh:`${g}｜上${d[1][0]}${up[0]}${up[1]}，下${d[1][1]}${lo[0]}${lo[1]}。`,en:`Upper ${up[2]} ${up[0]} ${up[3]}, lower ${lo[2]} ${lo[0]} ${lo[3]}.`}]
+    .concat(rowsOf([["卦象","Image"],["原典意義","Meaning"],["人生智慧","Wisdom"],["最小行動","Action"]],d,2));
+   return {num:pad(i+1),glyph:g,group:i%8===0?CG[i/8]:null,title:`${U[i][0]} × ${ic[0]}${h}｜${ic[1]}`,titleEn:`${U[i][1]} × ${ic[2]} (No. ${h})`,rows,note:d[10]?[d[10],d[11]]:null};})},
+ {zh:"總覽說明",en:"Overview",info:"架構說明、八卦基礎、八大LifeOS能力與終極整合。",
+  cards:OV.map(d=>({title:d[0],titleEn:d[1],rows:d[2].map(r=>({lab:r[0],zh:r[1],en:r[2]}))}))}
+];
+TABS.forEach(t=>t.cards.forEach(c=>{c.blob=[c.title,c.titleEn,...c.rows.flatMap(r=>[r.lab,r.labEn||"",r.zh,r.en]),...(c.note||[])].join(" ").toLowerCase();}));
+
+const $=s=>document.querySelector(s);
+const store={get(k,d){try{const v=localStorage.getItem("l64_"+k);return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem("l64_"+k,v)}catch(e){}}};
+let cur=+store.get("tab",0)||0, q="";
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const hl=s=>{s=esc(s);if(!q)return s;const t=esc(q).replace(/[.*+?^${}()|[\]\\]/g,"\\$&");return s.replace(new RegExp(t,"gi"),m=>`<mark>${m}</mark>`);};
+const match=c=>!q||c.blob.includes(q.toLowerCase());
+
+function renderTabs(){
+ $("#tabs").innerHTML=TABS.map((t,i)=>{const n=q?t.cards.filter(match).length:t.cards.length;
+  return `<button class="tab${i===cur?" on":""}" data-t="${i}">${t.zh}<span class="c">${n}</span></button>`}).join("");
+}
+function card(c,ti,ci){
+ return `<article class="card" id="c${ti}_${ci}" data-t="${ti}" data-c="${ci}"><header>${c.num?`<span class="num">${c.num}</span>`:""}${c.glyph?`<span class="glyph">${c.glyph}</span>`:""}<div class="hd"><h3 class="keep">${hl(c.title)}</h3><p class="en keep">${hl(c.titleEn)}</p></div><button class="say-all" title="朗讀整張卡的英文 Read all">🔊</button></header>`+
+ c.rows.map((r,ri)=>`<div class="row" data-r="${ri}">${r.lab||r.labEn?`<span class="lab">${hl(r.lab)}${r.labEn?`<em>${r.labEn}</em>`:""}</span>`:`<span></span>`}<div class="txt"><p class="zh">${hl(r.zh)}</p><p class="en"><button class="say" title="朗讀英文">🔈</button>${hl(r.en)}</p></div></div>`).join("")+
+ (c.note?`<div class="note"><p class="zh">${hl(c.note[0])}</p><p class="en">${hl(c.note[1])}</p></div>`:"")+`</article>`;
+}
+function render(){
+ renderTabs();const t=TABS[cur];let h="",n=0;
+ t.cards.forEach((c,i)=>{if(c.group&&!q)h+=`<h2 class="grp">${c.group[0]}<span class="en" style="font-size:13px;margin-left:8px;color:var(--sub)">${c.group[1]}</span></h2>`;if(match(c)){h+=card(c,cur,i);n++;}});
+ $("#grid").innerHTML=n?h:`<div class="empty">找不到「${esc(q)}」 · No results</div>`;
+ $("#info").textContent=(q?`搜尋「${q}」：本頁 ${n} 筆（分頁數字為各頁符合數）｜`:"")+t.info+` ｜ ${t.en}`;
+}
+
+// ===== Speech =====
+const synth=window.speechSynthesis;let voices=[],voice=null;
+const clean=s=>String(s).replace(/[─-╿☀-⛿䷀-䷿　]/g," ").replace(/→/g,", then ").replace(/[|｜]/g,", ").replace(/①|②|③/g,"").replace(/\s+/g," ").trim();
+function loadVoices(){
+ if(!synth)return;voices=synth.getVoices().filter(v=>/^en/i.test(v.lang));
+ const saved=store.get("voice","");
+ voices.sort((a,b)=>(/natural|online/i.test(b.name)-/natural|online/i.test(a.name))||((b.lang==="en-US")-(a.lang==="en-US")));
+ $("#voice").innerHTML=voices.length?voices.map((v,i)=>`<option value="${i}">${esc(v.name.replace(/Microsoft |Online |\(Natural\)/g,"").trim())} · ${v.lang}</option>`).join(""):`<option>（無英文語音）</option>`;
+ let idx=voices.findIndex(v=>v.name===saved);if(idx<0)idx=0;voice=voices[idx]||null;$("#voice").value=idx;
+}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+function clearHl(){document.querySelectorAll(".speaking").forEach(e=>e.classList.remove("speaking"));}
+function speakQueue(items){
+ if(!synth){alert("此瀏覽器不支援語音朗讀，請用 Edge 或 Chrome。");return;}
+ synth.cancel();clearHl();
+ items.forEach(([text,el])=>{const u=new SpeechSynthesisUtterance(clean(text));u.lang=voice?voice.lang:"en-US";if(voice)u.voice=voice;u.rate=+$("#rate").value;
+  u.onstart=()=>{clearHl();el&&el.classList.add("speaking")};u.onend=()=>el&&el.classList.remove("speaking");synth.speak(u);});
+}
+function cardOf(el){const a=el.closest(".card");return [a,TABS[+a.dataset.t].cards[+a.dataset.c]];}
+
+// ===== Events =====
+document.addEventListener("click",e=>{
+ const tb=e.target.closest(".tab");if(tb){cur=+tb.dataset.t;store.set("tab",cur);render();window.scrollTo(0,0);return;}
+ const s=e.target.closest(".say");if(s){const row=s.closest(".row"),[a,c]=cardOf(s);const r=row?c.rows[+row.dataset.r]:{en:c.note[1]};speakQueue([[r.en,row||s.parentNode]]);return;}
+ const sa=e.target.closest(".say-all");if(sa){const [a,c]=cardOf(sa);const rows=a.querySelectorAll(".row");
+  speakQueue([[c.titleEn,a.querySelector("header")]].concat(c.rows.map((r,i)=>[(r.labEn?r.labEn+". ":"")+r.en,rows[i]])));}
+});
+let tmr;$("#q").addEventListener("input",e=>{clearTimeout(tmr);tmr=setTimeout(()=>{q=e.target.value.trim();
+ if(q&&!TABS[cur].cards.some(match)){const k=TABS.findIndex(t=>t.cards.some(match));if(k>=0)cur=k;}render();},150);});
+$("#mode").addEventListener("change",e=>{document.body.className=e.target.value==="both"?"":"m-"+e.target.value;store.set("mode",e.target.value);});
+$("#rate").addEventListener("input",e=>{$("#rv").textContent=e.target.value;store.set("rate",e.target.value);});
+$("#voice").addEventListener("change",e=>{voice=voices[+e.target.value]||null;if(voice)store.set("voice",voice.name);});
+$("#stop").addEventListener("click",()=>{synth&&synth.cancel();clearHl();});
+$("#rand").addEventListener("click",()=>{const els=[...document.querySelectorAll("#grid .card")];if(!els.length)return;
+ const el=els[Math.floor(Math.random()*els.length)];el.scrollIntoView({behavior:"smooth",block:"center"});el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1600);});
+document.addEventListener("keydown",e=>{if(e.key==="/"&&document.activeElement!==$("#q")){e.preventDefault();$("#q").focus();}if(e.key==="Escape"){synth&&synth.cancel();clearHl();}});
+
+const m=store.get("mode","both");$("#mode").value=m;if(m!=="both")document.body.className="m-"+m;
+const rt=store.get("rate","0.9");$("#rate").value=rt;$("#rv").textContent=rt;
+if(cur>=TABS.length)cur=0;render();
+</script>
+</body>
+</html>

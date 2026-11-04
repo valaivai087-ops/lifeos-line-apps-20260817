@@ -822,5 +822,88 @@ function restart(){
 initFilters();
 renderGrid('全部');
 </script>
+
+<!-- LifeOS 臉書圖文：每頁一篇，八段手法 -->
+<style>
+#lfbOpen{position:fixed;right:16px;bottom:16px;z-index:2147483000;font:600 16px/1 system-ui,"Microsoft JhengHei",sans-serif;min-height:48px;padding:0 20px;border:0;border-radius:24px;background:#1f5f4c;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
+#lfb{position:fixed;inset:0;z-index:2147483001;display:none;background:rgba(10,20,16,.55)}
+#lfb.on{display:block}
+#lfb .lfb-box{position:absolute;inset:16px;max-width:980px;margin:auto;background:#fffdf8;color:#1d2b26;border-radius:14px;display:flex;flex-direction:column;overflow:hidden;font:17px/1.85 system-ui,"Microsoft JhengHei",sans-serif;text-align:left}
+#lfb .lfb-head{display:flex;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid #e3e6df;flex-wrap:wrap}
+#lfb .lfb-head b{font-size:17px;margin-right:auto}
+#lfb input{flex:1 1 220px;min-height:44px;padding:8px 12px;border:1px solid #cfd8d0;border-radius:8px;font:inherit;font-size:15px;background:#fff;color:#1d2b26}
+#lfb button{font:inherit;font-size:15px;min-height:44px;padding:6px 14px;border-radius:8px;border:1px solid #1f5f4c;background:#fff;color:#1f5f4c;cursor:pointer;line-height:1.3}
+#lfb button.pri{background:#1f5f4c;color:#fff}
+#lfb .lfb-main{display:grid;grid-template-columns:240px 1fr;min-height:0;flex:1}
+#lfb .lfb-list{overflow:auto;border-right:1px solid #e3e6df;padding:8px}
+#lfb .lfb-list button{display:block;width:100%;text-align:left;margin-bottom:6px;border-color:#e3e6df;color:#1d2b26;font-size:14px}
+#lfb .lfb-list button.cur{border-color:#1f5f4c;background:#e8f1ec;font-weight:600}
+#lfb .lfb-list small{display:block;color:#6a7a72;font-size:12px}
+#lfb .lfb-post{overflow:auto;padding:20px 26px 30px}
+#lfb .lfb-eye{color:#1f5f4c;font-size:13px;font-weight:700;letter-spacing:1px}
+#lfb h2{font-size:25px;line-height:1.45;margin:4px 0 2px;color:#17352b}
+#lfb .lfb-meta{color:#6a7a72;font-size:14px;margin-bottom:14px}
+#lfb .lfb-part{margin:0 0 16px}
+#lfb .lfb-part p{margin:0}
+#lfb .lfb-tag{display:inline-block;font-size:12px;color:#1f5f4c;border:1px solid #1f5f4c;border-radius:4px;padding:0 7px;line-height:1.6;margin-bottom:3px}
+#lfb .notag .lfb-tag{display:none}
+#lfb .lfb-tags{color:#1f5f4c;margin-bottom:14px}
+#lfb .lfb-act{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#lfb .lfb-st{color:#1f5f4c;font-size:14px}
+#lfb .lfb-qs{display:grid;gap:10px;margin:4px 0 16px}
+#lfb .lfb-q{background:#f3f7f1;border-left:4px solid #1f5f4c;border-radius:6px;padding:10px 14px}
+#lfb .lfb-q.act{background:#fbf5e8;border-left-color:#a86a12}
+#lfb .lfb-q small{display:block;font-size:12px;font-weight:700;color:#1f5f4c;letter-spacing:1px}
+#lfb .lfb-q.act small{color:#a86a12}
+#lfb .lfb-q b{display:block;font-size:17px;line-height:1.7}
+#lfb .lfb-q i{display:block;font-style:normal;color:#4b5a53;font-size:15px;line-height:1.6;font-family:Georgia,"Times New Roman",serif}
+@media(max-width:720px){#lfb .lfb-box{inset:0;border-radius:0}#lfb .lfb-main{grid-template-columns:1fr;grid-template-rows:auto 1fr}#lfb .lfb-list{display:flex;gap:6px;overflow-x:auto;border-right:0;border-bottom:1px solid #e3e6df}#lfb .lfb-list button{flex:0 0 auto;width:auto;margin:0}#lfb .lfb-post{padding:16px}}
+</style>
+<button id="lfbOpen" type="button" aria-haspopup="dialog">臉書圖文</button>
+<div id="lfb" role="dialog" aria-modal="true" aria-label="每頁臉書圖文">
+<div class="lfb-box">
+<div class="lfb-head"><b>每頁臉書圖文｜信念 × 身份</b><input type="search" id="lfbQ" placeholder="搜尋圖文…" aria-label="搜尋圖文"><button type="button" id="lfbClose">關閉</button></div>
+<div class="lfb-main"><nav class="lfb-list" id="lfbList" aria-label="頁面"></nav><article class="lfb-post" id="lfbPost"></article></div>
+</div></div>
+<script>
+(function(){
+var TAG=['情境衝突','反問句','哲學命題','對比句','排比句','認知翻轉','層層遞進','詩性收束'];
+var P=[{"page": "信念是預測模型", "t": "你不是缺乏能力，是你的信念讓你看不見自己的能力", "tags": "#信念是預測 #確認偏誤 #可更新假說 #LifeOS", "s": ["主管在會議上稱讚了他的提案，說這是今年最有創意的想法。全場都在點頭，他卻只記得主管最後補了一句：「細節可以再補強。」回到座位，他整個下午都在想那句話，越想越確定：「我就知道，我的東西永遠不夠好。」十句稱讚，一句提醒，他的大腦只留下了那一句。不是他聽錯了，而是他的大腦，早就決定了要聽什麼。", "如果我們看見的就是真相，為什麼別人眼中的優點，我們自己卻怎麼都看不見？如果我們的判斷都是客觀的，為什麼我們總是找得到證據，證明自己早就相信的事？我們的眼睛在看世界，可是，是誰在決定，我們要看見什麼？", "信念不是想法，而是大腦長期運行的預測框架。它決定你看什麼、忽略什麼、如何解讀每一件事。大腦會優先放大符合信念的訊號，過濾掉不符合的證據，於是信念不斷自我強化。你不是缺乏能力，而是信念系統，讓你看不見自己的能力。", "高熵的信念說：「信念就是真理，我是對的。」低熵的信念說：「信念是一個可以更新的假說，今天的理解，可能是明天的誤差。」一個只找支持自己的證據，一個刻意看反例；一個把情緒當真相，一個把情緒和事實分開；一個把錯誤當成人格失敗，一個把錯誤當成可以修正的資料。", "學習，不是為了證明自己，而是為了升級系統；被指正，不是被否定，而是被校準；遇到不同意見，不是威脅，而是一次看見盲點的機會；發現自己錯了，不是丟臉，而是又往真實靠近了一步。真正的抗熵，不是證明自己是對的，而是持續修正模型。", "我們以為要先相信自己，才能看見自己的能力；其實很多時候，是先刻意去看見證據，信念才慢慢鬆動。最深的翻轉是：你的大腦不是在騙你，它只是太忠誠了，忠誠於一個早就過期的預測。你要做的，不是跟它吵架，而是溫柔地，給它一些新的資料。", "從今天開始，每天花五分鐘，做一次信念審計：今天我用什麼信念過濾了現實？它有沒有讓我錯過什麼？再主動找一個不支持這個信念的反例。第一天，你可能找不到；第七天，你找到了一個；一個月後，你的筆記本裡有三十個反例；那三十個反例，就是你大腦開始相信新故事的三十塊磚。", "地圖畫錯了，再怎麼努力走，也走不到想去的地方。好在地圖是可以重畫的。願你不再把那張舊地圖當成整個世界；願你每天都替它補上一點點新的路；願你終有一天，在那張越來越準確的地圖上，看見一個比你想像中，更有能力的自己。"], "q": [["你不是缺乏能力，是你的信念讓你看不見自己的能力。", "You don't lack ability; your beliefs keep you from seeing it."], ["每天找一個不支持舊信念的反例。", "Find one example each day that doesn't fit your old belief."]]}, {"page": "信念抗熵17條", "t": "過期的信念，比錯誤本身更消耗你", "tags": "#信念抗熵 #定期審計 #停止內耗 #LifeOS", "s": ["二十歲時，他相信「想要成功就必須犧牲一切」。這個信念幫他撐過了最辛苦的創業期。可是到了四十五歲，他已經不缺錢了，卻還是每天工作到半夜，錯過孩子的成長，身體也亮起紅燈。太太問他為什麼不能慢一點，他說：「不行，一鬆懈就會失敗。」那個曾經救過他的信念，如今正在一點一點地耗盡他。", "如果一個信念曾經有效，為什麼它現在讓我們這麼累？如果我們從來不檢查自己的信念，我們怎麼知道，它們是不是早就過期了？我們會定期換掉冰箱裡過期的食物，那心裡那些過期的想法呢？", "信念不是一次設定就永遠有效的。世界在變，你的經驗在增加，過去有效的信念，可能已經過期了。大腦有保守的傾向，它偏好熟悉，抗拒更新；反覆使用的路徑會被強化，於是舊信念會自動重複啟動。所以信念需要被定期維護，就像任何一個重要的系統，都需要保養一樣。", "不維護信念的人說：「我的想法是我的，不需要被挑戰。」維護信念的人說：「我的信念是假說，需要定期審計，才能保持清醒。」一個想很多卻不行動，一個用行動的證據更新大腦；一個要全對才敢開始，一個在行動中快速調整；一個讓能量耗在維護舊信念，一個把能量用在創造新可能。", "每天問一次：這個信念還有效嗎？每天找一個反向的案例；情緒出現時，先把情緒和信念分開；每次重要事件後，走一次觀察、修正、更新；每個月，淘汰一個已經過期的舊信念；遠離那些只會放大焦慮與對立的資訊環境；把自我攻擊，換成自我修正。", "我們以為信念是自己的一部分，所以改變信念，就像否定自己；其實信念更像工具，好用的時候拿來用，不合用了就換一把。最深的翻轉是：過期的信念最大的代價，不是讓你犯錯，而是讓你在一個早就結束的戰場上，繼續消耗自己的一生。", "這個月，找出一個曾經幫助過你、現在卻讓你很累的信念，寫下它：它在什麼時候幫助過我？它現在讓我付出什麼代價？我想用什麼新的信念取代它？第一週，你只是看見它；第二週，你試著在某一個情境裡，用新的信念做一次選擇；月底，你正式向它說謝謝，也說再見。每個月一個，一年後，你會輕盈很多。", "冬天穿的厚外套，到了夏天就該脫下來，不是因為它不好，而是季節變了。願你謝謝那些曾經替你擋過寒風的信念；願你有勇氣，在季節改變的時候，把它們輕輕摺好收起來；願你穿上剛好適合現在的衣服，自在地，走進屬於你的陽光裡。"], "q": [["過期的信念，比錯誤本身更消耗你。", "An expired belief drains you more than the mistake itself."], ["每個月，向一個舊信念說謝謝，也說再見。", "Each month, thank one old belief, and say goodbye."]]}, {"page": "身份是自我生成器", "t": "很多失敗不是能力問題，而是你還不相信自己是那樣的人", "tags": "#身份 #自我生成 #身份語法 #LifeOS", "s": ["她減肥減了十年，每一次都在三週後放棄。她試過各種方法，也很清楚該怎麼吃、怎麼動。可是每次朋友約她去爬山，她心裡第一個念頭都是：「我不是那種會運動的人。」直到有一天，她不再說「我要減肥」，而是開始對自己說：「我是一個會照顧身體的人。」奇怪的是，同樣的方法，這一次她走了一年。", "如果我們缺的只是方法，為什麼知道方法的人，還是做不到？如果意志力夠強就能改變，為什麼最用力的改變，往往最快放棄？我們一直在努力改變自己做的事，可是，有沒有想過，要先改變的，是我們認為自己是誰？", "身份，是大腦對「我是誰」建立的長期預測模型。大腦有很強的「維持自我一致」的傾向：如果底層身份是「我不值得」，系統會自動過濾掉外界的肯定；如果身份是「我不是會堅持的人」，系統會自動找到放棄的理由。身份比意志力更強大，它決定了你能看見哪些可能。", "固定的身份說：「我就是這樣的人。」可更新的身份說：「我正在建立新版本的自己。」一個靠意志力硬撐改變，一個讓行動自然地從身份裡長出來；一個說「我要戒菸」，一個說「我不抽菸」；一個說「我要早起」，一個說「我是重視早晨的人」；一個在跟自己拔河，一個在成為自己。", "每天說一句新的身份語法：「我是一個……的人」；每天做一件符合新身份的小行動，讓行動替身份作證；每天做一件不符合舊身份的小事，打破舊的一致性；追蹤舊身份的來源，問問它是從誰那裡學來的；停止用失敗攻擊自己，因為自我攻擊，只會讓舊身份更牢固。", "我們以為要先變成那樣的人，才能做那樣的事；其實是先做那樣的事，大腦才會開始相信你是那樣的人。最深的翻轉是：大腦相信的是重複的證據，不是你的決心。你每完成一次小小的行動，就是在替新的自己投下一票；票數夠多，新的身份就當選了。", "這週，寫下一句你想成為的身份，例如「我是一個說到做到的人」。然後每天找一件小到不可能失敗的事，去兌現它：說好十點睡，就十點睡；說好回訊息，就回訊息。第一週，你累積了七票；第一個月，三十票；三個月後，你不再需要提醒自己，因為那已經是你了。", "雕塑家說，雕像本來就在石頭裡，他只是把多餘的部分鑿掉。你想成為的那個人，也許早就在你裡面，只是被太多舊的標籤蓋住了。願你每天輕輕地鑿去一點舊的自己；願你一次一次地，替新的自己投下一票；願你有一天站在鏡子前，認出那個你等了很久的人。"], "q": [["大腦相信的是重複的證據，不是你的決心。", "Your brain believes repeated evidence, not your resolutions."], ["每天完成一件小事，替新的自己投下一票。", "Complete one small thing each day, and cast a vote for your new self."]]}, {"page": "能量層×關係層×學習層", "t": "你覺得自己很廢，可能只是你的身份一直在偷你的能量", "tags": "#身份三層 #能量 #關係界線 #學習 #LifeOS", "s": ["他每天睡八個小時，醒來還是覺得累。上班時他不敢拒絕任何人的請求，下班後還要回覆一堆訊息；他想學新的技能，可是每次一遇到困難，就在心裡說：「我本來就不聰明。」週末他什麼都不想做，只想躺著。他以為自己是體力不好、個性不好、天分不好，卻從來沒想過，這三件事，可能都來自同一個地方。", "如果累只是身體的問題，為什麼休息了那麼久，還是沒有力氣？如果討好別人只是因為善良，為什麼越討好，心裡越委屈？如果學不會只是因為笨，為什麼有些時候，我們又學得很快？這些看起來不相干的困擾，背後會不會，有一條看不見的線連著？", "身份在三個關鍵層面影響你的人生：在能量層，低價值的身份讓系統長期內耗，力氣被消耗殆盡；在關係層，身份的缺口會驅動討好、依附或控制；在學習層，固定型的身份讓大腦認為「我學不會」，阻礙了成長的可能。改變身份，就是同時替三個地方，關掉漏水的水龍頭。", "在能量層，舊身份說「我很廢」，新身份說「系統正在低能量運行，需要修復」；在關係層，舊身份說「我一定要被喜歡」，新身份說「我可以有界線」；在學習層，舊身份說「我很笨」，新身份說「我的大腦可以升級，我現在正在學習中」。換一句話，就是換一種活法。", "追蹤你的能量流向，看看它都花在哪裡；每週練習一次真實的拒絕，替關係立一條界線；每天獨處十分鐘，建立一個不靠別人也能穩定的內在；每天累積一個學習的證據，對抗那個「我學不會」的聲音；不再用差距羞辱自己，而是用差距，替自己導航。", "我們以為累了就該休息，煩了就該忍耐，學不會就該放棄；其實很多累、很多委屈、很多學不會，都是身份在背後悄悄地扣分。最深的翻轉是：當你不再需要靠討好證明自己的價值，不再需要靠完美證明自己不笨，你會突然發現，原來自己有那麼多力氣。", "這週，選一層開始：如果是能量層，就記錄三天，看看什麼事最耗你；如果是關係層，就找一個小小的機會，說一次「不」；如果是學習層，就每天寫下一件今天學會的小事。第一週，你只是看見；第一個月，你開始堵住一個漏洞；三個月後，你會發現自己不再那麼容易累，也不再那麼容易覺得自己不夠好。", "水桶裝不滿水，不一定是水不夠，可能是桶底有洞。補好那個洞，一點點的水，就能慢慢裝滿。願你不再責怪自己為什麼總是空空的；願你溫柔地找到那些漏水的地方；願你在補好之後發現，原來你一直都擁有，足夠好好生活的力氣。"], "q": [["不再需要靠討好證明價值，你會發現自己有好多力氣。", "When you no longer need to please to prove your worth, you'll find so much strength."], ["這週練習一次真實的拒絕。", "Practice one honest \"no\" this week."]]}, {"page": "高熵身份五大特徵", "t": "被稱讚就有價值，被否定就懷疑人生：你的核心，交給了誰？", "tags": "#高熵身份 #間歇燃燒 #內在穩定 #LifeOS", "s": ["她的情緒像雲霄飛車。主管說一句「做得好」，她能開心一整週，工作充滿幹勁；客戶一句不滿，她就整晚失眠，懷疑自己是不是根本不適合這份工作。她一下子燃燒得很旺，熬夜做完三個專案；一下子又完全熄滅，好幾天什麼都不想碰。她很累，也很困惑：為什麼我的力氣，好像從來不是我自己的？", "如果我們的價值，要靠別人的評價才能確認，那別人不說話的時候，我們是誰？如果我們只能靠外面的刺激才能動起來，那刺激消失之後，我們還能走多遠？我們每天都很努力，可是，那些努力是朝著同一個方向，還是一直在原地轉圈？", "高熵的身份，沒有真正的目標函數，只有情緒反應。被稱讚就有價值，被否定就懷疑人生；系統沒有穩定的核心，能量大量耗散。它有五個常見的特徵：間歇燃燒、防禦內耗、關係靠討好、學習為了證明、人生不斷重播。看起來很忙，其實一直在原地繞圈。", "高熵的身份說：「我只能靠外部刺激驅動自己。」低熵的身份說：「我建立內在穩定的方向，持續地前進。」一個時而狂熱時而熄滅，一個像一盞穩定的燈；一個花力氣防禦每一句批評，一個把批評當成資料；一個學習是為了證明自己，一個學習是為了真正變強；一個人生在重播，一個人生在演化。", "不再用一時的熱血燃燒自己，而是用穩定的節奏前進；不再把力氣花在防禦，而是花在修正；不再靠討好維持關係，而是靠真誠交換；不再為了證明而學習，而是為了好奇而學習；不再一遍遍重播同樣的劇本，而是一點點地，寫出新的情節。", "我們以為要讓自己更有動力，就要找更強的刺激；其實真正走得遠的人，靠的不是刺激，而是方向。最深的翻轉是：當你的核心不再交給別人保管，別人的稱讚只是錦上添花，別人的批評只是一份回饋，它們都不再能決定，你今天是誰。", "這週，寫下一句只屬於你的方向：「我想成為一個怎樣的人，我想創造什麼？」每天早上讀一次，每天晚上問自己：今天有沒有朝這個方向走一步？不管今天被稱讚還是被批評，都回到這一句。第一週，你還是會被情緒帶著走；第一個月，你開始比較快地回來；半年後，你會發現，自己的情緒雖然還會起伏，可是方向，已經穩了。", "船如果沒有錨，再小的浪都能把它推走；放下了錨，風再大，它也能安穩地停在自己的位置。願你替自己的心，找到一個錨；願外面的稱讚與批評，都只是經過你的風；願你不管在哪一片海上，都知道自己是誰，要往哪裡去。"], "q": [["別讓你的核心，交給別人的稱讚和批評保管。", "Don't hand your core to other people's praise or criticism."], ["寫下一句只屬於你的方向，每天早晚讀一次。", "Write one direction that's truly yours, and read it morning and night."]]}, {"page": "身份抗熵七步驟", "t": "真正高階的人生，不是拚命輸出，而是讓自己保持可以更新", "tags": "#身份抗熵 #七步驟 #環境設計 #LifeOS", "s": ["他很努力，每天健身、讀書、經營副業，看起來是個很自律的人。可是每隔幾個月，他就會突然崩潰一次：情緒失控，什麼都不想做，然後又在罪惡感裡重新開始。朋友說他太拚了，他說：「我只是還不夠自律。」他沒有發現，他的問題不是不夠努力，而是在他的努力底下，那個「我是誰」，一直沒有被好好照顧。", "如果自律能解決一切，為什麼最自律的人，也會突然崩潰？如果只要不斷輸出就能成長，為什麼越用力的人，越容易燃燒殆盡？我們一直在追求更多的成果，可是，有沒有人在乎，那個產生成果的系統，是不是已經快要過熱了？", "身份一旦高熵化，就會出現情緒反覆、行動失真、關係混亂、長期內耗、人生重播。真正高階的人生，不是拚命輸出，而是持續地做身份抗熵。七個方法從七個方向著手：穩定的身份語法、不用情緒定義身份、用行動回寫身份、停止自我攻擊、保持可更新性、建立回饋系統，以及主動選擇高成長的環境。", "被動的人說：「讓環境和情緒來定義我。」主動的人說：「我來設計我的語法、我的行動、我的環境。」一個在情緒高的時候覺得自己很好，低的時候覺得自己很糟，一個知道情緒是天氣，身份是氣候；一個用自我攻擊逼自己前進，一個用自我修正陪自己前進。", "每天輸入一句穩定的身份語法；不在情緒最高或最低的時候，替自己下定論；每天做一個小行動，讓大腦看見新的證據；發現自己在攻擊自己時，立刻停下來，換成修正；保持「我還在學習」的心態；建立一個看得見進步的回饋系統；把自己放進一個會讓你變好的環境裡。", "我們以為改變靠的是意志力，所以意志力用完了，改變就停了；其實真正持久的改變，靠的是系統。最深的翻轉是：與其每天跟自己拔河，不如設計一個讓好的選擇變得容易的生活。環境替你做了一半的決定，你只要負責走剩下的那一半。", "這週，從七個步驟裡選兩個開始：一個內在的，一個外在的。內在的，例如每天早上說一句身份語法；外在的，例如把手機放到臥室外面，或加入一個能互相鼓勵的小團體。第一週，你只是嘗試；第一個月，你感覺到情緒的起伏變小了；三個月後，你發現那種「突然崩潰」的循環，已經很久沒有出現了。", "一座好的花園，不是靠園丁每天拚命拔草，而是靠一開始就把土壤養好、把陽光安排好。願你不再用蠻力對抗自己；願你為自己打造一座會長出好習慣的花園；願你在那裡，不必拚命，也能慢慢地、穩穩地，長成你想成為的樣子。"], "q": [["與其每天跟自己拔河，不如設計一個讓好選擇變容易的生活。", "Instead of fighting yourself daily, design a life where good choices come easily."], ["選兩個步驟開始：一個內在的，一個外在的。", "Start with two steps: one inside you, one in your environment."]]}, {"page": "身份目標函數系統", "t": "命運，是你的身份長期輸出的結果", "tags": "#目標函數 #差距導航 #命運可以更新 #LifeOS", "s": ["兩個同樣二十五歲的年輕人，起點差不多，能力也差不多。一個人每天被心情和別人的眼光推著走，今天想做這個，明天想做那個；另一個人很早就問過自己：「我想成為什麼樣的人？我想替世界創造什麼？」十年後，第一個人還在找方向，第二個人已經在自己的領域裡，走出了一條路。他們之間差的，不是運氣，而是一個方向。", "如果命運是天注定，為什麼那麼多人，在中途改寫了自己的人生？如果人生只要努力就好，為什麼同樣努力的人，最後走到了完全不同的地方？我們每天做的選擇，到底是被什麼決定的？是情緒，是習慣，還是一個我們很少認真想過的「我要成為誰」？", "身份，是一個目標函數運行的系統。高熵的身份，以情緒為驅動，沒有穩定的方向；低熵的身份，有一個長期的目標函數，人生會慢慢收斂，越走越清楚。從感受到的張力，到每天的選擇，到長期累積的智慧，每一層的差異，都在決定人生的品質。命運，就是你的身份長期輸出的結果。", "被動的目標函數說：「被情緒和外部事件推著走。」主動的目標函數說：「我要成為誰？我要創造什麼？我要讓我的系統如何演化？」一個在差距面前感到羞辱，一個把差距當成導航；一個只能解決一件事，一個培養能帶著走的能力；一個每年都在重來，一個每年都在累積。", "從「我跟別人差好多」的羞辱，轉向「我知道下一步要補什麼」的導航；從只為眼前的目標努力，轉向培養能夠遷移的能力；從被壓力擊倒，轉向在壓力裡校準方向；從被事件推著走，轉向每個月做一次系統的複盤：我離想成為的人，又近了多少？", "我們以為命運是一條已經畫好的路，我們只能走；其實命運更像一個系統的輸出，只要改變系統的目標，輸出就會慢慢改變。最深的翻轉是：你不必等到看見結果，才相信自己可以改變命運；你在每一次依照新的方向做出選擇的時候，就已經在改寫它了。", "這週，花半小時，替自己寫一份身份目標函數：我想成為一個怎樣的人？我想創造什麼價值？三年後，我希望自己的生活是什麼樣子？然後寫下，現在的我和那個我之間，最大的差距是什麼，下一步要補的是什麼。每個月回來看一次，調整一次。一年後，你會發現，方向清楚的人，每一步都不會白走。", "指南針不會替你走路，但它讓你每一步都朝著同一個方向。願你替自己的人生，找到那一根指南針；願你在每一次迷路的時候，都能低頭看看它，重新找回方向；願你走著走著，有一天回頭，發現自己已經走成了，那個曾經只敢在夢裡見到的人。"], "q": [["命運，是你的身分長期輸出的結果。", "Destiny is what your identity produces over time."], ["寫下：我想成為誰？我想創造什麼？下一步要補什麼？", "Write: who do I want to become, what do I want to create, what's my next gap?"]]}];
+var cur=0,hide=false;
+function g(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var QL=[['心靈雞湯｜Soul Soup',''],['激勵｜Motivation','act']];
+function qtext(p){return p.q?'\n\n'+p.q.map(function(x,k){return '【'+QL[k][0]+'】\n'+x[0]+'\n'+x[1]}).join('\n\n'):''}
+function qhtml(p){return p.q?'<div class="lfb-qs">'+p.q.map(function(x,k){return '<div class="lfb-q '+QL[k][1]+'"><small>'+QL[k][0]+'</small><b>'+esc(x[0])+'</b><i lang="en">'+esc(x[1])+'</i></div>'}).join('')+'</div>':''}
+function text(p){return '【'+p.t+'】\n\n'+p.s.join('\n\n')+qtext(p)+'\n\n'+p.tags}
+function list(){
+  var q=g('lfbQ').value.trim().toLowerCase();
+  g('lfbList').innerHTML=P.map(function(p,i){
+    if(q&&(p.page+' '+text(p)).toLowerCase().indexOf(q)<0)return '';
+    return '<button type="button" data-i="'+i+'" class="'+(i===cur?'cur':'')+'"><small>第 '+(i+1)+' 頁｜'+esc(p.page)+'</small>'+esc(p.t)+'</button>';
+  }).join('')||'<p style="padding:8px;font-size:14px">沒有符合的圖文</p>';
+}
+function show(i){
+  cur=i;var p=P[i];
+  g('lfbPost').innerHTML='<div class="lfb-eye">第 '+(i+1)+' / '+P.length+' 頁｜'+esc(p.page)+'</div><h2>'+esc(p.t)+'</h2><div class="lfb-meta">約 '+p.s.join('').replace(/\s/g,'').length+' 字 · 八種手法 · 文中情境為示例</div><div id="lfbBody" class="'+(hide?'notag':'')+'">'+p.s.map(function(x,k){return '<div class="lfb-part"><span class="lfb-tag">'+TAG[k]+'</span><p>'+esc(x)+'</p></div>'}).join('')+'</div>'+qhtml(p)+'<div class="lfb-tags">'+esc(p.tags)+'</div><div class="lfb-act"><button type="button" class="pri" id="lfbCopy">複製貼文</button><button type="button" id="lfbHide">'+(hide?'顯示':'隱藏')+'手法標籤</button><span class="lfb-st" id="lfbSt" role="status"></span></div>';
+  g('lfbPost').scrollTop=0;list();
+}
+function copy(){
+  var t=text(P[cur]),st=g('lfbSt');
+  function fall(){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}a.remove();st.textContent=ok?'已複製，可直接貼到臉書。':'無法自動複製，請手動選取內文。'}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){st.textContent='已複製，可直接貼到臉書。'},fall)}else fall();
+}
+g('lfbOpen').onclick=function(){g('lfb').classList.add('on');show(cur);g('lfbQ').focus()};
+g('lfbClose').onclick=function(){g('lfb').classList.remove('on');g('lfbOpen').focus()};
+g('lfb').addEventListener('click',function(e){
+  if(e.target===g('lfb'))g('lfbClose').onclick();
+  var b=e.target.closest&&e.target.closest('[data-i]');if(b)show(+b.getAttribute('data-i'));
+  if(e.target.id==='lfbCopy')copy();
+  if(e.target.id==='lfbHide'){hide=!hide;show(cur)}
+});
+g('lfbQ').addEventListener('input',list);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&g('lfb').classList.contains('on'))g('lfbClose').onclick()});
+})();
+</script>
 </body>
 </html>

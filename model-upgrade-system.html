@@ -393,7 +393,7 @@ const MOTHER_MODELS = [
 const SIX_STAGES = [
   {n:1,title:'第一階：求生存',desc:'解決眼前問題，避開危機',color:'var(--red)'},
   {n:2,title:'第二階：求成功',desc:'追求外在成就，建立地位',color:'#C07800'},
-  {n:3,title:'第三階：求自由',desc:'不被外在定義，掌握選擇',color:GOLD},
+  {n:3,title:'第三階：求自由',desc:'不被外在定義，掌握選擇',color:'var(--gold)'},
   {n:4,title:'第四階：求智慧',desc:'看見本質，建立高維模型',color:'var(--teal)'},
   {n:5,title:'第五階：求創造',desc:'創造新價值，設計新系統',color:'var(--navy)'},
   {n:6,title:'第六階：求演化',desc:'改變系統的演化方向',color:'var(--green)'},
@@ -673,6 +673,89 @@ function resetQuiz(){quizState={cur:0,score:0,done:false,answered:[]};renderQuiz
 // ═══════════════════════════════════════════════════════════
 initHome();
 renderBrowse();
+</script>
+
+<!-- LifeOS 臉書圖文：每頁一篇，八段手法 -->
+<style>
+#lfbOpen{position:fixed;right:16px;bottom:16px;z-index:2147483000;font:600 16px/1 system-ui,"Microsoft JhengHei",sans-serif;min-height:48px;padding:0 20px;border:0;border-radius:24px;background:#1f5f4c;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
+#lfb{position:fixed;inset:0;z-index:2147483001;display:none;background:rgba(10,20,16,.55)}
+#lfb.on{display:block}
+#lfb .lfb-box{position:absolute;inset:16px;max-width:980px;margin:auto;background:#fffdf8;color:#1d2b26;border-radius:14px;display:flex;flex-direction:column;overflow:hidden;font:17px/1.85 system-ui,"Microsoft JhengHei",sans-serif;text-align:left}
+#lfb .lfb-head{display:flex;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid #e3e6df;flex-wrap:wrap}
+#lfb .lfb-head b{font-size:17px;margin-right:auto}
+#lfb input{flex:1 1 220px;min-height:44px;padding:8px 12px;border:1px solid #cfd8d0;border-radius:8px;font:inherit;font-size:15px;background:#fff;color:#1d2b26}
+#lfb button{font:inherit;font-size:15px;min-height:44px;padding:6px 14px;border-radius:8px;border:1px solid #1f5f4c;background:#fff;color:#1f5f4c;cursor:pointer;line-height:1.3}
+#lfb button.pri{background:#1f5f4c;color:#fff}
+#lfb .lfb-main{display:grid;grid-template-columns:240px 1fr;min-height:0;flex:1}
+#lfb .lfb-list{overflow:auto;border-right:1px solid #e3e6df;padding:8px}
+#lfb .lfb-list button{display:block;width:100%;text-align:left;margin-bottom:6px;border-color:#e3e6df;color:#1d2b26;font-size:14px}
+#lfb .lfb-list button.cur{border-color:#1f5f4c;background:#e8f1ec;font-weight:600}
+#lfb .lfb-list small{display:block;color:#6a7a72;font-size:12px}
+#lfb .lfb-post{overflow:auto;padding:20px 26px 30px}
+#lfb .lfb-eye{color:#1f5f4c;font-size:13px;font-weight:700;letter-spacing:1px}
+#lfb h2{font-size:25px;line-height:1.45;margin:4px 0 2px;color:#17352b}
+#lfb .lfb-meta{color:#6a7a72;font-size:14px;margin-bottom:14px}
+#lfb .lfb-part{margin:0 0 16px}
+#lfb .lfb-part p{margin:0}
+#lfb .lfb-tag{display:inline-block;font-size:12px;color:#1f5f4c;border:1px solid #1f5f4c;border-radius:4px;padding:0 7px;line-height:1.6;margin-bottom:3px}
+#lfb .notag .lfb-tag{display:none}
+#lfb .lfb-tags{color:#1f5f4c;margin-bottom:14px}
+#lfb .lfb-act{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#lfb .lfb-st{color:#1f5f4c;font-size:14px}
+#lfb .lfb-qs{display:grid;gap:10px;margin:4px 0 16px}
+#lfb .lfb-q{background:#f3f7f1;border-left:4px solid #1f5f4c;border-radius:6px;padding:10px 14px}
+#lfb .lfb-q.act{background:#fbf5e8;border-left-color:#a86a12}
+#lfb .lfb-q small{display:block;font-size:12px;font-weight:700;color:#1f5f4c;letter-spacing:1px}
+#lfb .lfb-q.act small{color:#a86a12}
+#lfb .lfb-q b{display:block;font-size:17px;line-height:1.7}
+#lfb .lfb-q i{display:block;font-style:normal;color:#4b5a53;font-size:15px;line-height:1.6;font-family:Georgia,"Times New Roman",serif}
+@media(max-width:720px){#lfb .lfb-box{inset:0;border-radius:0}#lfb .lfb-main{grid-template-columns:1fr;grid-template-rows:auto 1fr}#lfb .lfb-list{display:flex;gap:6px;overflow-x:auto;border-right:0;border-bottom:1px solid #e3e6df}#lfb .lfb-list button{flex:0 0 auto;width:auto;margin:0}#lfb .lfb-post{padding:16px}}
+</style>
+<button id="lfbOpen" type="button" aria-haspopup="dialog">臉書圖文</button>
+<div id="lfb" role="dialog" aria-modal="true" aria-label="每頁臉書圖文">
+<div class="lfb-box">
+<div class="lfb-head"><b>每頁臉書圖文｜新舊模型升級系統</b><input type="search" id="lfbQ" placeholder="搜尋圖文…" aria-label="搜尋圖文"><button type="button" id="lfbClose">關閉</button></div>
+<div class="lfb-main"><nav class="lfb-list" id="lfbList" aria-label="頁面"></nav><article class="lfb-post" id="lfbPost"></article></div>
+</div></div>
+<script>
+(function(){
+var TAG=['情境衝突','反問句','哲學命題','對比句','排比句','認知翻轉','層層遞進','詩性收束'];
+var P=[{"page": "人生演化第一階：求生存", "t": "你不是不夠努力，你只是一直在用救火的方式過日子", "tags": "#求生存 #人生演化六階 #模型升級 #LifeOS", "s": ["每天早上一睜眼，他的腦袋就開始跑清單：房租、車貸、孩子的補習費、老闆昨天那封語氣不善的信。他是全公司最拚的人，加班最多，請假最少，可是存款永遠追不上帳單。一年又一年，他像一個消防員，哪裡起火就往哪裡衝。有一天，他在捷運上看著窗外，突然很想問自己：我這麼努力，到底是在前進，還是只是在不被淹死？", "如果努力就會成功，為什麼最努力的人，常常也是最疲憊的人？如果撐過這一關就好了，為什麼下一關總是馬上出現？我們是在經營人生，還是只是在處理一連串永遠處理不完的危機？", "人生的第一階，是求生存：解決眼前的問題，避開危機。這一階沒有錯，每個人都要先站穩。但生存模式有一個陷阱：它讓大腦只看見眼前三公尺的路。當你一直在救火，你就沒有時間問，火為什麼一直燒起來。努力的方向錯了，努力就會變成內耗。生存是起點，不是終點；人可以在生存裡站穩，卻不必一輩子住在那裡。", "生存模式說：「先撐過這個月再說。」升級的模式說：「這個月撐過去之後，我要做一件讓下個月更輕鬆的事。」一個只處理症狀，一個開始處理原因；一個用時間換生活，一個開始用方法換時間；一個說等有動力再做，一個知道先做了才會有動力。", "不是更拚命，而是找到正確的方向；不是做更多事，而是完成關鍵的那一件；不是等有了結果才有信心，而是先有了行動才長出信心；不是強者不害怕，而是強者能帶著害怕前進；不是堅持永不放棄，而是錯了，就勇敢地調整方向。", "我們以為要先脫離困境，才有資格思考未來；其實正是在最困難的時候，一點點的思考才最值錢。最深的翻轉是：讓你一直停在生存模式的，常常不是你擁有得太少，而是你一直沒有空，去換掉那個讓你一直在救火的舊模型。真正的喘息，不是逃離忙碌，而是讓明天的火，比今天少一把。", "從這週開始，每天留十五分鐘，不處理任何急事，只問一個問題：這週一直在燒的火，是從哪裡燒起來的？第一週，你只看見很多火；第二週，你發現有幾把火總是同一個原因；第一個月，你先撲滅了那個源頭；三個月後，你終於有了一點喘息的空間，開始思考，不只是活下去，而是怎麼活得更好。", "在洪水裡，抓住浮木是本能；可是活下來之後，人終究要學會游泳，然後蓋一艘自己的船。願你在最艱難的日子裡，也記得替自己留一點思考的時間；願你從救火的人，慢慢變成那個預防火災的人；願你的努力，終於開始替你累積，而不是只替你撐住。"], "q": [["生存是起點，不是終點。", "Survival is a starting point, not a destination."], ["每天留十五分鐘，問一句：這把火是從哪裡燒起來的？", "Keep fifteen minutes a day to ask: where is this fire coming from?"]]}, {"page": "人生演化第二階：求成功", "t": "你追到了別人羨慕的一切，卻發現那不是你要的", "tags": "#求成功 #外在成就 #人生演化六階 #LifeOS", "s": ["三十八歲，他終於當上了副總。名片上的頭銜很漂亮，年薪是爸媽一輩子的收入，同學會上大家都叫他「人生勝利組」。可是那天升職的慶功宴結束後，他一個人開車回家，停在社區門口，遲遲不想下車。他突然想起，自己已經很久沒有做過一件，純粹因為喜歡才做的事。他把一切都給了成功，卻忘了問成功，能給他什麼。", "如果成功就是終點，為什麼到了終點的人，常常感到空虛？如果贏過別人就會快樂，為什麼贏了之後，又馬上開始擔心被別人超越？我們是在追求自己想要的人生，還是在追求一份別人寫好的成績單？", "人生的第二階，是求成功：追求外在成就，建立地位。這是許多人一生最努力的階段，它帶來資源、肯定與選擇權，值得被珍惜。但它也有它的天花板：當一個人的價值完全來自外在的比較，他就永遠需要下一個更高的分數，才能確認自己仍然有價值。把成功當成工具的人，會越用越自由；把成功當成身分的人，會越活越害怕失去。", "成功模式說：「人生追求成功。」升級的模式說：「人生追求持續升級。」一個靠競爭，一個靠合作；一個追求高效率，一個追求高槓桿；一個把成就當成終點，一個把成就當成下一段旅程的資源；一個在乎別人怎麼看，一個開始在乎自己怎麼活。", "你可以爭取更高的職位，也可以問這個職位讓你成為什麼樣的人；你可以賺更多錢，也可以問這些錢讓你多了什麼選擇；你可以贏得更多掌聲，也可以問掌聲停下來之後，你還剩下什麼；你可以追求別人羨慕的人生，也可以開始寫一份，只屬於自己的人生。", "我們以為成功之後，就可以休息，就可以快樂；其實快樂往往不是成功的結果，而是能持續成功的原因。最深的翻轉是：成功不是錯的，錯的是把成功當成人生唯一的方向。當你的價值不再完全由外面決定，你才真正擁有了你的成功，而不是被它擁有。", "這週，拿一張紙寫下兩欄：左邊是你這幾年拿到的成就，右邊是這些成就讓你多了什麼自由。第一次寫，右邊可能很空；第二次寫，你開始知道哪些成就是為自己，哪些是為別人；一個月後，你做了一個小小的調整，把一點時間還給自己；一年後，你仍然成功，卻成功得更像你自己。", "山頂的風景很美，但如果你爬上去只是因為別人都在爬，到了山頂，你也只會看見下一座更高的山。願你在追求成功的路上，記得偶爾停下來，看看自己真正想去哪裡；願你的每一份成就，都能替你換來更多的自由；願你有一天，不再需要贏過誰，也能安心地覺得，自己活得很好。"], "q": [["把成功當工具的人越用越自由，把成功當身分的人越活越害怕。", "Those who use success as a tool grow freer; those who make it their identity grow more afraid."], ["寫兩欄：我拿到的成就，和它讓我多了什麼自由。", "Write two columns: the success I've gained, and the freedom it gave me."]]}, {"page": "人生演化第三階：求自由", "t": "真正的自由，不是想做什麼就做什麼，而是不再被外面定義", "tags": "#求自由 #掌握選擇 #人生演化六階 #LifeOS", "s": ["她辭掉了人人稱羨的工作，去做一直想做的手作工作室。親戚說她傻，朋友說她任性，媽媽在電話裡哭著問她：「妳讀那麼多書是為了什麼？」第一年，她的收入只有原來的三分之一，有好幾個晚上，她懷疑自己是不是做錯了。可是每天早上醒來，她第一次不再害怕星期一。她知道，她換來的不是輕鬆，而是一種終於可以替自己做決定的感覺。", "如果自由是擁有很多錢和時間，為什麼那麼多擁有這些的人，仍然活得像被困住？如果自由是想做什麼就做什麼，為什麼放縱之後，人反而更空虛？我們真正想要的自由，到底是什麼？", "人生的第三階，是求自由：不被外在定義，掌握自己的選擇。自由不是沒有限制，而是看清楚限制之後，仍然能做出自己的選擇。一個人真正的自由，常常是從他不再需要別人的認可，才敢做自己開始的。自由的另一面，是願意為自己的選擇負責。一個人能說「不」的範圍有多大，他的自由就有多大；而能說「好」的時候是真心的，那份自由才算完整。", "被定義的人說：「別人會怎麼看我？」自由的人說：「這是我想要的嗎？」一個活在別人的期待裡，一個活在自己的價值裡；一個把選擇交給社會的標準，一個願意承擔選擇的代價；一個怕失去認可，一個更怕失去自己。", "自由，是你可以說不，而不必找藉口；是你可以選擇慢一點，而不覺得自己落後；是你可以換一條路，而不必向所有人解釋；是你可以犯錯，然後重新開始；是你可以擁有一個不被任何頭銜綁架的名字。", "我們以為自由要等到財務自由、時間自由之後才會來；其實很多自由，是從心裡開始的。最深的翻轉是：真正困住我們的，常常不是外面的牆，而是心裡那張「我應該」的清單。當你開始一條一條地檢查它，有些「應該」，其實早就可以放下了。自由不是丟掉所有責任，而是你終於分得清，哪些責任是你選的，哪些只是你被交代的。", "這週，寫下你生活裡三個「我應該」，然後在每一句後面問：這是誰說的？它還適合現在的我嗎？第一個，你可能不敢動；第二個，你試著放下一點點；第三個，你發現天沒有塌下來；慢慢地，你的生活裡，屬於自己的選擇越來越多；有一天，你會發現，自由不是一個遠方，而是你每一次誠實的選擇。", "風箏能飛得高，不是因為它掙脫了線，而是因為那條線，終於握在自己的手裡。願你不必為了自由背棄一切；願你把那條線，一點一點地從別人手中拿回來；願你在天空裡，飛得又高又穩，而且，是朝著你自己想去的方向。"], "q": [["風箏飛得高，是因為那條線終於握在自己手裡。", "A kite flies high when its string is finally in your own hand."], ["寫下三個「我應該」，問問它們是誰說的。", "Write down three \"I shoulds\" and ask who said them."]]}, {"page": "人生演化第四階：求智慧", "t": "弱者看事件，普通人看方法，高手看結構，大師看系統", "tags": "#求智慧 #看見本質 #高維模型 #LifeOS", "s": ["同樣是孩子成績退步，第一位媽媽生氣地罵了一頓；第二位媽媽替孩子報了補習班；第三位媽媽坐下來，看了孩子一整週的作息，發現他每天睡不到六小時；第四位媽媽則想得更遠：為什麼我們家的生活節奏，讓每個人都睡不夠？四位媽媽都愛孩子，都很努力，可是她們看見的，是完全不同的問題。", "如果我們都很努力，為什麼有些人解決了問題，有些人卻讓問題越來越多？如果看得越多就越聰明，為什麼有人經歷了一輩子，看事情還是只看表面？我們到底是在看世界，還是一直在用同一副眼鏡，看所有的事？", "人生的第四階，是求智慧：看見本質，建立更高維度的模型。弱者看事件，普通人看方法，高手看結構，大師看系統。真正改變命運的，不是你做了什麼事，而是你用什麼模型在理解世界。命運，等於模型的品質，乘上更新的速度，再乘上持續的時間。模型就像眼鏡，度數不對，再用力看也看不清；換一副對的眼鏡，世界自己就清楚了。", "低維的人生是：控制結果、害怕誤差、抵抗改變，最後停滯。高維的人生是：觀察現實、建立模型、接受誤差、快速修正、持續更新、創造價值。一個想要每次都對，一個想要每次都更準；一個把問題當障礙，一個把問題當課程；一個在表面打轉，一個往深處看。", "學習不是記憶，而是建模；考試考的不只是知識，更是預測的能力；收集資訊不是最重要的，消化資訊才是；找方法不是最重要的，找原理才是；遇到高手不必自卑，那是最好的學習機會；讀書不只是為了考試，而是為了更懂這個世界。", "我們以為智慧是學會更多東西，其實真正的人生升級，不是學更多，而是淘汰更多過時的模型。最深的翻轉是：智慧不是腦袋裡裝了多少答案，而是你願意多快承認，自己的某個答案已經不再準確。願意放下，才裝得下新的。", "下一次遇到讓你困擾的事，試著問四個問題：發生了什麼事件？我用了什麼方法？背後有什麼結構？整個系統是怎麼運作的？第一次，你可能只答得出前兩題；第十次，你開始看見結構；一年後，你面對問題的方式不一樣了，不是更焦急，而是更清楚；你會發現，很多問題，在你看懂的那一刻，就已經解決了一半。", "站在山腳，只看得見眼前的樹；爬到半山腰，看見整片森林；站上山頂，才看見河流怎麼穿過森林，風從哪裡來。願你不必急著跑遍每一棵樹；願你偶爾爬高一點，看看整片風景；願你在看懂世界的過程裡，也越來越看懂自己。"], "q": [["真正的人生升級，不是學更多，而是淘汰更多過時的模型。", "Real growth isn't learning more; it's letting go of more outdated models."], ["遇到困擾時問四層：事件、方法、結構、系統。", "When troubled, ask four levels: event, method, structure, system."]]}, {"page": "人生演化第五階：求創造", "t": "你一輩子都在解別人出的題，什麼時候要出一道自己的題？", "tags": "#求創造 #創造價值 #設計系統 #LifeOS", "s": ["她是公司裡最會解決問題的人。每一個專案到了她手上，都能被處理得漂漂亮亮。可是那年年底，公司要找人規劃一個全新的方向，主管第一個想到的卻不是她，而是另一個平常常常提出怪點子的同事。她很不服氣，主管只說了一句：「妳很會解題，可是我們現在需要的，是會出題的人。」", "如果把每一件事都做好就夠了，為什麼有些人一輩子都很能幹，卻始終沒有留下屬於自己的東西？如果我們只是在執行別人的計畫，那我們的才華，最終替誰創造了價值？我們是不是太習慣回答問題，而忘了自己也可以提出問題？", "人生的第五階，是求創造：創造新的價值，設計新的系統。創造不一定是發明驚天動地的東西，它可以是一套讓家人更輕鬆的生活方式，一門幫助學生的新課，一份讓團隊少走彎路的流程。當你從使用系統，走到設計系統，你就從一個參與者，變成了一個貢獻者。使用者只能在別人設計的規則裡競爭，設計者卻能替更多人，打開一條原本不存在的路。", "執行的人問：「這件事要怎麼做好？」創造的人問：「這件事為什麼一定要這樣做？」一個在既有的框架裡追求完美，一個願意重新畫一個框架；一個記住答案，一個建立模型；一個努力工作，一個設計系統；一個增加時間，一個創造槓桿。", "把一次的經驗，變成一套方法；把一套方法，變成一份可以分享的教材；把一份教材，變成一個能幫助更多人的系統；把一個系統，變成一個會自己長大的生態。從做事，到做方法，到做系統，每往上一層，你的一份努力，就能幫助更多的人。", "我們以為創造需要天賦，需要靈感從天而降；其實創造常常來自一個很普通的不滿：為什麼這件事一直這麼麻煩？最深的翻轉是：你過去解決過的每一個問題，都是你創造的原料。當你開始把它們整理起來，你會發現，自己早就擁有了創造的能力。", "這週，找一件你常常重複處理的事，試著把它變成一份清單、一個模板，或一套簡單的流程。第一次，它很粗糙；第二次，你把它改得更好；第三次，你把它分享給一個同事或朋友；半年後，那份小小的工具，可能已經幫很多人省下了很多時間；而你，也從一個解題的人，變成了一個出題的人。", "河流不會只沿著別人挖好的渠道走，它會在大地上，慢慢沖刷出屬於自己的河道，讓兩岸長出新的生命。願你也敢在人生裡，開出一條自己的河道；願你的每一份經驗，都能變成別人的路；願你留下的，不只是一份完成的工作，而是一個讓世界更好一點的系統。"], "q": [["你過去解決過的每一個問題，都是你創造的原料。", "Every problem you've solved is raw material for what you'll create."], ["把一件常重複的事，變成一份清單或一個模板。", "Turn one task you keep repeating into a checklist or a template."]]}, {"page": "人生演化第六階：求演化", "t": "最高的境界，不是成為更好的自己，而是讓整個系統一起變好", "tags": "#求演化 #系統演化 #淘汰舊模型 #LifeOS", "s": ["一位退休的老師，在社區裡開了一間免費的讀書會。一開始只有三個人，後來變成十個、三十個。她不只教大家讀書，還教大家怎麼帶讀書會。幾年後，這個城市裡有了二十多個讀書會，很多根本不是她帶的，也沒有人知道最初是她開始的。有人問她會不會覺得可惜，她笑著說：「種子長成樹，就不必記得是誰種的了。」", "如果我們的成就只屬於自己，那當我們離開之後，世界會留下什麼？如果我們只想讓自己變好，為什麼很多變好的人，最後還是覺得孤單？一個人的進化，能不能不只改變自己的一生，也改變一群人、一個時代的方向？", "人生的第六階，是求演化：改變系統的演化方向。不只是自己升級，而是讓身邊的人、所在的社群、甚至一整套做事的方式，一起往更好的方向演化。在這個 AI 改變一切的時代，最珍貴的能力，已經不是記住答案，而是建立模型、設計系統，並讓系統持續更新。一個人的光再亮，也只能照亮一個房間；可是當他把點燈的方法教給別人，整座城市都會亮起來。", "個人的成長說：「我要變得更好。」系統的演化說：「我要讓更多人有機會變得更好。」一個累積自己的資產，一個累積大家的能力；一個擔心被取代，一個樂於讓別人超越自己；一個追求留下名字，一個追求留下改變。", "從求生存，到求成功；從求成功，到求自由；從求自由，到求智慧；從求智慧，到求創造；從求創造，到求演化。每一階都不必被羞愧地丟掉，而是被溫柔地包含進下一階。最後你會發現，所有的升級，都指向同一條路：淘汰過時的模型，持續地更新。", "我們以為人生的終點，是成為一個很厲害的人；其實人生最深的意義，可能是成為一個讓別人也變得更好的人。最深的翻轉是：真正的進化，不在於你走了多遠，而在於你走過的地方，有沒有讓後面的人，走得更容易一點。", "今天，想一想：有沒有一件你學會的事，可以教給一個人？有沒有一個你建立的方法，可以讓一群人一起使用？從分享一次開始，到教會一個人，到讓那個人也能教別人。一年後，你可能已經看不見那顆種子長到哪裡去了，可是你知道，世界因為你，多了一點點不一樣的方向。", "一棵樹最了不起的時刻，不是它長得最高的時候，而是它的種子，隨風落在遠方，長成了一整片森林。願你不只努力讓自己發光，也願意把火種傳出去；願你在某一天回頭，看見那一片你不認識、卻因你而存在的森林；願你的生命，成為別人的春天。"], "q": [["種子長成樹，就不必記得是誰種的了。", "Once the seed becomes a tree, it doesn't need to remember who planted it."], ["今天把一件你學會的事，教給一個人。", "Teach one thing you've learned to one person today."]]}];
+var cur=0,hide=false;
+function g(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var QL=[['心靈雞湯｜Soul Soup',''],['激勵｜Motivation','act']];
+function qtext(p){return p.q?'\n\n'+p.q.map(function(x,k){return '【'+QL[k][0]+'】\n'+x[0]+'\n'+x[1]}).join('\n\n'):''}
+function qhtml(p){return p.q?'<div class="lfb-qs">'+p.q.map(function(x,k){return '<div class="lfb-q '+QL[k][1]+'"><small>'+QL[k][0]+'</small><b>'+esc(x[0])+'</b><i lang="en">'+esc(x[1])+'</i></div>'}).join('')+'</div>':''}
+function text(p){return '【'+p.t+'】\n\n'+p.s.join('\n\n')+qtext(p)+'\n\n'+p.tags}
+function list(){
+  var q=g('lfbQ').value.trim().toLowerCase();
+  g('lfbList').innerHTML=P.map(function(p,i){
+    if(q&&(p.page+' '+text(p)).toLowerCase().indexOf(q)<0)return '';
+    return '<button type="button" data-i="'+i+'" class="'+(i===cur?'cur':'')+'"><small>第 '+(i+1)+' 頁｜'+esc(p.page)+'</small>'+esc(p.t)+'</button>';
+  }).join('')||'<p style="padding:8px;font-size:14px">沒有符合的圖文</p>';
+}
+function show(i){
+  cur=i;var p=P[i];
+  g('lfbPost').innerHTML='<div class="lfb-eye">第 '+(i+1)+' / '+P.length+' 頁｜'+esc(p.page)+'</div><h2>'+esc(p.t)+'</h2><div class="lfb-meta">約 '+p.s.join('').replace(/\s/g,'').length+' 字 · 八種手法 · 文中情境為示例</div><div id="lfbBody" class="'+(hide?'notag':'')+'">'+p.s.map(function(x,k){return '<div class="lfb-part"><span class="lfb-tag">'+TAG[k]+'</span><p>'+esc(x)+'</p></div>'}).join('')+'</div>'+qhtml(p)+'<div class="lfb-tags">'+esc(p.tags)+'</div><div class="lfb-act"><button type="button" class="pri" id="lfbCopy">複製貼文</button><button type="button" id="lfbHide">'+(hide?'顯示':'隱藏')+'手法標籤</button><span class="lfb-st" id="lfbSt" role="status"></span></div>';
+  g('lfbPost').scrollTop=0;list();
+}
+function copy(){
+  var t=text(P[cur]),st=g('lfbSt');
+  function fall(){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}a.remove();st.textContent=ok?'已複製，可直接貼到臉書。':'無法自動複製，請手動選取內文。'}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){st.textContent='已複製，可直接貼到臉書。'},fall)}else fall();
+}
+g('lfbOpen').onclick=function(){g('lfb').classList.add('on');show(cur);g('lfbQ').focus()};
+g('lfbClose').onclick=function(){g('lfb').classList.remove('on');g('lfbOpen').focus()};
+g('lfb').addEventListener('click',function(e){
+  if(e.target===g('lfb'))g('lfbClose').onclick();
+  var b=e.target.closest&&e.target.closest('[data-i]');if(b)show(+b.getAttribute('data-i'));
+  if(e.target.id==='lfbCopy')copy();
+  if(e.target.id==='lfbHide'){hide=!hide;show(cur)}
+});
+g('lfbQ').addEventListener('input',list);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&g('lfb').classList.contains('on'))g('lfbClose').onclick()});
+})();
 </script>
 </body>
 </html>

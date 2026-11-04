@@ -47,5 +47,88 @@ document.addEventListener('input',e=>{if(e.target.id==='search'){query=e.target.
 $('#lang').addEventListener('change',e=>{lang=e.target.value;persist('gratitude-lang',lang);render()});
 window.addEventListener('hashchange',()=>{filter='all';query='';scrollTo(0,0);render()});
 render();
-</script></body></html>
+</script>
+<!-- LifeOS 臉書圖文：每頁一篇，八段手法 -->
+<style>
+#lfbOpen{position:fixed;right:16px;bottom:16px;z-index:2147483000;font:600 16px/1 system-ui,"Microsoft JhengHei",sans-serif;min-height:48px;padding:0 20px;border:0;border-radius:24px;background:#1f5f4c;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
+#lfb{position:fixed;inset:0;z-index:2147483001;display:none;background:rgba(10,20,16,.55)}
+#lfb.on{display:block}
+#lfb .lfb-box{position:absolute;inset:16px;max-width:980px;margin:auto;background:#fffdf8;color:#1d2b26;border-radius:14px;display:flex;flex-direction:column;overflow:hidden;font:17px/1.85 system-ui,"Microsoft JhengHei",sans-serif;text-align:left}
+#lfb .lfb-head{display:flex;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid #e3e6df;flex-wrap:wrap}
+#lfb .lfb-head b{font-size:17px;margin-right:auto}
+#lfb input{flex:1 1 220px;min-height:44px;padding:8px 12px;border:1px solid #cfd8d0;border-radius:8px;font:inherit;font-size:15px;background:#fff;color:#1d2b26}
+#lfb button{font:inherit;font-size:15px;min-height:44px;padding:6px 14px;border-radius:8px;border:1px solid #1f5f4c;background:#fff;color:#1f5f4c;cursor:pointer;line-height:1.3}
+#lfb button.pri{background:#1f5f4c;color:#fff}
+#lfb .lfb-main{display:grid;grid-template-columns:240px 1fr;min-height:0;flex:1}
+#lfb .lfb-list{overflow:auto;border-right:1px solid #e3e6df;padding:8px}
+#lfb .lfb-list button{display:block;width:100%;text-align:left;margin-bottom:6px;border-color:#e3e6df;color:#1d2b26;font-size:14px}
+#lfb .lfb-list button.cur{border-color:#1f5f4c;background:#e8f1ec;font-weight:600}
+#lfb .lfb-list small{display:block;color:#6a7a72;font-size:12px}
+#lfb .lfb-post{overflow:auto;padding:20px 26px 30px}
+#lfb .lfb-eye{color:#1f5f4c;font-size:13px;font-weight:700;letter-spacing:1px}
+#lfb h2{font-size:25px;line-height:1.45;margin:4px 0 2px;color:#17352b}
+#lfb .lfb-meta{color:#6a7a72;font-size:14px;margin-bottom:14px}
+#lfb .lfb-part{margin:0 0 16px}
+#lfb .lfb-part p{margin:0}
+#lfb .lfb-tag{display:inline-block;font-size:12px;color:#1f5f4c;border:1px solid #1f5f4c;border-radius:4px;padding:0 7px;line-height:1.6;margin-bottom:3px}
+#lfb .notag .lfb-tag{display:none}
+#lfb .lfb-tags{color:#1f5f4c;margin-bottom:14px}
+#lfb .lfb-act{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#lfb .lfb-st{color:#1f5f4c;font-size:14px}
+#lfb .lfb-qs{display:grid;gap:10px;margin:4px 0 16px}
+#lfb .lfb-q{background:#f3f7f1;border-left:4px solid #1f5f4c;border-radius:6px;padding:10px 14px}
+#lfb .lfb-q.act{background:#fbf5e8;border-left-color:#a86a12}
+#lfb .lfb-q small{display:block;font-size:12px;font-weight:700;color:#1f5f4c;letter-spacing:1px}
+#lfb .lfb-q.act small{color:#a86a12}
+#lfb .lfb-q b{display:block;font-size:17px;line-height:1.7}
+#lfb .lfb-q i{display:block;font-style:normal;color:#4b5a53;font-size:15px;line-height:1.6;font-family:Georgia,"Times New Roman",serif}
+@media(max-width:720px){#lfb .lfb-box{inset:0;border-radius:0}#lfb .lfb-main{grid-template-columns:1fr;grid-template-rows:auto 1fr}#lfb .lfb-list{display:flex;gap:6px;overflow-x:auto;border-right:0;border-bottom:1px solid #e3e6df}#lfb .lfb-list button{flex:0 0 auto;width:auto;margin:0}#lfb .lfb-post{padding:16px}}
+</style>
+<button id="lfbOpen" type="button" aria-haspopup="dialog">臉書圖文</button>
+<div id="lfb" role="dialog" aria-modal="true" aria-label="每頁臉書圖文">
+<div class="lfb-box">
+<div class="lfb-head"><b>每頁臉書圖文｜感恩之間 · Between Gratitude</b><input type="search" id="lfbQ" placeholder="搜尋圖文…" aria-label="搜尋圖文"><button type="button" id="lfbClose">關閉</button></div>
+<div class="lfb-main"><nav class="lfb-list" id="lfbList" aria-label="頁面"></nav><article class="lfb-post" id="lfbPost"></article></div>
+</div></div>
+<script>
+(function(){
+var TAG=['情境衝突','反問句','哲學命題','對比句','排比句','認知翻轉','層層遞進','詩性收束'];
+var P=[{"page": "今日感恩", "t": "感恩你的身體，它讓你能體驗生命的每一刻", "tags": "#感恩之間 #今日感恩 #感謝身體 #LifeOS", "s": ["那天早上，她一如往常地被鬧鐘吵醒，皺著眉頭爬起來，抱怨膝蓋又痠了、眼睛又腫了、肚子又多了一圈。刷牙的時候，她突然想起住院的姑姑，上週在病床上對她說：「等我能自己走到廁所的那一天，我要好好謝謝我的腿。」她停下了牙刷，看著鏡子裡那個能夠站著、能夠呼吸、能夠自己刷牙的自己，第一次覺得，這一切原來都不是理所當然。", "如果我們每天都在使用這副身體，為什麼總要等到它生病了，才想起它有多重要？如果我們的身體每天都在默默工作，為什麼我們對它說得最多的，是嫌棄而不是感謝？我們花那麼多時間要求身體更瘦、更美、更有力，有多久沒有好好地，對它說一聲謝謝？", "這個 APP 的第一句感恩是：我感恩我的身體，它讓我能體驗生命的每一刻。感恩之間，說的是把目光帶回身體、情緒、關係與存在。身體是我們和世界相遇的地方：眼睛讓我們看見陽光，耳朵讓我們聽見笑聲，雙手讓我們能擁抱，雙腳讓我們能走向想去的地方。感恩，就從這最近、最常被忽略的地方開始。", "嫌棄的眼光說：「我的身體好多缺點。」感恩的眼光說：「我的身體今天陪我走了好多路。」一個盯著不完美的地方，一個看見它一直在努力；一個把身體當成需要被修理的機器，一個把身體當成一位忠實的老朋友；一個只在它壞掉時才注意它，一個在它好好的時候就說謝謝。", "謝謝眼睛，讓我看見今天的天空；謝謝耳朵，讓我聽見孩子的聲音；謝謝雙手，讓我能做一頓飯；謝謝雙腳，讓我能走到想去的地方；謝謝心臟，日日夜夜從不休息；謝謝呼吸，在我忘記它的時候，也一直陪著我。每一個部位，都值得一句感謝。", "我們以為感恩要等到發生了什麼好事才需要，其實最值得感恩的，往往是那些每天都在、卻從來沒被注意的東西。最深的翻轉是：當你開始感謝你的身體，你和它的關係就變了，你會更願意好好照顧它，好好休息、好好吃飯、好好睡覺，因為你終於知道，它一直在為你付出。", "從今天開始，每天早上起床前，先花一分鐘，把手放在胸口，感受自己的呼吸，然後在心裡對身體說一句：「謝謝你，今天也請多多指教。」第一天，你可能會覺得有點彆扭；一週後，你會發現自己起床時的心情不一樣了；一個月後，你開始更溫柔地對待自己的身體，也更懂得在它累的時候，讓它休息。", "一棟房子住久了，我們常常忘了感謝它替我們擋風遮雨；直到某一天下雨了，才想起有一個屋頂，是多麼幸福的事。願你今天就記得感謝你的身體；願你像對待一位老朋友那樣，溫柔地照顧它；願你在每一次呼吸裡，都感受到，自己正被這副身體，好好地愛著。"], "q": [["我感恩我的身體，它讓我能體驗生命的每一刻。", "I am grateful for my body; it lets me experience every moment of life."], ["明天起床前，把手放在胸口，對身體說一聲謝謝。", "Before getting up tomorrow, place a hand on your heart and thank your body."]]}, {"page": "每日練習｜10 日系列與 30 日挑戰", "t": "感恩不是一種心情，而是一個可以每天練習的小習慣", "tags": "#感恩練習 #30日挑戰 #每天一件小事 #LifeOS", "s": ["她決定參加三十日感恩挑戰。第一天，她寫下：今天的咖啡很香。第三天，她忘了寫。第五天，她覺得自己很累，什麼都不想感謝。第十天，她差點放棄。可是到了第二十天，她發現自己開始在走路時注意到路邊的花，在等紅燈時注意到天空的顏色。第三十天，她翻開那本筆記，看著一頁一頁的小事，突然紅了眼眶：原來我的生活裡，有這麼多值得被記住的時刻。", "如果感恩只是偶爾想起來才做，它能真正改變我們的生活嗎？如果我們只在心情好的時候感恩，那心情不好的時候呢？我們都知道感恩很好，可是，為什麼我們很少把它變成每天都做的事？", "這個 APP 保留了兩種練習：十日系列和三十日挑戰，每天只做一件小事。寫下一件今天已經擁有的小事；說出一件讓你不安的事，容許它暫時沒有答案；自然地呼吸三次，留意腳底接觸地面的感受。這些練習都很小，小到不可能失敗，卻在一天一天的重複裡，慢慢改變了一個人看世界的方式。", "偶爾的感恩說：「今天心情好，謝謝大家。」練習的感恩說：「今天心情不好，我還是找到了一件值得感謝的小事。」一個要等感覺來，一個自己創造感覺；一個做一次就結束，一個每天都留一點位置；一個讓感恩成為一次活動，一個讓感恩成為一種生活。", "第一天，感謝一杯水；第二天，感謝一個微笑；第三天，感謝一個願意聽你說話的人；第四天，感謝一個曾經讓你成長的困難；第五天，感謝今天的自己。不必一下子做很多，也不必每天都很有感覺。慢慢來，也是在前進。", "我們以為要先有感恩的心，才能做感恩的練習；其實很多時候，是先做了練習，感恩的心才慢慢長出來。最深的翻轉是：這個 APP 也提醒，不需要把每個情緒都改成正面。感恩不是要你假裝一切都很好，而是在你真實的感受旁邊，也留一個位置，給那些依然存在的美好。", "從今天開始，選十日系列或三十日挑戰，每天只花三分鐘，做一件小小的感恩練習，完成了就打一個勾。中斷了也沒關係，隔天再接上就好。第一週，你會常常忘記；第二週，你開始在白天就留意值得感謝的事；當你完成整個系列，你會發現，自己不只是多了一本筆記，而是多了一雙看見美好的眼睛。", "一顆水滴很小，可是每天都落在同一個地方，就能讓石頭長出青苔，長出小花。願你也每天落下一滴感恩；願你不必等到心情好，才允許自己看見美好；願你在三十天之後回頭，發現自己的心，已經長出了一小片柔軟的綠。"], "q": [["慢慢來，也是在前進。", "Slowly is still forward."], ["今天只做一件小小的感恩練習，完成了就打一個勾。", "Do one small gratitude practice today, and check it off when done."]]}, {"page": "感恩句庫｜一句話，重新看見自己", "t": "一句感恩的話，能把你的目光，從缺少的地方，帶回擁有的地方", "tags": "#感恩句庫 #一句話的力量 #重新看見自己 #LifeOS", "s": ["他是一個很容易看見問題的人。工作上，他總是第一個發現漏洞；生活裡，他也總是先看到哪裡不夠好：房子太小、薪水太少、孩子不夠用功、太太太嘮叨。有一天，孩子在學校做了一張感恩卡給他，上面寫著：「謝謝爸爸每天早上載我上學，雖然你都在打哈欠。」他拿著那張卡片笑了，然後忽然有點想哭：原來在孩子眼裡，他一直在給予，而他自己，卻從來沒有這樣看過自己。", "如果我們每天都盯著缺少的地方，那我們看見的世界，會是什麼樣子？如果一句話就能讓我們的心鬆一點，為什麼我們很少對自己說那樣的話？我們給自己的語言，是在幫我們看見生活，還是在替我們遮住生活？", "這個 APP 收錄了三十則感恩句，把目光帶回身體、情緒、關係與存在。一句感恩的話，像一面小小的鏡子，讓我們從另一個角度，重新看見自己。它不會改變事實，卻能改變我們看事實的眼光：同一棟小房子，可以是「太小了」，也可以是「我們一家人擠在一起，好溫暖」。", "挑剔的語言說：「我們家什麼都不夠好。」感恩的語言說：「我們家有一張可以一起吃飯的桌子。」挑剔的語言說：「我這一年什麼都沒做成。」感恩的語言說：「我這一年撐過了好多難關。」一個讓人越說越累，一個讓人越說越有力氣；一個把生活說小了，一個把生活說大了。", "我感恩我的身體，它讓我體驗生命；我感恩我的情緒，它讓我知道自己在乎什麼；我感恩身邊的人，他們讓我不孤單；我感恩我走過的路，它讓我成為現在的自己；我感恩這一刻，我還活著，還能感受，還能選擇。每一句，都是一次溫柔的看見。", "我們以為感恩的話是說給別人聽的，其實最需要聽見它的，常常是我們自己。最深的翻轉是：當你開始用感恩的語言描述自己的生活，你不是在欺騙自己，而是在把被忽略的真實，重新放回畫面裡。生活本來就同時有缺口和禮物，只是我們太習慣，只看見缺口。", "這週，從句庫裡挑一句最打動你的感恩句，抄在便利貼上，貼在每天會看到的地方。每天讀一次，然後在後面接一句屬於你自己的話，例如「我感恩身邊的人，特別是今天幫我倒水的同事」。第一天，你只是在讀別人的句子；一週後，你開始寫出自己的句子；一個月後，你會發現，你看自己和看世界的眼神，都溫柔了許多。", "同一扇窗，可以看見對面的灰牆，也可以看見牆上那一小片藍天。願你常常替自己換一個角度看窗外；願你收集那些能讓你重新看見美好的句子；願你在某一個平凡的早晨，也寫下一句，屬於你自己的感恩。"], "q": [["一句感恩的話，能把目光從缺少帶回擁有。", "A grateful sentence brings your eyes from what's missing back to what you have."], ["挑一句最打動你的感恩句，抄在每天看得到的地方。", "Copy the gratitude line that moves you most where you'll see it daily."]]}, {"page": "語言轉換｜換一句話，打開可能", "t": "不是要你假裝快樂，而是換一句話，讓心多一個出口", "tags": "#語言轉換 #換一句話 #感恩之間 #LifeOS", "s": ["每天早上，她都對自己說：「又要上班了，好煩。」這句話她說了十年，每次說完，心情就沉一點。後來她在這個 APP 裡看到一組語言轉換，試著把那句話換成：「今天要上班，我想先替自己泡一杯喜歡的茶。」工作還是一樣多，主管還是一樣嚴格，可是她發現，換了一句話之後，自己踏出家門的腳步，好像輕了一點點。", "如果語言只是用來描述事實，為什麼同一件事，換一種說法，心情就完全不一樣？如果我們說出口的話會影響我們，那我們每天對自己說的那些話，正在把我們帶往哪裡？我們能不能不否定自己的感受，卻又替自己找到一條新的路？", "這個 APP 收錄了四十組語言轉換，從「怎麼說」開始，留意一句話會帶出什麼行動。它特別提醒：這是可以選擇的表達練習，不需要否定你當下真實的感受。語言轉換不是逼自己正向思考，而是在「我很累」的旁邊，多放一句「我想先為自己做一件小事」，讓心不只有一個出口。", "舊的語言說：「好煩，又要做這些事。」轉換後的語言說：「這些事很多，我先從最簡單的一件開始。」舊的語言說：「我什麼都做不好。」轉換後的語言說：「我今天有一件事做得比較吃力，我想找人幫忙。」一個把情緒變成死胡同，一個把情緒接到一個可以做的小步驟。", "把「我必須」換成「我選擇」；把「為什麼總是我」換成「這次我可以怎麼做」；把「沒有人在乎我」換成「我想主動聯絡一個人」；把「我好失敗」換成「我正在學習」；把「好煩」換成「我需要一點休息」。每一句新的話，都不是在否定舊的感受，而是在替它找一個去處。", "我們以為改變心情，要先改變事情；其實很多時候，是先改變說法，心情才跟著改變，然後我們才有力氣，去改變事情。最深的翻轉是：這個 APP 借用維根斯坦對語言使用的關心，提醒我們看一句話在具體的情境裡，如何被使用。一句話的意義，不只在於它說了什麼，更在於它讓你接下來，做了什麼。", "這週，找出你每天最常對自己說的一句抱怨，把它寫下來，再寫一句轉換後的話，並且把它接到一個今天就能做的小步驟。例如「好累」轉換成「我很累，我想先早睡半小時」。每天說一次，然後做那件小事。第一天，你可能覺得在演戲；一週後，你發現那一句新的話，開始自己跑出來；一個月後，你的日子雖然一樣忙，心卻多了很多出口。", "一條河遇到大石頭，不會停下來抱怨，它會轉個彎，繼續往前流。語言也是一條河。願你在心裡那些堵住的地方，替自己轉一個彎；願你說給自己聽的每一句話，都能讓你往前多走一步；願你在換一句話的瞬間，看見一個新的可能，正在向你打開。"], "q": [["換一句話，不是否定感受，而是替它找一個去處。", "A new phrase doesn't deny your feeling; it gives it somewhere to go."], ["把一句常說的抱怨，接到一個今天能做的小步驟。", "Connect one complaint you often make to one small step you can take today."]]}, {"page": "根輪專章｜從安定，回到生活", "t": "所有的成長，都需要先有一塊能站穩的地", "tags": "#根輪 #安定感 #扎根練習 #感恩之間 #LifeOS", "s": ["搬到新城市的第一年，她總覺得自己像一棵被移植的植物：睡不好、吃不下，對什麼都提不起勁。工作很努力，心卻一直懸在半空中。後來，一位朋友教她一個很簡單的練習：每天早上光著腳站在地上一分鐘，感受腳底和地面接觸的感覺，然後慢慢地呼吸。她半信半疑地試了。一個月後，她發現自己開始能安靜地坐下來吃一頓飯，那種飄著的感覺，慢慢地落了地。", "如果我們每天都在追求更多、更快、更高，那支撐我們的那塊地，誰來照顧？如果我們心裡總是不安、總是懸著，是不是因為我們太久沒有好好地，感受自己正站在哪裡？成長需要往上長，可是，往上長之前，我們有沒有先往下扎根？", "這個 APP 依原文件，完整保留了「根輪專章」的八個層面：主題、意識、情緒、議題、身體、素材表格、日常策略與總結。根輪在原文的脈輪體系裡，象徵安全、安定與扎根。這個 APP 也清楚標示：原文裡有一些象徵與療效的敘述，未經驗證，不作為診斷或用藥的建議。我們在這裡，只借用它最溫柔的那一層意思：先讓自己站穩。", "懸著的心說：「我要更努力，才不會掉下去。」扎根的心說：「我先感受自己正站在地上，然後再往前走。」一個不斷往外抓安全感，一個先從身體裡找安定；一個越忙越慌，一個越慢越穩；一個把安全感寄託在別處，一個知道，安定也可以從腳下開始。", "感受腳底，和地面好好接觸一次；感受呼吸，讓它慢慢地沉到腹部；感受身體坐在椅子上的重量；感受一頓飯的溫度和味道；感受家裡一個讓你安心的角落。扎根，不需要很複雜的儀式，它常常就是在日常生活裡，好好地回到身體，回到此刻，回到自己。", "我們以為安全感來自擁有更多的東西，其實很多時候，安定是一種回到當下的能力。最深的翻轉是：當你學會在不安的時候，先回到身體、回到腳下，你就不再完全依賴外面的世界來給你安全感，因為你知道，自己身上有一個可以回去的地方。若長期失眠、焦慮或身體不適，請尋求醫療與專業的協助。", "這週，每天早上做一個一分鐘的扎根練習：站著或坐著，感受腳底接觸地面，自然地呼吸三次，在心裡說一句「我在這裡，我很安全」。第一天，你可能只覺得有點好笑；第一週，你開始習慣這一分鐘的安靜；一個月後，你會發現，即使生活依然忙亂，你心裡多了一塊，能讓自己站穩的地方。", "大樹之所以能在風中站立，不是因為它長得特別高，而是因為它的根，悄悄地往下扎得很深很深。願你在追求成長的同時，也記得往下扎根；願你在每一個不安的時刻，都找得到腳下的那塊地；願你從安定裡出發，慢慢長成一棵，風吹不倒的樹。"], "q": [["所有的成長，都需要先有一塊能站穩的地。", "All growth begins with ground you can stand on."], ["每天早上感受腳底一分鐘，說：「我在這裡，我很安全。」", "Each morning, feel your feet for one minute and say: \"I am here, I am safe.\""]]}, {"page": "我的筆記｜給感恩一個時間、一個人、一個情境", "t": "具體的感恩，比籠統的感恩，更能讓心真正暖起來", "tags": "#感恩筆記 #具體的感謝 #感恩之間 #LifeOS", "s": ["她寫感恩日記寫了一年，每天都寫一樣的句子：感謝家人、感謝健康、感謝工作。寫久了，她覺得很空洞，好像只是在完成一項功課。後來她換了一種寫法：不寫「感謝家人」，而是寫「感謝先生今天下雨時，先跑去把我的機車座墊擦乾」。她寫完那一句，忍不住笑了。同樣是感恩，這一次，她的心是真的暖了起來。", "如果感恩是一件好事，為什麼有些人寫了很久的感恩日記，卻沒有什麼感覺？如果我們每天都說謝謝，為什麼那些謝謝，有時候輕得像一陣風？是不是我們的感恩，太籠統了，籠統到連自己都碰觸不到？", "這個 APP 的筆記頁有兩個提問：這句感恩用在什麼情境？它讓我願意做哪一件小事？它邀請我們替感恩，留下一個具體的時間、人物與情境。具體，是感恩最重要的力量：當你寫下一個具體的畫面，你不只是在想一個概念，而是在重新經歷一次那份溫暖。筆記只儲存在你自己的裝置裡，是一個只屬於你的地方。", "籠統的感恩說：「感謝我的朋友。」具體的感恩說：「感謝小華昨天晚上聽我哭了一個小時，最後還陪我去吃宵夜。」籠統的感恩說：「感謝健康。」具體的感恩說：「感謝今天爬樓梯的時候，膝蓋沒有痛。」一個像一張模糊的照片，一個像一段清楚的影片。", "寫下時間：今天下午三點；寫下人物：隔壁的阿姨；寫下情境：她看我提著很重的東西，幫我開了門；寫下感受：我覺得被照顧；寫下行動：明天我想帶一點水果給她。五個元素，讓一句感恩，變成一個會長出行動的種子。", "我們以為感恩是一種想法，所以想到了就算數；其實感恩更像一種重新經歷，越具體，越能被身體記住。最深的翻轉是：當你的感恩接上了一個小行動，例如明天帶水果給阿姨，感恩就從一份心情，變成了一種關係；而你，也從一個接受溫暖的人，變成了一個傳遞溫暖的人。", "從今晚開始，換一種方式寫感恩筆記：每天只寫一件事，但要寫得很具體，有時間、有人、有情境，最後再加一句「它讓我想做的一件小事」。第一天，你可能會覺得要想很久；一週後，你開始在白天就留意那些具體的時刻；一個月後，你會發現，你身邊的人好像也變得更溫暖了，因為你開始用行動，回應了他們的好。", "一封寫著「親愛的你」的信，和一封寫著你的名字、記得你喜歡什麼的信，讀起來的溫度完全不同。願你的每一句感恩，都寫上對方的名字；願你記得那些具體的、溫柔的瞬間；願你在寫下它們的時候，也看見自己，正被這個世界，具體地、真實地愛著。"], "q": [["具體的感恩，比籠統的感恩，更能讓心暖起來。", "Specific gratitude warms the heart more than general thanks."], ["寫下時間、人物、情境，和一件你想回應的小事。", "Write the time, the person, the moment, and one small way you'll respond."]]}, {"page": "哲學與來源｜維根斯坦與海德格的日常", "t": "感恩不在遠方的大道理裡，而在你此刻身處的這張桌子、這個人、這一天", "tags": "#哲學與感恩 #維根斯坦 #海德格 #感恩之間 #LifeOS", "s": ["讀書會上，有人問：「感恩是不是只是一種心靈雞湯？」大家安靜了一下。一位老先生笑著說：「我年輕的時候也這樣覺得。可是我太太走了以後，每天早上看到她留下的那個杯子，我才懂，感恩不是一句話，是你終於看見，那些一直在你身邊的東西，原來都很珍貴。」那天之後，讀書會裡的每個人，回家都多看了一眼自己的餐桌。", "如果感恩只是一句好聽的話，為什麼它能在最痛的時候，給人一點支撐？如果哲學是遙遠又艱深的東西，為什麼它也能幫助我們，更好地過日常的生活？我們以為感恩很淺，可是，它會不會其實，碰觸到了人怎麼活在世界上的那個最深的問題？", "這個 APP 加入了兩種哲學導讀，並清楚標示那是編輯的應用，不是哲學家的感恩處方。受維根斯坦啟發的角度，是觀察語言如何被使用：感恩在什麼時候說、對誰說、說完之後做了什麼？受海德格啟發的角度，是回到在世的日常：描述你已經身處的關係、物件與情境，留意你所關切的事。兩者都把感恩，從抽象的道理，帶回具體的生活。", "抽象的感恩說：「我們要感恩生命。」具體的感恩說：「我感謝今天早上，這杯咖啡的溫度，和替我煮它的人。」抽象的感恩讓人點頭，具體的感恩讓人動容；抽象的感恩停在嘴上，具體的感恩接到行動；抽象的感恩離生活很遠，具體的感恩，就在你伸手可及的地方。", "看一看你每天坐的那張椅子，它承載了你多少疲憊；看一看你每天用的那個杯子，它陪你喝過多少個早晨；看一看你每天見到的那個人，他為你做過多少你沒注意到的事；看一看你每天走的那條路，它帶你回過多少次家。存在，本來就是被很多東西，默默地托住的。", "我們以為要讀懂很多哲學，才能活得更深刻；其實真正的深刻，常常就是把眼前的日常，看得更清楚一點。最深的翻轉是：感恩不是一種逃避現實的安慰，而是一種更誠實地面對現實的方式，因為它讓我們看見，在所有的困難與失去之中，我們依然被許多事物與人，深深地連結著。", "這週，選一個你每天都會經過的地方，例如你的餐桌、你的書桌、你家的門口，用三句話描述它：這裡有什麼？它和哪些人有關？它讓我想起什麼？然後對它，或對和它有關的人，說一句謝謝。第一次，你可能覺得很奇怪；第三次，你開始看見原本忽略的細節；一個月後，你會發現，你的日常生活，變得更有溫度，也更有意義。", "我們常常以為意義在遠方，要去很遠的地方才找得到；可是有一天回頭才發現，它一直放在餐桌上，在那個杯子裡，在那個人的笑容裡。願你不必走很遠，就能找到生活的意義；願你看見那些一直在托住你的人和事；願你在每一個平凡的日子裡，都能輕輕地說一聲：謝謝你，一直都在。"], "q": [["意義不在遠方，它一直放在你的餐桌上。", "Meaning isn't far away; it has been sitting at your table all along."], ["對一個每天都在的人或地方，說一聲謝謝。", "Say thank you to a person or place that is there for you every day."]]}];
+var cur=0,hide=false;
+function g(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var QL=[['心靈雞湯｜Soul Soup',''],['激勵｜Motivation','act']];
+function qtext(p){return p.q?'\n\n'+p.q.map(function(x,k){return '【'+QL[k][0]+'】\n'+x[0]+'\n'+x[1]}).join('\n\n'):''}
+function qhtml(p){return p.q?'<div class="lfb-qs">'+p.q.map(function(x,k){return '<div class="lfb-q '+QL[k][1]+'"><small>'+QL[k][0]+'</small><b>'+esc(x[0])+'</b><i lang="en">'+esc(x[1])+'</i></div>'}).join('')+'</div>':''}
+function text(p){return '【'+p.t+'】\n\n'+p.s.join('\n\n')+qtext(p)+'\n\n'+p.tags}
+function list(){
+  var q=g('lfbQ').value.trim().toLowerCase();
+  g('lfbList').innerHTML=P.map(function(p,i){
+    if(q&&(p.page+' '+text(p)).toLowerCase().indexOf(q)<0)return '';
+    return '<button type="button" data-i="'+i+'" class="'+(i===cur?'cur':'')+'"><small>第 '+(i+1)+' 頁｜'+esc(p.page)+'</small>'+esc(p.t)+'</button>';
+  }).join('')||'<p style="padding:8px;font-size:14px">沒有符合的圖文</p>';
+}
+function show(i){
+  cur=i;var p=P[i];
+  g('lfbPost').innerHTML='<div class="lfb-eye">第 '+(i+1)+' / '+P.length+' 頁｜'+esc(p.page)+'</div><h2>'+esc(p.t)+'</h2><div class="lfb-meta">約 '+p.s.join('').replace(/\s/g,'').length+' 字 · 八種手法 · 文中情境為示例</div><div id="lfbBody" class="'+(hide?'notag':'')+'">'+p.s.map(function(x,k){return '<div class="lfb-part"><span class="lfb-tag">'+TAG[k]+'</span><p>'+esc(x)+'</p></div>'}).join('')+'</div>'+qhtml(p)+'<div class="lfb-tags">'+esc(p.tags)+'</div><div class="lfb-act"><button type="button" class="pri" id="lfbCopy">複製貼文</button><button type="button" id="lfbHide">'+(hide?'顯示':'隱藏')+'手法標籤</button><span class="lfb-st" id="lfbSt" role="status"></span></div>';
+  g('lfbPost').scrollTop=0;list();
+}
+function copy(){
+  var t=text(P[cur]),st=g('lfbSt');
+  function fall(){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}a.remove();st.textContent=ok?'已複製，可直接貼到臉書。':'無法自動複製，請手動選取內文。'}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){st.textContent='已複製，可直接貼到臉書。'},fall)}else fall();
+}
+g('lfbOpen').onclick=function(){g('lfb').classList.add('on');show(cur);g('lfbQ').focus()};
+g('lfbClose').onclick=function(){g('lfb').classList.remove('on');g('lfbOpen').focus()};
+g('lfb').addEventListener('click',function(e){
+  if(e.target===g('lfb'))g('lfbClose').onclick();
+  var b=e.target.closest&&e.target.closest('[data-i]');if(b)show(+b.getAttribute('data-i'));
+  if(e.target.id==='lfbCopy')copy();
+  if(e.target.id==='lfbHide'){hide=!hide;show(cur)}
+});
+g('lfbQ').addEventListener('input',list);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&g('lfb').classList.contains('on'))g('lfbClose').onclick()});
+})();
+</script>
+</body></html>
 

@@ -720,5 +720,88 @@ function restart(){
 
 initGrid();
 </script>
+
+<!-- LifeOS 臉書圖文：每頁一篇，八段手法 -->
+<style>
+#lfbOpen{position:fixed;right:16px;bottom:16px;z-index:2147483000;font:600 16px/1 system-ui,"Microsoft JhengHei",sans-serif;min-height:48px;padding:0 20px;border:0;border-radius:24px;background:#1f5f4c;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
+#lfb{position:fixed;inset:0;z-index:2147483001;display:none;background:rgba(10,20,16,.55)}
+#lfb.on{display:block}
+#lfb .lfb-box{position:absolute;inset:16px;max-width:980px;margin:auto;background:#fffdf8;color:#1d2b26;border-radius:14px;display:flex;flex-direction:column;overflow:hidden;font:17px/1.85 system-ui,"Microsoft JhengHei",sans-serif;text-align:left}
+#lfb .lfb-head{display:flex;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid #e3e6df;flex-wrap:wrap}
+#lfb .lfb-head b{font-size:17px;margin-right:auto}
+#lfb input{flex:1 1 220px;min-height:44px;padding:8px 12px;border:1px solid #cfd8d0;border-radius:8px;font:inherit;font-size:15px;background:#fff;color:#1d2b26}
+#lfb button{font:inherit;font-size:15px;min-height:44px;padding:6px 14px;border-radius:8px;border:1px solid #1f5f4c;background:#fff;color:#1f5f4c;cursor:pointer;line-height:1.3}
+#lfb button.pri{background:#1f5f4c;color:#fff}
+#lfb .lfb-main{display:grid;grid-template-columns:240px 1fr;min-height:0;flex:1}
+#lfb .lfb-list{overflow:auto;border-right:1px solid #e3e6df;padding:8px}
+#lfb .lfb-list button{display:block;width:100%;text-align:left;margin-bottom:6px;border-color:#e3e6df;color:#1d2b26;font-size:14px}
+#lfb .lfb-list button.cur{border-color:#1f5f4c;background:#e8f1ec;font-weight:600}
+#lfb .lfb-list small{display:block;color:#6a7a72;font-size:12px}
+#lfb .lfb-post{overflow:auto;padding:20px 26px 30px}
+#lfb .lfb-eye{color:#1f5f4c;font-size:13px;font-weight:700;letter-spacing:1px}
+#lfb h2{font-size:25px;line-height:1.45;margin:4px 0 2px;color:#17352b}
+#lfb .lfb-meta{color:#6a7a72;font-size:14px;margin-bottom:14px}
+#lfb .lfb-part{margin:0 0 16px}
+#lfb .lfb-part p{margin:0}
+#lfb .lfb-tag{display:inline-block;font-size:12px;color:#1f5f4c;border:1px solid #1f5f4c;border-radius:4px;padding:0 7px;line-height:1.6;margin-bottom:3px}
+#lfb .notag .lfb-tag{display:none}
+#lfb .lfb-tags{color:#1f5f4c;margin-bottom:14px}
+#lfb .lfb-act{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#lfb .lfb-st{color:#1f5f4c;font-size:14px}
+#lfb .lfb-qs{display:grid;gap:10px;margin:4px 0 16px}
+#lfb .lfb-q{background:#f3f7f1;border-left:4px solid #1f5f4c;border-radius:6px;padding:10px 14px}
+#lfb .lfb-q.act{background:#fbf5e8;border-left-color:#a86a12}
+#lfb .lfb-q small{display:block;font-size:12px;font-weight:700;color:#1f5f4c;letter-spacing:1px}
+#lfb .lfb-q.act small{color:#a86a12}
+#lfb .lfb-q b{display:block;font-size:17px;line-height:1.7}
+#lfb .lfb-q i{display:block;font-style:normal;color:#4b5a53;font-size:15px;line-height:1.6;font-family:Georgia,"Times New Roman",serif}
+@media(max-width:720px){#lfb .lfb-box{inset:0;border-radius:0}#lfb .lfb-main{grid-template-columns:1fr;grid-template-rows:auto 1fr}#lfb .lfb-list{display:flex;gap:6px;overflow-x:auto;border-right:0;border-bottom:1px solid #e3e6df}#lfb .lfb-list button{flex:0 0 auto;width:auto;margin:0}#lfb .lfb-post{padding:16px}}
+</style>
+<button id="lfbOpen" type="button" aria-haspopup="dialog">臉書圖文</button>
+<div id="lfb" role="dialog" aria-modal="true" aria-label="每頁臉書圖文">
+<div class="lfb-box">
+<div class="lfb-head"><b>每頁臉書圖文｜大腦更新系統</b><input type="search" id="lfbQ" placeholder="搜尋圖文…" aria-label="搜尋圖文"><button type="button" id="lfbClose">關閉</button></div>
+<div class="lfb-main"><nav class="lfb-list" id="lfbList" aria-label="頁面"></nav><article class="lfb-post" id="lfbPost"></article></div>
+</div></div>
+<script>
+(function(){
+var TAG=['情境衝突','反問句','哲學命題','對比句','排比句','認知翻轉','層層遞進','詩性收束'];
+var P=[{"page": "前額葉｜人生CEO", "t": "你不是沒有意志力，你只是讓大腦的CEO太久沒上班了", "tags": "#前額葉 #延遲滿足 #深度思考 #LifeOS", "s": ["晚上十一點，他告訴自己：只看一支影片就睡。凌晨兩點，他還在滑。第二天早上，他答應自己要專心寫報告，可是打開電腦不到十分鐘，就切到購物網站。他很懊惱：我明明知道什麼是對的，為什麼就是做不到？他以為自己是一個沒有意志力的人，卻不知道，他大腦裡那位負責規劃與決策的主管，早就被長期的疲勞與碎片資訊，弄得精疲力盡。", "如果我們都知道該做什麼，為什麼總是做不到？如果意志力是天生的，為什麼同一個人，睡飽的時候和熬夜之後，自制力判若兩人？我們責怪自己不夠自律，可是，有沒有想過，那個負責自律的系統，可能只是需要被好好照顧？", "前額葉，被許多人比喻為人生的 CEO，負責思考、規劃、決策與長期的思維。它讓我們能夠為了更重要的目標，暫時放下眼前的誘惑。可是這位 CEO 很容易疲勞：睡眠不足、長期壓力、無止盡的碎片資訊，都會讓它的表現下降。當 CEO 累了，公司就交給本能與習慣來管，於是我們做出了一個又一個事後後悔的決定。", "讓 CEO 過勞的人說：「我要更用力地逼自己。」照顧 CEO 的人說：「我要讓它有休息、有訓練、有清楚的方向。」一個在疲憊的深夜做重要決定，一個把重要的事放在頭腦最清醒的時候；一個用意志力硬扛誘惑，一個把誘惑移出視線；一個讓資訊不斷轟炸，一個替大腦留下思考的空間。", "大量閱讀，是前額葉的健身房，讓它練習長時間的專注；寫作整理，讓模糊的想法留下清晰的痕跡；延遲滿足的練習，讓它一次次學會「等一下」；每天三問：今天最重要的事是什麼？我在逃避什麼？明天要怎麼做得更好？每一個練習，都是在替你的 CEO，加一點肌肉。", "我們以為自律是一種性格，有的人有，有的人沒有；其實自律更像一種被照顧出來的能力。最深的翻轉是：你不需要變成一個更狠的人，你只需要成為一個更懂得照顧自己大腦的人。睡飽了、專注了、方向清楚了，很多原本做不到的事，會突然變得沒有那麼難。", "從今天開始，替你的 CEO 安排一份簡單的工作表：早上頭腦最清醒的時候，先做最重要的那一件事；每天讀二十分鐘不是短影音的內容；每晚睡前寫下三句今天的整理。第一週，你會覺得很慢；第一個月，你發現自己比較能專心了；三個月後，你開始做出更多不會後悔的決定。", "一艘船能不能抵達遠方，不只看引擎有多強，更看掌舵的人是否清醒。願你好好照顧心裡那位掌舵的人；願你讓它睡飽、讓它思考、讓它看得見方向；願你的人生，不再被每一陣風吹著跑，而是穩穩地，朝著你真正想去的地方前進。"], "q": [["自律不是一種性格，而是一種被照顧出來的能力。", "Self-discipline isn't a personality trait; it's an ability that grows when you care for it."], ["把最重要的事，放在頭腦最清醒的時候先做。", "Do the most important thing first, while your mind is clearest."]]}, {"page": "杏仁核｜生存警報器", "t": "你不是太敏感，你的警報器只是太久沒有被好好安撫", "tags": "#杏仁核 #焦慮 #安全感練習 #LifeOS", "s": ["手機一響，她的心就跳一下；主管叫她的名字，她的手心就開始冒汗；家人晚歸半小時，她已經在腦中想好最壞的情況。朋友說她想太多，她也知道自己想太多，可是那種緊張，就像身體裡有一個停不下來的警報器，一點點聲響，就讓它大作。她好累，卻不知道要怎麼關掉它。", "如果焦慮只是想太多，為什麼告訴自己不要想，反而想得更多？如果危險已經過去了，為什麼身體還是一直處在緊繃的狀態？我們一直想用道理說服自己不要怕，可是，有沒有可能，那份害怕根本不在聽道理的那一層？", "杏仁核，是大腦裡的生存警報器，它的任務是偵測威脅，讓我們能在危險出現時快速反應。這個系統救過人類很多次，可是當它長期處在高警報的狀態，它就會把很多其實不危險的事情，也當成危險。焦慮、恐懼、隨時備戰的人格，常常不是因為脆弱，而是因為警報器的靈敏度，被調得太高了。", "跟警報器對抗的人說：「不要怕，有什麼好怕的。」安撫警報器的人說：「我知道你在保護我，我們先一起確認看看。」一個用道理壓抑恐懼，一個用身體讓自己安定；一個把想像當成事實，一個先分辨事實和想像；一個越對抗越緊繃，一個越安撫越放鬆。", "分辨事實與想像，寫下「真正發生的是什麼」和「我擔心會發生什麼」；用腹式呼吸，讓吐氣比吸氣更長，告訴身體現在是安全的；規律運動，讓累積的緊張有一個出口；每天累積一點安全感，例如記下今天一件順利的小事。警報器不是被說服的，而是被一次次的安全經驗，慢慢調低的。", "我們以為要先不焦慮，才能好好生活；其實常常是先好好生活，焦慮才慢慢變小。最深的翻轉是：你的敏感不是缺陷，它曾經是你保護自己的方式。現在你不必拆掉它，只需要讓它知道，你已經長大了，已經有能力，照顧自己了。", "這週，每天找三分鐘做一次慢慢的呼吸：吸氣四拍，停留一下，再用比較長的時間慢慢吐氣。焦慮升起時，拿出紙寫下兩欄：事實與想像。第一天，你會覺得效果很小；第一週，你開始比較快地平靜下來；一個月後，警報響的次數變少了。若焦慮持續影響睡眠、工作或生活，請尋求身心科或心理專業的協助，這不是軟弱，而是照顧自己。", "守夜的人整晚提著燈巡邏，是因為他怕黑夜裡有危險；如果有人輕輕地告訴他：天快亮了，你可以休息了，他才終於能放下那盞燈。願你心裡那位守夜的人，也能被溫柔地告知；願你的身體，慢慢學會什麼是安全；願你在某一個清晨醒來，發現自己，已經可以安心地呼吸了。"], "q": [["你的敏感不是缺陷，它曾經是你保護自己的方式。", "Your sensitivity isn't a flaw; it was once how you protected yourself."], ["焦慮時寫兩欄：事實與想像，再慢慢地吐氣。", "When anxious, write two columns, facts and fears, then breathe out slowly."]]}, {"page": "海馬迴｜人生圖書館", "t": "你不是記性差，你只是一直在收書，卻從來沒有整理過書架", "tags": "#海馬迴 #記憶 #學習方法 #睡眠 #LifeOS", "s": ["考試前一晚，他熬夜到三點，把整本講義從頭到尾看了三遍。第二天坐在考場裡，題目明明看起來很眼熟，答案卻怎麼也想不起來。他很沮喪：我已經讀了那麼多次，為什麼就是記不住？他以為自己記性差，卻不知道，他用來學習的方式，剛好是大腦最不容易記住東西的方式。", "如果多看幾遍就能記住，為什麼看了好多遍，還是一考就忘？如果熬夜讀書是努力的表現，為什麼熬夜之後，記得的反而更少？我們一直在往腦袋裡塞東西，可是，大腦真的是這樣學習的嗎？", "海馬迴，被許多人比喻為人生的圖書館，負責記憶的形成、學習與知識的整合。它不是一個只要拚命塞書就會變大的倉庫，而是一個需要分類、整理與定期複習的圖書館。睡眠對記憶的整合特別重要；把學到的東西說出來、寫出來，以及隔一段時間再複習一次，都比反覆地看，更能讓記憶留下來。", "死記的人說：「再多看幾遍就好。」會學習的人說：「我試著不看書，把它講出來。」一個反覆輸入，一個主動輸出；一個一次讀到天亮，一個分散在好幾天裡複習；一個犧牲睡眠換時間，一個把睡眠當成學習的一部分；一個把知識各自存放，一個把新知識和舊知識連在一起。", "讀完一段，就闔上書，試著說給自己聽；隔一天、隔三天、隔一週，再回頭看一次；睡前複習，讓睡眠替你整理；把新學到的東西，和你已經知道的事情連起來；把一個領域的方法，試著用到另一個領域。輸出強化記憶，間隔重複讓記憶生根，跨領域連結讓記憶長出枝幹。", "我們以為記性好不好是天生的，其實很多時候，是方法對不對。最深的翻轉是：學習不是把東西放進腦袋，而是把東西從腦袋裡拿出來。每一次你試著回想，哪怕想不起來，都是在告訴大腦：這很重要，請好好保存。費力的回想，比輕鬆的重讀，更能讓記憶留下來。", "這週，選一件你正在學的東西，試試三個方法：讀完之後立刻用自己的話講一遍；隔天和三天後各複習一次；睡前花五分鐘回想今天學到的重點。第一週，你會覺得比較慢、比較累；第二週，你發現自己記得的東西變多了；一個月後，你不再害怕考試或簡報，因為你知道，知識已經真正住進了你的圖書館。", "一座圖書館的價值，不在於它堆了多少本書，而在於你需要的時候，能不能很快地找到那一本。願你不再只是一直買書；願你學會替自己的記憶分類、整理、照顧；願你在人生需要答案的時候，總能在自己心裡的書架上，找到那一本，早就準備好的書。"], "q": [["學習不是把東西放進腦袋，而是把東西從腦袋裡拿出來。", "Learning isn't putting things into your head; it's bringing them out."], ["讀完一段就闔上書，用自己的話講一遍。", "After each section, close the book and explain it in your own words."]]}, {"page": "基底核｜習慣工廠", "t": "你不是懶，你只是一直在跟大腦的自動駕駛拔河", "tags": "#基底核 #習慣 #拖延 #兩分鐘法則 #LifeOS", "s": ["每天下班回家，她都告訴自己：今天要去運動。可是一進家門，身體好像有自己的意志：包包一放，人就倒在沙發上，手機已經在手裡。一回神，兩個小時過去了。她不是不想運動，也不是不知道運動的好處，她只是每天都在同一個時間、同一個地點，輸給了同一個習慣。", "如果我們真的很想改變，為什麼還是一次次回到舊的習慣？如果拖延是因為懶，為什麼我們在別的事情上，又可以那麼勤快？我們每天都在下決心，可是，下決心的那個我，和真正行動的那個我，是同一個嗎？", "基底核，常被比喻為大腦的習慣工廠。它把重複的行為自動化，讓我們不必每次都重新思考，省下很多力氣。習慣通常由三個部分組成：一個提示，一個行動，一個獎勵。拖延、滑手機上癮，往往不是因為意志薄弱，而是因為舊的習慣迴路，已經被練得非常熟練。要改變習慣，不是跟它硬拚，而是重新設計它。", "跟習慣拔河的人說：「我要靠意志力撐住。」設計習慣的人說：「我要改變提示、降低難度、給自己獎勵。」一個把手機放在床頭，一個把手機放在客廳充電；一個要求自己運動一小時，一個只要求自己穿上運動鞋；一個中斷一次就全盤放棄，一個只是隔天繼續。", "用兩分鐘法則開始：任何新習慣，先縮小到兩分鐘就能完成；重新設計提示、行動與獎勵，讓好習慣更容易被觸發；設計你的數位環境，把讓你分心的應用程式移出主畫面；追蹤你的習慣，用一個小小的打勾，讓大腦看見自己的進步；中斷了，就在第二天接上，不要讓一次失誤，變成兩次。", "我們以為改變習慣需要很大的決心，其實改變習慣，更需要很聰明的設計。最深的翻轉是：最難的永遠是開始的那一步，所以讓開始變得容易，比讓過程變得完美更重要。當好的行為變得容易，壞的行為變得麻煩，大腦的自動駕駛，就會慢慢開往新的方向。", "這週，挑一個你想養成的習慣，把它縮小到兩分鐘：想運動，就先穿上運動鞋走到門口；想閱讀，就先讀一頁；想早睡，就先在十點把手機放到客廳。每天完成就在月曆上打一個勾。第一週，你會覺得太簡單了；第二週，你開始做得比兩分鐘多；一個月後，那個習慣已經不太需要你提醒了。", "山路上第一個走過的人很辛苦，要撥開草叢、繞過石頭；可是走的人多了，路就自己出現了。願你耐心地，替自己開一條新的路；願你每天走一小段，不急，也不停；願你在某一天回頭，發現那條曾經雜草叢生的小徑，已經成了你每天自然而然，就會走上的路。"], "q": [["讓開始變得容易，比讓過程變得完美更重要。", "Making a start easy matters more than making the process perfect."], ["把新習慣縮小到兩分鐘，今天就做。", "Shrink a new habit to two minutes, and do it today."]]}, {"page": "島葉｜內在感測器", "t": "你一直在照顧所有人的感受，卻聽不見自己身體在說什麼", "tags": "#島葉 #身體覺察 #情緒命名 #LifeOS", "s": ["她是一個很能察言觀色的人，總是第一個發現同事心情不好，第一個注意到朋友需要幫忙。可是她自己，常常在一整天忙完之後，才突然發現肩膀痛得抬不起來，胃一直悶悶的，喉嚨很緊。朋友問她：「妳今天心情怎麼樣？」她愣了一下，竟然答不出來。她對別人的感受那麼敏銳，對自己的感受，卻像隔著一層厚厚的玻璃。", "如果我們這麼懂別人的情緒，為什麼常常說不出自己的感受？如果身體早就在發出訊號，為什麼我們總要等到它生病了，才肯停下來？我們每天都在接收外面的資訊，可是，我們有多久沒有好好聽一聽，從自己身體裡面傳來的聲音？", "島葉，常被比喻為大腦的內在感測器，參與我們對身體內部狀態的覺察，例如心跳、呼吸、飢餓、緊張，也和情緒的感受密切相關。當我們能夠覺察身體的訊號，就比較能夠早一點知道自己的情緒，也比較能專注與穩定。覺察，是所有情緒調節的第一步。", "忽略身體的人說：「我沒事，再撐一下就好。」覺察身體的人說：「我的肩膀很緊，我好像很焦慮。」一個等到身體崩潰才停下來，一個在訊號還小的時候就回應；一個只會說「很煩」，一個能說出「我是失望、委屈，還是害怕」；一個被情緒推著走，一個先看見，再選擇。", "每天做五分鐘的身體掃描，從頭頂到腳底，慢慢地感覺每一個部位；練習替情緒命名，越精準越好，不只是「不舒服」，而是「我覺得被忽略」；練習觀察呼吸，不改變它，只是看著它；替自己創造一點數位排毒的靜默時間，讓內在的聲音，有機會被聽見。", "我們以為要先處理情緒，才能好好生活；其實第一步不是處理，而是看見。最深的翻轉是：當你能說出自己的感受，那份感受就已經鬆開了一點。研究也常發現，把情緒用文字說出來，能幫助人比較平靜。你的身體一直在說話，你只是需要，給它一點被聽見的時間。", "從今天開始，每天睡前花五分鐘，躺著從頭到腳掃描一次身體，然後在心裡說出一個今天的情緒，越具體越好。第一天，你可能只感覺得到「累」；第一週，你開始分得出累和難過的差別；一個月後，你在白天也能比較早地察覺自己的狀態；三個月後，你會發現，自己不再那麼常被突然的情緒淹沒。", "儀表板上的燈亮了，不是車子在找麻煩，而是它在提醒你，該加油了，該檢查了。願你不再忽略心裡那些亮起的燈；願你每天都花一點時間，好好聽一聽自己的身體；願你在照顧所有人之前，也記得問自己一句：我今天，還好嗎？"], "q": [["說出自己的感受，那份感受就已經鬆開了一點。", "When you name a feeling, it already loosens a little."], ["睡前花五分鐘，從頭到腳掃描一次身體。", "Spend five minutes before bed scanning your body from head to toe."]]}, {"page": "預設模式網路 DMN｜身份系統", "t": "你腦袋裡那部一直在播的電影，主角是誰，劇本由誰來寫？", "tags": "#預設模式網路 #身份 #受害者與創造者 #LifeOS", "s": ["每當一閒下來，她的腦袋就開始自動播放：國中時被同學排擠的那一幕，前男友說她不夠好的那句話，上一份工作被主管當眾責罵的那個下午。她說：「我就是一個很倒楣的人，好事從來不會發生在我身上。」這部電影她已經看了很多年，每一次的結局都一樣，而她始終沒有想過，自己其實可以拿起筆，改一改劇本。", "如果我們一閒下來，腦袋就自動播放過去的傷痛，那這部電影，是誰在當導演？如果我們一直用同樣的方式說自己的故事，我們的人生，有可能演出不一樣的結局嗎？我們以為自己只是在回憶，可是，我們是不是也在一遍又一遍地，排練同一個角色？", "預設模式網路，是大腦在沒有專注於外在任務時，特別活躍的一組區域，常參與回想過去、想像未來，以及思考「我是誰」。它就像一部在背景播放的電影，而我們說給自己聽的故事，會慢慢形成我們的身份。如果這部電影總是以受害者為主角，我們就容易把自己活成那個角色。", "受害者的劇本說：「這些事發生在我身上，我無能為力。」創造者的劇本說：「這些事發生了，我可以選擇接下來怎麼做。」一個不斷重播過去，一個開始想像可能的未來；一個問「為什麼是我」，一個問「現在我能做什麼」；一個被故事定義，一個重新書寫故事。", "做一次身份考古，看看你常常說自己是什麼樣的人，這些說法是從哪裡來的；寫一份新的身份聲明，用你想成為的樣子描述自己；每天找一個身份證明，一件符合新身份的小事；在發現自己又進入受害者劇本時，練習切換：這件事裡，有哪一部分是我可以選擇的？", "我們以為回憶就是事實，其實回憶也是一種詮釋，每一次回想，我們都在重新講一次故事。最深的翻轉是：你不能改變過去發生的事，但你可以改變你怎麼講這個故事。當你開始用創造者的角度講述，同樣的過去，就會變成支撐你走下去的力量，而不是拖住你的重量。如果有些回憶太過沉重，也值得讓專業的人陪你一起整理。", "這週，找一段你常常重播的回憶，用兩種方式各寫一次：第一次用受害者的角度，第二次用創造者的角度，寫下「這件事讓我學會了什麼，我後來選擇了什麼」。第一次，你可能寫不出第二種版本；第三次，你開始找到一些新的句子；一個月後，那段回憶播放的時候，你心裡的感覺，已經不太一樣了。", "同一段旅程，可以被寫成一場災難，也可以被寫成一次冒險；差別不在旅途有多崎嶇，而在說故事的人，怎麼看待自己。願你成為自己人生電影的導演；願你溫柔地改寫那些舊劇本；願你在接下來的每一幕裡，都看見一個勇敢、正在成長、值得被祝福的主角。"], "q": [["你不能改變過去，但你可以改變你怎麼講這個故事。", "You can't change the past, but you can change how you tell the story."], ["把一段常重播的回憶，用創造者的角度重寫一次。", "Rewrite one memory you keep replaying, this time as its creator."]]}, {"page": "中央整合系統｜系統思維中心", "t": "真正的智慧，不是某一個腦區特別強，而是全部一起合作", "tags": "#系統思維 #整合 #智慧生成 #每週複盤 #LifeOS", "s": ["他是一個很聰明的人，邏輯好、記性好、反應快。可是他的人生，好像總是卡在某些地方：工作能力很強，人際關係卻一團糟；道理講得頭頭是道，情緒一來就全部失控；學了很多東西，卻很少真正用在生活裡。有人說他太聰明了，其實他只是有很多很強的零件，卻還沒有把它們，組成一台真正能運轉的機器。", "如果一個人很聰明，為什麼還是會做出不智慧的選擇？如果我們學了那麼多知識，為什麼遇到真實的困境，還是不知道該怎麼辦？我們一直在強化自己的某一項能力，可是，有沒有想過，真正讓人生順利運轉的，也許不是某一個零件，而是零件之間的合作？", "這個 APP 把前面的六個系統，整合成一個系統思維的中心：前額葉負責規劃，杏仁核負責警報，海馬迴負責記憶，基底核負責習慣，島葉負責覺察，預設模式網路負責身份。智慧，不是其中某一個特別強，而是它們能夠彼此協調：警報響的時候，覺察能接住；覺察到了，規劃能出手；規劃好了，習慣能執行；執行之後，記憶能整理，身份能更新。", "零件思維說：「我要讓自己的邏輯更好、記性更強。」系統思維說：「我要讓我的思考、情緒、習慣和身份，一起往同一個方向走。」一個在單點上追求極致，一個在整體上追求協調；一個在問題出現時頭痛醫頭，一個看見問題在系統裡的位置；一個累積知識，一個生成智慧。", "用四層思考法看事情：事件、模式、結構、系統；練習跨領域的類比，用一個領域的道理，理解另一個領域的困難；把痛苦升級成學習，問一句「這件事讓我的系統，需要更新哪裡」；每週做一次複盤，看看這週的思考、情緒、習慣和行動，是不是在同一條路上。", "我們以為成長是讓自己變得更強，其實成長更像是讓自己變得更協調。最深的翻轉是：很多問題，不是因為你哪裡不夠好，而是你身上那些已經很好的能力，還沒有學會彼此合作。當它們開始合作，你會發現，自己不需要更用力，卻能走得更遠。", "這週日晚上，花二十分鐘做一次複盤，問自己四個問題：這週我的頭腦在想什麼？我的身體和情緒在說什麼？我的習慣讓我往哪裡走？我心裡的那個「我」，有沒有因為這一週而更新一點？第一次，你可能只答得出一兩題；一個月後，你開始看見它們之間的關聯；半年後，你會發現，自己做決定越來越清楚，人生也越來越像一個整體。", "一支交響樂團，每一位樂手都很厲害，可是如果沒有一起聽、一起呼吸，演奏出來的只會是噪音；當他們開始彼此聆聽，音樂就出現了。願你身上的每一個能力，都能學會彼此聆聽；願你的頭腦、身體、情緒與習慣，一起奏出屬於你的旋律；願你的人生，成為一首完整而動人的曲子。"], "q": [["很多問題，只是你的好能力還沒學會彼此合作。", "Many problems are just your strengths not yet working together."], ["每週日花二十分鐘複盤：頭腦、身體、習慣、身分。", "Spend twenty minutes each Sunday reviewing mind, body, habits and identity."]]}];
+var cur=0,hide=false;
+function g(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var QL=[['心靈雞湯｜Soul Soup',''],['激勵｜Motivation','act']];
+function qtext(p){return p.q?'\n\n'+p.q.map(function(x,k){return '【'+QL[k][0]+'】\n'+x[0]+'\n'+x[1]}).join('\n\n'):''}
+function qhtml(p){return p.q?'<div class="lfb-qs">'+p.q.map(function(x,k){return '<div class="lfb-q '+QL[k][1]+'"><small>'+QL[k][0]+'</small><b>'+esc(x[0])+'</b><i lang="en">'+esc(x[1])+'</i></div>'}).join('')+'</div>':''}
+function text(p){return '【'+p.t+'】\n\n'+p.s.join('\n\n')+qtext(p)+'\n\n'+p.tags}
+function list(){
+  var q=g('lfbQ').value.trim().toLowerCase();
+  g('lfbList').innerHTML=P.map(function(p,i){
+    if(q&&(p.page+' '+text(p)).toLowerCase().indexOf(q)<0)return '';
+    return '<button type="button" data-i="'+i+'" class="'+(i===cur?'cur':'')+'"><small>第 '+(i+1)+' 頁｜'+esc(p.page)+'</small>'+esc(p.t)+'</button>';
+  }).join('')||'<p style="padding:8px;font-size:14px">沒有符合的圖文</p>';
+}
+function show(i){
+  cur=i;var p=P[i];
+  g('lfbPost').innerHTML='<div class="lfb-eye">第 '+(i+1)+' / '+P.length+' 頁｜'+esc(p.page)+'</div><h2>'+esc(p.t)+'</h2><div class="lfb-meta">約 '+p.s.join('').replace(/\s/g,'').length+' 字 · 八種手法 · 文中情境為示例</div><div id="lfbBody" class="'+(hide?'notag':'')+'">'+p.s.map(function(x,k){return '<div class="lfb-part"><span class="lfb-tag">'+TAG[k]+'</span><p>'+esc(x)+'</p></div>'}).join('')+'</div>'+qhtml(p)+'<div class="lfb-tags">'+esc(p.tags)+'</div><div class="lfb-act"><button type="button" class="pri" id="lfbCopy">複製貼文</button><button type="button" id="lfbHide">'+(hide?'顯示':'隱藏')+'手法標籤</button><span class="lfb-st" id="lfbSt" role="status"></span></div>';
+  g('lfbPost').scrollTop=0;list();
+}
+function copy(){
+  var t=text(P[cur]),st=g('lfbSt');
+  function fall(){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}a.remove();st.textContent=ok?'已複製，可直接貼到臉書。':'無法自動複製，請手動選取內文。'}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){st.textContent='已複製，可直接貼到臉書。'},fall)}else fall();
+}
+g('lfbOpen').onclick=function(){g('lfb').classList.add('on');show(cur);g('lfbQ').focus()};
+g('lfbClose').onclick=function(){g('lfb').classList.remove('on');g('lfbOpen').focus()};
+g('lfb').addEventListener('click',function(e){
+  if(e.target===g('lfb'))g('lfbClose').onclick();
+  var b=e.target.closest&&e.target.closest('[data-i]');if(b)show(+b.getAttribute('data-i'));
+  if(e.target.id==='lfbCopy')copy();
+  if(e.target.id==='lfbHide'){hide=!hide;show(cur)}
+});
+g('lfbQ').addEventListener('input',list);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&g('lfb').classList.contains('on'))g('lfbClose').onclick()});
+})();
+</script>
 </body>
 </html>

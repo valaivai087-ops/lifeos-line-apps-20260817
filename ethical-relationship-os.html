@@ -1944,5 +1944,88 @@
         // Initialize assessment
         document.addEventListener('DOMContentLoaded', renderAssessment);
     </script>
+
+<!-- LifeOS 臉書圖文：每頁一篇，八段手法 -->
+<style>
+#lfbOpen{position:fixed;right:16px;bottom:16px;z-index:2147483000;font:600 16px/1 system-ui,"Microsoft JhengHei",sans-serif;min-height:48px;padding:0 20px;border:0;border-radius:24px;background:#1f5f4c;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
+#lfb{position:fixed;inset:0;z-index:2147483001;display:none;background:rgba(10,20,16,.55)}
+#lfb.on{display:block}
+#lfb .lfb-box{position:absolute;inset:16px;max-width:980px;margin:auto;background:#fffdf8;color:#1d2b26;border-radius:14px;display:flex;flex-direction:column;overflow:hidden;font:17px/1.85 system-ui,"Microsoft JhengHei",sans-serif;text-align:left}
+#lfb .lfb-head{display:flex;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid #e3e6df;flex-wrap:wrap}
+#lfb .lfb-head b{font-size:17px;margin-right:auto}
+#lfb input{flex:1 1 220px;min-height:44px;padding:8px 12px;border:1px solid #cfd8d0;border-radius:8px;font:inherit;font-size:15px;background:#fff;color:#1d2b26}
+#lfb button{font:inherit;font-size:15px;min-height:44px;padding:6px 14px;border-radius:8px;border:1px solid #1f5f4c;background:#fff;color:#1f5f4c;cursor:pointer;line-height:1.3}
+#lfb button.pri{background:#1f5f4c;color:#fff}
+#lfb .lfb-main{display:grid;grid-template-columns:240px 1fr;min-height:0;flex:1}
+#lfb .lfb-list{overflow:auto;border-right:1px solid #e3e6df;padding:8px}
+#lfb .lfb-list button{display:block;width:100%;text-align:left;margin-bottom:6px;border-color:#e3e6df;color:#1d2b26;font-size:14px}
+#lfb .lfb-list button.cur{border-color:#1f5f4c;background:#e8f1ec;font-weight:600}
+#lfb .lfb-list small{display:block;color:#6a7a72;font-size:12px}
+#lfb .lfb-post{overflow:auto;padding:20px 26px 30px}
+#lfb .lfb-eye{color:#1f5f4c;font-size:13px;font-weight:700;letter-spacing:1px}
+#lfb h2{font-size:25px;line-height:1.45;margin:4px 0 2px;color:#17352b}
+#lfb .lfb-meta{color:#6a7a72;font-size:14px;margin-bottom:14px}
+#lfb .lfb-part{margin:0 0 16px}
+#lfb .lfb-part p{margin:0}
+#lfb .lfb-tag{display:inline-block;font-size:12px;color:#1f5f4c;border:1px solid #1f5f4c;border-radius:4px;padding:0 7px;line-height:1.6;margin-bottom:3px}
+#lfb .notag .lfb-tag{display:none}
+#lfb .lfb-tags{color:#1f5f4c;margin-bottom:14px}
+#lfb .lfb-act{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#lfb .lfb-st{color:#1f5f4c;font-size:14px}
+#lfb .lfb-qs{display:grid;gap:10px;margin:4px 0 16px}
+#lfb .lfb-q{background:#f3f7f1;border-left:4px solid #1f5f4c;border-radius:6px;padding:10px 14px}
+#lfb .lfb-q.act{background:#fbf5e8;border-left-color:#a86a12}
+#lfb .lfb-q small{display:block;font-size:12px;font-weight:700;color:#1f5f4c;letter-spacing:1px}
+#lfb .lfb-q.act small{color:#a86a12}
+#lfb .lfb-q b{display:block;font-size:17px;line-height:1.7}
+#lfb .lfb-q i{display:block;font-style:normal;color:#4b5a53;font-size:15px;line-height:1.6;font-family:Georgia,"Times New Roman",serif}
+@media(max-width:720px){#lfb .lfb-box{inset:0;border-radius:0}#lfb .lfb-main{grid-template-columns:1fr;grid-template-rows:auto 1fr}#lfb .lfb-list{display:flex;gap:6px;overflow-x:auto;border-right:0;border-bottom:1px solid #e3e6df}#lfb .lfb-list button{flex:0 0 auto;width:auto;margin:0}#lfb .lfb-post{padding:16px}}
+</style>
+<button id="lfbOpen" type="button" aria-haspopup="dialog">臉書圖文</button>
+<div id="lfb" role="dialog" aria-modal="true" aria-label="每頁臉書圖文">
+<div class="lfb-box">
+<div class="lfb-head"><b>每頁臉書圖文｜倫理人際關係作業系統</b><input type="search" id="lfbQ" placeholder="搜尋圖文…" aria-label="搜尋圖文"><button type="button" id="lfbClose">關閉</button></div>
+<div class="lfb-main"><nav class="lfb-list" id="lfbList" aria-label="頁面"></nav><article class="lfb-post" id="lfbPost"></article></div>
+</div></div>
+<script>
+(function(){
+var TAG=['情境衝突','反問句','哲學命題','對比句','排比句','認知翻轉','層層遞進','詩性收束'];
+var P=[{"page": "情感智商與自我覺知", "t": "你以為是別人惹你生氣，其實是你還不認識自己的情緒", "tags": "#情緒智商 #自我覺知 #同理心 #界線 #LifeOS", "s": ["週一早上的會議，同事只是隨口說了一句：「這個上次不是講過了嗎？」你的胸口瞬間一緊，脖子發熱，接下來的半小時，你一個字都沒聽進去。散會後你在茶水間跟另一個同事抱怨了十分鐘，回到座位還是氣。晚上洗澡時你忽然想：他那句話其實沒有很過分，為什麼我會那麼在意？那份熱，到底是從哪裡來的？", "如果情緒只是對事情的反應，為什麼同一句話，有時候你一笑置之，有時候卻讓你整天心神不寧？如果你夠了解自己，為什麼總是事後才知道自己在氣什麼？你以為自己在處理別人，會不會其實，一直是被自己身上那個沒被看懂的按鈕，牽著走？", "情緒智商不是不生氣，而是知道自己為什麼生氣。它從四件事開始：看見自己、管理自己、看見別人、經營關係。情緒是訊號，不是命令；它告訴你某個需要被碰到了，卻不必替你決定下一步。一個不認識自己情緒的人，就像拿著一張沒有標示的地圖，每一步都可能踩空。看見自己的情緒，是一個人與世界和平相處的第一步。", "情緒低落的人說：「是他害我的。」情緒成熟的人說：「我被碰到了哪裡？」一個把觸發點交給別人控制，一個把觸發點收回自己手裡；一個在壓力下只會戰鬥、逃跑或僵住，一個能先停一下，再選擇回應；一個總是事後後悔，一個開始能在當下轉彎。", "記下讓你起反應的情境，記下當下的感受，記下感受底下的需要；留意胸口的緊、脖子的熱、胃裡的翻攪，因為身體往往比腦袋更早知道；看看你在壓力下習慣戰鬥、逃避還是凍結；也看看那些自動冒出來的想法，是不是早年經驗留給你的聲音。", "我們以為同理心是先去理解別人，其實同理心的起點，是先理解自己。當你知道自己被誤解時有多痛，你才會懂別人為什麼那麼急著解釋；當你看見自己的界線，你才會尊重別人的「不」。原來最難讀懂的人不是別人，而是那個每天跟你住在一起，卻很少被好好問候的自己。", "從明天開始，每當心裡起波瀾，先在心裡說一句：「我注意到我現在……」第一週，你只是能叫出情緒的名字；第二週，你開始找到它背後的需要；一個月後，你能在開口前多停三秒；三個月後，同樣那句話再出現，你只是笑笑地說：「對，我再確認一次。」你沒有變得冷漠，你只是變得自由了。", "天氣不會因為我們討厭雨天就不下雨，可是懂得看雲的人，會記得帶傘。願你不再被自己心裡的天氣嚇到；願你學會讀懂每一朵雲的形狀；願你在風雨來的時候，仍然知道自己是誰，要往哪裡去。"], "q": [["看見自己的情緒，是與世界和平相處的第一步。", "Seeing your own emotions is the first step to living at peace with the world."], ["心裡起波瀾時，先說一句：「我注意到我現在……」", "When your heart stirs, start with: \"I notice that right now I…\""]]}, {"page": "倫理說服與信任構建", "t": "真正的影響力，不是讓人照你的話做，而是讓人願意相信你", "tags": "#信任 #倫理說服 #不操控 #影響力 #LifeOS", "s": ["他是業績最好的業務，話術一套一套，客戶的猶豫他都有辦法拆解。可是他很少接到回頭客，也很少有人主動介紹朋友給他。直到有一天，一位老客戶在電話裡淡淡地說：「你說的都對，可是跟你談完，我總覺得自己被推了一把。」掛掉電話後，他坐在車裡很久，第一次懷疑：我一直贏下來的，到底是什麼？", "如果說服就是讓對方點頭，為什麼有些點頭之後，信任反而變少了？如果話術夠好就能成交，為什麼最讓人願意追隨的人，常常不是最會說話的人？你想要的是一次的同意，還是一份能走很遠的信任？", "倫理說服不是操控。它以對方最好的利益為出發點，透過清楚的溝通、共同的價值與真實的信任來影響彼此。信任有三根柱子：有能力、守承諾、真關心。它不是一次建立起來的，而是在一次又一次安靜的兌現裡，慢慢長出來的。可以被公開檢查的意圖，才配得上長久的影響力。信任像存款，每一次守信是一筆存入，每一次操控都是一筆提領；而提領的速度，永遠比存入快得多。", "操控問：「怎樣讓他答應？」倫理說服問：「怎樣讓他做出對自己真正好的決定？」一個隱藏議程，一個坦白意圖；一個只講對自己有利的事實，一個連反方的聲音也誠實擺上桌；一個用羞愧、內疚或恐懼逼人就範，一個尊重對方說不的權利。", "先建立可信度，用一致的行動讓人看見你的價值；再理解對方的價值，聽懂他真正在乎什麼；然後找到共同的地方，讓彼此站在同一邊；接著說清楚一起行動會帶來什麼；最後，始終保持透明，包括你的限制、你的難處、你的不確定。", "我們以為信任來自說得多好，其實信任來自做得多穩。一千句漂亮的承諾，比不上一次小小的、沒有人在看時的守信。最深的翻轉是：當你不再急著說服別人，而是專心成為一個值得被相信的人，影響力就不再需要被推銷，它會自己找上門。真正被信任的人，不是從不犯錯的人，而是錯了也願意讓你看見的人。", "今天，從一個小承諾開始：答應的事，準時做到；做不到的，提早說清楚。一週後，你身邊的人開始對你少一點防備；一個月後，有人開始主動把難題交給你；半年後，你說的話變得有重量；幾年後，你也許不再是最會說的人，卻是大家最想聽的人。", "風可以把落葉吹向遠方，卻吹不動一棵扎了根的樹。願你不必靠推力讓人前進，而是用一片樹蔭，讓人願意停下來；願你的每一句話，都有你的行動替它作證；願你被信任，不是因為你說服了誰，而是因為你一直都在。"], "q": [["真正的影響力，不是讓人照你的話做，而是讓人願意相信你。", "Real influence isn't making people obey; it's making them willing to trust you."], ["從一個小承諾開始：答應的事，準時做到。", "Start with one small promise: do what you said, on time."]]}, {"page": "健康談判與衝突解決", "t": "吵架不代表關係失敗，不敢好好吵，才可能是", "tags": "#衝突解決 #積極傾聽 #雙贏 #困難對話 #LifeOS", "s": ["週末要回誰家過節，你們已經吵了第三輪。你說：「每次都回你家！」他說：「你根本不在乎我爸媽！」兩個人的聲音越來越大，孩子躲進房間。最後他摔門出去，你一個人坐在客廳，心裡又氣又委屈。其實你也沒有那麼在意回哪一家，你在意的是，自己的感受好像從來沒有被放進那張行事曆裡。", "如果衝突代表關係出了問題，為什麼那些從不吵架的伴侶，有時候反而最先走散？如果把道理講贏就能解決，為什麼同一個問題，每年都會再吵一次？我們爭的，真的是那個決定嗎？還是那個決定底下，誰的需要被看見、誰的需要被忽略？", "衝突是關係的自然部分，不是失敗的訊號；重要的不是有沒有衝突，而是怎麼處理它。健康的談判，不是誰讓步得多，而是讓雙方的需要都被理解、被尊重、被放進答案裡。當人們感覺被聽見，他們才有空間去聽你。傾聽，是一切和解的第一塊磚。不被說出口的不滿不會消失，它只會變成沉默、冷淡和一次比一次更大的爆發。", "不健康的爭吵針對人，健康的談判針對問題；不健康的爭吵守著立場，健康的談判挖出利益；不健康的爭吵說「你總是」，健康的談判說「當這件事發生時，我感到」；不健康的爭吵想要贏，健康的談判想要一起走下去。", "放下手機，看著對方的眼睛；聽完整個想法，而不是在心裡準備反擊；問一句「發生了什麼讓你這樣覺得？」；說一句「聽起來你覺得……是嗎？」；再說一句「我能理解你為什麼會這樣感受」，記得，理解不等於同意，卻是同意之前最重要的一步。", "我們以為談判是分一塊固定大小的餅，你多一口我就少一口；其實好的談判，常常是先一起把餅做大。立場是對方說他想要什麼，利益是他為什麼想要。當你們看見彼此真正在乎的是陪伴、公平、被尊重，答案往往不只兩個，而是十個。原來最難的不是找到解法，而是先放下想贏的心。", "下一次衝突快要升溫時，試著這樣開場：「我想跟你談一件對我們很重要的事，我希望我們都能說出自己的感受。」然後說你看見的行為，不評斷人格；說它帶給你的影響與感受；問他從他的角度怎麼看；一起列出方案；最後確認下一步。第一次會很彆扭，第五次會順一點，第十次，你們會發現吵架變少了，因為很多話，終於有地方好好說。", "兩條河交會的地方，水會翻起漩渦，可是過了那一段，河面就變寬了。衝突也是這樣，它不是終點，而是兩個不同的人要學會一起流動的地方。願你不再害怕那些不一樣；願你們每一次的爭執，最後都讓彼此更靠近一點。"], "q": [["衝突不是關係的終點，而是兩個人學著一起流動的地方。", "Conflict isn't the end of a relationship; it's where two people learn to flow together."], ["下次吵架前，先問：「你可以多說一點嗎？」", "Before the next argument, ask: \"Can you tell me more?\""]]}, {"page": "真誠連結與長期投資", "t": "你怕被看見脆弱，所以也沒有人真正靠近你", "tags": "#真誠連結 #脆弱的力量 #關係經營 #LifeOS", "s": ["在大家眼裡，她永遠是那個可靠的人：工作穩定，情緒穩定，從不麻煩別人。朋友有事找她，她從不推辭；可是她自己失業的那三個月，沒有一個朋友知道。她每天照樣穿好衣服出門，在咖啡廳坐一整天，晚上回家假裝下班。後來朋友知道了，難過地問她：「我們在妳心裡，到底算什麼？」她說不出話，因為她也不知道。", "如果堅強能保護我們，為什麼我們越堅強，越覺得孤單？如果不麻煩別人是一種體貼，為什麼別人反而覺得被推開？我們一直在等待一段不需要冒險的親密，可是，一段從來不敢讓對方看見真實的關係，真的能算是親密嗎？", "最深的關係，由脆弱與相互所建立。脆弱不是軟弱，它是敢於真實地被看見的勇氣。長期健康的關係是一種投資，它需要穩定的關注、時間、誠實的回饋，以及對彼此成長的承諾。它不是為了得到什麼而建立的交易，而是因為你珍惜這個人，以及你們一起創造的東西。人可以被欣賞而不被了解，卻很難在不被了解的情況下，真正被愛。", "假裝完美的人說：「我很好，不用擔心。」真誠連結的人說：「我最近其實有點撐不住。」一個讓人敬佩，一個讓人親近；一個只給不收，一個願意讓別人也有機會付出；一個守著安全的距離，一個冒著被拒絕的風險，換來被真正理解的可能。", "說出你正在掙扎的地方，而不是假裝無所不能；承認你搞砸的事，並且說出你學到了什麼；說出你的需要，「我現在需要支持」；慶祝對方的成功，真心地為他高興；定期說出你的欣賞，不要假設對方早就知道他對你有多重要。", "我們以為要先夠好，才配被愛；其實人與人之間真正的連結，常常發生在不夠好的那一刻。當你說出「我也是」，對方才敢放下他的盔甲。最深的翻轉是：脆弱不是讓關係變危險的東西，反而是讓關係變真實的東西。完美讓人仰望，真實才讓人靠近。你肯先打開一扇窗，別人才知道，原來這裡住著一個人。", "從一個你信任的人開始，說一件你平常不會說的小事。第一次，你的心會跳得很快；說完之後，你發現世界沒有崩塌；第二次，對方也分享了他的故事；慢慢地，你們之間多了一種不必解釋的默契；一年後，你遇到風雨時，第一個想到的，不再是自己扛，而是：我可以打給他。", "樹與樹之間，在地底下用根相連，彼此分享養分與水分。一棵樹看起來孤獨地站著，其實它從不是一個人活下來的。願你不必再假裝不需要誰；願你敢讓一個人走進你的心裡；願你在被看見的那一刻發現，原來真實的你，也是被愛著的。"], "q": [["完美讓人仰望，真實才讓人靠近。", "Perfection makes people look up; authenticity draws them close."], ["今天對一個信任的人，說一件你平常不會說的小事。", "Today, tell someone you trust one small thing you usually keep inside."]]}, {"page": "實際場景案例研究", "t": "同一個衝突，換一個問題，就換了一個結局", "tags": "#職場衝突 #家庭界線 #友誼 #內在衝突 #LifeOS", "s": ["四個場景，四種卡住：專案會議上，兩個同事為了分工吵到主管出面；過年前，媽媽第五次打電話問你什麼時候結婚；好朋友突然變冷淡，訊息只回一個「嗯」；而你自己，在想辭職和不敢辭職之間，已經拉扯了半年。看起來是四件毫不相干的事，可是它們都有同一個表情：每個人都覺得自己沒有錯，每個人都很累。", "如果每個人都沒錯，那為什麼大家都在受苦？如果衝突的起因是別人，為什麼換了一個環境，我們還是會遇見類似的劇情？我們是不是太習慣問「誰應該改」，而很少問「這裡面，有什麼是我可以先做的」？", "每一個人際衝突，底下都藏著幾個沒被說出口的需要：被尊重、被理解、被信任、被給予空間。職場衝突常常是角色與期待沒有對齊，家庭衝突常常是愛與界線糾纏在一起，友誼的冷淡常常是一個誤會沒有被問出來，而內在衝突，常常是兩個都很重要的價值在打架。", "把同事當對手，會議變成戰場；把同事當隊友，會議變成拼圖。把媽媽的催促當成控制，你會想逃；把它看成擔心，你可以溫柔地劃界線。把朋友的冷淡當成拒絕，你會先離開；把它當成一個問號，你可以先開口。把內心的拉扯當成軟弱，你會責怪自己；把它當成訊號，你可以好好聽。", "在職場，說「我們的目標是什麼」，而不是「這不是我的工作」；在家裡，說「我知道你擔心我，這件事我會自己決定」，而不是「你很煩」；在友誼裡，說「最近感覺你好像有點忙，你還好嗎」，而不是默默疏遠；在心裡，說「我害怕的是什麼，我想要的是什麼」，而不是只說「我不敢」。", "我們以為解決衝突要等對方先讓步，其實很多衝突的轉折點，都來自其中一個人先換了一個問題。不是「你為什麼這樣對我」，而是「我們之間發生了什麼」；不是「誰對誰錯」，而是「我們都想要什麼」。原來衝突不是牆，而是一扇門，只是需要有人先伸手轉開門把。", "挑一個你最近正卡住的場景，寫下三件事：我看見的事實、我的感受與需要、我猜對方的感受與需要。然後只做一個小動作：一句問候、一次澄清、一個界線。第一步之後，空氣會鬆一點；第二步之後，對方也許會回應；幾次之後，你會發現，你不再害怕衝突，因為你知道怎麼陪它走完。", "每一場衝突都像一場暴雨，來的時候讓人慌亂，過了之後，空氣卻特別乾淨。願你在每一個卡住的場景裡，都有勇氣先開口；願你的每一句話，都能讓對方覺得，自己被當成一個人，而不是一個問題。"], "q": [["衝突不是牆，而是一扇需要有人先轉開門把的門。", "Conflict isn't a wall; it's a door waiting for someone to turn the handle first."], ["選一個卡住的場景，只做一個小動作：一句問候。", "Pick one stuck situation and make one small move: a simple greeting."]]}, {"page": "常見陷阱與反模式", "t": "你以為自己在溝通，其實你只是換了一種方式在逃避", "tags": "#人際陷阱 #被動攻擊 #同理心疲勞 #界線 #LifeOS", "s": ["她讀了很多溝通的書，學會了說「我理解你的感受」。可是有一天，先生生氣地說：「妳每次都說理解，然後什麼都不改！」她很委屈：我明明照著書上做了。後來她才發現，自己的「理解」常常是一種防衛，一種讓對話快點結束的技巧。她說的每一個字都對，可是她的心，一直站在門外。", "如果我們學了那麼多技巧，為什麼關係沒有變得更好？如果我們已經很努力地體貼，為什麼有時候還是覺得心累、覺得被掏空？有沒有可能，我們正在用看起來很成熟的方式，做著跟以前一樣的事：保護自己，避開真正的靠近？", "每一種健康的能力，都有一個長得很像它的陷阱。同理太多會變成同理心疲勞，脆弱表演多了會變成虛偽的脆弱，不說不滿會變成被動攻擊，界線忽緊忽鬆會讓人無所適從，表面和諧會變成假信任。技巧可以學，但如果動機是控制或逃避，技巧只會讓逃避變得更體面。", "真正的同理是陪伴，同理心疲勞是把別人的情緒全扛到自己身上；真正的脆弱是冒險，虛偽的脆弱是用自我揭露換取同情；真正的不滿是說出來，被動攻擊是用遲到、冷淡、忘記來說；真正的界線是一致的，搖擺的界線只是情緒的開關；真正的信任經得起問，假信任只是不敢問。", "當你覺得疲憊，問問自己是不是承擔了不屬於你的重量；當你分享傷痛，問問自己是想被理解，還是想被同意；當你沉默，問問自己是在冷靜，還是在懲罰；當你說「隨便」，問問自己是真的隨便，還是不敢要；當你說「沒事」，問問自己，是真的沒事嗎？", "我們以為反模式是別人的毛病，其實它們常常是我們自己最熟悉的保護方式。它們曾經在某個時刻保護過你，所以不必羞愧，只需要辨認。最深的翻轉是：成熟不是學會更多技巧，而是越來越誠實地看見自己為什麼這樣做。當你看見了，選擇才真正出現。", "這一週，挑一個你最常掉進去的陷阱，只做觀察，不做批判。第一天，你在事後才發現；第三天，你在當下發現；第七天，你在開口前就發現了；一個月後，你開始能換一種說法；半年後，你身邊的人會說：跟你相處，變得比較輕鬆了。改變不必轟轟烈烈，它常常從一次誠實的發現開始。", "鏡子不會說謊，只是我們常常不敢看。願你有勇氣，在每一次想躲開的時候，多停留一秒；願你不必假裝很好，也不必假裝理解；願你的每一份溫柔，都是真的，而你給出的每一份愛，也終於有地方，安心地被接住。"], "q": [["成熟不是學會更多技巧，而是越來越誠實地看見自己。", "Maturity isn't learning more techniques; it's seeing yourself more honestly."], ["這週選一個你最常掉進的陷阱，只觀察，不批判。", "This week, pick the trap you fall into most, and just observe it without judging."]]}];
+var cur=0,hide=false;
+function g(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var QL=[['心靈雞湯｜Soul Soup',''],['激勵｜Motivation','act']];
+function qtext(p){return p.q?'\n\n'+p.q.map(function(x,k){return '【'+QL[k][0]+'】\n'+x[0]+'\n'+x[1]}).join('\n\n'):''}
+function qhtml(p){return p.q?'<div class="lfb-qs">'+p.q.map(function(x,k){return '<div class="lfb-q '+QL[k][1]+'"><small>'+QL[k][0]+'</small><b>'+esc(x[0])+'</b><i lang="en">'+esc(x[1])+'</i></div>'}).join('')+'</div>':''}
+function text(p){return '【'+p.t+'】\n\n'+p.s.join('\n\n')+qtext(p)+'\n\n'+p.tags}
+function list(){
+  var q=g('lfbQ').value.trim().toLowerCase();
+  g('lfbList').innerHTML=P.map(function(p,i){
+    if(q&&(p.page+' '+text(p)).toLowerCase().indexOf(q)<0)return '';
+    return '<button type="button" data-i="'+i+'" class="'+(i===cur?'cur':'')+'"><small>第 '+(i+1)+' 頁｜'+esc(p.page)+'</small>'+esc(p.t)+'</button>';
+  }).join('')||'<p style="padding:8px;font-size:14px">沒有符合的圖文</p>';
+}
+function show(i){
+  cur=i;var p=P[i];
+  g('lfbPost').innerHTML='<div class="lfb-eye">第 '+(i+1)+' / '+P.length+' 頁｜'+esc(p.page)+'</div><h2>'+esc(p.t)+'</h2><div class="lfb-meta">約 '+p.s.join('').replace(/\s/g,'').length+' 字 · 八種手法 · 文中情境為示例</div><div id="lfbBody" class="'+(hide?'notag':'')+'">'+p.s.map(function(x,k){return '<div class="lfb-part"><span class="lfb-tag">'+TAG[k]+'</span><p>'+esc(x)+'</p></div>'}).join('')+'</div>'+qhtml(p)+'<div class="lfb-tags">'+esc(p.tags)+'</div><div class="lfb-act"><button type="button" class="pri" id="lfbCopy">複製貼文</button><button type="button" id="lfbHide">'+(hide?'顯示':'隱藏')+'手法標籤</button><span class="lfb-st" id="lfbSt" role="status"></span></div>';
+  g('lfbPost').scrollTop=0;list();
+}
+function copy(){
+  var t=text(P[cur]),st=g('lfbSt');
+  function fall(){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}a.remove();st.textContent=ok?'已複製，可直接貼到臉書。':'無法自動複製，請手動選取內文。'}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){st.textContent='已複製，可直接貼到臉書。'},fall)}else fall();
+}
+g('lfbOpen').onclick=function(){g('lfb').classList.add('on');show(cur);g('lfbQ').focus()};
+g('lfbClose').onclick=function(){g('lfb').classList.remove('on');g('lfbOpen').focus()};
+g('lfb').addEventListener('click',function(e){
+  if(e.target===g('lfb'))g('lfbClose').onclick();
+  var b=e.target.closest&&e.target.closest('[data-i]');if(b)show(+b.getAttribute('data-i'));
+  if(e.target.id==='lfbCopy')copy();
+  if(e.target.id==='lfbHide'){hide=!hide;show(cur)}
+});
+g('lfbQ').addEventListener('input',list);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&g('lfb').classList.contains('on'))g('lfbClose').onclick()});
+})();
+</script>
 </body>
 </html>
